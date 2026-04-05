@@ -16,6 +16,8 @@ DerivedData/
 *.app
 *.icns
 *.iconset/
+*.dmg
+*.zip
 
 # Claude
 .claude/
