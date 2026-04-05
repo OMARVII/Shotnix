@@ -88,7 +88,7 @@ ctx.addLine(to: CGPoint(x: arrowEndX - headSize, y: arrowY - headSize * 0.6))
 ctx.closePath()
 ctx.fillPath()
 
-// --- App name at top ---
+// --- App name at top (accounting for Finder title bar ~60pt = 120px at 2x) ---
 let titleFont = NSFont.systemFont(ofSize: 36, weight: .bold)
 let titleAttrs: [NSAttributedString.Key: Any] = [
     .font: titleFont,
@@ -96,7 +96,9 @@ let titleAttrs: [NSAttributedString.Key: Any] = [
 ]
 let title = NSAttributedString(string: "Shotnix", attributes: titleAttrs)
 let titleSize = title.size()
-title.draw(at: NSPoint(x: (width - titleSize.width) / 2, y: height - 100))
+let titleX = (width - titleSize.width) / 2
+let titleY = height - 190  // ~190px from top to clear Finder title bar
+title.draw(at: NSPoint(x: titleX, y: titleY))
 
 // --- Tagline ---
 let tagFont = NSFont.systemFont(ofSize: 18, weight: .regular)
@@ -106,7 +108,9 @@ let tagAttrs: [NSAttributedString.Key: Any] = [
 ]
 let tag = NSAttributedString(string: "Drag to Applications to install", attributes: tagAttrs)
 let tagSize = tag.size()
-tag.draw(at: NSPoint(x: (width - tagSize.width) / 2, y: height - 145))
+let tagX = (width - tagSize.width) / 2
+let tagY = height - 240  // below title
+tag.draw(at: NSPoint(x: tagX, y: tagY))
 
 // --- Subtle glow behind icon positions ---
 func drawGlow(at center: CGPoint, radius: CGFloat, color: CGColor) {
