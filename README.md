@@ -54,10 +54,20 @@ macOS has built-in screenshot tools, but they stop at capture. Shotnix picks up 
 
 1. Grab the latest `.dmg` from [**Releases**](https://github.com/OMARVII/Shotnix/releases/latest)
 2. Open the DMG and drag **Shotnix** to your Applications folder
-3. On first launch: right-click the app → **Open** (bypasses Gatekeeper for unsigned apps)
-4. Grant **Screen Recording** permission when prompted
+3. Grant **Screen Recording** permission when prompted
 
-> **Note:** Shotnix is ad-hoc signed (no Apple Developer account). On macOS Sequoia 15+, you may need to go to **System Settings → Privacy & Security** and click **Open Anyway**, or run:
+> [!IMPORTANT]
+> **macOS will show a warning on first launch** — this is normal for open-source apps that aren't notarized through Apple's $99/year Developer Program. Shotnix is safe and fully open source. Here's how to open it:
+>
+> **macOS Ventura & Sonoma (13–14):**
+> Right-click `Shotnix.app` → click **Open** → click **Open** again in the dialog
+>
+> **macOS Sequoia (15+):**
+> 1. Try to open the app (it will be blocked)
+> 2. Go to **System Settings → Privacy & Security**
+> 3. Scroll down and click **Open Anyway** next to "Shotnix was blocked"
+>
+> **Or use Terminal:**
 > ```
 > xattr -dr com.apple.quarantine /Applications/Shotnix.app
 > ```
