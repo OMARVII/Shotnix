@@ -1,0 +1,22 @@
+# macOS
+.DS_Store
+*.swp
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# Xcode (if anyone opens in Xcode)
+*.xcodeproj/
+*.xcworkspace/
+xcuserdata/
+DerivedData/
+
+# Build artifacts
+*.app
+*.icns
+*.iconset/
+
+# Claude
+.claude/
+CLAUDE.md
