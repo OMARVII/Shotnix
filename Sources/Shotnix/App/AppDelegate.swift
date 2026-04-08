@@ -77,8 +77,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
     @objc func openHistory()         { HistoryPanelController.shared.show(historyManager: historyManager) }
     @objc func toggleDesktopIcons()  { DesktopIconsManager.toggle() }
-    @objc func openPreferences()     { PreferencesWindowController.shared.show() }
-    @objc func openAbout()           { AboutWindowController.shared.show() }
+    @objc func openPreferences()     { PreferencesWindowController.shared.show(tab: .general) }
+    @objc func openAbout()           { PreferencesWindowController.shared.show(tab: .about) }
 }
 
 // MARK: – NSMenu convenience

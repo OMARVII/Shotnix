@@ -23,6 +23,11 @@ final class AreaSelectionWindow: NSObject {
     private var keyMonitor: Any?
 
     func show() {
+        // LSUIElement apps are background processes — must activate before
+        // showing any interactive window, otherwise makeKey() silently fails
+        // and the overlay won't receive mouse drag events.
+        NSApp.activate(ignoringOtherApps: true)
+
         for screen in NSScreen.screens {
             let overlay = SelectionOverlayWindow(screen: screen, mode: mode)
             overlay.selectionHandler = { [weak self] rect in self?.finish(rect: rect, screen: screen) }
@@ -31,9 +36,9 @@ final class AreaSelectionWindow: NSObject {
             overlays.append(overlay)
         }
 
-        // FIX 1: borderless windows need canBecomeKey + explicit first responder
         if let first = overlays.first {
-            first.makeKey()
+            first.makeKeyAndOrderFront(nil)
+            first.makeMain()
             first.makeFirstResponder(first.contentView)
         }
 
@@ -96,13 +101,14 @@ private final class SelectionOverlayWindow: NSWindow {
         ignoresMouseEvents = false
         collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         contentView = overlayView
-        overlayView.frame = screen.frame
+        overlayView.frame = NSRect(origin: .zero, size: screen.frame.size)
         overlayView.selectionHandler = { [weak self] rect in self?.selectionHandler?(rect) }
         overlayView.cancelHandler   = { [weak self] in self?.cancelHandler?() }
     }
 
     // Borderless windows return false by default — must override or makeKey() is ignored
     override var canBecomeKey: Bool { true }
+    override var canBecomeMain: Bool { true }
 
     func show() {
         orderFrontRegardless()
@@ -186,8 +192,9 @@ private final class SelectionOverlayView: NSView {
             drawMagnifier(near: currentRect)
             drawSizeLabel(for: currentRect)
         } else if mode == .area {
-            // Area mode, pre-drag: fully transparent background + crosshair + coordinates
-            NSColor.clear.setFill()
+            // Area mode, pre-drag: near-invisible tint so macOS hit-tests this
+            // region and delivers mouseDown. Fully clear windows pass clicks through.
+            NSColor.black.withAlphaComponent(0.001).setFill()
             NSBezierPath.fill(bounds)
             if let pos = mousePosition {
                 drawCrosshair(at: pos)
@@ -329,6 +336,7 @@ private final class SelectionOverlayView: NSView {
     }
 
     override var acceptsFirstResponder: Bool { true }
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
 
     // MARK: – Helpers
 

@@ -45,14 +45,57 @@ private final class QuickAccessWindow: NSWindow {
         level = .floating
         hasShadow = true
         isMovableByWindowBackground = true
+        acceptsMouseMovedEvents = true
 
         buildContent(thumbW: thumbW, thumbH: thumbH, buttonRowH: buttonRowH, padding: padding, totalH: totalH)
+        setupWindowTrackingArea()
         positionOverlay()
     }
 
-    private func buildContent(thumbW: CGFloat, thumbH: CGFloat, buttonRowH: CGFloat, padding: CGFloat, totalH: CGFloat) {
+    override var canBecomeKey: Bool { true }
+
+    private func setupWindowTrackingArea() {
         guard let contentView else { return }
-        let container = NSVisualEffectView(frame: contentView.bounds)
+        let area = NSTrackingArea(
+            rect: contentView.bounds,
+            options: [.activeAlways, .mouseEnteredAndExited, .inVisibleRect],
+            owner: self
+        )
+        contentView.addTrackingArea(area)
+    }
+
+    override func mouseEntered(with event: NSEvent) {
+        super.mouseEntered(with: event)
+        NSApp.activate(ignoringOtherApps: true)
+        makeKey()
+    }
+
+    override func rightMouseDown(with event: NSEvent) {
+        let menu = NSMenu()
+        menu.addItem(NSMenuItem(title: "Copy  ⌘C", action: #selector(copyAction), keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: "Save  ⌘S", action: #selector(saveAction), keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: "Edit  ⌘E", action: #selector(editAction), keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: "Pin", action: #selector(pinAction), keyEquivalent: ""))
+        menu.addItem(.separator())
+        menu.addItem(NSMenuItem(title: "Close", action: #selector(dismissAction), keyEquivalent: ""))
+        for item in menu.items { item.target = self }
+        guard let view = contentView else { return }
+        NSMenu.popUpContextMenu(menu, with: event, for: view)
+    }
+
+    override func keyDown(with event: NSEvent) {
+        let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
+        switch (event.charactersIgnoringModifiers, flags) {
+        case ("c", .command):  copyAction()
+        case ("s", .command):  saveAction()
+        case ("e", .command):  editAction()
+        case ("\u{1B}", _):    dismissAction()   // Escape
+        default: super.keyDown(with: event)
+        }
+    }
+
+    private func buildContent(thumbW: CGFloat, thumbH: CGFloat, buttonRowH: CGFloat, padding: CGFloat, totalH: CGFloat) {
+        let container = OverlayContentView(frame: NSRect(x: 0, y: 0, width: thumbW + padding * 2, height: totalH))
         container.material = .hudWindow
         container.blendingMode = .behindWindow
         container.state = .active
@@ -61,7 +104,7 @@ private final class QuickAccessWindow: NSWindow {
         container.layer?.masksToBounds = true
         container.layer?.borderWidth = 0.5
         container.layer?.borderColor = NSColor.white.withAlphaComponent(0.15).cgColor
-        contentView.addSubview(container)
+        contentView = container
 
         // Draggable thumbnail — drag to Finder/apps, double-click to annotate
         let thumbFrame = NSRect(x: padding, y: buttonRowH + padding, width: thumbW, height: thumbH)
@@ -137,7 +180,9 @@ private final class QuickAccessWindow: NSWindow {
         setFrameOrigin(NSPoint(x: x, y: y))
         alphaValue = 0
 
+        NSApp.activate(ignoringOtherApps: true)
         orderFrontRegardless()
+        makeKey()
         NSAnimationContext.runAnimationGroup { ctx in
             ctx.duration = 0.25
             self.animator().alphaValue = 1
@@ -277,6 +322,14 @@ private final class ImageFilePromiseDelegate: NSObject, NSFilePromiseProviderDel
     func operationQueue(for filePromiseProvider: NSFilePromiseProvider) -> OperationQueue {
         .main
     }
+}
+
+// MARK: – Content view that accepts first mouse + right-click
+
+@MainActor
+private final class OverlayContentView: NSVisualEffectView {
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+    override var acceptsFirstResponder: Bool { true }
 }
 
 // MARK: – Hover button with tint change

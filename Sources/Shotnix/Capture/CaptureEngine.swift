@@ -115,6 +115,7 @@ final class CaptureEngine {
     }
 
     private func playCaptureSound() {
+        guard Settings.playSounds else { return }
         AudioServicesPlaySystemSound(1108)
     }
 
