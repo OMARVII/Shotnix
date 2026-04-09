@@ -18,6 +18,9 @@ private final class QuickAccessWindow: NSWindow {
     private static var openWindows: [QuickAccessWindow] = []
 
     private var dismissTimer: Timer?
+    private var keyMonitor: Any?
+    private var globalMouseMonitor: Any?
+    private var localMouseMonitor: Any?
     private let historyItem: HistoryItem
     private let historyManager: HistoryManager
     private let image: NSImage
@@ -46,52 +49,88 @@ private final class QuickAccessWindow: NSWindow {
         hasShadow = true
         isMovableByWindowBackground = true
         acceptsMouseMovedEvents = true
+        collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary]
 
         buildContent(thumbW: thumbW, thumbH: thumbH, buttonRowH: buttonRowH, padding: padding, totalH: totalH)
-        setupWindowTrackingArea()
         positionOverlay()
+        installEventMonitors()
     }
 
     override var canBecomeKey: Bool { true }
 
-    private func setupWindowTrackingArea() {
-        guard let contentView else { return }
-        let area = NSTrackingArea(
-            rect: contentView.bounds,
-            options: [.activeAlways, .mouseEnteredAndExited, .inVisibleRect],
-            owner: self
-        )
-        contentView.addTrackingArea(area)
+    // MARK: – Keyboard (direct override — works when window IS key)
+
+    override func keyDown(with event: NSEvent) {
+        guard !isClosing else { return }
+        let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
+        switch (event.charactersIgnoringModifiers, flags) {
+        case ("c", .command):  copyAction()
+        case ("s", .command):  saveAction()
+        case ("e", .command):  editAction()
+        default: break
+        }
+        if event.keyCode == 53 { dismissAction() }
     }
 
-    override func mouseEntered(with event: NSEvent) {
-        super.mouseEntered(with: event)
-        NSApp.activate(ignoringOtherApps: true)
-        makeKey()
+    // MARK: – Event Monitors (bypass view hierarchy entirely)
+
+    private func installEventMonitors() {
+        // Keyboard: catches ⌘C/⌘S/⌘E/Escape at the app level — no key window needed
+        keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
+            guard let self, !self.isClosing else { return event }
+            // Only handle if mouse is over our window
+            guard self.frame.contains(NSEvent.mouseLocation) else { return event }
+            let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
+            switch (event.charactersIgnoringModifiers, flags) {
+            case ("c", .command):  self.copyAction(); return nil
+            case ("s", .command):  self.saveAction(); return nil
+            case ("e", .command):  self.editAction(); return nil
+            default: break
+            }
+            if event.keyCode == 53 { self.dismissAction(); return nil }
+            return event
+        }
+
+        // Global mouse: activates app when cursor enters overlay frame (works even when app is inactive)
+        globalMouseMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.mouseMoved, .leftMouseDragged]) { [weak self] _ in
+            guard let self, !self.isClosing else { return }
+            if self.frame.contains(NSEvent.mouseLocation) {
+                DispatchQueue.main.async {
+                    NSApp.setActivationPolicy(.accessory)
+                    NSApp.activate(ignoringOtherApps: true)
+                    self.makeKeyAndOrderFront(nil)
+                    self.makeFirstResponder(self)
+                }
+            }
+        }
+
+        // Local mouse: keeps window key while hovering (when app IS active)
+        localMouseMonitor = NSEvent.addLocalMonitorForEvents(matching: [.mouseMoved]) { [weak self] event in
+            guard let self, !self.isClosing else { return event }
+            if self.frame.contains(NSEvent.mouseLocation) && !self.isKeyWindow {
+                self.makeKey()
+            }
+            return event
+        }
+    }
+
+    private func removeEventMonitors() {
+        if let m = keyMonitor { NSEvent.removeMonitor(m); keyMonitor = nil }
+        if let m = globalMouseMonitor { NSEvent.removeMonitor(m); globalMouseMonitor = nil }
+        if let m = localMouseMonitor { NSEvent.removeMonitor(m); localMouseMonitor = nil }
     }
 
     override func rightMouseDown(with event: NSEvent) {
         let menu = NSMenu()
-        menu.addItem(NSMenuItem(title: "Copy  ⌘C", action: #selector(copyAction), keyEquivalent: ""))
-        menu.addItem(NSMenuItem(title: "Save  ⌘S", action: #selector(saveAction), keyEquivalent: ""))
-        menu.addItem(NSMenuItem(title: "Edit  ⌘E", action: #selector(editAction), keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: "Copy", action: #selector(copyAction), keyEquivalent: "c"))
+        menu.addItem(NSMenuItem(title: "Save", action: #selector(saveAction), keyEquivalent: "s"))
+        menu.addItem(NSMenuItem(title: "Edit", action: #selector(editAction), keyEquivalent: "e"))
         menu.addItem(NSMenuItem(title: "Pin", action: #selector(pinAction), keyEquivalent: ""))
         menu.addItem(.separator())
         menu.addItem(NSMenuItem(title: "Close", action: #selector(dismissAction), keyEquivalent: ""))
         for item in menu.items { item.target = self }
         guard let view = contentView else { return }
         NSMenu.popUpContextMenu(menu, with: event, for: view)
-    }
-
-    override func keyDown(with event: NSEvent) {
-        let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
-        switch (event.charactersIgnoringModifiers, flags) {
-        case ("c", .command):  copyAction()
-        case ("s", .command):  saveAction()
-        case ("e", .command):  editAction()
-        case ("\u{1B}", _):    dismissAction()   // Escape
-        default: super.keyDown(with: event)
-        }
     }
 
     private func buildContent(thumbW: CGFloat, thumbH: CGFloat, buttonRowH: CGFloat, padding: CGFloat, totalH: CGFloat) {
@@ -180,9 +219,28 @@ private final class QuickAccessWindow: NSWindow {
         setFrameOrigin(NSPoint(x: x, y: y))
         alphaValue = 0
 
+        // LSUIElement apps have .prohibited activation policy — activate() is
+        // unreliable without temporarily escalating to .accessory first.
+        NSApp.setActivationPolicy(.accessory)
         NSApp.activate(ignoringOtherApps: true)
         orderFrontRegardless()
-        makeKey()
+        makeKeyAndOrderFront(nil)
+        makeFirstResponder(self)
+
+        // Deferred re-checks: activate() is async and completion time varies.
+        // 100ms catches the common case; 300ms catches slow activation handshakes.
+        for delay in [0.1, 0.3] {
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
+                guard let self, !self.isClosing else { return }
+                if !self.isKeyWindow {
+                    NSApp.setActivationPolicy(.accessory)
+                    NSApp.activate(ignoringOtherApps: true)
+                    self.makeKeyAndOrderFront(nil)
+                    self.makeFirstResponder(self)
+                }
+            }
+        }
+
         NSAnimationContext.runAnimationGroup { ctx in
             ctx.duration = 0.25
             self.animator().alphaValue = 1
@@ -209,8 +267,13 @@ private final class QuickAccessWindow: NSWindow {
     }
 
     private func forceCleanup() {
+        removeEventMonitors()
         orderOut(nil)
         QuickAccessWindow.openWindows.removeAll { $0 === self }
+        // Restore background-only policy so app doesn't appear in Cmd-Tab
+        if QuickAccessWindow.openWindows.isEmpty {
+            NSApp.setActivationPolicy(.prohibited)
+        }
     }
 
     // MARK: – Actions

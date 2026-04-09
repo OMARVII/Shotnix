@@ -44,9 +44,22 @@ macOS has built-in screenshot tools, but they stop at capture. Shotnix picks up 
 
 **Stay in flow**
 - Quick access overlay after every capture — copy, save, edit, or pin
-- Pin screenshots to float on your desktop
+- Drag-and-drop from overlay directly into Finder, Slack, or any app
+- Keyboard shortcuts on overlay — `Cmd+C` copy, `Cmd+S` save, `Cmd+E` edit, `Esc` dismiss
+- Right-click context menu on overlay
+- Pin screenshots to float on your desktop (draggable, resizable)
 - Full capture history with grid browser
 - Global hotkeys that work from anywhere
+
+**Configurable**
+- Tabbed settings window (General, Shortcuts, Screenshots, About)
+- Export as PNG or JPEG (with quality slider)
+- Auto-save location picker
+- Configurable overlay position (left or right) and timeout
+- Capture sound effects (toggleable)
+- Hide desktop icons during capture
+- Launch at login
+- What's New changelog in the About tab
 
 ## Install
 
@@ -94,6 +107,15 @@ This compiles a release build, generates the app icon, ad-hoc signs the binary, 
 | `Cmd + Shift + 7` | Previous area capture |
 | `Cmd + Shift + O` | OCR text extraction |
 | `Cmd + Shift + S` | Scrolling capture |
+
+**On the quick access overlay:**
+
+| Shortcut | Action |
+|---|---|
+| `Cmd + C` | Copy screenshot to clipboard |
+| `Cmd + S` | Save to file |
+| `Cmd + E` | Open in annotation editor |
+| `Esc` | Dismiss overlay |
 
 ## Architecture
 

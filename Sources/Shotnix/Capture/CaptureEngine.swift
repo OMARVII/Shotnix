@@ -128,7 +128,7 @@ final class CaptureEngine {
         )
         flash.isOpaque = false
         flash.backgroundColor = NSColor.white.withAlphaComponent(0.3)
-        flash.level = .screenSaver
+        flash.level = .floating
         flash.ignoresMouseEvents = true
         flash.orderFrontRegardless()
         NSAnimationContext.runAnimationGroup({ ctx in

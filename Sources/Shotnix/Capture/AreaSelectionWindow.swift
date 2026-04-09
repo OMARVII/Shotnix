@@ -23,9 +23,9 @@ final class AreaSelectionWindow: NSObject {
     private var keyMonitor: Any?
 
     func show() {
-        // LSUIElement apps are background processes — must activate before
-        // showing any interactive window, otherwise makeKey() silently fails
-        // and the overlay won't receive mouse drag events.
+        // LSUIElement apps have .prohibited activation policy — escalate to
+        // .accessory so activate() reliably grants key window status.
+        NSApp.setActivationPolicy(.accessory)
         NSApp.activate(ignoringOtherApps: true)
 
         for screen in NSScreen.screens {
@@ -36,19 +36,31 @@ final class AreaSelectionWindow: NSObject {
             overlays.append(overlay)
         }
 
-        if let first = overlays.first {
-            first.makeKeyAndOrderFront(nil)
-            first.makeMain()
-            first.makeFirstResponder(first.contentView)
+        // Triple-focus: immediate + 50ms + 150ms to handle async activation timing.
+        // activate() is async and completion time varies — the deferred attempts
+        // catch the case where the first makeKey silently failed.
+        focusFirstOverlay()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [weak self] in
+            self?.focusFirstOverlay()
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) { [weak self] in
+            self?.focusFirstOverlay()
         }
 
-        // FIX 2: local key monitor as belt-and-suspenders — Escape always exits
         keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
             if event.keyCode == 53 { self?.cancel(); return nil }
             return event
         }
 
         NSCursor.crosshair.push()
+    }
+
+    private func focusFirstOverlay() {
+        guard let first = overlays.first, !overlays.isEmpty else { return }
+        NSApp.activate(ignoringOtherApps: true)
+        first.makeKeyAndOrderFront(nil)
+        first.makeMain()
+        first.makeFirstResponder(first.contentView)
     }
 
     private func finish(rect: CGRect, screen: NSScreen) {
@@ -70,6 +82,8 @@ final class AreaSelectionWindow: NSObject {
         if let m = keyMonitor { NSEvent.removeMonitor(m); keyMonitor = nil }
         overlays.forEach { $0.orderOut(nil) }
         overlays.removeAll()
+        // Restore background-only policy
+        NSApp.setActivationPolicy(.prohibited)
     }
 }
 
@@ -99,6 +113,7 @@ private final class SelectionOverlayWindow: NSWindow {
         backgroundColor = .clear
         level = .screenSaver
         ignoresMouseEvents = false
+        acceptsMouseMovedEvents = true
         collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         contentView = overlayView
         overlayView.frame = NSRect(origin: .zero, size: screen.frame.size)
@@ -283,6 +298,14 @@ private final class SelectionOverlayView: NSView {
     // MARK: – Mouse Events
 
     override func mouseDown(with event: NSEvent) {
+        // Safety net: if window isn't key (activation race on first capture),
+        // force it now so the subsequent drag events are delivered here.
+        if let win = window, !win.isKeyWindow {
+            NSApp.activate(ignoringOtherApps: true)
+            win.makeKeyAndOrderFront(nil)
+            win.makeFirstResponder(self)
+        }
+
         if mode == .window {
             if let r = highlightedWindowRect {
                 selectionHandler?(r)

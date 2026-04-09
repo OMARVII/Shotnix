@@ -25,7 +25,7 @@ final class PinnedWindow: NSWindow {
 
     init(image: NSImage) {
         let size = constrainedSize(for: image.size)
-        imageView = NSImageView(frame: NSRect(origin: .zero, size: size))
+        imageView = DraggablePinnedImageView(frame: NSRect(origin: .zero, size: size))
 
         super.init(
             contentRect: NSRect(origin: .zero, size: size),
@@ -122,6 +122,13 @@ final class PinnedWindow: NSWindow {
     }
 
     @objc private func closeAll() { PinnedWindow.closeAll() }
+}
+
+// NSImageView consumes mouseDown for its own drag-and-drop, which blocks
+// isMovableByWindowBackground. This subclass lets the window handle drags.
+@MainActor
+private final class DraggablePinnedImageView: NSImageView {
+    override var mouseDownCanMoveWindow: Bool { true }
 }
 
 // Constrain initial size to something reasonable

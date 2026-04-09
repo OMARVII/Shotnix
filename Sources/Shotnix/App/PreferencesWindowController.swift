@@ -424,7 +424,7 @@ final class PreferencesWindowController: NSObject, NSToolbarDelegate, NSWindowDe
         y -= 34
 
         // Version
-        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.9.0-beta"
         let versionLabel = NSTextField(labelWithString: "Version \(version)")
         versionLabel.font = .systemFont(ofSize: 12)
         versionLabel.textColor = .secondaryLabelColor
