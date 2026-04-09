@@ -14,6 +14,11 @@
 
 ---
 
+> [!NOTE]
+> **Shotnix is in beta (v0.9.0).** It's fully functional but not yet notarized through Apple's Developer Program, so macOS will show a Gatekeeper warning on first launch. This is standard for open-source apps — Shotnix is safe and the source code is right here. Notarization is on the roadmap.
+>
+> To open: **Right-click → Open → Open** (macOS 13–14) or **System Settings → Privacy & Security → Open Anyway** (macOS 15+).
+
 <!-- Add a screenshot or GIF here:
 <p align="center">
   <img src="assets/screenshot.png" width="720" alt="Shotnix screenshot" />
