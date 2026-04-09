@@ -149,6 +149,8 @@ That's it. One dependency.
 ## Roadmap
 
 - [ ] Customizable hotkeys
+- [ ] Window capture with shadow and padding
+- [ ] Delay/timer capture (3s, 5s, 10s)
 - [ ] Multi-display capture fixes
 - [ ] First-launch onboarding
 - [ ] Auto-update mechanism
