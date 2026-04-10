@@ -40,6 +40,7 @@ final class PreferencesWindowController: NSObject, NSToolbarDelegate, NSWindowDe
     private var jpegQualityRow: NSView?
 
     func show(tab: PreferencesTab = .general) {
+        NSApp.setActivationPolicy(.accessory)
         NSApp.activate(ignoringOtherApps: true)
         if let existing = window {
             switchTab(to: tab)
@@ -78,6 +79,7 @@ final class PreferencesWindowController: NSObject, NSToolbarDelegate, NSWindowDe
     func windowWillClose(_ notification: Notification) {
         window = nil
         contentBox = nil
+        NSApp.setActivationPolicy(.prohibited)
     }
 
     // MARK: - Tab switching

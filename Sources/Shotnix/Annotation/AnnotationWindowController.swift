@@ -16,6 +16,7 @@ final class AnnotationWindowController: NSWindowController {
     static func open(image: NSImage, historyItem: HistoryItem? = nil, historyManager: HistoryManager? = nil) {
         let controller = AnnotationWindowController(image: image, historyItem: historyItem, historyManager: historyManager)
         openControllers.append(controller)
+        NSApp.setActivationPolicy(.accessory)
         NSApp.activate(ignoringOtherApps: true)
         controller.showWindow(nil)
         controller.window?.makeKeyAndOrderFront(nil)
@@ -110,6 +111,9 @@ final class AnnotationWindowController: NSWindowController {
 extension AnnotationWindowController: NSWindowDelegate {
     func windowWillClose(_ notification: Notification) {
         AnnotationWindowController.openControllers.removeAll { $0 === self }
+        if AnnotationWindowController.openControllers.isEmpty {
+            NSApp.setActivationPolicy(.prohibited)
+        }
     }
 }
 
