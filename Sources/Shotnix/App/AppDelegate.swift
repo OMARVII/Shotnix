@@ -16,6 +16,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         setupStatusItem()
         PermissionsManager.requestScreenRecordingPermission()
         hotkeyManager.register(captureEngine: captureEngine, historyManager: historyManager)
+        NativeShortcutManager.promptIfNeeded()
     }
 
     // MARK: – Status bar
