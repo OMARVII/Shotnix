@@ -266,7 +266,11 @@ private final class QuickAccessWindow: NSWindow {
         })
     }
 
+    private var didCleanup = false
+
     private func forceCleanup() {
+        guard !didCleanup else { return }
+        didCleanup = true
         removeEventMonitors()
         orderOut(nil)
         QuickAccessWindow.openWindows.removeAll { $0 === self }

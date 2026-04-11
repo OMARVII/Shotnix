@@ -51,6 +51,7 @@ final class CaptureEngine {
             PermissionsManager.showPermissionDeniedAlert(); return
         }
         let screens = NSScreen.screens
+        guard !screens.isEmpty else { return }
         // Capture the main (key) screen
         let screen = NSScreen.main ?? screens[0]
         let rect = screen.frame

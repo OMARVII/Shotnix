@@ -18,6 +18,11 @@ final class HistoryPanelController: NSObject {
             reload()
             return
         }
+        // Register for close notification to restore activation policy
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(panelDidClose),
+            name: NSWindow.willCloseNotification, object: nil
+        )
         let p = NSPanel(
             contentRect: NSRect(x: 0, y: 0, width: 600, height: 480),
             styleMask: [.titled, .closable, .resizable, .utilityWindow],
@@ -95,6 +100,12 @@ final class HistoryPanelController: NSObject {
     private func reload() {
         guard let panel, let manager = historyManager else { return }
         panel.contentView = buildContent(historyManager: manager)
+    }
+
+    @objc private func panelDidClose(_ notification: Notification) {
+        guard let closedWindow = notification.object as? NSWindow, closedWindow === panel else { return }
+        panel = nil
+        NSApp.setActivationPolicy(.prohibited)
     }
 
     @objc private func clearAll() {

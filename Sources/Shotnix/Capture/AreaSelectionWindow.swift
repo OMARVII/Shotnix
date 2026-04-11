@@ -56,7 +56,8 @@ final class AreaSelectionWindow: NSObject {
     }
 
     private func focusFirstOverlay() {
-        guard let first = overlays.first, !overlays.isEmpty else { return }
+        guard !overlays.isEmpty, let first = overlays.first else { return }
+        guard first.isVisible else { return }
         NSApp.activate(ignoringOtherApps: true)
         first.makeKeyAndOrderFront(nil)
         first.makeMain()
