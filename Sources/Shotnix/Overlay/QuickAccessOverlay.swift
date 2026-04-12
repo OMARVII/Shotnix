@@ -30,12 +30,14 @@ private final class QuickAccessWindow: NSWindow {
         self.historyItem = historyItem
         self.historyManager = historyManager
 
-        let thumbW: CGFloat = 240
+        let thumbW: CGFloat = 300
         let aspect = image.size.height / max(image.size.width, 1)
-        let thumbH: CGFloat = min(thumbW * aspect, 160)
-        let buttonRowH: CGFloat = 36
-        let padding: CGFloat = 8
-        let totalH = thumbH + buttonRowH + padding * 2
+        let thumbH: CGFloat = min(thumbW * aspect, 200)
+        let buttonRowH: CGFloat = 32
+        let separatorH: CGFloat = 0.5
+        let progressH: CGFloat = 1.5
+        let padding: CGFloat = 6
+        let totalH = progressH + buttonRowH + separatorH + thumbH + padding * 2
 
         super.init(
             contentRect: NSRect(x: 0, y: 0, width: thumbW + padding * 2, height: totalH),
@@ -46,12 +48,12 @@ private final class QuickAccessWindow: NSWindow {
         isOpaque = false
         backgroundColor = .clear
         level = .floating
-        hasShadow = true
+        hasShadow = false
         isMovableByWindowBackground = true
         acceptsMouseMovedEvents = true
         collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary]
 
-        buildContent(thumbW: thumbW, thumbH: thumbH, buttonRowH: buttonRowH, padding: padding, totalH: totalH)
+        buildContent(thumbW: thumbW, thumbH: thumbH, buttonRowH: buttonRowH, separatorH: separatorH, progressH: progressH, padding: padding, totalH: totalH)
         positionOverlay()
         installEventMonitors()
     }
@@ -133,55 +135,49 @@ private final class QuickAccessWindow: NSWindow {
         NSMenu.popUpContextMenu(menu, with: event, for: view)
     }
 
-    private func buildContent(thumbW: CGFloat, thumbH: CGFloat, buttonRowH: CGFloat, padding: CGFloat, totalH: CGFloat) {
-        let container = OverlayContentView(frame: NSRect(x: 0, y: 0, width: thumbW + padding * 2, height: totalH))
-        container.material = .hudWindow
+    private func buildContent(thumbW: CGFloat, thumbH: CGFloat, buttonRowH: CGFloat, separatorH: CGFloat, progressH: CGFloat, padding: CGFloat, totalH: CGFloat) {
+        let containerW = thumbW + padding * 2
+        let container = OverlayContentView(frame: NSRect(x: 0, y: 0, width: containerW, height: totalH))
+        container.material = .popover
         container.blendingMode = .behindWindow
         container.state = .active
         container.wantsLayer = true
-        container.layer?.cornerRadius = 10
-        container.layer?.masksToBounds = true
-        container.layer?.borderWidth = 0.5
-        container.layer?.borderColor = NSColor.white.withAlphaComponent(0.15).cgColor
+        container.layer?.cornerRadius = 12
+        container.layer?.masksToBounds = false
+        container.layer?.shadowColor = NSColor.black.cgColor
+        container.layer?.shadowOpacity = 0.25
+        container.layer?.shadowRadius = 16
+        container.layer?.shadowOffset = CGSize(width: 0, height: -4)
         contentView = container
 
+        // Clip subviews with a separate sublayer so the shadow remains visible
+        let clipView = NSView(frame: container.bounds)
+        clipView.wantsLayer = true
+        clipView.layer?.cornerRadius = 12
+        clipView.layer?.masksToBounds = true
+        container.addSubview(clipView)
+
         // Draggable thumbnail — drag to Finder/apps, double-click to annotate
-        let thumbFrame = NSRect(x: padding, y: buttonRowH + padding, width: thumbW, height: thumbH)
+        let thumbY = progressH + buttonRowH + separatorH + padding
+        let thumbFrame = NSRect(x: padding, y: thumbY, width: thumbW, height: thumbH)
         let thumb = DraggableImageView(frame: thumbFrame)
         thumb.image = image
         thumb.imageScaling = .scaleProportionallyUpOrDown
         thumb.wantsLayer = true
-        thumb.layer?.cornerRadius = 6
+        thumb.layer?.cornerRadius = 8
         thumb.layer?.masksToBounds = true
         thumb.dragImage = image
         thumb.onDoubleClick = { [weak self] in self?.editAction() }
         thumb.onDragStarted = { [weak self] in self?.dismissTimer?.invalidate() }
         thumb.onDragCompleted = { [weak self] in self?.animatedClose() }
-        container.addSubview(thumb)
+        clipView.addSubview(thumb)
 
-        // Progress bar — only shown when auto-dismiss is active
-        let timeout = Settings.overlayTimeout
-        if timeout > 0 {
-            let progressBg = NSView(frame: NSRect(x: padding, y: buttonRowH + padding - 3, width: thumbW, height: 2))
-            progressBg.wantsLayer = true
-            progressBg.layer?.backgroundColor = NSColor.white.withAlphaComponent(0.1).cgColor
-            container.addSubview(progressBg)
-
-            let progressFill = NSView(frame: progressBg.bounds)
-            progressFill.wantsLayer = true
-            progressFill.layer?.backgroundColor = NSColor.systemBlue.cgColor
-            progressBg.addSubview(progressFill)
-
-            NSAnimationContext.runAnimationGroup({ ctx in
-                ctx.duration = timeout
-                ctx.timingFunction = CAMediaTimingFunction(name: .linear)
-                progressFill.animator().frame = NSRect(x: 0, y: 0, width: 0, height: 2)
-            })
-
-            dismissTimer = Timer.scheduledTimer(withTimeInterval: timeout, repeats: false) { [weak self] _ in
-                DispatchQueue.main.async { self?.animatedClose() }
-            }
-        }
+        // Separator between thumbnail and buttons
+        let separatorY = progressH + buttonRowH
+        let separator = NSView(frame: NSRect(x: 0, y: separatorY, width: containerW, height: separatorH))
+        separator.wantsLayer = true
+        separator.layer?.backgroundColor = NSColor.separatorColor.cgColor
+        clipView.addSubview(separator)
 
         // Buttons
         let actions: [(String, String, Selector)] = [
@@ -191,9 +187,9 @@ private final class QuickAccessWindow: NSWindow {
             ("pin",                   "Pin",     #selector(pinAction)),
             ("xmark",                 "Close",   #selector(dismissAction)),
         ]
-        let btnW = (thumbW + padding * 2) / CGFloat(actions.count)
+        let btnW = containerW / CGFloat(actions.count)
         for (i, (icon, tooltip, sel)) in actions.enumerated() {
-            let btn = HoverButton(frame: NSRect(x: CGFloat(i) * btnW, y: 1, width: btnW, height: buttonRowH - 2))
+            let btn = HoverButton(frame: NSRect(x: CGFloat(i) * btnW, y: progressH, width: btnW, height: buttonRowH))
             btn.image = NSImage(systemSymbolName: icon, accessibilityDescription: tooltip)
             btn.bezelStyle = .regularSquare
             btn.isBordered = false
@@ -201,8 +197,32 @@ private final class QuickAccessWindow: NSWindow {
             btn.target = self
             btn.action = sel
             btn.imageScaling = .scaleProportionallyDown
-            btn.contentTintColor = .secondaryLabelColor
-            container.addSubview(btn)
+            btn.contentTintColor = .tertiaryLabelColor
+            clipView.addSubview(btn)
+        }
+
+        // Progress bar at the very bottom — only shown when auto-dismiss is active
+        let timeout = Settings.overlayTimeout
+        if timeout > 0 {
+            let progressBg = NSView(frame: NSRect(x: 0, y: 0, width: containerW, height: progressH))
+            progressBg.wantsLayer = true
+            progressBg.layer?.backgroundColor = NSColor.separatorColor.withAlphaComponent(0.3).cgColor
+            clipView.addSubview(progressBg)
+
+            let progressFill = NSView(frame: progressBg.bounds)
+            progressFill.wantsLayer = true
+            progressFill.layer?.backgroundColor = NSColor.controlAccentColor.withAlphaComponent(0.6).cgColor
+            progressBg.addSubview(progressFill)
+
+            NSAnimationContext.runAnimationGroup({ ctx in
+                ctx.duration = timeout
+                ctx.timingFunction = CAMediaTimingFunction(name: .linear)
+                progressFill.animator().frame = NSRect(x: 0, y: 0, width: 0, height: progressH)
+            })
+
+            dismissTimer = Timer.scheduledTimer(withTimeInterval: timeout, repeats: false) { [weak self] _ in
+                DispatchQueue.main.async { self?.animatedClose() }
+            }
         }
     }
 
@@ -412,10 +432,10 @@ private final class HoverButton: NSButton {
     }
 
     override func mouseEntered(with event: NSEvent) {
-        contentTintColor = .white
+        contentTintColor = .labelColor
     }
 
     override func mouseExited(with event: NSEvent) {
-        contentTintColor = .secondaryLabelColor
+        contentTintColor = .tertiaryLabelColor
     }
 }
