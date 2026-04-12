@@ -8,12 +8,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var captureEngine: CaptureEngine!
     var hotkeyManager: HotkeyManager!
     var historyManager: HistoryManager!
+    private let welcomeController = WelcomeWindowController()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         captureEngine = CaptureEngine()
         hotkeyManager = HotkeyManager()
         historyManager = HistoryManager()
         setupStatusItem()
+        welcomeController.showIfNeeded()
         PermissionsManager.requestScreenRecordingPermission()
         hotkeyManager.register(captureEngine: captureEngine, historyManager: historyManager)
         NativeShortcutManager.promptIfNeeded()
