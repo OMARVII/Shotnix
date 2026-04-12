@@ -184,7 +184,7 @@ private final class HistoryCell: NSView {
     }
 
     @objc private func saveImage() {
-        ImageExporter.saveWithPanel(image: item.fullImage, suggestedName: "screenshot")
+        ImageExporter.saveWithPanel(image: item.fullImage, suggestedName: ImageExporter.timestampedName)
     }
     @objc private func pinImage() { PinnedWindow.pin(image: item.fullImage) }
     @objc private func deleteItem() {

@@ -74,7 +74,7 @@ final class AnnotationWindowController: NSWindowController {
     private func save() {
         canvas.commitTextField()
         let flat = canvas.flatten()
-        ImageExporter.saveWithPanel(image: flat, suggestedName: "screenshot")
+        ImageExporter.saveWithPanel(image: flat, suggestedName: ImageExporter.timestampedName)
     }
 
     private func copyToClipboard() {
