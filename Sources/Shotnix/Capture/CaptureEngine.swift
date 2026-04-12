@@ -110,7 +110,6 @@ final class CaptureEngine {
     func captureRect(_ rect: CGRect, on screen: NSScreen, historyManager: HistoryManager) async {
         guard let image = await captureRectToImage(rect, on: screen) else { return }
         playCaptureSound()
-        showCaptureFlash(on: screen)
         let item = historyManager.add(image: image, rect: rect)
         QuickAccessOverlay.show(image: image, historyItem: item, historyManager: historyManager)
     }
@@ -118,26 +117,6 @@ final class CaptureEngine {
     private func playCaptureSound() {
         guard Settings.playSounds else { return }
         AudioServicesPlaySystemSound(1108)
-    }
-
-    private func showCaptureFlash(on screen: NSScreen) {
-        let flash = NSWindow(
-            contentRect: screen.frame,
-            styleMask: [.borderless],
-            backing: .buffered,
-            defer: false
-        )
-        flash.isOpaque = false
-        flash.backgroundColor = NSColor.white.withAlphaComponent(0.3)
-        flash.level = .floating
-        flash.ignoresMouseEvents = true
-        flash.orderFrontRegardless()
-        NSAnimationContext.runAnimationGroup({ ctx in
-            ctx.duration = 0.15
-            flash.animator().alphaValue = 0
-        }, completionHandler: {
-            flash.orderOut(nil)
-        })
     }
 
     func captureRectToImage(_ rect: CGRect, on screen: NSScreen) async -> NSImage? {
