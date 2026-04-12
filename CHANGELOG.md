@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.9.1-beta] - 2026-04-12
+
+### Fixed
+- **Screenshot quality** — pixel-perfect captures with no CoreGraphics resampling blur
+- Correct DPI metadata in PNG/JPEG exports (144 DPI on Retina, 72 on 1x)
+- Timestamped filenames — "Shotnix 2026-04-12 at 10.30.48" (prevents conflicts)
+- Preferences, history, and annotation windows not coming to front
+- Crash guard for empty screen arrays in fullscreen capture
+- Async overlay dealloc race in area selection focus callbacks
+- Double cleanup race in quick access overlay dismiss
+- Silent data loss on disk write failure in history manager
+- History panel now restores background-only activation policy on close
+
+### Added
+- Auto-detect and disable conflicting macOS native screenshot shortcuts on first launch
+
 ## [0.9.0-beta] - 2025-04-08
 
 ### Added
