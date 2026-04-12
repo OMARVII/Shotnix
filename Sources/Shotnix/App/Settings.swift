@@ -5,6 +5,13 @@ enum Settings {
 
     private static let defaults = UserDefaults.standard
 
+    // MARK: – First Launch
+
+    static var hasLaunchedBefore: Bool {
+        get { defaults.bool(forKey: "hasLaunchedBefore") }
+        set { defaults.set(newValue, forKey: "hasLaunchedBefore") }
+    }
+
     // MARK: – Overlay
 
     /// Auto-dismiss timeout in seconds. -1 = never dismiss automatically.
