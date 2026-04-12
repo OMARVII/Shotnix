@@ -38,7 +38,8 @@ enum ImageExporter {
 
     static func saveWithPanel(image: NSImage, suggestedName: String) {
         let panel = NSSavePanel()
-        panel.nameFieldStringValue = "\(suggestedName).png"
+        let preferredExt = Settings.screenshotFormat
+        panel.nameFieldStringValue = "\(suggestedName).\(preferredExt)"
         panel.allowedContentTypes = [.png, .jpeg, UTType("org.webmproject.webp") ?? .data]
         panel.canCreateDirectories = true
         guard panel.runModal() == .OK, let url = panel.url else { return }
@@ -53,9 +54,14 @@ enum ImageExporter {
         switch ext {
         case "jpg", "jpeg":
             data = jpegData(from: image)
+        case "webp":
+            data = webpData(from: image)
         default:
             data = pngData(from: image)
         }
+        // Ensure parent directory exists (auto-save may target a custom folder)
+        let dir = url.deletingLastPathComponent()
+        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         try? data?.write(to: url)
         HistoryManager.applyScreenshotMetadata(to: url.path, rect: nil)
     }
@@ -70,6 +76,22 @@ enum ImageExporter {
         // native ICC profile and lets the OS handle DPI (same as CleanShot X).
         CGImageDestinationAddImage(dest, cgImage, nil)
         guard CGImageDestinationFinalize(dest) else { return nil }
+        return data as Data
+    }
+
+    static func webpData(from image: NSImage, quality: CGFloat = 0.90) -> Data? {
+        guard let cgImage = image.bestCGImage else { return nil }
+        let data = NSMutableData()
+        // WebP support via ImageIO (macOS 14+). Falls back to PNG on older systems.
+        let webpUTI = "org.webmproject.webp" as CFString
+        guard let dest = CGImageDestinationCreateWithData(data, webpUTI, 1, nil) else {
+            return pngData(from: image)
+        }
+        let opts: [CFString: Any] = [kCGImageDestinationLossyCompressionQuality: quality]
+        CGImageDestinationAddImage(dest, cgImage, opts as CFDictionary)
+        guard CGImageDestinationFinalize(dest) else {
+            return pngData(from: image)
+        }
         return data as Data
     }
 

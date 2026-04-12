@@ -8,12 +8,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var captureEngine: CaptureEngine!
     var hotkeyManager: HotkeyManager!
     var historyManager: HistoryManager!
+    private let welcomeController = WelcomeWindowController()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         captureEngine = CaptureEngine()
         hotkeyManager = HotkeyManager()
         historyManager = HistoryManager()
         setupStatusItem()
+        welcomeController.showIfNeeded()
         PermissionsManager.requestScreenRecordingPermission()
         hotkeyManager.register(captureEngine: captureEngine, historyManager: historyManager)
         NativeShortcutManager.promptIfNeeded()
@@ -41,12 +43,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(title: "Capture Area",         key: "4", action: #selector(captureArea))
         menu.addItem(title: "Capture Window",       key: "5", action: #selector(captureWindow))
         menu.addItem(title: "Capture Fullscreen",   key: "6", action: #selector(captureFullscreen))
-        menu.addItem(title: "Capture Previous Area",key: "",  action: #selector(capturePrevious))
-        menu.addItem(title: "Scrolling Capture",    key: "",  action: #selector(captureScrolling))
+        menu.addItem(title: "Capture Previous Area",key: "7",  action: #selector(capturePrevious))
+        menu.addItem(title: "Scrolling Capture",    key: "s",  action: #selector(captureScrolling))
         menu.addItem(.separator())
 
         menu.addItem(header: "Tools")
-        menu.addItem(title: "Capture Text (OCR)",   key: "",  action: #selector(captureText))
+        menu.addItem(title: "Capture Text (OCR)",   key: "o",  action: #selector(captureText))
         menu.addItem(title: "Open History",         key: "",  action: #selector(openHistory))
         menu.addItem(title: "Annotate Last Screenshot", key: "", action: #selector(annotateLastScreenshot))
         menu.addItem(.separator())

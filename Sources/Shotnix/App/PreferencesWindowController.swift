@@ -339,15 +339,13 @@ final class PreferencesWindowController: NSObject, NSToolbarDelegate, NSWindowDe
         view.addSubview(formatLabel)
 
         let formatPopup = NSPopUpButton(frame: NSRect(x: inset + 130, y: y, width: 140, height: 24), pullsDown: false)
-        formatPopup.addItem(withTitle: "PNG")
-        formatPopup.lastItem?.representedObject = "png"
-        formatPopup.addItem(withTitle: "JPEG")
-        formatPopup.lastItem?.representedObject = "jpeg"
-        if Settings.screenshotFormat == "jpeg" {
-            formatPopup.selectItem(at: 1)
-        } else {
-            formatPopup.selectItem(at: 0)
+        let formats: [(String, String)] = [("PNG", "png"), ("JPEG", "jpeg"), ("WebP", "webp")]
+        for (title, value) in formats {
+            formatPopup.addItem(withTitle: title)
+            formatPopup.lastItem?.representedObject = value
         }
+        let selectedIdx = formats.firstIndex(where: { $0.1 == Settings.screenshotFormat }) ?? 0
+        formatPopup.selectItem(at: selectedIdx)
         formatPopup.target = self
         formatPopup.action = #selector(formatChanged(_:))
         view.addSubview(formatPopup)
@@ -373,7 +371,7 @@ final class PreferencesWindowController: NSObject, NSToolbarDelegate, NSWindowDe
         qualityRow.addSubview(pctLabel)
         jpegQualityLabel = pctLabel
 
-        qualityRow.isHidden = Settings.screenshotFormat != "jpeg"
+        qualityRow.isHidden = (Settings.screenshotFormat != "jpeg")
         view.addSubview(qualityRow)
         jpegQualityRow = qualityRow
         y -= 36
@@ -426,7 +424,7 @@ final class PreferencesWindowController: NSObject, NSToolbarDelegate, NSWindowDe
         y -= 34
 
         // Version
-        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.9.1-beta"
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.9.2-beta"
         let versionLabel = NSTextField(labelWithString: "Version \(version)")
         versionLabel.font = .systemFont(ofSize: 12)
         versionLabel.textColor = .secondaryLabelColor
@@ -458,10 +456,17 @@ final class PreferencesWindowController: NSObject, NSToolbarDelegate, NSWindowDe
         textView.textContainerInset = NSSize(width: 10, height: 10)
         textView.font = .systemFont(ofSize: 12)
         textView.string = """
+        Version 0.9.2-beta
+        \u{2022} WebP export support (macOS 14+)
+        \u{2022} First-launch onboarding with permission guide
+        \u{2022} After-capture auto-actions (auto-copy, auto-save)
+        \u{2022} Fixed multi-display capture coordinates
+        \u{2022} Screenshot colors now match display calibration exactly
+
         Version 0.9.1-beta
         \u{2022} Pixel-perfect screenshot quality (fixed CoreGraphics resampling blur)
-        \u{2022} Correct DPI metadata for Retina captures (144 DPI)
-        \u{2022} Timestamped filenames — "Shotnix 2026-04-12 at 10.30.48"
+        \u{2022} Correct DPI metadata for Retina captures
+        \u{2022} Timestamped filenames \u{2014} "Shotnix 2026-04-12 at 10.30.48"
         \u{2022} Auto-disable conflicting macOS screenshot shortcuts on first launch
         \u{2022} Fixed windows not coming to front (preferences, history, annotation)
         \u{2022} Crash guards for empty screen arrays and async cleanup races
@@ -486,7 +491,7 @@ final class PreferencesWindowController: NSObject, NSToolbarDelegate, NSWindowDe
         y -= scrollHeight + 16
 
         // Copyright
-        let copyright = NSTextField(labelWithString: "\u{00A9} 2025 Shotnix Contributors")
+        let copyright = NSTextField(labelWithString: "\u{00A9} 2026 Shotnix Contributors")
         copyright.font = .systemFont(ofSize: 11)
         copyright.textColor = .secondaryLabelColor
         copyright.alignment = .center

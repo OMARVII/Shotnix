@@ -58,11 +58,17 @@ echo "▶ Copying to Desktop…"
 rm -rf "$DEST"
 cp -R "$APP_BUNDLE" "$DEST"
 
+echo "▶ Copying to /Applications…"
+APPS_DEST="/Applications/$APP_NAME.app"
+rm -rf "$APPS_DEST"
+cp -R "$APP_BUNDLE" "$APPS_DEST"
+
 # Remove quarantine so it opens without Gatekeeper prompt
 xattr -dr com.apple.quarantine "$DEST" 2>/dev/null || true
+xattr -dr com.apple.quarantine "$APPS_DEST" 2>/dev/null || true
 
 echo ""
-echo "✓ Done!  Shotnix.app is on your Desktop."
+echo "✓ Done!  Shotnix.app deployed to Desktop + /Applications."
 echo "  Double-click it to launch."
 echo ""
 echo "  First launch: grant Screen Recording permission when prompted"
