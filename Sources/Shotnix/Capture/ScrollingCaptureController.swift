@@ -64,7 +64,21 @@ final class ScrollingCaptureController: NSObject {
         guard !frames.isEmpty else { return }
         let stitched = FrameStitcher.stitch(frames: frames)
         let item = historyManager.add(image: stitched, rect: captureRect ?? .zero)
-        QuickAccessOverlay.show(image: stitched, historyItem: item, historyManager: historyManager)
+
+        // Respect after-capture auto-actions (same as CaptureEngine.captureRect)
+        if Settings.afterCaptureCopyToClipboard {
+            ImageExporter.copyToClipboard(image: stitched)
+        }
+        if Settings.afterCaptureSaveAutomatically {
+            let dir = Settings.autoSaveLocation
+            let name = ImageExporter.timestampedName
+            let ext = Settings.screenshotFormat
+            let url = URL(fileURLWithPath: dir).appendingPathComponent("\(name).\(ext)")
+            ImageExporter.save(image: stitched, to: url)
+        }
+        if Settings.afterCaptureShowOverlay {
+            QuickAccessOverlay.show(image: stitched, historyItem: item, historyManager: historyManager)
+        }
     }
 }
 

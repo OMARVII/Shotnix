@@ -265,8 +265,9 @@ private final class SelectionOverlayView: NSView {
         guard let win = window else { return }
         // Convert view coordinates to screen coordinates for display
         let screenPoint = win.convertToScreen(NSRect(origin: point, size: .zero)).origin
-        // Convert to top-left origin (Core Graphics) for user-facing display
-        let screenHeight = win.screen?.frame.height ?? NSScreen.main?.frame.height ?? 0
+        // Convert to top-left origin (Core Graphics) for user-facing display.
+        // CG global coords are anchored to the primary display — use screens[0].
+        let screenHeight = NSScreen.screens.first?.frame.height ?? 0
         let displayX = Int(screenPoint.x)
         let displayY = Int(screenHeight - screenPoint.y)
 
@@ -387,8 +388,10 @@ private final class SelectionOverlayView: NSView {
                 width: boundsDict["Width"] ?? 0,
                 height: boundsDict["Height"] ?? 0
             )
-            // CGWindowBounds uses top-left origin; convert to AppKit bottom-left
-            let screenHeight = NSScreen.main?.frame.height ?? 0
+            // CGWindowBounds uses top-left origin (CG global coords); convert to AppKit bottom-left.
+            // The CG origin is anchored to the primary display — use screens[0], NOT .main
+            // (.main returns the key screen, which may be a secondary with different height).
+            let screenHeight = NSScreen.screens.first?.frame.height ?? 0
             let appKitRect = CGRect(
                 x: bounds.origin.x,
                 y: screenHeight - bounds.origin.y - bounds.height,

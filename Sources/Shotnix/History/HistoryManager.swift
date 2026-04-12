@@ -73,10 +73,16 @@ final class HistoryManager: ObservableObject {
     }
 
     private func load() {
-        guard let data = try? Data(contentsOf: indexURL),
-              let decoded = try? JSONDecoder().decode([HistoryItem].self, from: data) else { return }
-        // Filter out items whose files no longer exist on disk
-        items = decoded.filter { FileManager.default.fileExists(atPath: $0.imagePath) }
+        guard FileManager.default.fileExists(atPath: indexURL.path) else { return }
+        do {
+            let data = try Data(contentsOf: indexURL)
+            let decoded = try JSONDecoder().decode([HistoryItem].self, from: data)
+            // Filter out items whose files no longer exist on disk
+            items = decoded.filter { FileManager.default.fileExists(atPath: $0.imagePath) }
+        } catch {
+            print("[Shotnix] History index corrupted, starting fresh: \(error)")
+            // Don't overwrite — the corrupt file may be recoverable manually
+        }
     }
 
     // MARK: – Image saving

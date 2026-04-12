@@ -115,13 +115,41 @@ final class PinnedWindow: NSWindow {
 
     override func rightMouseDown(with event: NSEvent) {
         let menu = NSMenu()
-        menu.addItem(NSMenuItem(title: "Close Pin", action: #selector(closeTapped), keyEquivalent: ""))
-        menu.addItem(NSMenuItem(title: "Close All Pins", action: #selector(closeAll), keyEquivalent: ""))
+        let items: [(String, Selector)] = [
+            ("Copy",            #selector(copyPinnedImage)),
+            ("Save As…",        #selector(savePinnedImage)),
+            ("Edit",            #selector(editPinnedImage)),
+            ("Close Pin",       #selector(closeTapped)),
+            ("Close All Pins",  #selector(closeAllPins)),
+        ]
+        for (title, sel) in items {
+            let item = NSMenuItem(title: title, action: sel, keyEquivalent: "")
+            item.target = self
+            menu.addItem(item)
+            if title == "Edit" { menu.addItem(.separator()) }
+        }
         guard let view = contentView else { return }
         NSMenu.popUpContextMenu(menu, with: event, for: view)
     }
 
-    @objc private func closeAll() { PinnedWindow.closeAll() }
+    @objc private func copyPinnedImage() {
+        guard let image = imageView.image else { return }
+        ImageExporter.copyToClipboard(image: image)
+        ToastWindow.show(message: "✓ Copied to clipboard")
+    }
+
+    @objc private func savePinnedImage() {
+        guard let image = imageView.image else { return }
+        ImageExporter.saveWithPanel(image: image, suggestedName: ImageExporter.timestampedName)
+    }
+
+    @objc private func editPinnedImage() {
+        guard let image = imageView.image else { return }
+        AnnotationWindowController.open(image: image)
+        closeTapped()
+    }
+
+    @objc private func closeAllPins() { PinnedWindow.closeAll() }
 }
 
 // NSImageView consumes mouseDown for its own drag-and-drop, which blocks

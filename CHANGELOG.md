@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.9.2-beta] - 2026-04-12
+
+### Fixed
+- **Multi-display coordinates** — window capture and coordinate labels now correct on secondary screens
+- **Screenshot color accuracy** — uses display's native calibrated ICC profile (matches CleanShot X)
+- **DPI metadata** — removed incorrect pHYs chunk; CGImageDestination handles DPI naturally
+
+### Added
+- **WebP export** — save screenshots in WebP format (macOS 14+, falls back to PNG on older)
+- **First-launch onboarding** — welcome window guides users to grant Screen Recording permission
+- **After-capture auto-actions** — auto-copy to clipboard, auto-save to disk (configurable in Preferences)
+- **Conditional overlay** — post-capture overlay respects "Show Overlay" preference
+
 ## [0.9.1-beta] - 2026-04-12
 
 ### Fixed

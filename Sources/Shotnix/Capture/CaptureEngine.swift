@@ -111,7 +111,21 @@ final class CaptureEngine {
         guard let image = await captureRectToImage(rect, on: screen) else { return }
         playCaptureSound()
         let item = historyManager.add(image: image, rect: rect)
-        QuickAccessOverlay.show(image: image, historyItem: item, historyManager: historyManager)
+
+        // After-capture auto-actions (from Preferences)
+        if Settings.afterCaptureCopyToClipboard {
+            ImageExporter.copyToClipboard(image: image)
+        }
+        if Settings.afterCaptureSaveAutomatically {
+            let dir = Settings.autoSaveLocation
+            let name = ImageExporter.timestampedName
+            let ext = Settings.screenshotFormat
+            let url = URL(fileURLWithPath: dir).appendingPathComponent("\(name).\(ext)")
+            ImageExporter.save(image: image, to: url)
+        }
+        if Settings.afterCaptureShowOverlay {
+            QuickAccessOverlay.show(image: image, historyItem: item, historyManager: historyManager)
+        }
     }
 
     private func playCaptureSound() {
