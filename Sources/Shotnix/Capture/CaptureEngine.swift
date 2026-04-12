@@ -151,30 +151,43 @@ final class CaptureEngine {
     @available(macOS 14.0, *)
     private func captureRectSCK(_ rect: CGRect, on screen: NSScreen) async -> NSImage? {
         do {
-            // Convert from AppKit (bottom-left origin) to ScreenCaptureKit (top-left origin)
-            let screenHeight = screen.frame.height
-            let sckRect = CGRect(
-                x: rect.origin.x - screen.frame.origin.x,
-                y: screenHeight - rect.origin.y - rect.height + screen.frame.origin.y,
-                width: rect.width,
-                height: rect.height
-            )
             let content = try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: true)
             guard let display = content.displays.first(where: { $0.frame.intersects(rect) }) else {
                 return fallbackCapture(rect: rect)
             }
             let filter = SCContentFilter(display: display, excludingWindows: [])
-            let scale = screen.backingScaleFactor
+            let s: CGFloat = CGFloat(filter.pointPixelScale)
+
+            // Snap rect to integer pixel boundaries to avoid subpixel sampling.
+            // Fractional sourceRect coords cause SCK to interpolate between pixels,
+            // softening text and sharp edges.
+            let ox = floor((rect.origin.x - screen.frame.origin.x) * s) / s
+            let oy = floor((rect.origin.y - screen.frame.origin.y) * s) / s
+            let w  = ceil(rect.width * s) / s
+            let h  = ceil(rect.height * s) / s
+
+            // Convert from AppKit (bottom-left origin) to ScreenCaptureKit (top-left origin)
+            let screenHeight = screen.frame.height
+            let sckRect = CGRect(x: ox, y: screenHeight - oy - h, width: w, height: h)
+
+            let pixelW = Int(w * s)
+            let pixelH = Int(h * s)
+
             let config = SCStreamConfiguration()
             config.sourceRect = sckRect
-            config.width = Int(ceil(rect.width * scale))
-            config.height = Int(ceil(rect.height * scale))
+            config.width = pixelW
+            config.height = pixelH
             config.scalesToFit = false
             config.showsCursor = false
             config.captureResolution = .best
-            config.colorSpaceName = CGColorSpace.sRGB
+            // Preserve the display's native color space (Display P3 on modern Macs).
+            // sRGB forces a gamut conversion that can subtly degrade quality.
+            config.colorSpaceName = CGColorSpace.displayP3
+
             let cgImage = try await SCScreenshotManager.captureImage(contentFilter: filter, configuration: config)
-            return Self.nsImage(from: cgImage, logicalSize: rect.size)
+
+            let logicalSize = NSSize(width: w, height: h)
+            return Self.nsImage(from: cgImage, logicalSize: logicalSize)
         } catch {
             return fallbackCapture(rect: rect)
         }
