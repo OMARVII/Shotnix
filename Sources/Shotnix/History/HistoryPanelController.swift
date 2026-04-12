@@ -18,6 +18,11 @@ final class HistoryPanelController: NSObject {
             reload()
             return
         }
+        // Register for close notification to restore activation policy
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(panelDidClose),
+            name: NSWindow.willCloseNotification, object: nil
+        )
         let p = NSPanel(
             contentRect: NSRect(x: 0, y: 0, width: 600, height: 480),
             styleMask: [.titled, .closable, .resizable, .utilityWindow],
@@ -97,6 +102,12 @@ final class HistoryPanelController: NSObject {
         panel.contentView = buildContent(historyManager: manager)
     }
 
+    @objc private func panelDidClose(_ notification: Notification) {
+        guard let closedWindow = notification.object as? NSWindow, closedWindow === panel else { return }
+        panel = nil
+        NSApp.setActivationPolicy(.prohibited)
+    }
+
     @objc private func clearAll() {
         let alert = NSAlert()
         alert.messageText = "Clear History?"
@@ -173,7 +184,7 @@ private final class HistoryCell: NSView {
     }
 
     @objc private func saveImage() {
-        ImageExporter.saveWithPanel(image: item.fullImage, suggestedName: "screenshot")
+        ImageExporter.saveWithPanel(image: item.fullImage, suggestedName: ImageExporter.timestampedName)
     }
     @objc private func pinImage() { PinnedWindow.pin(image: item.fullImage) }
     @objc private func deleteItem() {

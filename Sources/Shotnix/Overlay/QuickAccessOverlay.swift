@@ -266,7 +266,11 @@ private final class QuickAccessWindow: NSWindow {
         })
     }
 
+    private var didCleanup = false
+
     private func forceCleanup() {
+        guard !didCleanup else { return }
+        didCleanup = true
         removeEventMonitors()
         orderOut(nil)
         QuickAccessWindow.openWindows.removeAll { $0 === self }
@@ -284,7 +288,7 @@ private final class QuickAccessWindow: NSWindow {
     }
 
     @objc private func saveAction() {
-        ImageExporter.saveWithPanel(image: image, suggestedName: "Shotnix-\(Date().formatted(.iso8601.year().month().day()))")
+        ImageExporter.saveWithPanel(image: image, suggestedName: ImageExporter.timestampedName)
         animatedClose()
     }
 
@@ -365,10 +369,7 @@ private final class ImageFilePromiseDelegate: NSObject, NSFilePromiseProviderDel
     }
 
     func filePromiseProvider(_ filePromiseProvider: NSFilePromiseProvider, fileNameForType fileType: String) -> String {
-        let ts = ISO8601DateFormatter()
-        ts.formatOptions = [.withFullDate, .withTime, .withColonSeparatorInTime]
-        let name = ts.string(from: Date()).replacingOccurrences(of: ":", with: "-")
-        return "Shotnix-\(name).png"
+        "\(ImageExporter.timestampedName).png"
     }
 
     func filePromiseProvider(_ filePromiseProvider: NSFilePromiseProvider, writePromiseTo url: URL, completionHandler handler: @escaping (Error?) -> Void) {

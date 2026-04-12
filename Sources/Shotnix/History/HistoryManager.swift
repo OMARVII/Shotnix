@@ -9,7 +9,9 @@ final class HistoryManager: ObservableObject {
     private let indexURL: URL
 
     init() {
-        let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+        guard let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
+            fatalError("[Shotnix] Application Support directory not found")
+        }
         storageDir = appSupport.appendingPathComponent("Shotnix/History", isDirectory: true)
         indexURL   = storageDir.appendingPathComponent("index.json")
         try? FileManager.default.createDirectory(at: storageDir, withIntermediateDirectories: true)
@@ -80,13 +82,12 @@ final class HistoryManager: ObservableObject {
     // MARK: – Image saving
 
     private func saveImage(_ image: NSImage, to path: String, size: CGSize?) {
-        if let size {
-            let thumb = image.resizedForThumbnail(to: size)
-            guard let png = ImageExporter.pngData(from: thumb) else { return }
-            try? png.write(to: URL(fileURLWithPath: path))
-        } else {
-            guard let png = ImageExporter.pngData(from: image) else { return }
-            try? png.write(to: URL(fileURLWithPath: path))
+        let source = size != nil ? image.resizedForThumbnail(to: size!) : image
+        guard let png = ImageExporter.pngData(from: source) else { return }
+        do {
+            try png.write(to: URL(fileURLWithPath: path))
+        } catch {
+            print("[Shotnix] Failed to write image to \(path): \(error)")
         }
     }
 
