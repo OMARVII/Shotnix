@@ -159,9 +159,9 @@ final class CaptureEngine {
             config.scalesToFit = false
             config.showsCursor = false
             config.captureResolution = .best
-            // Preserve the display's native color space (Display P3 on modern Macs).
-            // sRGB forces a gamut conversion that can subtly degrade quality.
-            config.colorSpaceName = CGColorSpace.displayP3
+            // Don't set colorSpaceName — SCK defaults to the display's native
+            // calibrated ICC profile, preserving exact on-screen colors.
+            // Forcing sRGB or Display P3 overrides the display calibration.
 
             let cgImage = try await SCScreenshotManager.captureImage(contentFilter: filter, configuration: config)
 

@@ -66,7 +66,9 @@ enum ImageExporter {
         guard let cgImage = image.bestCGImage else { return nil }
         let data = NSMutableData()
         guard let dest = CGImageDestinationCreateWithData(data, "public.png" as CFString, 1, nil) else { return nil }
-        CGImageDestinationAddImage(dest, cgImage, dpiProperties(for: image, cgImage: cgImage))
+        // No custom DPI properties — CGImageDestination embeds the CGImage's
+        // native ICC profile and lets the OS handle DPI (same as CleanShot X).
+        CGImageDestinationAddImage(dest, cgImage, nil)
         guard CGImageDestinationFinalize(dest) else { return nil }
         return data as Data
     }
@@ -75,27 +77,10 @@ enum ImageExporter {
         guard let cgImage = image.bestCGImage else { return nil }
         let data = NSMutableData()
         guard let dest = CGImageDestinationCreateWithData(data, "public.jpeg" as CFString, 1, nil) else { return nil }
-        var opts = dpiDict(for: image, cgImage: cgImage)
-        opts[kCGImageDestinationLossyCompressionQuality] = quality
+        let opts: [CFString: Any] = [kCGImageDestinationLossyCompressionQuality: quality]
         CGImageDestinationAddImage(dest, cgImage, opts as CFDictionary)
         guard CGImageDestinationFinalize(dest) else { return nil }
         return data as Data
-    }
-
-    /// Compute DPI metadata from the pixel-to-point ratio of the image.
-    /// On Retina (2x), pixels = 2 × points → DPI = 144. On 1x → DPI = 72.
-    private static func dpiProperties(for image: NSImage, cgImage: CGImage) -> CFDictionary {
-        dpiDict(for: image, cgImage: cgImage) as CFDictionary
-    }
-
-    private static func dpiDict(for image: NSImage, cgImage: CGImage) -> [CFString: Any] {
-        guard image.size.width > 0 else { return [:] }
-        let scale = CGFloat(cgImage.width) / image.size.width
-        let dpi = 72.0 * scale
-        return [
-            kCGImagePropertyDPIWidth: dpi,
-            kCGImagePropertyDPIHeight: dpi,
-        ]
     }
 }
 
