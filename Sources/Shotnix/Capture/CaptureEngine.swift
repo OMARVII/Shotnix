@@ -174,7 +174,7 @@ final class CaptureEngine {
             config.captureResolution = .best
             config.colorSpaceName = CGColorSpace.sRGB
             let cgImage = try await SCScreenshotManager.captureImage(contentFilter: filter, configuration: config)
-            return NSImage(cgImage: cgImage, size: rect.size)
+            return Self.nsImage(from: cgImage, logicalSize: rect.size)
         } catch {
             return fallbackCapture(rect: rect)
         }
@@ -182,7 +182,17 @@ final class CaptureEngine {
 
     private func fallbackCapture(rect: CGRect) -> NSImage? {
         guard let cgImage = CGWindowListCreateImage(rect, .optionAll, kCGNullWindowID, .bestResolution) else { return nil }
-        return NSImage(cgImage: cgImage, size: rect.size)
+        return Self.nsImage(from: cgImage, logicalSize: rect.size)
+    }
+
+    /// Creates an NSImage backed by NSBitmapImageRep so the raw CGImage pixels
+    /// are preserved through the entire pipeline (no CoreGraphics re-render).
+    static func nsImage(from cgImage: CGImage, logicalSize: NSSize) -> NSImage {
+        let rep = NSBitmapImageRep(cgImage: cgImage)
+        rep.size = logicalSize   // logical size for display; pixel data untouched
+        let image = NSImage(size: logicalSize)
+        image.addRepresentation(rep)
+        return image
     }
 
     // MARK: – OCR notification
