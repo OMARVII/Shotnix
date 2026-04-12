@@ -426,7 +426,7 @@ final class PreferencesWindowController: NSObject, NSToolbarDelegate, NSWindowDe
         y -= 34
 
         // Version
-        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.9.0-beta"
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.9.1-beta"
         let versionLabel = NSTextField(labelWithString: "Version \(version)")
         versionLabel.font = .systemFont(ofSize: 12)
         versionLabel.textColor = .secondaryLabelColor
@@ -458,6 +458,14 @@ final class PreferencesWindowController: NSObject, NSToolbarDelegate, NSWindowDe
         textView.textContainerInset = NSSize(width: 10, height: 10)
         textView.font = .systemFont(ofSize: 12)
         textView.string = """
+        Version 0.9.1-beta
+        \u{2022} Pixel-perfect screenshot quality (fixed CoreGraphics resampling blur)
+        \u{2022} Correct DPI metadata for Retina captures (144 DPI)
+        \u{2022} Timestamped filenames — "Shotnix 2026-04-12 at 10.30.48"
+        \u{2022} Auto-disable conflicting macOS screenshot shortcuts on first launch
+        \u{2022} Fixed windows not coming to front (preferences, history, annotation)
+        \u{2022} Crash guards for empty screen arrays and async cleanup races
+
         Version 0.9.0-beta
         \u{2022} Area, window, and fullscreen capture
         \u{2022} Scrolling capture for long content
