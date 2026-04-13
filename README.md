@@ -15,7 +15,7 @@
 ---
 
 > [!NOTE]
-> **Shotnix is in beta (v0.9.0).** It's fully functional but not yet notarized through Apple's Developer Program, so macOS will show a Gatekeeper warning on first launch. This is standard for open-source apps — Shotnix is safe and the source code is right here. Notarization is on the roadmap.
+> **Shotnix is in beta (v0.9.2).** It's fully functional but not yet notarized through Apple's Developer Program, so macOS will show a Gatekeeper warning on first launch. This is standard for open-source apps — Shotnix is safe and the source code is right here. Notarization is on the roadmap.
 >
 > To open: **Right-click → Open → Open** (macOS 13–14) or **System Settings → Privacy & Security → Open Anyway** (macOS 15+).
 
@@ -48,18 +48,22 @@ macOS has built-in screenshot tools, but they stop at capture. Shotnix picks up 
 - Crop to resize after capture
 
 **Stay in flow**
-- Quick access overlay after every capture — copy, save, edit, or pin
+- Quick access overlay after every capture — hover to reveal controls (copy, save, edit, pin, close)
 - Drag-and-drop from overlay directly into Finder, Slack, or any app
+- Swipe-to-dismiss overlay with trackpad gesture
+- Copy confirmation badge — visual feedback before closing
 - Keyboard shortcuts on overlay — `Cmd+C` copy, `Cmd+S` save, `Cmd+E` edit, `Esc` dismiss
 - Right-click context menu on overlay
+- Spring animations and micro-interactions for a premium feel
 - Pin screenshots to float on your desktop (draggable, resizable)
 - Full capture history with grid browser
 - Global hotkeys that work from anywhere
 
 **Configurable**
 - Tabbed settings window (General, Shortcuts, Screenshots, About)
-- Export as PNG or JPEG (with quality slider)
+- Export as PNG, JPEG, or WebP (with quality slider)
 - Auto-save location picker
+- After-capture auto-actions (auto-copy, auto-save)
 - Configurable overlay position (left or right) and timeout
 - Capture sound effects (toggleable)
 - Hide desktop icons during capture
@@ -148,11 +152,14 @@ That's it. One dependency.
 
 ## Roadmap
 
+- [x] Multi-display capture fixes
+- [x] First-launch onboarding
+- [x] WebP export
+- [x] After-capture auto-actions
+- [x] Premium overlay redesign (hover controls, spring animations, swipe-to-dismiss)
 - [ ] Customizable hotkeys
 - [ ] Window capture with shadow and padding
 - [ ] Delay/timer capture (3s, 5s, 10s)
-- [ ] Multi-display capture fixes
-- [ ] First-launch onboarding
 - [ ] Auto-update mechanism
 - [ ] Developer signing + notarization
 
