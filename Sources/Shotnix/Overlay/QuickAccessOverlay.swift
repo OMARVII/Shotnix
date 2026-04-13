@@ -30,9 +30,9 @@ private final class QuickAccessWindow: NSWindow {
         self.historyItem = historyItem
         self.historyManager = historyManager
 
-        let thumbW: CGFloat = 300
+        let thumbW: CGFloat = 220
         let aspect = image.size.height / max(image.size.width, 1)
-        let thumbH: CGFloat = min(thumbW * aspect, 200)
+        let thumbH: CGFloat = min(thumbW * aspect, 150)
         let buttonRowH: CGFloat = 32
         let separatorH: CGFloat = 0.5
         let progressH: CGFloat = 1.5
