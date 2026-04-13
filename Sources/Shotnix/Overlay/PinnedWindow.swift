@@ -44,9 +44,18 @@ final class PinnedWindow: NSWindow {
         imageView.imageScaling = .scaleProportionallyUpOrDown
         imageView.wantsLayer = true
         imageView.layer?.cornerRadius = 8
+        imageView.layer?.cornerCurve = .continuous
         imageView.layer?.masksToBounds = true
+        imageView.layer?.borderWidth = 0.5
+        imageView.layer?.borderColor = NSColor.white.withAlphaComponent(0.12).cgColor
 
         contentView = imageView
+        // Premium shadow
+        let shadowLayer = contentView?.superview?.layer ?? imageView.layer
+        shadowLayer?.shadowColor = NSColor.black.cgColor
+        shadowLayer?.shadowOpacity = 0.3
+        shadowLayer?.shadowRadius = 20
+        shadowLayer?.shadowOffset = CGSize(width: 0, height: -4)
         center()
     }
 
