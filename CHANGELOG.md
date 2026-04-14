@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.9.3-beta] - 2026-04-14
+
+### Fixed
+- **Annotation editor blank area** — canvas now centers in viewport when window is wider than the image
+- **Annotation toolbar clutter** — removed always-visible Undo/Redo/Del buttons (keyboard shortcuts still work: ⌘Z, ⌘⇧Z, Delete); Crop✓ only appears when a crop region is drawn
+
+### Changed
+- **Quick access overlay** — refined shadow, corner radius (12px), frosted glass controls, white border for polish
+- **Menu bar icon** — switched to `viewfinder` symbol with medium weight for sharper clarity
+- **Annotation editor background** — dark gray backdrop instead of system gray for a professional editor feel
+- **Overlay context menu** — added Delete option
+
 ## [0.9.2-beta] - 2026-04-12
 
 ### Fixed
