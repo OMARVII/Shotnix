@@ -211,7 +211,7 @@ final class AnnotationToolbar: NSView {
         var x: CGFloat = 8
 
         // Tool buttons
-        let tools: [AnnotationTool] = [.select, .arrow, .rectangle, .filledRectangle, .ellipse, .line, .freehand, .text, .highlighter, .blur, .pixelate, .crop]
+        let tools: [AnnotationTool] = [.select, .arrow, .rectangle, .filledRectangle, .ellipse, .line, .freehand, .text, .numberedStep, .highlighter, .blur, .pixelate, .crop]
         for tool in tools {
             let btn = makeToolButton(tool: tool)
             btn.frame = NSRect(x: x, y: 8, width: 34, height: 34)
