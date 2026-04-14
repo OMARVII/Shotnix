@@ -31,7 +31,14 @@ final class AnnotationWindowController: NSWindowController {
 
         let canvasSize = image.size
         let toolbarHeight: CGFloat = 52
-        let windowSize = NSSize(width: canvasSize.width, height: canvasSize.height + toolbarHeight)
+
+        // Cap window to 85% of screen so large screenshots don't go off-screen
+        let screenFrame = NSScreen.main?.visibleFrame ?? NSRect(x: 0, y: 0, width: 1280, height: 800)
+        let maxW = screenFrame.width * 0.85
+        let maxH = screenFrame.height * 0.85 - toolbarHeight
+        let winW = min(canvasSize.width, maxW)
+        let winH = min(canvasSize.height, maxH) + toolbarHeight
+        let windowSize = NSSize(width: winW, height: winH)
 
         let win = NSWindow(
             contentRect: NSRect(origin: .zero, size: windowSize),
@@ -41,29 +48,66 @@ final class AnnotationWindowController: NSWindowController {
         )
         win.title = "Shotnix — Annotate"
         win.isReleasedWhenClosed = false
+        win.minSize = NSSize(width: 320, height: 240 + toolbarHeight)
         win.center()
 
         super.init(window: win)
 
         canvas.backgroundImage = image
-        canvas.frame = NSRect(x: 0, y: 0, width: canvasSize.width, height: canvasSize.height)
-        toolbar.frame = NSRect(x: 0, y: canvasSize.height, width: canvasSize.width, height: toolbarHeight)
+        canvas.frame = NSRect(origin: .zero, size: canvasSize)
 
-        toolbar.onToolChanged     = { [weak self] tool  in self?.canvas.activeTool = tool }
+        // Scroll view for canvas — clips content properly
+        let scrollView = NSScrollView(frame: NSRect(x: 0, y: 0, width: winW, height: winH - toolbarHeight))
+        // Center canvas when viewport is larger than the image (eliminates blank side areas)
+        let clipView = CenteringClipView()
+        clipView.drawsBackground = false
+        scrollView.contentView = clipView
+        scrollView.documentView = canvas
+        scrollView.hasVerticalScroller = true
+        scrollView.hasHorizontalScroller = true
+        scrollView.autohidesScrollers = true
+        scrollView.drawsBackground = true
+        scrollView.backgroundColor = NSColor(white: 0.12, alpha: 1.0)
+        scrollView.autoresizingMask = [.width, .height]
+        scrollView.horizontalScrollElasticity = .none
+        scrollView.verticalScrollElasticity = .none
+
+        // Toolbar positioned at top of window
+        toolbar.frame = NSRect(x: 0, y: winH - toolbarHeight, width: winW, height: toolbarHeight)
+        toolbar.autoresizingMask = [.width, .minYMargin]
+
+        toolbar.onToolChanged     = { [weak self] tool in
+            self?.canvas.activeTool = tool
+            // Clear crop state when switching away from crop tool
+            if tool != .crop {
+                self?.canvas.cropRect = nil
+                self?.canvas.setNeedsDisplay(self?.canvas.bounds ?? .zero)
+                self?.toolbar.setCropApplyVisible(false)
+            }
+        }
         toolbar.onColorChanged    = { [weak self] color in self?.canvas.activeColor = color }
         toolbar.onLineWidthChanged = { [weak self] w   in self?.canvas.activeLineWidth = w }
-        toolbar.onUndo            = { [weak self] in self?.canvas.performUndo() }
-        toolbar.onRedo            = { [weak self] in self?.canvas.performRedo() }
         toolbar.onSave            = { [weak self] in self?.save() }
         toolbar.onCopy            = { [weak self] in self?.copyToClipboard() }
-        toolbar.onDelete          = { [weak self] in self?.canvas.deleteSelected() }
         toolbar.onApplyCrop       = { [weak self] in self?.applyCrop() }
 
+        // Show Crop✓ button only when a crop region is drawn
+        canvas.onCropChanged = { [weak self] rect in
+            let hasCrop = rect != nil && !(rect?.isEmpty ?? true)
+            self?.toolbar.setCropApplyVisible(hasCrop)
+        }
+
+        // Build hierarchy FIRST, then configure layers (layers don't exist until views are in a window)
         let container = NSView(frame: NSRect(origin: .zero, size: windowSize))
-        container.addSubview(canvas)
+        container.addSubview(scrollView)
         container.addSubview(toolbar)
         win.contentView = container
         win.delegate = self
+
+        // NOW layers exist — set masksToBounds on the clip view (the actual clipping mechanism)
+        scrollView.contentView.wantsLayer = true
+        scrollView.contentView.layer?.masksToBounds = true
+
         win.makeFirstResponder(canvas)
     }
 
@@ -117,6 +161,25 @@ extension AnnotationWindowController: NSWindowDelegate {
     }
 }
 
+// MARK: – Centering Clip View
+
+/// Centers the document view when the scroll view viewport is larger than the content.
+@MainActor
+final class CenteringClipView: NSClipView {
+    override func constrainBoundsRect(_ proposedBounds: NSRect) -> NSRect {
+        var rect = super.constrainBoundsRect(proposedBounds)
+        guard let documentView = documentView else { return rect }
+        let docFrame = documentView.frame
+        if docFrame.width < rect.width {
+            rect.origin.x = (docFrame.width - rect.width) / 2
+        }
+        if docFrame.height < rect.height {
+            rect.origin.y = (docFrame.height - rect.height) / 2
+        }
+        return rect
+    }
+}
+
 // MARK: – Toolbar
 
 @MainActor
@@ -125,16 +188,14 @@ final class AnnotationToolbar: NSView {
     var onToolChanged: ((AnnotationTool) -> Void)?
     var onColorChanged: ((NSColor) -> Void)?
     var onLineWidthChanged: ((CGFloat) -> Void)?
-    var onUndo: (() -> Void)?
-    var onRedo: (() -> Void)?
     var onSave: (() -> Void)?
     var onCopy: (() -> Void)?
-    var onDelete: (() -> Void)?
     var onApplyCrop: (() -> Void)?
 
     private var toolButtons: [AnnotationTool: NSButton] = [:]
     private var selectedTool: AnnotationTool = .arrow
     private let colorWell = NSColorWell()
+    private var cropApplyButton: NSButton?
 
     override init(frame: NSRect) {
         super.init(frame: frame)
@@ -187,17 +248,23 @@ final class AnnotationToolbar: NSView {
         sep2.frame = NSRect(x: x, y: 6, width: 1, height: 40)
         addSubview(sep2); x += 12
 
-        // Action buttons
-        for (title, sel) in [("↩ Undo", #selector(undoTapped)), ("↪ Redo", #selector(redoTapped)),
-                              ("⌫ Del", #selector(deleteTapped)), ("Crop✓", #selector(cropTapped)),
-                              ("Copy", #selector(copyTapped)), ("Save", #selector(saveTapped))] {
+        // Always-visible action buttons
+        for (title, sel) in [("Copy", #selector(copyTapped)), ("Save", #selector(saveTapped))] {
             let btn = NSButton(title: title, target: self, action: sel)
             btn.bezelStyle = .rounded
             btn.font = .systemFont(ofSize: 11)
-            let w: CGFloat = title.count > 5 ? 60 : 50
-            btn.frame = NSRect(x: x, y: 11, width: w, height: 28)
-            addSubview(btn); x += w + 4
+            btn.frame = NSRect(x: x, y: 11, width: 50, height: 28)
+            addSubview(btn); x += 54
         }
+
+        // Crop apply button (only visible when a crop region is drawn)
+        let cropBtn = NSButton(title: "Crop✓", target: self, action: #selector(cropTapped))
+        cropBtn.bezelStyle = .rounded
+        cropBtn.font = .systemFont(ofSize: 11)
+        cropBtn.frame = NSRect(x: x, y: 11, width: 60, height: 28)
+        cropBtn.isHidden = true
+        addSubview(cropBtn)
+        cropApplyButton = cropBtn
 
         selectTool(.arrow)
     }
@@ -228,11 +295,12 @@ final class AnnotationToolbar: NSView {
         toolButtons[tool]?.layer?.cornerRadius = 6
     }
 
+    func setCropApplyVisible(_ visible: Bool) {
+        cropApplyButton?.isHidden = !visible
+    }
+
     @objc private func colorChanged()     { onColorChanged?(colorWell.color) }
     @objc private func lineWidthChanged(_ sender: NSSlider) { onLineWidthChanged?(CGFloat(sender.doubleValue)) }
-    @objc private func undoTapped()       { onUndo?() }
-    @objc private func redoTapped()       { onRedo?() }
-    @objc private func deleteTapped()     { onDelete?() }
     @objc private func cropTapped()       { onApplyCrop?() }
     @objc private func copyTapped()       { onCopy?() }
     @objc private func saveTapped()       { onSave?() }

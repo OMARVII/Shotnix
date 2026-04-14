@@ -50,7 +50,7 @@ private final class QuickAccessWindow: NSWindow {
         isOpaque = false
         backgroundColor = .clear
         level = .floating
-        hasShadow = false
+        hasShadow = true
         isMovableByWindowBackground = true
         acceptsMouseMovedEvents = true
         collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary]
@@ -152,6 +152,7 @@ private final class QuickAccessWindow: NSWindow {
         menu.addItem(NSMenuItem(title: "Edit", action: #selector(editAction), keyEquivalent: "e"))
         menu.addItem(NSMenuItem(title: "Pin", action: #selector(pinAction), keyEquivalent: ""))
         menu.addItem(.separator())
+        menu.addItem(NSMenuItem(title: "Delete", action: #selector(deleteAction), keyEquivalent: ""))
         menu.addItem(NSMenuItem(title: "Close", action: #selector(dismissAction), keyEquivalent: ""))
         for item in menu.items { item.target = self }
         guard let view = contentView else { return }
@@ -161,30 +162,32 @@ private final class QuickAccessWindow: NSWindow {
     private func buildContent(thumbW: CGFloat, thumbH: CGFloat, progressH: CGFloat, totalH: CGFloat) {
         let container = OverlayContentView(frame: NSRect(x: 0, y: 0, width: thumbW, height: totalH))
         container.wantsLayer = true
-        container.layer?.cornerRadius = 8
+        container.layer?.cornerRadius = 12
         container.layer?.cornerCurve = .continuous
         container.layer?.masksToBounds = false
         container.layer?.shadowColor = NSColor.black.cgColor
-        container.layer?.shadowOpacity = 0.35
-        container.layer?.shadowRadius = 24
-        container.layer?.shadowOffset = CGSize(width: 0, height: -6)
+        container.layer?.shadowOpacity = 0.55
+        container.layer?.shadowRadius = 30
+        container.layer?.shadowOffset = CGSize(width: 0, height: -10)
         contentView = container
 
         // Clip subviews so content respects corner radius while shadow remains visible
         let clipView = NSView(frame: container.bounds)
         clipView.wantsLayer = true
-        clipView.layer?.cornerRadius = 8
+        clipView.layer?.cornerRadius = 12
         clipView.layer?.cornerCurve = .continuous
         clipView.layer?.masksToBounds = true
+        // Subtle dark tint — frames content, visible at rounded corners and behind image
+        clipView.layer?.backgroundColor = NSColor.black.withAlphaComponent(0.08).cgColor
         container.addSubview(clipView)
 
-        // Subtle inner border — gives definition against any background color
+        // White border — primary edge definition on light wallpapers (shadow handles dark)
         let borderView = NSView(frame: container.bounds)
         borderView.wantsLayer = true
-        borderView.layer?.cornerRadius = 8
+        borderView.layer?.cornerRadius = 12
         borderView.layer?.cornerCurve = .continuous
-        borderView.layer?.borderWidth = 0.5
-        borderView.layer?.borderColor = NSColor.white.withAlphaComponent(0.12).cgColor
+        borderView.layer?.borderWidth = 1.5
+        borderView.layer?.borderColor = NSColor.white.withAlphaComponent(0.35).cgColor
         container.addSubview(borderView)
 
         // Draggable thumbnail — drag to Finder/apps, double-click to annotate
@@ -203,48 +206,87 @@ private final class QuickAccessWindow: NSWindow {
         thumb.onDragCompleted = { [weak self] in self?.animatedClose() }
         clipView.addSubview(thumb)
 
-        // Controls overlay — dark gradient scrim with action buttons, hidden by default
-        let controlsH: CGFloat = 40
-        let controls = NSView(frame: NSRect(x: 0, y: progressH, width: thumbW, height: controlsH))
+        // Controls overlay — frosted glass + corner circles + center pills
+        let controls = NSView(frame: NSRect(x: 0, y: progressH, width: thumbW, height: thumbH))
         controls.wantsLayer = true
 
-        let gradient = CAGradientLayer()
-        gradient.frame = controls.bounds
-        gradient.colors = [
-            NSColor.clear.cgColor,
-            NSColor.black.withAlphaComponent(0.55).cgColor
-        ]
-        gradient.startPoint = CGPoint(x: 0.5, y: 1)
-        gradient.endPoint = CGPoint(x: 0.5, y: 0)
-        controls.layer?.addSublayer(gradient)
+        // Frosted glass backdrop
+        let frost = NSVisualEffectView(frame: controls.bounds)
+        frost.material = .hudWindow
+        frost.blendingMode = .behindWindow
+        frost.state = .active
+        controls.addSubview(frost)
 
-        let actions: [(String, String, Selector)] = [
-            ("doc.on.clipboard",      "Copy",    #selector(copyAction)),
-            ("square.and.arrow.down", "Save",    #selector(saveAction)),
-            ("pencil",                "Edit",    #selector(editAction)),
-            ("pin",                   "Pin",     #selector(pinAction)),
-            ("xmark",                 "Close",   #selector(dismissAction)),
+        // ── Corner circles (28px glass buttons, all 4 corners) ──
+        let cSize: CGFloat = 28
+        let cMargin: CGFloat = 8
+        let cConfig = NSImage.SymbolConfiguration(pointSize: 12, weight: .medium)
+
+        let corners: [(String, String, Selector, CGFloat, CGFloat)] = [
+            ("pencil",  "Edit",   #selector(editAction),    cMargin,                   thumbH - cSize - cMargin),
+            ("xmark",   "Close",  #selector(dismissAction), thumbW - cSize - cMargin,  thumbH - cSize - cMargin),
+            ("trash",   "Delete", #selector(deleteAction),  cMargin,                   cMargin),
+            ("pin",     "Pin",    #selector(pinAction),     thumbW - cSize - cMargin,  cMargin),
         ]
-        let btnSize: CGFloat = 28
-        let spacing: CGFloat = 4
-        let totalBtnsW = CGFloat(actions.count) * btnSize + CGFloat(actions.count - 1) * spacing
-        let startX = (thumbW - totalBtnsW) / 2
-        let btnY: CGFloat = 6
-        let iconConfig = NSImage.SymbolConfiguration(pointSize: 12, weight: .semibold)
-        for (i, (icon, tooltip, sel)) in actions.enumerated() {
-            let btn = OverlayHoverButton(frame: NSRect(
-                x: startX + CGFloat(i) * (btnSize + spacing),
-                y: btnY, width: btnSize, height: btnSize
-            ))
-            btn.image = NSImage(systemSymbolName: icon, accessibilityDescription: tooltip)?.withSymbolConfiguration(iconConfig)
+        let screenScale = NSScreen.main?.backingScaleFactor ?? 2.0
+        for (icon, tip, sel, cx, cy) in corners {
+            let btn = OverlayCornerButton(frame: NSRect(x: cx, y: cy, width: cSize, height: cSize))
+            btn.image = NSImage(systemSymbolName: icon, accessibilityDescription: tip)?.withSymbolConfiguration(cConfig)
             btn.bezelStyle = .regularSquare
             btn.isBordered = false
-            btn.toolTip = tooltip
+            btn.toolTip = tip
             btn.target = self
             btn.action = sel
             btn.imageScaling = .scaleNone
             btn.contentTintColor = .white
+            btn.wantsLayer = true
+            btn.layer?.contentsScale = screenScale
+            btn.layer?.cornerRadius = cSize / 2
+            btn.layer?.cornerCurve = .continuous
+            btn.layer?.backgroundColor = NSColor.white.withAlphaComponent(0.18).cgColor
             controls.addSubview(btn)
+        }
+
+        // ── Center pills (tight-fit white capsules) ──
+        let pillH: CGFloat = 28
+        let pillGap: CGFloat = 8
+        let pillPadding: CGFloat = 28  // total horizontal padding (14 each side)
+        let pillFont = NSFont.systemFont(ofSize: 13, weight: .medium)
+        let pillAttrs: [NSAttributedString.Key: Any] = [
+            .foregroundColor: NSColor.black.withAlphaComponent(0.85),
+            .font: pillFont,
+        ]
+
+        let pills: [(String, Selector)] = [
+            ("Copy", #selector(copyAction)),
+            ("Save", #selector(saveAction)),
+        ]
+
+        // Measure each pill to fit text snugly
+        let pillWidths = pills.map { title, _ in
+            ceil((title as NSString).size(withAttributes: pillAttrs).width) + pillPadding
+        }
+        let totalPillW = pillWidths.reduce(0, +) + CGFloat(pills.count - 1) * pillGap
+        let pillY = (thumbH - pillH) / 2
+        var pillCursorX = (thumbW - totalPillW) / 2
+
+        let retinaScale = NSScreen.main?.backingScaleFactor ?? 2.0
+        for (i, (title, sel)) in pills.enumerated() {
+            let pw = pillWidths[i]
+            let btn = OverlayPillButton(frame: NSRect(x: pillCursorX, y: pillY, width: pw, height: pillH))
+            btn.attributedTitle = NSAttributedString(string: title, attributes: pillAttrs)
+            btn.alignment = .center
+            btn.bezelStyle = .regularSquare
+            btn.isBordered = false
+            btn.target = self
+            btn.action = sel
+            btn.wantsLayer = true
+            btn.layer?.contentsScale = retinaScale
+            btn.layer?.cornerRadius = pillH / 2
+            btn.layer?.cornerCurve = .continuous
+            btn.layer?.backgroundColor = NSColor.white.withAlphaComponent(0.92).cgColor
+            controls.addSubview(btn)
+            pillCursorX += pw + pillGap
         }
 
         controls.alphaValue = 0
@@ -296,19 +338,6 @@ private final class QuickAccessWindow: NSWindow {
             ctx.duration = 0.2
             controlsOverlay?.animator().alphaValue = hovered ? 1 : 0
         }
-
-        // Subtle scale-up on hover (1.0 → 1.02) for lively micro-interaction
-        guard let layer = contentView?.layer else { return }
-        let scale: CGFloat = hovered ? 1.02 : 1.0
-        let anim = CABasicAnimation(keyPath: "transform.scale")
-        anim.fromValue = hovered ? 1.0 : 1.02
-        anim.toValue = scale
-        anim.duration = 0.25
-        anim.timingFunction = CAMediaTimingFunction(controlPoints: 0.34, 1.56, 0.64, 1.0)
-        anim.fillMode = .forwards
-        anim.isRemovedOnCompletion = false
-        layer.add(anim, forKey: "hoverScale")
-        layer.transform = CATransform3DMakeScale(scale, scale, 1)
     }
 
     private func positionOverlay() {
@@ -397,6 +426,7 @@ private final class QuickAccessWindow: NSWindow {
     }
 
     private var isClosing = false
+    private var skipPolicyReset = false
 
     private func animatedClose() {
         guard !isClosing else { return }
@@ -425,7 +455,8 @@ private final class QuickAccessWindow: NSWindow {
         orderOut(nil)
         QuickAccessWindow.openWindows.removeAll { $0 === self }
         // Restore background-only policy so app doesn't appear in Cmd-Tab
-        if QuickAccessWindow.openWindows.isEmpty {
+        // (skip when transitioning to another window like editor or pin)
+        if QuickAccessWindow.openWindows.isEmpty && !skipPolicyReset {
             NSApp.setActivationPolicy(.prohibited)
         }
     }
@@ -472,13 +503,25 @@ private final class QuickAccessWindow: NSWindow {
     }
 
     @objc private func editAction() {
+        skipPolicyReset = true
         animatedClose()
-        AnnotationWindowController.open(image: image, historyItem: historyItem, historyManager: historyManager)
+        // Open after a short delay so cleanup doesn't kill activation
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [image, historyItem, historyManager] in
+            AnnotationWindowController.open(image: image, historyItem: historyItem, historyManager: historyManager)
+        }
     }
 
     @objc private func pinAction() {
+        skipPolicyReset = true
         animatedClose()
-        PinnedWindow.pin(image: image)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [image] in
+            PinnedWindow.pin(image: image)
+        }
+    }
+
+    @objc private func deleteAction() {
+        historyManager.delete(historyItem)
+        animatedClose()
     }
 
     @objc private func dismissAction() {
@@ -575,10 +618,10 @@ private final class OverlayContentView: NSView {
     override var acceptsFirstResponder: Bool { true }
 }
 
-// MARK: – Overlay hover button (white icon on dark scrim)
+// MARK: – Corner button (glass circle, secondary action)
 
 @MainActor
-private final class OverlayHoverButton: NSButton {
+private final class OverlayCornerButton: NSButton {
 
     private var trackingArea: NSTrackingArea?
 
@@ -591,12 +634,44 @@ private final class OverlayHoverButton: NSButton {
     }
 
     override func mouseEntered(with event: NSEvent) {
-        wantsLayer = true
-        layer?.backgroundColor = NSColor.white.withAlphaComponent(0.15).cgColor
-        layer?.cornerRadius = 6
+        layer?.backgroundColor = NSColor.white.withAlphaComponent(0.35).cgColor
     }
 
     override func mouseExited(with event: NSEvent) {
-        layer?.backgroundColor = nil
+        layer?.backgroundColor = NSColor.white.withAlphaComponent(0.18).cgColor
+    }
+}
+
+// MARK: – Pill button (white capsule, primary action)
+
+@MainActor
+private final class OverlayPillButton: NSButton {
+
+    private var trackingArea: NSTrackingArea?
+
+    // Kill all default NSButton drawing — layer handles everything
+    override func draw(_ dirtyRect: NSRect) {
+        // Draw only the attributed title, centered
+        guard let title = attributedTitle as NSAttributedString? else { return }
+        let size = title.size()
+        let x = (bounds.width - size.width) / 2
+        let y = (bounds.height - size.height) / 2
+        title.draw(at: NSPoint(x: x, y: y))
+    }
+
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+        if let old = trackingArea { removeTrackingArea(old) }
+        let area = NSTrackingArea(rect: bounds, options: [.activeAlways, .mouseEnteredAndExited], owner: self)
+        addTrackingArea(area)
+        trackingArea = area
+    }
+
+    override func mouseEntered(with event: NSEvent) {
+        layer?.backgroundColor = NSColor.white.cgColor
+    }
+
+    override func mouseExited(with event: NSEvent) {
+        layer?.backgroundColor = NSColor.white.withAlphaComponent(0.92).cgColor
     }
 }
