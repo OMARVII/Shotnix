@@ -26,8 +26,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func setupStatusItem() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         guard let button = statusItem.button else { return }
-        button.image = NSImage(systemSymbolName: "camera.viewfinder", accessibilityDescription: "Shotnix")
-        button.image?.isTemplate = true
+        let config = NSImage.SymbolConfiguration(pointSize: 14, weight: .medium, scale: .medium)
+        let icon = NSImage(systemSymbolName: "viewfinder", accessibilityDescription: "Shotnix")?
+            .withSymbolConfiguration(config)
+        icon?.isTemplate = true
+        button.image = icon
         statusItem.menu = buildMenu()
     }
 
