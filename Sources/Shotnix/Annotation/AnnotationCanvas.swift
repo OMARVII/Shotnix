@@ -173,6 +173,14 @@ final class AnnotationCanvas: NSView {
             beginTextEntry(at: point)
             return
         }
+        if activeTool == .numberedStep {
+            pushUndo()
+            let step = NumberedStepAnnotation(center: point, number: nextStepNumber())
+            step.color = activeColor
+            objects.append(step)
+            setNeedsDisplay(bounds)
+            return
+        }
 
         pushUndo()
         dragStart = point
@@ -307,6 +315,11 @@ final class AnnotationCanvas: NSView {
 
     private func rectFrom(_ a: CGPoint, to b: CGPoint) -> CGRect {
         CGRect(x: min(a.x,b.x), y: min(a.y,b.y), width: abs(b.x-a.x), height: abs(b.y-a.y))
+    }
+
+    private func nextStepNumber() -> Int {
+        let existing = objects.compactMap { ($0 as? NumberedStepAnnotation)?.number }
+        return (existing.max() ?? 0) + 1
     }
 
     // MARK: – Text

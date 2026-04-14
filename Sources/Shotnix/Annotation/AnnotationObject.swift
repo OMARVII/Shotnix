@@ -4,7 +4,7 @@ import AppKit
 
 enum AnnotationTool: String, CaseIterable {
     case select, arrow, rectangle, filledRectangle, ellipse, line, freehand
-    case text, highlighter, blur, pixelate, crop
+    case text, numberedStep, highlighter, blur, pixelate, crop
 
     var icon: String {
         switch self {
@@ -16,6 +16,7 @@ enum AnnotationTool: String, CaseIterable {
         case .line:            return "line.diagonal"
         case .freehand:        return "pencil"
         case .text:            return "textformat"
+        case .numberedStep:    return "1.circle.fill"
         case .highlighter:     return "highlighter"
         case .blur:            return "camera.filters"
         case .pixelate:        return "square.grid.3x3.fill"
@@ -33,6 +34,7 @@ enum AnnotationTool: String, CaseIterable {
         case .line:            return "Line"
         case .freehand:        return "Freehand Draw"
         case .text:            return "Text"
+        case .numberedStep:    return "Numbered Steps"
         case .highlighter:     return "Highlighter"
         case .blur:            return "Blur"
         case .pixelate:        return "Pixelate"
@@ -392,4 +394,84 @@ final class TextAnnotation: AnnotationObject {
 
     func contains(point: CGPoint) -> Bool { bounds.insetBy(dx: -8, dy: -8).contains(point) }
     func move(by delta: CGPoint) { origin.x += delta.x; origin.y += delta.y }
+}
+
+// MARK: – Numbered Step
+
+final class NumberedStepAnnotation: AnnotationObject {
+    let id = UUID()
+    var color: NSColor = .systemRed
+    var lineWidth: CGFloat = 0
+    var isSelected = false
+    var origin: CGPoint
+    var number: Int
+    var diameter: CGFloat = 30
+
+    private lazy var cachedTextLayout: (font: NSFont, attrs: [NSAttributedString.Key: Any], size: CGSize) = {
+        let font = NSFont.boldSystemFont(ofSize: diameter * 0.55)
+        let attrs: [NSAttributedString.Key: Any] = [
+            .font: font,
+            .foregroundColor: NSColor.white
+        ]
+        let size = ("\(number)" as NSString).size(withAttributes: attrs)
+        return (font, attrs, size)
+    }()
+
+    init(center: CGPoint, number: Int) {
+        self.origin = center
+        self.number = number
+    }
+
+    var bounds: CGRect {
+        CGRect(x: origin.x - diameter/2, y: origin.y - diameter/2,
+               width: diameter, height: diameter)
+    }
+
+    func contains(point: CGPoint) -> Bool {
+        let dx = point.x - origin.x
+        let dy = point.y - origin.y
+        return (dx*dx + dy*dy) <= (diameter/2 + 4) * (diameter/2 + 4)
+    }
+
+    func move(by delta: CGPoint) {
+        origin.x += delta.x
+        origin.y += delta.y
+    }
+
+    func draw(in ctx: CGContext, scale: CGFloat) {
+        ctx.saveGState()
+
+        let circleRect = bounds
+
+        // Shadow behind the circle
+        ctx.setShadow(offset: CGSize(width: 0, height: 1), blur: 3,
+                       color: NSColor.black.withAlphaComponent(0.3).cgColor)
+
+        // Filled circle
+        ctx.setFillColor(color.cgColor)
+        ctx.fillEllipse(in: circleRect)
+
+        // Reset shadow before drawing border and text
+        ctx.setShadow(offset: .zero, blur: 0)
+
+        // White border
+        ctx.setStrokeColor(NSColor.white.cgColor)
+        ctx.setLineWidth(1)
+        ctx.strokeEllipse(in: circleRect)
+
+        // Number text (centered, white, bold) — font + size cached as lazy property
+        let layout = cachedTextLayout
+        let textOrigin = CGPoint(
+            x: circleRect.midX - layout.size.width / 2,
+            y: circleRect.midY - layout.size.height / 2
+        )
+
+        NSGraphicsContext.saveGraphicsState()
+        let nsCtx = NSGraphicsContext(cgContext: ctx, flipped: true)
+        NSGraphicsContext.current = nsCtx
+        ("\(number)" as NSString).draw(at: textOrigin, withAttributes: layout.attrs)
+        NSGraphicsContext.restoreGraphicsState()
+
+        ctx.restoreGState()
+    }
 }
