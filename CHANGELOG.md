@@ -6,6 +6,7 @@
 - **Premium branding** — new app icon, menu bar icon, and first-launch welcome screen
 - **Adaptive colors** — new `AdaptiveColors` utility for light/dark-aware UI tokens
 - **Haptic feedback** — overlay and capture interactions emit subtle haptics on supported trackpads
+- **Premium DMG installer** — dark graphite background with inline "INSTALL SHOTNIX" arrow, refined icon spacing, volume icon sourced from `Branding/Shotnix.icns` *(installer-only update; app binary unchanged)*
 
 ### Changed
 - **Overlay animations** — snappier spring curves and pixel-perfect button alignment

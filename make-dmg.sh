@@ -27,12 +27,12 @@ rm -f "$DMG_PATH"
 
 DMG_ARGS=(
     --volname "$APP_NAME"
-    --volicon "$SCRIPT_DIR/Shotnix.icns"
+    --volicon "$SCRIPT_DIR/Branding/Shotnix.icns"
     --window-pos 200 120
     --window-size 600 400
     --icon-size 128
-    --icon "$APP_NAME.app" 150 185
-    --app-drop-link 450 185
+    --icon "$APP_NAME.app" 120 175
+    --app-drop-link 480 175
     --hide-extension "$APP_NAME.app"
     --no-internet-enable
 )

@@ -1,118 +1,119 @@
 #!/usr/bin/env swift
-// Generates the DMG installer background image.
-// Run: swift make-dmg-bg.swift
-
 import AppKit
 import CoreGraphics
 
-let width: CGFloat = 1200  // 600pt window × 2x retina
-let height: CGFloat = 800  // 400pt window × 2x retina
+// The window is 600x400 points. We MUST generate a 600x400 image so create-dmg
+// maps it 1:1 to the window coordinate system.
+let width: CGFloat = 600
+let height: CGFloat = 400
 
 let img = NSImage(size: NSSize(width: width, height: height))
 img.lockFocus()
 
 let ctx = NSGraphicsContext.current!.cgContext
-let rect = CGRect(x: 0, y: 0, width: width, height: height)
 
-// --- Dark gradient background matching app theme ---
+// --- Deep Space Background ---
 let bgGradient = CGGradient(
     colorsSpace: CGColorSpaceCreateDeviceRGB(),
     colors: [
-        CGColor(red: 0.10, green: 0.08, blue: 0.18, alpha: 1),  // deep dark purple
-        CGColor(red: 0.14, green: 0.10, blue: 0.22, alpha: 1),  // slightly lighter
-        CGColor(red: 0.10, green: 0.08, blue: 0.16, alpha: 1),  // back to dark
-    ] as CFArray,
-    locations: [0, 0.5, 1]
-)!
-ctx.drawRadialGradient(
-    bgGradient,
-    startCenter: CGPoint(x: width * 0.5, y: height * 0.55),
-    startRadius: 0,
-    endCenter: CGPoint(x: width * 0.5, y: height * 0.55),
-    endRadius: width * 0.7,
-    options: [.drawsAfterEndLocation]
-)
-
-// --- Subtle grid pattern for texture ---
-ctx.setStrokeColor(CGColor(red: 1, green: 1, blue: 1, alpha: 0.02))
-ctx.setLineWidth(0.5)
-let gridSpacing: CGFloat = 40
-var x: CGFloat = 0
-while x < width {
-    ctx.move(to: CGPoint(x: x, y: 0))
-    ctx.addLine(to: CGPoint(x: x, y: height))
-    x += gridSpacing
-}
-var y: CGFloat = 0
-while y < height {
-    ctx.move(to: CGPoint(x: 0, y: y))
-    ctx.addLine(to: CGPoint(x: width, y: y))
-    y += gridSpacing
-}
-ctx.strokePath()
-
-// --- Arrow from app icon area to Applications area ---
-// Icon centers: app at 150pt (300px), Applications at 450pt (900px), both at 185pt (370px) from top
-let arrowY: CGFloat = height - 370  // flip for bottom-left origin
-let arrowStartX: CGFloat = 380     // after app icon
-let arrowEndX: CGFloat = 820       // before Applications icon
-
-// Arrow body - gradient line
-ctx.setLineCap(.round)
-let arrowGrad = CGGradient(
-    colorsSpace: CGColorSpaceCreateDeviceRGB(),
-    colors: [
-        CGColor(red: 0.40, green: 0.55, blue: 1.0, alpha: 0.6),
-        CGColor(red: 0.60, green: 0.35, blue: 0.95, alpha: 0.6),
+        CGColor(red: 0.12, green: 0.12, blue: 0.13, alpha: 1.0),
+        CGColor(red: 0.05, green: 0.05, blue: 0.06, alpha: 1.0),
     ] as CFArray,
     locations: [0, 1]
 )!
+ctx.drawRadialGradient(
+    bgGradient,
+    startCenter: CGPoint(x: width * 0.5, y: height * 0.4),
+    startRadius: 0,
+    endCenter: CGPoint(x: width * 0.5, y: height * 0.4),
+    endRadius: width * 0.8,
+    options: [.drawsAfterEndLocation, .drawsBeforeStartLocation]
+)
 
-// Draw arrow shaft as a thick line
-ctx.saveGState()
-ctx.setStrokeColor(CGColor(red: 0.50, green: 0.45, blue: 0.95, alpha: 0.35))
-ctx.setLineWidth(3)
-ctx.setLineDash(phase: 0, lengths: [12, 8])
-ctx.move(to: CGPoint(x: arrowStartX, y: arrowY))
-ctx.addLine(to: CGPoint(x: arrowEndX - 20, y: arrowY))
+// --- Spotlight effect from bottom ---
+let spotlight = CGGradient(
+    colorsSpace: CGColorSpaceCreateDeviceRGB(),
+    colors: [
+        CGColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.08),
+        CGColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.0)
+    ] as CFArray,
+    locations: [0, 1]
+)!
+ctx.drawRadialGradient(
+    spotlight,
+    startCenter: CGPoint(x: width * 0.5, y: -50),
+    startRadius: 0,
+    endCenter: CGPoint(x: width * 0.5, y: -50),
+    endRadius: height * 0.8,
+    options: [.drawsAfterEndLocation]
+)
+
+// Add noise texture
+if let noiseImg = CGImage.createNoiseImage(width: Int(width), height: Int(height)) {
+    ctx.setBlendMode(.screen)
+    ctx.setAlpha(0.02)
+    ctx.draw(noiseImg, in: CGRect(x: 0, y: 0, width: width, height: height))
+    ctx.setBlendMode(.normal)
+    ctx.setAlpha(1.0)
+}
+
+// --- Warp-style Inline Arrow ---
+// create-dmg places icons at Y=175pt from top.
+// Center of 128pt image is ~164pt from top.
+// CoreGraphics Y is from bottom: 400 - 164 = 236
+let arrowY: CGFloat = 236
+let text = "INSTALL SHOTNIX"
+
+let font = NSFont.systemFont(ofSize: 11, weight: .bold)
+let attributes: [NSAttributedString.Key: Any] = [
+    .font: font,
+    .foregroundColor: NSColor(calibratedWhite: 1.0, alpha: 0.4),
+    .kern: 1.5
+]
+let attrText = NSAttributedString(string: text, attributes: attributes)
+let textSize = attrText.size()
+
+// Positions
+let centerX = width / 2
+let textPadding: CGFloat = 12
+let textX = centerX - (textSize.width / 2)
+// Adjust textY to optically center it vertically with the line
+// CoreGraphics Y is from bottom, so subtracting moves it DOWN
+let textY = arrowY - (textSize.height / 2) - 2
+
+let leftLineStart: CGFloat = 200
+let leftLineEnd = textX - textPadding
+
+let rightLineStart = textX + textSize.width + textPadding
+let rightLineEnd: CGFloat = 400
+
+ctx.setStrokeColor(CGColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.3))
+ctx.setLineWidth(1.5)
+ctx.setLineCap(.round)
+ctx.setLineJoin(.round)
+
+// Left line segment
+ctx.move(to: CGPoint(x: leftLineStart, y: arrowY))
+ctx.addLine(to: CGPoint(x: leftLineEnd, y: arrowY))
 ctx.strokePath()
-ctx.restoreGState()
+
+// Right line segment
+ctx.move(to: CGPoint(x: rightLineStart, y: arrowY))
+ctx.addLine(to: CGPoint(x: rightLineEnd, y: arrowY))
+ctx.strokePath()
 
 // Arrow head
-ctx.setFillColor(CGColor(red: 0.50, green: 0.45, blue: 0.95, alpha: 0.45))
-ctx.setLineDash(phase: 0, lengths: [])
-let headSize: CGFloat = 16
-ctx.move(to: CGPoint(x: arrowEndX, y: arrowY))
-ctx.addLine(to: CGPoint(x: arrowEndX - headSize, y: arrowY + headSize * 0.6))
-ctx.addLine(to: CGPoint(x: arrowEndX - headSize, y: arrowY - headSize * 0.6))
-ctx.closePath()
-ctx.fillPath()
+let headSize: CGFloat = 6
+ctx.move(to: CGPoint(x: rightLineEnd, y: arrowY))
+ctx.addLine(to: CGPoint(x: rightLineEnd - headSize, y: arrowY + headSize * 0.8))
+ctx.move(to: CGPoint(x: rightLineEnd, y: arrowY))
+ctx.addLine(to: CGPoint(x: rightLineEnd - headSize, y: arrowY - headSize * 0.8))
+ctx.strokePath()
 
-// --- App name at top (accounting for Finder title bar ~60pt = 120px at 2x) ---
-let titleFont = NSFont.systemFont(ofSize: 36, weight: .bold)
-let titleAttrs: [NSAttributedString.Key: Any] = [
-    .font: titleFont,
-    .foregroundColor: NSColor(calibratedRed: 1, green: 1, blue: 1, alpha: 0.85),
-]
-let title = NSAttributedString(string: "Shotnix", attributes: titleAttrs)
-let titleSize = title.size()
-let titleX = (width - titleSize.width) / 2
-let titleY = height - 190  // ~190px from top to clear Finder title bar
-title.draw(at: NSPoint(x: titleX, y: titleY))
+// Draw Text
+attrText.draw(at: NSPoint(x: textX, y: textY))
 
-// --- Tagline ---
-let tagFont = NSFont.systemFont(ofSize: 18, weight: .regular)
-let tagAttrs: [NSAttributedString.Key: Any] = [
-    .font: tagFont,
-    .foregroundColor: NSColor(calibratedRed: 1, green: 1, blue: 1, alpha: 0.4),
-]
-let tag = NSAttributedString(string: "Drag to Applications to install", attributes: tagAttrs)
-let tagSize = tag.size()
-let tagX = (width - tagSize.width) / 2
-let tagY = height - 240  // below title
-tag.draw(at: NSPoint(x: tagX, y: tagY))
-
-// --- Subtle glow behind icon positions ---
+// --- Icon Glows ---
 func drawGlow(at center: CGPoint, radius: CGFloat, color: CGColor) {
     let glow = CGGradient(
         colorsSpace: CGColorSpaceCreateDeviceRGB(),
@@ -123,19 +124,31 @@ func drawGlow(at center: CGPoint, radius: CGFloat, color: CGColor) {
                            endCenter: center, endRadius: radius, options: [])
 }
 
-// Glow behind app icon position
-drawGlow(at: CGPoint(x: 300, y: arrowY), radius: 140,
-         color: CGColor(red: 0.30, green: 0.40, blue: 0.98, alpha: 0.12))
-
-// Glow behind Applications position
-drawGlow(at: CGPoint(x: 900, y: arrowY), radius: 140,
-         color: CGColor(red: 0.48, green: 0.30, blue: 0.92, alpha: 0.08))
+// Glow under icons
+drawGlow(at: CGPoint(x: 120, y: arrowY), radius: 80,
+         color: CGColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.08))
+drawGlow(at: CGPoint(x: 480, y: arrowY), radius: 80,
+         color: CGColor(red: 0.2, green: 0.6, blue: 1.0, alpha: 0.06))
 
 img.unlockFocus()
 
-// Save as PNG
 let rep = NSBitmapImageRep(data: img.tiffRepresentation!)!
 let pngData = rep.representation(using: .png, properties: [:])!
 let outputURL = URL(fileURLWithPath: "dmg-background.png")
 try! pngData.write(to: outputURL)
-print("✓ dmg-background.png created (\(Int(width))×\(Int(height)))")
+print("✓ dmg-background.png created (600x400)")
+
+extension CGImage {
+    static func createNoiseImage(width: Int, height: Int) -> CGImage? {
+        let colorSpace = CGColorSpaceCreateDeviceGray()
+        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.none.rawValue)
+        guard let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width, space: colorSpace, bitmapInfo: bitmapInfo.rawValue) else { return nil }
+        
+        guard let data = context.data else { return nil }
+        let buffer = data.bindMemory(to: UInt8.self, capacity: width * height)
+        for i in 0..<(width * height) {
+            buffer[i] = UInt8.random(in: 0...255)
+        }
+        return context.makeImage()
+    }
+}
