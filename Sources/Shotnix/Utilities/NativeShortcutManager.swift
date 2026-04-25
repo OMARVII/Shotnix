@@ -13,7 +13,7 @@ enum NativeShortcutManager {
     /// Returns true if any native screenshot shortcuts are still enabled.
     static var nativeShortcutsEnabled: Bool {
         guard let prefs = UserDefaults(suiteName: "com.apple.symbolichotkeys"),
-              let hotkeys = prefs.dictionary(forKey: "AppleSymbolicHotKeys") as? [String: Any] else {
+              let hotkeys = prefs.dictionary(forKey: "AppleSymbolicHotKeys") else {
             return true // Assume enabled if we can't read
         }
 
@@ -31,23 +31,29 @@ enum NativeShortcutManager {
     /// Requires a logout/login or cfprefsd restart to take full effect,
     /// but most apps pick up the change immediately.
     static func disableNativeShortcuts() {
+        let appID = "com.apple.symbolichotkeys" as CFString
+        guard let currentDict = CFPreferencesCopyAppValue("AppleSymbolicHotKeys" as CFString, appID) as? [String: Any] else { return }
+        
+        var newDict = currentDict
         for id in screenshotHotkeyIDs {
-            let task = Process()
-            task.launchPath = "/usr/bin/defaults"
-            task.arguments = [
-                "write", "com.apple.symbolichotkeys",
-                "AppleSymbolicHotKeys", "-dict-add", "\(id)",
-                "<dict><key>enabled</key><false/></dict>"
-            ]
-            try? task.run()
-            task.waitUntilExit()
+            if var entry = newDict["\(id)"] as? [String: Any] {
+                entry["enabled"] = false
+                newDict["\(id)"] = entry
+            } else {
+                newDict["\(id)"] = ["enabled": false]
+            }
         }
+        
+        CFPreferencesSetValue("AppleSymbolicHotKeys" as CFString, newDict as CFDictionary, appID, kCFPreferencesCurrentUser, kCFPreferencesAnyHost)
+        CFPreferencesSynchronize(appID, kCFPreferencesCurrentUser, kCFPreferencesAnyHost)
 
-        // Restart cfprefsd so changes take effect without logout
-        let restart = Process()
-        restart.launchPath = "/usr/bin/killall"
-        restart.arguments = ["cfprefsd"]
-        try? restart.run()
+        // Force a system reload of symbolic hotkeys.
+        // We use AppleScript to gently ask SystemUIServer to restart,
+        // which forces the Hotkey manager to reload the plist without brutal shell kills.
+        let script = "tell application \"SystemUIServer\" to quit"
+        if let appleScript = NSAppleScript(source: script) {
+            appleScript.executeAndReturnError(nil)
+        }
     }
 
     /// Shows a one-time dialog offering to disable conflicting native shortcuts.
