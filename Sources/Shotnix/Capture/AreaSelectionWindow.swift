@@ -22,23 +22,30 @@ final class AreaSelectionWindow: NSObject {
 
     private var keyMonitor: Any?
 
-    func show() {
-        // LSUIElement apps have .prohibited activation policy — escalate to
-        // .accessory so activate() reliably grants key window status.
+    func prepareAndShow(engine: CaptureEngine) async {
         NSApp.setActivationPolicy(.accessory)
         NSApp.activate(ignoringOtherApps: true)
 
-        for screen in NSScreen.screens {
-            let overlay = SelectionOverlayWindow(screen: screen, mode: mode)
-            overlay.selectionHandler = { [weak self] rect in self?.finish(rect: rect, screen: screen) }
-            overlay.cancelHandler   = { [weak self] in self?.cancel() }
-            overlay.show()
-            overlays.append(overlay)
+        // Capture all screens concurrently for speed
+        await withTaskGroup(of: (NSScreen, CGImage?).self) { group in
+            for screen in NSScreen.screens {
+                group.addTask {
+                    let image = await engine.captureRectToImage(screen.frame, on: screen)
+                    var r = NSRect(origin: .zero, size: screen.frame.size)
+                    let cg = image?.cgImage(forProposedRect: &r, context: nil, hints: nil)
+                    return (screen, cg)
+                }
+            }
+            
+            for await (screen, frozenCG) in group {
+                let overlay = SelectionOverlayWindow(screen: screen, mode: self.mode, frozenImage: frozenCG)
+                overlay.selectionHandler = { [weak self] rect in self?.finish(rect: rect, screen: screen) }
+                overlay.cancelHandler   = { [weak self] in self?.cancel() }
+                overlay.show()
+                self.overlays.append(overlay)
+            }
         }
 
-        // Triple-focus: immediate + 50ms + 150ms to handle async activation timing.
-        // activate() is async and completion time varies — the deferred attempts
-        // catch the case where the first makeKey silently failed.
         focusFirstOverlay()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [weak self] in
             self?.focusFirstOverlay()
@@ -54,7 +61,6 @@ final class AreaSelectionWindow: NSObject {
 
         NSCursor.crosshair.push()
     }
-
     private func focusFirstOverlay() {
         guard !overlays.isEmpty, let first = overlays.first else { return }
         guard first.isVisible else { return }
@@ -100,10 +106,10 @@ private final class SelectionOverlayWindow: NSWindow {
     private let targetScreen: NSScreen
     private let mode: SelectionMode
 
-    init(screen: NSScreen, mode: SelectionMode) {
+    init(screen: NSScreen, mode: SelectionMode, frozenImage: CGImage?) {
         self.targetScreen = screen
         self.mode = mode
-        self.overlayView = SelectionOverlayView(mode: mode)
+        self.overlayView = SelectionOverlayView(mode: mode, frozenImage: frozenImage)
         super.init(
             contentRect: screen.frame,
             styleMask: [.borderless],
@@ -121,8 +127,6 @@ private final class SelectionOverlayWindow: NSWindow {
         overlayView.selectionHandler = { [weak self] rect in self?.selectionHandler?(rect) }
         overlayView.cancelHandler   = { [weak self] in self?.cancelHandler?() }
     }
-
-    // Borderless windows return false by default — must override or makeKey() is ignored
     override var canBecomeKey: Bool { true }
     override var canBecomeMain: Bool { true }
 
@@ -151,12 +155,16 @@ private final class SelectionOverlayView: NSView {
     private var highlightedWindowRect: NSRect?
     private var trackingArea: NSTrackingArea?
 
-    init(mode: SelectionMode) {
+    private let frozenImage: CGImage?
+
+    init(mode: SelectionMode, frozenImage: CGImage?) {
         self.mode = mode
+        self.frozenImage = frozenImage
         super.init(frame: .zero)
+        wantsLayer = true
+        layerContentsRedrawPolicy = .onSetNeedsDisplay
         updateTrackingArea()
     }
-
     required init?(coder: NSCoder) { fatalError() }
 
     override func updateTrackingAreas() {
@@ -205,8 +213,31 @@ private final class SelectionOverlayView: NSView {
             border.lineWidth = 1.5
             border.stroke()
 
-            drawMagnifier(near: currentRect)
-            drawSizeLabel(for: currentRect)
+            // Subtle rule-of-thirds grid for premium framing (like CleanShot X)
+            if currentRect.width > 50 && currentRect.height > 50 {
+                NSColor.white.withAlphaComponent(0.25).setStroke()
+                let grid = NSBezierPath()
+                let w3 = currentRect.width / 3
+                let h3 = currentRect.height / 3
+                grid.move(to: NSPoint(x: currentRect.minX + w3, y: currentRect.minY))
+                grid.line(to: NSPoint(x: currentRect.minX + w3, y: currentRect.maxY))
+                grid.move(to: NSPoint(x: currentRect.minX + w3 * 2, y: currentRect.minY))
+                grid.line(to: NSPoint(x: currentRect.minX + w3 * 2, y: currentRect.maxY))
+                grid.move(to: NSPoint(x: currentRect.minX, y: currentRect.minY + h3))
+                grid.line(to: NSPoint(x: currentRect.maxX, y: currentRect.minY + h3))
+                grid.move(to: NSPoint(x: currentRect.minX, y: currentRect.minY + h3 * 2))
+                grid.line(to: NSPoint(x: currentRect.maxX, y: currentRect.minY + h3 * 2))
+                grid.lineWidth = 1.0
+                grid.stroke()
+            }
+
+            drawCornerHandles(for: currentRect)
+            drawDimensionLabel(near: currentRect)
+            // No loupe during drag: CGWindowListCreateImage is a synchronous
+            // main-thread screen capture per frame, which trails behind the
+            // cursor and paints dark-circle artifacts along the drag path.
+            // Dimension label + corner handles are the more useful feedback
+            // while the rect is being sized, matching CleanShot X.
         } else if mode == .area {
             // Area mode, pre-drag: near-invisible tint so macOS hit-tests this
             // region and delivers mouseDown. Fully clear windows pass clicks through.
@@ -215,13 +246,191 @@ private final class SelectionOverlayView: NSView {
             if let pos = mousePosition {
                 drawCrosshair(at: pos)
                 drawCoordinateLabel(at: pos)
+                drawMagnifierLoupe(at: pos)
             }
         }
     }
 
-    private func drawMagnifier(near rect: NSRect) {
-        // Show pixel-accurate coordinates
-        let label = String(format: "%.0f × %.0f", rect.width, rect.height)
+    // MARK: – Magnifier Loupe
+
+    private func drawMagnifierLoupe(at point: NSPoint) {
+        guard let window = window else { return }
+        
+        // Convert cursor point to the AppKit screen coordinate space
+        let screenPoint = window.convertToScreen(NSRect(origin: point, size: .zero)).origin
+
+        // Capture region: 24x24 pixels around cursor
+        let captureSize: CGFloat = 24
+        
+        // Use the frozen screen image to get pixels instantly!
+        // The frozenImage is full-screen, top-left origin (CoreGraphics standard).
+        // screenPoint.y is AppKit bottom-left, so we must invert it to sample the CGImage.
+        let screenHeight = window.screen?.frame.height ?? bounds.height
+        let cgY = screenHeight - screenPoint.y
+        
+        let captureRect = CGRect(
+            x: screenPoint.x - captureSize / 2,
+            y: cgY - captureSize / 2,
+            width: captureSize,
+            height: captureSize
+        )
+
+        guard let cgImage = frozenImage?.cropping(to: captureRect) else { return }
+        let loupeSize: CGFloat = 120
+        let offset: CGFloat = 20
+
+        // Position: offset from cursor, flip to other side near edges
+        var loupeX = point.x + offset
+        var loupeY = point.y + offset
+        if loupeX + loupeSize > bounds.maxX - 10 {
+            loupeX = point.x - offset - loupeSize
+        }
+        if loupeY + loupeSize > bounds.maxY - 10 {
+            loupeY = point.y - offset - loupeSize
+        }
+
+        let loupeRect = NSRect(x: loupeX, y: loupeY, width: loupeSize, height: loupeSize)
+
+        guard let ctx = NSGraphicsContext.current?.cgContext else { return }
+        ctx.saveGState()
+
+        // Clip to circle
+        let clipPath = CGPath(ellipseIn: loupeRect, transform: nil)
+        ctx.addPath(clipPath)
+        ctx.clip()
+
+        // Dark background behind the magnified pixels
+        ctx.setFillColor(NSColor.black.withAlphaComponent(0.85).cgColor)
+        ctx.fill(loupeRect)
+
+        // Draw magnified image with nearest-neighbor interpolation for crisp pixels
+        ctx.interpolationQuality = .none
+        ctx.draw(cgImage, in: loupeRect)
+
+        // Pixel grid overlay
+        let pixelSize = loupeSize / captureSize
+        if pixelSize > 4 {
+            ctx.setStrokeColor(NSColor.white.withAlphaComponent(0.1).cgColor)
+            ctx.setLineWidth(0.5)
+            for i in 0...Int(captureSize) {
+                let x = loupeRect.minX + CGFloat(i) * pixelSize
+                ctx.move(to: CGPoint(x: x, y: loupeRect.minY))
+                ctx.addLine(to: CGPoint(x: x, y: loupeRect.maxY))
+                let y = loupeRect.minY + CGFloat(i) * pixelSize
+                ctx.move(to: CGPoint(x: loupeRect.minX, y: y))
+                ctx.addLine(to: CGPoint(x: loupeRect.maxX, y: y))
+            }
+            ctx.strokePath()
+        }
+
+        // Center crosshair
+        let cx = loupeRect.midX, cy = loupeRect.midY
+        ctx.setStrokeColor(NSColor.white.withAlphaComponent(0.8).cgColor)
+        ctx.setLineWidth(1.0)
+        ctx.move(to: CGPoint(x: cx - 6, y: cy))
+        ctx.addLine(to: CGPoint(x: cx + 6, y: cy))
+        ctx.move(to: CGPoint(x: cx, y: cy - 6))
+        ctx.addLine(to: CGPoint(x: cx, y: cy + 6))
+        ctx.strokePath()
+
+        ctx.restoreGState()
+
+        // Circular border (drawn outside the clip)
+        let borderPath = NSBezierPath(ovalIn: loupeRect.insetBy(dx: 0.75, dy: 0.75))
+        NSColor.white.withAlphaComponent(0.4).setStroke()
+        borderPath.lineWidth = 1.5
+        borderPath.stroke()
+
+        // Shadow ring for depth
+        let shadowPath = NSBezierPath(ovalIn: loupeRect.insetBy(dx: -1, dy: -1))
+        NSColor.black.withAlphaComponent(0.3).setStroke()
+        shadowPath.lineWidth = 2.0
+        shadowPath.stroke()
+
+        // Pixel color hex label below the loupe
+        drawColorLabel(for: cgImage, below: loupeRect)
+    }
+
+    private func drawColorLabel(for image: CGImage, below loupeRect: NSRect) {
+        // Sample the center pixel of the captured image
+        let w = image.width, h = image.height
+        guard w > 0, h > 0 else { return }
+        let centerX = w / 2, centerY = h / 2
+
+        guard let dataProvider = image.dataProvider,
+              let data = dataProvider.data,
+              let ptr = CFDataGetBytePtr(data) else { return }
+
+        let bytesPerRow = image.bytesPerRow
+        let bytesPerPixel = image.bitsPerPixel / 8
+        guard bytesPerPixel >= 3 else { return }
+
+        let offset = centerY * bytesPerRow + centerX * bytesPerPixel
+        guard offset + 2 < CFDataGetLength(data) else { return }
+
+        // Pixel order depends on bitmap info; most CG captures are BGRA or RGBA
+        let alphaInfo = image.alphaInfo
+        let byteOrder = image.bitmapInfo.intersection(.byteOrderMask)
+        let r: UInt8, g: UInt8, b: UInt8
+        if byteOrder == .byteOrder32Little {
+            // BGRA layout
+            b = ptr[offset]
+            g = ptr[offset + 1]
+            r = ptr[offset + 2]
+        } else {
+            // RGBA layout
+            r = ptr[offset]
+            g = ptr[offset + 1]
+            b = ptr[offset + 2]
+        }
+        _ = alphaInfo // silence unused warning
+
+        let hex = String(format: "#%02X%02X%02X", r, g, b)
+        let attrs: [NSAttributedString.Key: Any] = [
+            .font: NSFont.monospacedSystemFont(ofSize: 10, weight: .medium),
+            .foregroundColor: NSColor.white
+        ]
+        let str = NSAttributedString(string: hex, attributes: attrs)
+        let size = str.size()
+        let pillX = loupeRect.midX - (size.width + 12) / 2
+        let pillY = loupeRect.minY - size.height - 10
+        let pillRect = NSRect(x: pillX, y: pillY, width: size.width + 12, height: size.height + 6)
+
+        NSColor.black.withAlphaComponent(0.75).setFill()
+        NSBezierPath(roundedRect: pillRect, xRadius: 4, yRadius: 4).fill()
+        str.draw(at: NSPoint(x: pillX + 6, y: pillY + 3))
+    }
+
+    // MARK: – Corner Handles
+
+    private func drawCornerHandles(for rect: NSRect) {
+        let handleLen: CGFloat = 8
+        let handleWidth: CGFloat = 2.5
+        NSColor.white.setStroke()
+
+        let corners: [(NSPoint, [(CGFloat, CGFloat)])] = [
+            (NSPoint(x: rect.minX, y: rect.minY), [(0, handleLen), (handleLen, 0)]),
+            (NSPoint(x: rect.maxX, y: rect.minY), [(0, handleLen), (-handleLen, 0)]),
+            (NSPoint(x: rect.minX, y: rect.maxY), [(0, -handleLen), (handleLen, 0)]),
+            (NSPoint(x: rect.maxX, y: rect.maxY), [(0, -handleLen), (-handleLen, 0)]),
+        ]
+
+        for (origin, offsets) in corners {
+            let path = NSBezierPath()
+            path.lineWidth = handleWidth
+            path.lineCapStyle = .round
+            for (dx, dy) in offsets {
+                path.move(to: origin)
+                path.line(to: NSPoint(x: origin.x + dx, y: origin.y + dy))
+            }
+            path.stroke()
+        }
+    }
+
+    // MARK: – Dimension Label
+
+    private func drawDimensionLabel(near rect: NSRect) {
+        let label = String(format: "%.0f \u{00D7} %.0f", rect.width, rect.height)
         let attrs: [NSAttributedString.Key: Any] = [
             .font: NSFont.monospacedSystemFont(ofSize: 11, weight: .medium),
             .foregroundColor: NSColor.white
@@ -234,8 +443,6 @@ private final class SelectionOverlayView: NSView {
         NSBezierPath(roundedRect: bg, xRadius: 4, yRadius: 4).fill()
         str.draw(at: origin)
     }
-
-    private func drawSizeLabel(for rect: NSRect) { /* included above */ }
 
     private func drawCrosshair(at point: NSPoint) {
         guard let ctx = NSGraphicsContext.current?.cgContext else { return }
@@ -324,19 +531,34 @@ private final class SelectionOverlayView: NSView {
     override func mouseDragged(with event: NSEvent) {
         guard mode == .area, let start = startPoint else { return }
         let current = event.locationInWindow
+        let previousRect = currentRect
         currentRect = NSRect(
             x: min(start.x, current.x),
             y: min(start.y, current.y),
             width: abs(current.x - start.x),
             height: abs(current.y - start.y)
         )
-        setNeedsDisplay(bounds)
+
+        // First drag frame: pre-drag branch only painted a near-clear tint
+        // across the screen, so we need a full-screen redraw to establish the
+        // 0.3 dim everywhere and punch out the selection. After that, only
+        // the diff between old and new rects (plus margin for border, corner
+        // handles, and the dimension label above) actually changed — the rest
+        // of the dim region is already correct on the layer's backing store.
+        let margin: CGFloat = 32
+        if previousRect.isEmpty {
+            setNeedsDisplay(bounds)
+        } else {
+            setNeedsDisplay(previousRect.insetBy(dx: -margin, dy: -margin).intersection(bounds))
+            setNeedsDisplay(currentRect.insetBy(dx: -margin, dy: -margin).intersection(bounds))
+        }
     }
 
     override func mouseUp(with event: NSEvent) {
         guard mode == .area, isSelecting else { return }
         isSelecting = false
         if currentRect.width > 4 && currentRect.height > 4 {
+            NSHapticFeedbackManager.defaultPerformer.perform(.generic, performanceTime: .now)
             selectionHandler?(convertToScreen(currentRect))
         } else {
             // Tiny click / accidental tap — cancel cleanly; never leave overlay stuck
@@ -348,10 +570,42 @@ private final class SelectionOverlayView: NSView {
     override func mouseMoved(with event: NSEvent) {
         if mode == .window {
             highlightedWindowRect = windowRect(under: event.locationInWindow)
+            setNeedsDisplay(bounds)
         } else if mode == .area && !isSelecting {
+            // Invalidate every artifact we paint around the cursor at both
+            // the previous and new positions: crosshair strips (full-screen
+            // lines), the loupe (120px + shadow/border, flips left or right
+            // and up or down near screen edges), the hex color pill below
+            // the loupe, and the coordinate label offset from the cursor.
+            if let old = mousePosition {
+                invalidateCursorArtifacts(at: old)
+            }
             mousePosition = event.locationInWindow
+            invalidateCursorArtifacts(at: mousePosition!)
+        } else {
+            setNeedsDisplay(bounds)
         }
-        setNeedsDisplay(bounds)
+    }
+
+    /// Repaints the narrow crosshair strips plus a generous box around the
+    /// cursor that fully contains the loupe (on either side), the hex color
+    /// pill, and the coordinate label. Tuned so no leftover pixels trail the
+    /// pointer when the mouse moves fast.
+    private func invalidateCursorArtifacts(at point: NSPoint) {
+        // Crosshair lines span the whole view; invalidate a thin strip on each axis.
+        let strip: CGFloat = 4
+        setNeedsDisplay(NSRect(x: 0, y: point.y - strip / 2, width: bounds.width, height: strip))
+        setNeedsDisplay(NSRect(x: point.x - strip / 2, y: 0, width: strip, height: bounds.height))
+
+        // Loupe (120) + 20 offset + margin for shadow/border/pill/coord label in any quadrant.
+        let halo: CGFloat = 190
+        let haloRect = NSRect(
+            x: point.x - halo,
+            y: point.y - halo,
+            width: halo * 2,
+            height: halo * 2
+        ).intersection(bounds)
+        setNeedsDisplay(haloRect)
     }
 
     override func keyDown(with event: NSEvent) {

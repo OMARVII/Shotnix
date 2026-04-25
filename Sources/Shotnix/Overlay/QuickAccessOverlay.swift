@@ -35,10 +35,16 @@ private final class QuickAccessWindow: NSWindow {
         self.historyItem = historyItem
         self.historyManager = historyManager
 
+        // Fixed premium container — every capture renders at the same size so
+        // the overlay has a consistent, CleanShot-style visual presence
+        // regardless of whether the user grabbed a 4K fullscreen, a narrow
+        // banner, or a tall sidebar. The image inside is aspect-fit (letterboxed)
+        // so the full capture is always visible against the container's dark tint.
         let thumbW: CGFloat = 240
-        let aspect = image.size.height / max(image.size.width, 1)
-        let thumbH: CGFloat = min(thumbW * aspect, 160)
-        let progressH: CGFloat = 1.5
+        let thumbH: CGFloat = 150
+        // Use an integer value so the controls overlay placed above it sits on an integer pixel boundary
+        // This prevents CoreAnimation from subpixel blending straight edges against the frosted glass.
+        let progressH: CGFloat = 2.0
         let totalH = thumbH + progressH
 
         super.init(
@@ -178,7 +184,7 @@ private final class QuickAccessWindow: NSWindow {
         clipView.layer?.cornerCurve = .continuous
         clipView.layer?.masksToBounds = true
         // Subtle dark tint — frames content, visible at rounded corners and behind image
-        clipView.layer?.backgroundColor = NSColor.black.withAlphaComponent(0.08).cgColor
+        clipView.layer?.backgroundColor = ShotnixColors.overlayTint.cgColor
         container.addSubview(clipView)
 
         // White border — primary edge definition on light wallpapers (shadow handles dark)
@@ -187,17 +193,23 @@ private final class QuickAccessWindow: NSWindow {
         borderView.layer?.cornerRadius = 12
         borderView.layer?.cornerCurve = .continuous
         borderView.layer?.borderWidth = 1.5
-        borderView.layer?.borderColor = NSColor.white.withAlphaComponent(0.35).cgColor
+        borderView.layer?.borderColor = ShotnixColors.overlayBorder.cgColor
         container.addSubview(borderView)
 
-        // Draggable thumbnail — drag to Finder/apps, double-click to annotate
+        // Draggable thumbnail — drag to Finder/apps, double-click to annotate.
+        // Dark container fill goes on the thumb's own layer so letterbox bars
+        // read as a proper container without inserting an extra opaque subview
+        // that can interfere with hit-testing on the controls overlay above.
         let thumbFrame = NSRect(x: 0, y: progressH, width: thumbW, height: thumbH)
         let thumb = DraggableImageView(frame: thumbFrame)
         thumb.image = image
         thumb.imageScaling = .scaleNone
         thumb.wantsLayer = true
-        // Render via CALayer for crisp retina aspect-fill (no NSImageView resampling)
-        thumb.layer?.contentsGravity = .resizeAspectFill
+        thumb.layer?.backgroundColor = ShotnixColors.overlayContainerFill.cgColor
+        // resizeAspect letterboxes the image inside the fixed container so the
+        // full capture is visible with dark bars on the short axis — matches
+        // CleanShot X. resizeAspectFill was cropping content on wide captures.
+        thumb.layer?.contentsGravity = .resizeAspect
         thumb.layer?.contents = image.bestCGImage
         thumb.layer?.contentsScale = NSScreen.main?.backingScaleFactor ?? 2.0
         thumb.dragImage = image
@@ -243,7 +255,7 @@ private final class QuickAccessWindow: NSWindow {
             btn.layer?.contentsScale = screenScale
             btn.layer?.cornerRadius = cSize / 2
             btn.layer?.cornerCurve = .continuous
-            btn.layer?.backgroundColor = NSColor.white.withAlphaComponent(0.18).cgColor
+            btn.layer?.backgroundColor = ShotnixColors.cornerButtonBackground.cgColor
             controls.addSubview(btn)
         }
 
@@ -267,25 +279,21 @@ private final class QuickAccessWindow: NSWindow {
             ceil((title as NSString).size(withAttributes: pillAttrs).width) + pillPadding
         }
         let totalPillW = pillWidths.reduce(0, +) + CGFloat(pills.count - 1) * pillGap
-        let pillY = (thumbH - pillH) / 2
-        var pillCursorX = (thumbW - totalPillW) / 2
+        let pillY = round((thumbH - pillH) / 2)
+        var pillCursorX = round((thumbW - totalPillW) / 2)
 
         let retinaScale = NSScreen.main?.backingScaleFactor ?? 2.0
         for (i, (title, sel)) in pills.enumerated() {
             let pw = pillWidths[i]
-            let btn = OverlayPillButton(frame: NSRect(x: pillCursorX, y: pillY, width: pw, height: pillH))
-            btn.attributedTitle = NSAttributedString(string: title, attributes: pillAttrs)
-            btn.alignment = .center
-            btn.bezelStyle = .regularSquare
-            btn.isBordered = false
-            btn.target = self
-            btn.action = sel
-            btn.wantsLayer = true
-            btn.layer?.contentsScale = retinaScale
-            btn.layer?.cornerRadius = pillH / 2
-            btn.layer?.cornerCurve = .continuous
-            btn.layer?.backgroundColor = NSColor.white.withAlphaComponent(0.92).cgColor
-            controls.addSubview(btn)
+            let pill = OverlayPillView(frame: NSRect(x: pillCursorX, y: pillY, width: pw, height: pillH))
+            pill.attributedTitle = NSAttributedString(string: title, attributes: pillAttrs)
+            pill.target = self
+            pill.action = sel
+            pill.layer?.contentsScale = retinaScale
+            pill.layer?.cornerRadius = pillH / 2
+            pill.layer?.cornerCurve = .continuous
+            pill.layer?.backgroundColor = ShotnixColors.pillButtonBackground.cgColor
+            controls.addSubview(pill)
             pillCursorX += pw + pillGap
         }
 
@@ -298,7 +306,7 @@ private final class QuickAccessWindow: NSWindow {
         if timeout > 0 {
             let progressBg = NSView(frame: NSRect(x: 0, y: 0, width: thumbW, height: progressH))
             progressBg.wantsLayer = true
-            progressBg.layer?.backgroundColor = NSColor.black.withAlphaComponent(0.3).cgColor
+            progressBg.layer?.backgroundColor = ShotnixColors.progressBackground.cgColor
             clipView.addSubview(progressBg)
 
             let progressFill = NSView(frame: progressBg.bounds)
@@ -433,13 +441,23 @@ private final class QuickAccessWindow: NSWindow {
         isClosing = true
         dismissTimer?.invalidate()
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
             self?.forceCleanup()
         }
 
         NSAnimationContext.runAnimationGroup({ ctx in
-            ctx.duration = 0.2
+            ctx.duration = 0.12
             ctx.timingFunction = CAMediaTimingFunction(name: .easeIn)
+            
+            if let layer = self.contentView?.layer {
+                let scaleAnim = CABasicAnimation(keyPath: "transform.scale")
+                scaleAnim.toValue = 0.95
+                scaleAnim.duration = 0.12
+                scaleAnim.fillMode = .forwards
+                scaleAnim.isRemovedOnCompletion = false
+                layer.add(scaleAnim, forKey: "exitScale")
+            }
+            
             self.animator().alphaValue = 0
         }, completionHandler: { [weak self] in
             DispatchQueue.main.async { self?.forceCleanup() }
@@ -469,8 +487,11 @@ private final class QuickAccessWindow: NSWindow {
     }
 
     @objc private func saveAction() {
-        ImageExporter.saveWithPanel(image: image, suggestedName: ImageExporter.timestampedName)
-        animatedClose()
+        ImageExporter.saveWithPanel(image: image, suggestedName: ImageExporter.timestampedName) { [weak self] success in
+            if success {
+                self?.showConfirmation(icon: "arrow.down.circle") { [weak self] in self?.animatedClose() }
+            }
+        }
     }
 
     /// Flash a confirmation icon over the thumbnail before closing
@@ -490,13 +511,22 @@ private final class QuickAccessWindow: NSWindow {
         badge.layer?.cornerRadius = size / 2
         badge.layer?.cornerCurve = .continuous
         badge.alphaValue = 0
+        badge.layer?.transform = CATransform3DMakeScale(0.7, 0.7, 1)
         clip.addSubview(badge)
 
         NSAnimationContext.runAnimationGroup({ ctx in
-            ctx.duration = 0.15
+            ctx.duration = 0.12
+            ctx.timingFunction = CAMediaTimingFunction(name: .easeOut)
             badge.animator().alphaValue = 1
+            
+            let scaleAnim = CABasicAnimation(keyPath: "transform.scale")
+            scaleAnim.fromValue = 0.7
+            scaleAnim.toValue = 1.0
+            scaleAnim.duration = 0.12
+            badge.layer?.add(scaleAnim, forKey: "pop")
+            badge.layer?.transform = CATransform3DIdentity
         }, completionHandler: {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
                 completion()
             }
         })
@@ -513,9 +543,12 @@ private final class QuickAccessWindow: NSWindow {
 
     @objc private func pinAction() {
         skipPolicyReset = true
-        animatedClose()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [image] in
-            PinnedWindow.pin(image: image)
+        showConfirmation(icon: "pin") { [weak self] in
+            guard let self else { return }
+            self.animatedClose()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [image = self.image] in
+                PinnedWindow.pin(image: image)
+            }
         }
     }
 
@@ -624,6 +657,19 @@ private final class OverlayContentView: NSView {
 private final class OverlayCornerButton: NSButton {
 
     private var trackingArea: NSTrackingArea?
+    private var isHovered = false
+
+    // Let the first click land on the button even if the overlay window
+    // isn't key yet — otherwise the first click just activates the window
+    // and the user has to click twice for anything to happen.
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+
+    // Suppress the default AppKit focus-ring line that paints under the
+    // button when it becomes first responder.
+    override var focusRingType: NSFocusRingType {
+        get { .none }
+        set { _ = newValue }
+    }
 
     override func updateTrackingAreas() {
         super.updateTrackingAreas()
@@ -634,29 +680,90 @@ private final class OverlayCornerButton: NSButton {
     }
 
     override func mouseEntered(with event: NSEvent) {
-        layer?.backgroundColor = NSColor.white.withAlphaComponent(0.35).cgColor
+        isHovered = true
+        layer?.backgroundColor = ShotnixColors.cornerButtonHover.cgColor
     }
 
     override func mouseExited(with event: NSEvent) {
-        layer?.backgroundColor = NSColor.white.withAlphaComponent(0.18).cgColor
+        isHovered = false
+        layer?.backgroundColor = ShotnixColors.cornerButtonBackground.cgColor
+    }
+
+    override func mouseDown(with event: NSEvent) {
+        layer?.backgroundColor = ShotnixColors.cornerButtonPressed.cgColor
+        let scale = CATransform3DMakeScale(0.92, 0.92, 1)
+        layer?.transform = scale
+        NSHapticFeedbackManager.defaultPerformer.perform(.generic, performanceTime: .default)
+        super.mouseDown(with: event)
+    }
+
+    override func mouseUp(with event: NSEvent) {
+        let spring = CASpringAnimation(keyPath: "transform.scale")
+        spring.fromValue = 0.92
+        spring.toValue = 1.0
+        spring.mass = 1.0
+        spring.stiffness = 300
+        spring.damping = 15
+        spring.initialVelocity = 0
+        spring.duration = spring.settlingDuration
+        layer?.add(spring, forKey: "bounceBack")
+        layer?.transform = CATransform3DIdentity
+        layer?.backgroundColor = isHovered
+            ? ShotnixColors.cornerButtonHover.cgColor
+            : ShotnixColors.cornerButtonBackground.cgColor
+        super.mouseUp(with: event)
     }
 }
 
 // MARK: – Pill button (white capsule, primary action)
 
+/// NSView-based pill with an NSTextField label. Uses color-only pressed
+/// feedback — no CATransform3D scaling, which causes CoreAnimation to
+/// rasterize the layer tree and pixelate text glyphs during the transform.
 @MainActor
-private final class OverlayPillButton: NSButton {
+private final class OverlayPillView: NSView {
+
+    var attributedTitle: NSAttributedString? {
+        didSet {
+            label.attributedStringValue = attributedTitle ?? NSAttributedString()
+            needsLayout = true
+        }
+    }
+    
+    weak var target: AnyObject?
+    var action: Selector?
 
     private var trackingArea: NSTrackingArea?
+    private var isHovered = false
+    private var isPressed = false
+    
+    private let label: NSTextField
 
-    // Kill all default NSButton drawing — layer handles everything
-    override func draw(_ dirtyRect: NSRect) {
-        // Draw only the attributed title, centered
-        guard let title = attributedTitle as NSAttributedString? else { return }
-        let size = title.size()
-        let x = (bounds.width - size.width) / 2
-        let y = (bounds.height - size.height) / 2
-        title.draw(at: NSPoint(x: x, y: y))
+    override init(frame: NSRect) {
+        label = NSTextField(labelWithString: "")
+        super.init(frame: frame)
+        wantsLayer = true
+        
+        label.drawsBackground = false
+        label.isBezeled = false
+        label.isEditable = false
+        label.isSelectable = false
+        label.alignment = .center
+        addSubview(label)
+    }
+
+    required init?(coder: NSCoder) { fatalError() }
+
+    override var isFlipped: Bool { false }
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+
+    override func layout() {
+        super.layout()
+        label.sizeToFit()
+        let scale = window?.backingScaleFactor ?? 2.0
+        let x = round((bounds.width - label.bounds.width) / 2 * scale) / scale
+        let y = round((bounds.height - label.bounds.height) / 2 * scale) / scale
+        label.setFrameOrigin(NSPoint(x: x, y: y))
     }
 
     override func updateTrackingAreas() {
@@ -668,10 +775,38 @@ private final class OverlayPillButton: NSButton {
     }
 
     override func mouseEntered(with event: NSEvent) {
-        layer?.backgroundColor = NSColor.white.cgColor
+        isHovered = true
+        if !isPressed {
+            layer?.backgroundColor = ShotnixColors.pillButtonHover.cgColor
+        }
     }
 
     override func mouseExited(with event: NSEvent) {
-        layer?.backgroundColor = NSColor.white.withAlphaComponent(0.92).cgColor
+        isHovered = false
+        if !isPressed {
+            layer?.backgroundColor = ShotnixColors.pillButtonBackground.cgColor
+        }
+    }
+
+    override func mouseDown(with event: NSEvent) {
+        isPressed = true
+        // Color-only feedback: darken the pill, no scale transform.
+        // This keeps text rendered live by AppKit at native Retina resolution
+        // throughout the entire press cycle — zero pixelation, zero rasterization.
+        layer?.backgroundColor = ShotnixColors.pillButtonPressed.cgColor
+        NSHapticFeedbackManager.defaultPerformer.perform(.generic, performanceTime: .default)
+    }
+
+    override func mouseUp(with event: NSEvent) {
+        isPressed = false
+        layer?.backgroundColor = isHovered
+            ? ShotnixColors.pillButtonHover.cgColor
+            : ShotnixColors.pillButtonBackground.cgColor
+
+        // Fire target-action only if the mouse is still over us (iOS-style behaviour).
+        let point = convert(event.locationInWindow, from: nil)
+        if bounds.contains(point), let target = target, let action = action {
+            _ = NSApp.sendAction(action, to: target, from: self)
+        }
     }
 }

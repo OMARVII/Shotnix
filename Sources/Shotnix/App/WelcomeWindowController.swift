@@ -17,11 +17,12 @@ final class WelcomeWindowController: NSObject, NSWindowDelegate {
 
         let win = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: width, height: height),
-            styleMask: [.titled, .closable],
+            styleMask: [.titled, .closable, .fullSizeContentView],
             backing: .buffered,
             defer: false
         )
-        win.title = "Welcome to Shotnix"
+        win.titleVisibility = .hidden
+        win.titlebarAppearsTransparent = true
         win.center()
         win.isReleasedWhenClosed = false
         win.delegate = self
@@ -47,9 +48,7 @@ final class WelcomeWindowController: NSObject, NSWindowDelegate {
         // App icon
         let iconSize: CGFloat = 56
         let iconView = NSImageView(frame: NSRect(x: centerX - iconSize / 2, y: y - iconSize, width: iconSize, height: iconSize))
-        let config = NSImage.SymbolConfiguration(pointSize: 40, weight: .light)
-        iconView.image = NSImage(systemSymbolName: "camera.viewfinder", accessibilityDescription: "Shotnix")?.withSymbolConfiguration(config)
-        iconView.contentTintColor = .controlAccentColor
+        iconView.image = NSImage(named: "NSApplicationIcon")
         iconView.imageScaling = .scaleProportionallyUpOrDown
         container.addSubview(iconView)
         y -= iconSize + 8

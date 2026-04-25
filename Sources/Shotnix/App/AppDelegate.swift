@@ -27,7 +27,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         guard let button = statusItem.button else { return }
         let config = NSImage.SymbolConfiguration(pointSize: 14, weight: .medium, scale: .medium)
-        let icon = NSImage(systemSymbolName: "viewfinder", accessibilityDescription: "Shotnix")?
+        let icon = NSImage(systemSymbolName: "crop", accessibilityDescription: "Shotnix")?
             .withSymbolConfiguration(config)
         icon?.isTemplate = true
         button.image = icon
@@ -43,25 +43,26 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(.separator())
 
         menu.addItem(header: "Capture")
-        menu.addItem(title: "Capture Area",         key: "4", action: #selector(captureArea))
-        menu.addItem(title: "Capture Window",       key: "5", action: #selector(captureWindow))
-        menu.addItem(title: "Capture Fullscreen",   key: "6", action: #selector(captureFullscreen))
-        menu.addItem(title: "Capture Previous Area",key: "7",  action: #selector(capturePrevious))
-        menu.addItem(title: "Scrolling Capture",    key: "s",  action: #selector(captureScrolling))
+        menu.addItem(title: "Capture Area",         key: "4", action: #selector(captureArea), icon: "rectangle.dashed")
+        menu.addItem(title: "Capture Window",       key: "5", action: #selector(captureWindow), icon: "macwindow")
+        menu.addItem(title: "Capture Fullscreen",   key: "6", action: #selector(captureFullscreen), icon: "rectangle.on.rectangle")
+        menu.addItem(title: "Capture Previous Area",key: "7",  action: #selector(capturePrevious), icon: "arrow.counterclockwise.rectangle")
+        menu.addItem(title: "Scrolling Capture",    key: "s",  action: #selector(captureScrolling), icon: "scroll")
         menu.addItem(.separator())
 
         menu.addItem(header: "Tools")
-        menu.addItem(title: "Capture Text (OCR)",   key: "o",  action: #selector(captureText))
-        menu.addItem(title: "Open History",         key: "",  action: #selector(openHistory))
-        menu.addItem(title: "Annotate Last Screenshot", key: "", action: #selector(annotateLastScreenshot))
+        menu.addItem(title: "Capture Text (OCR)",   key: "o",  action: #selector(captureText), icon: "text.viewfinder")
+        menu.addItem(title: "Open History",         key: "",  action: #selector(openHistory), icon: "clock.arrow.circlepath")
+        menu.addItem(title: "Annotate Last Screenshot", key: "", action: #selector(annotateLastScreenshot), icon: "pencil.tip.crop.circle")
         menu.addItem(.separator())
 
         let hideIconsItem = NSMenuItem(title: "Hide Desktop Icons", action: #selector(toggleDesktopIcons), keyEquivalent: "")
         hideIconsItem.target = self
+        hideIconsItem.image = NSImage(systemSymbolName: "eye.slash", accessibilityDescription: nil)
         menu.addItem(hideIconsItem)
         menu.addItem(.separator())
 
-        menu.addItem(title: "Preferences…",         key: ",", action: #selector(openPreferences))
+        menu.addItem(title: "Preferences…",         key: ",", action: #selector(openPreferences), icon: "gearshape")
 
         let quit = NSMenuItem(title: "Quit Shotnix", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         menu.addItem(quit)
@@ -99,9 +100,14 @@ private extension NSMenu {
         addItem(item)
     }
 
-    func addItem(title: String, key: String, action: Selector) {
+    @discardableResult
+    func addItem(title: String, key: String, action: Selector, icon: String? = nil) -> NSMenuItem {
         let item = NSMenuItem(title: title, action: action, keyEquivalent: key)
         item.target = NSApp.delegate
+        if let iconName = icon {
+            item.image = NSImage(systemSymbolName: iconName, accessibilityDescription: nil)
+        }
         addItem(item)
+        return item
     }
 }

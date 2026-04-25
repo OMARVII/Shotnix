@@ -1,6 +1,6 @@
 import AppKit
 
-/// Floating panel showing all past captures as a scrollable grid.
+/// Floating panel showing all past captures in a grouped NSCollectionView.
 @MainActor
 final class HistoryPanelController: NSObject {
 
@@ -8,6 +8,17 @@ final class HistoryPanelController: NSObject {
 
     private var panel: NSPanel?
     private weak var historyManager: HistoryManager?
+    private var collectionView: NSCollectionView?
+    private var emptyOverlay: NSView?
+
+    private struct Section {
+        let title: String
+        let items: [HistoryItem]
+    }
+
+    private var sections: [Section] = []
+
+    // MARK: - Show / Hide
 
     func show(historyManager: HistoryManager) {
         self.historyManager = historyManager
@@ -15,10 +26,11 @@ final class HistoryPanelController: NSObject {
         NSApp.activate(ignoringOtherApps: true)
         if let existing = panel {
             existing.makeKeyAndOrderFront(nil)
-            reload()
+            buildSections()
+            collectionView?.reloadData()
+            updateEmptyState()
             return
         }
-        // Register for close notification to restore activation policy
         NotificationCenter.default.addObserver(
             self, selector: #selector(panelDidClose),
             name: NSWindow.willCloseNotification, object: nil
@@ -33,78 +45,174 @@ final class HistoryPanelController: NSObject {
         p.isFloatingPanel = true
         p.center()
         p.contentView = buildContent(historyManager: historyManager)
+        p.alphaValue = 0
         p.makeKeyAndOrderFront(nil)
+        NSAnimationContext.runAnimationGroup { ctx in
+            ctx.duration = 0.2
+            ctx.timingFunction = CAMediaTimingFunction(name: .easeOut)
+            p.animator().alphaValue = 1
+        }
         panel = p
     }
+
+    // MARK: - Content
 
     private func buildContent(historyManager: HistoryManager) -> NSView {
         let container = NSView(frame: NSRect(x: 0, y: 0, width: 600, height: 480))
 
         // Toolbar
+        let toolbar = NSView(frame: NSRect(x: 0, y: 448, width: 600, height: 32))
+        toolbar.autoresizingMask = [.width, .minYMargin]
+
         let clearBtn = NSButton(title: "Clear All", target: self, action: #selector(clearAll))
         clearBtn.bezelStyle = .rounded
-        clearBtn.frame = NSRect(x: 8, y: 448, width: 80, height: 24)
-        container.addSubview(clearBtn)
+        clearBtn.frame = NSRect(x: 8, y: 4, width: 80, height: 24)
+        toolbar.addSubview(clearBtn)
 
         let label = NSTextField(labelWithString: "Capture History")
         label.font = .boldSystemFont(ofSize: 13)
-        label.frame = NSRect(x: 100, y: 450, width: 400, height: 20)
+        label.frame = NSRect(x: 100, y: 6, width: 400, height: 20)
         label.alignment = .center
-        container.addSubview(label)
+        toolbar.addSubview(label)
+        container.addSubview(toolbar)
 
-        // Grid scroll view
-        let scroll = NSScrollView(frame: NSRect(x: 0, y: 0, width: 600, height: 440))
+        // Collection view
+        let layout = NSCollectionViewFlowLayout()
+        layout.itemSize = NSSize(width: 180, height: 220)
+        layout.minimumInteritemSpacing = 12
+        layout.minimumLineSpacing = 12
+        layout.sectionInset = NSEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
+        layout.headerReferenceSize = NSSize(width: 600, height: 32)
+
+        let cv = NSCollectionView()
+        cv.collectionViewLayout = layout
+        cv.register(
+            HistoryCollectionItem.self,
+            forItemWithIdentifier: HistoryCollectionItem.identifier
+        )
+        cv.register(
+            HistorySectionHeader.self,
+            forSupplementaryViewOfKind: NSCollectionView.elementKindSectionHeader,
+            withIdentifier: HistorySectionHeader.identifier
+        )
+        cv.dataSource = self
+        cv.delegate = self
+        cv.backgroundColors = [.clear]
+        cv.setDraggingSourceOperationMask(.copy, forLocal: false)
+
+        let scroll = NSScrollView(frame: NSRect(x: 0, y: 0, width: 600, height: 448))
+        scroll.documentView = cv
         scroll.hasVerticalScroller = true
         scroll.autohidesScrollers = true
-
-        let grid = buildGrid(historyManager: historyManager)
-        scroll.documentView = grid
+        scroll.autoresizingMask = [.width, .height]
         container.addSubview(scroll)
+
+        collectionView = cv
+
+        // Empty state overlay
+        let empty = buildEmptyOverlay(frame: scroll.frame)
+        empty.autoresizingMask = [.width, .height]
+        container.addSubview(empty)
+        emptyOverlay = empty
+
+        buildSections()
+        updateEmptyState()
 
         return container
     }
 
-    private func buildGrid(historyManager: HistoryManager) -> NSView {
-        let cols = 3
-        let thumbSize: CGFloat = 180
-        let padding: CGFloat = 12
-        let items = historyManager.items
-        let rows = max(1, Int(ceil(Double(items.count) / Double(cols))))
-        let totalH = CGFloat(rows) * (thumbSize + 40 + padding) + padding
+    private func buildEmptyOverlay(frame: NSRect) -> NSView {
+        let overlay = NSView(frame: frame)
 
-        let grid = NSView(frame: NSRect(x: 0, y: 0, width: 600, height: totalH))
+        let stack = NSView(frame: NSRect(x: 0, y: 0, width: 260, height: 100))
 
-        for (i, item) in items.enumerated() {
-            let col = i % cols
-            let row = i / cols
-            let x = padding + CGFloat(col) * (thumbSize + padding)
-            // In NSScrollView, y=0 is bottom; we want newest (index 0) at top
-            let y = totalH - (CGFloat(row + 1) * (thumbSize + 40 + padding))
+        let icon = NSImageView(frame: NSRect(x: 100, y: 52, width: 60, height: 48))
+        if let symbolImg = NSImage(systemSymbolName: "camera.viewfinder", accessibilityDescription: nil) {
+            let config = NSImage.SymbolConfiguration(pointSize: 40, weight: .light)
+            icon.image = symbolImg.withSymbolConfiguration(config)
+        }
+        icon.contentTintColor = .tertiaryLabelColor
+        stack.addSubview(icon)
 
-            let cell = HistoryCell(item: item, size: thumbSize, historyManager: historyManager)
-            cell.frame = NSRect(x: x, y: y, width: thumbSize, height: thumbSize + 40)
-            grid.addSubview(cell)
+        let title = NSTextField(labelWithString: "No captures yet")
+        title.font = .boldSystemFont(ofSize: 16)
+        title.textColor = .secondaryLabelColor
+        title.alignment = .center
+        title.frame = NSRect(x: 0, y: 24, width: 260, height: 22)
+        stack.addSubview(title)
+
+        let subtitle = NSTextField(labelWithString: "Press \u{2318}\u{21E7}4 to take your first screenshot")
+        subtitle.font = .systemFont(ofSize: 12)
+        subtitle.textColor = .tertiaryLabelColor
+        subtitle.alignment = .center
+        subtitle.frame = NSRect(x: 0, y: 0, width: 260, height: 18)
+        stack.addSubview(subtitle)
+
+        stack.frame.origin = NSPoint(
+            x: (frame.width - stack.frame.width) / 2,
+            y: (frame.height - stack.frame.height) / 2
+        )
+        stack.autoresizingMask = [.minXMargin, .maxXMargin, .minYMargin, .maxYMargin]
+        overlay.addSubview(stack)
+
+        return overlay
+    }
+
+    private func updateEmptyState() {
+        emptyOverlay?.isHidden = !sections.isEmpty
+    }
+
+    // MARK: - Sections
+
+    private func buildSections() {
+        guard let manager = historyManager else { sections = []; return }
+        let calendar = Calendar.current
+        var today: [HistoryItem] = []
+        var yesterday: [HistoryItem] = []
+        var thisWeek: [HistoryItem] = []
+        var older: [HistoryItem] = []
+
+        for item in manager.items {
+            if calendar.isDateInToday(item.createdAt) {
+                today.append(item)
+            } else if calendar.isDateInYesterday(item.createdAt) {
+                yesterday.append(item)
+            } else if let weekAgo = calendar.date(byAdding: .day, value: -7, to: Date()),
+                      item.createdAt > weekAgo {
+                thisWeek.append(item)
+            } else {
+                older.append(item)
+            }
         }
 
-        if items.isEmpty {
-            let empty = NSTextField(labelWithString: "No captures yet")
-            empty.textColor = .secondaryLabelColor
-            empty.alignment = .center
-            empty.frame = NSRect(x: 0, y: totalH/2 - 12, width: 600, height: 24)
-            grid.addSubview(empty)
-        }
+        sections = []
+        if !today.isEmpty { sections.append(Section(title: "Today", items: today)) }
+        if !yesterday.isEmpty { sections.append(Section(title: "Yesterday", items: yesterday)) }
+        if !thisWeek.isEmpty { sections.append(Section(title: "This Week", items: thisWeek)) }
+        if !older.isEmpty { sections.append(Section(title: "Older", items: older)) }
+    }
 
-        return grid
+    // MARK: - Reload
+
+    func reloadAfterDelete() {
+        buildSections()
+        collectionView?.reloadData()
+        updateEmptyState()
     }
 
     private func reload() {
-        guard let panel, let manager = historyManager else { return }
-        panel.contentView = buildContent(historyManager: manager)
+        buildSections()
+        collectionView?.reloadData()
+        updateEmptyState()
     }
+
+    // MARK: - Actions
 
     @objc private func panelDidClose(_ notification: Notification) {
         guard let closedWindow = notification.object as? NSWindow, closedWindow === panel else { return }
         panel = nil
+        collectionView = nil
+        emptyOverlay = nil
         NSApp.setActivationPolicy(.prohibited)
     }
 
@@ -120,75 +228,219 @@ final class HistoryPanelController: NSObject {
     }
 }
 
-// MARK: – History Cell
+// MARK: - NSCollectionViewDataSource
+
+extension HistoryPanelController: NSCollectionViewDataSource {
+
+    func numberOfSections(in collectionView: NSCollectionView) -> Int {
+        return max(sections.count, 1)
+    }
+
+    func collectionView(_ collectionView: NSCollectionView, numberOfItemsInSection section: Int) -> Int {
+        guard !sections.isEmpty else { return 0 }
+        return sections[section].items.count
+    }
+
+    func collectionView(
+        _ collectionView: NSCollectionView,
+        itemForRepresentedObjectAt indexPath: IndexPath
+    ) -> NSCollectionViewItem {
+        let cell = collectionView.makeItem(
+            withIdentifier: HistoryCollectionItem.identifier,
+            for: indexPath
+        ) as! HistoryCollectionItem
+        let historyItem = sections[indexPath.section].items[indexPath.item]
+        cell.configure(with: historyItem, historyManager: historyManager!)
+        return cell
+    }
+
+    func collectionView(
+        _ collectionView: NSCollectionView,
+        viewForSupplementaryElementOfKind kind: NSCollectionView.SupplementaryElementKind,
+        at indexPath: IndexPath
+    ) -> NSView {
+        let header = collectionView.makeSupplementaryView(
+            ofKind: kind,
+            withIdentifier: HistorySectionHeader.identifier,
+            for: indexPath
+        ) as! HistorySectionHeader
+        if !sections.isEmpty {
+            header.configure(title: sections[indexPath.section].title)
+        }
+        return header
+    }
+}
+
+// MARK: - NSCollectionViewDelegate + Drag
+
+extension HistoryPanelController: NSCollectionViewDelegate {
+
+    func collectionView(
+        _ collectionView: NSCollectionView,
+        pasteboardWriterForItemAt indexPath: IndexPath
+    ) -> (any NSPasteboardWriting)? {
+        guard !sections.isEmpty else { return nil }
+        let item = sections[indexPath.section].items[indexPath.item]
+        let url = URL(fileURLWithPath: item.imagePath) as NSURL
+        return url
+    }
+}
+
+// MARK: - Collection View Item
 
 @MainActor
-private final class HistoryCell: NSView {
+final class HistoryCollectionItem: NSCollectionViewItem {
 
-    private let item: HistoryItem
-    private let historyManager: HistoryManager
+    static let identifier = NSUserInterfaceItemIdentifier("HistoryCollectionItem")
 
-    init(item: HistoryItem, size: CGFloat, historyManager: HistoryManager) {
-        self.item = item
-        self.historyManager = historyManager
-        super.init(frame: .zero)
+    private var historyItem: HistoryItem?
+    private weak var historyManager: HistoryManager?
+    private var trackingArea: NSTrackingArea?
+    private let thumbView = NSImageView()
+    private let dateLabel = NSTextField(labelWithString: "")
+    private let copyBtn = NSButton(title: "Copy", target: nil, action: nil)
+    private let editBtn = NSButton(title: "Edit", target: nil, action: nil)
 
-        let thumb = NSImageView(frame: NSRect(x: 0, y: 40, width: size, height: size))
-        thumb.image = item.thumbnail
-        thumb.imageScaling = .scaleProportionallyUpOrDown
-        thumb.wantsLayer = true
-        thumb.layer?.cornerRadius = 6
-        thumb.layer?.masksToBounds = true
-        thumb.layer?.borderWidth = 1
-        thumb.layer?.borderColor = NSColor.separatorColor.cgColor
-        addSubview(thumb)
+    override func loadView() {
+        let container = NSView(frame: NSRect(x: 0, y: 0, width: 180, height: 220))
 
-        let dateStr = item.createdAt.formatted(date: .abbreviated, time: .shortened)
-        let label = NSTextField(labelWithString: dateStr)
-        label.font = .systemFont(ofSize: 10)
-        label.textColor = .secondaryLabelColor
-        label.alignment = .center
-        label.frame = NSRect(x: 0, y: 20, width: size, height: 16)
-        addSubview(label)
+        thumbView.frame = NSRect(x: 0, y: 40, width: 180, height: 180)
+        thumbView.imageScaling = .scaleProportionallyUpOrDown
+        thumbView.wantsLayer = true
+        thumbView.layer?.cornerRadius = 8
+        thumbView.layer?.cornerCurve = .continuous
+        thumbView.layer?.masksToBounds = true
+        thumbView.layer?.borderWidth = 1
+        thumbView.layer?.borderColor = NSColor.separatorColor.cgColor
+        container.addSubview(thumbView)
 
-        let copyBtn = NSButton(title: "Copy", target: self, action: #selector(copyImage))
+        dateLabel.font = .systemFont(ofSize: 10)
+        dateLabel.textColor = .secondaryLabelColor
+        dateLabel.alignment = .center
+        dateLabel.frame = NSRect(x: 0, y: 20, width: 180, height: 16)
+        container.addSubview(dateLabel)
+
         copyBtn.bezelStyle = .rounded
         copyBtn.font = .systemFont(ofSize: 10)
-        copyBtn.frame = NSRect(x: 0, y: 0, width: size/2 - 2, height: 18)
-        addSubview(copyBtn)
+        copyBtn.frame = NSRect(x: 0, y: 0, width: 86, height: 18)
+        copyBtn.target = self
+        copyBtn.action = #selector(copyImage)
+        container.addSubview(copyBtn)
 
-        let editBtn = NSButton(title: "Edit", target: self, action: #selector(editImage))
         editBtn.bezelStyle = .rounded
         editBtn.font = .systemFont(ofSize: 10)
-        editBtn.frame = NSRect(x: size/2 + 2, y: 0, width: size/2 - 2, height: 18)
-        addSubview(editBtn)
+        editBtn.frame = NSRect(x: 92, y: 0, width: 88, height: 18)
+        editBtn.target = self
+        editBtn.action = #selector(editImage)
+        container.addSubview(editBtn)
+
+        self.view = container
+    }
+
+    func configure(with item: HistoryItem, historyManager: HistoryManager) {
+        self.historyItem = item
+        self.historyManager = historyManager
+        thumbView.image = historyManager.cachedThumbnail(for: item) ?? item.thumbnail
+        dateLabel.stringValue = item.createdAt.formatted(date: .abbreviated, time: .shortened)
+        setupTracking()
+    }
+
+    // MARK: Hover
+
+    private func setupTracking() {
+        if let old = trackingArea { view.removeTrackingArea(old) }
+        let area = NSTrackingArea(
+            rect: view.bounds,
+            options: [.activeAlways, .mouseEnteredAndExited],
+            owner: self
+        )
+        view.addTrackingArea(area)
+        trackingArea = area
+    }
+
+    override func mouseEntered(with event: NSEvent) {
+        NSAnimationContext.runAnimationGroup { ctx in
+            ctx.duration = 0.15
+            thumbView.animator().layer?.transform = CATransform3DMakeScale(1.03, 1.03, 1)
+        }
+        thumbView.layer?.shadowColor = NSColor.black.cgColor
+        thumbView.layer?.shadowOpacity = 0.2
+        thumbView.layer?.shadowRadius = 8
+        thumbView.layer?.shadowOffset = CGSize(width: 0, height: -2)
+    }
+
+    override func mouseExited(with event: NSEvent) {
+        NSAnimationContext.runAnimationGroup { ctx in
+            ctx.duration = 0.2
+            thumbView.animator().layer?.transform = CATransform3DIdentity
+        }
+        thumbView.layer?.shadowOpacity = 0
+    }
+
+    // MARK: Context Menu
+
+    override func rightMouseDown(with event: NSEvent) {
+        guard historyItem != nil else { return }
+        let menu = NSMenu()
+        menu.addItem(NSMenuItem(title: "Copy", action: #selector(copyImage), keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: "Edit", action: #selector(editImage), keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: "Save As\u{2026}", action: #selector(saveImage), keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: "Pin to Screen", action: #selector(pinImage), keyEquivalent: ""))
+        menu.addItem(.separator())
+        menu.addItem(NSMenuItem(title: "Delete", action: #selector(deleteItem), keyEquivalent: ""))
+        for menuItem in menu.items { menuItem.target = self }
+        NSMenu.popUpContextMenu(menu, with: event, for: view)
+    }
+
+    // MARK: Actions
+
+    @objc private func copyImage() {
+        guard let item = historyItem else { return }
+        ImageExporter.copyToClipboard(image: item.fullImage)
+    }
+
+    @objc private func editImage() {
+        guard let item = historyItem, let manager = historyManager else { return }
+        AnnotationWindowController.open(image: item.fullImage, historyItem: item, historyManager: manager)
+    }
+
+    @objc private func saveImage() {
+        guard let item = historyItem else { return }
+        ImageExporter.saveWithPanel(image: item.fullImage, suggestedName: ImageExporter.timestampedName)
+    }
+
+    @objc private func pinImage() {
+        guard let item = historyItem else { return }
+        PinnedWindow.pin(image: item.fullImage)
+    }
+
+    @objc private func deleteItem() {
+        guard let item = historyItem, let manager = historyManager else { return }
+        manager.delete(item)
+        HistoryPanelController.shared.reloadAfterDelete()
+    }
+}
+
+// MARK: - Section Header
+
+@MainActor
+final class HistorySectionHeader: NSView, NSCollectionViewElement {
+
+    static let identifier = NSUserInterfaceItemIdentifier("HistorySectionHeader")
+
+    private let label = NSTextField(labelWithString: "")
+
+    override init(frame: NSRect) {
+        super.init(frame: frame)
+        label.font = .boldSystemFont(ofSize: 12)
+        label.textColor = .secondaryLabelColor
+        label.frame = NSRect(x: 16, y: 4, width: 300, height: 20)
+        addSubview(label)
     }
 
     required init?(coder: NSCoder) { fatalError() }
 
-    @objc private func copyImage() { ImageExporter.copyToClipboard(image: item.fullImage) }
-    @objc private func editImage() {
-        AnnotationWindowController.open(image: item.fullImage, historyItem: item, historyManager: historyManager)
-    }
-
-    override func rightMouseDown(with event: NSEvent) {
-        let menu = NSMenu()
-        menu.addItem(NSMenuItem(title: "Copy",         action: #selector(copyImage),  keyEquivalent: ""))
-        menu.addItem(NSMenuItem(title: "Edit",         action: #selector(editImage),  keyEquivalent: ""))
-        menu.addItem(NSMenuItem(title: "Save As…",     action: #selector(saveImage),  keyEquivalent: ""))
-        menu.addItem(NSMenuItem(title: "Pin to Screen",action: #selector(pinImage),   keyEquivalent: ""))
-        menu.addItem(.separator())
-        menu.addItem(NSMenuItem(title: "Delete",       action: #selector(deleteItem), keyEquivalent: ""))
-        for item in menu.items { item.target = self }
-        NSMenu.popUpContextMenu(menu, with: event, for: self)
-    }
-
-    @objc private func saveImage() {
-        ImageExporter.saveWithPanel(image: item.fullImage, suggestedName: ImageExporter.timestampedName)
-    }
-    @objc private func pinImage() { PinnedWindow.pin(image: item.fullImage) }
-    @objc private func deleteItem() {
-        historyManager.delete(item)
-        removeFromSuperview()
+    func configure(title: String) {
+        label.stringValue = title
     }
 }

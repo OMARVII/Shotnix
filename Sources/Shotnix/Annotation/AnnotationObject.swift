@@ -26,19 +26,19 @@ enum AnnotationTool: String, CaseIterable {
 
     var tooltip: String {
         switch self {
-        case .select:          return "Select"
-        case .arrow:           return "Arrow"
-        case .rectangle:       return "Rectangle"
-        case .filledRectangle: return "Filled Rectangle"
-        case .ellipse:         return "Ellipse"
-        case .line:            return "Line"
-        case .freehand:        return "Freehand Draw"
-        case .text:            return "Text"
-        case .numberedStep:    return "Numbered Steps"
-        case .highlighter:     return "Highlighter"
-        case .blur:            return "Blur"
-        case .pixelate:        return "Pixelate"
-        case .crop:            return "Crop"
+        case .select:          return "Select (V)"
+        case .arrow:           return "Arrow (A)"
+        case .rectangle:       return "Rectangle (R)"
+        case .filledRectangle: return "Filled Rectangle (\u{21E7}R)"
+        case .ellipse:         return "Ellipse (E)"
+        case .line:            return "Line (L)"
+        case .freehand:        return "Freehand Draw (D)"
+        case .text:            return "Text (T)"
+        case .numberedStep:    return "Numbered Steps (N)"
+        case .highlighter:     return "Highlighter (H)"
+        case .blur:            return "Blur (B)"
+        case .pixelate:        return "Pixelate (P)"
+        case .crop:            return "Crop (C)"
         }
     }
 }
@@ -325,6 +325,8 @@ final class BlurAnnotation: AnnotationObject {
     var isSelected = false
     var rect: CGRect
     var radius: Double = 12
+    var cachedRender: NSImage?
+    var cachedRect: CGRect = .zero
 
     init(rect: CGRect) { self.rect = rect }
 
@@ -347,6 +349,8 @@ final class PixelateAnnotation: AnnotationObject {
     var isSelected = false
     var rect: CGRect
     var scale: Double = 10
+    var cachedRender: NSImage?
+    var cachedRect: CGRect = .zero
 
     init(rect: CGRect) { self.rect = rect }
 
