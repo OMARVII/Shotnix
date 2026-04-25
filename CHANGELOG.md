@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.9.5-beta] - 2026-04-25
+
+### Added
+- **Premium branding** — new app icon, menu bar icon, and first-launch welcome screen
+- **Adaptive colors** — new `AdaptiveColors` utility for light/dark-aware UI tokens
+- **Haptic feedback** — overlay and capture interactions emit subtle haptics on supported trackpads
+
+### Changed
+- **Overlay animations** — snappier spring curves and pixel-perfect button alignment
+- **Preferences UI** — fully modernized window controller, leaner code, cleaner layout
+- **Capture engine** — refactored area/window selection and scrolling capture for clarity and stability
+- **History panel** — refined controller and manager (better persistence, smoother grid)
+- **Annotation editor** — polished toolbar interactions and window chrome
+
+### Refactored
+- **Native macOS APIs** — replaced legacy shell `Process()` calls with native equivalents
+- Removed legacy `make-icon.swift` (icon now ships pre-generated under `Branding/`)
+
+## [0.9.4-beta] - 2026-04-14
+
+### Added
+- **Numbered step counter annotation** — click-to-place incrementing numbered circles for tutorials and walkthroughs
+- `NumberedStepAnnotation` with filled circle, white border, shadow, and centered bold number
+- Auto-incrementing via scan of existing steps (`max + 1`); survives undo/redo/delete
+- Cached text layout for draw performance
+- SF Symbol toolbar icon (`1.circle.fill`) with forgiving circular hit testing
+
 ## [0.9.3-beta] - 2026-04-14
 
 ### Fixed

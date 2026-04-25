@@ -15,7 +15,7 @@
 ---
 
 > [!NOTE]
-> **Shotnix is in beta (v0.9.3).** It's fully functional but not yet notarized through Apple's Developer Program, so macOS will show a Gatekeeper warning on first launch. This is standard for open-source apps — Shotnix is safe and the source code is right here. Notarization is on the roadmap.
+> **Shotnix is in beta (v0.9.5).** It's fully functional but not yet notarized through Apple's Developer Program, so macOS will show a Gatekeeper warning on first launch. This is standard for open-source apps — Shotnix is safe and the source code is right here. Notarization is on the roadmap.
 >
 > To open: **Right-click → Open → Open** (macOS 13–14) or **System Settings → Privacy & Security → Open Anyway** (macOS 15+).
 
@@ -158,6 +158,11 @@ That's it. One dependency.
 - [x] After-capture auto-actions
 - [x] Premium overlay redesign (hover controls, spring animations, swipe-to-dismiss)
 - [x] Clean annotation toolbar (contextual buttons, centered canvas, dark editor background)
+- [x] Numbered step counter annotation tool
+- [x] Premium branding (app icon, menu bar icon, welcome screen)
+- [x] Modernized preferences UI and capture engine
+- [x] Snappy overlay animations + haptic feedback + pixel-perfect buttons
+- [x] Native macOS APIs (replaced legacy shell `Process()` calls)
 - [ ] Customizable hotkeys
 - [ ] Window capture with shadow and padding
 - [ ] Delay/timer capture (3s, 5s, 10s)
