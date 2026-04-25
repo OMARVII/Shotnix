@@ -19,16 +19,19 @@ final class HistoryManager: ObservableObject {
     }
 
     // MARK: – Add
+    //
+    // Two-phase insert: the HistoryItem is returned synchronously so the UI
+    // (overlay, auto-copy, auto-save) unblocks immediately. PNG encoding,
+    // thumbnail generation, xattr metadata and JSON index write all happen on
+    // a detached background Task. We prime HistoryImageCache with the
+    // in-memory NSImage so any call to `item.fullImage` / `item.thumbnail`
+    // before the disk write finishes serves from memory.
 
     @discardableResult
     func add(image: NSImage, rect: CGRect?) -> HistoryItem {
         let id = UUID()
         let imagePath = storageDir.appendingPathComponent("\(id.uuidString).png").path
         let thumbPath = storageDir.appendingPathComponent("\(id.uuidString)_thumb.png").path
-
-        saveImage(image, to: imagePath, size: nil)
-        saveImage(image, to: thumbPath, size: CGSize(width: 240, height: 240))
-        HistoryManager.applyScreenshotMetadata(to: imagePath, rect: rect)
 
         let item = HistoryItem(
             id: id,
@@ -38,63 +41,154 @@ final class HistoryManager: ObservableObject {
             captureRect: rect.map(CodableRect.init)
         )
         items.insert(item, at: 0)
-        persist()
+
+        // Serve the full image from memory until the disk write lands.
+        HistoryImageCache.primeFull(image, for: imagePath)
+        // Stand-in thumbnail: the full image scales down fine in NSImageView
+        // until the real thumbnail is generated. Cheap perceptual win.
+        HistoryImageCache.primeThumbnail(image, for: thumbPath)
+
+        Task.detached(priority: .userInitiated) { [weak self] in
+            Self.encodeAndPersist(
+                image: image,
+                imagePath: imagePath,
+                thumbPath: thumbPath,
+                rect: rect,
+                manager: self
+            )
+        }
         return item
+    }
+
+    /// Called from the detached encode task once the index needs to be written.
+    /// Runs on the main actor because it reads `items`, which is actor-isolated.
+    func persistCurrentIndex() {
+        let snapshot = items
+        let url = indexURL
+        Task.detached(priority: .utility) { Self.persist(items: snapshot, to: url) }
+    }
+
+    // MARK: – Thumbnail access (UI convenience)
+
+    func cachedThumbnail(for item: HistoryItem) -> NSImage? {
+        HistoryImageCache.thumbnail(for: item.thumbnailPath)
     }
 
     // MARK: – Delete
 
     func delete(_ item: HistoryItem) {
         items.removeAll { $0.id == item.id }
-        try? FileManager.default.removeItem(atPath: item.imagePath)
-        try? FileManager.default.removeItem(atPath: item.thumbnailPath)
-        persist()
+        HistoryImageCache.evict(fullPath: item.imagePath, thumbnailPath: item.thumbnailPath)
+        let imgPath = item.imagePath
+        let thumbPath = item.thumbnailPath
+        let indexURL = self.indexURL
+        let snapshot = self.items
+        Task.detached(priority: .utility) {
+            try? FileManager.default.removeItem(atPath: imgPath)
+            try? FileManager.default.removeItem(atPath: thumbPath)
+            Self.persist(items: snapshot, to: indexURL)
+        }
     }
 
     func deleteAll() {
-        items.forEach {
-            try? FileManager.default.removeItem(atPath: $0.imagePath)
-            try? FileManager.default.removeItem(atPath: $0.thumbnailPath)
-        }
+        let removed = items
         items.removeAll()
-        persist()
+        HistoryImageCache.evictAll()
+        let indexURL = self.indexURL
+        Task.detached(priority: .utility) {
+            removed.forEach {
+                try? FileManager.default.removeItem(atPath: $0.imagePath)
+                try? FileManager.default.removeItem(atPath: $0.thumbnailPath)
+            }
+            Self.persist(items: [], to: indexURL)
+        }
     }
 
     // MARK: – Persistence
-
-    private func persist() {
-        do {
-            let data = try JSONEncoder().encode(items)
-            try data.write(to: indexURL, options: .atomic)
-        } catch {
-            // Encoding/write failed — do NOT overwrite existing index with empty data
-            print("[Shotnix] History persist failed: \(error)")
-        }
-    }
 
     private func load() {
         guard FileManager.default.fileExists(atPath: indexURL.path) else { return }
         do {
             let data = try Data(contentsOf: indexURL)
             let decoded = try JSONDecoder().decode([HistoryItem].self, from: data)
-            // Filter out items whose files no longer exist on disk
             items = decoded.filter { FileManager.default.fileExists(atPath: $0.imagePath) }
         } catch {
             print("[Shotnix] History index corrupted, starting fresh: \(error)")
-            // Don't overwrite — the corrupt file may be recoverable manually
+            // Don't overwrite — the corrupt file may be recoverable manually.
         }
     }
 
-    // MARK: – Image saving
-
-    private func saveImage(_ image: NSImage, to path: String, size: CGSize?) {
-        let source = size != nil ? image.resizedForThumbnail(to: size!) : image
-        guard let png = ImageExporter.pngData(from: source) else { return }
+    nonisolated private static func persist(items: [HistoryItem], to indexURL: URL) {
         do {
-            try png.write(to: URL(fileURLWithPath: path))
+            let data = try JSONEncoder().encode(items)
+            try data.write(to: indexURL, options: .atomic)
         } catch {
-            print("[Shotnix] Failed to write image to \(path): \(error)")
+            print("[Shotnix] History persist failed: \(error)")
         }
+    }
+
+    // MARK: – Encode + persist (off-main)
+    //
+    // Runs on a detached background Task. Does the expensive PNG encode, the
+    // thumbnail downsample + encode, xattr metadata, and JSON index write —
+    // none of which need the main actor. Once the files are on disk, we
+    // reach back to the main actor to prime the thumbnail cache with the
+    // downsampled version so the history grid picks it up.
+
+    nonisolated private static func encodeAndPersist(
+        image: NSImage,
+        imagePath: String,
+        thumbPath: String,
+        rect: CGRect?,
+        manager: HistoryManager?
+    ) {
+        guard let fullCG = image.bestCGImage else { return }
+
+        if let pngFull = ImageExporter.pngData(from: fullCG) {
+            try? pngFull.write(to: URL(fileURLWithPath: imagePath))
+            applyScreenshotMetadata(to: imagePath, rect: rect)
+        }
+
+        // Thumbnail via CoreGraphics (thread-safe, ~2–3× faster than lockFocus).
+        if let thumbCG = downsample(cg: fullCG, maxDimension: 240),
+           let pngThumb = ImageExporter.pngData(from: thumbCG) {
+            try? pngThumb.write(to: URL(fileURLWithPath: thumbPath))
+
+            let logicalSize = NSSize(width: thumbCG.width, height: thumbCG.height)
+            let thumbImage = CaptureEngine.nsImage(from: thumbCG, logicalSize: logicalSize)
+            Task { @MainActor in
+                HistoryImageCache.primeThumbnail(thumbImage, for: thumbPath)
+            }
+        }
+
+        Task { @MainActor in
+            manager?.persistCurrentIndex()
+        }
+    }
+
+    /// Downsample a CGImage so its longest edge is `maxDimension` points.
+    /// Returns the input unchanged if it already fits.
+    nonisolated private static func downsample(cg: CGImage, maxDimension: CGFloat) -> CGImage? {
+        let w = CGFloat(cg.width)
+        let h = CGFloat(cg.height)
+        let longest = max(w, h)
+        guard longest > maxDimension else { return cg }
+        let scale = maxDimension / longest
+        let newW = max(1, Int((w * scale).rounded()))
+        let newH = max(1, Int((h * scale).rounded()))
+        let colorSpace = cg.colorSpace ?? CGColorSpaceCreateDeviceRGB()
+        guard let ctx = CGContext(
+            data: nil,
+            width: newW,
+            height: newH,
+            bitsPerComponent: 8,
+            bytesPerRow: 0,
+            space: colorSpace,
+            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+        ) else { return nil }
+        ctx.interpolationQuality = .high
+        ctx.draw(cg, in: CGRect(x: 0, y: 0, width: newW, height: newH))
+        return ctx.makeImage()
     }
 
     // MARK: – Screenshot metadata
@@ -134,15 +228,3 @@ final class HistoryManager: ObservableObject {
     }
 }
 
-private extension NSImage {
-    func resizedForThumbnail(to maxSize: CGSize) -> NSImage {
-        let scale = min(maxSize.width / size.width, maxSize.height / size.height, 1)
-        let newSize = CGSize(width: round(size.width * scale), height: round(size.height * scale))
-        let result = NSImage(size: newSize)
-        result.lockFocus()
-        NSGraphicsContext.current?.imageInterpolation = .high
-        draw(in: CGRect(origin: .zero, size: newSize))
-        result.unlockFocus()
-        return result
-    }
-}

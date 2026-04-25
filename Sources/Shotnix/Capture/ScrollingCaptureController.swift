@@ -22,7 +22,7 @@ final class ScrollingCaptureController: NSObject {
             self.captureScreen = screen
             self.beginScrollingPhase(historyManager: historyManager)
         }
-        selectionWindow?.show()
+        await selectionWindow?.prepareAndShow(engine: CaptureEngine())
     }
 
     private func beginScrollingPhase(historyManager: HistoryManager) {
@@ -50,6 +50,7 @@ final class ScrollingCaptureController: NSObject {
         Task {
             if let img = await captureEngine.captureRectToImage(rect, on: screen) {
                 self.frames.append(img)
+                self.statusWindow?.updateCount(self.frames.count)
             }
         }
     }
@@ -62,22 +63,28 @@ final class ScrollingCaptureController: NSObject {
         statusWindow = nil
 
         guard !frames.isEmpty else { return }
-        let stitched = FrameStitcher.stitch(frames: frames)
-        let item = historyManager.add(image: stitched, rect: captureRect ?? .zero)
+        let framesToStitch = frames
+        let rect = captureRect ?? .zero
+        Task.detached(priority: .userInitiated) {
+            let stitched = FrameStitcher.stitch(frames: framesToStitch)
+            await MainActor.run { [weak self] in
+                guard self != nil else { return }
+                let item = historyManager.add(image: stitched, rect: rect)
 
-        // Respect after-capture auto-actions (same as CaptureEngine.captureRect)
-        if Settings.afterCaptureCopyToClipboard {
-            ImageExporter.copyToClipboard(image: stitched)
-        }
-        if Settings.afterCaptureSaveAutomatically {
-            let dir = Settings.autoSaveLocation
-            let name = ImageExporter.timestampedName
-            let ext = Settings.screenshotFormat
-            let url = URL(fileURLWithPath: dir).appendingPathComponent("\(name).\(ext)")
-            ImageExporter.save(image: stitched, to: url)
-        }
-        if Settings.afterCaptureShowOverlay {
-            QuickAccessOverlay.show(image: stitched, historyItem: item, historyManager: historyManager)
+                if Settings.afterCaptureCopyToClipboard {
+                    ImageExporter.copyToClipboard(image: stitched)
+                }
+                if Settings.afterCaptureSaveAutomatically {
+                    let dir = Settings.autoSaveLocation
+                    let name = ImageExporter.timestampedName
+                    let ext = Settings.screenshotFormat
+                    let url = URL(fileURLWithPath: dir).appendingPathComponent("\(name).\(ext)")
+                    ImageExporter.save(image: stitched, to: url)
+                }
+                if Settings.afterCaptureShowOverlay {
+                    QuickAccessOverlay.show(image: stitched, historyItem: item, historyManager: historyManager)
+                }
+            }
         }
     }
 }
@@ -108,10 +115,13 @@ enum FrameStitcher {
 
         for i in 1..<frames.count {
             guard let rep = bitmapRep(from: frames[i]) else { continue }
-            // Simple dedup: skip frame if identical to previous
             if let prev = uniqueFrames.last,
-               rep.representation(using: .png, properties: [:]) == prev.representation(using: .png, properties: [:]) {
-                continue
+               rep.pixelsWide == prev.pixelsWide,
+               rep.pixelsHigh == prev.pixelsHigh,
+               let d1 = rep.bitmapData,
+               let d2 = prev.bitmapData {
+                let byteCount = rep.bytesPerRow * rep.pixelsHigh
+                if memcmp(d1, d2, byteCount) == 0 { continue }
             }
             uniqueFrames.append(rep)
         }
@@ -153,9 +163,10 @@ enum FrameStitcher {
 private final class ScrollingStatusWindow: NSWindow {
 
     var stopHandler: (() -> Void)?
+    private let countLabel = NSTextField(labelWithString: "0 frames")
 
     init() {
-        super.init(contentRect: NSRect(x: 0, y: 0, width: 200, height: 44),
+        super.init(contentRect: NSRect(x: 0, y: 0, width: 260, height: 44),
                    styleMask: [.borderless], backing: .buffered, defer: false)
         isOpaque = false
         backgroundColor = .clear
@@ -170,18 +181,29 @@ private final class ScrollingStatusWindow: NSWindow {
         view.wantsLayer = true
         view.layer?.cornerRadius = 10
         view.layer?.masksToBounds = true
+        view.autoresizingMask = [.width, .height]
         contentView.addSubview(view)
 
         let label = NSTextField(labelWithString: "Scroll to capture…")
         label.font = .systemFont(ofSize: 12)
         label.textColor = .labelColor
-        label.frame = NSRect(x: 12, y: 12, width: 120, height: 20)
+        label.frame = NSRect(x: 12, y: 12, width: 110, height: 20)
         view.addSubview(label)
+
+        countLabel.font = .monospacedDigitSystemFont(ofSize: 11, weight: .medium)
+        countLabel.textColor = .secondaryLabelColor
+        countLabel.alignment = .center
+        countLabel.frame = NSRect(x: 122, y: 12, width: 64, height: 20)
+        view.addSubview(countLabel)
 
         let btn = NSButton(title: "Done", target: self, action: #selector(stopTapped))
         btn.bezelStyle = .rounded
-        btn.frame = NSRect(x: 136, y: 8, width: 56, height: 28)
+        btn.frame = NSRect(x: 192, y: 8, width: 56, height: 28)
         view.addSubview(btn)
+    }
+
+    func updateCount(_ count: Int) {
+        countLabel.stringValue = "\(count) frame\(count == 1 ? "" : "s")"
     }
 
     func show(near point: CGPoint) {

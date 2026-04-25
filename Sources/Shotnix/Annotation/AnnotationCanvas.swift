@@ -10,9 +10,16 @@ final class AnnotationCanvas: NSView {
     var backgroundImage: NSImage?
     var objects: [any AnnotationObject] = []
     var selectedObjects: [any AnnotationObject] = []
-    var activeTool: AnnotationTool = .arrow
+    var activeTool: AnnotationTool = .arrow {
+        didSet {
+            window?.invalidateCursorRects(for: self)
+            onToolChanged?(activeTool)
+        }
+    }
     var activeColor: NSColor = .systemRed
     var activeLineWidth: CGFloat = 3
+
+    var onToolChanged: ((AnnotationTool) -> Void)?
 
     // Undo/redo managed via undoSnapshots/redoSnapshots below
 
@@ -38,6 +45,22 @@ final class AnnotationCanvas: NSView {
 
     override var acceptsFirstResponder: Bool { true }
     override var isFlipped: Bool { true } // Easier coordinate math (top-left origin)
+
+    // MARK: - Cursor Management
+
+    override func resetCursorRects() {
+        discardCursorRects()
+        let cursor: NSCursor
+        switch activeTool {
+        case .select:                                      cursor = .arrow
+        case .arrow, .rectangle, .filledRectangle, .ellipse: cursor = .crosshair
+        case .line, .freehand, .highlighter:               cursor = .crosshair
+        case .text:                                        cursor = .iBeam
+        case .numberedStep:                                cursor = .pointingHand
+        case .blur, .pixelate, .crop:                      cursor = .crosshair
+        }
+        addCursorRect(bounds, cursor: cursor)
+    }
 
     // MARK: – Drawing
 
@@ -91,6 +114,10 @@ final class AnnotationCanvas: NSView {
     }
 
     private func drawBlur(_ blur: BlurAnnotation, ctx: CGContext) {
+        if blur.rect == blur.cachedRect, let cached = blur.cachedRender {
+            cached.draw(in: blur.rect)
+            return
+        }
         guard let bg = backgroundImage, let cgImg = bg.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return }
         let imgSize = CGSize(width: cgImg.width, height: cgImg.height)
         let cropRect = viewRectToCGImageRect(blur.rect, imageSize: imgSize)
@@ -100,15 +127,20 @@ final class AnnotationCanvas: NSView {
         filter.setValue(ci, forKey: kCIInputImageKey)
         filter.setValue(blur.radius, forKey: kCIInputRadiusKey)
         guard let output = filter.outputImage else { return }
-        // Clamp to avoid infinite extent
         let clamped = output.cropped(to: ci.extent)
         let rep = NSCIImageRep(ciImage: clamped)
         let result = NSImage(size: blur.rect.size)
         result.addRepresentation(rep)
         result.draw(in: blur.rect)
+        blur.cachedRender = result
+        blur.cachedRect = blur.rect
     }
 
     private func drawPixelate(_ px: PixelateAnnotation, ctx: CGContext) {
+        if px.rect == px.cachedRect, let cached = px.cachedRender {
+            cached.draw(in: px.rect)
+            return
+        }
         guard let bg = backgroundImage, let cgImg = bg.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return }
         let imgSize = CGSize(width: cgImg.width, height: cgImg.height)
         let cropRect = viewRectToCGImageRect(px.rect, imageSize: imgSize)
@@ -123,16 +155,48 @@ final class AnnotationCanvas: NSView {
         let result = NSImage(size: px.rect.size)
         result.addRepresentation(rep)
         result.draw(in: px.rect)
+        px.cachedRender = result
+        px.cachedRect = px.rect
     }
 
     private func drawSelectionHandle(for obj: any AnnotationObject, ctx: CGContext) {
-        let r = obj.bounds.insetBy(dx: -4, dy: -4)
+        let inset: CGFloat = 4
+        let expanded = obj.bounds.insetBy(dx: -inset, dy: -inset)
+
         ctx.saveGState()
+
+        // Dashed selection border
         ctx.setStrokeColor(NSColor.systemBlue.cgColor)
-        ctx.setLineWidth(1.5)
-        ctx.setLineDash(phase: 0, lengths: [4, 3])
-        ctx.stroke(r)
+        ctx.setLineWidth(1.0)
+        ctx.setLineDash(phase: 0, lengths: [4, 4])
+        ctx.stroke(expanded)
+        ctx.setLineDash(phase: 0, lengths: [])
+
+        // 8 resize handles (corners + midpoints)
+        let handleSize: CGFloat = 8
+        for handleRect in resizeHandleRects(for: expanded, size: handleSize) {
+            ctx.setFillColor(NSColor.white.cgColor)
+            ctx.fill(handleRect)
+            ctx.setStrokeColor(NSColor.systemBlue.cgColor)
+            ctx.setLineWidth(1.0)
+            ctx.stroke(handleRect)
+        }
+
         ctx.restoreGState()
+    }
+
+    private func resizeHandleRects(for rect: CGRect, size: CGFloat) -> [CGRect] {
+        let hs = size / 2
+        return [
+            CGRect(x: rect.minX - hs, y: rect.minY - hs, width: size, height: size),  // top-left (flipped)
+            CGRect(x: rect.midX - hs, y: rect.minY - hs, width: size, height: size),  // top-center
+            CGRect(x: rect.maxX - hs, y: rect.minY - hs, width: size, height: size),  // top-right
+            CGRect(x: rect.minX - hs, y: rect.midY - hs, width: size, height: size),  // left-center
+            CGRect(x: rect.maxX - hs, y: rect.midY - hs, width: size, height: size),  // right-center
+            CGRect(x: rect.minX - hs, y: rect.maxY - hs, width: size, height: size),  // bottom-left
+            CGRect(x: rect.midX - hs, y: rect.maxY - hs, width: size, height: size),  // bottom-center
+            CGRect(x: rect.maxX - hs, y: rect.maxY - hs, width: size, height: size),  // bottom-right
+        ]
     }
 
     private func drawCropOverlay(_ crop: CGRect, ctx: CGContext) {
@@ -388,16 +452,40 @@ final class AnnotationCanvas: NSView {
     }
 
     override func keyDown(with event: NSEvent) {
+        // ⌘Z / ⌘⇧Z for undo/redo
         if event.modifierFlags.contains(.command) && event.keyCode == 6 {
             if event.modifierFlags.contains(.shift) {
-                performRedo()   // ⌘⇧Z
+                performRedo()
             } else {
-                performUndo()   // ⌘Z
+                performUndo()
             }
             return
         }
         if event.keyCode == 51 || event.keyCode == 117 { // Delete/Backspace
             deleteSelected()
+            return
+        }
+
+        // Single-key tool shortcuts (only when no text field is active and no command key)
+        if activeTextField == nil && !event.modifierFlags.contains(.command) {
+            switch event.charactersIgnoringModifiers?.lowercased() {
+            case "v": activeTool = .select; return
+            case "a": activeTool = .arrow; return
+            case "r":
+                if event.modifierFlags.contains(.shift) { activeTool = .filledRectangle }
+                else { activeTool = .rectangle }
+                return
+            case "e": activeTool = .ellipse; return
+            case "l": activeTool = .line; return
+            case "d": activeTool = .freehand; return
+            case "t": activeTool = .text; return
+            case "n": activeTool = .numberedStep; return
+            case "h": activeTool = .highlighter; return
+            case "b": activeTool = .blur; return
+            case "p": activeTool = .pixelate; return
+            case "c": activeTool = .crop; return
+            default: break
+            }
         }
     }
 
@@ -413,12 +501,23 @@ final class AnnotationCanvas: NSView {
     // MARK: – Crop
 
     func applyCrop() -> NSImage? {
-        guard let crop = cropRect, !crop.isEmpty, let bg = backgroundImage else { return nil }
+        guard let crop = cropRect, !crop.isEmpty else { return nil }
+        
+        // Flatten the canvas first so annotations are preserved in the crop
+        let flat = flatten()
         let result = NSImage(size: crop.size)
+        
+        // NSImage drawing context is bottom-up (origin at bottom-left).
+        // Our canvas is top-down (isFlipped = true). 
+        // We must flip the crop rectangle's Y coordinate before drawing from it!
+        var flippedCrop = crop
+        flippedCrop.origin.y = bounds.height - crop.maxY
+        
         result.lockFocus()
-        bg.draw(in: CGRect(origin: .zero, size: crop.size),
-                from: crop, operation: .copy, fraction: 1)
+        flat.draw(in: CGRect(origin: .zero, size: crop.size),
+                  from: flippedCrop, operation: .copy, fraction: 1)
         result.unlockFocus()
+        
         cropRect = nil
         return result
     }
@@ -426,10 +525,19 @@ final class AnnotationCanvas: NSView {
     // MARK: – Flatten to NSImage
 
     func flatten() -> NSImage {
+        // Temporarily hide crop overlay so it doesn't get saved into the final image
+        let oldCrop = cropRect
+        cropRect = nil
+        
+        // cacheDisplay(in:to:) correctly respects the view's isFlipped = true state,
+        // avoiding the dreaded upside-down or shifted annotation bug caused by NSImage.lockFocus()
+        guard let rep = bitmapImageRepForCachingDisplay(in: bounds) else { return NSImage() }
+        cacheDisplay(in: bounds, to: rep)
+        
+        cropRect = oldCrop
+        
         let img = NSImage(size: bounds.size)
-        img.lockFocus()
-        draw(bounds)
-        img.unlockFocus()
+        img.addRepresentation(rep)
         return img
     }
 }

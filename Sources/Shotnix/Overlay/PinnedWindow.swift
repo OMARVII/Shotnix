@@ -18,14 +18,15 @@ final class PinnedWindow: NSWindow {
         pinned.removeAll()
     }
 
-    private let imageView: NSImageView
-    private var trackingArea: NSTrackingArea?
+    private let imageView: DraggablePinnedImageView
     private var closeButton: NSButton?
+    private var resizeGrip: NSImageView?
     private var isHovered = false
 
     init(image: NSImage) {
         let size = constrainedSize(for: image.size)
-        imageView = DraggablePinnedImageView(frame: NSRect(origin: .zero, size: size))
+        let draggableImage = DraggablePinnedImageView(frame: NSRect(origin: .zero, size: size))
+        imageView = draggableImage
 
         super.init(
             contentRect: NSRect(origin: .zero, size: size),
@@ -39,6 +40,9 @@ final class PinnedWindow: NSWindow {
         isMovableByWindowBackground = true
         collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         hasShadow = true
+        
+        // Force proportional resize so the layer border always perfectly fits the image!
+        self.aspectRatio = size
 
         imageView.image = image
         imageView.imageScaling = .scaleProportionallyUpOrDown
@@ -47,72 +51,71 @@ final class PinnedWindow: NSWindow {
         imageView.layer?.cornerCurve = .continuous
         imageView.layer?.masksToBounds = true
         imageView.layer?.borderWidth = 0.5
-        imageView.layer?.borderColor = NSColor.white.withAlphaComponent(0.12).cgColor
+        imageView.layer?.borderColor = ShotnixColors.pinnedBorder.cgColor
+        imageView.autoresizingMask = [.width, .height]
+
+        draggableImage.onHoverStateChanged = { [weak self] hovered in
+            self?.isHovered = hovered
+            if hovered {
+                self?.showCloseButton()
+            } else {
+                self?.hideCloseButton()
+            }
+        }
 
         contentView = imageView
-        // Premium shadow
-        let shadowLayer = contentView?.superview?.layer ?? imageView.layer
-        shadowLayer?.shadowColor = NSColor.black.cgColor
-        shadowLayer?.shadowOpacity = 0.3
-        shadowLayer?.shadowRadius = 20
-        shadowLayer?.shadowOffset = CGSize(width: 0, height: -4)
         center()
     }
 
     func show() {
         orderFrontRegardless()
-        setupTrackingArea()
     }
 
     // MARK: – Hover (shows close button)
 
-    private func setupTrackingArea() {
-        if let old = trackingArea { imageView.removeTrackingArea(old) }
-        let area = NSTrackingArea(
-            rect: imageView.bounds,
-            options: [.activeAlways, .mouseEnteredAndExited],
-            owner: self
-        )
-        imageView.addTrackingArea(area)
-        trackingArea = area
-    }
-
-    override func mouseEntered(with event: NSEvent) {
-        isHovered = true
-        showCloseButton()
-    }
-
-    override func mouseExited(with event: NSEvent) {
-        isHovered = false
-        hideCloseButton()
-    }
-
     private func showCloseButton() {
-        guard closeButton == nil else { return }
-        let btn = NSButton(frame: NSRect(x: frame.width - 24, y: frame.height - 24, width: 20, height: 20))
+        guard closeButton == nil, let content = contentView else { return }
+        let btn = NSButton(frame: NSRect(x: content.bounds.width - 24, y: content.bounds.height - 24, width: 20, height: 20))
         btn.image = NSImage(systemSymbolName: "xmark.circle.fill", accessibilityDescription: "Close")
         btn.bezelStyle = .regularSquare
         btn.isBordered = false
         btn.target = self
         btn.action = #selector(closeTapped)
         btn.alphaValue = 0
-        contentView?.addSubview(btn)
+        // Stick to top-right corner during live window resize.
+        btn.autoresizingMask = [.minXMargin, .minYMargin]
+        content.addSubview(btn)
         closeButton = btn
+
+        let grip = NSImageView(frame: NSRect(x: content.bounds.width - 20, y: 4, width: 16, height: 16))
+        grip.image = NSImage(systemSymbolName: "arrow.up.left.and.arrow.down.right", accessibilityDescription: "Resize")
+        grip.contentTintColor = .white.withAlphaComponent(0.6)
+        grip.alphaValue = 0
+        // Stick to bottom-right corner during live window resize.
+        grip.autoresizingMask = [.minXMargin, .maxYMargin]
+        content.addSubview(grip)
+        resizeGrip = grip
+
         NSAnimationContext.runAnimationGroup { ctx in
             ctx.duration = 0.2
             btn.animator().alphaValue = 1
+            grip.animator().alphaValue = 1
         }
     }
 
     private func hideCloseButton() {
         guard let btn = closeButton else { return }
+        let grip = resizeGrip
         NSAnimationContext.runAnimationGroup({ ctx in
             ctx.duration = 0.2
             btn.animator().alphaValue = 0
+            grip?.animator().alphaValue = 0
         }, completionHandler: {
             btn.removeFromSuperview()
+            grip?.removeFromSuperview()
         })
         closeButton = nil
+        resizeGrip = nil
     }
 
     @objc private func closeTapped() {
@@ -165,7 +168,26 @@ final class PinnedWindow: NSWindow {
 // isMovableByWindowBackground. This subclass lets the window handle drags.
 @MainActor
 private final class DraggablePinnedImageView: NSImageView {
+    var onHoverStateChanged: ((Bool) -> Void)?
+    private var trackingArea: NSTrackingArea?
+
     override var mouseDownCanMoveWindow: Bool { true }
+    
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+        if let old = trackingArea { removeTrackingArea(old) }
+        let area = NSTrackingArea(rect: bounds, options: [.activeAlways, .mouseEnteredAndExited], owner: self)
+        addTrackingArea(area)
+        trackingArea = area
+    }
+
+    override func mouseEntered(with event: NSEvent) {
+        onHoverStateChanged?(true)
+    }
+
+    override func mouseExited(with event: NSEvent) {
+        onHoverStateChanged?(false)
+    }
 }
 
 // Constrain initial size to something reasonable
