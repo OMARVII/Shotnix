@@ -24,15 +24,9 @@ mkdir -p "$APP_BUNDLE/Contents/Resources"
 cp "$BINARY"              "$APP_BUNDLE/Contents/MacOS/$APP_NAME"
 cp "$SCRIPT_DIR/Info.plist" "$APP_BUNDLE/Contents/Info.plist"
 
-# Regenerate icon if script exists
-if [ -f "$SCRIPT_DIR/make-icon.swift" ]; then
-    echo "▶ Regenerating icon…"
-    (cd "$SCRIPT_DIR" && swift make-icon.swift 2>/dev/null) || true
-fi
-
 # Copy icon into bundle
-if [ -f "$SCRIPT_DIR/Shotnix.icns" ]; then
-    cp "$SCRIPT_DIR/Shotnix.icns" "$APP_BUNDLE/Contents/Resources/Shotnix.icns"
+if [ -f "$SCRIPT_DIR/Branding/Shotnix.icns" ]; then
+    cp "$SCRIPT_DIR/Branding/Shotnix.icns" "$APP_BUNDLE/Contents/Resources/Shotnix.icns"
 fi
 
 # Write entitlements for ScreenCaptureKit
@@ -54,22 +48,17 @@ codesign --force --deep --sign - \
     --entitlements /tmp/Shotnix.entitlements \
     "$APP_BUNDLE"
 
-echo "▶ Copying to Desktop…"
-rm -rf "$DEST"
-cp -R "$APP_BUNDLE" "$DEST"
-
 echo "▶ Copying to /Applications…"
 APPS_DEST="/Applications/$APP_NAME.app"
 rm -rf "$APPS_DEST"
 cp -R "$APP_BUNDLE" "$APPS_DEST"
 
 # Remove quarantine so it opens without Gatekeeper prompt
-xattr -dr com.apple.quarantine "$DEST" 2>/dev/null || true
 xattr -dr com.apple.quarantine "$APPS_DEST" 2>/dev/null || true
 
 echo ""
-echo "✓ Done!  Shotnix.app deployed to Desktop + /Applications."
-echo "  Double-click it to launch."
+echo "✓ Done!  Shotnix.app deployed to /Applications."
+echo "  Launch it from /Applications."
 echo ""
 echo "  First launch: grant Screen Recording permission when prompted"
 echo "  (System Settings → Privacy & Security → Screen Recording)"
