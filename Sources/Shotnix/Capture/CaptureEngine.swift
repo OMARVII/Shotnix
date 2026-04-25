@@ -11,6 +11,54 @@ final class CaptureEngine {
     private var areaSelectionWindow: AreaSelectionWindow?
     private var scrollingCapture: ScrollingCaptureController?
 
+    // Cached SCShareableContent. `SCShareableContent.excludingDesktopWindows`
+    // enumerates every on-screen window and routinely costs 30–100 ms. For
+    // area/fullscreen/previous capture modes we only need the display list, and
+    // the display list only changes when the user plugs/unplugs a monitor or
+    // changes resolution — NSApplication.didChangeScreenParametersNotification
+    // is the perfect invalidator.
+    @available(macOS 14.0, *)
+    private static var cachedContent: SCShareableContent?
+    private static var cachedContentIncludesWindows = false
+    private static var observerInstalled = false
+
+    init() {
+        installScreenChangeObserverIfNeeded()
+    }
+
+    private func installScreenChangeObserverIfNeeded() {
+        guard !Self.observerInstalled else { return }
+        Self.observerInstalled = true
+        NotificationCenter.default.addObserver(
+            forName: NSApplication.didChangeScreenParametersNotification,
+            object: nil,
+            queue: .main
+        ) { _ in
+            Task { @MainActor in
+                if #available(macOS 14.0, *) {
+                    Self.cachedContent = nil
+                    Self.cachedContentIncludesWindows = false
+                }
+            }
+        }
+    }
+
+    @available(macOS 14.0, *)
+    private static func shareableContent(includeWindows: Bool) async throws -> SCShareableContent {
+        // Only reuse the cache if it covers what the caller needs. A cache
+        // populated for "displays only" can't serve window-capture mode.
+        if let cached = cachedContent, cachedContentIncludesWindows || !includeWindows {
+            return cached
+        }
+        let content = try await SCShareableContent.excludingDesktopWindows(
+            false,
+            onScreenWindowsOnly: includeWindows
+        )
+        cachedContent = content
+        cachedContentIncludesWindows = includeWindows
+        return content
+    }
+
     // MARK: – Area Capture
 
     func startAreaCapture(historyManager: HistoryManager) async {
@@ -25,7 +73,7 @@ final class CaptureEngine {
             self.lastCaptureRect = rect
             Task { await self.captureRect(rect, on: screen, historyManager: historyManager) }
         }
-        areaSelectionWindow?.show()
+        await areaSelectionWindow?.prepareAndShow(engine: self)
     }
 
     // MARK: – Window Capture
@@ -41,7 +89,7 @@ final class CaptureEngine {
             guard let rect else { return }
             Task { await self.captureRect(rect, on: screen, historyManager: historyManager) }
         }
-        areaSelectionWindow?.show()
+        await areaSelectionWindow?.prepareAndShow(engine: self)
     }
 
     // MARK: – Fullscreen
@@ -102,7 +150,7 @@ final class CaptureEngine {
                 }
             }
         }
-        areaSelectionWindow?.show()
+        await areaSelectionWindow?.prepareAndShow(engine: self)
     }
 
     // MARK: – Core capture
@@ -110,6 +158,7 @@ final class CaptureEngine {
     func captureRect(_ rect: CGRect, on screen: NSScreen, historyManager: HistoryManager) async {
         guard let image = await captureRectToImage(rect, on: screen) else { return }
         playCaptureSound()
+        NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .default)
         let item = historyManager.add(image: image, rect: rect)
 
         // After-capture auto-actions (from Preferences)
@@ -144,7 +193,8 @@ final class CaptureEngine {
     @available(macOS 14.0, *)
     private func captureRectSCK(_ rect: CGRect, on screen: NSScreen) async -> NSImage? {
         do {
-            let content = try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: true)
+            // captureRectSCK only needs the display list — no window enumeration.
+            let content = try await Self.shareableContent(includeWindows: false)
             guard let display = content.displays.first(where: { $0.frame.intersects(rect) }) else {
                 return fallbackCapture(rect: rect)
             }
@@ -193,7 +243,8 @@ final class CaptureEngine {
 
     /// Creates an NSImage backed by NSBitmapImageRep so the raw CGImage pixels
     /// are preserved through the entire pipeline (no CoreGraphics re-render).
-    static func nsImage(from cgImage: CGImage, logicalSize: NSSize) -> NSImage {
+    /// Safe to call from any thread — touches no actor-isolated state.
+    nonisolated static func nsImage(from cgImage: CGImage, logicalSize: NSSize) -> NSImage {
         let rep = NSBitmapImageRep(cgImage: cgImage)
         rep.size = logicalSize   // logical size for display; pixel data untouched
         let image = NSImage(size: logicalSize)
