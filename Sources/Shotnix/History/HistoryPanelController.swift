@@ -10,6 +10,7 @@ final class HistoryPanelController: NSObject {
     private weak var historyManager: HistoryManager?
     private var collectionView: NSCollectionView?
     private var emptyOverlay: NSView?
+    private var closeObserver: NSObjectProtocol?
 
     private struct Section {
         let title: String
@@ -31,10 +32,6 @@ final class HistoryPanelController: NSObject {
             updateEmptyState()
             return
         }
-        NotificationCenter.default.addObserver(
-            self, selector: #selector(panelDidClose),
-            name: NSWindow.willCloseNotification, object: nil
-        )
         let p = NSPanel(
             contentRect: NSRect(x: 0, y: 0, width: 600, height: 480),
             styleMask: [.titled, .closable, .resizable, .utilityWindow],
@@ -46,6 +43,13 @@ final class HistoryPanelController: NSObject {
         p.center()
         p.contentView = buildContent(historyManager: historyManager)
         p.alphaValue = 0
+        closeObserver = NotificationCenter.default.addObserver(
+            forName: NSWindow.willCloseNotification,
+            object: p,
+            queue: .main
+        ) { [weak self] notification in
+            Task { @MainActor in self?.panelDidClose(notification) }
+        }
         p.makeKeyAndOrderFront(nil)
         NSAnimationContext.runAnimationGroup { ctx in
             ctx.duration = 0.2
@@ -210,6 +214,10 @@ final class HistoryPanelController: NSObject {
 
     @objc private func panelDidClose(_ notification: Notification) {
         guard let closedWindow = notification.object as? NSWindow, closedWindow === panel else { return }
+        if let closeObserver {
+            NotificationCenter.default.removeObserver(closeObserver)
+            self.closeObserver = nil
+        }
         panel = nil
         collectionView = nil
         emptyOverlay = nil

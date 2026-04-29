@@ -27,7 +27,9 @@ private final class QuickAccessWindow: NSWindow {
     private let historyManager: HistoryManager
     private let image: NSImage
     private var controlsOverlay: NSView?
+    private weak var timeoutProgressLayer: CALayer?
     private var isHovered = false
+    private var mouseInsideOverlay = false
     private var swipeAccumX: CGFloat = 0
 
     init(image: NSImage, historyItem: HistoryItem, historyManager: HistoryManager) {
@@ -105,6 +107,8 @@ private final class QuickAccessWindow: NSWindow {
         globalMouseMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.mouseMoved, .leftMouseDragged]) { [weak self] _ in
             guard let self, !self.isClosing else { return }
             let inside = self.frame.contains(NSEvent.mouseLocation)
+            guard inside != self.mouseInsideOverlay else { return }
+            self.mouseInsideOverlay = inside
             DispatchQueue.main.async {
                 self.setHovered(inside)
                 if inside {
@@ -312,13 +316,12 @@ private final class QuickAccessWindow: NSWindow {
             let progressFill = NSView(frame: progressBg.bounds)
             progressFill.wantsLayer = true
             progressFill.layer?.backgroundColor = NSColor.controlAccentColor.cgColor
+            progressFill.layer?.anchorPoint = CGPoint(x: 0, y: 0.5)
+            progressFill.layer?.position = CGPoint(x: 0, y: progressH / 2)
             progressBg.addSubview(progressFill)
+            timeoutProgressLayer = progressFill.layer
 
-            NSAnimationContext.runAnimationGroup({ ctx in
-                ctx.duration = timeout
-                ctx.timingFunction = CAMediaTimingFunction(name: .linear)
-                progressFill.animator().frame = NSRect(x: 0, y: 0, width: 0, height: progressH)
-            })
+            animateTimeoutProgress(duration: timeout)
 
             dismissTimer = Timer.scheduledTimer(withTimeInterval: timeout, repeats: false) { [weak self] _ in
                 DispatchQueue.main.async { self?.animatedClose() }
@@ -333,9 +336,11 @@ private final class QuickAccessWindow: NSWindow {
         // Pause/resume auto-dismiss timer on hover (like CleanShot X)
         if hovered {
             dismissTimer?.invalidate()
+            timeoutProgressLayer?.removeAnimation(forKey: "timeoutProgress")
         } else {
             let remaining = Settings.overlayTimeout
             if remaining > 0 {
+                animateTimeoutProgress(duration: remaining)
                 dismissTimer = Timer.scheduledTimer(withTimeInterval: remaining, repeats: false) { [weak self] _ in
                     DispatchQueue.main.async { self?.animatedClose() }
                 }
@@ -346,6 +351,20 @@ private final class QuickAccessWindow: NSWindow {
             ctx.duration = 0.2
             controlsOverlay?.animator().alphaValue = hovered ? 1 : 0
         }
+    }
+
+    private func animateTimeoutProgress(duration: TimeInterval) {
+        guard let layer = timeoutProgressLayer else { return }
+        layer.removeAnimation(forKey: "timeoutProgress")
+        layer.transform = CATransform3DIdentity
+        let shrink = CABasicAnimation(keyPath: "transform.scale.x")
+        shrink.fromValue = 1.0
+        shrink.toValue = 0.0
+        shrink.duration = duration
+        shrink.timingFunction = CAMediaTimingFunction(name: .linear)
+        shrink.fillMode = .forwards
+        shrink.isRemovedOnCompletion = false
+        layer.add(shrink, forKey: "timeoutProgress")
     }
 
     private func positionOverlay() {
@@ -617,6 +636,14 @@ private final class DraggableImageView: NSImageView, NSDraggingSource {
 
 private final class ImageFilePromiseDelegate: NSObject, NSFilePromiseProviderDelegate, @unchecked Sendable {
 
+    private static let queue: OperationQueue = {
+        let queue = OperationQueue()
+        queue.name = "Shotnix.FilePromise"
+        queue.maxConcurrentOperationCount = 1
+        queue.qualityOfService = .userInitiated
+        return queue
+    }()
+
     private let image: NSImage
 
     init(image: NSImage) {
@@ -639,7 +666,7 @@ private final class ImageFilePromiseDelegate: NSObject, NSFilePromiseProviderDel
     }
 
     func operationQueue(for filePromiseProvider: NSFilePromiseProvider) -> OperationQueue {
-        .main
+        Self.queue
     }
 }
 
