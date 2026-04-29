@@ -11,6 +11,19 @@ final class CaptureEngine {
     private var areaSelectionWindow: AreaSelectionWindow?
     private var scrollingCapture: ScrollingCaptureController?
 
+    private func hideDesktopIconsForCaptureIfNeeded() async -> Bool {
+        guard Settings.hideDesktopIconsWhileCapturing else { return false }
+        let hiddenByCapture = DesktopIconsManager.hideForCapture()
+        if hiddenByCapture {
+            try? await Task.sleep(nanoseconds: 350_000_000)
+        }
+        return hiddenByCapture
+    }
+
+    private func restoreDesktopIconsIfNeeded(_ hiddenByCapture: Bool) {
+        DesktopIconsManager.showAfterCapture(ifHiddenByCapture: hiddenByCapture)
+    }
+
     // Cached SCShareableContent. `SCShareableContent.excludingDesktopWindows`
     // enumerates every on-screen window and routinely costs 30–100 ms. For
     // area/fullscreen/previous capture modes we only need the display list, and
@@ -66,12 +79,19 @@ final class CaptureEngine {
             PermissionsManager.showPermissionDeniedAlert(); return
         }
         guard areaSelectionWindow == nil else { return } // already selecting
+        let hiddenByCapture = await hideDesktopIconsForCaptureIfNeeded()
         areaSelectionWindow = AreaSelectionWindow(mode: .area) { [weak self] rect, screen in
             guard let self else { return }
             self.areaSelectionWindow = nil
-            guard let rect else { return }
+            guard let rect else {
+                self.restoreDesktopIconsIfNeeded(hiddenByCapture)
+                return
+            }
             self.lastCaptureRect = rect
-            Task { await self.captureRect(rect, on: screen, historyManager: historyManager) }
+            Task {
+                await self.captureRect(rect, on: screen, historyManager: historyManager)
+                self.restoreDesktopIconsIfNeeded(hiddenByCapture)
+            }
         }
         await areaSelectionWindow?.prepareAndShow(engine: self)
     }
@@ -83,11 +103,18 @@ final class CaptureEngine {
             PermissionsManager.showPermissionDeniedAlert(); return
         }
         guard areaSelectionWindow == nil else { return }
+        let hiddenByCapture = await hideDesktopIconsForCaptureIfNeeded()
         areaSelectionWindow = AreaSelectionWindow(mode: .window) { [weak self] rect, screen in
             guard let self else { return }
             self.areaSelectionWindow = nil
-            guard let rect else { return }
-            Task { await self.captureRect(rect, on: screen, historyManager: historyManager) }
+            guard let rect else {
+                self.restoreDesktopIconsIfNeeded(hiddenByCapture)
+                return
+            }
+            Task {
+                await self.captureRect(rect, on: screen, historyManager: historyManager)
+                self.restoreDesktopIconsIfNeeded(hiddenByCapture)
+            }
         }
         await areaSelectionWindow?.prepareAndShow(engine: self)
     }
@@ -100,6 +127,8 @@ final class CaptureEngine {
         }
         let screens = NSScreen.screens
         guard !screens.isEmpty else { return }
+        let hiddenByCapture = await hideDesktopIconsForCaptureIfNeeded()
+        defer { restoreDesktopIconsIfNeeded(hiddenByCapture) }
         // Capture the main (key) screen
         let screen = NSScreen.main ?? screens[0]
         let rect = screen.frame
@@ -116,6 +145,8 @@ final class CaptureEngine {
         guard let screen = NSScreen.screens.first(where: { $0.frame.intersects(rect) }) ?? NSScreen.main else {
             await startAreaCapture(historyManager: historyManager); return
         }
+        let hiddenByCapture = await hideDesktopIconsForCaptureIfNeeded()
+        defer { restoreDesktopIconsIfNeeded(hiddenByCapture) }
         await captureRect(rect, on: screen, historyManager: historyManager)
     }
 
@@ -125,8 +156,9 @@ final class CaptureEngine {
         guard PermissionsManager.hasScreenRecordingPermission else {
             PermissionsManager.showPermissionDeniedAlert(); return
         }
+        guard scrollingCapture?.isActive != true else { return }
         scrollingCapture = ScrollingCaptureController()
-        await scrollingCapture?.start(historyManager: historyManager)
+        await scrollingCapture?.start(historyManager: historyManager, hiddenDesktopIconsByCapture: await hideDesktopIconsForCaptureIfNeeded())
     }
 
     // MARK: – OCR Capture
@@ -136,18 +168,26 @@ final class CaptureEngine {
             PermissionsManager.showPermissionDeniedAlert(); return
         }
         guard areaSelectionWindow == nil else { return }
+        let hiddenByCapture = await hideDesktopIconsForCaptureIfNeeded()
         areaSelectionWindow = AreaSelectionWindow(mode: .area) { [weak self] rect, screen in
             guard let self else { return }
             self.areaSelectionWindow = nil
-            guard let rect else { return }
+            guard let rect else {
+                self.restoreDesktopIconsIfNeeded(hiddenByCapture)
+                return
+            }
             Task {
-                guard let image = await self.captureRectToImage(rect, on: screen) else { return }
+                guard let image = await self.captureRectToImage(rect, on: screen) else {
+                    self.restoreDesktopIconsIfNeeded(hiddenByCapture)
+                    return
+                }
                 let text = await OCREngine.recognizeText(in: image)
                 await MainActor.run {
                     NSPasteboard.general.clearContents()
                     NSPasteboard.general.setString(text, forType: .string)
                     self.showOCRNotification(text: text)
                 }
+                self.restoreDesktopIconsIfNeeded(hiddenByCapture)
             }
         }
         await areaSelectionWindow?.prepareAndShow(engine: self)

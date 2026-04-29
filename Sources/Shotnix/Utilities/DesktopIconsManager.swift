@@ -4,9 +4,30 @@ import AppKit
 enum DesktopIconsManager {
 
     private static var isHidden = false
+    private static let finderAppID = "com.apple.finder" as CFString
+    private static let createDesktopKey = "CreateDesktop" as CFString
+
+    static var desktopIconsVisible: Bool {
+        guard let value = CFPreferencesCopyAppValue(createDesktopKey, finderAppID) else { return true }
+        return (value as? Bool) ?? true
+    }
 
     static func toggle() {
-        isHidden ? show() : hide()
+        desktopIconsVisible ? hide() : show()
+    }
+
+    static func hideForCapture() -> Bool {
+        guard desktopIconsVisible else {
+            isHidden = true
+            return false
+        }
+        hide()
+        return true
+    }
+
+    static func showAfterCapture(ifHiddenByCapture hiddenByCapture: Bool) {
+        guard hiddenByCapture else { return }
+        show()
     }
 
     static func hide() {
@@ -21,9 +42,8 @@ enum DesktopIconsManager {
 
     private static func setCreateDesktop(_ value: Bool) {
         // Use native CFPreferences instead of 'defaults write' shell script
-        let appID = "com.apple.finder" as CFString
-        CFPreferencesSetValue("CreateDesktop" as CFString, value as CFPropertyList, appID, kCFPreferencesCurrentUser, kCFPreferencesAnyHost)
-        CFPreferencesSynchronize(appID, kCFPreferencesCurrentUser, kCFPreferencesAnyHost)
+        CFPreferencesSetValue(createDesktopKey, value as CFPropertyList, finderAppID, kCFPreferencesCurrentUser, kCFPreferencesAnyHost)
+        CFPreferencesSynchronize(finderAppID, kCFPreferencesCurrentUser, kCFPreferencesAnyHost)
 
         // Gently restart Finder natively
         if let finder = NSWorkspace.shared.runningApplications.first(where: { $0.bundleIdentifier == "com.apple.finder" }) {
