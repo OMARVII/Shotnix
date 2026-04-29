@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.9.6-beta] - 2026-04-29
+
+### Added
+- **Fullscreen shortcut alias** — `Cmd + Shift + 3` now triggers Shotnix fullscreen capture when native macOS screenshot shortcuts are disabled, while `Cmd + Shift + 6` remains available.
+
+### Fixed
+- **Annotation undo correctness** — moving existing annotations now creates a proper undo checkpoint backed by deep-copied annotation snapshots.
+- **Scrolling capture retry after cancel** — canceling scrolling-area selection no longer leaves the controller stuck active.
+- **Desktop icon hiding preference** — “Hide desktop icons while capturing” now wraps capture flows and restores Finder state afterward.
+- **WebP fallback safety** — unsupported WebP exports now fall back to a real `.png` file instead of writing PNG bytes to a `.webp` filename.
+
+### Changed
+- **Performance polish** — reduced annotation redraw work, throttled window-selection hit testing, avoided overlapping scrolling-capture frames, and moved drag file promises off the main queue.
+- **Release packaging** — build signing now uses a committed entitlements file with hardened runtime options and no longer strips quarantine from the installed app.
+
 ## [0.9.5-beta] - 2026-04-25
 
 ### Added

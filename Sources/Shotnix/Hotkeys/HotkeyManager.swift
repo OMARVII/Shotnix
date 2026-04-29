@@ -24,7 +24,15 @@ final class HotkeyManager {
         }
         hotkeys.append(win)
 
-        // ⌘⇧6 — Capture Fullscreen
+        // ⌘⇧3 — Capture Fullscreen (macOS muscle memory; requires native shortcut disabled)
+        let fullNative = HotKey(key: .three, modifiers: [.command, .shift])
+        fullNative.keyDownHandler = { [weak captureEngine, weak historyManager] in
+            guard let e = captureEngine, let h = historyManager else { return }
+            Task { await e.captureFullscreen(historyManager: h) }
+        }
+        hotkeys.append(fullNative)
+
+        // ⌘⇧6 — Capture Fullscreen (non-conflicting fallback)
         let full = HotKey(key: .six, modifiers: [.command, .shift])
         full.keyDownHandler = { [weak captureEngine, weak historyManager] in
             guard let e = captureEngine, let h = historyManager else { return }

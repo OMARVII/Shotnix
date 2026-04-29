@@ -4,6 +4,8 @@ import ImageIO
 
 enum ImageExporter {
 
+    private static let webpUTI = "org.webmproject.webp" as CFString
+
     // MARK: – Clipboard
 
     static func copyToClipboard(image: NSImage) {
@@ -51,16 +53,23 @@ enum ImageExporter {
         // Extract the CGImage once and reuse it for whichever encoder runs.
         guard let cg = image.bestCGImage else { return }
         let ext = url.pathExtension.lowercased()
+        var outputURL = url
         let data: Data?
         switch ext {
-        case "jpg", "jpeg": data = jpegData(from: cg)
-        case "webp":        data = webpData(from: cg)
+        case "jpg", "jpeg": data = jpegData(from: cg, quality: CGFloat(Settings.jpegQuality))
+        case "webp":
+            if isWebPSupported, let webp = webpData(from: cg) {
+                data = webp
+            } else {
+                outputURL = url.deletingPathExtension().appendingPathExtension("png")
+                data = pngData(from: cg)
+            }
         default:            data = pngData(from: cg)
         }
-        let dir = url.deletingLastPathComponent()
+        let dir = outputURL.deletingLastPathComponent()
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-        try? data?.write(to: url)
-        HistoryManager.applyScreenshotMetadata(to: url.path, rect: nil)
+        try? data?.write(to: outputURL)
+        HistoryManager.applyScreenshotMetadata(to: outputURL.path, rect: nil)
     }
 
     // MARK: – Format helpers
@@ -87,15 +96,20 @@ enum ImageExporter {
     }
 
     static func webpData(from cg: CGImage, quality: CGFloat = 0.90) -> Data? {
+        guard isWebPSupported else { return nil }
         let data = NSMutableData()
-        let webpUTI = "org.webmproject.webp" as CFString
         guard let dest = CGImageDestinationCreateWithData(data, webpUTI, 1, nil) else {
-            return pngData(from: cg)
+            return nil
         }
         let opts: [CFString: Any] = [kCGImageDestinationLossyCompressionQuality: quality]
         CGImageDestinationAddImage(dest, cg, opts as CFDictionary)
-        guard CGImageDestinationFinalize(dest) else { return pngData(from: cg) }
+        guard CGImageDestinationFinalize(dest) else { return nil }
         return data as Data
+    }
+
+    private static var isWebPSupported: Bool {
+        let identifiers = CGImageDestinationCopyTypeIdentifiers() as NSArray
+        return identifiers.contains(webpUTI)
     }
 
     static func pngData(from image: NSImage) -> Data? {

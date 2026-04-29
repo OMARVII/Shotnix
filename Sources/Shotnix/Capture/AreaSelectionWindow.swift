@@ -154,6 +154,8 @@ private final class SelectionOverlayView: NSView {
     // For window mode
     private var highlightedWindowRect: NSRect?
     private var trackingArea: NSTrackingArea?
+    private var cachedWindowRects: [NSRect] = []
+    private var lastWindowListRefresh: TimeInterval = 0
 
     private let frozenImage: CGImage?
 
@@ -569,8 +571,11 @@ private final class SelectionOverlayView: NSView {
 
     override func mouseMoved(with event: NSEvent) {
         if mode == .window {
+            let previous = highlightedWindowRect
             highlightedWindowRect = windowRect(under: event.locationInWindow)
-            setNeedsDisplay(bounds)
+            if previous != highlightedWindowRect {
+                invalidateWindowHighlight(from: previous, to: highlightedWindowRect)
+            }
         } else if mode == .area && !isSelecting {
             // Invalidate every artifact we paint around the cursor at both
             // the previous and new positions: crosshair strips (full-screen
@@ -584,6 +589,16 @@ private final class SelectionOverlayView: NSView {
             invalidateCursorArtifacts(at: mousePosition!)
         } else {
             setNeedsDisplay(bounds)
+        }
+    }
+
+    private func invalidateWindowHighlight(from oldRect: NSRect?, to newRect: NSRect?) {
+        let padding: CGFloat = 8
+        if let oldRect {
+            setNeedsDisplay(oldRect.insetBy(dx: -padding, dy: -padding).intersection(bounds))
+        }
+        if let newRect {
+            setNeedsDisplay(newRect.insetBy(dx: -padding, dy: -padding).intersection(bounds))
         }
     }
 
@@ -630,34 +645,38 @@ private final class SelectionOverlayView: NSView {
     private func windowRect(under point: NSPoint) -> NSRect? {
         guard let win = window else { return nil }
         let screenPoint = win.convertToScreen(NSRect(origin: point, size: .zero)).origin
+        refreshWindowRectsIfNeeded()
+        for appKitRect in cachedWindowRects where appKitRect.contains(screenPoint) {
+            let viewOrigin = win.convertFromScreen(NSRect(origin: appKitRect.origin, size: .zero)).origin
+            return NSRect(origin: viewOrigin, size: appKitRect.size)
+        }
+        return nil
+    }
+
+    private func refreshWindowRectsIfNeeded() {
+        let now = ProcessInfo.processInfo.systemUptime
+        guard now - lastWindowListRefresh > 0.15 else { return }
+        lastWindowListRefresh = now
         let windowList = CGWindowListCopyWindowInfo([.optionOnScreenOnly, .excludeDesktopElements], kCGNullWindowID) as? [[String: Any]] ?? []
-        for info in windowList {
+        let screenHeight = NSScreen.screens.first?.frame.height ?? 0
+        cachedWindowRects = windowList.compactMap { info in
             guard
                 let layer = info[kCGWindowLayer as String] as? Int, layer == 0,
                 let boundsDict = info[kCGWindowBounds as String] as? [String: CGFloat]
-            else { continue }
+            else { return nil }
             let bounds = CGRect(
                 x: boundsDict["X"] ?? 0,
                 y: boundsDict["Y"] ?? 0,
                 width: boundsDict["Width"] ?? 0,
                 height: boundsDict["Height"] ?? 0
             )
-            // CGWindowBounds uses top-left origin (CG global coords); convert to AppKit bottom-left.
-            // The CG origin is anchored to the primary display — use screens[0], NOT .main
-            // (.main returns the key screen, which may be a secondary with different height).
-            let screenHeight = NSScreen.screens.first?.frame.height ?? 0
-            let appKitRect = CGRect(
+            return CGRect(
                 x: bounds.origin.x,
                 y: screenHeight - bounds.origin.y - bounds.height,
                 width: bounds.width,
                 height: bounds.height
             )
-            if appKitRect.contains(screenPoint) {
-                // Convert back to view coords for display
-                let viewOrigin = win.convertFromScreen(NSRect(origin: appKitRect.origin, size: .zero)).origin
-                return NSRect(origin: viewOrigin, size: appKitRect.size)
-            }
         }
-        return nil
     }
+
 }

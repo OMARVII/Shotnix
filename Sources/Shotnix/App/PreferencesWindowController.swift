@@ -154,7 +154,7 @@ struct ShortcutsSettingsView: View {
             Section {
                 ShortcutRow(title: "Capture Area", key: "⌘⇧4")
                 ShortcutRow(title: "Capture Window", key: "⌘⇧5")
-                ShortcutRow(title: "Capture Fullscreen", key: "⌘⇧6")
+                ShortcutRow(title: "Capture Fullscreen", key: "⌘⇧3 / ⌘⇧6")
                 ShortcutRow(title: "Capture Previous Area", key: "⌘⇧7")
             } header: {
                 Text("Screenshots")
@@ -259,7 +259,7 @@ struct ScreenshotsSettingsView: View {
     }
 }
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.9.2-beta"
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.9.6-beta"
     
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
@@ -284,6 +284,18 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.9.6-beta
+                    • ⌘⇧3 fullscreen capture alias
+                    • Fixed annotation move undo correctness
+                    • Hide desktop icons while capturing now works during capture flows
+                    • Safer WebP fallback and release signing cleanup
+                    • Performance polish for annotation, overlay, history, and scrolling capture
+
+                    Version 0.9.5-beta
+                    • Premium branding, app icon, menu bar icon, and first-launch welcome screen
+                    • Adaptive colors and haptic feedback
+                    • Premium DMG installer branding
+
                     Version 0.9.2-beta
                     • WebP export support (macOS 14+)
                     • First-launch onboarding with permission guide
@@ -307,7 +319,7 @@ struct AboutSettingsView: View {
                     • Quick access overlay with drag-and-drop
                     • Pin screenshots to desktop
                     • Capture history with grid browser
-                    • Global hotkeys (⌘⇧4/5/6/7)
+                    • Global hotkeys (⌘⇧3/4/5/6/7)
                     • Launch at login support
                     • Full settings window
                     """)

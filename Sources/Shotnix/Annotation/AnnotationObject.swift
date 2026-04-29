@@ -53,6 +53,7 @@ protocol AnnotationObject: AnyObject {
     func draw(in context: CGContext, scale: CGFloat)
     func contains(point: CGPoint) -> Bool
     func move(by delta: CGPoint)
+    func copy() -> any AnnotationObject
     var bounds: CGRect { get }
 }
 
@@ -122,6 +123,14 @@ final class ArrowAnnotation: AnnotationObject {
         endPoint.x += delta.x;   endPoint.y += delta.y
     }
 
+    func copy() -> any AnnotationObject {
+        let annotation = ArrowAnnotation(start: startPoint, end: endPoint)
+        annotation.color = color
+        annotation.lineWidth = lineWidth
+        annotation.isSelected = isSelected
+        return annotation
+    }
+
     private func distanceFromLineSegment(point p: CGPoint, a: CGPoint, b: CGPoint) -> CGFloat {
         let dx = b.x - a.x, dy = b.y - a.y
         let len2 = dx*dx + dy*dy
@@ -162,6 +171,13 @@ final class RectangleAnnotation: AnnotationObject {
 
     func contains(point: CGPoint) -> Bool { rect.insetBy(dx: -8, dy: -8).contains(point) }
     func move(by delta: CGPoint) { rect.origin.x += delta.x; rect.origin.y += delta.y }
+    func copy() -> any AnnotationObject {
+        let annotation = RectangleAnnotation(rect: rect, filled: filled)
+        annotation.color = color
+        annotation.lineWidth = lineWidth
+        annotation.isSelected = isSelected
+        return annotation
+    }
 }
 
 // MARK: – Ellipse
@@ -187,6 +203,13 @@ final class EllipseAnnotation: AnnotationObject {
 
     func contains(point: CGPoint) -> Bool { rect.insetBy(dx: -8, dy: -8).contains(point) }
     func move(by delta: CGPoint) { rect.origin.x += delta.x; rect.origin.y += delta.y }
+    func copy() -> any AnnotationObject {
+        let annotation = EllipseAnnotation(rect: rect)
+        annotation.color = color
+        annotation.lineWidth = lineWidth
+        annotation.isSelected = isSelected
+        return annotation
+    }
 }
 
 // MARK: – Line
@@ -236,6 +259,14 @@ final class LineAnnotation: AnnotationObject {
         startPoint.x += delta.x; startPoint.y += delta.y
         endPoint.x += delta.x;   endPoint.y += delta.y
     }
+
+    func copy() -> any AnnotationObject {
+        let annotation = LineAnnotation(start: startPoint, end: endPoint)
+        annotation.color = color
+        annotation.lineWidth = lineWidth
+        annotation.isSelected = isSelected
+        return annotation
+    }
 }
 
 // MARK: – Freehand
@@ -274,6 +305,14 @@ final class FreehandAnnotation: AnnotationObject {
 
     func contains(point: CGPoint) -> Bool { bounds.insetBy(dx: -8, dy: -8).contains(point) }
     func move(by delta: CGPoint) { points = points.map { CGPoint(x: $0.x+delta.x, y: $0.y+delta.y) } }
+    func copy() -> any AnnotationObject {
+        let annotation = FreehandAnnotation()
+        annotation.color = color
+        annotation.lineWidth = lineWidth
+        annotation.isSelected = isSelected
+        annotation.points = points
+        return annotation
+    }
 }
 
 // MARK: – Highlighter
@@ -314,6 +353,14 @@ final class HighlighterAnnotation: AnnotationObject {
         startPoint.x += delta.x; startPoint.y += delta.y
         endPoint.x += delta.x;   endPoint.y += delta.y
     }
+
+    func copy() -> any AnnotationObject {
+        let annotation = HighlighterAnnotation(start: startPoint, end: endPoint)
+        annotation.color = color
+        annotation.lineWidth = lineWidth
+        annotation.isSelected = isSelected
+        return annotation
+    }
 }
 
 // MARK: – Blur
@@ -338,6 +385,14 @@ final class BlurAnnotation: AnnotationObject {
 
     func contains(point: CGPoint) -> Bool { rect.insetBy(dx: -8, dy: -8).contains(point) }
     func move(by delta: CGPoint) { rect.origin.x += delta.x; rect.origin.y += delta.y }
+    func copy() -> any AnnotationObject {
+        let annotation = BlurAnnotation(rect: rect)
+        annotation.color = color
+        annotation.lineWidth = lineWidth
+        annotation.isSelected = isSelected
+        annotation.radius = radius
+        return annotation
+    }
 }
 
 // MARK: – Pixelate
@@ -362,6 +417,14 @@ final class PixelateAnnotation: AnnotationObject {
 
     func contains(point: CGPoint) -> Bool { rect.insetBy(dx: -8, dy: -8).contains(point) }
     func move(by delta: CGPoint) { rect.origin.x += delta.x; rect.origin.y += delta.y }
+    func copy() -> any AnnotationObject {
+        let annotation = PixelateAnnotation(rect: rect)
+        annotation.color = color
+        annotation.lineWidth = lineWidth
+        annotation.isSelected = isSelected
+        annotation.scale = scale
+        return annotation
+    }
 }
 
 // MARK: – Text
@@ -398,6 +461,15 @@ final class TextAnnotation: AnnotationObject {
 
     func contains(point: CGPoint) -> Bool { bounds.insetBy(dx: -8, dy: -8).contains(point) }
     func move(by delta: CGPoint) { origin.x += delta.x; origin.y += delta.y }
+    func copy() -> any AnnotationObject {
+        let annotation = TextAnnotation(origin: origin)
+        annotation.color = color
+        annotation.lineWidth = lineWidth
+        annotation.isSelected = isSelected
+        annotation.text = text
+        annotation.fontSize = fontSize
+        return annotation
+    }
 }
 
 // MARK: – Numbered Step
@@ -440,6 +512,15 @@ final class NumberedStepAnnotation: AnnotationObject {
     func move(by delta: CGPoint) {
         origin.x += delta.x
         origin.y += delta.y
+    }
+
+    func copy() -> any AnnotationObject {
+        let annotation = NumberedStepAnnotation(center: origin, number: number)
+        annotation.color = color
+        annotation.lineWidth = lineWidth
+        annotation.isSelected = isSelected
+        annotation.diameter = diameter
+        return annotation
     }
 
     func draw(in ctx: CGContext, scale: CGFloat) {

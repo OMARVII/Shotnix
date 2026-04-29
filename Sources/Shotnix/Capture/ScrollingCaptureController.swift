@@ -10,19 +10,35 @@ final class ScrollingCaptureController: NSObject {
     private var captureScreen: NSScreen?
     private var frames: [NSImage] = []
     private var isCapturing = false
+    private var isCapturingFrame = false
     private var captureTimer: Timer?
     private var statusWindow: ScrollingStatusWindow?
+    private var hiddenDesktopIconsByCapture = false
+    private var pendingStopHistoryManager: HistoryManager?
     /// Single reusable capture engine — never allocate per-frame
     private let captureEngine = CaptureEngine()
 
-    func start(historyManager: HistoryManager) async {
+    var isActive: Bool { isCapturing || selectionWindow != nil }
+
+    deinit {
+        captureTimer?.invalidate()
+    }
+
+    func start(historyManager: HistoryManager, hiddenDesktopIconsByCapture: Bool = false) async {
+        self.hiddenDesktopIconsByCapture = hiddenDesktopIconsByCapture
         selectionWindow = AreaSelectionWindow(mode: .area) { [weak self] rect, screen in
-            guard let self, let rect else { return }
+            guard let self else { return }
+            self.selectionWindow = nil
+            guard let rect else {
+                DesktopIconsManager.showAfterCapture(ifHiddenByCapture: self.hiddenDesktopIconsByCapture)
+                self.hiddenDesktopIconsByCapture = false
+                return
+            }
             self.captureRect = rect
             self.captureScreen = screen
             self.beginScrollingPhase(historyManager: historyManager)
         }
-        await selectionWindow?.prepareAndShow(engine: CaptureEngine())
+        await selectionWindow?.prepareAndShow(engine: captureEngine)
     }
 
     private func beginScrollingPhase(historyManager: HistoryManager) {
@@ -47,10 +63,17 @@ final class ScrollingCaptureController: NSObject {
 
     private func captureFrame() {
         guard isCapturing, let rect = captureRect, let screen = captureScreen else { return }
+        guard !isCapturingFrame else { return }
+        isCapturingFrame = true
         Task {
             if let img = await captureEngine.captureRectToImage(rect, on: screen) {
                 self.frames.append(img)
                 self.statusWindow?.updateCount(self.frames.count)
+            }
+            self.isCapturingFrame = false
+            if let historyManager = self.pendingStopHistoryManager {
+                self.pendingStopHistoryManager = nil
+                self.finishCapture(historyManager: historyManager)
             }
         }
     }
@@ -59,16 +82,39 @@ final class ScrollingCaptureController: NSObject {
         captureTimer?.invalidate()
         captureTimer = nil
         isCapturing = false
+
+        if isCapturingFrame {
+            pendingStopHistoryManager = historyManager
+            return
+        }
+
+        finishCapture(historyManager: historyManager)
+    }
+
+    private func finishCapture(historyManager: HistoryManager) {
+        captureTimer?.invalidate()
+        captureTimer = nil
+        isCapturing = false
+        isCapturingFrame = false
+        selectionWindow = nil
         statusWindow?.orderOut(nil)
         statusWindow = nil
+        let shouldRestoreDesktopIcons = hiddenDesktopIconsByCapture
+        hiddenDesktopIconsByCapture = false
 
-        guard !frames.isEmpty else { return }
+        guard !frames.isEmpty else {
+            DesktopIconsManager.showAfterCapture(ifHiddenByCapture: shouldRestoreDesktopIcons)
+            return
+        }
         let framesToStitch = frames
         let rect = captureRect ?? .zero
         Task.detached(priority: .userInitiated) {
             let stitched = FrameStitcher.stitch(frames: framesToStitch)
             await MainActor.run { [weak self] in
-                guard self != nil else { return }
+                guard self != nil else {
+                    DesktopIconsManager.showAfterCapture(ifHiddenByCapture: shouldRestoreDesktopIcons)
+                    return
+                }
                 let item = historyManager.add(image: stitched, rect: rect)
 
                 if Settings.afterCaptureCopyToClipboard {
@@ -84,6 +130,7 @@ final class ScrollingCaptureController: NSObject {
                 if Settings.afterCaptureShowOverlay {
                     QuickAccessOverlay.show(image: stitched, historyItem: item, historyManager: historyManager)
                 }
+                DesktopIconsManager.showAfterCapture(ifHiddenByCapture: shouldRestoreDesktopIcons)
             }
         }
     }
