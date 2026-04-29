@@ -15,7 +15,7 @@
 ---
 
 > [!NOTE]
-> **Shotnix is in beta (v0.9.5).** It's fully functional but not yet notarized through Apple's Developer Program, so macOS will show a Gatekeeper warning on first launch. This is standard for open-source apps — Shotnix is safe and the source code is right here. Notarization is on the roadmap.
+> **Shotnix is in beta (v0.9.6).** It's fully functional but not yet notarized through Apple's Developer Program, so macOS will show a Gatekeeper warning on first launch. This is standard for open-source apps — Shotnix is safe and the source code is right here. Notarization is on the roadmap.
 >
 > To open: **Right-click → Open → Open** (macOS 13–14) or **System Settings → Privacy & Security → Open Anyway** (macOS 15+).
 
@@ -89,10 +89,7 @@ macOS has built-in screenshot tools, but they stop at capture. Shotnix picks up 
 > 2. Go to **System Settings → Privacy & Security**
 > 3. Scroll down and click **Open Anyway** next to "Shotnix was blocked"
 >
-> **Or use Terminal:**
-> ```
-> xattr -dr com.apple.quarantine /Applications/Shotnix.app
-> ```
+> If macOS still blocks the app, use **System Settings → Privacy & Security → Open Anyway**.
 
 ### Build from source
 
@@ -102,7 +99,7 @@ cd Shotnix
 bash build-app.sh
 ```
 
-This compiles a release build, generates the app icon, ad-hoc signs the binary, and copies `Shotnix.app` to your Desktop.
+This compiles a release build, assembles the app bundle, ad-hoc signs the binary, and copies `Shotnix.app` to `/Applications`.
 
 **Requirements:** macOS 13+, Swift 5.9+
 
@@ -112,7 +109,7 @@ This compiles a release build, generates the app icon, ad-hoc signs the binary, 
 |---|---|
 | `Cmd + Shift + 4` | Area capture |
 | `Cmd + Shift + 5` | Window capture |
-| `Cmd + Shift + 6` | Fullscreen capture |
+| `Cmd + Shift + 3` / `Cmd + Shift + 6` | Fullscreen capture |
 | `Cmd + Shift + 7` | Previous area capture |
 | `Cmd + Shift + O` | OCR text extraction |
 | `Cmd + Shift + S` | Scrolling capture |
