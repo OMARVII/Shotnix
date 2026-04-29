@@ -260,18 +260,20 @@ final class AnnotationCanvas: NSView {
             return
         }
         if activeTool == .crop, let start = dragStart {
+            let previous = cropRect
             cropRect = CGRect(
                 x: min(start.x, point.x), y: min(start.y, point.y),
                 width: abs(point.x - start.x), height: abs(point.y - start.y)
             )
             onCropChanged?(cropRect)
-            setNeedsDisplay(bounds)
+            invalidate(previous, cropRect, padding: 2)
             return
         }
 
+        let previousBounds = currentObject?.bounds
         updateCurrentObject(to: point)
         lastDragPoint = point
-        setNeedsDisplay(bounds)
+        invalidate(previousBounds, currentObject?.bounds, padding: activeLineWidth + 12)
     }
 
     override func mouseUp(with event: NSEvent) {
@@ -298,6 +300,7 @@ final class AnnotationCanvas: NSView {
 
     private var selectDragStart: CGPoint?
     private var selectObjectStart: [(UUID, CGPoint)] = []
+    private var didPushSelectMoveUndo = false
 
     private func handleSelectDown(point: CGPoint) {
         let hit = objects.last(where: { $0.contains(point: point) })
@@ -306,6 +309,7 @@ final class AnnotationCanvas: NSView {
                 selectedObjects = [hit]
             }
             selectDragStart = point
+            didPushSelectMoveUndo = false
             selectObjectStart = selectedObjects.map { ($0.id, CGPoint(x: $0.bounds.origin.x, y: $0.bounds.origin.y)) }
         } else {
             selectedObjects = []
@@ -316,15 +320,25 @@ final class AnnotationCanvas: NSView {
     private func handleSelectDrag(point: CGPoint) {
         guard let start = selectDragStart else { return }
         let delta = CGPoint(x: point.x - start.x, y: point.y - start.y)
+        guard delta.x != 0 || delta.y != 0 else { return }
+        if !didPushSelectMoveUndo {
+            pushUndo()
+            didPushSelectMoveUndo = true
+        }
+        let previousRects = selectedObjects.map(\.bounds)
         for obj in selectedObjects {
             obj.move(by: delta)
         }
         selectDragStart = point
-        setNeedsDisplay(bounds)
+        let currentRects = selectedObjects.map(\.bounds)
+        for rect in previousRects + currentRects {
+            setNeedsDisplay(rect.insetBy(dx: -12, dy: -12).intersection(bounds))
+        }
     }
 
     private func handleSelectUp(point: CGPoint) {
         selectDragStart = nil
+        didPushSelectMoveUndo = false
     }
 
     // MARK: – Object factory
@@ -369,7 +383,9 @@ final class AnnotationCanvas: NSView {
         case let r as RectangleAnnotation:   r.rect = rectFrom(start, to: point)
         case let e as EllipseAnnotation:     e.rect = rectFrom(start, to: point)
         case let l as LineAnnotation:        l.endPoint = point
-        case let f as FreehandAnnotation:    f.points.append(point)
+        case let f as FreehandAnnotation:
+            if let last = f.points.last, hypot(point.x - last.x, point.y - last.y) < 1.5 { return }
+            f.points.append(point)
         case let h as HighlighterAnnotation: h.endPoint = point
         case let b as BlurAnnotation:        b.rect = rectFrom(start, to: point)
         case let p as PixelateAnnotation:    p.rect = rectFrom(start, to: point)
@@ -379,6 +395,15 @@ final class AnnotationCanvas: NSView {
 
     private func rectFrom(_ a: CGPoint, to b: CGPoint) -> CGRect {
         CGRect(x: min(a.x,b.x), y: min(a.y,b.y), width: abs(b.x-a.x), height: abs(b.y-a.y))
+    }
+
+    private func invalidate(_ oldRect: CGRect?, _ newRect: CGRect?, padding: CGFloat) {
+        if let oldRect {
+            setNeedsDisplay(oldRect.insetBy(dx: -padding, dy: -padding).intersection(bounds))
+        }
+        if let newRect {
+            setNeedsDisplay(newRect.insetBy(dx: -padding, dy: -padding).intersection(bounds))
+        }
     }
 
     private func nextStepNumber() -> Int {
@@ -429,15 +454,13 @@ final class AnnotationCanvas: NSView {
     private var redoSnapshots: [(objects: [any AnnotationObject], selected: [any AnnotationObject])] = []
 
     func pushUndo() {
-        // Snapshot: copy the array (shallow — but since we only add/remove,
-        // the previously committed objects are never mutated)
-        undoSnapshots.append((objects: Array(objects), selected: Array(selectedObjects)))
+        undoSnapshots.append((objects: objects.map { $0.copy() }, selected: selectedObjects.map { $0.copy() }))
         redoSnapshots.removeAll()
     }
 
     func performUndo() {
         guard let prev = undoSnapshots.popLast() else { return }
-        redoSnapshots.append((objects: Array(objects), selected: Array(selectedObjects)))
+        redoSnapshots.append((objects: objects.map { $0.copy() }, selected: selectedObjects.map { $0.copy() }))
         objects = prev.objects
         selectedObjects = []
         setNeedsDisplay(bounds)
@@ -445,7 +468,7 @@ final class AnnotationCanvas: NSView {
 
     func performRedo() {
         guard let next = redoSnapshots.popLast() else { return }
-        undoSnapshots.append((objects: Array(objects), selected: Array(selectedObjects)))
+        undoSnapshots.append((objects: objects.map { $0.copy() }, selected: selectedObjects.map { $0.copy() }))
         objects = next.objects
         selectedObjects = []
         setNeedsDisplay(bounds)
