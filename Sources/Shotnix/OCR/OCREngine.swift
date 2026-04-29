@@ -5,7 +5,7 @@ enum OCREngine {
 
     /// Recognize text in a CGImage and return the full recognized string.
     static func recognizeText(in image: NSImage) async -> String {
-        guard let cgImage = image.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return "" }
+        guard let cgImage = image.bestCGImage else { return "" }
         return await recognizeText(in: cgImage)
     }
 
