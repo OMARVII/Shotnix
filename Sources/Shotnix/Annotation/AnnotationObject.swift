@@ -82,17 +82,28 @@ final class ArrowAnnotation: AnnotationObject {
     }
 
     func draw(in ctx: CGContext, scale: CGFloat) {
+        let dx = endPoint.x - startPoint.x
+        let dy = endPoint.y - startPoint.y
+        let length = hypot(dx, dy)
+        guard length > 0 else { return }
+
+        let unitX = dx / length
+        let unitY = dy / length
+        let shaftEnd = CGPoint(
+            x: endPoint.x - unitX * (lineWidth / 2),
+            y: endPoint.y - unitY * (lineWidth / 2)
+        )
+
         ctx.saveGState()
         ctx.setStrokeColor(color.cgColor)
         ctx.setLineWidth(lineWidth)
         ctx.setLineCap(.round)
 
         ctx.move(to: startPoint)
-        ctx.addLine(to: endPoint)
+        ctx.addLine(to: shaftEnd)
         ctx.strokePath()
 
-        // Arrowhead
-        let angle = atan2(endPoint.y - startPoint.y, endPoint.x - startPoint.x)
+        let angle = atan2(dy, dx)
         let arrowLen: CGFloat = lineWidth * 5
         let arrowAngle: CGFloat = .pi / 6
         let p1 = CGPoint(

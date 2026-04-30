@@ -72,7 +72,7 @@ final class PreferencesWindowController: NSWindowController, NSWindowDelegate {
     }
     
     func windowWillClose(_ notification: Notification) {
-        NSApp.setActivationPolicy(.prohibited)
+        NSApp.restoreBackgroundOnlyActivationPolicyIfNeeded(excluding: notification.object as? NSWindow)
     }
 }
 
@@ -259,7 +259,7 @@ struct ScreenshotsSettingsView: View {
     }
 }
 struct AboutSettingsView: View {
-        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.9.6-beta"
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.9.7-beta"
     
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
@@ -284,6 +284,11 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.9.7-beta
+                    • Closing a Shotnix window no longer drops the app from Cmd-Tab when other windows remain open
+                    • Annotation editor toolbar no longer overlaps the traffic light buttons
+                    • Arrow annotations render cleanly — shaft now stops at the arrowhead instead of overlapping it
+
                     Version 0.9.6-beta
                     • ⌘⇧3 fullscreen capture alias
                     • Fixed annotation move undo correctness

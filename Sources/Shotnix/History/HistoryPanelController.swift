@@ -221,7 +221,7 @@ final class HistoryPanelController: NSObject {
         panel = nil
         collectionView = nil
         emptyOverlay = nil
-        NSApp.setActivationPolicy(.prohibited)
+        NSApp.restoreBackgroundOnlyActivationPolicyIfNeeded(excluding: closedWindow)
     }
 
     @objc private func clearAll() {

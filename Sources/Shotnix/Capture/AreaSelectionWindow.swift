@@ -26,24 +26,15 @@ final class AreaSelectionWindow: NSObject {
         NSApp.setActivationPolicy(.accessory)
         NSApp.activate(ignoringOtherApps: true)
 
-        // Capture all screens concurrently for speed
-        await withTaskGroup(of: (NSScreen, CGImage?).self) { group in
-            for screen in NSScreen.screens {
-                group.addTask {
-                    let image = await engine.captureRectToImage(screen.frame, on: screen)
-                    var r = NSRect(origin: .zero, size: screen.frame.size)
-                    let cg = image?.cgImage(forProposedRect: &r, context: nil, hints: nil)
-                    return (screen, cg)
-                }
-            }
-            
-            for await (screen, frozenCG) in group {
-                let overlay = SelectionOverlayWindow(screen: screen, mode: self.mode, frozenImage: frozenCG)
-                overlay.selectionHandler = { [weak self] rect in self?.finish(rect: rect, screen: screen) }
-                overlay.cancelHandler   = { [weak self] in self?.cancel() }
-                overlay.show()
-                self.overlays.append(overlay)
-            }
+        for screen in NSScreen.screens {
+            let image = await engine.captureRectToImage(screen.frame, on: screen)
+            var rect = NSRect(origin: .zero, size: screen.frame.size)
+            let frozenCG = image?.cgImage(forProposedRect: &rect, context: nil, hints: nil)
+            let overlay = SelectionOverlayWindow(screen: screen, mode: mode, frozenImage: frozenCG)
+            overlay.selectionHandler = { [weak self] rect in self?.finish(rect: rect, screen: screen) }
+            overlay.cancelHandler = { [weak self] in self?.cancel() }
+            overlay.show()
+            overlays.append(overlay)
         }
 
         focusFirstOverlay()
@@ -90,7 +81,7 @@ final class AreaSelectionWindow: NSObject {
         overlays.forEach { $0.orderOut(nil) }
         overlays.removeAll()
         // Restore background-only policy
-        NSApp.setActivationPolicy(.prohibited)
+        NSApp.restoreBackgroundOnlyActivationPolicyIfNeeded()
     }
 }
 

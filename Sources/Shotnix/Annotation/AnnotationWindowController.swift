@@ -4,6 +4,9 @@ import AppKit
 @MainActor
 final class AnnotationWindowController: NSWindowController {
 
+    private static let trafficLightReservedWidth: CGFloat = 92
+    private static let minimumEditorWidth = trafficLightReservedWidth + AnnotationToolbar.requiredWidth
+
     private let canvas: AnnotationCanvas
     private let toolbar: AnnotationToolbar
     private let historyItem: HistoryItem?
@@ -44,7 +47,7 @@ final class AnnotationWindowController: NSWindowController {
         let screenFrame = NSScreen.main?.visibleFrame ?? NSRect(x: 0, y: 0, width: 1280, height: 800)
         let maxW = screenFrame.width * 0.85
         let maxH = screenFrame.height * 0.85 - toolbarHeight
-        let winW = min(canvasSize.width, maxW)
+        let winW = max(min(canvasSize.width, maxW), Self.minimumEditorWidth)
         let winH = min(canvasSize.height, maxH) + toolbarHeight
         let windowSize = NSSize(width: winW, height: winH)
 
@@ -57,7 +60,7 @@ final class AnnotationWindowController: NSWindowController {
         win.titleVisibility = .hidden
         win.titlebarAppearsTransparent = true
         win.isReleasedWhenClosed = false
-        win.minSize = NSSize(width: 320, height: 240 + toolbarHeight)
+        win.minSize = NSSize(width: Self.minimumEditorWidth, height: 240 + toolbarHeight)
         win.center()
 
         super.init(window: win)
@@ -82,7 +85,12 @@ final class AnnotationWindowController: NSWindowController {
         scrollView.verticalScrollElasticity = .none
 
         // Toolbar positioned at top of window
-        toolbar.frame = NSRect(x: 0, y: winH - toolbarHeight, width: winW, height: toolbarHeight)
+        toolbar.frame = NSRect(
+            x: Self.trafficLightReservedWidth,
+            y: winH - toolbarHeight,
+            width: max(0, winW - Self.trafficLightReservedWidth),
+            height: toolbarHeight
+        )
         toolbar.autoresizingMask = [.width, .minYMargin]
 
         toolbar.onToolChanged     = { [weak self] tool in
@@ -186,7 +194,7 @@ extension AnnotationWindowController: NSWindowDelegate {
     func windowWillClose(_ notification: Notification) {
         AnnotationWindowController.openControllers.removeAll { $0 === self }
         if AnnotationWindowController.openControllers.isEmpty {
-            NSApp.setActivationPolicy(.prohibited)
+            NSApp.restoreBackgroundOnlyActivationPolicyIfNeeded(excluding: notification.object as? NSWindow)
         }
     }
 }
@@ -214,6 +222,8 @@ final class CenteringClipView: NSClipView {
 
 @MainActor
 final class AnnotationToolbar: NSView {
+
+    static let requiredWidth: CGFloat = 870
 
     var onToolChanged: ((AnnotationTool) -> Void)?
     var onColorChanged: ((NSColor) -> Void)?
