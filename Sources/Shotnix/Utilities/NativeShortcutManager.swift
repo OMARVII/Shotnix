@@ -99,7 +99,7 @@ enum NativeShortcutManager {
             showSuccessToast()
         }
 
-        NSApp.setActivationPolicy(.prohibited)
+        NSApp.restoreBackgroundOnlyActivationPolicyIfNeeded()
     }
 
     @MainActor

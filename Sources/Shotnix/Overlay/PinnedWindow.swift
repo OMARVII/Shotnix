@@ -121,6 +121,7 @@ final class PinnedWindow: NSWindow {
     @objc private func closeTapped() {
         PinnedWindow.pinned.removeAll { $0 === self }
         orderOut(nil)
+        NSApp.restoreBackgroundOnlyActivationPolicyIfNeeded()
     }
 
     // MARK: – Right-click menu

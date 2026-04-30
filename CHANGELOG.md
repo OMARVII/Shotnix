@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.9.7-beta] - 2026-05-01
+
+### Fixed
+- **Cmd-Tab visibility** — closing a Shotnix window no longer prematurely drops the app from Cmd-Tab when other Shotnix windows are still open. Replaced hardcoded `NSApp.setActivationPolicy(.prohibited)` calls across the annotation editor, preferences, welcome, history, pinned-window, area-selection, quick-access overlay, and shortcut-permission flows with a centralized helper that only restores background-only mode when no Shotnix windows remain.
+- **Annotation editor layout** — the toolbar now reserves space for the macOS traffic-light buttons and enforces a minimum window width, so close/minimize/zoom no longer overlap toolbar controls.
+- **Arrow rendering** — arrow shafts now stop short of the arrowhead by half the line width, removing the visible bulge at the tip on thick strokes.
+
+### Changed
+- **Multi-screen area capture** — simplified the per-screen freeze-frame capture loop (sequential capture in place of a `TaskGroup`); behavior unchanged but code is easier to follow.
+
+### Internal
+- New `ActivationPolicy.swift` helper extends `NSApplication` with `restoreBackgroundOnlyActivationPolicyIfNeeded(excluding:)`, the single source of truth for menu-bar-app activation lifecycle.
+
 ## [0.9.6-beta] - 2026-04-29
 
 ### Added

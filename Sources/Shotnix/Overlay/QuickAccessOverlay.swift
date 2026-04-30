@@ -494,7 +494,7 @@ private final class QuickAccessWindow: NSWindow {
         // Restore background-only policy so app doesn't appear in Cmd-Tab
         // (skip when transitioning to another window like editor or pin)
         if QuickAccessWindow.openWindows.isEmpty && !skipPolicyReset {
-            NSApp.setActivationPolicy(.prohibited)
+            NSApp.restoreBackgroundOnlyActivationPolicyIfNeeded()
         }
     }
 
