@@ -260,7 +260,7 @@ struct ScreenshotsSettingsView: View {
     }
 }
 struct AboutSettingsView: View {
-        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.9.7-beta"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.9.8-beta"
     
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
@@ -285,6 +285,10 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.9.8-beta
+                    • About now includes Website, GitHub, and Report Issue links
+                    • First-launch welcome copy now better reflects the full capture workflow
+
                     Version 0.9.7-beta
                     • Closing a Shotnix window no longer drops the app from Cmd-Tab when other windows remain open
                     • Annotation editor toolbar no longer overlaps the traffic light buttons
@@ -346,12 +350,22 @@ struct AboutSettingsView: View {
                     .font(.system(size: 10))
                     .foregroundColor(Color(NSColor.tertiaryLabelColor))
                 
-                Button("GitHub") {
-                    if let url = URL(string: "https://github.com/OMARVII/Shotnix") {
-                        NSWorkspace.shared.open(url)
+                HStack(spacing: 12) {
+                    Button("Website") {
+                        openURL("https://shotnix.com/")
                     }
+                    .buttonStyle(.link)
+
+                    Button("GitHub") {
+                        openURL("https://github.com/OMARVII/Shotnix")
+                    }
+                    .buttonStyle(.link)
+
+                    Button("Report Issue") {
+                        openURL("https://github.com/OMARVII/Shotnix/issues/new")
+                    }
+                    .buttonStyle(.link)
                 }
-                .buttonStyle(.link)
                 .font(.caption)
             }
             .padding(.top, 8)
@@ -360,5 +374,11 @@ struct AboutSettingsView: View {
         }
         .padding(30)
         .frame(width: 500, height: 500)
+    }
+
+    private func openURL(_ string: String) {
+        if let url = URL(string: string) {
+            NSWorkspace.shared.open(url)
+        }
     }
 }
