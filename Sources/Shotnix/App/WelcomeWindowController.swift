@@ -62,13 +62,13 @@ final class WelcomeWindowController: NSObject, NSWindowDelegate {
         y -= 32
 
         // Description
-        let desc = NSTextField(wrappingLabelWithString: "Shotnix is a lightweight screenshot tool that lives in your menu bar. Capture areas, windows, or your full screen with global hotkeys.")
+        let desc = NSTextField(wrappingLabelWithString: "Shotnix lives in your menu bar for quick capture, annotation, OCR, scrolling screenshots, pinning, and local history.")
         desc.font = .systemFont(ofSize: 12)
         desc.textColor = .secondaryLabelColor
         desc.alignment = .center
-        desc.frame = NSRect(x: 30, y: y - 40, width: width - 60, height: 40)
+        desc.frame = NSRect(x: 30, y: y - 50, width: width - 60, height: 50)
         container.addSubview(desc)
-        y -= 48
+        y -= 58
 
         // Permission notice
         let sep = NSBox()
