@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.9.9-beta] - 2026-05-02
+
+### Added
+- **QR code scanning** — scan a selected screen area for QR codes from the Tools menu.
+- **Smart QR results** — recognized links, email, phone, SMS, Wi-Fi, and plain text payloads now show friendly fields and explicit actions.
+
 ## [0.9.8-beta] - 2026-05-02
 
 ### Changed

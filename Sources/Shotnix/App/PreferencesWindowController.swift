@@ -285,6 +285,10 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.9.9-beta
+                    • QR code scanning from a selected screen area
+                    • Smart QR results for links, email, phone, SMS, Wi-Fi, and plain text
+
                     Version 0.9.8-beta
                     • About now includes Website, GitHub, and Report Issue links
                     • First-launch welcome copy now better reflects the full capture workflow
