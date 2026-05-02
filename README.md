@@ -1,4 +1,5 @@
 <p align="center">
+  <img src="Branding/Shotnix_Icon_Transparent.png" width="128" alt="Shotnix Logo" />
   <h1 align="center">Shotnix</h1>
   <p align="center">
     A fast, focused screenshot utility for macOS.<br/>
@@ -90,6 +91,15 @@ macOS has built-in screenshot tools, but they stop at capture. Shotnix picks up 
 > 3. Scroll down and click **Open Anyway** next to "Shotnix was blocked"
 >
 > If macOS still blocks the app, use **System Settings → Privacy & Security → Open Anyway**.
+>
+> **If macOS says "Shotnix" is damaged and can't be opened:**
+> This can happen because Shotnix is currently unsigned and macOS quarantines unsigned apps by default. After installing Shotnix, run this command in Terminal:
+>
+> ```bash
+> xattr -rd com.apple.quarantine /Applications/Shotnix.app
+> ```
+>
+> If the command is blocked, give Terminal Full Disk Access in **System Settings → Privacy & Security**, then run it again.
 
 ### Build from source
 
