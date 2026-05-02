@@ -1,4 +1,5 @@
 import AppKit
+import Darwin
 
 /// Persists captures to ~/Library/Application Support/Shotnix/History/
 @MainActor
@@ -63,9 +64,7 @@ final class HistoryManager: ObservableObject {
     /// Called from the detached encode task once the index needs to be written.
     /// Runs on the main actor because it reads `items`, which is actor-isolated.
     func persistCurrentIndex() {
-        let snapshot = items
-        let url = indexURL
-        Task.detached(priority: .utility) { Self.persist(items: snapshot, to: url) }
+        Self.persist(items: items, to: indexURL)
     }
 
     // MARK: – Thumbnail access (UI convenience)
@@ -81,12 +80,10 @@ final class HistoryManager: ObservableObject {
         HistoryImageCache.evict(fullPath: item.imagePath, thumbnailPath: item.thumbnailPath)
         let imgPath = item.imagePath
         let thumbPath = item.thumbnailPath
-        let indexURL = self.indexURL
-        let snapshot = self.items
+        persistCurrentIndex()
         Task.detached(priority: .utility) {
             try? FileManager.default.removeItem(atPath: imgPath)
             try? FileManager.default.removeItem(atPath: thumbPath)
-            Self.persist(items: snapshot, to: indexURL)
         }
     }
 
@@ -94,13 +91,12 @@ final class HistoryManager: ObservableObject {
         let removed = items
         items.removeAll()
         HistoryImageCache.evictAll()
-        let indexURL = self.indexURL
+        persistCurrentIndex()
         Task.detached(priority: .utility) {
             removed.forEach {
                 try? FileManager.default.removeItem(atPath: $0.imagePath)
                 try? FileManager.default.removeItem(atPath: $0.thumbnailPath)
             }
-            Self.persist(items: [], to: indexURL)
         }
     }
 
@@ -118,12 +114,15 @@ final class HistoryManager: ObservableObject {
         }
     }
 
-    nonisolated private static func persist(items: [HistoryItem], to indexURL: URL) {
+    @discardableResult
+    nonisolated private static func persist(items: [HistoryItem], to indexURL: URL) -> Bool {
         do {
             let data = try JSONEncoder().encode(items)
             try data.write(to: indexURL, options: .atomic)
+            return true
         } catch {
             print("[Shotnix] History persist failed: \(error)")
+            return false
         }
     }
 
@@ -142,26 +141,41 @@ final class HistoryManager: ObservableObject {
         rect: CGRect?,
         manager: HistoryManager?
     ) {
-        guard let fullCG = image.bestCGImage else { return }
+        guard let fullCG = image.bestCGImage else {
+            print("[Shotnix] History persist failed: image has no CGImage backing")
+            return
+        }
 
-        if let pngFull = ImageExporter.pngData(from: fullCG) {
-            try? pngFull.write(to: URL(fileURLWithPath: imagePath))
+        guard let pngFull = ImageExporter.pngData(from: fullCG) else {
+            print("[Shotnix] History persist failed: unable to encode full image")
+            return
+        }
+
+        do {
+            try pngFull.write(to: URL(fileURLWithPath: imagePath), options: .atomic)
             applyScreenshotMetadata(to: imagePath, rect: rect)
+        } catch {
+            print("[Shotnix] History persist failed at \(imagePath): \(error)")
+            return
         }
 
         // Thumbnail via CoreGraphics (thread-safe, ~2–3× faster than lockFocus).
+        var thumbImage: NSImage?
         if let thumbCG = downsample(cg: fullCG, maxDimension: 240),
            let pngThumb = ImageExporter.pngData(from: thumbCG) {
-            try? pngThumb.write(to: URL(fileURLWithPath: thumbPath))
-
-            let logicalSize = NSSize(width: thumbCG.width, height: thumbCG.height)
-            let thumbImage = CaptureEngine.nsImage(from: thumbCG, logicalSize: logicalSize)
-            Task { @MainActor in
-                HistoryImageCache.primeThumbnail(thumbImage, for: thumbPath)
+            do {
+                try pngThumb.write(to: URL(fileURLWithPath: thumbPath), options: .atomic)
+                let logicalSize = NSSize(width: thumbCG.width, height: thumbCG.height)
+                thumbImage = CaptureEngine.nsImage(from: thumbCG, logicalSize: logicalSize)
+            } catch {
+                print("[Shotnix] History thumbnail persist failed at \(thumbPath): \(error)")
             }
         }
 
         Task { @MainActor in
+            if let thumbImage {
+                HistoryImageCache.primeThumbnail(thumbImage, for: thumbPath)
+            }
             manager?.persistCurrentIndex()
         }
     }
@@ -201,7 +215,7 @@ final class HistoryManager: ObservableObject {
         if let plist {
             _ = (url as URL).withUnsafeFileSystemRepresentation { cPath -> Int32 in
                 guard let cPath else { return -1 }
-                return setxattr(cPath, "com.apple.metadata:kMDItemIsScreenCapture", (plist as NSData).bytes, plist.count, 0, 0)
+                return setxattr(cPath, "com.apple.metadata:kMDItemIsScreenCapture", (plist as NSData).bytes, plist.count, 0, XATTR_NOFOLLOW)
             }
         }
 
@@ -210,7 +224,7 @@ final class HistoryManager: ObservableObject {
         if let typeData {
             _ = (url as URL).withUnsafeFileSystemRepresentation { cPath -> Int32 in
                 guard let cPath else { return -1 }
-                return setxattr(cPath, "com.apple.metadata:kMDItemScreenCaptureType", (typeData as NSData).bytes, typeData.count, 0, 0)
+                return setxattr(cPath, "com.apple.metadata:kMDItemScreenCaptureType", (typeData as NSData).bytes, typeData.count, 0, XATTR_NOFOLLOW)
             }
         }
 
@@ -221,10 +235,9 @@ final class HistoryManager: ObservableObject {
             if let rectData {
                 _ = (url as URL).withUnsafeFileSystemRepresentation { cPath -> Int32 in
                     guard let cPath else { return -1 }
-                    return setxattr(cPath, "com.apple.metadata:kMDItemScreenCaptureGlobalRect", (rectData as NSData).bytes, rectData.count, 0, 0)
+                    return setxattr(cPath, "com.apple.metadata:kMDItemScreenCaptureGlobalRect", (rectData as NSData).bytes, rectData.count, 0, XATTR_NOFOLLOW)
                 }
             }
         }
     }
 }
-

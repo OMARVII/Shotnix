@@ -66,6 +66,7 @@ final class ArrowAnnotation: AnnotationObject {
     var isSelected = false
     var startPoint: CGPoint
     var endPoint: CGPoint
+    var controlPoint: CGPoint?
 
     init(start: CGPoint, end: CGPoint) {
         self.startPoint = start
@@ -73,25 +74,33 @@ final class ArrowAnnotation: AnnotationObject {
     }
 
     var bounds: CGRect {
-        CGRect(
-            x: min(startPoint.x, endPoint.x) - lineWidth,
-            y: min(startPoint.y, endPoint.y) - lineWidth,
-            width: abs(endPoint.x - startPoint.x) + lineWidth * 2,
-            height: abs(endPoint.y - startPoint.y) + lineWidth * 2
-        )
+        var points = [startPoint, endPoint]
+        if let controlPoint { points.append(controlPoint) }
+        let minX = points.map(\.x).min() ?? 0
+        let maxX = points.map(\.x).max() ?? 0
+        let minY = points.map(\.y).min() ?? 0
+        let maxY = points.map(\.y).max() ?? 0
+        let padding = max(lineWidth * 6, 18)
+        return CGRect(x: minX - padding, y: minY - padding,
+                      width: maxX - minX + padding * 2,
+                      height: maxY - minY + padding * 2)
     }
 
     func draw(in ctx: CGContext, scale: CGFloat) {
-        let dx = endPoint.x - startPoint.x
-        let dy = endPoint.y - startPoint.y
+        let tangentStart = controlPoint ?? startPoint
+        let dx = endPoint.x - tangentStart.x
+        let dy = endPoint.y - tangentStart.y
         let length = hypot(dx, dy)
         guard length > 0 else { return }
 
         let unitX = dx / length
         let unitY = dy / length
+        let arrowLen: CGFloat = lineWidth * 5
+        let arrowAngle: CGFloat = .pi / 6
+        let headInset = min(arrowLen * cos(arrowAngle), length * 0.7)
         let shaftEnd = CGPoint(
-            x: endPoint.x - unitX * (lineWidth / 2),
-            y: endPoint.y - unitY * (lineWidth / 2)
+            x: endPoint.x - unitX * headInset,
+            y: endPoint.y - unitY * headInset
         )
 
         ctx.saveGState()
@@ -100,12 +109,14 @@ final class ArrowAnnotation: AnnotationObject {
         ctx.setLineCap(.round)
 
         ctx.move(to: startPoint)
-        ctx.addLine(to: shaftEnd)
+        if let controlPoint {
+            ctx.addQuadCurve(to: shaftEnd, control: controlPoint)
+        } else {
+            ctx.addLine(to: shaftEnd)
+        }
         ctx.strokePath()
 
         let angle = atan2(dy, dx)
-        let arrowLen: CGFloat = lineWidth * 5
-        let arrowAngle: CGFloat = .pi / 6
         let p1 = CGPoint(
             x: endPoint.x - arrowLen * cos(angle - arrowAngle),
             y: endPoint.y - arrowLen * sin(angle - arrowAngle)
@@ -125,13 +136,19 @@ final class ArrowAnnotation: AnnotationObject {
     }
 
     func contains(point: CGPoint) -> Bool {
-        let d = distanceFromLineSegment(point: point, a: startPoint, b: endPoint)
+        let d: CGFloat
+        if let controlPoint {
+            d = distanceFromQuadraticCurve(point: point, control: controlPoint)
+        } else {
+            d = distanceFromLineSegment(point: point, a: startPoint, b: endPoint)
+        }
         return d < max(lineWidth + 4, 8)
     }
 
     func move(by delta: CGPoint) {
         startPoint.x += delta.x; startPoint.y += delta.y
         endPoint.x += delta.x;   endPoint.y += delta.y
+        controlPoint = controlPoint.map { CGPoint(x: $0.x + delta.x, y: $0.y + delta.y) }
     }
 
     func copy() -> any AnnotationObject {
@@ -139,7 +156,40 @@ final class ArrowAnnotation: AnnotationObject {
         annotation.color = color
         annotation.lineWidth = lineWidth
         annotation.isSelected = isSelected
+        annotation.controlPoint = controlPoint
         return annotation
+    }
+
+    func handlePoint(_ handle: ArrowHandle) -> CGPoint {
+        switch handle {
+        case .start:   return startPoint
+        case .end:     return endPoint
+        case .control: return controlPoint ?? midpoint
+        }
+    }
+
+    func setHandle(_ handle: ArrowHandle, to point: CGPoint) {
+        switch handle {
+        case .start:   startPoint = point
+        case .end:     endPoint = point
+        case .control: controlPoint = point
+        }
+    }
+
+    var midpoint: CGPoint {
+        CGPoint(x: (startPoint.x + endPoint.x) / 2, y: (startPoint.y + endPoint.y) / 2)
+    }
+
+    func pointOnCurve(at t: CGFloat) -> CGPoint {
+        guard let controlPoint else {
+            return CGPoint(x: startPoint.x + (endPoint.x - startPoint.x) * t,
+                           y: startPoint.y + (endPoint.y - startPoint.y) * t)
+        }
+        let mt = 1 - t
+        return CGPoint(
+            x: mt * mt * startPoint.x + 2 * mt * t * controlPoint.x + t * t * endPoint.x,
+            y: mt * mt * startPoint.y + 2 * mt * t * controlPoint.y + t * t * endPoint.y
+        )
     }
 
     private func distanceFromLineSegment(point p: CGPoint, a: CGPoint, b: CGPoint) -> CGFloat {
@@ -149,6 +199,21 @@ final class ArrowAnnotation: AnnotationObject {
         let t = max(0, min(1, ((p.x-a.x)*dx + (p.y-a.y)*dy) / len2))
         return hypot(p.x - (a.x + t*dx), p.y - (a.y + t*dy))
     }
+
+    private func distanceFromQuadraticCurve(point: CGPoint, control: CGPoint) -> CGFloat {
+        var closest = CGFloat.greatestFiniteMagnitude
+        var previous = startPoint
+        for step in 1...28 {
+            let current = pointOnCurve(at: CGFloat(step) / 28)
+            closest = min(closest, distanceFromLineSegment(point: point, a: previous, b: current))
+            previous = current
+        }
+        return closest
+    }
+}
+
+enum ArrowHandle {
+    case start, end, control
 }
 
 // MARK: – Rectangle
@@ -494,7 +559,7 @@ final class NumberedStepAnnotation: AnnotationObject {
     var number: Int
     var diameter: CGFloat = 30
 
-    private lazy var cachedTextLayout: (font: NSFont, attrs: [NSAttributedString.Key: Any], size: CGSize) = {
+    private var textLayout: (font: NSFont, attrs: [NSAttributedString.Key: Any], size: CGSize) {
         let font = NSFont.boldSystemFont(ofSize: diameter * 0.55)
         let attrs: [NSAttributedString.Key: Any] = [
             .font: font,
@@ -502,7 +567,7 @@ final class NumberedStepAnnotation: AnnotationObject {
         ]
         let size = ("\(number)" as NSString).size(withAttributes: attrs)
         return (font, attrs, size)
-    }()
+    }
 
     init(center: CGPoint, number: Int) {
         self.origin = center
@@ -556,7 +621,7 @@ final class NumberedStepAnnotation: AnnotationObject {
         ctx.strokeEllipse(in: circleRect)
 
         // Number text (centered, white, bold) — font + size cached as lazy property
-        let layout = cachedTextLayout
+        let layout = textLayout
         let textOrigin = CGPoint(
             x: circleRect.midX - layout.size.width / 2,
             y: circleRect.midY - layout.size.height / 2

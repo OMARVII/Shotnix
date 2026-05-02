@@ -29,6 +29,10 @@ if [ -f "$SCRIPT_DIR/Branding/Shotnix.icns" ]; then
     cp "$SCRIPT_DIR/Branding/Shotnix.icns" "$APP_BUNDLE/Contents/Resources/Shotnix.icns"
 fi
 
+if [ -f "$SCRIPT_DIR/PrivacyInfo.xcprivacy" ]; then
+    cp "$SCRIPT_DIR/PrivacyInfo.xcprivacy" "$APP_BUNDLE/Contents/Resources/PrivacyInfo.xcprivacy"
+fi
+
 echo "▶ Ad-hoc signing…"
 codesign --force --deep --sign - \
     --options runtime \
