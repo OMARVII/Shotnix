@@ -102,8 +102,8 @@ final class AnnotationWindowController: NSWindowController {
                 self?.toolbar.setCropApplyVisible(false)
             }
         }
-        toolbar.onColorChanged    = { [weak self] color in self?.canvas.activeColor = color }
-        toolbar.onLineWidthChanged = { [weak self] w   in self?.canvas.activeLineWidth = w }
+        toolbar.onColorChanged    = { [weak self] color in self?.canvas.setActiveColor(color) }
+        toolbar.onLineWidthChanged = { [weak self] w   in self?.canvas.setActiveLineWidth(w) }
         toolbar.onSave            = { [weak self] in self?.save() }
         toolbar.onCopy            = { [weak self] in self?.copyToClipboard() }
         toolbar.onApplyCrop       = { [weak self] in self?.applyCrop() }
