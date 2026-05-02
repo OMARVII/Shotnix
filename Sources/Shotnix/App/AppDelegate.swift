@@ -52,6 +52,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         menu.addItem(header: "Tools")
         menu.addItem(title: "Capture Text (OCR)",   key: "o",  action: #selector(captureText), icon: "text.viewfinder")
+        menu.addItem(title: "Scan QR Code",         key: "",  action: #selector(scanQRCode), icon: "qrcode.viewfinder")
         menu.addItem(title: "Open History",         key: "",  action: #selector(openHistory), icon: "clock.arrow.circlepath")
         menu.addItem(title: "Annotate Last Screenshot", key: "", action: #selector(annotateLastScreenshot), icon: "pencil.tip.crop.circle")
         menu.addItem(.separator())
@@ -78,6 +79,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func capturePrevious()     { Task { await captureEngine.capturePreviousArea(historyManager: historyManager) } }
     @objc func captureScrolling()    { Task { await captureEngine.startScrollingCapture(historyManager: historyManager) } }
     @objc func captureText()         { Task { await captureEngine.startOCRCapture() } }
+    @objc func scanQRCode()          { Task { await captureEngine.startQRCodeCapture() } }
     @objc func annotateLastScreenshot() {
         guard let last = historyManager.items.first else { return }
         AnnotationWindowController.open(image: last.fullImage, historyItem: last, historyManager: historyManager)

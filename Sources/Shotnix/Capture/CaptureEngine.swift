@@ -193,6 +193,40 @@ final class CaptureEngine {
         await areaSelectionWindow?.prepareAndShow(engine: self)
     }
 
+    // MARK: – QR Capture
+
+    func startQRCodeCapture() async {
+        guard PermissionsManager.hasScreenRecordingPermission else {
+            PermissionsManager.showPermissionDeniedAlert(); return
+        }
+        guard areaSelectionWindow == nil else { return }
+        let hiddenByCapture = await hideDesktopIconsForCaptureIfNeeded()
+        areaSelectionWindow = AreaSelectionWindow(mode: .area) { [weak self] rect, screen in
+            guard let self else { return }
+            self.areaSelectionWindow = nil
+            guard let rect else {
+                self.restoreDesktopIconsIfNeeded(hiddenByCapture)
+                return
+            }
+            Task {
+                guard let image = await self.captureRectToImage(rect, on: screen) else {
+                    self.restoreDesktopIconsIfNeeded(hiddenByCapture)
+                    return
+                }
+                let results = await QRCodeEngine.detect(in: image)
+                await MainActor.run {
+                    if results.isEmpty {
+                        ToastWindow.show(message: "No QR code found in this selection")
+                    } else {
+                        QRCodeResultWindow.show(results: results)
+                    }
+                }
+                self.restoreDesktopIconsIfNeeded(hiddenByCapture)
+            }
+        }
+        await areaSelectionWindow?.prepareAndShow(engine: self)
+    }
+
     // MARK: – Core capture
 
     func captureRect(_ rect: CGRect, on screen: NSScreen, historyManager: HistoryManager) async {
