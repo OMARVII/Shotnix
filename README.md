@@ -6,6 +6,7 @@
     Capture, annotate, pin, and extract text — all from your menu bar.
   </p>
   <p align="center">
+    <a href="https://shotnix.com/"><img alt="Website" src="https://img.shields.io/badge/website-shotnix.com-79F2FF?style=flat-square"/></a>
     <a href="https://github.com/OMARVII/Shotnix/releases/latest"><img alt="Download" src="https://img.shields.io/github/v/release/OMARVII/Shotnix?label=Download&style=flat-square&color=6C3FE8"/></a>
     <img alt="Platform" src="https://img.shields.io/badge/platform-macOS%2013%2B-blue?style=flat-square"/>
     <a href="LICENSE"><img alt="License" src="https://img.shields.io/github/license/OMARVII/Shotnix?style=flat-square"/></a>
@@ -29,6 +30,8 @@
 ## Why Shotnix?
 
 macOS has built-in screenshot tools, but they stop at capture. Shotnix picks up where they leave off — annotate with arrows, blur sensitive info, pin screenshots to your desktop, extract text with OCR, and access everything from a lightweight menu bar app. No subscription. No account. Just a fast tool that stays out of your way.
+
+Visit **[shotnix.com](https://shotnix.com/)** for the latest download and project overview.
 
 ## Features
 
@@ -75,7 +78,7 @@ macOS has built-in screenshot tools, but they stop at capture. Shotnix picks up 
 
 ### Download (recommended)
 
-1. Grab the latest `.dmg` from [**Releases**](https://github.com/OMARVII/Shotnix/releases/latest)
+1. Grab the latest `.dmg` from [**shotnix.com**](https://shotnix.com/) or [**Releases**](https://github.com/OMARVII/Shotnix/releases/latest)
 2. Open the DMG and drag **Shotnix** to your Applications folder
 3. Grant **Screen Recording** permission when prompted
 
