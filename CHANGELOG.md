@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.9.8-beta] - 2026-05-02
+
+### Changed
+- **About links** — added Website and Report Issue links next to GitHub so beta users can quickly find the site, source, and issue tracker.
+- **Welcome copy** — refreshed the first-launch description to mention annotation, OCR, scrolling capture, pinning, and local history.
+
 ## [0.9.7-beta] - 2026-05-01
 
 ### Fixed
