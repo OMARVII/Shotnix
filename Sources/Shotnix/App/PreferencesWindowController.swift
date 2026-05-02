@@ -196,10 +196,7 @@ struct ScreenshotsSettingsView: View {
     @AppStorage("autoSaveLocation") var autoSaveLocation = ""
 
     var displayLocation: String {
-        if autoSaveLocation.isEmpty {
-            return ("~/Desktop" as NSString).expandingTildeInPath
-        }
-        return autoSaveLocation
+        Settings.autoSaveLocation
     }
 
     var body: some View {
@@ -244,7 +241,11 @@ struct ScreenshotsSettingsView: View {
                         panel.directoryURL = URL(fileURLWithPath: displayLocation)
                         
                         if panel.runModal() == .OK, let url = panel.url {
-                            autoSaveLocation = url.path
+                            if Settings.setAutoSaveLocation(url.path) {
+                                autoSaveLocation = Settings.autoSaveLocation
+                            } else {
+                                ToastWindow.show(message: "Choose a writable folder for auto-save.")
+                            }
                         }
                     }
                 }

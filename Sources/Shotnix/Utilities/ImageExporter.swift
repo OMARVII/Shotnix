@@ -39,8 +39,7 @@ enum ImageExporter {
         panel.canCreateDirectories = true
         panel.begin { response in
             if response == .OK, let url = panel.url {
-                save(image: image, to: url)
-                completion?(true)
+                completion?(save(image: image, to: url) != nil)
             } else {
                 completion?(false)
             }
@@ -49,9 +48,13 @@ enum ImageExporter {
 
     // MARK: – Silent save
 
-    static func save(image: NSImage, to url: URL) {
+    @discardableResult
+    static func save(image: NSImage, to url: URL) -> URL? {
         // Extract the CGImage once and reuse it for whichever encoder runs.
-        guard let cg = image.bestCGImage else { return }
+        guard let cg = image.bestCGImage else {
+            print("[Shotnix] Save failed: image has no CGImage backing")
+            return nil
+        }
         let ext = url.pathExtension.lowercased()
         var outputURL = url
         let data: Data?
@@ -66,10 +69,20 @@ enum ImageExporter {
             }
         default:            data = pngData(from: cg)
         }
-        let dir = outputURL.deletingLastPathComponent()
-        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-        try? data?.write(to: outputURL)
-        HistoryManager.applyScreenshotMetadata(to: outputURL.path, rect: nil)
+        guard let data else {
+            print("[Shotnix] Save failed: unable to encode image")
+            return nil
+        }
+        do {
+            let dir = outputURL.deletingLastPathComponent()
+            try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+            try data.write(to: outputURL, options: .atomic)
+            HistoryManager.applyScreenshotMetadata(to: outputURL.path, rect: nil)
+            return outputURL
+        } catch {
+            print("[Shotnix] Save failed at \(outputURL.path): \(error)")
+            return nil
+        }
     }
 
     // MARK: – Format helpers

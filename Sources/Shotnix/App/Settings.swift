@@ -4,6 +4,14 @@ import Foundation
 enum Settings {
 
     private static let defaults = UserDefaults.standard
+    private static let autoSaveLocationKey = "autoSaveLocation"
+
+    static var defaultAutoSaveLocation: String {
+        if let desktop = FileManager.default.urls(for: .desktopDirectory, in: .userDomainMask).first {
+            return desktop.path
+        }
+        return ("~/Desktop" as NSString).expandingTildeInPath
+    }
 
     // MARK: – First Launch
 
@@ -74,10 +82,36 @@ enum Settings {
 
     static var autoSaveLocation: String {
         get {
-            let v = defaults.string(forKey: "autoSaveLocation") ?? ""
-            return v.isEmpty ? ("~/Desktop" as NSString).expandingTildeInPath : v
+            let v = defaults.string(forKey: autoSaveLocationKey) ?? ""
+            guard !v.isEmpty else { return defaultAutoSaveLocation }
+            return normalizedWritableDirectoryPath(v) ?? defaultAutoSaveLocation
         }
-        set { defaults.set(newValue, forKey: "autoSaveLocation") }
+        set { _ = setAutoSaveLocation(newValue) }
+    }
+
+    @discardableResult
+    static func setAutoSaveLocation(_ path: String) -> Bool {
+        let trimmed = path.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else {
+            defaults.removeObject(forKey: autoSaveLocationKey)
+            return true
+        }
+        guard let normalized = normalizedWritableDirectoryPath(trimmed) else { return false }
+        defaults.set(normalized, forKey: autoSaveLocationKey)
+        return true
+    }
+
+    private static func normalizedWritableDirectoryPath(_ path: String) -> String? {
+        guard path.hasPrefix("/") else { return nil }
+        guard !path.split(separator: "/", omittingEmptySubsequences: false).contains("..") else { return nil }
+
+        let url = URL(fileURLWithPath: path, isDirectory: true).standardizedFileURL
+        var isDirectory = ObjCBool(false)
+        guard FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory), isDirectory.boolValue else {
+            return nil
+        }
+        guard FileManager.default.isWritableFile(atPath: url.path) else { return nil }
+        return url.path
     }
 
     // MARK: – Screenshots
