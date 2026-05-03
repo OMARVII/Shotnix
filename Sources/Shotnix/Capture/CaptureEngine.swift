@@ -173,8 +173,8 @@ final class CaptureEngine {
         guard canBeginRecordingSetup() else { return }
 
         do {
-            let content = try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: true)
-            let choices = recordingWindowChoices(from: content.windows)
+            let content = try await SCShareableContent.excludingDesktopWindows(true, onScreenWindowsOnly: true)
+            let choices = await recordingWindowChoices(from: content.windows)
             guard !choices.isEmpty else {
                 ToastWindow.show(message: "No recordable windows found")
                 return
@@ -244,10 +244,10 @@ final class CaptureEngine {
         return true
     }
 
-    private func recordingWindowChoices(from windows: [SCWindow]) -> [RecordingWindowChoice] {
+    private func recordingWindowChoices(from windows: [SCWindow]) async -> [RecordingWindowChoice] {
         let currentProcessID = pid_t(ProcessInfo.processInfo.processIdentifier)
-        return windows.compactMap { window in
-            guard window.frame.width >= 96, window.frame.height >= 64 else { return nil }
+        let candidates: [(window: SCWindow, appName: String, title: String, frame: CGRect, screen: NSScreen, previewRect: CGRect, appIcon: NSImage?)] = windows.compactMap { window in
+            guard Self.isRecordableWindowCandidate(window) else { return nil }
             if window.owningApplication?.processID == currentProcessID { return nil }
 
             let appName = window.owningApplication?.applicationName.trimmingCharacters(in: .whitespacesAndNewlines) ?? "App"
@@ -262,13 +262,97 @@ final class CaptureEngine {
                 width: window.frame.width,
                 height: window.frame.height
             )
-            return RecordingWindowChoice(window: window, appName: appName, title: title, frame: window.frame, screen: screen, previewRect: previewRect)
+            let appIcon = window.owningApplication.flatMap { NSRunningApplication(processIdentifier: $0.processID)?.icon }
+            return (window, appName, title, window.frame, screen, previewRect, appIcon)
         }
         .sorted {
             let lhs = "\($0.appName) \($0.title)".localizedLowercase
             let rhs = "\($1.appName) \($1.title)".localizedLowercase
             return lhs < rhs
         }
+
+        var choices: [RecordingWindowChoice] = []
+        choices.reserveCapacity(candidates.count)
+        for candidate in candidates {
+            let previewImage = await windowPreviewImage(for: candidate.window)
+            choices.append(
+                RecordingWindowChoice(
+                    window: candidate.window,
+                    appName: candidate.appName,
+                    title: candidate.title,
+                    frame: candidate.frame,
+                    screen: candidate.screen,
+                    previewRect: candidate.previewRect,
+                    previewImage: previewImage,
+                    appIcon: candidate.appIcon
+                )
+            )
+        }
+        return choices
+    }
+
+    private func windowPreviewImage(for window: SCWindow) async -> NSImage? {
+        if #available(macOS 14.0, *), let image = await screenCaptureKitWindowPreview(for: window) {
+            return image
+        }
+        return fallbackWindowPreview(for: window)
+    }
+
+    @available(macOS 14.0, *)
+    private func screenCaptureKitWindowPreview(for window: SCWindow) async -> NSImage? {
+        let filter = SCContentFilter(desktopIndependentWindow: window)
+        let pixelSize = Self.previewPixelSize(for: window.frame.size)
+        let config = SCStreamConfiguration()
+        config.width = pixelSize.width
+        config.height = pixelSize.height
+        config.scalesToFit = true
+        config.showsCursor = false
+        config.captureResolution = .best
+
+        do {
+            let cgImage = try await SCScreenshotManager.captureImage(contentFilter: filter, configuration: config)
+            return Self.nsImage(from: cgImage, logicalSize: Self.previewLogicalSize(pixelSize: pixelSize))
+        } catch {
+            return nil
+        }
+    }
+
+    private func fallbackWindowPreview(for window: SCWindow) -> NSImage? {
+        let options: CGWindowImageOption = [.bestResolution, .boundsIgnoreFraming]
+        guard let cgImage = CGWindowListCreateImage(.null, .optionIncludingWindow, CGWindowID(window.windowID), options) else { return nil }
+        return Self.nsImage(from: cgImage, logicalSize: window.frame.size)
+    }
+
+    nonisolated private static func previewPixelSize(for size: CGSize) -> (width: Int, height: Int) {
+        let maxWidth: CGFloat = 420
+        let maxHeight: CGFloat = 260
+        let width = max(size.width, 1)
+        let height = max(size.height, 1)
+        let scale = min(maxWidth / width, maxHeight / height, 1)
+        return (
+            width: max(2, evenCeil(Int(ceil(width * scale * 2)))),
+            height: max(2, evenCeil(Int(ceil(height * scale * 2))))
+        )
+    }
+
+    nonisolated private static func previewLogicalSize(pixelSize: (width: Int, height: Int)) -> CGSize {
+        CGSize(width: CGFloat(pixelSize.width) / 2, height: CGFloat(pixelSize.height) / 2)
+    }
+
+    nonisolated private static func evenCeil(_ value: Int) -> Int {
+        value.isMultiple(of: 2) ? value : value + 1
+    }
+
+    nonisolated private static func isRecordableWindowCandidate(_ window: SCWindow) -> Bool {
+        guard window.frame.width >= 160, window.frame.height >= 120 else { return false }
+        let aspectRatio = window.frame.width / max(window.frame.height, 1)
+        guard aspectRatio <= 10 else { return false }
+
+        let title = (window.title ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        let appName = window.owningApplication?.applicationName.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let searchText = "\(appName) \(title)".localizedLowercase
+        let blockedFragments = ["backstop", "underbelly"]
+        return !blockedFragments.contains { searchText.contains($0) }
     }
 
     private func screen(containing rect: CGRect) -> NSScreen? {
@@ -517,6 +601,8 @@ private struct RecordingWindowChoice {
     let frame: CGRect
     let screen: NSScreen
     let previewRect: CGRect
+    let previewImage: NSImage?
+    let appIcon: NSImage?
 
     var displayTitle: String {
         title.isEmpty ? appName : title
@@ -554,9 +640,9 @@ private enum RecordingTargetKind {
 private final class RecordingWindowChooserWindow: NSWindow {
 
     private static var openWindows: [RecordingWindowChooserWindow] = []
-    private static let panelWidth: CGFloat = 560
-    private static let panelHeight: CGFloat = 420
-    private static let headerHeight: CGFloat = 74
+    private static let panelWidth: CGFloat = 724
+    private static let panelHeight: CGFloat = 560
+    private static let headerHeight: CGFloat = 84
 
     private let choices: [RecordingWindowChoice]
     private let selectHandler: (RecordingWindowChoice) -> Void
@@ -632,12 +718,12 @@ private final class RecordingWindowChooserWindow: NSWindow {
         panel.layer?.borderColor = NSColor.white.withAlphaComponent(0.16).cgColor
         root.addSubview(panel)
 
-        let title = label("Choose window", size: 15, weight: .bold, color: .white)
-        title.frame = NSRect(x: 22, y: frame.height - 40, width: 220, height: 20)
+        let title = label("Choose window", size: 16, weight: .bold, color: .white)
+        title.frame = NSRect(x: 24, y: frame.height - 42, width: 220, height: 20)
         panel.addSubview(title)
 
         let subtitle = label("Select a window to record without blocking other apps", size: 10.5, weight: .semibold, color: NSColor.white.withAlphaComponent(0.48))
-        subtitle.frame = NSRect(x: 22, y: frame.height - 60, width: 340, height: 14)
+        subtitle.frame = NSRect(x: 24, y: frame.height - 63, width: 360, height: 14)
         panel.addSubview(subtitle)
 
         let closeButton = RecordingChooserCloseButton(frame: NSRect(x: frame.width - 44, y: frame.height - 44, width: 28, height: 28))
@@ -645,7 +731,7 @@ private final class RecordingWindowChooserWindow: NSWindow {
         closeButton.action = #selector(closeTapped)
         panel.addSubview(closeButton)
 
-        let scrollFrame = NSRect(x: 14, y: 14, width: frame.width - 28, height: frame.height - Self.headerHeight - 18)
+        let scrollFrame = NSRect(x: 16, y: 16, width: frame.width - 48, height: frame.height - Self.headerHeight - 18)
         let scroll = NSScrollView(frame: scrollFrame)
         scroll.drawsBackground = false
         scroll.hasVerticalScroller = true
@@ -653,14 +739,14 @@ private final class RecordingWindowChooserWindow: NSWindow {
         scroll.borderType = .noBorder
         panel.addSubview(scroll)
 
-        let rowHeight: CGFloat = 54
+        let rowHeight: CGFloat = 150
         let documentHeight = max(scrollFrame.height, CGFloat(choices.count) * rowHeight)
         let document = NSView(frame: NSRect(x: 0, y: 0, width: scrollFrame.width, height: documentHeight))
         scroll.documentView = document
 
         for (index, choice) in choices.enumerated() {
             let y = documentHeight - CGFloat(index + 1) * rowHeight
-            let button = RecordingWindowChoiceButton(frame: NSRect(x: 0, y: y + 5, width: scrollFrame.width - 4, height: rowHeight - 8), choice: choice)
+            let button = RecordingWindowChoiceButton(frame: NSRect(x: 0, y: y + 6, width: scrollFrame.width - 8, height: rowHeight - 12), choice: choice)
             button.target = self
             button.action = #selector(windowChosen(_:))
             document.addSubview(button)
@@ -721,6 +807,8 @@ private final class RecordingWindowChooserWindow: NSWindow {
 private final class RecordingWindowChoiceButton: NSButton {
 
     let choice: RecordingWindowChoice
+    private let idleBackground = NSColor.white.withAlphaComponent(0.074)
+    private let pressedBackground = NSColor.white.withAlphaComponent(0.125)
 
     init(frame: NSRect, choice: RecordingWindowChoice) {
         self.choice = choice
@@ -729,37 +817,48 @@ private final class RecordingWindowChoiceButton: NSButton {
         title = ""
         imagePosition = .noImage
         wantsLayer = true
-        layer?.cornerRadius = 14
+        layer?.cornerRadius = 18
         layer?.cornerCurve = .continuous
-        layer?.backgroundColor = NSColor.white.withAlphaComponent(0.075).cgColor
+        layer?.backgroundColor = idleBackground.cgColor
         layer?.borderWidth = 1
-        layer?.borderColor = NSColor.white.withAlphaComponent(0.07).cgColor
+        layer?.borderColor = NSColor.white.withAlphaComponent(0.105).cgColor
 
-        let icon = NSImageView(frame: NSRect(x: 14, y: 15, width: 18, height: 18))
-        icon.image = NSImage(systemSymbolName: "macwindow", accessibilityDescription: nil)
+        let previewFrame = NSRect(x: 12, y: 12, width: 180, height: frame.height - 24)
+        let preview = RecordingWindowPreviewView(frame: previewFrame, image: choice.previewImage, appIcon: choice.appIcon)
+        addSubview(preview)
+
+        let icon = NSImageView(frame: NSRect(x: 214, y: frame.height - 44, width: 22, height: 22))
+        icon.image = choice.appIcon ?? NSImage(systemSymbolName: "macwindow", accessibilityDescription: nil)
         icon.contentTintColor = NSColor.white.withAlphaComponent(0.84)
         addSubview(icon)
 
         let titleField = NSTextField(labelWithString: choice.displayTitle)
-        titleField.font = .systemFont(ofSize: 12.5, weight: .bold)
+        titleField.font = .systemFont(ofSize: 14, weight: .bold)
         titleField.textColor = .white
         titleField.lineBreakMode = .byTruncatingTail
-        titleField.frame = NSRect(x: 44, y: 25, width: frame.width - 132, height: 16)
+        titleField.frame = NSRect(x: 244, y: frame.height - 43, width: frame.width - 390, height: 18)
         addSubview(titleField)
 
         let subtitleField = NSTextField(labelWithString: choice.subtitle)
         subtitleField.font = .systemFont(ofSize: 10.5, weight: .semibold)
         subtitleField.textColor = NSColor.white.withAlphaComponent(0.46)
         subtitleField.lineBreakMode = .byTruncatingTail
-        subtitleField.frame = NSRect(x: 44, y: 9, width: frame.width - 132, height: 13)
+        subtitleField.frame = NSRect(x: 244, y: frame.height - 62, width: frame.width - 390, height: 13)
         addSubview(subtitleField)
 
-        let actionField = NSTextField(labelWithString: "Select")
-        actionField.font = .systemFont(ofSize: 10, weight: .bold)
-        actionField.textColor = NSColor.systemRed.withAlphaComponent(0.92)
-        actionField.alignment = .right
-        actionField.frame = NSRect(x: frame.width - 78, y: 18, width: 56, height: 13)
-        addSubview(actionField)
+        let description = NSTextField(labelWithString: "Preview the target, then continue to recording controls.")
+        description.font = .systemFont(ofSize: 11, weight: .medium)
+        description.textColor = NSColor.white.withAlphaComponent(0.42)
+        description.lineBreakMode = .byTruncatingTail
+        description.frame = NSRect(x: 214, y: 48, width: frame.width - 358, height: 15)
+        addSubview(description)
+
+        let sizePill = RecordingWindowPillLabel(text: "\(Int(choice.frame.width)) × \(Int(choice.frame.height))")
+        sizePill.frame = NSRect(x: 214, y: 18, width: 92, height: 24)
+        addSubview(sizePill)
+
+        let selectPill = RecordingWindowSelectPill(frame: NSRect(x: frame.width - 120, y: 52, width: 82, height: 32))
+        addSubview(selectPill)
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
@@ -767,10 +866,146 @@ private final class RecordingWindowChoiceButton: NSButton {
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
 
     override func mouseDown(with event: NSEvent) {
-        layer?.backgroundColor = NSColor.white.withAlphaComponent(0.12).cgColor
+        layer?.backgroundColor = pressedBackground.cgColor
         NSHapticFeedbackManager.defaultPerformer.perform(.generic, performanceTime: .default)
         super.mouseDown(with: event)
-        layer?.backgroundColor = NSColor.white.withAlphaComponent(0.075).cgColor
+        layer?.backgroundColor = idleBackground.cgColor
+    }
+}
+
+@MainActor
+private final class RecordingWindowPreviewView: NSView {
+
+    private let image: NSImage?
+    private let appIcon: NSImage?
+
+    init(frame: NSRect, image: NSImage?, appIcon: NSImage?) {
+        self.image = image
+        self.appIcon = appIcon
+        super.init(frame: frame)
+        wantsLayer = true
+        layer?.contentsScale = NSScreen.main?.backingScaleFactor ?? 2
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+
+    override func draw(_ dirtyRect: NSRect) {
+        super.draw(dirtyRect)
+        NSGraphicsContext.current?.imageInterpolation = .high
+
+        let backgroundPath = NSBezierPath(roundedRect: bounds, xRadius: 14, yRadius: 14)
+        NSColor(calibratedWhite: 0.02, alpha: 0.98).setFill()
+        backgroundPath.fill()
+
+        let inner = bounds.insetBy(dx: 8, dy: 8)
+        let imageRect = image.map { Self.aspectFitRect(imageSize: $0.size, in: inner) }
+        if let image, let imageRect {
+            image.draw(in: imageRect, from: .zero, operation: .sourceOver, fraction: 1, respectFlipped: true, hints: [.interpolation: NSImageInterpolation.high])
+        } else {
+            drawPlaceholder(in: inner)
+        }
+
+        if let appIcon {
+            let iconRect = NSRect(x: bounds.minX + 12, y: bounds.minY + 12, width: 30, height: 30)
+            NSColor.black.withAlphaComponent(0.34).setFill()
+            NSBezierPath(roundedRect: iconRect.insetBy(dx: -5, dy: -5), xRadius: 10, yRadius: 10).fill()
+            appIcon.draw(in: iconRect)
+        }
+
+        NSColor.white.withAlphaComponent(0.12).setStroke()
+        backgroundPath.lineWidth = 1
+        backgroundPath.stroke()
+    }
+
+    private func drawPlaceholder(in rect: NSRect) {
+        let symbol = NSImage(systemSymbolName: "macwindow", accessibilityDescription: nil)
+        symbol?.withSymbolConfiguration(NSImage.SymbolConfiguration(pointSize: 28, weight: .semibold))?.draw(
+            in: NSRect(x: rect.midX - 18, y: rect.midY - 18, width: 36, height: 36),
+            from: .zero,
+            operation: .sourceOver,
+            fraction: 0.54
+        )
+    }
+
+    private static func aspectFitRect(imageSize: CGSize, in rect: NSRect) -> NSRect {
+        guard imageSize.width > 0, imageSize.height > 0 else { return rect }
+        let scale = min(rect.width / imageSize.width, rect.height / imageSize.height)
+        let width = imageSize.width * scale
+        let height = imageSize.height * scale
+        return NSRect(x: rect.midX - width / 2, y: rect.midY - height / 2, width: width, height: height)
+    }
+}
+
+@MainActor
+private final class RecordingWindowSelectPill: NSView {
+
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        wantsLayer = true
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+
+    override func hitTest(_ point: NSPoint) -> NSView? { nil }
+
+    override func draw(_ dirtyRect: NSRect) {
+        super.draw(dirtyRect)
+        let path = NSBezierPath(roundedRect: bounds, xRadius: 12, yRadius: 12)
+        NSColor.systemRed.withAlphaComponent(0.16).setFill()
+        path.fill()
+        NSColor.systemRed.withAlphaComponent(0.32).setStroke()
+        path.lineWidth = 1
+        path.stroke()
+
+        let text = "Select" as NSString
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: NSFont.systemFont(ofSize: 10.5, weight: .bold),
+            .foregroundColor: NSColor.systemRed.withAlphaComponent(0.96)
+        ]
+        let textSize = text.size(withAttributes: attributes)
+        let textRect = NSRect(x: bounds.midX - textSize.width / 2 - 5, y: bounds.midY - textSize.height / 2, width: textSize.width, height: textSize.height)
+        text.draw(in: textRect, withAttributes: attributes)
+
+        let chevron = NSBezierPath()
+        let x = textRect.maxX + 8
+        let y = bounds.midY
+        chevron.move(to: NSPoint(x: x - 2, y: y + 4))
+        chevron.line(to: NSPoint(x: x + 2, y: y))
+        chevron.line(to: NSPoint(x: x - 2, y: y - 4))
+        NSColor.systemRed.withAlphaComponent(0.86).setStroke()
+        chevron.lineWidth = 1.8
+        chevron.lineCapStyle = .round
+        chevron.lineJoinStyle = .round
+        chevron.stroke()
+    }
+}
+
+@MainActor
+private final class RecordingWindowPillLabel: NSView {
+
+    private let textField: NSTextField
+
+    init(text: String) {
+        textField = NSTextField(labelWithString: text)
+        super.init(frame: .zero)
+        wantsLayer = true
+        layer?.cornerRadius = 10
+        layer?.cornerCurve = .continuous
+        layer?.backgroundColor = NSColor.white.withAlphaComponent(0.08).cgColor
+        layer?.borderWidth = 1
+        layer?.borderColor = NSColor.white.withAlphaComponent(0.08).cgColor
+
+        textField.font = .monospacedDigitSystemFont(ofSize: 10, weight: .semibold)
+        textField.textColor = NSColor.white.withAlphaComponent(0.62)
+        textField.alignment = .center
+        addSubview(textField)
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+
+    override func layout() {
+        super.layout()
+        textField.frame = bounds.insetBy(dx: 8, dy: 5)
     }
 }
 

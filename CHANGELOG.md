@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.10.2-beta] - 2026-05-03
+
+### Added
+- **Record Window previews** — the Record Window picker now shows premium window preview cards with app icons and clearer target details.
+
+### Fixed
+- **Record Window picker polish** — desktop/backstop windows are filtered out and the Select control no longer crowds the scrollbar edge.
+
 ## [0.10.1] - 2026-05-03
 
 ### Fixed
