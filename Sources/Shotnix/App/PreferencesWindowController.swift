@@ -1,4 +1,5 @@
 import AppKit
+import AVFoundation
 import SwiftUI
 import ServiceManagement
 
@@ -6,7 +7,8 @@ enum PreferencesTab: Int, CaseIterable {
     case general = 0
     case shortcuts = 1
     case screenshots = 2
-    case about = 3
+    case recording = 3
+    case about = 4
 }
 
 @MainActor
@@ -38,6 +40,13 @@ final class PreferencesWindowController: NSWindowController, NSWindowDelegate {
         screenshotsItem.label = "Screenshots"
         screenshotsItem.image = NSImage(systemSymbolName: "camera", accessibilityDescription: nil)
         tabViewController.addTabViewItem(screenshotsItem)
+
+        let recordingVC = NSHostingController(rootView: RecordingSettingsView())
+        recordingVC.title = "Recording"
+        let recordingItem = NSTabViewItem(viewController: recordingVC)
+        recordingItem.label = "Recording"
+        recordingItem.image = NSImage(systemSymbolName: "record.circle", accessibilityDescription: nil)
+        tabViewController.addTabViewItem(recordingItem)
         
         let aboutVC = NSHostingController(rootView: AboutSettingsView())
         aboutVC.title = "About"
@@ -259,8 +268,91 @@ struct ScreenshotsSettingsView: View {
         .frame(width: 500, height: 350)
     }
 }
+
+private struct MicrophoneOption: Identifiable {
+    let id: String
+    let name: String
+}
+
+private enum MicrophoneDeviceProvider {
+    static var options: [MicrophoneOption] {
+        let deviceTypes: [AVCaptureDevice.DeviceType]
+        if #available(macOS 14.0, *) {
+            deviceTypes = [.microphone, .externalUnknown]
+        } else {
+            deviceTypes = [.builtInMicrophone, .externalUnknown]
+        }
+
+        return AVCaptureDevice.DiscoverySession(
+            deviceTypes: deviceTypes,
+            mediaType: .audio,
+            position: .unspecified
+        )
+        .devices
+        .sorted { $0.localizedName.localizedCaseInsensitiveCompare($1.localizedName) == .orderedAscending }
+        .map { MicrophoneOption(id: $0.uniqueID, name: $0.localizedName) }
+    }
+}
+
+struct RecordingSettingsView: View {
+    @AppStorage("recordingFPS") var fps = 30
+    @AppStorage("recordingQuality") var quality = "high"
+    @AppStorage("recordingShowsCursor") var showsCursor = true
+    @AppStorage("recordingSystemAudio") var systemAudio = false
+    @AppStorage("recordingMicrophone") var microphone = false
+    @AppStorage("recordingMicrophoneDeviceID") var microphoneDeviceID = ""
+
+    private var microphones: [MicrophoneOption] { MicrophoneDeviceProvider.options }
+
+    var body: some View {
+        Form {
+            Section {
+                Picker("Quality", selection: $quality) {
+                    Text("Balanced").tag("balanced")
+                    Text("High").tag("high")
+                    Text("Max").tag("max")
+                }
+
+                Picker("Frame rate", selection: $fps) {
+                    Text("30 fps").tag(30)
+                    Text("60 fps").tag(60)
+                }
+
+                Toggle("Show cursor", isOn: $showsCursor)
+            } header: {
+                Text("Video")
+            } footer: {
+                Text("High is the default. Max keeps more detail for demos, but creates larger files.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+
+            Section {
+                Toggle("Record system audio", isOn: $systemAudio)
+                Toggle("Record microphone", isOn: $microphone)
+
+                Picker("Microphone", selection: $microphoneDeviceID) {
+                    Text("System Default").tag("")
+                    ForEach(microphones) { device in
+                        Text(device.name).tag(device.id)
+                    }
+                }
+                .disabled(!microphone)
+            } header: {
+                Text("Audio")
+            } footer: {
+                Text("Microphone recording requires macOS microphone permission. System audio excludes Shotnix sounds to avoid feedback.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+        }
+        .formStyle(.grouped)
+        .frame(width: 500, height: 430)
+    }
+}
+
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.9.8-beta"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.10.0-beta"
     
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
@@ -285,6 +377,12 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.10.0-beta
+                    • Record an area, selected window, or fullscreen display
+                    • Configure system audio, microphone, cursor, quality, and FPS before recording
+                    • Live recording HUD with timer, stop control, audio state, and mic level feedback
+                    • Record Window now uses a selectable window picker instead of a blocking overlay
+
                     Version 0.9.9-beta
                     • QR code scanning from a selected screen area
                     • Smart QR results for links, email, phone, SMS, Wi-Fi, and plain text

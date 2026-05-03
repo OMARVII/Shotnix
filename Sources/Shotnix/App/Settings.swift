@@ -128,4 +128,48 @@ enum Settings {
         }
         set { defaults.set(newValue, forKey: "jpegQuality") }
     }
+
+    // MARK: – Recording
+
+    static var recordingFPS: Int {
+        get {
+            let value = defaults.integer(forKey: "recordingFPS")
+            return value == 60 ? 60 : 30
+        }
+        set { defaults.set(newValue == 60 ? 60 : 30, forKey: "recordingFPS") }
+    }
+
+    static var recordingQuality: String {
+        get {
+            let value = defaults.string(forKey: "recordingQuality") ?? "high"
+            return ["balanced", "high", "max"].contains(value) ? value : "high"
+        }
+        set {
+            let value = ["balanced", "high", "max"].contains(newValue) ? newValue : "high"
+            defaults.set(value, forKey: "recordingQuality")
+        }
+    }
+
+    static var recordingShowsCursor: Bool {
+        get {
+            if defaults.object(forKey: "recordingShowsCursor") == nil { return true }
+            return defaults.bool(forKey: "recordingShowsCursor")
+        }
+        set { defaults.set(newValue, forKey: "recordingShowsCursor") }
+    }
+
+    static var recordingSystemAudio: Bool {
+        get { defaults.bool(forKey: "recordingSystemAudio") }
+        set { defaults.set(newValue, forKey: "recordingSystemAudio") }
+    }
+
+    static var recordingMicrophone: Bool {
+        get { defaults.bool(forKey: "recordingMicrophone") }
+        set { defaults.set(newValue, forKey: "recordingMicrophone") }
+    }
+
+    static var recordingMicrophoneDeviceID: String {
+        get { defaults.string(forKey: "recordingMicrophoneDeviceID") ?? "" }
+        set { defaults.set(newValue, forKey: "recordingMicrophoneDeviceID") }
+    }
 }
