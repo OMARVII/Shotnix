@@ -352,7 +352,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.10.0-beta"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.10.1"
     
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
@@ -377,6 +377,10 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.10.1
+                    • Back-to-back recordings and screenshots no longer get stuck after stopping recording
+                    • Screen recordings preserve Retina scale for sharper MP4 output
+
                     Version 0.10.0-beta
                     • Record an area, selected window, or fullscreen display
                     • Configure system audio, microphone, cursor, quality, and FPS before recording
