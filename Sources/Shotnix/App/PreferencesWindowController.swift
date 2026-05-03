@@ -352,7 +352,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.10.1"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.10.2-beta"
     
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
@@ -377,6 +377,11 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.10.2-beta
+                    • Record Window now shows premium preview cards with app icons and target details
+                    • Desktop/backstop windows are filtered out of the picker
+                    • Select controls no longer crowd the right scrollbar edge
+
                     Version 0.10.1
                     • Back-to-back recordings and screenshots no longer get stuck after stopping recording
                     • Screen recordings preserve Retina scale for sharper MP4 output
