@@ -82,7 +82,7 @@ final class WelcomeWindowController: NSObject, NSWindowDelegate {
         lockIcon.contentTintColor = .systemOrange
         container.addSubview(lockIcon)
 
-        let permLabel = NSTextField(wrappingLabelWithString: "Screen Recording permission is required to capture screenshots. You can grant it now or later in System Settings.")
+        let permLabel = NSTextField(wrappingLabelWithString: "Screen Recording permission is required to capture screenshots and screen recordings. You can grant it now or later in System Settings.")
         permLabel.font = .systemFont(ofSize: 11)
         permLabel.textColor = .secondaryLabelColor
         permLabel.frame = NSRect(x: 52, y: y - 34, width: width - 82, height: 34)

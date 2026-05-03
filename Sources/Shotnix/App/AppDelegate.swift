@@ -2,7 +2,7 @@ import AppKit
 import ScreenCaptureKit
 
 @MainActor
-final class AppDelegate: NSObject, NSApplicationDelegate {
+final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
 
     private var statusItem: NSStatusItem!
     private var captureEngine: CaptureEngine!
@@ -50,6 +50,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(title: "Scrolling Capture",    key: "s",  action: #selector(captureScrolling), icon: "scroll")
         menu.addItem(.separator())
 
+        menu.addItem(header: "Record")
+        menu.addItem(title: "Record Area",          key: "", action: #selector(recordArea), icon: "record.circle")
+        menu.addItem(title: "Record Window",        key: "", action: #selector(recordWindow), icon: "macwindow.badge.plus")
+        menu.addItem(title: "Record Fullscreen",    key: "", action: #selector(recordFullscreen), icon: "rectangle.fill.on.rectangle.fill")
+        menu.addItem(title: "Stop Recording",       key: "", action: #selector(stopRecording), icon: "stop.circle")
+        menu.addItem(.separator())
+
         menu.addItem(header: "Tools")
         menu.addItem(title: "Capture Text (OCR)",   key: "o",  action: #selector(captureText), icon: "text.viewfinder")
         menu.addItem(title: "Scan QR Code",         key: "",  action: #selector(scanQRCode), icon: "qrcode.viewfinder")
@@ -78,6 +85,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func captureFullscreen()   { Task { await captureEngine.captureFullscreen(historyManager: historyManager) } }
     @objc func capturePrevious()     { Task { await captureEngine.capturePreviousArea(historyManager: historyManager) } }
     @objc func captureScrolling()    { Task { await captureEngine.startScrollingCapture(historyManager: historyManager) } }
+    @objc func recordArea()          { Task { await captureEngine.startAreaRecording() } }
+    @objc func recordWindow()        { Task { await captureEngine.startWindowRecording() } }
+    @objc func recordFullscreen()    { Task { await captureEngine.startFullscreenRecording() } }
+    @objc func stopRecording()       { captureEngine.stopRecording() }
     @objc func captureText()         { Task { await captureEngine.startOCRCapture() } }
     @objc func scanQRCode()          { Task { await captureEngine.startQRCodeCapture() } }
     @objc func annotateLastScreenshot() {
@@ -88,6 +99,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func toggleDesktopIcons()  { DesktopIconsManager.toggle() }
     @objc func openPreferences()     { PreferencesWindowController.shared.show(tab: .general) }
     @objc func openAbout()           { PreferencesWindowController.shared.show(tab: .about) }
+
+    @objc func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+        if menuItem.action == #selector(stopRecording) {
+            return captureEngine?.recordingActive ?? false
+        }
+        if menuItem.action == #selector(recordArea)
+            || menuItem.action == #selector(recordWindow)
+            || menuItem.action == #selector(recordFullscreen) {
+            return captureEngine?.recordingActionsEnabled ?? false
+        }
+        return true
+    }
 }
 
 // MARK: – NSMenu convenience
