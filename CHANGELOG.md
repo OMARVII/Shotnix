@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.10.1] - 2026-05-03
+
+### Fixed
+- **Recording retry** — stopping a recording now clears capture and writer state reliably, so back-to-back recordings and screenshots no longer get stuck.
+- **Recording quality** — recordings now preserve Retina-scale capture dimensions and use higher encoder quality for sharper MP4 output.
+
 ## [0.10.0-beta] - 2026-05-03
 
 ### Added
