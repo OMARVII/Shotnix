@@ -25,6 +25,8 @@ final class RecordingEngine: NSObject {
     private var recordingStartedAt: CFTimeInterval = 0
     private var isRecording = false
     private var isFinishing = false
+    private var finishSessionID = UUID()
+    private var finishTimeoutWorkItem: DispatchWorkItem?
     private var hud: RecordingHUDWindow?
     private var configuration = RecordingConfiguration.current
 
@@ -101,16 +103,19 @@ final class RecordingEngine: NSObject {
 
     func stopRecording() {
         guard isRecording, !isFinishing else { return }
-        isRecording = false
-        hud?.closeHUD()
-        hud = nil
+        beginFinishing()
 
         let streamToStop = stream
+        let outputToRemove = streamOutput
         Task {
             do {
                 try await streamToStop?.stopCapture()
             } catch {
                 print("[Shotnix] Recording stop failed: \(error)")
+            }
+            if let streamToStop, let outputToRemove {
+                try? streamToStop.removeStreamOutput(outputToRemove, type: .screen)
+                try? streamToStop.removeStreamOutput(outputToRemove, type: .audio)
             }
             finishRecording(error: nil)
         }
@@ -119,9 +124,7 @@ final class RecordingEngine: NSObject {
     fileprivate nonisolated func streamDidStopWithError(_ error: Error) {
         Task { @MainActor [weak self] in
             guard let self, self.isRecording, !self.isFinishing else { return }
-            self.isRecording = false
-            self.hud?.closeHUD()
-            self.hud = nil
+            self.beginFinishing()
             self.finishRecording(error: error)
         }
     }
@@ -245,7 +248,8 @@ final class RecordingEngine: NSObject {
             content.windows.first { CGWindowID($0.windowID) == windowNumber }
         }
 
-        let scale = screen.backingScaleFactor
+        let filter = SCContentFilter(display: display, excludingWindows: excludedWindows)
+        let scale = Self.pixelScale(for: filter, fallbackScreen: screen)
         let originX = floor((rect.origin.x - screen.frame.origin.x) * scale) / scale
         let originY = floor((rect.origin.y - screen.frame.origin.y) * scale) / scale
         let width = ceil(rect.width * scale) / scale
@@ -257,20 +261,19 @@ final class RecordingEngine: NSObject {
             height: height
         )
 
-        let pixelWidth = max(2, Self.even(Int(width * scale)))
-        let pixelHeight = max(2, Self.even(Int(height * scale)))
+        let pixelWidth = max(2, Self.evenCeil(Int(ceil(width * scale))))
+        let pixelHeight = max(2, Self.evenCeil(Int(ceil(height * scale))))
         let streamConfig = Self.streamConfiguration(width: pixelWidth, height: pixelHeight, configuration: configuration)
         streamConfig.sourceRect = sourceRect
 
-        let filter = SCContentFilter(display: display, excludingWindows: excludedWindows)
         return PreparedCaptureSource(filter: filter, streamConfig: streamConfig, pixelWidth: pixelWidth, pixelHeight: pixelHeight)
     }
 
     private func prepareWindowSource(window: SCWindow, on screen: NSScreen, configuration: RecordingConfiguration) -> PreparedCaptureSource {
         let filter = SCContentFilter(desktopIndependentWindow: window)
-        let scale = max(screen.backingScaleFactor, 1)
-        let width = max(2, Self.even(Int(ceil(window.frame.width * scale))))
-        let height = max(2, Self.even(Int(ceil(window.frame.height * scale))))
+        let scale = Self.pixelScale(for: filter, fallbackScreen: screen)
+        let width = max(2, Self.evenCeil(Int(ceil(window.frame.width * scale))))
+        let height = max(2, Self.evenCeil(Int(ceil(window.frame.height * scale))))
         let streamConfig = Self.streamConfiguration(width: width, height: height, configuration: configuration)
         return PreparedCaptureSource(filter: filter, streamConfig: streamConfig, pixelWidth: width, pixelHeight: height)
     }
@@ -280,10 +283,13 @@ final class RecordingEngine: NSObject {
         streamConfig.width = width
         streamConfig.height = height
         streamConfig.minimumFrameInterval = CMTime(value: 1, timescale: CMTimeScale(configuration.fps))
-        streamConfig.queueDepth = 6
+        streamConfig.queueDepth = 8
         streamConfig.showsCursor = configuration.showsCursor
         streamConfig.scalesToFit = false
         streamConfig.pixelFormat = kCVPixelFormatType_32BGRA
+        if #available(macOS 14.0, *) {
+            streamConfig.captureResolution = .best
+        }
         if configuration.recordsSystemAudio {
             streamConfig.capturesAudio = true
             streamConfig.excludesCurrentProcessAudio = true
@@ -354,9 +360,10 @@ final class RecordingEngine: NSObject {
     }
 
     private func finishRecording(error: Error?) {
-        guard !isFinishing else { return }
-        isFinishing = true
+        guard isFinishing else { return }
         stopMicrophoneCapture()
+        let sessionID = UUID()
+        finishSessionID = sessionID
 
         Task { @MainActor [weak self] in
             guard let self else { return }
@@ -375,11 +382,13 @@ final class RecordingEngine: NSObject {
             self.microphoneInput?.markAsFinished()
 
             let writerBox = AssetWriterBox(writer)
+            self.scheduleFinishTimeout(sessionID: sessionID, url: url)
             writer.finishWriting { [weak self] in
                 let writerStatus = writerBox.writer.status
                 let writerError = writerBox.writer.error
                 DispatchQueue.main.async {
-                    guard let self else { return }
+                    guard let self, self.finishSessionID == sessionID else { return }
+                    self.cancelFinishTimeout()
                     self.cleanup()
                     if let error {
                         ToastWindow.show(message: "Recording stopped unexpectedly.")
@@ -393,6 +402,34 @@ final class RecordingEngine: NSObject {
                 }
             }
         }
+    }
+
+    private func beginFinishing() {
+        isRecording = false
+        isFinishing = true
+        hud?.closeHUD()
+        hud = nil
+    }
+
+    private func scheduleFinishTimeout(sessionID: UUID, url: URL) {
+        cancelFinishTimeout()
+
+        let timeout = DispatchWorkItem { [weak self] in
+            DispatchQueue.main.async {
+                guard let self, self.finishSessionID == sessionID else { return }
+                self.assetWriter?.cancelWriting()
+                self.cleanup()
+                ToastWindow.show(message: "Could not save recording.")
+                print("[Shotnix] Recording finish timed out for \(url.path)")
+            }
+        }
+        finishTimeoutWorkItem = timeout
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10, execute: timeout)
+    }
+
+    private func cancelFinishTimeout() {
+        finishTimeoutWorkItem?.cancel()
+        finishTimeoutWorkItem = nil
     }
 
     private func appendFinalStaticFrameIfNeeded() {
@@ -451,6 +488,7 @@ final class RecordingEngine: NSObject {
     }
 
     private func cleanup() {
+        cancelFinishTimeout()
         stopMicrophoneCapture()
         stream = nil
         streamOutput = nil
@@ -465,6 +503,8 @@ final class RecordingEngine: NSObject {
         isFinishing = false
         hud?.closeHUD()
         hud = nil
+        finishSessionID = UUID()
+        NSApp.restoreBackgroundOnlyActivationPolicyIfNeeded()
     }
 
     private func resetTimingState() {
@@ -488,6 +528,8 @@ final class RecordingEngine: NSObject {
                 AVVideoAverageBitRateKey: bitrate(width: width, height: height, fps: fps, quality: quality),
                 AVVideoExpectedSourceFrameRateKey: fps,
                 AVVideoMaxKeyFrameIntervalKey: fps,
+                AVVideoQualityKey: 1.0,
+                AVVideoAllowFrameReorderingKey: false,
                 AVVideoH264EntropyModeKey: AVVideoH264EntropyModeCABAC,
                 AVVideoProfileLevelKey: AVVideoProfileLevelH264HighAutoLevel
             ]
@@ -605,8 +647,16 @@ final class RecordingEngine: NSObject {
         return CGFloat(max(0, min(1, (decibels + 55) / 45)))
     }
 
-    private static func even(_ value: Int) -> Int {
-        value.isMultiple(of: 2) ? value : value - 1
+    private static func pixelScale(for filter: SCContentFilter, fallbackScreen screen: NSScreen) -> CGFloat {
+        let fallbackScale = max(screen.backingScaleFactor, 1)
+        if #available(macOS 14.0, *) {
+            return max(CGFloat(filter.pointPixelScale), fallbackScale)
+        }
+        return fallbackScale
+    }
+
+    private static func evenCeil(_ value: Int) -> Int {
+        value.isMultiple(of: 2) ? value : value + 1
     }
 
     private static func makeOutputURL() -> URL {
@@ -702,25 +752,25 @@ private enum RecordingQuality: String {
 
     var bitsPerPixelPerFrame: Double {
         switch self {
-        case .balanced: 0.10
-        case .high: 0.16
-        case .max: 0.24
+        case .balanced: 0.12
+        case .high: 0.22
+        case .max: 0.32
         }
     }
 
     var minimumBitrate: Int {
         switch self {
-        case .balanced: 2_000_000
-        case .high: 4_000_000
-        case .max: 8_000_000
+        case .balanced: 6_000_000
+        case .high: 12_000_000
+        case .max: 20_000_000
         }
     }
 
     var maximumBitrate: Int {
         switch self {
-        case .balanced: 24_000_000
-        case .high: 50_000_000
-        case .max: 90_000_000
+        case .balanced: 40_000_000
+        case .high: 80_000_000
+        case .max: 120_000_000
         }
     }
 }
