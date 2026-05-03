@@ -9,9 +9,9 @@
     <key>CFBundleDisplayName</key>
     <string>Shotnix</string>
     <key>CFBundleVersion</key>
-    <string>10</string>
+    <string>11</string>
     <key>CFBundleShortVersionString</key>
-    <string>0.9.9-beta</string>
+    <string>0.10.0-beta</string>
     <key>CFBundleExecutable</key>
     <string>Shotnix</string>
     <key>CFBundlePackageType</key>
@@ -29,7 +29,9 @@
     <key>NSSupportsAutomaticGraphicsSwitching</key>
     <true/>
     <key>NSScreenCaptureUsageDescription</key>
-    <string>Shotnix needs screen recording permission to capture screenshots.</string>
+    <string>Shotnix needs screen recording permission to capture screenshots and screen recordings.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Shotnix needs microphone access when you enable microphone audio for screen recordings.</string>
     <key>NSHumanReadableCopyright</key>
     <string>Copyright © 2026 Shotnix Contributors. MIT License.</string>
     <key>CFBundleInfoDictionaryVersion</key>

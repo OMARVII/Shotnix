@@ -2,8 +2,8 @@
   <img src="Branding/Shotnix_Icon_Transparent.png" width="128" alt="Shotnix Logo" />
   <h1 align="center">Shotnix</h1>
   <p align="center">
-    A fast, focused screenshot utility for macOS.<br/>
-    Capture, annotate, pin, and extract text — all from your menu bar.
+    A fast, focused screenshot and screen recording utility for macOS.<br/>
+    Capture, record, annotate, pin, and extract text — all from your menu bar.
   </p>
   <p align="center">
     <a href="https://shotnix.com/"><img alt="Website" src="https://img.shields.io/badge/website-shotnix.com-79F2FF?style=flat-square"/></a>
@@ -17,7 +17,7 @@
 ---
 
 > [!NOTE]
-> **Shotnix is in beta (v0.9.9).** It's fully functional but not yet notarized through Apple's Developer Program, so macOS will show a Gatekeeper warning on first launch. This is standard for open-source apps — Shotnix is safe and the source code is right here. Notarization is on the roadmap.
+> **Shotnix is in beta (v0.10.0-beta).** It's fully functional but not yet notarized through Apple's Developer Program, so macOS will show a Gatekeeper warning on first launch. This is standard for open-source apps — Shotnix is safe and the source code is right here. Notarization is on the roadmap.
 >
 > To open: **Right-click → Open → Open** (macOS 13–14) or **System Settings → Privacy & Security → Open Anyway** (macOS 15+).
 
@@ -41,6 +41,7 @@ Visit **[shotnix.com](https://shotnix.com/)** for the latest download and projec
 - **Fullscreen** — grab the entire screen instantly
 - **Previous area** — re-capture the last selected region with one shortcut
 - **Scrolling** — capture content beyond the visible area
+- **Screen recording** — record an area, window, or display with system audio, microphone audio, cursor control, quality, and FPS options
 - **OCR** — extract and copy text from any part of the screen
 - **QR scanning** — scan QR codes from a selected screen area
 
@@ -65,7 +66,7 @@ Visit **[shotnix.com](https://shotnix.com/)** for the latest download and projec
 - Global hotkeys that work from anywhere
 
 **Configurable**
-- Tabbed settings window (General, Shortcuts, Screenshots, About)
+- Tabbed settings window (General, Shortcuts, Screenshots, Recording, About)
 - Export as PNG, JPEG, or WebP (with quality slider)
 - Auto-save location picker
 - After-capture auto-actions (auto-copy, auto-save)

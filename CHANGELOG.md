@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.10.0-beta] - 2026-05-03
+
+### Added
+- **Screen recording** — record an area, selected window, or fullscreen display directly from the menu bar.
+- **Recording controls** — choose system audio, microphone input, cursor visibility, quality, and FPS before recording starts.
+- **Live recording HUD** — draggable timer island with stop control, active audio state, and live microphone level feedback.
+
+### Fixed
+- **Window recording picker** — Record Window now shows a selectable ScreenCaptureKit window list instead of relying on an overlay that blocked clicks on other windows.
+- **Recording setup safety** — recording actions are disabled while another recording setup or active recording is in progress.
+
 ## [0.9.9-beta] - 2026-05-02
 
 ### Added
