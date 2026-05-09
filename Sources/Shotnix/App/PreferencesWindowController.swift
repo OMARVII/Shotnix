@@ -352,7 +352,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.11.0"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.11.0-beta"
     
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
@@ -377,7 +377,7 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
-                    Version 0.11.0
+                    Version 0.11.0-beta
                     • Per-image Backdrop controls for presentation-ready screenshot exports
                     • Annotation editor now previews styled backgrounds exactly as saved
                     • Save panels, editor restore, and local signing are more reliable

@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.11.0] - 2026-05-09
+## [0.11.0-beta] - 2026-05-09
 
 ### Added
 - **Presentation backdrops** — annotation exports can now include per-image solid or gradient backgrounds with padding, rounded corners, and shadows.
