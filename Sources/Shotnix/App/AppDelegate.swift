@@ -61,6 +61,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
         menu.addItem(title: "Capture Text (OCR)",   key: "o",  action: #selector(captureText), icon: "text.viewfinder")
         menu.addItem(title: "Scan QR Code",         key: "",  action: #selector(scanQRCode), icon: "qrcode.viewfinder")
         menu.addItem(title: "Open History",         key: "",  action: #selector(openHistory), icon: "clock.arrow.circlepath")
+        menu.addItem(title: "Show Editor",          key: "",  action: #selector(showEditor), icon: "pencil.and.outline")
         menu.addItem(title: "Annotate Last Screenshot", key: "", action: #selector(annotateLastScreenshot), icon: "pencil.tip.crop.circle")
         menu.addItem(.separator())
 
@@ -91,6 +92,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
     @objc func stopRecording()       { captureEngine.stopRecording() }
     @objc func captureText()         { Task { await captureEngine.startOCRCapture() } }
     @objc func scanQRCode()          { Task { await captureEngine.startQRCodeCapture() } }
+    @objc func showEditor()          { AnnotationWindowController.bringOpenEditorsToFront() }
     @objc func annotateLastScreenshot() {
         guard let last = historyManager.items.first else { return }
         AnnotationWindowController.open(image: last.fullImage, historyItem: last, historyManager: historyManager)
@@ -108,6 +110,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
             || menuItem.action == #selector(recordWindow)
             || menuItem.action == #selector(recordFullscreen) {
             return captureEngine?.recordingActionsEnabled ?? false
+        }
+        if menuItem.action == #selector(showEditor) {
+            return AnnotationWindowController.hasOpenEditors
         }
         return true
     }
