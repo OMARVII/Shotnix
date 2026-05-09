@@ -1,4 +1,5 @@
 import AppKit
+import UniformTypeIdentifiers
 
 /// Manages the full annotation editor window.
 @MainActor
@@ -537,12 +538,15 @@ private final class BackgroundPopoverController: NSViewController {
     private let enabledButton = NSButton(checkboxWithTitle: "Apply background to this image", target: nil, action: nil)
     private let stylePopup = NSPopUpButton()
     private let presetPopup = NSPopUpButton()
+    private let uploadImageButton = NSButton(title: "Upload Custom Image", target: nil, action: nil)
     private let paddingSlider = NSSlider()
     private let radiusSlider = NSSlider()
     private let shadowSlider = NSSlider()
     private let paddingValue = NSTextField(labelWithString: "")
     private let radiusValue = NSTextField(labelWithString: "")
     private let shadowValue = NSTextField(labelWithString: "")
+    private var presetLabel: NSTextField?
+    private var imagePresetButtons: [NSButton] = []
 
     private let solidPresets: [(String, String)] = [
         ("Porcelain", "#f4eadb"),
@@ -574,8 +578,8 @@ private final class BackgroundPopoverController: NSViewController {
     required init?(coder: NSCoder) { fatalError() }
 
     override func loadView() {
-        let container = NSView(frame: NSRect(x: 0, y: 0, width: 300, height: 230))
-        var y: CGFloat = 194
+        let container = NSView(frame: NSRect(x: 0, y: 0, width: 300, height: 452))
+        var y: CGFloat = 416
 
         enabledButton.frame = NSRect(x: 16, y: y, width: 260, height: 22)
         enabledButton.target = self
@@ -585,19 +589,30 @@ private final class BackgroundPopoverController: NSViewController {
         y -= 38
         addLabel("Style", x: 16, y: y + 4, to: container)
         stylePopup.frame = NSRect(x: 106, y: y, width: 170, height: 26)
-        stylePopup.addItems(withTitles: ["Gradient", "Solid Color"])
+        stylePopup.addItems(withTitles: ["Gradient", "Solid Color", "Image"])
         stylePopup.target = self
         stylePopup.action = #selector(styleChanged)
         container.addSubview(stylePopup)
 
         y -= 36
-        addLabel("Preset", x: 16, y: y + 4, to: container)
+        presetLabel = addLabel("Preset", x: 16, y: y + 4, to: container)
         presetPopup.frame = NSRect(x: 106, y: y, width: 170, height: 26)
         presetPopup.target = self
         presetPopup.action = #selector(presetChanged)
         container.addSubview(presetPopup)
 
-        y -= 42
+        uploadImageButton.frame = NSRect(x: 16, y: 302, width: 260, height: 30)
+        uploadImageButton.bezelStyle = .rounded
+        uploadImageButton.font = .systemFont(ofSize: 12, weight: .semibold)
+        uploadImageButton.image = NSImage(systemSymbolName: "square.and.arrow.up", accessibilityDescription: nil)
+        uploadImageButton.imagePosition = .imageLeading
+        uploadImageButton.target = self
+        uploadImageButton.action = #selector(uploadCustomImage)
+        container.addSubview(uploadImageButton)
+
+        addImagePresetGrid(to: container)
+
+        y = 124
         addSliderRow("Padding", slider: paddingSlider, valueLabel: paddingValue, y: y, min: 0, max: 240, to: container)
         y -= 38
         addSliderRow("Radius", slider: radiusSlider, valueLabel: radiusValue, y: y, min: 0, max: 36, to: container)
@@ -608,11 +623,46 @@ private final class BackgroundPopoverController: NSViewController {
         syncControls()
     }
 
-    private func addLabel(_ text: String, x: CGFloat, y: CGFloat, to view: NSView) {
+    @discardableResult
+    private func addLabel(_ text: String, x: CGFloat, y: CGFloat, to view: NSView) -> NSTextField {
         let label = NSTextField(labelWithString: text)
         label.font = .systemFont(ofSize: 11)
         label.frame = NSRect(x: x, y: y, width: 80, height: 16)
         view.addSubview(label)
+        return label
+    }
+
+    private func addImagePresetGrid(to view: NSView) {
+        let buttonSize = NSSize(width: 42, height: 34)
+        let gap: CGFloat = 10
+        let startX: CGFloat = 16
+        let startY: CGFloat = 256
+        let columns = 5
+
+        for (index, preset) in ScreenshotBackgroundOptions.imagePresets.enumerated() {
+            let row = index / columns
+            let col = index % columns
+            let button = NSButton(frame: NSRect(
+                x: startX + CGFloat(col) * (buttonSize.width + gap),
+                y: startY - CGFloat(row) * (buttonSize.height + gap),
+                width: buttonSize.width,
+                height: buttonSize.height
+            ))
+            button.image = ScreenshotBackgroundComposer.previewImage(options: imageOptions(for: preset), size: NSSize(width: 84, height: 68))
+            button.imageScaling = .scaleAxesIndependently
+            button.isBordered = false
+            button.bezelStyle = .regularSquare
+            button.toolTip = preset.name
+            button.tag = index
+            button.target = self
+            button.action = #selector(imagePresetTapped(_:))
+            button.wantsLayer = true
+            button.layer?.cornerRadius = 7
+            button.layer?.cornerCurve = .continuous
+            button.layer?.masksToBounds = true
+            view.addSubview(button)
+            imagePresetButtons.append(button)
+        }
     }
 
     private func addSliderRow(_ title: String, slider: NSSlider, valueLabel: NSTextField, y: CGFloat, min: Double, max: Double, to view: NSView) {
@@ -632,12 +682,18 @@ private final class BackgroundPopoverController: NSViewController {
 
     private func syncControls() {
         enabledButton.state = options.isEnabled ? .on : .off
-        stylePopup.selectItem(at: options.style == .gradient ? 0 : 1)
+        switch options.style {
+        case .gradient: stylePopup.selectItem(at: 0)
+        case .solid: stylePopup.selectItem(at: 1)
+        case .image: stylePopup.selectItem(at: 2)
+        }
         paddingSlider.doubleValue = Double(options.padding)
         radiusSlider.doubleValue = Double(options.cornerRadius)
         shadowSlider.doubleValue = Double(options.shadow)
         rebuildPresetPopup()
+        updateStyleVisibility()
         updateValueLabels()
+        updateImagePresetSelection()
     }
 
     private func rebuildPresetPopup() {
@@ -653,6 +709,29 @@ private final class BackgroundPopoverController: NSViewController {
             if let index = gradientPresets.firstIndex(where: { $0.name == options.presetName }) {
                 presetPopup.selectItem(at: index)
             }
+        case .image:
+            presetPopup.addItems(withTitles: ScreenshotBackgroundOptions.imagePresets.map(\.name))
+            if let index = ScreenshotBackgroundOptions.imagePresets.firstIndex(where: { $0.name == options.presetName }) {
+                presetPopup.selectItem(at: index)
+            }
+        }
+    }
+
+    private func updateStyleVisibility() {
+        let isImageStyle = options.style == .image
+        presetLabel?.isHidden = isImageStyle
+        presetPopup.isHidden = isImageStyle
+        uploadImageButton.isHidden = !isImageStyle
+        imagePresetButtons.forEach { $0.isHidden = !isImageStyle }
+        uploadImageButton.title = options.customImageName.map { "Custom: \($0)" } ?? "Upload Custom Image"
+    }
+
+    private func updateImagePresetSelection() {
+        for (index, button) in imagePresetButtons.enumerated() {
+            let preset = ScreenshotBackgroundOptions.imagePresets[index]
+            let selected = options.style == .image && options.customImageData == nil && preset.name == options.presetName
+            button.layer?.borderWidth = selected ? 2 : 1
+            button.layer?.borderColor = selected ? NSColor.controlAccentColor.cgColor : NSColor.white.withAlphaComponent(0.18).cgColor
         }
     }
 
@@ -663,6 +742,8 @@ private final class BackgroundPopoverController: NSViewController {
     }
 
     private func emitChange() {
+        updateStyleVisibility()
+        updateImagePresetSelection()
         updateValueLabels()
         onChange?(options)
     }
@@ -673,9 +754,29 @@ private final class BackgroundPopoverController: NSViewController {
     }
 
     @objc private func styleChanged() {
-        options.style = stylePopup.indexOfSelectedItem == 0 ? .gradient : .solid
+        switch stylePopup.indexOfSelectedItem {
+        case 1:
+            options.style = .solid
+        case 2:
+            options.style = .image
+            options.isEnabled = true
+            if options.customImageData == nil,
+               !ScreenshotBackgroundOptions.imagePresets.contains(where: { $0.name == options.presetName }) {
+                let preset = ScreenshotBackgroundOptions.imagePresets[0]
+                options.presetName = preset.name
+                options.gradientStartHex = preset.startHex
+                options.gradientEndHex = preset.endHex
+                options.accentHexes = preset.accentHexes
+            }
+        default:
+            options.style = .gradient
+        }
         rebuildPresetPopup()
-        presetChanged()
+        if options.style == .image {
+            emitChange()
+        } else {
+            presetChanged()
+        }
     }
 
     @objc private func presetChanged() {
@@ -692,8 +793,64 @@ private final class BackgroundPopoverController: NSViewController {
             options.gradientStartHex = preset.start
             options.gradientEndHex = preset.end
             options.accentHexes = preset.accents
+            options.customImageData = nil
+            options.customImageName = nil
+        case .image:
+            let preset = ScreenshotBackgroundOptions.imagePresets[min(index, ScreenshotBackgroundOptions.imagePresets.count - 1)]
+            applyImagePreset(preset)
         }
         emitChange()
+    }
+
+    @objc private func imagePresetTapped(_ sender: NSButton) {
+        let preset = ScreenshotBackgroundOptions.imagePresets[min(sender.tag, ScreenshotBackgroundOptions.imagePresets.count - 1)]
+        applyImagePreset(preset)
+        emitChange()
+    }
+
+    @objc private func uploadCustomImage() {
+        let panel = NSOpenPanel()
+        panel.allowedContentTypes = [.image]
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+        panel.canChooseFiles = true
+
+        guard panel.runModal() == .OK,
+              let url = panel.url,
+              let data = try? Data(contentsOf: url),
+              NSImage(data: data) != nil else { return }
+
+        options.isEnabled = true
+        options.style = .image
+        options.presetName = "Custom Image"
+        options.customImageData = data
+        options.customImageName = url.lastPathComponent
+        stylePopup.selectItem(at: 2)
+        emitChange()
+    }
+
+    private func applyImagePreset(_ preset: ScreenshotBackgroundImagePreset) {
+        options.isEnabled = true
+        options.style = .image
+        options.presetName = preset.name
+        options.gradientStartHex = preset.startHex
+        options.gradientEndHex = preset.endHex
+        options.accentHexes = preset.accentHexes
+        options.customImageData = nil
+        options.customImageName = nil
+    }
+
+    private func imageOptions(for preset: ScreenshotBackgroundImagePreset) -> ScreenshotBackgroundOptions {
+        var preview = options
+        preview.isEnabled = true
+        preview.style = .image
+        preview.presetName = preset.name
+        preview.gradientStartHex = preset.startHex
+        preview.gradientEndHex = preset.endHex
+        preview.accentHexes = preset.accentHexes
+        preview.customImageData = nil
+        preview.customImageName = nil
+        return preview
     }
 
     @objc private func sliderChanged(_ sender: NSSlider) {
