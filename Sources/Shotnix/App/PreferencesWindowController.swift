@@ -232,7 +232,7 @@ struct ScreenshotsSettingsView: View {
             } header: {
                 Text("Export Format")
             }
-            
+
             Section {
                 HStack {
                     Text(displayLocation)
@@ -265,7 +265,7 @@ struct ScreenshotsSettingsView: View {
             }
         }
         .formStyle(.grouped)
-        .frame(width: 500, height: 350)
+        .frame(width: 500, height: 430)
     }
 }
 
@@ -352,7 +352,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.10.2-beta"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.11.0"
     
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
@@ -377,6 +377,11 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.11.0
+                    • Per-image Backdrop controls for presentation-ready screenshot exports
+                    • Annotation editor now previews styled backgrounds exactly as saved
+                    • Save panels, editor restore, and local signing are more reliable
+
                     Version 0.10.2-beta
                     • Record Window now shows premium preview cards with app icons and target details
                     • Desktop/backstop windows are filtered out of the picker

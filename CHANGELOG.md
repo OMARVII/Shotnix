@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.11.0] - 2026-05-09
+
+### Added
+- **Presentation backdrops** — annotation exports can now include per-image solid or gradient backgrounds with padding, rounded corners, and shadows.
+
+### Fixed
+- **Editor export parity** — the annotation editor preview now matches saved and copied output when a backdrop is enabled.
+- **Editor save flow** — save panels, copy feedback, and editor restoration are more reliable for the menu bar app lifecycle.
+- **Screenshot file promises** — history and overlay drag exports now write PNG data atomically and report encoding failures.
+
 ## [0.10.2-beta] - 2026-05-03
 
 ### Added
