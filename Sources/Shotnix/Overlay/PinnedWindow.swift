@@ -153,7 +153,11 @@ final class PinnedWindow: NSWindow {
 
     @objc private func savePinnedImage() {
         guard let image = imageView.image else { return }
-        ImageExporter.saveWithPanel(image: image, suggestedName: ImageExporter.timestampedName)
+        ImageExporter.saveWithPanel(image: image, suggestedName: ImageExporter.timestampedName, presentingWindow: self) { result in
+            if result.didSave {
+                ToastWindow.show(message: "✓ Saved screenshot")
+            }
+        }
     }
 
     @objc private func editPinnedImage() {

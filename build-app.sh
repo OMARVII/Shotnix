@@ -5,6 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 APP_NAME="Shotnix"
 APP_BUNDLE="$SCRIPT_DIR/$APP_NAME.app"
 ENTITLEMENTS="$SCRIPT_DIR/Shotnix.entitlements"
+SIGN_IDENTITY="${SHOTNIX_CODESIGN_IDENTITY:-Shotnix Local Dev}"
 
 echo "▶ Building $APP_NAME (release)…"
 cd "$SCRIPT_DIR"
@@ -33,8 +34,8 @@ if [ -f "$SCRIPT_DIR/PrivacyInfo.xcprivacy" ]; then
     cp "$SCRIPT_DIR/PrivacyInfo.xcprivacy" "$APP_BUNDLE/Contents/Resources/PrivacyInfo.xcprivacy"
 fi
 
-echo "▶ Ad-hoc signing…"
-codesign --force --deep --sign - \
+echo "Signing with $SIGN_IDENTITY..."
+codesign --force --deep --sign "$SIGN_IDENTITY" \
     --options runtime \
     --entitlements "$ENTITLEMENTS" \
     "$APP_BUNDLE"

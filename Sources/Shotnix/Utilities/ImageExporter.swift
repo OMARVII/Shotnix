@@ -4,7 +4,30 @@ import ImageIO
 
 enum ImageExporter {
 
+    enum ExportError: LocalizedError {
+        case pngEncodingFailed
+
+        var errorDescription: String? {
+            switch self {
+            case .pngEncodingFailed:
+                "Could not encode screenshot as PNG."
+            }
+        }
+    }
+
+    enum SavePanelResult {
+        case saved(URL)
+        case cancelled
+        case failed(URL?)
+
+        var didSave: Bool {
+            if case .saved = self { return true }
+            return false
+        }
+    }
+
     private static let webpUTI = "org.webmproject.webp" as CFString
+    private static var activeSavePanels: [NSSavePanel] = []
 
     // MARK: – Clipboard
 
@@ -31,18 +54,72 @@ enum ImageExporter {
 
     // MARK: – Save with panel
 
-    static func saveWithPanel(image: NSImage, suggestedName: String, completion: ((Bool) -> Void)? = nil) {
+    @MainActor
+    static func saveWithPanel(image: NSImage, suggestedName: String, presentingWindow: NSWindow? = nil, completion: ((SavePanelResult) -> Void)? = nil) {
+        NSApp.unhide(nil)
+        NSApp.setActivationPolicy(.accessory)
+        NSApp.activate(ignoringOtherApps: true)
+        presentingWindow?.deminiaturize(nil)
+        presentingWindow?.makeKeyAndOrderFront(nil)
+        presentingWindow?.orderFrontRegardless()
+
         let panel = NSSavePanel()
         let preferredExt = Settings.screenshotFormat
         panel.nameFieldStringValue = "\(suggestedName).\(preferredExt)"
         panel.allowedContentTypes = [.png, .jpeg, UTType("org.webmproject.webp") ?? .data]
         panel.canCreateDirectories = true
-        panel.begin { response in
-            if response == .OK, let url = panel.url {
-                completion?(save(image: image, to: url) != nil)
-            } else {
-                completion?(false)
+        panel.canSelectHiddenExtension = true
+        panel.isExtensionHidden = false
+        panel.directoryURL = FileManager.default.urls(for: .desktopDirectory, in: .userDomainMask).first
+
+        activeSavePanels.append(panel)
+
+        let handler: (NSApplication.ModalResponse) -> Void = { response in
+            activeSavePanels.removeAll { $0 === panel }
+
+            guard response == .OK else {
+                completion?(.cancelled)
+                return
             }
+
+            guard let url = panel.url else {
+                completion?(.failed(nil))
+                showSaveFailedAlert(for: nil, presentingWindow: presentingWindow)
+                return
+            }
+
+            guard let savedURL = save(image: image, to: url) else {
+                completion?(.failed(url))
+                showSaveFailedAlert(for: url, presentingWindow: presentingWindow)
+                return
+            }
+
+            completion?(.saved(savedURL))
+        }
+
+        if let presentingWindow {
+            panel.beginSheetModal(for: presentingWindow, completionHandler: handler)
+        } else {
+            panel.begin(completionHandler: handler)
+        }
+    }
+
+    @MainActor
+    private static func showSaveFailedAlert(for url: URL?, presentingWindow: NSWindow?) {
+        let alert = NSAlert()
+        alert.alertStyle = .warning
+        alert.messageText = "Could Not Save Screenshot"
+        if let url {
+            alert.informativeText = "Shotnix could not write the file to:\n\(url.path)"
+        } else {
+            alert.informativeText = "The save panel did not return a destination. Please try saving again."
+        }
+        alert.addButton(withTitle: "OK")
+
+        if let presentingWindow, presentingWindow.isVisible {
+            alert.beginSheetModal(for: presentingWindow)
+        } else {
+            alert.runModal()
         }
     }
 

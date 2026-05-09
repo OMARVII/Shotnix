@@ -506,8 +506,8 @@ private final class QuickAccessWindow: NSWindow {
     }
 
     @objc private func saveAction() {
-        ImageExporter.saveWithPanel(image: image, suggestedName: ImageExporter.timestampedName) { [weak self] success in
-            if success {
+        ImageExporter.saveWithPanel(image: image, suggestedName: ImageExporter.timestampedName) { [weak self] result in
+            if result.didSave {
                 self?.showConfirmation(icon: "arrow.down.circle") { [weak self] in self?.animatedClose() }
             }
         }
@@ -656,9 +656,11 @@ private final class ImageFilePromiseDelegate: NSObject, NSFilePromiseProviderDel
 
     func filePromiseProvider(_ filePromiseProvider: NSFilePromiseProvider, writePromiseTo url: URL, completionHandler handler: @escaping (Error?) -> Void) {
         do {
-            if let png = ImageExporter.pngData(from: image) {
-                try png.write(to: url)
+            guard let png = ImageExporter.pngData(from: image) else {
+                handler(ImageExporter.ExportError.pngEncodingFailed)
+                return
             }
+            try png.write(to: url, options: .atomic)
             handler(nil)
         } catch {
             handler(error)

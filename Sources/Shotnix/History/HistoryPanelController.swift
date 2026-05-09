@@ -289,8 +289,45 @@ extension HistoryPanelController: NSCollectionViewDelegate {
     ) -> (any NSPasteboardWriting)? {
         guard !sections.isEmpty else { return nil }
         let item = sections[indexPath.section].items[indexPath.item]
-        let url = URL(fileURLWithPath: item.imagePath) as NSURL
-        return url
+        return NSFilePromiseProvider(fileType: "public.png", delegate: HistoryImageFilePromiseDelegate(image: item.fullImage))
+    }
+}
+
+private final class HistoryImageFilePromiseDelegate: NSObject, NSFilePromiseProviderDelegate, @unchecked Sendable {
+
+    private static let queue: OperationQueue = {
+        let queue = OperationQueue()
+        queue.name = "Shotnix.HistoryFilePromise"
+        queue.maxConcurrentOperationCount = 1
+        queue.qualityOfService = .userInitiated
+        return queue
+    }()
+
+    private let image: NSImage
+
+    init(image: NSImage) {
+        self.image = image
+    }
+
+    func filePromiseProvider(_ filePromiseProvider: NSFilePromiseProvider, fileNameForType fileType: String) -> String {
+        "\(ImageExporter.timestampedName).png"
+    }
+
+    func filePromiseProvider(_ filePromiseProvider: NSFilePromiseProvider, writePromiseTo url: URL, completionHandler handler: @escaping (Error?) -> Void) {
+        do {
+            guard let png = ImageExporter.pngData(from: image) else {
+                handler(ImageExporter.ExportError.pngEncodingFailed)
+                return
+            }
+            try png.write(to: url, options: .atomic)
+            handler(nil)
+        } catch {
+            handler(error)
+        }
+    }
+
+    func operationQueue(for filePromiseProvider: NSFilePromiseProvider) -> OperationQueue {
+        Self.queue
     }
 }
 
