@@ -34,6 +34,11 @@ final class AnnotationCanvas: NSView {
     // Crop overlay
     var cropRect: CGRect?
     var onCropChanged: ((CGRect?) -> Void)?
+    var backgroundOptions = ScreenshotBackgroundOptions.editorDefault
+    private var cachedPresentationImage: NSImage?
+    private var cachedPresentationSource: NSImage?
+    private var cachedPresentationOptions: ScreenshotBackgroundOptions?
+    private var cachedPresentationSize: NSSize = .zero
 
     // MARK: – Init
 
@@ -67,9 +72,9 @@ final class AnnotationCanvas: NSView {
     override func draw(_ dirtyRect: NSRect) {
         guard let ctx = NSGraphicsContext.current?.cgContext else { return }
 
-        // 1. Background image
+        // 1. Screenshot and optional presentation background
         if let img = backgroundImage {
-            img.draw(in: bounds)
+            drawBackgroundImage(img, ctx: ctx)
         }
 
         // 2. Blur and pixelate (CIFilter applied to background region)
@@ -101,15 +106,67 @@ final class AnnotationCanvas: NSView {
         }
     }
 
+    private func drawBackgroundImage(_ image: NSImage, ctx: CGContext) {
+        guard backgroundOptions.isEnabled else {
+            image.draw(in: bounds)
+            return
+        }
+
+        presentationImage(for: image).draw(in: bounds)
+    }
+
+    private func presentationImage(for image: NSImage) -> NSImage {
+        if let cachedPresentationImage,
+           cachedPresentationSource === image,
+           cachedPresentationOptions == backgroundOptions,
+           cachedPresentationSize == bounds.size {
+            return cachedPresentationImage
+        }
+
+        let composed = ScreenshotBackgroundComposer.composeIfNeeded(image, options: backgroundOptions)
+        cachedPresentationImage = composed
+        cachedPresentationSource = image
+        cachedPresentationOptions = backgroundOptions
+        cachedPresentationSize = bounds.size
+        return composed
+    }
+
+    private func backgroundImageRect(for image: NSImage) -> CGRect {
+        guard backgroundOptions.isEnabled else { return bounds }
+        let padding = clamped(backgroundOptions.padding, min: 0, max: 240)
+        return pixelAligned(
+            CGRect(x: padding, y: padding, width: image.size.width, height: image.size.height),
+            scale: max(window?.backingScaleFactor ?? 2, 1)
+        )
+    }
+
+    private func clamped(_ value: CGFloat, min: CGFloat, max: CGFloat) -> CGFloat {
+        Swift.min(Swift.max(value, min), max)
+    }
+
+    private func pixelAligned(_ rect: CGRect, scale: CGFloat) -> CGRect {
+        CGRect(
+            x: (rect.origin.x * scale).rounded() / scale,
+            y: (rect.origin.y * scale).rounded() / scale,
+            width: (rect.width * scale).rounded() / scale,
+            height: (rect.height * scale).rounded() / scale
+        )
+    }
+
     /// Convert a view rect (flipped, top-left origin) to CGImage coordinates (also top-left origin).
-    private func viewRectToCGImageRect(_ viewRect: CGRect, imageSize: CGSize) -> CGRect {
-        let scaleX = imageSize.width / bounds.width
-        let scaleY = imageSize.height / bounds.height
+    private func viewRectToCGImageRect(_ viewRect: CGRect, imageSize: CGSize) -> CGRect? {
+        guard let backgroundImage else { return nil }
+        let imageRect = backgroundImageRect(for: backgroundImage)
+        let clipped = viewRect.intersection(imageRect)
+        guard !clipped.isNull, !clipped.isEmpty else { return nil }
+
+        let scaleX = imageSize.width / imageRect.width
+        let scaleY = imageSize.height / imageRect.height
         return CGRect(
-            x: viewRect.origin.x * scaleX,
-            y: viewRect.origin.y * scaleY,
-            width: viewRect.width * scaleX,
-            height: viewRect.height * scaleY
+            x: (clipped.origin.x - imageRect.origin.x) * scaleX,
+            y: (clipped.origin.y - imageRect.origin.y) * scaleY,
+            width: clipped.width * scaleX,
+            height: clipped.height * scaleY
         )
     }
 
@@ -120,7 +177,7 @@ final class AnnotationCanvas: NSView {
         }
         guard let bg = backgroundImage, let cgImg = bg.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return }
         let imgSize = CGSize(width: cgImg.width, height: cgImg.height)
-        let cropRect = viewRectToCGImageRect(blur.rect, imageSize: imgSize)
+        guard let cropRect = viewRectToCGImageRect(blur.rect, imageSize: imgSize) else { return }
         guard let croppedCG = cgImg.cropping(to: cropRect) else { return }
         let ci = CIImage(cgImage: croppedCG)
         guard let filter = CIFilter(name: "CIGaussianBlur") else { return }
@@ -143,7 +200,7 @@ final class AnnotationCanvas: NSView {
         }
         guard let bg = backgroundImage, let cgImg = bg.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return }
         let imgSize = CGSize(width: cgImg.width, height: cgImg.height)
-        let cropRect = viewRectToCGImageRect(px.rect, imageSize: imgSize)
+        guard let cropRect = viewRectToCGImageRect(px.rect, imageSize: imgSize) else { return }
         guard let cropped = cgImg.cropping(to: cropRect) else { return }
         let ci = CIImage(cgImage: cropped)
         guard let filter = CIFilter(name: "CIPixellate") else { return }
@@ -719,6 +776,32 @@ final class AnnotationCanvas: NSView {
         for obj in selectedObjects where !(obj is TextAnnotation) && !(obj is NumberedStepAnnotation) {
             obj.lineWidth = lineWidth
         }
+        setNeedsDisplay(bounds)
+    }
+
+    func offsetContent(by delta: CGPoint) {
+        guard delta.x != 0 || delta.y != 0 else { return }
+
+        for obj in objects {
+            obj.move(by: delta)
+            if let blur = obj as? BlurAnnotation { blur.cachedRender = nil }
+            if let pixelate = obj as? PixelateAnnotation { pixelate.cachedRender = nil }
+        }
+
+        currentObject?.move(by: delta)
+
+        if var crop = cropRect {
+            crop.origin.x += delta.x
+            crop.origin.y += delta.y
+            cropRect = crop
+            onCropChanged?(crop)
+        }
+
+        if let activeTextField {
+            activeTextField.frame.origin.x += delta.x
+            activeTextField.frame.origin.y += delta.y
+        }
+
         setNeedsDisplay(bounds)
     }
 
