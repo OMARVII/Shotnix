@@ -6,7 +6,7 @@ import UniformTypeIdentifiers
 final class AnnotationWindowController: NSWindowController {
 
     private static let trafficLightReservedWidth: CGFloat = 92
-    private static let minimumEditorWidth = trafficLightReservedWidth + AnnotationToolbar.requiredWidth
+    private static let minimumEditorWidth = trafficLightReservedWidth + AnnotationToolbar.requiredWidth + 20
 
     private let canvas: AnnotationCanvas
     private let toolbar: AnnotationToolbar
@@ -57,12 +57,14 @@ final class AnnotationWindowController: NSWindowController {
         self.toolbar = AnnotationToolbar()
 
         let canvasSize = image.size
-        let toolbarHeight: CGFloat = 52
+        let toolbarHeight: CGFloat = 76
+        let toolbarDockHeight: CGFloat = 56
+        let stageInset: CGFloat = 18
 
         // Cap window to 85% of screen so large screenshots don't go off-screen
         let screenFrame = NSScreen.main?.visibleFrame ?? NSRect(x: 0, y: 0, width: 1280, height: 800)
         let maxW = screenFrame.width * 0.85
-        let maxH = screenFrame.height * 0.85 - toolbarHeight
+        let maxH = screenFrame.height * 0.85 - toolbarHeight - stageInset
         let winW = max(min(canvasSize.width, maxW), Self.minimumEditorWidth)
         let winH = min(canvasSize.height, maxH) + toolbarHeight
         let windowSize = NSSize(width: winW, height: winH)
@@ -77,7 +79,7 @@ final class AnnotationWindowController: NSWindowController {
         win.titlebarAppearsTransparent = true
         win.isReleasedWhenClosed = false
         win.level = .floating
-        win.minSize = NSSize(width: Self.minimumEditorWidth, height: 240 + toolbarHeight)
+        win.minSize = NSSize(width: Self.minimumEditorWidth, height: 260 + toolbarHeight)
         win.center()
 
         super.init(window: win)
@@ -86,7 +88,12 @@ final class AnnotationWindowController: NSWindowController {
         canvas.frame = NSRect(origin: .zero, size: canvasSize)
 
         // Scroll view for canvas — clips content properly
-        let scrollView = NSScrollView(frame: NSRect(x: 0, y: 0, width: winW, height: winH - toolbarHeight))
+        let scrollView = NSScrollView(frame: NSRect(
+            x: stageInset,
+            y: stageInset,
+            width: winW - stageInset * 2,
+            height: winH - toolbarHeight - stageInset
+        ))
         // Center canvas when viewport is larger than the image (eliminates blank side areas)
         let clipView = CenteringClipView()
         clipView.drawsBackground = false
@@ -95,20 +102,31 @@ final class AnnotationWindowController: NSWindowController {
         scrollView.hasVerticalScroller = true
         scrollView.hasHorizontalScroller = true
         scrollView.autohidesScrollers = true
-        scrollView.drawsBackground = true
-        scrollView.backgroundColor = ShotnixColors.canvasBackground
+        scrollView.drawsBackground = false
+        scrollView.backgroundColor = .clear
         scrollView.autoresizingMask = [.width, .height]
         scrollView.horizontalScrollElasticity = .none
         scrollView.verticalScrollElasticity = .none
+        scrollView.wantsLayer = true
+        scrollView.layer?.cornerRadius = 18
+        scrollView.layer?.cornerCurve = .continuous
+        scrollView.layer?.borderWidth = 1
+        scrollView.layer?.borderColor = ShotnixColors.editorChromeBorder.cgColor
+        scrollView.layer?.shadowColor = NSColor.black.cgColor
+        scrollView.layer?.shadowOpacity = 0.24
+        scrollView.layer?.shadowRadius = 32
+        scrollView.layer?.shadowOffset = CGSize(width: 0, height: -18)
 
-        // Toolbar positioned at top of window
+        // Floating toolbar dock positioned at top of window
+        let toolbarWidth = min(AnnotationToolbar.requiredWidth, max(0, winW - Self.trafficLightReservedWidth - stageInset))
+        let toolbarX = max(Self.trafficLightReservedWidth, round((winW - toolbarWidth) / 2))
         toolbar.frame = NSRect(
-            x: Self.trafficLightReservedWidth,
-            y: winH - toolbarHeight,
-            width: max(0, winW - Self.trafficLightReservedWidth),
-            height: toolbarHeight
+            x: toolbarX,
+            y: winH - toolbarDockHeight - 10,
+            width: toolbarWidth,
+            height: toolbarDockHeight
         )
-        toolbar.autoresizingMask = [.width, .minYMargin]
+        toolbar.autoresizingMask = [.minXMargin, .maxXMargin, .minYMargin]
 
         toolbar.onToolChanged     = { [weak self] tool in
             self?.canvas.activeTool = tool
@@ -143,7 +161,7 @@ final class AnnotationWindowController: NSWindowController {
         }
 
         // Build hierarchy FIRST, then configure layers (layers don't exist until views are in a window)
-        let container = NSView(frame: NSRect(origin: .zero, size: windowSize))
+        let container = PremiumEditorStageView(frame: NSRect(origin: .zero, size: windowSize))
         container.addSubview(scrollView)
         container.addSubview(toolbar)
         win.contentView = container
@@ -278,6 +296,52 @@ final class CenteringClipView: NSClipView {
     }
 }
 
+@MainActor
+private final class PremiumEditorStageView: NSView {
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        wantsLayer = true
+    }
+
+    required init?(coder: NSCoder) { fatalError() }
+
+    override func draw(_ dirtyRect: NSRect) {
+        guard let ctx = NSGraphicsContext.current?.cgContext else { return }
+        let rect = bounds
+        let colorSpace = CGColorSpace(name: CGColorSpace.sRGB) ?? CGColorSpaceCreateDeviceRGB()
+        let colors = [ShotnixColors.editorStageTop.cgColor, ShotnixColors.editorStageBottom.cgColor] as CFArray
+
+        if let gradient = CGGradient(colorsSpace: colorSpace, colors: colors, locations: [0, 1]) {
+            ctx.drawLinearGradient(
+                gradient,
+                start: CGPoint(x: rect.midX, y: rect.minY),
+                end: CGPoint(x: rect.midX, y: rect.maxY),
+                options: []
+            )
+        } else {
+            ShotnixColors.editorStageTop.setFill()
+            rect.fill()
+        }
+
+        drawGlow(in: ctx, rect: rect, color: NSColor.controlAccentColor.withAlphaComponent(0.18), center: CGPoint(x: rect.maxX * 0.72, y: rect.minY + 24), radius: max(rect.width, rect.height) * 0.42)
+        drawGlow(in: ctx, rect: rect, color: NSColor.systemPurple.withAlphaComponent(0.12), center: CGPoint(x: rect.minX + rect.width * 0.18, y: rect.maxY + 20), radius: max(rect.width, rect.height) * 0.36)
+    }
+
+    private func drawGlow(in context: CGContext, rect: CGRect, color: NSColor, center: CGPoint, radius: CGFloat) {
+        let colors = [color.cgColor, color.withAlphaComponent(0).cgColor] as CFArray
+        let colorSpace = color.cgColor.colorSpace ?? CGColorSpace(name: CGColorSpace.sRGB) ?? CGColorSpaceCreateDeviceRGB()
+        guard let gradient = CGGradient(colorsSpace: colorSpace, colors: colors, locations: [0, 1]) else { return }
+        context.drawRadialGradient(
+            gradient,
+            startCenter: center,
+            startRadius: 0,
+            endCenter: center,
+            endRadius: radius,
+            options: .drawsAfterEndLocation
+        )
+    }
+}
+
 // MARK: – Toolbar
 
 @MainActor
@@ -311,21 +375,32 @@ final class AnnotationToolbar: NSView {
 
     private func buildUI() {
         wantsLayer = true
+        layer?.cornerRadius = 18
+        layer?.cornerCurve = .continuous
+        layer?.shadowColor = NSColor.black.cgColor
+        layer?.shadowOpacity = 0.18
+        layer?.shadowRadius = 22
+        layer?.shadowOffset = CGSize(width: 0, height: -10)
 
-        // Frosted glass background
         let blur = NSVisualEffectView(frame: bounds)
-        blur.material = .titlebar
+        blur.material = .hudWindow
         blur.blendingMode = .withinWindow
         blur.state = .active
         blur.autoresizingMask = [.width, .height]
+        blur.wantsLayer = true
+        blur.layer?.cornerRadius = 18
+        blur.layer?.cornerCurve = .continuous
+        blur.layer?.masksToBounds = true
         addSubview(blur)
 
-        // Bottom separator line
-        let bottomLine = NSBox()
-        bottomLine.boxType = .separator
-        bottomLine.frame = NSRect(x: 0, y: 0, width: bounds.width, height: 1)
-        bottomLine.autoresizingMask = [.width]
-        addSubview(bottomLine)
+        let border = NSView(frame: bounds.insetBy(dx: 0.5, dy: 0.5))
+        border.autoresizingMask = [.width, .height]
+        border.wantsLayer = true
+        border.layer?.cornerRadius = 18
+        border.layer?.cornerCurve = .continuous
+        border.layer?.borderWidth = 1
+        border.layer?.borderColor = ShotnixColors.editorDockBorder.cgColor
+        addSubview(border)
 
         var x: CGFloat = 8
 
@@ -400,8 +475,8 @@ final class AnnotationToolbar: NSView {
 
         x += 10
 
-        let backgroundBtn = NSButton(title: "Backdrop", target: self, action: #selector(backgroundTapped(_:)))
-        backgroundBtn.bezelStyle = .rounded
+        let backgroundBtn = PremiumToolbarActionButton(title: "Backdrop", target: self, action: #selector(backgroundTapped(_:)))
+        backgroundBtn.bezelStyle = .regularSquare
         backgroundBtn.font = .systemFont(ofSize: 11, weight: .semibold)
         backgroundBtn.image = NSImage(systemSymbolName: "sparkles", accessibilityDescription: nil)
         backgroundBtn.imagePosition = .imageLeading
@@ -414,16 +489,16 @@ final class AnnotationToolbar: NSView {
 
         // Action buttons
         for (title, sel) in [("Copy", #selector(copyTapped)), ("Save", #selector(saveTapped))] {
-            let btn = NSButton(title: title, target: self, action: sel)
-            btn.bezelStyle = .rounded
+            let btn = PremiumToolbarActionButton(title: title, target: self, action: sel)
+            btn.bezelStyle = .regularSquare
             btn.font = .systemFont(ofSize: 11, weight: title == "Save" ? .semibold : .regular)
             btn.frame = NSRect(x: x, y: 10, width: 54, height: 30)
             addSubview(btn); x += 58
         }
 
         // Crop apply button (only visible when a crop region is drawn)
-        let cropBtn = NSButton(title: "Crop\u{2713}", target: self, action: #selector(cropTapped))
-        cropBtn.bezelStyle = .rounded
+        let cropBtn = PremiumToolbarActionButton(title: "Crop\u{2713}", target: self, action: #selector(cropTapped))
+        cropBtn.bezelStyle = .regularSquare
         cropBtn.font = .systemFont(ofSize: 11)
         cropBtn.frame = NSRect(x: x, y: 11, width: 60, height: 28)
         cropBtn.isHidden = true
@@ -918,6 +993,75 @@ private final class AnnotationToolButton: NSButton {
         layer?.add(spring, forKey: "bounceBack")
         layer?.transform = CATransform3DIdentity
         super.mouseUp(with: event)
+    }
+}
+
+@MainActor
+private final class PremiumToolbarActionButton: NSButton {
+    private var trackingArea: NSTrackingArea?
+    private var isHovered = false
+
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        configureLayer()
+    }
+
+    convenience init(title: String, target: AnyObject?, action: Selector?) {
+        self.init(frame: .zero)
+        self.title = title
+        self.target = target
+        self.action = action
+    }
+
+    required init?(coder: NSCoder) { fatalError() }
+
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+        if let trackingArea { removeTrackingArea(trackingArea) }
+        let area = NSTrackingArea(rect: bounds, options: [.activeAlways, .mouseEnteredAndExited], owner: self)
+        addTrackingArea(area)
+        trackingArea = area
+    }
+
+    override func mouseEntered(with event: NSEvent) {
+        isHovered = true
+        animateBackground(ShotnixColors.cornerButtonHover.cgColor)
+    }
+
+    override func mouseExited(with event: NSEvent) {
+        isHovered = false
+        animateBackground(ShotnixColors.editorActionBackground.cgColor)
+    }
+
+    override func mouseDown(with event: NSEvent) {
+        animateBackground(ShotnixColors.cornerButtonPressed.cgColor)
+        layer?.transform = CATransform3DMakeScale(0.97, 0.97, 1)
+        super.mouseDown(with: event)
+    }
+
+    override func mouseUp(with event: NSEvent) {
+        animateBackground(isHovered ? ShotnixColors.cornerButtonHover.cgColor : ShotnixColors.editorActionBackground.cgColor)
+        layer?.transform = CATransform3DIdentity
+        super.mouseUp(with: event)
+    }
+
+    private func configureLayer() {
+        wantsLayer = true
+        isBordered = false
+        layer?.cornerRadius = 9
+        layer?.cornerCurve = .continuous
+        layer?.backgroundColor = ShotnixColors.editorActionBackground.cgColor
+        layer?.borderWidth = 1
+        layer?.borderColor = ShotnixColors.editorDockBorder.cgColor
+    }
+
+    private func animateBackground(_ color: CGColor) {
+        wantsLayer = true
+        NSAnimationContext.runAnimationGroup { ctx in
+            ctx.duration = 0.16
+            ctx.allowsImplicitAnimation = true
+            self.layer?.backgroundColor = color
+        }
     }
 }
 
