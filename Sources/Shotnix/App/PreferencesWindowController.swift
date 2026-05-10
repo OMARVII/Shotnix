@@ -352,7 +352,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.11.0-beta"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.12.0-beta"
     
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
@@ -377,6 +377,11 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.12.0-beta
+                    • Custom image backdrops and generated image presets for presentation-ready exports
+                    • Refined annotation editor chrome, toolbar spacing, and background popovers
+                    • Numbered markers and color swatches render cleanly in the editor
+
                     Version 0.11.0-beta
                     • Per-image Backdrop controls for presentation-ready screenshot exports
                     • Annotation editor now previews styled backgrounds exactly as saved

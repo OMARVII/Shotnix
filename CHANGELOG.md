@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.12.0-beta] - 2026-05-10
+
+### Added
+- **Image backdrops** — annotation exports can now use generated image-style backgrounds or a custom user-selected image.
+
+### Changed
+- **Editor shell polish** — the annotation editor has a refined stage, floating toolbar dock, compact background popovers, and cleaner toolbar spacing.
+
+### Fixed
+- **Editor controls** — numbered markers, color swatches, Background controls, and popover style switching now render cleanly without clipped labels or stale layout.
+
 ## [0.11.0-beta] - 2026-05-09
 
 ### Added
