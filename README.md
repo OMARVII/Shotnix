@@ -68,7 +68,7 @@ Visit **[shotnix.com](https://shotnix.com/)** for the latest download and projec
 
 **Configurable**
 - Tabbed settings window (General, Shortcuts, Screenshots, Recording, About)
-- Export as PNG, JPEG, or WebP (with quality slider)
+- Export as PNG, JPEG, or WebP, with a JPEG quality slider
 - Auto-save location picker
 - After-capture auto-actions (auto-copy, auto-save)
 - Configurable overlay position (left or right) and timeout
