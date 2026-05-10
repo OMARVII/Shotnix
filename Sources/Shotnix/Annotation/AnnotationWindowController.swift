@@ -347,7 +347,7 @@ private final class PremiumEditorStageView: NSView {
 @MainActor
 final class AnnotationToolbar: NSView {
 
-    static let requiredWidth: CGFloat = 982
+    static let requiredWidth: CGFloat = 930
 
     var onToolChanged: ((AnnotationTool) -> Void)?
     var onColorChanged: ((NSColor) -> Void)?
@@ -475,15 +475,15 @@ final class AnnotationToolbar: NSView {
 
         x += 10
 
-        let backgroundBtn = PremiumToolbarActionButton(title: "Backdrop", target: self, action: #selector(backgroundTapped(_:)))
+        let backgroundBtn = PremiumToolbarActionButton(title: "Background", target: self, action: #selector(backgroundTapped(_:)))
         backgroundBtn.bezelStyle = .regularSquare
         backgroundBtn.font = .systemFont(ofSize: 11, weight: .semibold)
-        backgroundBtn.image = NSImage(systemSymbolName: "sparkles", accessibilityDescription: nil)
-        backgroundBtn.imagePosition = .imageLeading
-        backgroundBtn.frame = NSRect(x: x, y: 10, width: 104, height: 30)
+        backgroundBtn.imagePosition = .noImage
+        backgroundBtn.toolTip = "Background"
+        backgroundBtn.frame = NSRect(x: x, y: 10, width: 110, height: 30)
         addSubview(backgroundBtn)
         backgroundButton = backgroundBtn
-        x += 110
+        x += 116
 
         x += 2
 
@@ -595,6 +595,7 @@ final class AnnotationToolbar: NSView {
         let popover = NSPopover()
         popover.contentViewController = controller
         popover.behavior = .transient
+        controller.popover = popover
         popover.show(relativeTo: sender.bounds, of: sender, preferredEdge: .minY)
         backgroundPopover = popover
     }
@@ -608,6 +609,7 @@ final class AnnotationToolbar: NSView {
 @MainActor
 private final class BackgroundPopoverController: NSViewController {
     var onChange: ((ScreenshotBackgroundOptions) -> Void)?
+    weak var popover: NSPopover?
 
     private var options: ScreenshotBackgroundOptions
     private let enabledButton = NSButton(checkboxWithTitle: "Apply background to this image", target: nil, action: nil)
@@ -620,8 +622,15 @@ private final class BackgroundPopoverController: NSViewController {
     private let paddingValue = NSTextField(labelWithString: "")
     private let radiusValue = NSTextField(labelWithString: "")
     private let shadowValue = NSTextField(labelWithString: "")
+    private var styleLabel: NSTextField?
     private var presetLabel: NSTextField?
+    private var paddingLabel: NSTextField?
+    private var radiusLabel: NSTextField?
+    private var shadowLabel: NSTextField?
     private var imagePresetButtons: [NSButton] = []
+    private let popoverWidth: CGFloat = 300
+    private let compactPopoverHeight: CGFloat = 250
+    private let imagePopoverHeight: CGFloat = 452
 
     private let solidPresets: [(String, String)] = [
         ("Porcelain", "#f4eadb"),
@@ -653,7 +662,7 @@ private final class BackgroundPopoverController: NSViewController {
     required init?(coder: NSCoder) { fatalError() }
 
     override func loadView() {
-        let container = NSView(frame: NSRect(x: 0, y: 0, width: 300, height: 452))
+        let container = NSView(frame: NSRect(x: 0, y: 0, width: popoverWidth, height: imagePopoverHeight))
         var y: CGFloat = 416
 
         enabledButton.frame = NSRect(x: 16, y: y, width: 260, height: 22)
@@ -662,7 +671,7 @@ private final class BackgroundPopoverController: NSViewController {
         container.addSubview(enabledButton)
 
         y -= 38
-        addLabel("Style", x: 16, y: y + 4, to: container)
+        styleLabel = addLabel("Style", x: 16, y: y + 4, to: container)
         stylePopup.frame = NSRect(x: 106, y: y, width: 170, height: 26)
         stylePopup.addItems(withTitles: ["Gradient", "Solid Color", "Image"])
         stylePopup.target = self
@@ -688,11 +697,11 @@ private final class BackgroundPopoverController: NSViewController {
         addImagePresetGrid(to: container)
 
         y = 124
-        addSliderRow("Padding", slider: paddingSlider, valueLabel: paddingValue, y: y, min: 0, max: 240, to: container)
+        paddingLabel = addSliderRow("Padding", slider: paddingSlider, valueLabel: paddingValue, y: y, min: 0, max: 240, to: container)
         y -= 38
-        addSliderRow("Radius", slider: radiusSlider, valueLabel: radiusValue, y: y, min: 0, max: 36, to: container)
+        radiusLabel = addSliderRow("Radius", slider: radiusSlider, valueLabel: radiusValue, y: y, min: 0, max: 36, to: container)
         y -= 38
-        addSliderRow("Shadow", slider: shadowSlider, valueLabel: shadowValue, y: y, min: 0, max: 1, to: container)
+        shadowLabel = addSliderRow("Shadow", slider: shadowSlider, valueLabel: shadowValue, y: y, min: 0, max: 1, to: container)
 
         view = container
         syncControls()
@@ -740,8 +749,9 @@ private final class BackgroundPopoverController: NSViewController {
         }
     }
 
-    private func addSliderRow(_ title: String, slider: NSSlider, valueLabel: NSTextField, y: CGFloat, min: Double, max: Double, to view: NSView) {
-        addLabel(title, x: 16, y: y + 6, to: view)
+    @discardableResult
+    private func addSliderRow(_ title: String, slider: NSSlider, valueLabel: NSTextField, y: CGFloat, min: Double, max: Double, to view: NSView) -> NSTextField {
+        let label = addLabel(title, x: 16, y: y + 6, to: view)
         slider.minValue = min
         slider.maxValue = max
         slider.target = self
@@ -753,6 +763,59 @@ private final class BackgroundPopoverController: NSViewController {
         valueLabel.textColor = .secondaryLabelColor
         valueLabel.frame = NSRect(x: 236, y: y + 5, width: 40, height: 16)
         view.addSubview(valueLabel)
+        return label
+    }
+
+    private func layoutControls() {
+        let isImageStyle = options.style == .image
+        let height = isImageStyle ? imagePopoverHeight : compactPopoverHeight
+        let size = NSSize(width: popoverWidth, height: height)
+        view.setFrameSize(size)
+        preferredContentSize = size
+        popover?.contentSize = size
+
+        let enabledY = height - 36
+        let styleY = enabledY - 38
+        let presetY = styleY - 36
+        let uploadY = presetY - 40
+        let imageGridStartY = uploadY - 46
+        let sliderY = isImageStyle ? CGFloat(124) : presetY - 48
+
+        enabledButton.frame = NSRect(x: 16, y: enabledY, width: 260, height: 22)
+        styleLabel?.frame = NSRect(x: 16, y: styleY + 4, width: 80, height: 16)
+        stylePopup.frame = NSRect(x: 106, y: styleY, width: 170, height: 26)
+        presetLabel?.frame = NSRect(x: 16, y: presetY + 4, width: 80, height: 16)
+        presetPopup.frame = NSRect(x: 106, y: presetY, width: 170, height: 26)
+        uploadImageButton.frame = NSRect(x: 16, y: uploadY, width: 260, height: 30)
+        layoutImagePresetButtons(startY: imageGridStartY)
+        layoutSliderRow(label: paddingLabel, slider: paddingSlider, valueLabel: paddingValue, y: sliderY)
+        layoutSliderRow(label: radiusLabel, slider: radiusSlider, valueLabel: radiusValue, y: sliderY - 38)
+        layoutSliderRow(label: shadowLabel, slider: shadowSlider, valueLabel: shadowValue, y: sliderY - 76)
+        view.needsDisplay = true
+    }
+
+    private func layoutImagePresetButtons(startY: CGFloat) {
+        let buttonSize = NSSize(width: 42, height: 34)
+        let gap: CGFloat = 10
+        let startX: CGFloat = 16
+        let columns = 5
+
+        for (index, button) in imagePresetButtons.enumerated() {
+            let row = index / columns
+            let col = index % columns
+            button.frame = NSRect(
+                x: startX + CGFloat(col) * (buttonSize.width + gap),
+                y: startY - CGFloat(row) * (buttonSize.height + gap),
+                width: buttonSize.width,
+                height: buttonSize.height
+            )
+        }
+    }
+
+    private func layoutSliderRow(label: NSTextField?, slider: NSSlider, valueLabel: NSTextField, y: CGFloat) {
+        label?.frame = NSRect(x: 16, y: y + 6, width: 80, height: 16)
+        slider.frame = NSRect(x: 106, y: y, width: 126, height: 26)
+        valueLabel.frame = NSRect(x: 236, y: y + 5, width: 40, height: 16)
     }
 
     private func syncControls() {
@@ -794,6 +857,7 @@ private final class BackgroundPopoverController: NSViewController {
 
     private func updateStyleVisibility() {
         let isImageStyle = options.style == .image
+        layoutControls()
         presetLabel?.isHidden = isImageStyle
         presetPopup.isHidden = isImageStyle
         uploadImageButton.isHidden = !isImageStyle
@@ -1097,6 +1161,10 @@ final class ColorPopoverController: NSViewController {
                 guard idx < presets.count else { break }
                 let x = padding + CGFloat(col) * (btnSize + gap)
                 let btn = NSButton(frame: NSRect(x: x, y: y, width: btnSize, height: btnSize))
+                btn.title = ""
+                btn.alternateTitle = ""
+                btn.attributedTitle = NSAttributedString(string: "")
+                btn.imagePosition = .noImage
                 btn.wantsLayer = true
                 btn.layer?.cornerRadius = btnSize / 2
                 btn.layer?.backgroundColor = presets[idx].cgColor
