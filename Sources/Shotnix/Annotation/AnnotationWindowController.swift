@@ -1,11 +1,12 @@
 import AppKit
+import UniformTypeIdentifiers
 
 /// Manages the full annotation editor window.
 @MainActor
 final class AnnotationWindowController: NSWindowController {
 
     private static let trafficLightReservedWidth: CGFloat = 92
-    private static let minimumEditorWidth = trafficLightReservedWidth + AnnotationToolbar.requiredWidth
+    private static let minimumEditorWidth = trafficLightReservedWidth + AnnotationToolbar.requiredWidth + 20
 
     private let canvas: AnnotationCanvas
     private let toolbar: AnnotationToolbar
@@ -56,12 +57,14 @@ final class AnnotationWindowController: NSWindowController {
         self.toolbar = AnnotationToolbar()
 
         let canvasSize = image.size
-        let toolbarHeight: CGFloat = 52
+        let toolbarHeight: CGFloat = 76
+        let toolbarDockHeight: CGFloat = 56
+        let stageInset: CGFloat = 18
 
         // Cap window to 85% of screen so large screenshots don't go off-screen
         let screenFrame = NSScreen.main?.visibleFrame ?? NSRect(x: 0, y: 0, width: 1280, height: 800)
         let maxW = screenFrame.width * 0.85
-        let maxH = screenFrame.height * 0.85 - toolbarHeight
+        let maxH = screenFrame.height * 0.85 - toolbarHeight - stageInset
         let winW = max(min(canvasSize.width, maxW), Self.minimumEditorWidth)
         let winH = min(canvasSize.height, maxH) + toolbarHeight
         let windowSize = NSSize(width: winW, height: winH)
@@ -76,7 +79,7 @@ final class AnnotationWindowController: NSWindowController {
         win.titlebarAppearsTransparent = true
         win.isReleasedWhenClosed = false
         win.level = .floating
-        win.minSize = NSSize(width: Self.minimumEditorWidth, height: 240 + toolbarHeight)
+        win.minSize = NSSize(width: Self.minimumEditorWidth, height: 260 + toolbarHeight)
         win.center()
 
         super.init(window: win)
@@ -85,7 +88,12 @@ final class AnnotationWindowController: NSWindowController {
         canvas.frame = NSRect(origin: .zero, size: canvasSize)
 
         // Scroll view for canvas — clips content properly
-        let scrollView = NSScrollView(frame: NSRect(x: 0, y: 0, width: winW, height: winH - toolbarHeight))
+        let scrollView = NSScrollView(frame: NSRect(
+            x: stageInset,
+            y: stageInset,
+            width: winW - stageInset * 2,
+            height: winH - toolbarHeight - stageInset
+        ))
         // Center canvas when viewport is larger than the image (eliminates blank side areas)
         let clipView = CenteringClipView()
         clipView.drawsBackground = false
@@ -94,20 +102,31 @@ final class AnnotationWindowController: NSWindowController {
         scrollView.hasVerticalScroller = true
         scrollView.hasHorizontalScroller = true
         scrollView.autohidesScrollers = true
-        scrollView.drawsBackground = true
-        scrollView.backgroundColor = ShotnixColors.canvasBackground
+        scrollView.drawsBackground = false
+        scrollView.backgroundColor = .clear
         scrollView.autoresizingMask = [.width, .height]
         scrollView.horizontalScrollElasticity = .none
         scrollView.verticalScrollElasticity = .none
+        scrollView.wantsLayer = true
+        scrollView.layer?.cornerRadius = 18
+        scrollView.layer?.cornerCurve = .continuous
+        scrollView.layer?.borderWidth = 1
+        scrollView.layer?.borderColor = ShotnixColors.editorChromeBorder.cgColor
+        scrollView.layer?.shadowColor = NSColor.black.cgColor
+        scrollView.layer?.shadowOpacity = 0.24
+        scrollView.layer?.shadowRadius = 32
+        scrollView.layer?.shadowOffset = CGSize(width: 0, height: -18)
 
-        // Toolbar positioned at top of window
+        // Floating toolbar dock positioned at top of window
+        let toolbarWidth = min(AnnotationToolbar.requiredWidth, max(0, winW - Self.trafficLightReservedWidth - stageInset))
+        let toolbarX = max(Self.trafficLightReservedWidth, round((winW - toolbarWidth) / 2))
         toolbar.frame = NSRect(
-            x: Self.trafficLightReservedWidth,
-            y: winH - toolbarHeight,
-            width: max(0, winW - Self.trafficLightReservedWidth),
-            height: toolbarHeight
+            x: toolbarX,
+            y: winH - toolbarDockHeight - 10,
+            width: toolbarWidth,
+            height: toolbarDockHeight
         )
-        toolbar.autoresizingMask = [.width, .minYMargin]
+        toolbar.autoresizingMask = [.minXMargin, .maxXMargin, .minYMargin]
 
         toolbar.onToolChanged     = { [weak self] tool in
             self?.canvas.activeTool = tool
@@ -142,7 +161,7 @@ final class AnnotationWindowController: NSWindowController {
         }
 
         // Build hierarchy FIRST, then configure layers (layers don't exist until views are in a window)
-        let container = NSView(frame: NSRect(origin: .zero, size: windowSize))
+        let container = PremiumEditorStageView(frame: NSRect(origin: .zero, size: windowSize))
         container.addSubview(scrollView)
         container.addSubview(toolbar)
         win.contentView = container
@@ -277,12 +296,58 @@ final class CenteringClipView: NSClipView {
     }
 }
 
+@MainActor
+private final class PremiumEditorStageView: NSView {
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        wantsLayer = true
+    }
+
+    required init?(coder: NSCoder) { fatalError() }
+
+    override func draw(_ dirtyRect: NSRect) {
+        guard let ctx = NSGraphicsContext.current?.cgContext else { return }
+        let rect = bounds
+        let colorSpace = CGColorSpace(name: CGColorSpace.sRGB) ?? CGColorSpaceCreateDeviceRGB()
+        let colors = [ShotnixColors.editorStageTop.cgColor, ShotnixColors.editorStageBottom.cgColor] as CFArray
+
+        if let gradient = CGGradient(colorsSpace: colorSpace, colors: colors, locations: [0, 1]) {
+            ctx.drawLinearGradient(
+                gradient,
+                start: CGPoint(x: rect.midX, y: rect.minY),
+                end: CGPoint(x: rect.midX, y: rect.maxY),
+                options: []
+            )
+        } else {
+            ShotnixColors.editorStageTop.setFill()
+            rect.fill()
+        }
+
+        drawGlow(in: ctx, rect: rect, color: NSColor.controlAccentColor.withAlphaComponent(0.18), center: CGPoint(x: rect.maxX * 0.72, y: rect.minY + 24), radius: max(rect.width, rect.height) * 0.42)
+        drawGlow(in: ctx, rect: rect, color: NSColor.systemPurple.withAlphaComponent(0.12), center: CGPoint(x: rect.minX + rect.width * 0.18, y: rect.maxY + 20), radius: max(rect.width, rect.height) * 0.36)
+    }
+
+    private func drawGlow(in context: CGContext, rect: CGRect, color: NSColor, center: CGPoint, radius: CGFloat) {
+        let colors = [color.cgColor, color.withAlphaComponent(0).cgColor] as CFArray
+        let colorSpace = color.cgColor.colorSpace ?? CGColorSpace(name: CGColorSpace.sRGB) ?? CGColorSpaceCreateDeviceRGB()
+        guard let gradient = CGGradient(colorsSpace: colorSpace, colors: colors, locations: [0, 1]) else { return }
+        context.drawRadialGradient(
+            gradient,
+            startCenter: center,
+            startRadius: 0,
+            endCenter: center,
+            endRadius: radius,
+            options: .drawsAfterEndLocation
+        )
+    }
+}
+
 // MARK: – Toolbar
 
 @MainActor
 final class AnnotationToolbar: NSView {
 
-    static let requiredWidth: CGFloat = 982
+    static let requiredWidth: CGFloat = 930
 
     var onToolChanged: ((AnnotationTool) -> Void)?
     var onColorChanged: ((NSColor) -> Void)?
@@ -310,21 +375,32 @@ final class AnnotationToolbar: NSView {
 
     private func buildUI() {
         wantsLayer = true
+        layer?.cornerRadius = 18
+        layer?.cornerCurve = .continuous
+        layer?.shadowColor = NSColor.black.cgColor
+        layer?.shadowOpacity = 0.18
+        layer?.shadowRadius = 22
+        layer?.shadowOffset = CGSize(width: 0, height: -10)
 
-        // Frosted glass background
         let blur = NSVisualEffectView(frame: bounds)
-        blur.material = .titlebar
+        blur.material = .hudWindow
         blur.blendingMode = .withinWindow
         blur.state = .active
         blur.autoresizingMask = [.width, .height]
+        blur.wantsLayer = true
+        blur.layer?.cornerRadius = 18
+        blur.layer?.cornerCurve = .continuous
+        blur.layer?.masksToBounds = true
         addSubview(blur)
 
-        // Bottom separator line
-        let bottomLine = NSBox()
-        bottomLine.boxType = .separator
-        bottomLine.frame = NSRect(x: 0, y: 0, width: bounds.width, height: 1)
-        bottomLine.autoresizingMask = [.width]
-        addSubview(bottomLine)
+        let border = NSView(frame: bounds.insetBy(dx: 0.5, dy: 0.5))
+        border.autoresizingMask = [.width, .height]
+        border.wantsLayer = true
+        border.layer?.cornerRadius = 18
+        border.layer?.cornerCurve = .continuous
+        border.layer?.borderWidth = 1
+        border.layer?.borderColor = ShotnixColors.editorDockBorder.cgColor
+        addSubview(border)
 
         var x: CGFloat = 8
 
@@ -399,30 +475,30 @@ final class AnnotationToolbar: NSView {
 
         x += 10
 
-        let backgroundBtn = NSButton(title: "Backdrop", target: self, action: #selector(backgroundTapped(_:)))
-        backgroundBtn.bezelStyle = .rounded
+        let backgroundBtn = PremiumToolbarActionButton(title: "Background", target: self, action: #selector(backgroundTapped(_:)))
+        backgroundBtn.bezelStyle = .regularSquare
         backgroundBtn.font = .systemFont(ofSize: 11, weight: .semibold)
-        backgroundBtn.image = NSImage(systemSymbolName: "sparkles", accessibilityDescription: nil)
-        backgroundBtn.imagePosition = .imageLeading
-        backgroundBtn.frame = NSRect(x: x, y: 10, width: 104, height: 30)
+        backgroundBtn.imagePosition = .noImage
+        backgroundBtn.toolTip = "Background"
+        backgroundBtn.frame = NSRect(x: x, y: 10, width: 110, height: 30)
         addSubview(backgroundBtn)
         backgroundButton = backgroundBtn
-        x += 110
+        x += 116
 
         x += 2
 
         // Action buttons
         for (title, sel) in [("Copy", #selector(copyTapped)), ("Save", #selector(saveTapped))] {
-            let btn = NSButton(title: title, target: self, action: sel)
-            btn.bezelStyle = .rounded
+            let btn = PremiumToolbarActionButton(title: title, target: self, action: sel)
+            btn.bezelStyle = .regularSquare
             btn.font = .systemFont(ofSize: 11, weight: title == "Save" ? .semibold : .regular)
             btn.frame = NSRect(x: x, y: 10, width: 54, height: 30)
             addSubview(btn); x += 58
         }
 
         // Crop apply button (only visible when a crop region is drawn)
-        let cropBtn = NSButton(title: "Crop\u{2713}", target: self, action: #selector(cropTapped))
-        cropBtn.bezelStyle = .rounded
+        let cropBtn = PremiumToolbarActionButton(title: "Crop\u{2713}", target: self, action: #selector(cropTapped))
+        cropBtn.bezelStyle = .regularSquare
         cropBtn.font = .systemFont(ofSize: 11)
         cropBtn.frame = NSRect(x: x, y: 11, width: 60, height: 28)
         cropBtn.isHidden = true
@@ -519,6 +595,7 @@ final class AnnotationToolbar: NSView {
         let popover = NSPopover()
         popover.contentViewController = controller
         popover.behavior = .transient
+        controller.popover = popover
         popover.show(relativeTo: sender.bounds, of: sender, preferredEdge: .minY)
         backgroundPopover = popover
     }
@@ -532,17 +609,28 @@ final class AnnotationToolbar: NSView {
 @MainActor
 private final class BackgroundPopoverController: NSViewController {
     var onChange: ((ScreenshotBackgroundOptions) -> Void)?
+    weak var popover: NSPopover?
 
     private var options: ScreenshotBackgroundOptions
     private let enabledButton = NSButton(checkboxWithTitle: "Apply background to this image", target: nil, action: nil)
     private let stylePopup = NSPopUpButton()
     private let presetPopup = NSPopUpButton()
+    private let uploadImageButton = NSButton(title: "Upload Custom Image", target: nil, action: nil)
     private let paddingSlider = NSSlider()
     private let radiusSlider = NSSlider()
     private let shadowSlider = NSSlider()
     private let paddingValue = NSTextField(labelWithString: "")
     private let radiusValue = NSTextField(labelWithString: "")
     private let shadowValue = NSTextField(labelWithString: "")
+    private var styleLabel: NSTextField?
+    private var presetLabel: NSTextField?
+    private var paddingLabel: NSTextField?
+    private var radiusLabel: NSTextField?
+    private var shadowLabel: NSTextField?
+    private var imagePresetButtons: [NSButton] = []
+    private let popoverWidth: CGFloat = 300
+    private let compactPopoverHeight: CGFloat = 250
+    private let imagePopoverHeight: CGFloat = 452
 
     private let solidPresets: [(String, String)] = [
         ("Porcelain", "#f4eadb"),
@@ -574,8 +662,8 @@ private final class BackgroundPopoverController: NSViewController {
     required init?(coder: NSCoder) { fatalError() }
 
     override func loadView() {
-        let container = NSView(frame: NSRect(x: 0, y: 0, width: 300, height: 230))
-        var y: CGFloat = 194
+        let container = NSView(frame: NSRect(x: 0, y: 0, width: popoverWidth, height: imagePopoverHeight))
+        var y: CGFloat = 416
 
         enabledButton.frame = NSRect(x: 16, y: y, width: 260, height: 22)
         enabledButton.target = self
@@ -583,40 +671,87 @@ private final class BackgroundPopoverController: NSViewController {
         container.addSubview(enabledButton)
 
         y -= 38
-        addLabel("Style", x: 16, y: y + 4, to: container)
+        styleLabel = addLabel("Style", x: 16, y: y + 4, to: container)
         stylePopup.frame = NSRect(x: 106, y: y, width: 170, height: 26)
-        stylePopup.addItems(withTitles: ["Gradient", "Solid Color"])
+        stylePopup.addItems(withTitles: ["Gradient", "Solid Color", "Image"])
         stylePopup.target = self
         stylePopup.action = #selector(styleChanged)
         container.addSubview(stylePopup)
 
         y -= 36
-        addLabel("Preset", x: 16, y: y + 4, to: container)
+        presetLabel = addLabel("Preset", x: 16, y: y + 4, to: container)
         presetPopup.frame = NSRect(x: 106, y: y, width: 170, height: 26)
         presetPopup.target = self
         presetPopup.action = #selector(presetChanged)
         container.addSubview(presetPopup)
 
-        y -= 42
-        addSliderRow("Padding", slider: paddingSlider, valueLabel: paddingValue, y: y, min: 0, max: 240, to: container)
+        uploadImageButton.frame = NSRect(x: 16, y: 302, width: 260, height: 30)
+        uploadImageButton.bezelStyle = .rounded
+        uploadImageButton.font = .systemFont(ofSize: 12, weight: .semibold)
+        uploadImageButton.image = NSImage(systemSymbolName: "square.and.arrow.up", accessibilityDescription: nil)
+        uploadImageButton.imagePosition = .imageLeading
+        uploadImageButton.target = self
+        uploadImageButton.action = #selector(uploadCustomImage)
+        container.addSubview(uploadImageButton)
+
+        addImagePresetGrid(to: container)
+
+        y = 124
+        paddingLabel = addSliderRow("Padding", slider: paddingSlider, valueLabel: paddingValue, y: y, min: 0, max: 240, to: container)
         y -= 38
-        addSliderRow("Radius", slider: radiusSlider, valueLabel: radiusValue, y: y, min: 0, max: 36, to: container)
+        radiusLabel = addSliderRow("Radius", slider: radiusSlider, valueLabel: radiusValue, y: y, min: 0, max: 36, to: container)
         y -= 38
-        addSliderRow("Shadow", slider: shadowSlider, valueLabel: shadowValue, y: y, min: 0, max: 1, to: container)
+        shadowLabel = addSliderRow("Shadow", slider: shadowSlider, valueLabel: shadowValue, y: y, min: 0, max: 1, to: container)
 
         view = container
         syncControls()
     }
 
-    private func addLabel(_ text: String, x: CGFloat, y: CGFloat, to view: NSView) {
+    @discardableResult
+    private func addLabel(_ text: String, x: CGFloat, y: CGFloat, to view: NSView) -> NSTextField {
         let label = NSTextField(labelWithString: text)
         label.font = .systemFont(ofSize: 11)
         label.frame = NSRect(x: x, y: y, width: 80, height: 16)
         view.addSubview(label)
+        return label
     }
 
-    private func addSliderRow(_ title: String, slider: NSSlider, valueLabel: NSTextField, y: CGFloat, min: Double, max: Double, to view: NSView) {
-        addLabel(title, x: 16, y: y + 6, to: view)
+    private func addImagePresetGrid(to view: NSView) {
+        let buttonSize = NSSize(width: 42, height: 34)
+        let gap: CGFloat = 10
+        let startX: CGFloat = 16
+        let startY: CGFloat = 256
+        let columns = 5
+
+        for (index, preset) in ScreenshotBackgroundOptions.imagePresets.enumerated() {
+            let row = index / columns
+            let col = index % columns
+            let button = NSButton(frame: NSRect(
+                x: startX + CGFloat(col) * (buttonSize.width + gap),
+                y: startY - CGFloat(row) * (buttonSize.height + gap),
+                width: buttonSize.width,
+                height: buttonSize.height
+            ))
+            button.image = ScreenshotBackgroundComposer.previewImage(options: imageOptions(for: preset), size: NSSize(width: 84, height: 68))
+            button.imageScaling = .scaleAxesIndependently
+            button.isBordered = false
+            button.bezelStyle = .regularSquare
+            button.toolTip = preset.name
+            button.tag = index
+            button.target = self
+            button.action = #selector(imagePresetTapped(_:))
+            button.wantsLayer = true
+            button.layer?.cornerRadius = 7
+            button.layer?.cornerCurve = .continuous
+            button.layer?.masksToBounds = true
+            view.addSubview(button)
+            imagePresetButtons.append(button)
+        }
+    }
+
+    @discardableResult
+    private func addSliderRow(_ title: String, slider: NSSlider, valueLabel: NSTextField, y: CGFloat, min: Double, max: Double, to view: NSView) -> NSTextField {
+        let label = addLabel(title, x: 16, y: y + 6, to: view)
         slider.minValue = min
         slider.maxValue = max
         slider.target = self
@@ -628,16 +763,75 @@ private final class BackgroundPopoverController: NSViewController {
         valueLabel.textColor = .secondaryLabelColor
         valueLabel.frame = NSRect(x: 236, y: y + 5, width: 40, height: 16)
         view.addSubview(valueLabel)
+        return label
+    }
+
+    private func layoutControls() {
+        let isImageStyle = options.style == .image
+        let height = isImageStyle ? imagePopoverHeight : compactPopoverHeight
+        let size = NSSize(width: popoverWidth, height: height)
+        view.setFrameSize(size)
+        preferredContentSize = size
+        popover?.contentSize = size
+
+        let enabledY = height - 36
+        let styleY = enabledY - 38
+        let presetY = styleY - 36
+        let uploadY = presetY - 40
+        let imageGridStartY = uploadY - 46
+        let sliderY = isImageStyle ? CGFloat(124) : presetY - 48
+
+        enabledButton.frame = NSRect(x: 16, y: enabledY, width: 260, height: 22)
+        styleLabel?.frame = NSRect(x: 16, y: styleY + 4, width: 80, height: 16)
+        stylePopup.frame = NSRect(x: 106, y: styleY, width: 170, height: 26)
+        presetLabel?.frame = NSRect(x: 16, y: presetY + 4, width: 80, height: 16)
+        presetPopup.frame = NSRect(x: 106, y: presetY, width: 170, height: 26)
+        uploadImageButton.frame = NSRect(x: 16, y: uploadY, width: 260, height: 30)
+        layoutImagePresetButtons(startY: imageGridStartY)
+        layoutSliderRow(label: paddingLabel, slider: paddingSlider, valueLabel: paddingValue, y: sliderY)
+        layoutSliderRow(label: radiusLabel, slider: radiusSlider, valueLabel: radiusValue, y: sliderY - 38)
+        layoutSliderRow(label: shadowLabel, slider: shadowSlider, valueLabel: shadowValue, y: sliderY - 76)
+        view.needsDisplay = true
+    }
+
+    private func layoutImagePresetButtons(startY: CGFloat) {
+        let buttonSize = NSSize(width: 42, height: 34)
+        let gap: CGFloat = 10
+        let startX: CGFloat = 16
+        let columns = 5
+
+        for (index, button) in imagePresetButtons.enumerated() {
+            let row = index / columns
+            let col = index % columns
+            button.frame = NSRect(
+                x: startX + CGFloat(col) * (buttonSize.width + gap),
+                y: startY - CGFloat(row) * (buttonSize.height + gap),
+                width: buttonSize.width,
+                height: buttonSize.height
+            )
+        }
+    }
+
+    private func layoutSliderRow(label: NSTextField?, slider: NSSlider, valueLabel: NSTextField, y: CGFloat) {
+        label?.frame = NSRect(x: 16, y: y + 6, width: 80, height: 16)
+        slider.frame = NSRect(x: 106, y: y, width: 126, height: 26)
+        valueLabel.frame = NSRect(x: 236, y: y + 5, width: 40, height: 16)
     }
 
     private func syncControls() {
         enabledButton.state = options.isEnabled ? .on : .off
-        stylePopup.selectItem(at: options.style == .gradient ? 0 : 1)
+        switch options.style {
+        case .gradient: stylePopup.selectItem(at: 0)
+        case .solid: stylePopup.selectItem(at: 1)
+        case .image: stylePopup.selectItem(at: 2)
+        }
         paddingSlider.doubleValue = Double(options.padding)
         radiusSlider.doubleValue = Double(options.cornerRadius)
         shadowSlider.doubleValue = Double(options.shadow)
         rebuildPresetPopup()
+        updateStyleVisibility()
         updateValueLabels()
+        updateImagePresetSelection()
     }
 
     private func rebuildPresetPopup() {
@@ -653,6 +847,30 @@ private final class BackgroundPopoverController: NSViewController {
             if let index = gradientPresets.firstIndex(where: { $0.name == options.presetName }) {
                 presetPopup.selectItem(at: index)
             }
+        case .image:
+            presetPopup.addItems(withTitles: ScreenshotBackgroundOptions.imagePresets.map(\.name))
+            if let index = ScreenshotBackgroundOptions.imagePresets.firstIndex(where: { $0.name == options.presetName }) {
+                presetPopup.selectItem(at: index)
+            }
+        }
+    }
+
+    private func updateStyleVisibility() {
+        let isImageStyle = options.style == .image
+        layoutControls()
+        presetLabel?.isHidden = isImageStyle
+        presetPopup.isHidden = isImageStyle
+        uploadImageButton.isHidden = !isImageStyle
+        imagePresetButtons.forEach { $0.isHidden = !isImageStyle }
+        uploadImageButton.title = options.customImageName.map { "Custom: \($0)" } ?? "Upload Custom Image"
+    }
+
+    private func updateImagePresetSelection() {
+        for (index, button) in imagePresetButtons.enumerated() {
+            let preset = ScreenshotBackgroundOptions.imagePresets[index]
+            let selected = options.style == .image && options.customImageData == nil && preset.name == options.presetName
+            button.layer?.borderWidth = selected ? 2 : 1
+            button.layer?.borderColor = selected ? NSColor.controlAccentColor.cgColor : NSColor.white.withAlphaComponent(0.18).cgColor
         }
     }
 
@@ -663,6 +881,8 @@ private final class BackgroundPopoverController: NSViewController {
     }
 
     private func emitChange() {
+        updateStyleVisibility()
+        updateImagePresetSelection()
         updateValueLabels()
         onChange?(options)
     }
@@ -673,9 +893,29 @@ private final class BackgroundPopoverController: NSViewController {
     }
 
     @objc private func styleChanged() {
-        options.style = stylePopup.indexOfSelectedItem == 0 ? .gradient : .solid
+        switch stylePopup.indexOfSelectedItem {
+        case 1:
+            options.style = .solid
+        case 2:
+            options.style = .image
+            options.isEnabled = true
+            if options.customImageData == nil,
+               !ScreenshotBackgroundOptions.imagePresets.contains(where: { $0.name == options.presetName }) {
+                let preset = ScreenshotBackgroundOptions.imagePresets[0]
+                options.presetName = preset.name
+                options.gradientStartHex = preset.startHex
+                options.gradientEndHex = preset.endHex
+                options.accentHexes = preset.accentHexes
+            }
+        default:
+            options.style = .gradient
+        }
         rebuildPresetPopup()
-        presetChanged()
+        if options.style == .image {
+            emitChange()
+        } else {
+            presetChanged()
+        }
     }
 
     @objc private func presetChanged() {
@@ -692,8 +932,64 @@ private final class BackgroundPopoverController: NSViewController {
             options.gradientStartHex = preset.start
             options.gradientEndHex = preset.end
             options.accentHexes = preset.accents
+            options.customImageData = nil
+            options.customImageName = nil
+        case .image:
+            let preset = ScreenshotBackgroundOptions.imagePresets[min(index, ScreenshotBackgroundOptions.imagePresets.count - 1)]
+            applyImagePreset(preset)
         }
         emitChange()
+    }
+
+    @objc private func imagePresetTapped(_ sender: NSButton) {
+        let preset = ScreenshotBackgroundOptions.imagePresets[min(sender.tag, ScreenshotBackgroundOptions.imagePresets.count - 1)]
+        applyImagePreset(preset)
+        emitChange()
+    }
+
+    @objc private func uploadCustomImage() {
+        let panel = NSOpenPanel()
+        panel.allowedContentTypes = [.image]
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+        panel.canChooseFiles = true
+
+        guard panel.runModal() == .OK,
+              let url = panel.url,
+              let data = try? Data(contentsOf: url),
+              NSImage(data: data) != nil else { return }
+
+        options.isEnabled = true
+        options.style = .image
+        options.presetName = "Custom Image"
+        options.customImageData = data
+        options.customImageName = url.lastPathComponent
+        stylePopup.selectItem(at: 2)
+        emitChange()
+    }
+
+    private func applyImagePreset(_ preset: ScreenshotBackgroundImagePreset) {
+        options.isEnabled = true
+        options.style = .image
+        options.presetName = preset.name
+        options.gradientStartHex = preset.startHex
+        options.gradientEndHex = preset.endHex
+        options.accentHexes = preset.accentHexes
+        options.customImageData = nil
+        options.customImageName = nil
+    }
+
+    private func imageOptions(for preset: ScreenshotBackgroundImagePreset) -> ScreenshotBackgroundOptions {
+        var preview = options
+        preview.isEnabled = true
+        preview.style = .image
+        preview.presetName = preset.name
+        preview.gradientStartHex = preset.startHex
+        preview.gradientEndHex = preset.endHex
+        preview.accentHexes = preset.accentHexes
+        preview.customImageData = nil
+        preview.customImageName = nil
+        return preview
     }
 
     @objc private func sliderChanged(_ sender: NSSlider) {
@@ -764,6 +1060,75 @@ private final class AnnotationToolButton: NSButton {
     }
 }
 
+@MainActor
+private final class PremiumToolbarActionButton: NSButton {
+    private var trackingArea: NSTrackingArea?
+    private var isHovered = false
+
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        configureLayer()
+    }
+
+    convenience init(title: String, target: AnyObject?, action: Selector?) {
+        self.init(frame: .zero)
+        self.title = title
+        self.target = target
+        self.action = action
+    }
+
+    required init?(coder: NSCoder) { fatalError() }
+
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+        if let trackingArea { removeTrackingArea(trackingArea) }
+        let area = NSTrackingArea(rect: bounds, options: [.activeAlways, .mouseEnteredAndExited], owner: self)
+        addTrackingArea(area)
+        trackingArea = area
+    }
+
+    override func mouseEntered(with event: NSEvent) {
+        isHovered = true
+        animateBackground(ShotnixColors.cornerButtonHover.cgColor)
+    }
+
+    override func mouseExited(with event: NSEvent) {
+        isHovered = false
+        animateBackground(ShotnixColors.editorActionBackground.cgColor)
+    }
+
+    override func mouseDown(with event: NSEvent) {
+        animateBackground(ShotnixColors.cornerButtonPressed.cgColor)
+        layer?.transform = CATransform3DMakeScale(0.97, 0.97, 1)
+        super.mouseDown(with: event)
+    }
+
+    override func mouseUp(with event: NSEvent) {
+        animateBackground(isHovered ? ShotnixColors.cornerButtonHover.cgColor : ShotnixColors.editorActionBackground.cgColor)
+        layer?.transform = CATransform3DIdentity
+        super.mouseUp(with: event)
+    }
+
+    private func configureLayer() {
+        wantsLayer = true
+        isBordered = false
+        layer?.cornerRadius = 9
+        layer?.cornerCurve = .continuous
+        layer?.backgroundColor = ShotnixColors.editorActionBackground.cgColor
+        layer?.borderWidth = 1
+        layer?.borderColor = ShotnixColors.editorDockBorder.cgColor
+    }
+
+    private func animateBackground(_ color: CGColor) {
+        wantsLayer = true
+        NSAnimationContext.runAnimationGroup { ctx in
+            ctx.duration = 0.16
+            ctx.allowsImplicitAnimation = true
+            self.layer?.backgroundColor = color
+        }
+    }
+}
+
 // MARK: - Color Presets Popover
 
 @MainActor
@@ -796,6 +1161,10 @@ final class ColorPopoverController: NSViewController {
                 guard idx < presets.count else { break }
                 let x = padding + CGFloat(col) * (btnSize + gap)
                 let btn = NSButton(frame: NSRect(x: x, y: y, width: btnSize, height: btnSize))
+                btn.title = ""
+                btn.alternateTitle = ""
+                btn.attributedTitle = NSAttributedString(string: "")
+                btn.imagePosition = .noImage
                 btn.wantsLayer = true
                 btn.layer?.cornerRadius = btnSize / 2
                 btn.layer?.backgroundColor = presets[idx].cgColor

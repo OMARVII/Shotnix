@@ -96,6 +96,41 @@ enum ShotnixColors {
         }
     }
 
+    static let editorStageTop = NSColor(name: "editorStageTop") { appearance in
+        switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
+        case .darkAqua: return NSColor(calibratedRed: 0.045, green: 0.049, blue: 0.062, alpha: 1)
+        default:        return NSColor(calibratedRed: 0.16, green: 0.17, blue: 0.19, alpha: 1)
+        }
+    }
+
+    static let editorStageBottom = NSColor(name: "editorStageBottom") { appearance in
+        switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
+        case .darkAqua: return NSColor(calibratedRed: 0.105, green: 0.096, blue: 0.13, alpha: 1)
+        default:        return NSColor(calibratedRed: 0.28, green: 0.28, blue: 0.31, alpha: 1)
+        }
+    }
+
+    static let editorChromeBorder = NSColor(name: "editorChromeBorder") { appearance in
+        switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
+        case .darkAqua: return NSColor.white.withAlphaComponent(0.10)
+        default:        return NSColor.white.withAlphaComponent(0.20)
+        }
+    }
+
+    static let editorDockBorder = NSColor(name: "editorDockBorder") { appearance in
+        switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
+        case .darkAqua: return NSColor.white.withAlphaComponent(0.18)
+        default:        return NSColor.white.withAlphaComponent(0.28)
+        }
+    }
+
+    static let editorActionBackground = NSColor(name: "editorActionBackground") { appearance in
+        switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
+        case .darkAqua: return NSColor.white.withAlphaComponent(0.13)
+        default:        return NSColor.black.withAlphaComponent(0.10)
+        }
+    }
+
     static let selectionDim = NSColor(name: "selectionDim") { appearance in
         switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
         case .darkAqua: return NSColor.black.withAlphaComponent(0.45)

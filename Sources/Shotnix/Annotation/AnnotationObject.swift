@@ -561,9 +561,12 @@ final class NumberedStepAnnotation: AnnotationObject {
 
     private var textLayout: (font: NSFont, attrs: [NSAttributedString.Key: Any], size: CGSize) {
         let font = NSFont.boldSystemFont(ofSize: diameter * 0.55)
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .center
         let attrs: [NSAttributedString.Key: Any] = [
             .font: font,
-            .foregroundColor: NSColor.white
+            .foregroundColor: NSColor.white,
+            .paragraphStyle: paragraphStyle
         ]
         let size = ("\(number)" as NSString).size(withAttributes: attrs)
         return (font, attrs, size)
@@ -620,17 +623,22 @@ final class NumberedStepAnnotation: AnnotationObject {
         ctx.setLineWidth(1)
         ctx.strokeEllipse(in: circleRect)
 
-        // Number text (centered, white, bold) — font + size cached as lazy property
         let layout = textLayout
-        let textOrigin = CGPoint(
-            x: circleRect.midX - layout.size.width / 2,
-            y: circleRect.midY - layout.size.height / 2
+        let textRect = CGRect(
+            x: circleRect.minX,
+            y: circleRect.midY - layout.size.height / 2 - 1,
+            width: circleRect.width,
+            height: layout.size.height + 2
         )
 
         NSGraphicsContext.saveGraphicsState()
         let nsCtx = NSGraphicsContext(cgContext: ctx, flipped: true)
         NSGraphicsContext.current = nsCtx
-        ("\(number)" as NSString).draw(at: textOrigin, withAttributes: layout.attrs)
+        ("\(number)" as NSString).draw(
+            with: textRect,
+            options: [.usesLineFragmentOrigin, .usesFontLeading],
+            attributes: layout.attrs
+        )
         NSGraphicsContext.restoreGraphicsState()
 
         ctx.restoreGState()
