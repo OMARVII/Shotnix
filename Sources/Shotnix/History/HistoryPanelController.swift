@@ -10,6 +10,7 @@ final class HistoryPanelController: NSObject {
     private weak var historyManager: HistoryManager?
     private var collectionView: NSCollectionView?
     private var emptyOverlay: NSView?
+    private var countLabel: NSTextField?
     private var closeObserver: NSObjectProtocol?
 
     private struct Section {
@@ -33,13 +34,18 @@ final class HistoryPanelController: NSObject {
             return
         }
         let p = NSPanel(
-            contentRect: NSRect(x: 0, y: 0, width: 600, height: 480),
-            styleMask: [.titled, .closable, .resizable, .utilityWindow],
+            contentRect: NSRect(x: 0, y: 0, width: 920, height: 640),
+            styleMask: [.titled, .closable, .resizable, .utilityWindow, .fullSizeContentView],
             backing: .buffered,
             defer: false
         )
-        p.title = "Shotnix — Capture History"
+        p.title = "Shotnix - Capture History"
+        p.titleVisibility = .hidden
+        p.titlebarAppearsTransparent = true
+        p.isOpaque = false
+        p.backgroundColor = .clear
         p.isFloatingPanel = true
+        p.minSize = NSSize(width: 760, height: 520)
         p.center()
         p.contentView = buildContent(historyManager: historyManager)
         p.alphaValue = 0
@@ -62,31 +68,44 @@ final class HistoryPanelController: NSObject {
     // MARK: - Content
 
     private func buildContent(historyManager: HistoryManager) -> NSView {
-        let container = NSView(frame: NSRect(x: 0, y: 0, width: 600, height: 480))
+        let container = HistoryStageView(frame: NSRect(x: 0, y: 0, width: 920, height: 640))
 
-        // Toolbar
-        let toolbar = NSView(frame: NSRect(x: 0, y: 448, width: 600, height: 32))
-        toolbar.autoresizingMask = [.width, .minYMargin]
+        let header = NSView(frame: NSRect(x: 0, y: 532, width: 920, height: 108))
+        header.autoresizingMask = [.width, .minYMargin]
 
-        let clearBtn = NSButton(title: "Clear All", target: self, action: #selector(clearAll))
-        clearBtn.bezelStyle = .rounded
-        clearBtn.frame = NSRect(x: 8, y: 4, width: 80, height: 24)
-        toolbar.addSubview(clearBtn)
+        let eyebrow = NSTextField(labelWithString: "SHOTNIX LIBRARY")
+        eyebrow.font = .monospacedSystemFont(ofSize: 11, weight: .semibold)
+        eyebrow.textColor = NSColor.controlAccentColor.withAlphaComponent(0.92)
+        eyebrow.frame = NSRect(x: 28, y: 70, width: 240, height: 16)
+        header.addSubview(eyebrow)
 
-        let label = NSTextField(labelWithString: "Capture History")
-        label.font = .boldSystemFont(ofSize: 13)
-        label.frame = NSRect(x: 100, y: 6, width: 400, height: 20)
-        label.alignment = .center
-        toolbar.addSubview(label)
-        container.addSubview(toolbar)
+        let title = NSTextField(labelWithString: "Capture History")
+        title.font = .systemFont(ofSize: 26, weight: .bold)
+        title.textColor = NSColor.white.withAlphaComponent(0.94)
+        title.frame = NSRect(x: 28, y: 34, width: 360, height: 34)
+        header.addSubview(title)
+
+        let count = NSTextField(labelWithString: "")
+        count.font = .systemFont(ofSize: 12, weight: .medium)
+        count.textColor = NSColor.white.withAlphaComponent(0.48)
+        count.frame = NSRect(x: 30, y: 16, width: 560, height: 16)
+        header.addSubview(count)
+        countLabel = count
+
+        let clearBtn = HistoryActionButton(title: "Clear All", variant: .destructive, target: self, action: #selector(clearAll))
+        clearBtn.frame = NSRect(x: 770, y: 42, width: 118, height: 34)
+        clearBtn.autoresizingMask = [.minXMargin]
+        clearBtn.toolTip = "Delete every saved capture"
+        header.addSubview(clearBtn)
+        container.addSubview(header)
 
         // Collection view
         let layout = NSCollectionViewFlowLayout()
-        layout.itemSize = NSSize(width: 180, height: 220)
-        layout.minimumInteritemSpacing = 12
-        layout.minimumLineSpacing = 12
-        layout.sectionInset = NSEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
-        layout.headerReferenceSize = NSSize(width: 600, height: 32)
+        layout.itemSize = NSSize(width: 190, height: 238)
+        layout.minimumInteritemSpacing = 10
+        layout.minimumLineSpacing = 16
+        layout.sectionInset = NSEdgeInsets(top: 8, left: 20, bottom: 24, right: 20)
+        layout.headerReferenceSize = NSSize(width: 920, height: 36)
 
         let cv = NSCollectionView()
         cv.collectionViewLayout = layout
@@ -102,12 +121,15 @@ final class HistoryPanelController: NSObject {
         cv.dataSource = self
         cv.delegate = self
         cv.backgroundColors = [.clear]
+        cv.isSelectable = false
         cv.setDraggingSourceOperationMask(.copy, forLocal: false)
 
-        let scroll = NSScrollView(frame: NSRect(x: 0, y: 0, width: 600, height: 448))
+        let scroll = NSScrollView(frame: NSRect(x: 16, y: 16, width: 888, height: 508))
         scroll.documentView = cv
         scroll.hasVerticalScroller = true
         scroll.autohidesScrollers = true
+        scroll.drawsBackground = false
+        scroll.backgroundColor = .clear
         scroll.autoresizingMask = [.width, .height]
         container.addSubview(scroll)
 
@@ -120,6 +142,7 @@ final class HistoryPanelController: NSObject {
         emptyOverlay = empty
 
         buildSections()
+        updateHeader()
         updateEmptyState()
 
         return container
@@ -128,29 +151,36 @@ final class HistoryPanelController: NSObject {
     private func buildEmptyOverlay(frame: NSRect) -> NSView {
         let overlay = NSView(frame: frame)
 
-        let stack = NSView(frame: NSRect(x: 0, y: 0, width: 260, height: 100))
+        let stack = HistoryEmptyStateCard(frame: NSRect(x: 0, y: 0, width: 360, height: 190))
 
-        let icon = NSImageView(frame: NSRect(x: 100, y: 52, width: 60, height: 48))
+        let icon = NSImageView(frame: NSRect(x: 150, y: 122, width: 60, height: 46))
         if let symbolImg = NSImage(systemSymbolName: "camera.viewfinder", accessibilityDescription: nil) {
-            let config = NSImage.SymbolConfiguration(pointSize: 40, weight: .light)
+            let config = NSImage.SymbolConfiguration(pointSize: 38, weight: .medium)
             icon.image = symbolImg.withSymbolConfiguration(config)
         }
-        icon.contentTintColor = .tertiaryLabelColor
+        icon.contentTintColor = NSColor.controlAccentColor.withAlphaComponent(0.86)
         stack.addSubview(icon)
 
         let title = NSTextField(labelWithString: "No captures yet")
-        title.font = .boldSystemFont(ofSize: 16)
-        title.textColor = .secondaryLabelColor
+        title.font = .systemFont(ofSize: 18, weight: .bold)
+        title.textColor = NSColor.white.withAlphaComponent(0.92)
         title.alignment = .center
-        title.frame = NSRect(x: 0, y: 24, width: 260, height: 22)
+        title.frame = NSRect(x: 0, y: 88, width: 360, height: 24)
         stack.addSubview(title)
 
         let subtitle = NSTextField(labelWithString: "Press \u{2318}\u{21E7}4 to take your first screenshot")
-        subtitle.font = .systemFont(ofSize: 12)
-        subtitle.textColor = .tertiaryLabelColor
+        subtitle.font = .systemFont(ofSize: 13, weight: .medium)
+        subtitle.textColor = NSColor.white.withAlphaComponent(0.50)
         subtitle.alignment = .center
-        subtitle.frame = NSRect(x: 0, y: 0, width: 260, height: 18)
+        subtitle.frame = NSRect(x: 24, y: 56, width: 312, height: 18)
         stack.addSubview(subtitle)
+
+        let hint = NSTextField(labelWithString: "Captured screenshots will appear here instantly")
+        hint.font = .systemFont(ofSize: 12, weight: .regular)
+        hint.textColor = NSColor.white.withAlphaComponent(0.36)
+        hint.alignment = .center
+        hint.frame = NSRect(x: 24, y: 30, width: 312, height: 16)
+        stack.addSubview(hint)
 
         stack.frame.origin = NSPoint(
             x: (frame.width - stack.frame.width) / 2,
@@ -164,6 +194,15 @@ final class HistoryPanelController: NSObject {
 
     private func updateEmptyState() {
         emptyOverlay?.isHidden = !sections.isEmpty
+        updateHeader()
+    }
+
+    private func updateHeader() {
+        let total = sections.reduce(0) { $0 + $1.items.count }
+        let captureWord = total == 1 ? "capture" : "captures"
+        countLabel?.stringValue = total == 0
+            ? "No saved captures yet"
+            : "\(total) saved \(captureWord) · drag any card to Finder · right-click for more actions"
     }
 
     // MARK: - Sections
@@ -221,6 +260,7 @@ final class HistoryPanelController: NSObject {
         panel = nil
         collectionView = nil
         emptyOverlay = nil
+        countLabel = nil
         NSApp.restoreBackgroundOnlyActivationPolicyIfNeeded(excluding: closedWindow)
     }
 
@@ -341,42 +381,60 @@ final class HistoryCollectionItem: NSCollectionViewItem {
     private var historyItem: HistoryItem?
     private weak var historyManager: HistoryManager?
     private var trackingArea: NSTrackingArea?
+    private let cardView = HistoryCaptureCardView()
+    private let previewWell = HistoryPreviewWellView()
     private let thumbView = NSImageView()
     private let dateLabel = NSTextField(labelWithString: "")
-    private let copyBtn = NSButton(title: "Copy", target: nil, action: nil)
-    private let editBtn = NSButton(title: "Edit", target: nil, action: nil)
+    private let detailLabel = NSTextField(labelWithString: "")
+    private let copyBtn = HistoryActionButton(title: "Copy", variant: .secondary, target: nil, action: nil)
+    private let editBtn = HistoryActionButton(title: "Edit", variant: .primary, target: nil, action: nil)
 
     override func loadView() {
-        let container = NSView(frame: NSRect(x: 0, y: 0, width: 180, height: 220))
+        let container = NSView(frame: NSRect(x: 0, y: 0, width: 190, height: 238))
 
-        thumbView.frame = NSRect(x: 0, y: 40, width: 180, height: 180)
+        cardView.frame = container.bounds
+        cardView.autoresizingMask = [.width, .height]
+        container.addSubview(cardView)
+
+        previewWell.frame = NSRect(x: 12, y: 70, width: 166, height: 140)
+        container.addSubview(previewWell)
+
+        thumbView.frame = previewWell.frame.insetBy(dx: 8, dy: 7)
         thumbView.imageScaling = .scaleProportionallyUpOrDown
         thumbView.wantsLayer = true
-        thumbView.layer?.cornerRadius = 8
+        thumbView.layer?.cornerRadius = 10
         thumbView.layer?.cornerCurve = .continuous
         thumbView.layer?.masksToBounds = true
-        thumbView.layer?.borderWidth = 1
-        thumbView.layer?.borderColor = NSColor.separatorColor.cgColor
+        thumbView.layer?.allowsEdgeAntialiasing = true
+        thumbView.layer?.borderWidth = 0
+        thumbView.layer?.borderColor = NSColor.clear.cgColor
+        thumbView.layer?.backgroundColor = NSColor.clear.cgColor
         container.addSubview(thumbView)
 
-        dateLabel.font = .systemFont(ofSize: 10)
-        dateLabel.textColor = .secondaryLabelColor
-        dateLabel.alignment = .center
-        dateLabel.frame = NSRect(x: 0, y: 20, width: 180, height: 16)
+        dateLabel.font = .monospacedDigitSystemFont(ofSize: 10.5, weight: .semibold)
+        dateLabel.textColor = NSColor.white.withAlphaComponent(0.78)
+        dateLabel.alignment = .left
+        dateLabel.lineBreakMode = .byTruncatingTail
+        dateLabel.frame = NSRect(x: 14, y: 48, width: 162, height: 15)
         container.addSubview(dateLabel)
 
-        copyBtn.bezelStyle = .rounded
-        copyBtn.font = .systemFont(ofSize: 10)
-        copyBtn.frame = NSRect(x: 0, y: 0, width: 86, height: 18)
+        detailLabel.font = .systemFont(ofSize: 9.5, weight: .medium)
+        detailLabel.textColor = NSColor.white.withAlphaComponent(0.42)
+        detailLabel.alignment = .left
+        detailLabel.lineBreakMode = .byTruncatingTail
+        detailLabel.frame = NSRect(x: 14, y: 33, width: 162, height: 13)
+        container.addSubview(detailLabel)
+
+        copyBtn.frame = NSRect(x: 14, y: 7, width: 74, height: 24)
         copyBtn.target = self
         copyBtn.action = #selector(copyImage)
+        copyBtn.toolTip = "Copy capture to clipboard"
         container.addSubview(copyBtn)
 
-        editBtn.bezelStyle = .rounded
-        editBtn.font = .systemFont(ofSize: 10)
-        editBtn.frame = NSRect(x: 92, y: 0, width: 88, height: 18)
+        editBtn.frame = NSRect(x: 102, y: 7, width: 74, height: 24)
         editBtn.target = self
         editBtn.action = #selector(editImage)
+        editBtn.toolTip = "Open in annotation editor"
         container.addSubview(editBtn)
 
         self.view = container
@@ -387,7 +445,17 @@ final class HistoryCollectionItem: NSCollectionViewItem {
         self.historyManager = historyManager
         thumbView.image = historyManager.cachedThumbnail(for: item) ?? item.thumbnail
         dateLabel.stringValue = item.createdAt.formatted(date: .abbreviated, time: .shortened)
+        detailLabel.stringValue = detailText(for: item)
         setupTracking()
+    }
+
+    private func detailText(for item: HistoryItem) -> String {
+        if let rect = item.captureRect?.cgRect {
+            return String(format: "%.0f x %.0f capture", rect.width, rect.height)
+        }
+        let size = item.thumbnail.size
+        guard size.width > 0, size.height > 0 else { return "Saved capture" }
+        return String(format: "%.0f x %.0f image", size.width, size.height)
     }
 
     // MARK: Hover
@@ -405,13 +473,18 @@ final class HistoryCollectionItem: NSCollectionViewItem {
 
     override func mouseEntered(with event: NSEvent) {
         NSAnimationContext.runAnimationGroup { ctx in
-            ctx.duration = 0.15
-            thumbView.animator().layer?.transform = CATransform3DMakeScale(1.03, 1.03, 1)
+            ctx.duration = 0.18
+            ctx.timingFunction = CAMediaTimingFunction(name: .easeOut)
+            cardView.animator().alphaValue = 1
+            previewWell.animator().alphaValue = 1
+            thumbView.animator().layer?.transform = CATransform3DMakeScale(1.014, 1.014, 1)
         }
+        cardView.isHovered = true
+        previewWell.isHovered = true
         thumbView.layer?.shadowColor = NSColor.black.cgColor
-        thumbView.layer?.shadowOpacity = 0.2
-        thumbView.layer?.shadowRadius = 8
-        thumbView.layer?.shadowOffset = CGSize(width: 0, height: -2)
+        thumbView.layer?.shadowOpacity = 0.18
+        thumbView.layer?.shadowRadius = 10
+        thumbView.layer?.shadowOffset = CGSize(width: 0, height: -4)
     }
 
     override func mouseExited(with event: NSEvent) {
@@ -419,6 +492,8 @@ final class HistoryCollectionItem: NSCollectionViewItem {
             ctx.duration = 0.2
             thumbView.animator().layer?.transform = CATransform3DIdentity
         }
+        cardView.isHovered = false
+        previewWell.isHovered = false
         thumbView.layer?.shadowOpacity = 0
     }
 
@@ -477,15 +552,273 @@ final class HistorySectionHeader: NSView, NSCollectionViewElement {
 
     override init(frame: NSRect) {
         super.init(frame: frame)
-        label.font = .boldSystemFont(ofSize: 12)
-        label.textColor = .secondaryLabelColor
-        label.frame = NSRect(x: 16, y: 4, width: 300, height: 20)
+        label.font = .systemFont(ofSize: 12, weight: .bold)
+        label.textColor = NSColor.white.withAlphaComponent(0.58)
+        label.frame = NSRect(x: 26, y: 7, width: 300, height: 18)
         addSubview(label)
     }
 
     required init?(coder: NSCoder) { fatalError() }
 
     func configure(title: String) {
-        label.stringValue = title
+        label.stringValue = title.uppercased()
+    }
+}
+
+@MainActor
+private final class HistoryStageView: NSView {
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        wantsLayer = true
+    }
+
+    required init?(coder: NSCoder) { fatalError() }
+
+    override func draw(_ dirtyRect: NSRect) {
+        guard let context = NSGraphicsContext.current?.cgContext else { return }
+        let rect = bounds
+        let colorSpace = CGColorSpace(name: CGColorSpace.sRGB) ?? CGColorSpaceCreateDeviceRGB()
+        let colors = [ShotnixColors.editorStageTop.cgColor, ShotnixColors.editorStageBottom.cgColor] as CFArray
+
+        if let gradient = CGGradient(colorsSpace: colorSpace, colors: colors, locations: [0, 1]) {
+            context.drawLinearGradient(
+                gradient,
+                start: CGPoint(x: rect.midX, y: rect.maxY),
+                end: CGPoint(x: rect.midX, y: rect.minY),
+                options: []
+            )
+        } else {
+            ShotnixColors.editorStageTop.setFill()
+            rect.fill()
+        }
+
+        drawGlow(in: context, color: NSColor.controlAccentColor.withAlphaComponent(0.14), center: CGPoint(x: rect.maxX * 0.78, y: rect.maxY + 12), radius: max(rect.width, rect.height) * 0.42)
+        drawGlow(in: context, color: NSColor.systemPurple.withAlphaComponent(0.12), center: CGPoint(x: rect.minX + rect.width * 0.18, y: rect.minY - 10), radius: max(rect.width, rect.height) * 0.38)
+    }
+
+    private func drawGlow(in context: CGContext, color: NSColor, center: CGPoint, radius: CGFloat) {
+        let colors = [color.cgColor, color.withAlphaComponent(0).cgColor] as CFArray
+        let colorSpace = color.cgColor.colorSpace ?? CGColorSpace(name: CGColorSpace.sRGB) ?? CGColorSpaceCreateDeviceRGB()
+        guard let gradient = CGGradient(colorsSpace: colorSpace, colors: colors, locations: [0, 1]) else { return }
+        context.drawRadialGradient(
+            gradient,
+            startCenter: center,
+            startRadius: 0,
+            endCenter: center,
+            endRadius: radius,
+            options: .drawsAfterEndLocation
+        )
+    }
+}
+
+@MainActor
+private final class HistoryPreviewWellView: NSView {
+    var isHovered = false { didSet { needsDisplay = true } }
+
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        wantsLayer = true
+        layer?.allowsEdgeAntialiasing = true
+    }
+
+    required init?(coder: NSCoder) { fatalError() }
+
+    override func draw(_ dirtyRect: NSRect) {
+        guard let context = NSGraphicsContext.current?.cgContext else { return }
+        context.setShouldAntialias(true)
+        context.setAllowsAntialiasing(true)
+
+        let rect = bounds.insetBy(dx: 0.5, dy: 0.5)
+        let path = CGPath(
+            roundedRect: rect,
+            cornerWidth: 14,
+            cornerHeight: 14,
+            transform: nil
+        )
+
+        context.addPath(path)
+        context.setFillColor(NSColor.black.withAlphaComponent(isHovered ? 0.20 : 0.15).cgColor)
+        context.fillPath()
+
+        context.addPath(path)
+        context.setStrokeColor(NSColor.white.withAlphaComponent(isHovered ? 0.08 : 0.045).cgColor)
+        context.setLineWidth(1)
+        context.strokePath()
+    }
+}
+
+@MainActor
+private final class HistoryCaptureCardView: NSView {
+    var isHovered = false { didSet { needsDisplay = true } }
+
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        wantsLayer = true
+        layer?.allowsEdgeAntialiasing = true
+        layer?.shadowColor = NSColor.black.cgColor
+        layer?.shadowOpacity = 0.16
+        layer?.shadowRadius = 18
+        layer?.shadowOffset = CGSize(width: 0, height: -8)
+    }
+
+    required init?(coder: NSCoder) { fatalError() }
+
+    override func draw(_ dirtyRect: NSRect) {
+        guard let context = NSGraphicsContext.current?.cgContext else { return }
+        context.setShouldAntialias(true)
+        context.setAllowsAntialiasing(true)
+
+        let rect = bounds.insetBy(dx: 0.5, dy: 0.5)
+        let path = CGPath(
+            roundedRect: rect,
+            cornerWidth: 18,
+            cornerHeight: 18,
+            transform: nil
+        )
+
+        context.addPath(path)
+        context.setFillColor(NSColor(calibratedWhite: 0.045, alpha: isHovered ? 0.94 : 0.86).cgColor)
+        context.fillPath()
+
+        context.addPath(path)
+        context.setStrokeColor(NSColor.white.withAlphaComponent(isHovered ? 0.12 : 0.06).cgColor)
+        context.setLineWidth(1)
+        context.strokePath()
+    }
+}
+
+@MainActor
+private final class HistoryEmptyStateCard: NSView {
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        wantsLayer = true
+        layer?.shadowColor = NSColor.black.cgColor
+        layer?.shadowOpacity = 0.24
+        layer?.shadowRadius = 30
+        layer?.shadowOffset = CGSize(width: 0, height: -14)
+    }
+
+    required init?(coder: NSCoder) { fatalError() }
+
+    override func draw(_ dirtyRect: NSRect) {
+        let rect = bounds.insetBy(dx: 1, dy: 1)
+        let path = NSBezierPath(roundedRect: rect, xRadius: 26, yRadius: 26)
+        NSColor.black.withAlphaComponent(0.26).setFill()
+        path.fill()
+        NSColor.white.withAlphaComponent(0.13).setStroke()
+        path.lineWidth = 1
+        path.stroke()
+    }
+}
+
+@MainActor
+private final class HistoryActionButton: NSButton {
+    enum Variant { case primary, secondary, destructive }
+
+    private let variant: Variant
+    private var trackingArea: NSTrackingArea?
+    private var isHovered = false
+
+    init(title: String, variant: Variant, target: AnyObject?, action: Selector?) {
+        self.variant = variant
+        super.init(frame: .zero)
+        self.title = title
+        self.target = target
+        self.action = action
+        configure()
+    }
+
+    required init?(coder: NSCoder) { fatalError() }
+
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+        if let trackingArea { removeTrackingArea(trackingArea) }
+        let area = NSTrackingArea(rect: bounds, options: [.activeAlways, .mouseEnteredAndExited], owner: self)
+        addTrackingArea(area)
+        trackingArea = area
+    }
+
+    override func mouseEntered(with event: NSEvent) {
+        isHovered = true
+        animateBackground(hoverColor)
+    }
+
+    override func mouseExited(with event: NSEvent) {
+        isHovered = false
+        animateBackground(baseColor)
+    }
+
+    override func mouseDown(with event: NSEvent) {
+        animateBackground(pressedColor)
+        layer?.transform = CATransform3DMakeScale(0.97, 0.97, 1)
+        super.mouseDown(with: event)
+    }
+
+    override func mouseUp(with event: NSEvent) {
+        animateBackground(isHovered ? hoverColor : baseColor)
+        layer?.transform = CATransform3DIdentity
+        super.mouseUp(with: event)
+    }
+
+    private func configure() {
+        isBordered = false
+        bezelStyle = .regularSquare
+        focusRingType = .none
+        font = .systemFont(ofSize: 12, weight: .semibold)
+        contentTintColor = textColor
+        wantsLayer = true
+        layer?.cornerRadius = 10
+        layer?.cornerCurve = .continuous
+        layer?.backgroundColor = baseColor
+        layer?.borderWidth = 1
+        layer?.borderColor = borderColor
+    }
+
+    private var baseColor: CGColor {
+        switch variant {
+        case .primary: return NSColor.white.withAlphaComponent(0.92).cgColor
+        case .secondary: return ShotnixColors.editorActionBackground.cgColor
+        case .destructive: return NSColor.systemRed.withAlphaComponent(0.18).cgColor
+        }
+    }
+
+    private var hoverColor: CGColor {
+        switch variant {
+        case .primary: return NSColor.white.cgColor
+        case .secondary: return ShotnixColors.cornerButtonHover.cgColor
+        case .destructive: return NSColor.systemRed.withAlphaComponent(0.27).cgColor
+        }
+    }
+
+    private var pressedColor: CGColor {
+        switch variant {
+        case .primary: return NSColor.white.withAlphaComponent(0.74).cgColor
+        case .secondary: return ShotnixColors.cornerButtonPressed.cgColor
+        case .destructive: return NSColor.systemRed.withAlphaComponent(0.36).cgColor
+        }
+    }
+
+    private var borderColor: CGColor {
+        switch variant {
+        case .primary: return NSColor.white.withAlphaComponent(0.28).cgColor
+        case .secondary: return ShotnixColors.editorDockBorder.cgColor
+        case .destructive: return NSColor.systemRed.withAlphaComponent(0.38).cgColor
+        }
+    }
+
+    private var textColor: NSColor {
+        switch variant {
+        case .primary: return NSColor.black.withAlphaComponent(0.88)
+        case .secondary: return NSColor.white.withAlphaComponent(0.84)
+        case .destructive: return NSColor.systemRed
+        }
+    }
+
+    private func animateBackground(_ color: CGColor) {
+        NSAnimationContext.runAnimationGroup { ctx in
+            ctx.duration = 0.16
+            ctx.allowsImplicitAnimation = true
+            self.layer?.backgroundColor = color
+        }
     }
 }
