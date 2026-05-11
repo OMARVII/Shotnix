@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.13.0-beta] - 2026-05-11
+
+### Changed
+- **Capture History redesign** — the history panel now uses a premium dark-glass layout, compact four-column capture cards, smoother preview framing, and refined hover/card polish.
+
 ## [0.12.0-beta] - 2026-05-10
 
 ### Added
