@@ -352,7 +352,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.12.0-beta"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.13.0-beta"
     
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
@@ -377,6 +377,11 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.13.0-beta
+                    • Redesigned Capture History with premium dark-glass styling
+                    • More compact four-column capture cards with smoother preview framing
+                    • Refined history panel spacing, hover states, and card borders
+
                     Version 0.12.0-beta
                     • Custom image backdrops and generated image presets for presentation-ready exports
                     • Refined annotation editor chrome, toolbar spacing, and background popovers
