@@ -21,11 +21,9 @@
 >
 > To open: **Right-click → Open → Open** (macOS 13–14) or **System Settings → Privacy & Security → Open Anyway** (macOS 15+).
 
-<!-- Add a screenshot or GIF here:
 <p align="center">
-  <img src="assets/screenshot.png" width="720" alt="Shotnix screenshot" />
+  <img src="assets/screenshots/shotnix-annotation-editor-demo.png" width="720" alt="Shotnix annotation editor demo" />
 </p>
--->
 
 ## Why Shotnix?
 
