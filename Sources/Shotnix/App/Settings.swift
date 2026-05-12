@@ -71,7 +71,10 @@ enum Settings {
     }
 
     static var afterCaptureCopyToClipboard: Bool {
-        get { defaults.bool(forKey: "afterCaptureCopyToClipboard") }
+        get {
+            if defaults.object(forKey: "afterCaptureCopyToClipboard") == nil { return true }
+            return defaults.bool(forKey: "afterCaptureCopyToClipboard")
+        }
         set { defaults.set(newValue, forKey: "afterCaptureCopyToClipboard") }
     }
 

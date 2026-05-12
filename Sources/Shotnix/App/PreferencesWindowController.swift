@@ -92,7 +92,6 @@ struct GeneralSettingsView: View {
     @AppStorage("showMenuBarIcon") var showMenuBarIcon = true
     @AppStorage("hideDesktopIconsWhileCapturing") var hideDesktopIcons = false
     @AppStorage("afterCaptureShowOverlay") var showOverlay = true
-    @AppStorage("afterCaptureCopyToClipboard") var copyToClipboard = false
     @AppStorage("afterCaptureSaveAutomatically") var saveAutomatically = false
     @AppStorage("overlayOnLeft") var overlayOnLeft = false
     @AppStorage("overlayTimeout") var overlayTimeout: Double = 6.0
@@ -130,7 +129,6 @@ struct GeneralSettingsView: View {
             
             Section {
                 Toggle("Show Quick Access Overlay", isOn: $showOverlay)
-                Toggle("Copy file to clipboard", isOn: $copyToClipboard)
                 Toggle("Save automatically", isOn: $saveAutomatically)
                 
                 Picker("Overlay position", selection: $overlayOnLeft) {
@@ -202,6 +200,7 @@ struct ShortcutRow: View {
 struct ScreenshotsSettingsView: View {
     @AppStorage("screenshotFormat") var screenshotFormat = "png"
     @AppStorage("jpegQuality") var jpegQuality: Double = 0.95
+    @AppStorage("afterCaptureCopyToClipboard") var copyToClipboard = true
     @AppStorage("autoSaveLocation") var autoSaveLocation = ""
 
     var displayLocation: String {
@@ -231,6 +230,14 @@ struct ScreenshotsSettingsView: View {
                 }
             } header: {
                 Text("Export Format")
+            }
+
+            Section {
+                Toggle("Copy screenshots to clipboard", isOn: $copyToClipboard)
+            } header: {
+                Text("Clipboard")
+            } footer: {
+                Text("New screenshots are copied automatically. Turn this off if you only want to use the overlay or history actions.")
             }
 
             Section {
@@ -352,7 +359,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.13.0-beta"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.14.0-beta"
     
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
@@ -377,6 +384,10 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.14.0-beta
+                    • New screenshots copy to the clipboard by default
+                    • Added a Screenshots preference to disable automatic clipboard copying
+
                     Version 0.13.0-beta
                     • Redesigned Capture History with premium dark-glass styling
                     • More compact four-column capture cards with smoother preview framing
