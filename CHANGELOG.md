@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.14.0-beta] - 2026-05-12
+
+### Changed
+- **Default screenshot copy** — new screenshots are now copied to the clipboard by default, with a Screenshots preference to disable automatic copying.
+
 ## [0.13.0-beta] - 2026-05-11
 
 ### Changed
