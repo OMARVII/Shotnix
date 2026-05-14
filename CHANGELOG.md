@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.14.1-beta] - 2026-05-14
+
+### Changed
+- **Overlay Save flow** — the quick-access Save action now writes directly to the configured Save Location and uses the same immediate confirmation flow as Copy.
+- **Record Window quality** — window recordings now use the sharper display-crop pipeline while targeting only the selected window.
+
 ## [0.14.0-beta] - 2026-05-12
 
 ### Changed
