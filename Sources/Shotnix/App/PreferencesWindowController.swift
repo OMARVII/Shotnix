@@ -359,7 +359,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.14.0-beta"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.14.0"
     
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
@@ -384,7 +384,7 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
-                    Version 0.14.0-beta
+                    Version 0.14.0
                     • New screenshots copy to the clipboard by default
                     • Added a Screenshots preference to disable automatic clipboard copying
 
@@ -490,6 +490,16 @@ struct AboutSettingsView: View {
                 HStack(spacing: 12) {
                     Button("Website") {
                         openURL("https://shotnix.com/")
+                    }
+                    .buttonStyle(.link)
+
+                    Button("Privacy Policy") {
+                        openURL("https://shotnix.com/privacy")
+                    }
+                    .buttonStyle(.link)
+
+                    Button("Support") {
+                        openURL("https://shotnix.com/support")
                     }
                     .buttonStyle(.link)
 
