@@ -506,11 +506,17 @@ private final class QuickAccessWindow: NSWindow {
     }
 
     @objc private func saveAction() {
-        ImageExporter.saveWithPanel(image: image, suggestedName: ImageExporter.timestampedName) { [weak self] result in
-            if result.didSave {
-                self?.showConfirmation(icon: "arrow.down.circle") { [weak self] in self?.animatedClose() }
-            }
+        let dir = Settings.autoSaveLocation
+        let name = ImageExporter.timestampedName
+        let ext = Settings.screenshotFormat
+        let url = URL(fileURLWithPath: dir, isDirectory: true).appendingPathComponent("\(name).\(ext)")
+
+        guard ImageExporter.save(image: image, to: url) != nil else {
+            ToastWindow.show(message: "Could not save screenshot")
+            return
         }
+
+        showConfirmation(icon: "checkmark") { [weak self] in self?.animatedClose() }
     }
 
     /// Flash a confirmation icon over the thumbnail before closing
