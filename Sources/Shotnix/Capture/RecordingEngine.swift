@@ -230,8 +230,42 @@ final class RecordingEngine: NSObject {
                 excludingWindowNumbers: excludingWindowNumbers
             )
         case .window(let window, let screen):
-            return prepareWindowSource(window: window, on: screen, configuration: configuration)
+            return try await prepareWindowDisplaySource(
+                window: window,
+                on: screen,
+                configuration: configuration
+            )
         }
+    }
+
+    private func prepareWindowDisplaySource(
+        window: SCWindow,
+        on screen: NSScreen,
+        configuration: RecordingConfiguration
+    ) async throws -> PreparedCaptureSource {
+        let content = try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: false)
+        let selectedWindow = content.windows.first { $0.windowID == window.windowID } ?? window
+        let appKitRect = Self.appKitRect(fromScreenCaptureKitWindowFrame: selectedWindow.frame, on: screen)
+        guard let display = content.displays.first(where: { $0.frame.intersects(selectedWindow.frame) }) ?? content.displays.first else {
+            throw RecordingError.noDisplay
+        }
+
+        let filter = SCContentFilter(display: display, including: [selectedWindow])
+        return prepareDisplaySource(
+            rect: appKitRect,
+            on: screen,
+            configuration: configuration,
+            filter: filter
+        )
+    }
+
+    private static func appKitRect(fromScreenCaptureKitWindowFrame frame: CGRect, on screen: NSScreen) -> CGRect {
+        CGRect(
+            x: frame.minX,
+            y: screen.frame.origin.y + screen.frame.height - frame.maxY,
+            width: frame.width,
+            height: frame.height
+        )
     }
 
     private func prepareDisplaySource(
@@ -249,6 +283,20 @@ final class RecordingEngine: NSObject {
         }
 
         let filter = SCContentFilter(display: display, excludingWindows: excludedWindows)
+        return prepareDisplaySource(
+            rect: rect,
+            on: screen,
+            configuration: configuration,
+            filter: filter
+        )
+    }
+
+    private func prepareDisplaySource(
+        rect: CGRect,
+        on screen: NSScreen,
+        configuration: RecordingConfiguration,
+        filter: SCContentFilter
+    ) -> PreparedCaptureSource {
         let scale = Self.pixelScale(for: filter, fallbackScreen: screen)
         let originX = floor((rect.origin.x - screen.frame.origin.x) * scale) / scale
         let originY = floor((rect.origin.y - screen.frame.origin.y) * scale) / scale
@@ -267,15 +315,6 @@ final class RecordingEngine: NSObject {
         streamConfig.sourceRect = sourceRect
 
         return PreparedCaptureSource(filter: filter, streamConfig: streamConfig, pixelWidth: pixelWidth, pixelHeight: pixelHeight)
-    }
-
-    private func prepareWindowSource(window: SCWindow, on screen: NSScreen, configuration: RecordingConfiguration) -> PreparedCaptureSource {
-        let filter = SCContentFilter(desktopIndependentWindow: window)
-        let scale = Self.pixelScale(for: filter, fallbackScreen: screen)
-        let width = max(2, Self.evenCeil(Int(ceil(window.frame.width * scale))))
-        let height = max(2, Self.evenCeil(Int(ceil(window.frame.height * scale))))
-        let streamConfig = Self.streamConfiguration(width: width, height: height, configuration: configuration)
-        return PreparedCaptureSource(filter: filter, streamConfig: streamConfig, pixelWidth: width, pixelHeight: height)
     }
 
     private static func streamConfiguration(width: Int, height: Int, configuration: RecordingConfiguration) -> SCStreamConfiguration {
@@ -695,8 +734,7 @@ final class RecordingEngine: NSObject {
 
         var usesDisplayFilter: Bool {
             switch self {
-            case .displayRect: true
-            case .window: false
+            case .displayRect, .window: true
             }
         }
     }
