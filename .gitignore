@@ -20,7 +20,23 @@ DerivedData/
 *.zip
 dmg-background.png
 
+# Local signing/notarization config and secrets
+.env
+.env.*
+!.env.example
+*.p8
+*.p12
+*.cer
+*.certSigningRequest
+*.mobileprovision
+*.provisionprofile
+*.keychain
+*.keychain-db
+notary-log*.json
+notary-log*.plist
+
 # Claude
 .claude/
 CLAUDE.md
+RELEASE_GUIDE.md
 RELEASE_PLAN.md

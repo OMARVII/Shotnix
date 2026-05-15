@@ -8,6 +8,14 @@ VERSION=$(defaults read "$APP_PATH/Contents/Info.plist" CFBundleShortVersionStri
 DMG_NAME="$APP_NAME-v$VERSION-macOS"
 DMG_PATH="$SCRIPT_DIR/$DMG_NAME.dmg"
 
+if [ -f "$SCRIPT_DIR/.env.local" ]; then
+    set -a
+    source "$SCRIPT_DIR/.env.local"
+    set +a
+fi
+
+SIGN_IDENTITY="${SHOTNIX_CODESIGN_IDENTITY:-}"
+
 if [ ! -d "$APP_PATH" ]; then
     echo "Error: $APP_PATH not found. Run build-app.sh first."
     exit 1
@@ -44,6 +52,16 @@ fi
 
 create-dmg "${DMG_ARGS[@]}" "$DMG_PATH" "$APP_PATH"
 
+if [ -n "$SIGN_IDENTITY" ]; then
+    echo "▶ Signing DMG with $SIGN_IDENTITY…"
+    SIGN_ARGS=(--force --sign "$SIGN_IDENTITY")
+    if [[ "$SIGN_IDENTITY" == Developer\ ID\ Application:* ]]; then
+        SIGN_ARGS+=(--timestamp)
+    fi
+    codesign "${SIGN_ARGS[@]}" "$DMG_PATH"
+fi
+
 echo ""
 echo "✓ Done!  $DMG_NAME.dmg created."
 echo "  Upload this to your GitHub release."
+echo "  For Developer ID distribution, run: bash notarize-dmg.sh \"$DMG_PATH\""

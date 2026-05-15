@@ -359,7 +359,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.14.0"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.14.1"
     
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
@@ -384,6 +384,11 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.14.1
+                    • Overlay Save now writes to the configured Save Location immediately
+                    • Save uses the same quick confirmation experience as Copy
+                    • Record Window now captures the selected window more sharply
+
                     Version 0.14.0
                     • New screenshots copy to the clipboard by default
                     • Added a Screenshots preference to disable automatic clipboard copying
