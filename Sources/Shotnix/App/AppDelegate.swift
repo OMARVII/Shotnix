@@ -9,16 +9,48 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
     var hotkeyManager: HotkeyManager!
     var historyManager: HistoryManager!
     private let welcomeController = WelcomeWindowController()
+    private var didRegisterHotkeys = false
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         captureEngine = CaptureEngine()
         hotkeyManager = HotkeyManager()
         historyManager = HistoryManager()
         setupStatusItem()
-        welcomeController.showIfNeeded()
-        PermissionsManager.requestScreenRecordingPermission()
+        registerHotkeys()
+        let promptForNativeShortcuts = { [weak self] in
+            NativeShortcutManager.promptIfNeeded {
+                self?.registerHotkeys()
+                self?.showReadyToastIfNeeded(delay: 2.2)
+            }
+        }
+        if !welcomeController.showIfNeeded(onClose: promptForNativeShortcuts) {
+            promptForNativeShortcuts()
+        }
+    }
+
+    private func registerHotkeys() {
         hotkeyManager.register(captureEngine: captureEngine, historyManager: historyManager)
-        NativeShortcutManager.promptIfNeeded()
+        didRegisterHotkeys = true
+    }
+
+    private func showReadyToastIfNeeded(delay: TimeInterval = 0) {
+        let show = { @MainActor in
+            guard Settings.hasLaunchedBefore,
+                  !Settings.didShowReadyToast,
+                  PermissionsManager.hasScreenRecordingPermission,
+                  !NativeShortcutManager.nativeShortcutsEnabled else { return }
+
+            Settings.didShowReadyToast = true
+            ToastWindow.show(message: "Shotnix is ready to use!", duration: 3.0, anchorView: self.statusItem.button)
+        }
+
+        if delay > 0 {
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                show()
+            }
+        } else {
+            show()
+        }
     }
 
     // MARK: – Status bar

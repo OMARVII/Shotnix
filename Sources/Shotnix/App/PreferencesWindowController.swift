@@ -93,7 +93,7 @@ struct GeneralSettingsView: View {
     @AppStorage("hideDesktopIconsWhileCapturing") var hideDesktopIcons = false
     @AppStorage("afterCaptureShowOverlay") var showOverlay = true
     @AppStorage("afterCaptureSaveAutomatically") var saveAutomatically = false
-    @AppStorage("overlayOnLeft") var overlayOnLeft = false
+    @AppStorage("overlayOnLeft") var overlayOnLeft = true
     @AppStorage("overlayTimeout") var overlayTimeout: Double = 6.0
     
     @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
@@ -359,7 +359,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.14.1"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.15.0"
     
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
@@ -384,6 +384,11 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.15.0
+                    • First-run onboarding now guides Screen Recording and Apple screenshot shortcut setup
+                    • Shotnix can disable conflicting macOS screenshot shortcuts and confirms when setup is ready
+                    • The quick-access thumbnail now defaults to the left side on fresh installs
+
                     Version 0.14.1
                     • Overlay Save now writes to the configured Save Location immediately
                     • Save uses the same quick confirmation experience as Copy

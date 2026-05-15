@@ -7,10 +7,10 @@ final class ToastWindow: NSWindow {
     private static var current: ToastWindow?
     private var finalOrigin: NSPoint = .zero
 
-    static func show(message: String, duration: TimeInterval = 2.0) {
+    static func show(message: String, duration: TimeInterval = 2.0, anchorView: NSView? = nil) {
         current?.orderOut(nil)
 
-        let toast = ToastWindow(message: message)
+        let toast = ToastWindow(message: message, anchorView: anchorView)
         current = toast
 
         // Start 12px below final position, scaled down
@@ -55,7 +55,7 @@ final class ToastWindow: NSWindow {
         }
     }
 
-    private init(message: String) {
+    private init(message: String, anchorView: NSView?) {
         let font = NSFont.systemFont(ofSize: 13, weight: .semibold)
         let paragraph = NSMutableParagraphStyle()
         paragraph.alignment = .center
@@ -79,8 +79,10 @@ final class ToastWindow: NSWindow {
         let width = Self.pixelAligned(min(maxWidth, max(280, ceil(targetTextWidth) + paddingX * 2)), scale: screenScale)
         let labelWidth = Self.pixelAligned(width - paddingX * 2, scale: screenScale)
         let labelHeight = ceil(textRect.height)
-        let height = Self.pixelAligned(max(42, labelHeight + paddingY * 2), scale: screenScale)
-        let cornerRadius = min(18, height / 2)
+        let bubbleHeight = Self.pixelAligned(max(42, labelHeight + paddingY * 2), scale: screenScale)
+        let pointerHeight: CGFloat = anchorView == nil ? 0 : 9
+        let height = bubbleHeight + pointerHeight
+        let cornerRadius = min(18, bubbleHeight / 2)
 
         super.init(
             contentRect: NSRect(x: 0, y: 0, width: width, height: height),
@@ -96,15 +98,22 @@ final class ToastWindow: NSWindow {
 
         let container = NSView(frame: NSRect(x: 0, y: 0, width: width, height: height))
         container.wantsLayer = true
-        container.layer?.cornerRadius = cornerRadius
-        container.layer?.cornerCurve = .continuous
         container.layer?.masksToBounds = false
         container.layer?.shadowColor = NSColor.black.cgColor
         container.layer?.shadowOpacity = 0.28
         container.layer?.shadowRadius = 18
         container.layer?.shadowOffset = CGSize(width: 0, height: -5)
 
-        let clipView = NSView(frame: container.bounds)
+        let pointer: ToastPointerView?
+        if anchorView != nil {
+            let view = ToastPointerView(frame: NSRect(x: width / 2 - 10, y: bubbleHeight - 1, width: 20, height: pointerHeight + 1))
+            container.addSubview(view)
+            pointer = view
+        } else {
+            pointer = nil
+        }
+
+        let clipView = NSView(frame: NSRect(x: 0, y: 0, width: width, height: bubbleHeight))
         clipView.wantsLayer = true
         clipView.layer?.cornerRadius = cornerRadius
         clipView.layer?.cornerCurve = .continuous
@@ -124,10 +133,17 @@ final class ToastWindow: NSWindow {
         label.textColor = .white
         label.alignment = .center
         label.lineBreakMode = .byCharWrapping
-        label.frame = NSRect(x: paddingX, y: (height - labelHeight) / 2, width: labelWidth, height: labelHeight)
+        label.frame = NSRect(x: paddingX, y: (bubbleHeight - labelHeight) / 2, width: labelWidth, height: labelHeight)
         clipView.addSubview(label)
 
-        if let screen = NSScreen.main {
+        if let anchorFrame = Self.screenFrame(for: anchorView), let screen = Self.screen(containing: anchorFrame) {
+            let visible = screen.visibleFrame
+            let x = max(visible.minX + 8, min(anchorFrame.midX - width / 2, visible.maxX - width - 8))
+            let y = min(anchorFrame.minY - height + 13, visible.maxY - height - 4)
+            finalOrigin = Self.pixelAligned(NSPoint(x: x, y: y), scale: screenScale)
+            pointer?.frame.origin.x = Self.pixelAligned(max(14, min(anchorFrame.midX - finalOrigin.x - 10, width - 34)), scale: screenScale)
+            setFrameOrigin(finalOrigin)
+        } else if let screen = NSScreen.main {
             let visible = screen.visibleFrame
             let x = max(visible.minX + horizontalInset, min(visible.midX - width / 2, visible.maxX - width - horizontalInset))
             let y = visible.maxY - height - 40
@@ -136,11 +152,33 @@ final class ToastWindow: NSWindow {
         }
     }
 
+    private static func screenFrame(for view: NSView?) -> NSRect? {
+        guard let view, let window = view.window else { return nil }
+        return window.convertToScreen(view.convert(view.bounds, to: nil))
+    }
+
+    private static func screen(containing rect: NSRect) -> NSScreen? {
+        NSScreen.screens.first { $0.frame.intersects(rect) } ?? NSScreen.main
+    }
+
     private static func pixelAligned(_ value: CGFloat, scale: CGFloat) -> CGFloat {
         (value * scale).rounded(.up) / scale
     }
 
     private static func pixelAligned(_ point: NSPoint, scale: CGFloat) -> NSPoint {
         NSPoint(x: (point.x * scale).rounded() / scale, y: (point.y * scale).rounded() / scale)
+    }
+}
+
+private final class ToastPointerView: NSView {
+    override func draw(_ dirtyRect: NSRect) {
+        NSColor.black.withAlphaComponent(0.72).setFill()
+
+        let path = NSBezierPath()
+        path.move(to: NSPoint(x: bounds.midX, y: bounds.maxY))
+        path.line(to: NSPoint(x: bounds.minX, y: bounds.minY))
+        path.line(to: NSPoint(x: bounds.maxX, y: bounds.minY))
+        path.close()
+        path.fill()
     }
 }

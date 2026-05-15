@@ -20,6 +20,21 @@ enum Settings {
         set { defaults.set(newValue, forKey: "hasLaunchedBefore") }
     }
 
+    static var didRequestScreenRecordingPermission: Bool {
+        get { defaults.bool(forKey: "didRequestScreenRecordingPermission") }
+        set { defaults.set(newValue, forKey: "didRequestScreenRecordingPermission") }
+    }
+
+    static var didConfirmScreenRecordingPermission: Bool {
+        get { defaults.bool(forKey: "didConfirmScreenRecordingPermission") }
+        set { defaults.set(newValue, forKey: "didConfirmScreenRecordingPermission") }
+    }
+
+    static var didShowReadyToast: Bool {
+        get { defaults.bool(forKey: "didShowReadyToast") }
+        set { defaults.set(newValue, forKey: "didShowReadyToast") }
+    }
+
     // MARK: – Overlay
 
     /// Auto-dismiss timeout in seconds. -1 = never dismiss automatically.
@@ -31,9 +46,12 @@ enum Settings {
         set { defaults.set(newValue, forKey: "overlayTimeout") }
     }
 
-    /// true = show overlay on the left side, false = right side (default)
+    /// true = show overlay on the left side (default), false = right side
     static var overlayOnLeft: Bool {
-        get { defaults.bool(forKey: "overlayOnLeft") }
+        get {
+            if defaults.object(forKey: "overlayOnLeft") == nil { return true }
+            return defaults.bool(forKey: "overlayOnLeft")
+        }
         set { defaults.set(newValue, forKey: "overlayOnLeft") }
     }
 

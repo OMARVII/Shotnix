@@ -8,6 +8,8 @@ final class HotkeyManager {
     private var hotkeys: [HotKey] = []
 
     func register(captureEngine: CaptureEngine, historyManager: HistoryManager) {
+        hotkeys.removeAll()
+
         // ⌘⇧4 — Capture Area (mirrors macOS default muscle memory)
         let area = HotKey(key: .four, modifiers: [.command, .shift])
         area.keyDownHandler = { [weak captureEngine, weak historyManager] in

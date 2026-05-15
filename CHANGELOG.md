@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.15.0-beta] - 2026-05-15
+
+### Added
+- **First-run onboarding** — Shotnix now guides Screen Recording permission setup and follows with a native shortcut conflict prompt.
+- **Ready confirmation** — after setup is complete, Shotnix shows a menu-bar anchored “Shotnix is ready to use!” confirmation.
+
+### Changed
+- **Native screenshot shortcuts** — Shotnix can disable conflicting macOS screenshot shortcuts across user and host preference scopes before registering its own capture hotkeys.
+- **Overlay default position** — the quick-access thumbnail now defaults to the left side for fresh installs while preserving existing user preferences.
+
+### Fixed
+- **Permission handoff** — Screen Recording prompts no longer mark onboarding complete before macOS has registered the permission flow.
+
 ## [0.14.1-beta] - 2026-05-14
 
 ### Changed
