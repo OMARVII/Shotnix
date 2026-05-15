@@ -17,9 +17,7 @@
 ---
 
 > [!NOTE]
-> **Shotnix is in beta (v0.14.1-beta).** It's fully functional but not yet notarized through Apple's Developer Program, so macOS will show a Gatekeeper warning on first launch. This is standard for open-source apps — Shotnix is safe and the source code is right here. Notarization is on the roadmap.
->
-> To open: **Right-click → Open → Open** (macOS 13–14) or **System Settings → Privacy & Security → Open Anyway** (macOS 15+).
+> **Shotnix is in beta (v0.14.1-beta).** Official downloads are signed and notarized with Apple Developer ID. The source code is available here for review and local builds.
 
 <p align="center">
   <img src="assets/screenshots/shotnix-annotation-editor-demo.png" width="720" alt="Shotnix annotation editor demo" />
@@ -83,28 +81,6 @@ Visit **[shotnix.com](https://shotnix.com/)** for the latest download and projec
 2. Open the DMG and drag **Shotnix** to your Applications folder
 3. Grant **Screen Recording** permission when prompted
 
-> [!IMPORTANT]
-> **macOS will show a warning on first launch** — this is normal for open-source apps that aren't notarized through Apple's $99/year Developer Program. Shotnix is safe and fully open source. Here's how to open it:
->
-> **macOS Ventura & Sonoma (13–14):**
-> Right-click `Shotnix.app` → click **Open** → click **Open** again in the dialog
->
-> **macOS Sequoia (15+):**
-> 1. Try to open the app (it will be blocked)
-> 2. Go to **System Settings → Privacy & Security**
-> 3. Scroll down and click **Open Anyway** next to "Shotnix was blocked"
->
-> If macOS still blocks the app, use **System Settings → Privacy & Security → Open Anyway**.
->
-> **If macOS says "Shotnix" is damaged and can't be opened:**
-> This can happen because Shotnix is currently unsigned and macOS quarantines unsigned apps by default. After installing Shotnix, run this command in Terminal:
->
-> ```bash
-> xattr -rd com.apple.quarantine /Applications/Shotnix.app
-> ```
->
-> If the command is blocked, give Terminal Full Disk Access in **System Settings → Privacy & Security**, then run it again.
-
 ### Build from source
 
 ```bash
@@ -113,7 +89,7 @@ cd Shotnix
 bash build-app.sh
 ```
 
-This compiles a release build, assembles the app bundle, ad-hoc signs the binary, and copies `Shotnix.app` to `/Applications`.
+This compiles a release build, assembles the app bundle, signs the binary locally, and copies `Shotnix.app` to `/Applications`.
 
 **Requirements:** macOS 13+, Swift 5.9+
 
