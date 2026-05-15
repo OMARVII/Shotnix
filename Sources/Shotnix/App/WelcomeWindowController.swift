@@ -4,16 +4,19 @@ import AppKit
 final class WelcomeWindowController: NSObject, NSWindowDelegate {
 
     private var window: NSWindow?
+    private var onClose: (() -> Void)?
 
-    func showIfNeeded() {
-        guard !Settings.hasLaunchedBefore else { return }
-        Settings.hasLaunchedBefore = true
+    @discardableResult
+    func showIfNeeded(onClose: (() -> Void)? = nil) -> Bool {
+        guard !Settings.hasLaunchedBefore else { return false }
+        self.onClose = onClose
         showWindow()
+        return true
     }
 
     private func showWindow() {
-        let width: CGFloat = 400
-        let height: CGFloat = 300
+        let width: CGFloat = 460
+        let height: CGFloat = 360
 
         let win = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: width, height: height),
@@ -43,7 +46,7 @@ final class WelcomeWindowController: NSObject, NSWindowDelegate {
 
     private func buildContent(in container: NSView, width: CGFloat, height: CGFloat) {
         let centerX = width / 2
-        var y = height - 30
+        var y = height - 34
 
         // App icon
         let iconSize: CGFloat = 56
@@ -55,20 +58,19 @@ final class WelcomeWindowController: NSObject, NSWindowDelegate {
 
         // Title
         let title = NSTextField(labelWithString: "Welcome to Shotnix")
-        title.font = .boldSystemFont(ofSize: 18)
+        title.font = .boldSystemFont(ofSize: 22)
         title.alignment = .center
         title.frame = NSRect(x: 20, y: y - 24, width: width - 40, height: 24)
         container.addSubview(title)
         y -= 32
 
-        // Description
-        let desc = NSTextField(wrappingLabelWithString: "Shotnix lives in your menu bar for quick capture, annotation, OCR, scrolling screenshots, pinning, and local history.")
+        let desc = NSTextField(wrappingLabelWithString: "A fast menu bar workflow for screenshots, recordings, annotation, OCR, QR scanning, pinning, and local history.")
         desc.font = .systemFont(ofSize: 12)
         desc.textColor = .secondaryLabelColor
         desc.alignment = .center
-        desc.frame = NSRect(x: 30, y: y - 50, width: width - 60, height: 50)
+        desc.frame = NSRect(x: 44, y: y - 42, width: width - 88, height: 42)
         container.addSubview(desc)
-        y -= 58
+        y -= 52
 
         // Permission notice
         let sep = NSBox()
@@ -77,44 +79,80 @@ final class WelcomeWindowController: NSObject, NSWindowDelegate {
         container.addSubview(sep)
         y -= 16
 
-        let lockIcon = NSImageView(frame: NSRect(x: 30, y: y - 16, width: 16, height: 16))
+        let lockIcon = NSImageView(frame: NSRect(x: 44, y: y - 18, width: 18, height: 18))
         lockIcon.image = NSImage(systemSymbolName: "lock.shield", accessibilityDescription: nil)
         lockIcon.contentTintColor = .systemOrange
         container.addSubview(lockIcon)
 
-        let permLabel = NSTextField(wrappingLabelWithString: "Screen Recording permission is required to capture screenshots and screen recordings. You can grant it now or later in System Settings.")
+        let permLabel = NSTextField(wrappingLabelWithString: "Step 1 · Allow Screen Recording so Shotnix can capture screenshots, recordings, OCR selections, and QR scans.")
         permLabel.font = .systemFont(ofSize: 11)
         permLabel.textColor = .secondaryLabelColor
-        permLabel.frame = NSRect(x: 52, y: y - 34, width: width - 82, height: 34)
+        permLabel.frame = NSRect(x: 70, y: y - 36, width: width - 114, height: 36)
         container.addSubview(permLabel)
-        y -= 50
+
+        let shortcutIcon = NSImageView(frame: NSRect(x: 44, y: y - 62, width: 18, height: 18))
+        shortcutIcon.image = NSImage(systemSymbolName: "keyboard", accessibilityDescription: nil)
+        shortcutIcon.contentTintColor = .systemBlue
+        container.addSubview(shortcutIcon)
+
+        let shortcutLabel = NSTextField(wrappingLabelWithString: "Step 2 · Shotnix will help disable macOS screenshot shortcuts so captures do not double-trigger.")
+        shortcutLabel.font = .systemFont(ofSize: 11)
+        shortcutLabel.textColor = .secondaryLabelColor
+        shortcutLabel.frame = NSRect(x: 70, y: y - 82, width: width - 114, height: 36)
+        container.addSubview(shortcutLabel)
+        y -= 96
 
         // Buttons
-        let btnWidth: CGFloat = 140
-        let btnHeight: CGFloat = 28
+        let btnWidth: CGFloat = 154
+        let btnHeight: CGFloat = 32
         let gap: CGFloat = 12
         let totalBtnWidth = btnWidth * 2 + gap
         let btnX = centerX - totalBtnWidth / 2
 
         let skipBtn = NSButton(title: "Later", target: self, action: #selector(skipClicked))
         skipBtn.bezelStyle = .rounded
-        skipBtn.frame = NSRect(x: btnX, y: 16, width: btnWidth, height: btnHeight)
+        skipBtn.frame = NSRect(x: btnX, y: 20, width: btnWidth, height: btnHeight)
         container.addSubview(skipBtn)
 
-        let grantBtn = NSButton(title: "Grant Permission", target: self, action: #selector(grantClicked))
+        let grantBtn = NSButton(title: "Enable Capture", target: self, action: #selector(grantClicked))
         grantBtn.bezelStyle = .rounded
         grantBtn.keyEquivalent = "\r"
-        grantBtn.frame = NSRect(x: btnX + btnWidth + gap, y: 16, width: btnWidth, height: btnHeight)
+        grantBtn.frame = NSRect(x: btnX + btnWidth + gap, y: 20, width: btnWidth, height: btnHeight)
         container.addSubview(grantBtn)
     }
 
     @objc private func grantClicked() {
-        NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture")!)
+        Settings.hasLaunchedBefore = true
+        let granted = PermissionsManager.requestScreenRecordingPermission()
+        if granted {
+            closeWindow()
+            return
+        }
+
+        if Settings.didRequestScreenRecordingPermission {
+            showRestartAfterPermissionAlert()
+        } else {
+            PermissionsManager.openScreenRecordingSettings()
+        }
         closeWindow()
     }
 
     @objc private func skipClicked() {
+        Settings.hasLaunchedBefore = true
         closeWindow()
+    }
+
+    private func showRestartAfterPermissionAlert() {
+        let alert = NSAlert()
+        alert.messageText = "Finish Permission in System Settings"
+        alert.informativeText = "After enabling Shotnix in Screen & System Audio Recording, quit and reopen Shotnix so macOS applies the permission."
+        alert.alertStyle = .informational
+        alert.addButton(withTitle: "Open Settings")
+        alert.addButton(withTitle: "OK")
+
+        if alert.runModal() == .alertFirstButtonReturn {
+            PermissionsManager.openScreenRecordingSettings()
+        }
     }
 
     private func closeWindow() {
@@ -123,6 +161,9 @@ final class WelcomeWindowController: NSObject, NSWindowDelegate {
 
     func windowWillClose(_ notification: Notification) {
         window = nil
+        let closeHandler = onClose
+        onClose = nil
+        closeHandler?()
         NSApp.restoreBackgroundOnlyActivationPolicyIfNeeded(excluding: notification.object as? NSWindow)
     }
 }
