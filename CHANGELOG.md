@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.15.2-beta] - 2026-05-16
+
+### Fixed
+- **Quick Access drag-and-drop** — dragging the post-capture thumbnail now exports reliably to Finder and other apps.
+- **Overlay action buttons** — Copy and Save remain clickable while thumbnail drag-and-drop stays available from non-button areas.
+
 ## [0.15.1-beta] - 2026-05-16
 
 ### Changed
