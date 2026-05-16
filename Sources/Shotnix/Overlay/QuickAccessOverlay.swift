@@ -59,7 +59,7 @@ private final class QuickAccessWindow: NSWindow {
         backgroundColor = .clear
         level = .floating
         hasShadow = true
-        isMovableByWindowBackground = true
+        isMovableByWindowBackground = false
         acceptsMouseMovedEvents = true
         collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary]
 
@@ -192,7 +192,7 @@ private final class QuickAccessWindow: NSWindow {
         container.addSubview(clipView)
 
         // White border — primary edge definition on light wallpapers (shadow handles dark)
-        let borderView = NSView(frame: container.bounds)
+        let borderView = PassthroughView(frame: container.bounds)
         borderView.wantsLayer = true
         borderView.layer?.cornerRadius = 12
         borderView.layer?.cornerCurve = .continuous
@@ -223,7 +223,7 @@ private final class QuickAccessWindow: NSWindow {
         clipView.addSubview(thumb)
 
         // Controls overlay — frosted glass + corner circles + center pills
-        let controls = NSView(frame: NSRect(x: 0, y: progressH, width: thumbW, height: thumbH))
+        let controls = OverlayControlsView(frame: NSRect(x: 0, y: progressH, width: thumbW, height: thumbH))
         controls.wantsLayer = true
 
         // Frosted glass backdrop
@@ -289,7 +289,7 @@ private final class QuickAccessWindow: NSWindow {
         let retinaScale = NSScreen.main?.backingScaleFactor ?? 2.0
         for (i, (title, sel)) in pills.enumerated() {
             let pw = pillWidths[i]
-            let pill = OverlayPillView(frame: NSRect(x: pillCursorX, y: pillY, width: pw, height: pillH))
+            let pill = OverlayPillButton(frame: NSRect(x: pillCursorX, y: pillY, width: pw, height: pillH))
             pill.attributedTitle = NSAttributedString(string: title, attributes: pillAttrs)
             pill.target = self
             pill.action = sel
@@ -388,6 +388,7 @@ private final class QuickAccessWindow: NSWindow {
         orderFrontRegardless()
         makeKeyAndOrderFront(nil)
         makeFirstResponder(self)
+        setHovered(frame.contains(NSEvent.mouseLocation))
 
         // Deferred re-checks: activate() is async and completion time varies.
         // 100ms catches the common case; 300ms catches slow activation handshakes.
@@ -602,6 +603,12 @@ private final class DraggableImageView: NSImageView, NSDraggingSource {
     var onDragCompleted: (() -> Void)?
 
     private var dragOrigin: NSPoint?
+    private var activeDragFileURL: URL?
+    private static var retainedDragFiles: Set<URL> = []
+    private static let dragFileCleanupDelay: TimeInterval = 300
+
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+    override var mouseDownCanMoveWindow: Bool { false }
 
     override func mouseDown(with event: NSEvent) {
         if event.clickCount == 2 {
@@ -619,12 +626,33 @@ private final class DraggableImageView: NSImageView, NSDraggingSource {
         guard dx > 3 || dy > 3 else { return }
 
         dragOrigin = nil
+
+        guard let png = ImageExporter.pngData(from: dragImg),
+              let fileURL = Self.makeTemporaryDragFile(data: png) else { return }
+
         onDragStarted?()
 
-        let provider = NSFilePromiseProvider(fileType: "public.png", delegate: ImageFilePromiseDelegate(image: dragImg))
-        let item = NSDraggingItem(pasteboardWriter: provider)
+        activeDragFileURL = fileURL
+        Self.retainedDragFiles.insert(fileURL)
+
+        let item = NSDraggingItem(pasteboardWriter: fileURL as NSURL)
         item.setDraggingFrame(bounds, contents: dragImg)
         beginDraggingSession(with: [item], event: event, source: self)
+    }
+
+    private static func makeTemporaryDragFile(data: Data) -> URL? {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent("ShotnixDrag", isDirectory: true)
+        let filename = "\(ImageExporter.timestampedName)-\(UUID().uuidString.prefix(8)).png"
+        let url = directory.appendingPathComponent(filename)
+
+        do {
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            try data.write(to: url, options: .atomic)
+            return url
+        } catch {
+            print("[Shotnix] Drag export failed at \(url.path): \(error)")
+            return nil
+        }
     }
 
     nonisolated func draggingSession(_ session: NSDraggingSession, sourceOperationMaskFor context: NSDraggingContext) -> NSDragOperation {
@@ -633,48 +661,22 @@ private final class DraggableImageView: NSImageView, NSDraggingSource {
 
     nonisolated func draggingSession(_ session: NSDraggingSession, endedAt screenPoint: NSPoint, operation: NSDragOperation) {
         DispatchQueue.main.async { [weak self] in
+            self?.scheduleActiveDragFileCleanup()
             self?.onDragCompleted?()
         }
     }
-}
 
-// MARK: – File promise for drag-and-drop
-
-private final class ImageFilePromiseDelegate: NSObject, NSFilePromiseProviderDelegate, @unchecked Sendable {
-
-    private static let queue: OperationQueue = {
-        let queue = OperationQueue()
-        queue.name = "Shotnix.FilePromise"
-        queue.maxConcurrentOperationCount = 1
-        queue.qualityOfService = .userInitiated
-        return queue
-    }()
-
-    private let image: NSImage
-
-    init(image: NSImage) {
-        self.image = image
+    private func scheduleActiveDragFileCleanup() {
+        guard let url = activeDragFileURL else { return }
+        activeDragFileURL = nil
+        Self.scheduleDragFileCleanup(url)
     }
 
-    func filePromiseProvider(_ filePromiseProvider: NSFilePromiseProvider, fileNameForType fileType: String) -> String {
-        "\(ImageExporter.timestampedName).png"
-    }
-
-    func filePromiseProvider(_ filePromiseProvider: NSFilePromiseProvider, writePromiseTo url: URL, completionHandler handler: @escaping (Error?) -> Void) {
-        do {
-            guard let png = ImageExporter.pngData(from: image) else {
-                handler(ImageExporter.ExportError.pngEncodingFailed)
-                return
-            }
-            try png.write(to: url, options: .atomic)
-            handler(nil)
-        } catch {
-            handler(error)
+    private static func scheduleDragFileCleanup(_ url: URL) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + dragFileCleanupDelay) {
+            try? FileManager.default.removeItem(at: url)
+            retainedDragFiles.remove(url)
         }
-    }
-
-    func operationQueue(for filePromiseProvider: NSFilePromiseProvider) -> OperationQueue {
-        Self.queue
     }
 }
 
@@ -684,6 +686,24 @@ private final class ImageFilePromiseDelegate: NSObject, NSFilePromiseProviderDel
 private final class OverlayContentView: NSView {
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
     override var acceptsFirstResponder: Bool { true }
+    override var mouseDownCanMoveWindow: Bool { false }
+}
+
+@MainActor
+private final class PassthroughView: NSView {
+    override func hitTest(_ point: NSPoint) -> NSView? { nil }
+    override var mouseDownCanMoveWindow: Bool { false }
+}
+
+@MainActor
+private final class OverlayControlsView: NSView {
+    override var mouseDownCanMoveWindow: Bool { false }
+
+    override func hitTest(_ point: NSPoint) -> NSView? {
+        guard let hit = super.hitTest(point) else { return nil }
+        if hit === self || hit is NSVisualEffectView { return nil }
+        return hit
+    }
 }
 
 // MARK: – Corner button (glass circle, secondary action)
@@ -750,55 +770,28 @@ private final class OverlayCornerButton: NSButton {
     }
 }
 
-// MARK: – Pill button (white capsule, primary action)
-
-/// NSView-based pill with an NSTextField label. Uses color-only pressed
-/// feedback — no CATransform3D scaling, which causes CoreAnimation to
-/// rasterize the layer tree and pixelate text glyphs during the transform.
 @MainActor
-private final class OverlayPillView: NSView {
-
-    var attributedTitle: NSAttributedString? {
-        didSet {
-            label.attributedStringValue = attributedTitle ?? NSAttributedString()
-            needsLayout = true
-        }
-    }
-    
-    weak var target: AnyObject?
-    var action: Selector?
-
+private final class OverlayPillButton: NSButton {
     private var trackingArea: NSTrackingArea?
     private var isHovered = false
-    private var isPressed = false
-    
-    private let label: NSTextField
 
     override init(frame: NSRect) {
-        label = NSTextField(labelWithString: "")
         super.init(frame: frame)
         wantsLayer = true
-        
-        label.drawsBackground = false
-        label.isBezeled = false
-        label.isEditable = false
-        label.isSelectable = false
-        label.alignment = .center
-        addSubview(label)
+        isBordered = false
+        bezelStyle = .regularSquare
+        setButtonType(.momentaryChange)
+        alignment = .center
     }
 
     required init?(coder: NSCoder) { fatalError() }
 
-    override var isFlipped: Bool { false }
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+    override var mouseDownCanMoveWindow: Bool { false }
 
-    override func layout() {
-        super.layout()
-        label.sizeToFit()
-        let scale = window?.backingScaleFactor ?? 2.0
-        let x = round((bounds.width - label.bounds.width) / 2 * scale) / scale
-        let y = round((bounds.height - label.bounds.height) / 2 * scale) / scale
-        label.setFrameOrigin(NSPoint(x: x, y: y))
+    override var focusRingType: NSFocusRingType {
+        get { .none }
+        set { _ = newValue }
     }
 
     override func updateTrackingAreas() {
@@ -811,37 +804,20 @@ private final class OverlayPillView: NSView {
 
     override func mouseEntered(with event: NSEvent) {
         isHovered = true
-        if !isPressed {
-            layer?.backgroundColor = ShotnixColors.pillButtonHover.cgColor
-        }
+        layer?.backgroundColor = ShotnixColors.pillButtonHover.cgColor
     }
 
     override func mouseExited(with event: NSEvent) {
         isHovered = false
-        if !isPressed {
-            layer?.backgroundColor = ShotnixColors.pillButtonBackground.cgColor
-        }
+        layer?.backgroundColor = ShotnixColors.pillButtonBackground.cgColor
     }
 
     override func mouseDown(with event: NSEvent) {
-        isPressed = true
-        // Color-only feedback: darken the pill, no scale transform.
-        // This keeps text rendered live by AppKit at native Retina resolution
-        // throughout the entire press cycle — zero pixelation, zero rasterization.
         layer?.backgroundColor = ShotnixColors.pillButtonPressed.cgColor
         NSHapticFeedbackManager.defaultPerformer.perform(.generic, performanceTime: .default)
-    }
-
-    override func mouseUp(with event: NSEvent) {
-        isPressed = false
+        super.mouseDown(with: event)
         layer?.backgroundColor = isHovered
             ? ShotnixColors.pillButtonHover.cgColor
             : ShotnixColors.pillButtonBackground.cgColor
-
-        // Fire target-action only if the mouse is still over us (iOS-style behaviour).
-        let point = convert(event.locationInWindow, from: nil)
-        if bounds.contains(point), let target = target, let action = action {
-            _ = NSApp.sendAction(action, to: target, from: self)
-        }
     }
 }
