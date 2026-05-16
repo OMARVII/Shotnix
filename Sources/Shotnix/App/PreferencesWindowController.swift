@@ -359,7 +359,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.15.0"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.15.1"
     
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
@@ -384,6 +384,11 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.15.1
+                    • Annotation editor windows now open larger by default to reduce immediate scrolling
+                    • Editor sizing stays capped to the visible screen for smaller or accessibility-scaled displays
+                    • Crop confirmation now stays fully visible in the toolbar
+
                     Version 0.15.0
                     • First-run onboarding now guides Screen Recording and Apple screenshot shortcut setup
                     • Shotnix can disable conflicting macOS screenshot shortcuts and confirms when setup is ready

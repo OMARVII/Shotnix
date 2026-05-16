@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.15.1-beta] - 2026-05-16
+
+### Changed
+- **Annotation editor launch size** — the editor now opens larger by default so captured images start with less scrolling on normal MacBook and desktop displays.
+- **Small-screen sizing safety** — the editor still caps its minimum window size to the visible display, preventing oversized windows on accessibility-scaled or low-resolution screens.
+
+### Fixed
+- **Crop apply button** — the Crop confirmation button now has enough toolbar width to appear fully instead of clipping at the right edge.
+
 ## [0.15.0-beta] - 2026-05-15
 
 ### Added
