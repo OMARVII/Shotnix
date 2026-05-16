@@ -21,13 +21,16 @@ if [ ! -d "$APP_PATH" ]; then
     exit 1
 fi
 
-STAGING_DIR="$(mktemp -d "$SCRIPT_DIR/dmg-staging.XXXXXX")"
+RW_DMG_PATH="$SCRIPT_DIR/rw.$$.$DMG_NAME.dmg"
+MOUNT_DIR="$(mktemp -d "$SCRIPT_DIR/dmg-mount.XXXXXX")"
 cleanup() {
-    rm -rf "$STAGING_DIR"
+    if mount | grep -q "on $MOUNT_DIR "; then
+        hdiutil detach "$MOUNT_DIR" >/dev/null 2>&1 || hdiutil detach -force "$MOUNT_DIR" >/dev/null 2>&1 || true
+    fi
+    rm -rf "$MOUNT_DIR"
+    rm -f "$RW_DMG_PATH"
 }
 trap cleanup EXIT
-
-ditto --rsrc --extattr "$APP_PATH" "$STAGING_DIR/$APP_NAME.app"
 
 # Generate background image
 BG_PATH="$SCRIPT_DIR/dmg-background.png"
@@ -39,27 +42,102 @@ fi
 echo "▶ Creating DMG installer…"
 
 # Clean previous
-rm -f "$DMG_PATH"
+rm -f "$DMG_PATH" "$RW_DMG_PATH"
 
-DMG_ARGS=(
-    --sandbox-safe
-    --volname "$APP_NAME"
-    --volicon "$SCRIPT_DIR/Branding/Shotnix.icns"
-    --window-pos 200 120
-    --window-size 600 400
-    --icon-size 128
-    --icon "$APP_NAME.app" 120 175
-    --app-drop-link 480 175
-    --hide-extension "$APP_NAME.app"
-    --no-internet-enable
-)
+echo "▶ Creating writable disk image…"
+hdiutil create \
+    -size 64m \
+    -volname "$APP_NAME" \
+    -fs HFS+ \
+    -fsargs "-c c=64,a=16,e=16" \
+    "$RW_DMG_PATH"
 
-# Use custom background if generated
+echo "▶ Mounting disk image…"
+hdiutil attach -readwrite -noverify -noautoopen -mountpoint "$MOUNT_DIR" "$RW_DMG_PATH" >/dev/null
+
+echo "▶ Copying app and installer assets…"
+ditto --rsrc --extattr "$APP_PATH" "$MOUNT_DIR/$APP_NAME.app"
+ln -s /Applications "$MOUNT_DIR/Applications"
+
 if [ -f "$BG_PATH" ]; then
-    DMG_ARGS+=(--background "$BG_PATH")
+    mkdir -p "$MOUNT_DIR/.background"
+    cp "$BG_PATH" "$MOUNT_DIR/.background/$(basename "$BG_PATH")"
 fi
 
-create-dmg "${DMG_ARGS[@]}" "$DMG_PATH" "$STAGING_DIR"
+if [ -f "$SCRIPT_DIR/Branding/Shotnix.icns" ]; then
+    cp "$SCRIPT_DIR/Branding/Shotnix.icns" "$MOUNT_DIR/.VolumeIcon.icns"
+    if command -v SetFile >/dev/null 2>&1; then
+        SetFile -c icnC "$MOUNT_DIR/.VolumeIcon.icns" || true
+        SetFile -a C "$MOUNT_DIR" || true
+    fi
+fi
+
+echo "▶ Styling Finder window…"
+/usr/bin/osascript <<EOF
+on run
+    set mountPath to "$MOUNT_DIR"
+    set appName to "$APP_NAME"
+    set backgroundName to "$(basename "$BG_PATH")"
+    set backgroundAlias to POSIX file (mountPath & "/.background/" & backgroundName) as alias
+
+    tell application "Finder"
+        set dmgFolder to POSIX file mountPath as alias
+        tell folder dmgFolder
+            open
+            tell container window
+                set current view to icon view
+                set toolbar visible to false
+                set statusbar visible to false
+                set the bounds to {200, 120, 800, 520}
+            end tell
+
+            set opts to the icon view options of container window
+            tell opts
+                set icon size to 128
+                set text size to 16
+                set arrangement to not arranged
+                set background picture to backgroundAlias
+            end tell
+
+            set position of item (appName & ".app") to {120, 175}
+            set extension hidden of item (appName & ".app") to true
+            set position of item "Applications" to {480, 175}
+
+            close
+            open
+            delay 1
+            tell container window
+                set statusbar visible to false
+                set the bounds to {200, 120, 790, 510}
+            end tell
+        end tell
+
+        delay 1
+
+        tell folder dmgFolder
+            tell container window
+                set statusbar visible to false
+                set the bounds to {200, 120, 800, 520}
+            end tell
+        end tell
+
+        delay 2
+    end tell
+end run
+EOF
+
+sync
+sleep 1
+
+echo "▶ Finalizing disk image…"
+rm -rf "$MOUNT_DIR/.fseventsd"
+hdiutil detach "$MOUNT_DIR"
+
+hdiutil convert "$RW_DMG_PATH" \
+    -format UDZO \
+    -imagekey zlib-level=9 \
+    -o "$DMG_PATH"
+rm -f "$RW_DMG_PATH"
 
 if [ -n "$SIGN_IDENTITY" ]; then
     echo "▶ Signing DMG with $SIGN_IDENTITY…"
