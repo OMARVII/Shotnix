@@ -7,6 +7,9 @@ final class AnnotationWindowController: NSWindowController {
 
     private static let trafficLightReservedWidth: CGFloat = 92
     private static let minimumEditorWidth = trafficLightReservedWidth + AnnotationToolbar.requiredWidth + 20
+    private static let initialScreenWidthFraction: CGFloat = 0.96
+    private static let initialScreenHeightFraction: CGFloat = 0.92
+    private static let initialScreenEdgeInset: CGFloat = 24
 
     private let canvas: AnnotationCanvas
     private let toolbar: AnnotationToolbar
@@ -61,12 +64,19 @@ final class AnnotationWindowController: NSWindowController {
         let toolbarDockHeight: CGFloat = 56
         let stageInset: CGFloat = 18
 
-        // Cap window to 85% of screen so large screenshots don't go off-screen
+        // Open as large as the visible display safely allows so the image starts with less scrolling.
         let screenFrame = NSScreen.main?.visibleFrame ?? NSRect(x: 0, y: 0, width: 1280, height: 800)
-        let maxW = screenFrame.width * 0.85
-        let maxH = screenFrame.height * 0.85 - toolbarHeight - stageInset
-        let winW = max(min(canvasSize.width, maxW), Self.minimumEditorWidth)
-        let winH = min(canvasSize.height, maxH) + toolbarHeight
+        let minimumEditorHeight = 260 + toolbarHeight
+        let screenSafeWidth = max(1, screenFrame.width - Self.initialScreenEdgeInset * 2)
+        let screenSafeHeight = max(1, screenFrame.height - Self.initialScreenEdgeInset * 2)
+        let maxWindowWidth = min(screenSafeWidth, screenFrame.width * Self.initialScreenWidthFraction)
+        let maxWindowHeight = min(screenSafeHeight, screenFrame.height * Self.initialScreenHeightFraction)
+        let effectiveMinimumWidth = min(Self.minimumEditorWidth, maxWindowWidth)
+        let effectiveMinimumHeight = min(minimumEditorHeight, maxWindowHeight)
+        let desiredWindowWidth = canvasSize.width + stageInset * 2
+        let desiredWindowHeight = canvasSize.height + toolbarHeight + stageInset
+        let winW = max(min(desiredWindowWidth, maxWindowWidth), effectiveMinimumWidth)
+        let winH = max(min(desiredWindowHeight, maxWindowHeight), effectiveMinimumHeight)
         let windowSize = NSSize(width: winW, height: winH)
 
         let win = NSWindow(
@@ -79,7 +89,7 @@ final class AnnotationWindowController: NSWindowController {
         win.titlebarAppearsTransparent = true
         win.isReleasedWhenClosed = false
         win.level = .floating
-        win.minSize = NSSize(width: Self.minimumEditorWidth, height: 260 + toolbarHeight)
+        win.minSize = NSSize(width: effectiveMinimumWidth, height: effectiveMinimumHeight)
         win.center()
 
         super.init(window: win)
@@ -347,7 +357,7 @@ private final class PremiumEditorStageView: NSView {
 @MainActor
 final class AnnotationToolbar: NSView {
 
-    static let requiredWidth: CGFloat = 930
+    static let requiredWidth: CGFloat = 984
 
     var onToolChanged: ((AnnotationTool) -> Void)?
     var onColorChanged: ((NSColor) -> Void)?
