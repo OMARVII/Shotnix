@@ -21,6 +21,14 @@ if [ ! -d "$APP_PATH" ]; then
     exit 1
 fi
 
+STAGING_DIR="$(mktemp -d "$SCRIPT_DIR/dmg-staging.XXXXXX")"
+cleanup() {
+    rm -rf "$STAGING_DIR"
+}
+trap cleanup EXIT
+
+ditto --rsrc --extattr "$APP_PATH" "$STAGING_DIR/$APP_NAME.app"
+
 # Generate background image
 BG_PATH="$SCRIPT_DIR/dmg-background.png"
 if [ -f "$SCRIPT_DIR/make-dmg-bg.swift" ]; then
@@ -34,6 +42,7 @@ echo "▶ Creating DMG installer…"
 rm -f "$DMG_PATH"
 
 DMG_ARGS=(
+    --sandbox-safe
     --volname "$APP_NAME"
     --volicon "$SCRIPT_DIR/Branding/Shotnix.icns"
     --window-pos 200 120
@@ -50,7 +59,7 @@ if [ -f "$BG_PATH" ]; then
     DMG_ARGS+=(--background "$BG_PATH")
 fi
 
-create-dmg "${DMG_ARGS[@]}" "$DMG_PATH" "$APP_PATH"
+create-dmg "${DMG_ARGS[@]}" "$DMG_PATH" "$STAGING_DIR"
 
 if [ -n "$SIGN_IDENTITY" ]; then
     echo "▶ Signing DMG with $SIGN_IDENTITY…"
