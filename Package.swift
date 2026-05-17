@@ -13,7 +13,8 @@ let package = Package(
             dependencies: [
                 .product(name: "HotKey", package: "HotKey"),
             ],
-            path: "Sources/Shotnix"
+            path: "Sources/Shotnix",
+            resources: [.process("Resources")]
         ),
     ]
 )

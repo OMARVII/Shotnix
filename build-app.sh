@@ -42,6 +42,16 @@ if [ -f "$SCRIPT_DIR/PrivacyInfo.xcprivacy" ]; then
     cp "$SCRIPT_DIR/PrivacyInfo.xcprivacy" "$APP_BUNDLE/Contents/Resources/PrivacyInfo.xcprivacy"
 fi
 
+if [ -f "$SCRIPT_DIR/THIRD_PARTY_NOTICES.md" ]; then
+    cp "$SCRIPT_DIR/THIRD_PARTY_NOTICES.md" "$APP_BUNDLE/Contents/Resources/THIRD_PARTY_NOTICES.md"
+fi
+
+# Copy SPM-generated resource bundle (capture sound, etc.) if present
+SPM_RESOURCE_BUNDLE="$SCRIPT_DIR/.build/release/${APP_NAME}_${APP_NAME}.bundle"
+if [ -d "$SPM_RESOURCE_BUNDLE" ]; then
+    cp -R "$SPM_RESOURCE_BUNDLE" "$APP_BUNDLE/Contents/Resources/"
+fi
+
 echo "Signing with $SIGN_IDENTITY..."
 SIGN_ARGS=(--force --deep --sign "$SIGN_IDENTITY" --options runtime --entitlements "$ENTITLEMENTS")
 
