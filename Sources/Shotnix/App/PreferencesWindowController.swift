@@ -359,7 +359,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.15.2"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.15.3"
     
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
@@ -384,6 +384,10 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.15.3
+                    • Screenshot captures now play a bundled Shotnix capture sound reliably
+                    • The capture sound is packaged with the app bundle for signed releases
+
                     Version 0.15.2
                     • Quick Access thumbnail drag-and-drop now exports reliably to Finder and other apps
                     • Copy and Save buttons keep responding while thumbnail drag remains available from non-button areas
