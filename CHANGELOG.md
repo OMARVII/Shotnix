@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.15.3-beta] - 2026-05-17
+
+### Added
+- **Bundled capture sound** — screenshot captures now use a bundled Shotnix sound effect instead of relying on a macOS system sound ID.
+
+### Fixed
+- **Release sound packaging** — the app bundle now includes SwiftPM resources so the capture sound ships with signed builds.
+
 ## [0.15.2-beta] - 2026-05-16
 
 ### Fixed

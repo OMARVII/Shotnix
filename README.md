@@ -17,7 +17,7 @@
 ---
 
 > [!NOTE]
-> **Shotnix is in beta (v0.15.2-beta).** Official downloads are signed and notarized with Apple Developer ID. The source code is available here for review and local builds.
+> **Shotnix is in beta (v0.15.3-beta).** Official downloads are signed and notarized with Apple Developer ID. The source code is available here for review and local builds.
 
 <p align="center">
   <img src="assets/screenshots/shotnix-annotation-editor-demo.png" width="720" alt="Shotnix annotation editor demo" />
@@ -162,4 +162,4 @@ Contributions are welcome. Open an issue first to discuss what you'd like to cha
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE). Third-party asset provenance is listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
