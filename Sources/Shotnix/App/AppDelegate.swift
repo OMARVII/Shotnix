@@ -17,6 +17,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
         historyManager = HistoryManager()
         setupStatusItem()
         registerHotkeys()
+        CaptureEngine.warmCaptureSound()
         let promptForNativeShortcuts = { [weak self] in
             NativeShortcutManager.promptIfNeeded {
                 self?.registerHotkeys()

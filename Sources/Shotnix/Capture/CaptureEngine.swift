@@ -3,6 +3,7 @@ import AVFoundation
 import QuartzCore
 import ScreenCaptureKit
 import AudioToolbox
+import os.log
 
 /// Central coordinator for all capture modes.
 @MainActor
@@ -511,7 +512,30 @@ final class CaptureEngine {
 
     private func playCaptureSound() {
         guard Settings.playSounds else { return }
-        AudioServicesPlaySystemSound(1108)
+        if let soundID = Self.bundledCaptureSoundID {
+            AudioServicesPlaySystemSound(soundID)
+        } else {
+            AudioServicesPlayAlertSound(kSystemSoundID_UserPreferredAlert)
+        }
+    }
+
+    /// Registered once and reused for the process lifetime.
+    private static let bundledCaptureSoundID: SystemSoundID? = {
+        guard let url = Bundle.module.url(forResource: "capture", withExtension: "aiff") else {
+            os_log("Bundled capture sound resource missing", type: .error)
+            return nil
+        }
+        var soundID: SystemSoundID = 0
+        let status = AudioServicesCreateSystemSoundID(url as CFURL, &soundID)
+        guard status == kAudioServicesNoError else {
+            os_log("AudioServicesCreateSystemSoundID failed with status %d", type: .error, Int32(status))
+            return nil
+        }
+        return soundID
+    }()
+
+    static func warmCaptureSound() {
+        _ = bundledCaptureSoundID
     }
 
     func captureRectToImage(_ rect: CGRect, on screen: NSScreen) async -> NSImage? {
