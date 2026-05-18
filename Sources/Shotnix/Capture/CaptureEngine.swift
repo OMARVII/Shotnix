@@ -1,5 +1,7 @@
 import AppKit
 import AVFoundation
+import CoreImage
+import CoreMedia
 import QuartzCore
 import ScreenCaptureKit
 import AudioToolbox
@@ -583,13 +585,21 @@ final class CaptureEngine {
             // calibrated ICC profile, preserving exact on-screen colors.
             // Forcing sRGB or Display P3 overrides the display calibration.
 
-            let cgImage = try await SCScreenshotManager.captureImage(contentFilter: filter, configuration: config)
-
             let logicalSize = NSSize(width: w, height: h)
+            let cgImage = try await SCScreenshotManager.captureImage(contentFilter: filter, configuration: config)
+            if Self.isEffectivelyBlack(cgImage), let streamImage = try? await captureRectStream(filter: filter, configuration: config) {
+                return Self.nsImage(from: streamImage, logicalSize: logicalSize)
+            }
+
             return Self.nsImage(from: cgImage, logicalSize: logicalSize)
         } catch {
             return fallbackCapture(rect: rect)
         }
+    }
+
+    @available(macOS 14.0, *)
+    private func captureRectStream(filter: SCContentFilter, configuration: SCStreamConfiguration) async throws -> CGImage {
+        try await SingleFrameImageCapture().capture(filter: filter, configuration: configuration)
     }
 
     private func fallbackCapture(rect: CGRect) -> NSImage? {
@@ -608,6 +618,37 @@ final class CaptureEngine {
         return image
     }
 
+    nonisolated private static func isEffectivelyBlack(_ cgImage: CGImage) -> Bool {
+        let width = min(max(cgImage.width, 1), 32)
+        let height = min(max(cgImage.height, 1), 32)
+        var pixels = [UInt8](repeating: 0, count: width * height * 4)
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        guard let context = CGContext(
+            data: &pixels,
+            width: width,
+            height: height,
+            bitsPerComponent: 8,
+            bytesPerRow: width * 4,
+            space: colorSpace,
+            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+        ) else {
+            return false
+        }
+
+        context.interpolationQuality = .none
+        context.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
+
+        for index in stride(from: 0, to: pixels.count, by: 4) {
+            let red = pixels[index]
+            let green = pixels[index + 1]
+            let blue = pixels[index + 2]
+            if max(red, green, blue) > 8 {
+                return false
+            }
+        }
+        return true
+    }
+
     // MARK: – OCR notification
 
     private func showOCRNotification(text: String) {
@@ -615,6 +656,136 @@ final class CaptureEngine {
         let message = preview.isEmpty ? "No text recognized" : "✓ Text copied to clipboard"
         ToastWindow.show(message: message)
     }
+}
+
+@available(macOS 14.0, *)
+private final class SingleFrameImageCapture: NSObject, SCStreamOutput, SCStreamDelegate {
+
+    private static let ciContext = CIContext(options: [.cacheIntermediates: false])
+
+    private let sampleQueue = DispatchQueue(label: "com.shotnix.capture.single-frame", qos: .userInitiated)
+    private let lock = NSLock()
+    private var stream: SCStream?
+    private var continuation: CheckedContinuation<CGImage, Error>?
+
+    func capture(filter: SCContentFilter, configuration: SCStreamConfiguration) async throws -> CGImage {
+        try await withTaskCancellationHandler {
+            try await withCheckedThrowingContinuation { continuation in
+                begin(filter: filter, configuration: configuration, continuation: continuation)
+            }
+        } onCancel: {
+            self.cancelCapture()
+        }
+    }
+
+    private func begin(filter: SCContentFilter, configuration: SCStreamConfiguration, continuation: CheckedContinuation<CGImage, Error>) {
+        lock.lock()
+        self.continuation = continuation
+        lock.unlock()
+
+        let stream = SCStream(filter: filter, configuration: configuration, delegate: self)
+        lock.lock()
+        self.stream = stream
+        lock.unlock()
+
+        do {
+            try stream.addStreamOutput(self, type: .screen, sampleHandlerQueue: sampleQueue)
+        } catch {
+            finish(.failure(error))
+            return
+        }
+
+        Task {
+            do {
+                try await stream.startCapture()
+            } catch {
+                finish(.failure(error))
+            }
+        }
+
+        sampleQueue.asyncAfter(deadline: .now() + 1.5) { [weak self] in
+            self?.finish(.failure(SingleFrameImageCaptureError.timeout))
+        }
+    }
+
+    func stream(_ stream: SCStream, didOutputSampleBuffer sampleBuffer: CMSampleBuffer, of outputType: SCStreamOutputType) {
+        guard outputType == .screen,
+              sampleBuffer.isValid,
+              CMSampleBufferDataIsReady(sampleBuffer),
+              Self.isCompleteFrame(sampleBuffer),
+              let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+            return
+        }
+
+        let image = CIImage(cvPixelBuffer: pixelBuffer)
+        let extent = image.extent.integral
+        guard !extent.isEmpty,
+              let cgImage = Self.ciContext.createCGImage(image, from: extent) else {
+            return
+        }
+        finish(.success(cgImage))
+    }
+
+    func stream(_ stream: SCStream, didStopWithError error: Error) {
+        finish(.failure(error))
+    }
+
+    private func finish(_ result: Result<CGImage, Error>) {
+        lock.lock()
+        guard let continuation else {
+            lock.unlock()
+            return
+        }
+        self.continuation = nil
+        let stream = self.stream
+        self.stream = nil
+        lock.unlock()
+
+        Task {
+            if let stream {
+                try? await stream.stopCapture()
+                try? stream.removeStreamOutput(self, type: .screen)
+            }
+            switch result {
+            case .success(let image):
+                continuation.resume(returning: image)
+            case .failure(let error):
+                continuation.resume(throwing: error)
+            }
+        }
+    }
+
+    private func cancelCapture() {
+        lock.lock()
+        let stream = self.stream
+        self.stream = nil
+        let continuation = self.continuation
+        self.continuation = nil
+        lock.unlock()
+
+        Task {
+            if let stream {
+                try? await stream.stopCapture()
+                try? stream.removeStreamOutput(self, type: .screen)
+            }
+            continuation?.resume(throwing: CancellationError())
+        }
+    }
+
+    private static func isCompleteFrame(_ sampleBuffer: CMSampleBuffer) -> Bool {
+        guard let attachments = CMSampleBufferGetSampleAttachmentsArray(sampleBuffer, createIfNecessary: false) as? [[SCStreamFrameInfo: Any]],
+              let rawStatus = attachments.first?[SCStreamFrameInfo.status] else {
+            return false
+        }
+        if let status = rawStatus as? SCFrameStatus { return status == .complete }
+        if let raw = rawStatus as? Int { return SCFrameStatus(rawValue: raw) == .complete }
+        if let raw = rawStatus as? NSNumber { return SCFrameStatus(rawValue: raw.intValue) == .complete }
+        return false
+    }
+}
+
+private enum SingleFrameImageCaptureError: Error {
+    case timeout
 }
 
 @MainActor
