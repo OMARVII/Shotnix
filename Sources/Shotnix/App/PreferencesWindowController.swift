@@ -359,7 +359,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.15.3"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.15.4"
     
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
@@ -384,6 +384,10 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.15.4
+                    • Quick Access thumbnails now show the full screenshot with a premium blurred backdrop
+                    • DisplayLink still screenshots now retry through a stream capture path when the still image path returns black
+
                     Version 0.15.3
                     • Screenshot captures now play a bundled Shotnix capture sound reliably
                     • The capture sound is packaged with the app bundle for signed releases
