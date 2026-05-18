@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.15.4-beta] - 2026-05-18
+
+### Changed
+- **Quick Access thumbnails** — the post-capture thumbnail now keeps a consistent card size while showing the full screenshot over a darker blurred backdrop for a more premium preview.
+
+### Fixed
+- **DisplayLink screenshots** — still captures that come back effectively black now retry through a one-frame ScreenCaptureKit stream path, matching the capture route that works on DisplayLink displays.
+
 ## [0.15.3-beta] - 2026-05-17
 
 ### Added
