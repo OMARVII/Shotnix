@@ -1,4 +1,5 @@
 import AppKit
+import CoreImage
 import QuartzCore
 
 /// Post-capture floating thumbnail with quick action buttons.
@@ -37,11 +38,6 @@ private final class QuickAccessWindow: NSWindow {
         self.historyItem = historyItem
         self.historyManager = historyManager
 
-        // Fixed premium container — every capture renders at the same size so
-        // the overlay has a consistent, CleanShot-style visual presence
-        // regardless of whether the user grabbed a 4K fullscreen, a narrow
-        // banner, or a tall sidebar. The image inside is aspect-fit (letterboxed)
-        // so the full capture is always visible against the container's dark tint.
         let thumbW: CGFloat = 240
         let thumbH: CGFloat = 150
         // Use an integer value so the controls overlay placed above it sits on an integer pixel boundary
@@ -205,16 +201,33 @@ private final class QuickAccessWindow: NSWindow {
         // read as a proper container without inserting an extra opaque subview
         // that can interfere with hit-testing on the controls overlay above.
         let thumbFrame = NSRect(x: 0, y: progressH, width: thumbW, height: thumbH)
+
+        let backdrop = PassthroughView(frame: thumbFrame)
+        backdrop.wantsLayer = true
+        backdrop.layer?.backgroundColor = ShotnixColors.overlayContainerFill.cgColor
+        if let cgImage = image.bestCGImage {
+            backdrop.layer?.contents = cgImage
+            backdrop.layer?.contentsGravity = .resizeAspectFill
+            backdrop.layer?.contentsScale = NSScreen.main?.backingScaleFactor ?? 2.0
+            if let blur = CIFilter(name: "CIGaussianBlur") {
+                blur.setValue(18, forKey: kCIInputRadiusKey)
+                backdrop.layer?.filters = [blur]
+            }
+            backdrop.layer?.opacity = 0.26
+        }
+        clipView.addSubview(backdrop)
+
+        let backdropDim = PassthroughView(frame: thumbFrame)
+        backdropDim.wantsLayer = true
+        backdropDim.layer?.backgroundColor = NSColor.black.withAlphaComponent(0.58).cgColor
+        clipView.addSubview(backdropDim)
+
         let thumb = DraggableImageView(frame: thumbFrame)
         thumb.image = image
-        thumb.imageScaling = .scaleNone
+        thumb.imageScaling = .scaleProportionallyUpOrDown
+        thumb.imageAlignment = .alignCenter
         thumb.wantsLayer = true
-        thumb.layer?.backgroundColor = ShotnixColors.overlayContainerFill.cgColor
-        // resizeAspect letterboxes the image inside the fixed container so the
-        // full capture is visible with dark bars on the short axis — matches
-        // CleanShot X. resizeAspectFill was cropping content on wide captures.
-        thumb.layer?.contentsGravity = .resizeAspect
-        thumb.layer?.contents = image.bestCGImage
+        thumb.layer?.backgroundColor = NSColor.clear.cgColor
         thumb.layer?.contentsScale = NSScreen.main?.backingScaleFactor ?? 2.0
         thumb.dragImage = image
         thumb.onDoubleClick = { [weak self] in self?.editAction() }
