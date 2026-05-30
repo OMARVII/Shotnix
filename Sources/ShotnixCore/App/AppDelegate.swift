@@ -1,17 +1,20 @@
 import AppKit
+import KeyboardShortcuts
 import ScreenCaptureKit
 
 @MainActor
-final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
+final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation, NSMenuDelegate {
 
     private var statusItem: NSStatusItem!
     private var captureEngine: CaptureEngine!
     var hotkeyManager: HotkeyManager!
     var historyManager: HistoryManager!
     private let welcomeController = WelcomeWindowController()
+    private var updateController: AppUpdateController!
     private var didRegisterHotkeys = false
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        updateController = AppUpdateController()
         captureEngine = CaptureEngine()
         hotkeyManager = HotkeyManager()
         historyManager = HistoryManager()
@@ -69,18 +72,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
 
     func buildMenu() -> NSMenu {
         let menu = NSMenu()
+        menu.delegate = self
 
         let about = NSMenuItem(title: "About Shotnix", action: #selector(openAbout), keyEquivalent: "")
         about.target = self
         menu.addItem(about)
+        menu.addItem(title: "Check for Updates…", key: "", action: #selector(checkForUpdates), icon: "arrow.triangle.2.circlepath")
         menu.addItem(.separator())
 
         menu.addItem(header: "Capture")
-        menu.addItem(title: "Capture Area",         key: "4", action: #selector(captureArea), icon: "rectangle.dashed")
-        menu.addItem(title: "Capture Window",       key: "5", action: #selector(captureWindow), icon: "macwindow")
-        menu.addItem(title: "Capture Fullscreen",   key: "6", action: #selector(captureFullscreen), icon: "rectangle.on.rectangle")
-        menu.addItem(title: "Capture Previous Area",key: "7",  action: #selector(capturePrevious), icon: "arrow.counterclockwise.rectangle")
-        menu.addItem(title: "Scrolling Capture",    key: "s",  action: #selector(captureScrolling), icon: "scroll")
+        menu.addItem(title: "Capture Area", shortcut: .shotnixCaptureArea, action: #selector(captureArea), icon: "rectangle.dashed")
+        menu.addItem(title: "Capture Window", shortcut: .shotnixCaptureWindow, action: #selector(captureWindow), icon: "macwindow")
+        menu.addItem(title: "Capture Fullscreen", shortcut: .shotnixCaptureFullscreenNative, action: #selector(captureFullscreen), icon: "rectangle.on.rectangle")
+        menu.addItem(title: "Capture Previous Area", shortcut: .shotnixCapturePreviousArea, action: #selector(capturePrevious), icon: "arrow.counterclockwise.rectangle")
+        menu.addItem(title: "Scrolling Capture", shortcut: .shotnixCaptureScrolling, action: #selector(captureScrolling), icon: "scroll")
         menu.addItem(.separator())
 
         menu.addItem(header: "Record")
@@ -91,7 +96,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
         menu.addItem(.separator())
 
         menu.addItem(header: "Tools")
-        menu.addItem(title: "Capture Text (OCR)",   key: "o",  action: #selector(captureText), icon: "text.viewfinder")
+        menu.addItem(title: "Capture Text (OCR)", shortcut: .shotnixCaptureText, action: #selector(captureText), icon: "text.viewfinder")
         menu.addItem(title: "Scan QR Code",         key: "",  action: #selector(scanQRCode), icon: "qrcode.viewfinder")
         menu.addItem(title: "Open History",         key: "",  action: #selector(openHistory), icon: "clock.arrow.circlepath")
         menu.addItem(title: "Show Editor",          key: "",  action: #selector(showEditor), icon: "pencil.and.outline")
@@ -110,6 +115,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
         menu.addItem(quit)
 
         return menu
+    }
+
+    func menuNeedsUpdate(_ menu: NSMenu) {
+        menu.refreshShotnixShortcutDisplays()
     }
 
     // MARK: – Actions
@@ -134,8 +143,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
     @objc func toggleDesktopIcons()  { DesktopIconsManager.toggle() }
     @objc func openPreferences()     { PreferencesWindowController.shared.show(tab: .general) }
     @objc func openAbout()           { PreferencesWindowController.shared.show(tab: .about) }
+    @objc func checkForUpdates(_ sender: Any?) { updateController?.checkForUpdates(sender) }
 
     @objc func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+        if menuItem.action == #selector(checkForUpdates) {
+            return updateController?.canCheckForUpdates ?? false
+        }
         if menuItem.action == #selector(stopRecording) {
             return captureEngine?.recordingActive ?? false
         }
@@ -154,6 +167,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
 // MARK: – NSMenu convenience
 
 private extension NSMenu {
+    @MainActor
     func addItem(header text: String) {
         let item = NSMenuItem(title: text, action: nil, keyEquivalent: "")
         item.attributedTitle = NSAttributedString(
@@ -164,7 +178,8 @@ private extension NSMenu {
     }
 
     @discardableResult
-    func addItem(title: String, key: String, action: Selector, icon: String? = nil) -> NSMenuItem {
+    @MainActor
+    func addItem(title: String, key: String = "", action: Selector, icon: String? = nil) -> NSMenuItem {
         let item = NSMenuItem(title: title, action: action, keyEquivalent: key)
         item.target = NSApp.delegate
         if let iconName = icon {
@@ -172,5 +187,39 @@ private extension NSMenu {
         }
         addItem(item)
         return item
+    }
+
+    @discardableResult
+    @MainActor
+    func addItem(title: String, shortcut: KeyboardShortcuts.Name, action: Selector, icon: String? = nil) -> NSMenuItem {
+        let item = addItem(title: title, key: "", action: action, icon: icon)
+        item.representedObject = shortcut
+        item.applyShotnixShortcutDisplay(for: shortcut)
+        return item
+    }
+
+    @MainActor
+    func refreshShotnixShortcutDisplays() {
+        for item in items {
+            if let shortcut = item.representedObject as? KeyboardShortcuts.Name {
+                item.applyShotnixShortcutDisplay(for: shortcut)
+            }
+            item.submenu?.refreshShotnixShortcutDisplays()
+        }
+    }
+}
+
+private extension NSMenuItem {
+    @MainActor
+    func applyShotnixShortcutDisplay(for name: KeyboardShortcuts.Name) {
+        guard let shortcut = KeyboardShortcuts.getShortcut(for: name),
+              let keyEquivalent = shortcut.nsMenuItemKeyEquivalent else {
+            self.keyEquivalent = ""
+            self.keyEquivalentModifierMask = []
+            return
+        }
+
+        self.keyEquivalent = keyEquivalent
+        self.keyEquivalentModifierMask = shortcut.modifiers.intersection([.command, .option, .control, .shift])
     }
 }

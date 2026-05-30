@@ -64,6 +64,8 @@ Visit **[shotnix.com](https://shotnix.com/)** for the latest download and projec
 
 **Configurable**
 - Tabbed settings window (General, Shortcuts, Screenshots, Recording, About)
+- Customizable global hotkeys with one-click default reset
+- Sparkle-powered in-app update checks for official builds
 - Export as PNG, JPEG, or WebP, with a JPEG quality slider
 - Auto-save location picker
 - After-capture auto-actions (auto-copy, auto-save)
@@ -115,27 +117,30 @@ This compiles a release build, assembles the app bundle, signs the binary locall
 
 ## Architecture
 
-Shotnix is a Swift Package Manager project — no `.xcodeproj`, no storyboards. Pure AppKit, built from the terminal.
+Shotnix is a Swift Package Manager project — no `.xcodeproj`, no storyboards. The executable is a tiny wrapper around a testable `ShotnixCore` library.
 
 ```
-Sources/Shotnix/
-├── App/           Application lifecycle, menu bar, preferences
-├── Capture/       Screenshot engine (ScreenCaptureKit + CGWindow fallback)
-├── Annotation/    Editor with 12 drawing tools and undo/redo
-├── History/       Persistent capture history (~Library/Application Support/)
-├── Hotkeys/       Global shortcuts via HotKey package
-├── OCR/           Text recognition via Vision framework
-├── Overlay/       Quick access thumbnail, pinned windows, toasts
-└── Utilities/     Image export, permissions, desktop icon toggle
+Sources/
+├── Shotnix/       Executable entry point
+└── ShotnixCore/
+    ├── App/           Application lifecycle, menu bar, preferences
+    ├── Capture/       Screenshot engine (ScreenCaptureKit + CGWindow fallback)
+    ├── Annotation/    Editor with 12 drawing tools and undo/redo
+    ├── History/       Persistent capture history (~Library/Application Support/)
+    ├── Hotkeys/       Customizable global shortcuts
+    ├── OCR/           Text recognition via Vision framework
+    ├── Overlay/       Quick access thumbnail, pinned windows, toasts
+    └── Utilities/     Image export, permissions, desktop icon toggle
 ```
 
 ## Dependencies
 
 | Package | Purpose |
 |---|---|
-| [HotKey](https://github.com/soffes/HotKey) | Global keyboard shortcuts |
+| [KeyboardShortcuts](https://github.com/sindresorhus/KeyboardShortcuts) | Customizable global keyboard shortcuts |
+| [Sparkle](https://sparkle-project.org/) | In-app update checks for signed releases |
 
-That's it. One dependency.
+The app still keeps dependencies intentionally narrow.
 
 ## Roadmap
 
@@ -150,11 +155,11 @@ That's it. One dependency.
 - [x] Modernized preferences UI and capture engine
 - [x] Snappy overlay animations + haptic feedback + pixel-perfect buttons
 - [x] Native macOS APIs (replaced legacy shell `Process()` calls)
-- [ ] Customizable hotkeys
+- [x] Customizable hotkeys
 - [ ] Window capture with shadow and padding
 - [ ] Delay/timer capture (3s, 5s, 10s)
-- [ ] Auto-update mechanism
-- [ ] Developer signing + notarization
+- [x] Auto-update mechanism
+- [x] Developer signing + notarization workflow
 
 ## Contributing
 

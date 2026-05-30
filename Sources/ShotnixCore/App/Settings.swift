@@ -3,7 +3,7 @@ import Foundation
 /// Central UserDefaults store for all user-configurable settings.
 enum Settings {
 
-    private static let defaults = UserDefaults.standard
+    static var defaults = UserDefaults.standard
     private static let autoSaveLocationKey = "autoSaveLocation"
 
     static var defaultAutoSaveLocation: String {

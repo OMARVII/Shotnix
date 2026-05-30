@@ -40,5 +40,9 @@
     <array>
         <string>MacOSX</string>
     </array>
+    <key>SUFeedURL</key>
+    <string>https://shotnix.com/downloads/appcast.xml</string>
+    <key>SUPublicEDKey</key>
+    <string>SET_SPARKLE_PUBLIC_ED_KEY_IN_RELEASE_BUILD</string>
 </dict>
 </plist>

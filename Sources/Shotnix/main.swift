@@ -1,0 +1,3 @@
+import ShotnixCore
+
+ShotnixApp.run()

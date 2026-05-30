@@ -9,11 +9,15 @@ final class HistoryManager: ObservableObject {
     private let storageDir: URL
     private let indexURL: URL
 
-    init() {
-        guard let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
-            fatalError("[Shotnix] Application Support directory not found")
+    init(storageDir overrideStorageDir: URL? = nil) {
+        if let overrideStorageDir {
+            storageDir = overrideStorageDir
+        } else {
+            guard let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
+                fatalError("[Shotnix] Application Support directory not found")
+            }
+            storageDir = appSupport.appendingPathComponent("Shotnix/History", isDirectory: true)
         }
-        storageDir = appSupport.appendingPathComponent("Shotnix/History", isDirectory: true)
         indexURL   = storageDir.appendingPathComponent("index.json")
         try? FileManager.default.createDirectory(at: storageDir, withIntermediateDirectories: true)
         load()

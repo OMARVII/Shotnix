@@ -1,5 +1,6 @@
 import AppKit
 import AVFoundation
+import KeyboardShortcuts
 import SwiftUI
 import ServiceManagement
 
@@ -156,45 +157,82 @@ struct GeneralSettingsView: View {
     }
 }
 struct ShortcutsSettingsView: View {
+    private var screenshotShortcuts: [ShotnixShortcut] {
+        ShotnixShortcut.allCases.filter { $0.section == .screenshots }
+    }
+
+    private var toolShortcuts: [ShotnixShortcut] {
+        ShotnixShortcut.allCases.filter { $0.section == .tools }
+    }
+
     var body: some View {
-        Form {
-            Section {
-                ShortcutRow(title: "Capture Area", key: "⌘⇧4")
-                ShortcutRow(title: "Capture Window", key: "⌘⇧5")
-                ShortcutRow(title: "Capture Fullscreen", key: "⌘⇧3 / ⌘⇧6")
-                ShortcutRow(title: "Capture Previous Area", key: "⌘⇧7")
-            } header: {
-                Text("Screenshots")
-            } footer: {
-                Text("Hotkeys are system-wide and always active while the app is running.")
-            }
-            
-            Section {
-                ShortcutRow(title: "OCR / Capture Text", key: "⌘⇧O")
-                ShortcutRow(title: "Scrolling Capture", key: "⌘⇧S")
-            } header: {
-                Text("Advanced Tools")
+        VStack(alignment: .leading, spacing: 18) {
+            ShortcutSection(title: "Screenshots", shortcuts: screenshotShortcuts)
+
+            Text("Hotkeys are system-wide and active while Shotnix is running. The ⌘⇧3 default works best after Apple's screenshot shortcut is disabled.")
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            ShortcutSection(title: "Advanced Tools", shortcuts: toolShortcuts)
+
+            HStack {
+                Button("Reset Defaults") {
+                    HotkeyManager.resetDefaults()
+                }
+                Spacer()
             }
         }
-        .formStyle(.grouped)
-        .frame(width: 500, height: 350)
+        .padding(24)
+        .frame(width: 520, height: 430, alignment: .topLeading)
     }
 }
 
-struct ShortcutRow: View {
+private struct ShortcutSection: View {
     let title: String
-    let key: String
+    let shortcuts: [ShotnixShortcut]
+
     var body: some View {
-        HStack {
+        VStack(alignment: .leading, spacing: 10) {
             Text(title)
-            Spacer()
-            Text(key)
-                .font(.system(.body, design: .monospaced))
-                .padding(.horizontal, 8)
-                .padding(.vertical, 4)
-                .background(Color(NSColor.unemphasizedSelectedContentBackgroundColor))
-                .cornerRadius(6)
+                .font(.headline)
+
+            VStack(spacing: 0) {
+                ForEach(shortcuts) { shortcut in
+                    ShortcutRecorderRow(shortcut: shortcut)
+
+                    if shortcut.id != shortcuts.last?.id {
+                        Divider()
+                            .padding(.leading, 14)
+                    }
+                }
+            }
+            .background(Color(NSColor.controlBackgroundColor))
+            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .stroke(Color(NSColor.separatorColor).opacity(0.8), lineWidth: 1)
+            )
         }
+    }
+}
+
+private struct ShortcutRecorderRow: View {
+    let shortcut: ShotnixShortcut
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Text(shortcut.title)
+                .font(.system(size: 13, weight: .medium))
+                .foregroundColor(.primary)
+                .lineLimit(1)
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            KeyboardShortcuts.Recorder("", name: shortcut.name)
+                .frame(width: 134)
+        }
+        .frame(height: 40)
+        .padding(.horizontal, 14)
     }
 }
 struct ScreenshotsSettingsView: View {
@@ -527,6 +565,11 @@ struct AboutSettingsView: View {
 
                     Button("Support") {
                         openURL("https://shotnix.com/support")
+                    }
+                    .buttonStyle(.link)
+
+                    Button("Check for Updates") {
+                        (NSApp.delegate as? AppDelegate)?.checkForUpdates(nil)
                     }
                     .buttonStyle(.link)
 

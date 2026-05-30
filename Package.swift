@@ -5,16 +5,33 @@ let package = Package(
     name: "Shotnix",
     platforms: [.macOS(.v13)],
     dependencies: [
-        .package(url: "https://github.com/soffes/HotKey", from: "0.2.0"),
+        .package(url: "https://github.com/sindresorhus/KeyboardShortcuts", from: "2.4.0"),
+        .package(url: "https://github.com/sparkle-project/Sparkle", from: "2.9.2"),
     ],
     targets: [
+        .target(
+            name: "ShotnixCore",
+            dependencies: [
+                .product(name: "KeyboardShortcuts", package: "KeyboardShortcuts"),
+                .product(name: "Sparkle", package: "Sparkle"),
+            ],
+            path: "Sources/ShotnixCore",
+            resources: [.process("Resources")]
+        ),
         .executableTarget(
             name: "Shotnix",
             dependencies: [
-                .product(name: "HotKey", package: "HotKey"),
+                "ShotnixCore",
             ],
-            path: "Sources/Shotnix",
-            resources: [.process("Resources")]
+            path: "Sources/Shotnix"
+        ),
+        .testTarget(
+            name: "ShotnixCoreTests",
+            dependencies: [
+                "ShotnixCore",
+                .product(name: "KeyboardShortcuts", package: "KeyboardShortcuts"),
+            ],
+            path: "Tests/ShotnixCoreTests"
         ),
     ]
 )

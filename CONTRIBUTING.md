@@ -26,7 +26,7 @@ No Xcode project — everything builds from the terminal via Swift Package Manag
 ## Code Style
 
 - All UI code is `@MainActor`
-- AppKit only (no SwiftUI)
+- AppKit for capture/editor surfaces; SwiftUI is used for preferences panels
 - No force unwraps (`!`) without a documented reason
 - No `// TODO` or `// HACK` — fix it or file an issue
 - Match existing patterns in the file you're editing

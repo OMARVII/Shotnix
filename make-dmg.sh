@@ -4,9 +4,6 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 APP_NAME="Shotnix"
 APP_PATH="$SCRIPT_DIR/$APP_NAME.app"
-VERSION=$(defaults read "$APP_PATH/Contents/Info.plist" CFBundleShortVersionString)
-DMG_NAME="$APP_NAME-v$VERSION-macOS"
-DMG_PATH="$SCRIPT_DIR/$DMG_NAME.dmg"
 
 if [ -f "$SCRIPT_DIR/.env.local" ]; then
     set -a
@@ -20,6 +17,11 @@ if [ ! -d "$APP_PATH" ]; then
     echo "Error: $APP_PATH not found. Run build-app.sh first."
     exit 1
 fi
+
+VERSION=$(defaults read "$APP_PATH/Contents/Info.plist" CFBundleShortVersionString)
+PUBLIC_VERSION="${SHOTNIX_PUBLIC_VERSION:-$VERSION}"
+DMG_NAME="$APP_NAME-v$PUBLIC_VERSION-macOS"
+DMG_PATH="$SCRIPT_DIR/$DMG_NAME.dmg"
 
 RW_DMG_PATH="$SCRIPT_DIR/rw.$$.$DMG_NAME.dmg"
 MOUNT_DIR="$(mktemp -d "$SCRIPT_DIR/dmg-mount.XXXXXX")"
