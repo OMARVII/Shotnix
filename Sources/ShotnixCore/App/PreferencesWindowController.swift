@@ -166,15 +166,25 @@ struct ShortcutsSettingsView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            ShortcutSection(title: "Screenshots", shortcuts: screenshotShortcuts)
+        VStack(spacing: 0) {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 18) {
+                    ShortcutSection(title: "Screenshots", shortcuts: screenshotShortcuts)
 
-            Text("Hotkeys are system-wide and active while Shotnix is running. The ⌘⇧3 default works best after Apple's screenshot shortcut is disabled.")
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
+                    Text("Hotkeys are system-wide and active while Shotnix is running. The ⌘⇧3 default works best after Apple's screenshot shortcut is disabled.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
 
-            ShortcutSection(title: "Advanced Tools", shortcuts: toolShortcuts)
+                    ShortcutSection(title: "Advanced Tools", shortcuts: toolShortcuts)
+                }
+                .padding(.horizontal, 24)
+                .padding(.top, 22)
+                .padding(.bottom, 18)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+            Divider()
 
             HStack {
                 Button("Reset Defaults") {
@@ -182,9 +192,11 @@ struct ShortcutsSettingsView: View {
                 }
                 Spacer()
             }
+            .padding(.horizontal, 24)
+            .padding(.vertical, 14)
+            .background(Color(NSColor.windowBackgroundColor))
         }
-        .padding(24)
-        .frame(width: 520, height: 430, alignment: .topLeading)
+        .frame(width: 520, height: 500, alignment: .topLeading)
     }
 }
 
@@ -425,6 +437,7 @@ struct AboutSettingsView: View {
                     Version 0.15.4
                     • Quick Access thumbnails now show the full screenshot with a premium blurred backdrop
                     • DisplayLink still screenshots now retry through a stream capture path when the still image path returns black
+                    • Shortcut preferences now scroll cleanly and keep Reset Defaults reachable
 
                     Version 0.15.3
                     • Screenshot captures now play a bundled Shotnix capture sound reliably
