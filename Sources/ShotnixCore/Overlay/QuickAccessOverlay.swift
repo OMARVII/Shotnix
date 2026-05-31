@@ -152,17 +152,23 @@ private final class QuickAccessWindow: NSWindow {
     }
 
     override func rightMouseDown(with event: NSEvent) {
-        let menu = NSMenu()
-        menu.addItem(NSMenuItem(title: "Copy", action: #selector(copyAction), keyEquivalent: "c"))
-        menu.addItem(NSMenuItem(title: "Save", action: #selector(saveAction), keyEquivalent: "s"))
-        menu.addItem(NSMenuItem(title: "Edit", action: #selector(editAction), keyEquivalent: "e"))
-        menu.addItem(NSMenuItem(title: "Pin", action: #selector(pinAction), keyEquivalent: ""))
-        menu.addItem(.separator())
-        menu.addItem(NSMenuItem(title: "Delete", action: #selector(deleteAction), keyEquivalent: ""))
-        menu.addItem(NSMenuItem(title: "Close", action: #selector(dismissAction), keyEquivalent: ""))
-        for item in menu.items { item.target = self }
         guard let view = contentView else { return }
-        NSMenu.popUpContextMenu(menu, with: event, for: view)
+        ShotnixContextMenu.show(
+            sections: [
+                ShotnixMenuSection(id: "quick.primary", title: "Capture", actions: [
+                    ShotnixMenuAction(id: "quick.copy", title: "Copy", symbolName: "doc.on.doc", shortcut: "⌘C", role: .primary) { [weak self] in self?.copyAction() },
+                    ShotnixMenuAction(id: "quick.save", title: "Save", symbolName: "square.and.arrow.down", shortcut: "⌘S") { [weak self] in self?.saveAction() },
+                    ShotnixMenuAction(id: "quick.edit", title: "Edit", symbolName: "pencil", shortcut: "⌘E") { [weak self] in self?.editAction() },
+                    ShotnixMenuAction(id: "quick.pin", title: "Pin", symbolName: "pin") { [weak self] in self?.pinAction() },
+                ]),
+                ShotnixMenuSection(id: "quick.manage", title: "Manage", actions: [
+                    ShotnixMenuAction(id: "quick.delete", title: "Delete", symbolName: "trash", role: .destructive) { [weak self] in self?.deleteAction() },
+                    ShotnixMenuAction(id: "quick.close", title: "Close", symbolName: "xmark") { [weak self] in self?.dismissAction() },
+                ])
+            ],
+            at: event,
+            in: view
+        )
     }
 
     private func buildContent(thumbW: CGFloat, thumbH: CGFloat, progressH: CGFloat, totalH: CGFloat) {

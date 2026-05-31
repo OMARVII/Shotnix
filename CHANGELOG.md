@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.16.0-beta] - 2026-05-31
+
+### Added
+- **Command Center** — the menu bar dropdown is now an editor-inspired Shotnix command surface with compact groups for health, capture, recording, tools, utilities, and settings.
+- **Health status** — Shotnix now surfaces Screen Recording permission, Apple shortcut conflicts, Sparkle updates, save folder writability, shortcut configuration, and current version/build from the menu bar.
+
+### Changed
+- **Modern context menus** — Quick Access, History, and pinned screenshot right-click menus now use the shared premium HUD style with icons, grouping, keyboard navigation, and destructive action styling.
+- **Modern preferences** — Preferences now use the same compact HUD visual system, with centered tab navigation, consistent dark surfaces, and custom selector controls.
+- **Command Center polish** — Capture Area is visually promoted, Health is more compact, settings actions stay pinned in the footer, and recording setup exposes a clear Cancel Recording action.
+
+### Fixed
+- **Recording menu state** — Stop Recording now becomes available during active recordings, while recording setup can be cancelled directly from Command Center.
+
 ## [0.15.4-beta] - 2026-05-18
 
 ### Changed

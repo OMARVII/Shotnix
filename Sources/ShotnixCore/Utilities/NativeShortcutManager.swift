@@ -181,7 +181,7 @@ enum NativeShortcutManager {
     }
 
     @MainActor
-    private static func openKeyboardSettings() {
+    static func openKeyboardSettings() {
         if let url = URL(string: "x-apple.systempreferences:com.apple.Keyboard-Settings.extension") {
             NSWorkspace.shared.open(url)
         }

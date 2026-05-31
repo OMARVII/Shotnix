@@ -10,55 +10,52 @@ enum PreferencesTab: Int, CaseIterable {
     case screenshots = 2
     case recording = 3
     case about = 4
+
+    var title: String {
+        switch self {
+        case .general: return "General"
+        case .shortcuts: return "Shortcuts"
+        case .screenshots: return "Screenshots"
+        case .recording: return "Recording"
+        case .about: return "About"
+        }
+    }
+
+    var symbolName: String {
+        switch self {
+        case .general: return "gearshape"
+        case .shortcuts: return "keyboard"
+        case .screenshots: return "camera"
+        case .recording: return "record.circle"
+        case .about: return "info.circle"
+        }
+    }
+}
+
+@MainActor
+private final class PreferencesSelectionModel: ObservableObject {
+    @Published var selectedTab: PreferencesTab = .general
 }
 
 @MainActor
 final class PreferencesWindowController: NSWindowController, NSWindowDelegate {
     
     static let shared = PreferencesWindowController()
+
+    private let selection = PreferencesSelectionModel()
     
     private init() {
-        let tabViewController = NSTabViewController()
-        tabViewController.tabStyle = .toolbar
-        
-        let generalVC = NSHostingController(rootView: GeneralSettingsView())
-        generalVC.title = "General"
-        let generalItem = NSTabViewItem(viewController: generalVC)
-        generalItem.label = "General"
-        generalItem.image = NSImage(systemSymbolName: "gearshape", accessibilityDescription: nil)
-        tabViewController.addTabViewItem(generalItem)
-        
-        let shortcutsVC = NSHostingController(rootView: ShortcutsSettingsView())
-        shortcutsVC.title = "Shortcuts"
-        let shortcutsItem = NSTabViewItem(viewController: shortcutsVC)
-        shortcutsItem.label = "Shortcuts"
-        shortcutsItem.image = NSImage(systemSymbolName: "keyboard", accessibilityDescription: nil)
-        tabViewController.addTabViewItem(shortcutsItem)
-        
-        let screenshotsVC = NSHostingController(rootView: ScreenshotsSettingsView())
-        screenshotsVC.title = "Screenshots"
-        let screenshotsItem = NSTabViewItem(viewController: screenshotsVC)
-        screenshotsItem.label = "Screenshots"
-        screenshotsItem.image = NSImage(systemSymbolName: "camera", accessibilityDescription: nil)
-        tabViewController.addTabViewItem(screenshotsItem)
-
-        let recordingVC = NSHostingController(rootView: RecordingSettingsView())
-        recordingVC.title = "Recording"
-        let recordingItem = NSTabViewItem(viewController: recordingVC)
-        recordingItem.label = "Recording"
-        recordingItem.image = NSImage(systemSymbolName: "record.circle", accessibilityDescription: nil)
-        tabViewController.addTabViewItem(recordingItem)
-        
-        let aboutVC = NSHostingController(rootView: AboutSettingsView())
-        aboutVC.title = "About"
-        let aboutItem = NSTabViewItem(viewController: aboutVC)
-        aboutItem.label = "About"
-        aboutItem.image = NSImage(systemSymbolName: "info.circle", accessibilityDescription: nil)
-        tabViewController.addTabViewItem(aboutItem)
-        
-        let window = NSWindow(contentViewController: tabViewController)
-        window.title = "Preferences"
-        window.styleMask = [.titled, .closable]
+        let hostingController = NSHostingController(rootView: PreferencesRootView(selection: selection))
+        let window = NSWindow(contentViewController: hostingController)
+        window.title = "Shotnix Preferences"
+        window.styleMask = [.titled, .closable, .resizable, .fullSizeContentView]
+        window.titleVisibility = .hidden
+        window.titlebarAppearsTransparent = true
+        window.backgroundColor = ShotnixColors.editorStageTop
+        window.isOpaque = false
+        window.isMovableByWindowBackground = true
+        window.setContentSize(NSSize(width: 560, height: 620))
+        window.minSize = NSSize(width: 520, height: 520)
         window.center()
         window.isReleasedWhenClosed = false
         
@@ -73,11 +70,8 @@ final class PreferencesWindowController: NSWindowController, NSWindowDelegate {
     func show(tab: PreferencesTab = .general) {
         NSApp.setActivationPolicy(.accessory)
         NSApp.activate(ignoringOtherApps: true)
-        
-        if let tabVC = window?.contentViewController as? NSTabViewController {
-            tabVC.selectedTabViewItemIndex = tab.rawValue
-        }
-        
+
+        selection.selectedTab = tab
         window?.makeKeyAndOrderFront(nil)
     }
     
@@ -87,6 +81,326 @@ final class PreferencesWindowController: NSWindowController, NSWindowDelegate {
 }
 
 // MARK: - SwiftUI Views
+
+private struct PreferencesRootView: View {
+    @ObservedObject var selection: PreferencesSelectionModel
+
+    var body: some View {
+        ZStack {
+            ShotnixHUDBackground()
+                .ignoresSafeArea()
+
+            VStack(spacing: 0) {
+                PreferencesTabStrip(selectedTab: $selection.selectedTab)
+
+                Divider()
+                    .overlay(Color.white.opacity(0.08))
+
+                Group {
+                    switch selection.selectedTab {
+                    case .general:
+                        GeneralSettingsView()
+                    case .shortcuts:
+                        ShortcutsSettingsView()
+                    case .screenshots:
+                        ScreenshotsSettingsView()
+                    case .recording:
+                        RecordingSettingsView()
+                    case .about:
+                        AboutSettingsView()
+                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+        }
+        .frame(minWidth: 520, idealWidth: 560, minHeight: 520, idealHeight: 620)
+        .preferredColorScheme(.dark)
+    }
+}
+
+private struct PreferencesTabStrip: View {
+    @Binding var selectedTab: PreferencesTab
+
+    var body: some View {
+        GeometryReader { proxy in
+            HStack(spacing: 8) {
+                ForEach(PreferencesTab.allCases, id: \.self) { tab in
+                    PreferencesTabButton(
+                        tab: tab,
+                        isSelected: selectedTab == tab,
+                        action: { selectedTab = tab }
+                    )
+                }
+            }
+            .frame(width: min(402, max(320, proxy.size.width - 118)))
+            .position(x: proxy.size.width / 2, y: 46)
+        }
+        .frame(height: 86)
+        .background(Color.black.opacity(0.12))
+    }
+}
+
+private struct PreferencesTabButton: View {
+    let tab: PreferencesTab
+    let isSelected: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            VStack(spacing: 5) {
+                Image(systemName: tab.symbolName)
+                    .font(.system(size: 18, weight: .semibold))
+                    .frame(height: 20)
+
+                Text(tab.title)
+                    .font(.system(size: 11, weight: .semibold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+            }
+            .foregroundStyle(isSelected ? Color.accentColor : Color.white.opacity(0.62))
+            .frame(width: 74, height: 56)
+            .background(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(isSelected ? Color.white.opacity(0.08) : Color.clear)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .stroke(isSelected ? Color.accentColor.opacity(0.35) : Color.clear, lineWidth: 1)
+            )
+            .contentShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+        }
+        .buttonStyle(.plain)
+        .help(tab.title)
+    }
+}
+
+private struct PreferencesPane<Content: View>: View {
+    let content: Content
+
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 18) {
+                content
+            }
+            .padding(.horizontal, 22)
+            .padding(.vertical, 22)
+            .frame(maxWidth: 560, alignment: .topLeading)
+            .frame(maxWidth: .infinity, alignment: .top)
+        }
+    }
+}
+
+private struct PreferencesPaneWithFooter<Content: View, Footer: View>: View {
+    let content: Content
+    let footer: Footer
+
+    init(
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder footer: () -> Footer
+    ) {
+        self.content = content()
+        self.footer = footer()
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            PreferencesPane {
+                content
+            }
+
+            Divider()
+                .overlay(Color.white.opacity(0.08))
+
+            footer
+                .padding(.horizontal, 22)
+                .padding(.vertical, 14)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color.black.opacity(0.18))
+        }
+    }
+}
+
+private struct PreferenceSection<Content: View>: View {
+    let title: String
+    let content: Content
+
+    init(_ title: String, @ViewBuilder content: () -> Content) {
+        self.title = title
+        self.content = content()
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text(title)
+                .font(.system(size: 13, weight: .bold))
+                .foregroundStyle(Color.white.opacity(0.86))
+
+            VStack(spacing: 0) {
+                content
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color.white.opacity(0.055), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .stroke(Color.white.opacity(0.08), lineWidth: 1)
+            )
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+private struct PreferenceRow<Trailing: View>: View {
+    let title: String
+    let detail: String?
+    let trailing: Trailing
+
+    init(_ title: String, detail: String? = nil, @ViewBuilder trailing: () -> Trailing) {
+        self.title = title
+        self.detail = detail
+        self.trailing = trailing()
+    }
+
+    var body: some View {
+        HStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(Color.white.opacity(0.88))
+                    .lineLimit(1)
+
+                if let detail {
+                    Text(detail)
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(Color.white.opacity(0.45))
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+                }
+            }
+
+            Spacer(minLength: 12)
+
+            trailing
+                .controlSize(.small)
+        }
+        .frame(maxWidth: .infinity, minHeight: detail == nil ? 44 : 50, alignment: .leading)
+        .padding(.horizontal, 12)
+    }
+}
+
+private struct PreferenceDivider: View {
+    var body: some View {
+        Divider()
+            .overlay(Color.white.opacity(0.08))
+            .padding(.leading, 12)
+    }
+}
+
+private struct PreferenceFootnote: View {
+    let text: String
+
+    var body: some View {
+        Text(text)
+            .font(.system(size: 11, weight: .medium))
+            .foregroundStyle(Color.white.opacity(0.45))
+            .fixedSize(horizontal: false, vertical: true)
+            .padding(.horizontal, 2)
+    }
+}
+
+private struct PreferenceOption<Value: Hashable>: Identifiable {
+    let value: Value
+    let title: String
+
+    var id: Value { value }
+}
+
+private struct PreferenceMenuSelector<Value: Hashable>: View {
+    @Binding var selection: Value
+    let options: [PreferenceOption<Value>]
+    var width: CGFloat = 156
+    var isEnabled = true
+
+    private var selectedTitle: String {
+        options.first { $0.value == selection }?.title ?? options.first?.title ?? ""
+    }
+
+    var body: some View {
+        Menu {
+            ForEach(options) { option in
+                Button {
+                    selection = option.value
+                } label: {
+                    Text(option.title)
+                }
+            }
+        } label: {
+            HStack(spacing: 8) {
+                Text(selectedTitle)
+                    .font(.system(size: 12, weight: .semibold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.85)
+
+                Spacer(minLength: 6)
+
+                Image(systemName: "chevron.up.chevron.down")
+                    .font(.system(size: 10, weight: .bold))
+                    .foregroundStyle(Color.white.opacity(isEnabled ? 0.44 : 0.22))
+            }
+            .foregroundStyle(Color.white.opacity(isEnabled ? 0.86 : 0.34))
+            .padding(.horizontal, 10)
+            .frame(width: width, height: 28)
+            .background(
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .fill(Color.white.opacity(isEnabled ? 0.08 : 0.045))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .stroke(Color.white.opacity(isEnabled ? 0.10 : 0.05), lineWidth: 1)
+            )
+        }
+        .buttonStyle(.plain)
+        .disabled(!isEnabled)
+    }
+}
+
+private struct PreferenceSegmentedSelector<Value: Hashable>: View {
+    @Binding var selection: Value
+    let options: [PreferenceOption<Value>]
+    var width: CGFloat = 156
+
+    var body: some View {
+        HStack(spacing: 2) {
+            ForEach(options) { option in
+                Button {
+                    selection = option.value
+                } label: {
+                    Text(option.title)
+                        .font(.system(size: 12, weight: .semibold))
+                        .lineLimit(1)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 24)
+                        .foregroundStyle(option.value == selection ? Color.white : Color.white.opacity(0.58))
+                        .background(
+                            RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                .fill(option.value == selection ? Color.accentColor.opacity(0.95) : Color.clear)
+                        )
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(2)
+        .frame(width: width, height: 28)
+        .background(Color.white.opacity(0.07), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .stroke(Color.white.opacity(0.10), lineWidth: 1)
+        )
+    }
+}
 
 struct GeneralSettingsView: View {
     @AppStorage("playSounds") var playSounds = true
@@ -100,60 +414,92 @@ struct GeneralSettingsView: View {
     @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
 
     var body: some View {
-        Form {
-            Section {
-                Toggle("Launch Shotnix at login", isOn: $launchAtLogin)
-                    .onChange(of: launchAtLogin) { newValue in
-                        do {
-                            if newValue { try SMAppService.mainApp.register() }
-                            else { try SMAppService.mainApp.unregister() }
-                        } catch {
-                            launchAtLogin.toggle()
+        PreferencesPane {
+            PreferenceSection("Startup") {
+                PreferenceRow("Launch Shotnix at login") {
+                    Toggle("", isOn: $launchAtLogin)
+                        .labelsHidden()
+                        .toggleStyle(.switch)
+                        .onChange(of: launchAtLogin) { newValue in
+                            do {
+                                if newValue { try SMAppService.mainApp.register() }
+                                else { try SMAppService.mainApp.unregister() }
+                            } catch {
+                                launchAtLogin.toggle()
+                            }
                         }
-                    }
-            } header: {
-                Text("Startup")
-            }
-            
-            Section {
-                Toggle("Play capture sound", isOn: $playSounds)
-            } header: {
-                Text("Sounds")
-            }
-            
-            Section {
-                Toggle("Show menu bar icon", isOn: $showMenuBarIcon)
-                Toggle("Hide desktop icons while capturing", isOn: $hideDesktopIcons)
-            } header: {
-                Text("Menu Bar")
-            }
-            
-            Section {
-                Toggle("Show Quick Access Overlay", isOn: $showOverlay)
-                Toggle("Save automatically", isOn: $saveAutomatically)
-                
-                Picker("Overlay position", selection: $overlayOnLeft) {
-                    Text("Left").tag(true)
-                    Text("Right").tag(false)
                 }
-                
-                Picker("Auto-dismiss overlay", selection: $overlayTimeout) {
-                    Text("3 seconds").tag(3.0)
-                    Text("6 seconds").tag(6.0)
-                    Text("10 seconds").tag(10.0)
-                    Text("30 seconds").tag(30.0)
-                    Text("Never").tag(-1.0)
-                }
-            } header: {
-                Text("After Capture")
-            } footer: {
-                Text("Choose what happens immediately after taking a screenshot.")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
             }
+
+            PreferenceSection("Sounds") {
+                PreferenceRow("Play capture sound") {
+                    Toggle("", isOn: $playSounds)
+                        .labelsHidden()
+                        .toggleStyle(.switch)
+                }
+            }
+
+            PreferenceSection("Menu Bar") {
+                PreferenceRow("Show menu bar icon") {
+                    Toggle("", isOn: $showMenuBarIcon)
+                        .labelsHidden()
+                        .toggleStyle(.switch)
+                }
+
+                PreferenceDivider()
+
+                PreferenceRow("Hide desktop icons while capturing") {
+                    Toggle("", isOn: $hideDesktopIcons)
+                        .labelsHidden()
+                        .toggleStyle(.switch)
+                }
+            }
+
+            PreferenceSection("After Capture") {
+                PreferenceRow("Show Quick Access Overlay") {
+                    Toggle("", isOn: $showOverlay)
+                        .labelsHidden()
+                        .toggleStyle(.switch)
+                }
+
+                PreferenceDivider()
+
+                PreferenceRow("Save automatically") {
+                    Toggle("", isOn: $saveAutomatically)
+                        .labelsHidden()
+                        .toggleStyle(.switch)
+                }
+
+                PreferenceDivider()
+
+                PreferenceRow("Overlay position") {
+                    PreferenceSegmentedSelector(
+                        selection: $overlayOnLeft,
+                        options: [
+                            PreferenceOption(value: true, title: "Left"),
+                            PreferenceOption(value: false, title: "Right")
+                        ]
+                    )
+                }
+
+                PreferenceDivider()
+
+                PreferenceRow("Auto-dismiss overlay") {
+                    PreferenceMenuSelector(
+                        selection: $overlayTimeout,
+                        options: [
+                            PreferenceOption(value: 3.0, title: "3 seconds"),
+                            PreferenceOption(value: 6.0, title: "6 seconds"),
+                            PreferenceOption(value: 10.0, title: "10 seconds"),
+                            PreferenceOption(value: 30.0, title: "30 seconds"),
+                            PreferenceOption(value: -1.0, title: "Never")
+                        ]
+                    )
+                }
+            }
+
+            PreferenceFootnote(text: "Choose what happens immediately after taking a screenshot.")
         }
-        .formStyle(.grouped)
-        .frame(width: 500, height: 500)
     }
 }
 struct ShortcutsSettingsView: View {
@@ -166,37 +512,22 @@ struct ShortcutsSettingsView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 18) {
-                    ShortcutSection(title: "Screenshots", shortcuts: screenshotShortcuts)
+        PreferencesPaneWithFooter {
+            ShortcutSection(title: "Screenshots", shortcuts: screenshotShortcuts)
 
-                    Text("Hotkeys are system-wide and active while Shotnix is running. The ⌘⇧3 default works best after Apple's screenshot shortcut is disabled.")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
+            PreferenceFootnote(text: "Hotkeys are system-wide and active while Shotnix is running. The ⌘⇧3 default works best after Apple's screenshot shortcut is disabled.")
 
-                    ShortcutSection(title: "Advanced Tools", shortcuts: toolShortcuts)
-                }
-                .padding(.horizontal, 24)
-                .padding(.top, 22)
-                .padding(.bottom, 18)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-
-            Divider()
-
+            ShortcutSection(title: "Advanced Tools", shortcuts: toolShortcuts)
+        } footer: {
             HStack {
                 Button("Reset Defaults") {
                     HotkeyManager.resetDefaults()
                 }
+                .buttonStyle(.bordered)
+
                 Spacer()
             }
-            .padding(.horizontal, 24)
-            .padding(.vertical, 14)
-            .background(Color(NSColor.windowBackgroundColor))
         }
-        .frame(width: 520, height: 500, alignment: .topLeading)
     }
 }
 
@@ -207,7 +538,8 @@ private struct ShortcutSection: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(title)
-                .font(.headline)
+                .font(.system(size: 13, weight: .bold))
+                .foregroundStyle(Color.white.opacity(0.86))
 
             VStack(spacing: 0) {
                 ForEach(shortcuts) { shortcut in
@@ -216,16 +548,19 @@ private struct ShortcutSection: View {
                     if shortcut.id != shortcuts.last?.id {
                         Divider()
                             .padding(.leading, 14)
+                            .overlay(Color.white.opacity(0.08))
                     }
                 }
             }
-            .background(Color(NSColor.controlBackgroundColor))
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color.white.opacity(0.055))
             .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .stroke(Color(NSColor.separatorColor).opacity(0.8), lineWidth: 1)
+                    .stroke(Color.white.opacity(0.08), lineWidth: 1)
             )
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -236,14 +571,14 @@ private struct ShortcutRecorderRow: View {
         HStack(spacing: 12) {
             Text(shortcut.title)
                 .font(.system(size: 13, weight: .medium))
-                .foregroundColor(.primary)
+                .foregroundStyle(Color.white.opacity(0.88))
                 .lineLimit(1)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             KeyboardShortcuts.Recorder("", name: shortcut.name)
                 .frame(width: 134)
         }
-        .frame(height: 40)
+        .frame(height: 42)
         .padding(.horizontal, 14)
     }
 }
@@ -258,54 +593,55 @@ struct ScreenshotsSettingsView: View {
     }
 
     var body: some View {
-        Form {
-            Section {
-                Picker("Format", selection: $screenshotFormat) {
-                    Text("PNG").tag("png")
-                    Text("JPEG").tag("jpeg")
-                    Text("WebP").tag("webp")
+        PreferencesPane {
+            PreferenceSection("Export Format") {
+                PreferenceRow("Format") {
+                    PreferenceMenuSelector(
+                        selection: $screenshotFormat,
+                        options: [
+                            PreferenceOption(value: "png", title: "PNG"),
+                            PreferenceOption(value: "jpeg", title: "JPEG"),
+                            PreferenceOption(value: "webp", title: "WebP")
+                        ]
+                    )
                 }
-                
+
                 if screenshotFormat == "jpeg" {
-                    HStack {
-                        Text("JPEG Quality")
-                        Spacer()
-                        Slider(value: $jpegQuality, in: 0.1...1.0)
-                            .frame(width: 150)
-                        Text("\(Int(jpegQuality * 100))%")
-                            .font(.system(.body, design: .monospaced))
-                            .frame(width: 45, alignment: .trailing)
-                            .foregroundColor(.secondary)
+                    PreferenceDivider()
+
+                    PreferenceRow("JPEG Quality") {
+                        HStack(spacing: 8) {
+                            Slider(value: $jpegQuality, in: 0.1...1.0)
+                                .frame(width: 140)
+
+                            Text("\(Int(jpegQuality * 100))%")
+                                .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                                .foregroundStyle(Color.white.opacity(0.56))
+                                .frame(width: 38, alignment: .trailing)
+                        }
                     }
                 }
-            } header: {
-                Text("Export Format")
             }
 
-            Section {
-                Toggle("Copy screenshots to clipboard", isOn: $copyToClipboard)
-            } header: {
-                Text("Clipboard")
-            } footer: {
-                Text("New screenshots are copied automatically. Turn this off if you only want to use the overlay or history actions.")
+            PreferenceSection("Clipboard") {
+                PreferenceRow("Copy screenshots to clipboard") {
+                    Toggle("", isOn: $copyToClipboard)
+                        .labelsHidden()
+                        .toggleStyle(.switch)
+                }
             }
 
-            Section {
-                HStack {
-                    Text(displayLocation)
-                        .foregroundColor(.secondary)
-                        .lineLimit(1)
-                        .truncationMode(.middle)
-                    
-                    Spacer()
-                    
+            PreferenceFootnote(text: "New screenshots are copied automatically. Turn this off if you only want to use the overlay or history actions.")
+
+            PreferenceSection("Save Location") {
+                PreferenceRow("Auto-save folder", detail: displayLocation) {
                     Button("Choose...") {
                         let panel = NSOpenPanel()
                         panel.canChooseFiles = false
                         panel.canChooseDirectories = true
                         panel.canCreateDirectories = true
                         panel.directoryURL = URL(fileURLWithPath: displayLocation)
-                        
+
                         if panel.runModal() == .OK, let url = panel.url {
                             if Settings.setAutoSaveLocation(url.path) {
                                 autoSaveLocation = Settings.autoSaveLocation
@@ -314,15 +650,12 @@ struct ScreenshotsSettingsView: View {
                             }
                         }
                     }
+                    .buttonStyle(.bordered)
                 }
-            } header: {
-                Text("Save Location")
-            } footer: {
-                Text("Directory where screenshots are saved if Auto-Save is enabled.")
             }
+
+            PreferenceFootnote(text: "Directory where screenshots are saved if Auto-Save is enabled.")
         }
-        .formStyle(.grouped)
-        .frame(width: 500, height: 430)
     }
 }
 
@@ -362,78 +695,124 @@ struct RecordingSettingsView: View {
     private var microphones: [MicrophoneOption] { MicrophoneDeviceProvider.options }
 
     var body: some View {
-        Form {
-            Section {
-                Picker("Quality", selection: $quality) {
-                    Text("Balanced").tag("balanced")
-                    Text("High").tag("high")
-                    Text("Max").tag("max")
+        PreferencesPane {
+            PreferenceSection("Video") {
+                PreferenceRow("Quality") {
+                    PreferenceMenuSelector(
+                        selection: $quality,
+                        options: [
+                            PreferenceOption(value: "balanced", title: "Balanced"),
+                            PreferenceOption(value: "high", title: "High"),
+                            PreferenceOption(value: "max", title: "Max")
+                        ]
+                    )
                 }
 
-                Picker("Frame rate", selection: $fps) {
-                    Text("30 fps").tag(30)
-                    Text("60 fps").tag(60)
+                PreferenceDivider()
+
+                PreferenceRow("Frame rate") {
+                    PreferenceSegmentedSelector(
+                        selection: $fps,
+                        options: [
+                            PreferenceOption(value: 30, title: "30 fps"),
+                            PreferenceOption(value: 60, title: "60 fps")
+                        ]
+                    )
                 }
 
-                Toggle("Show cursor", isOn: $showsCursor)
-            } header: {
-                Text("Video")
-            } footer: {
-                Text("High is the default. Max keeps more detail for demos, but creates larger files.")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                PreferenceDivider()
+
+                PreferenceRow("Show cursor") {
+                    Toggle("", isOn: $showsCursor)
+                        .labelsHidden()
+                        .toggleStyle(.switch)
+                }
             }
 
-            Section {
-                Toggle("Record system audio", isOn: $systemAudio)
-                Toggle("Record microphone", isOn: $microphone)
+            PreferenceFootnote(text: "High is the default. Max keeps more detail for demos, but creates larger files.")
 
-                Picker("Microphone", selection: $microphoneDeviceID) {
-                    Text("System Default").tag("")
-                    ForEach(microphones) { device in
-                        Text(device.name).tag(device.id)
-                    }
+            PreferenceSection("Audio") {
+                PreferenceRow("Record system audio") {
+                    Toggle("", isOn: $systemAudio)
+                        .labelsHidden()
+                        .toggleStyle(.switch)
                 }
-                .disabled(!microphone)
-            } header: {
-                Text("Audio")
-            } footer: {
-                Text("Microphone recording requires macOS microphone permission. System audio excludes Shotnix sounds to avoid feedback.")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+
+                PreferenceDivider()
+
+                PreferenceRow("Record microphone") {
+                    Toggle("", isOn: $microphone)
+                        .labelsHidden()
+                        .toggleStyle(.switch)
+                }
+
+                PreferenceDivider()
+
+                PreferenceRow("Microphone") {
+                    PreferenceMenuSelector(
+                        selection: $microphoneDeviceID,
+                        options: [PreferenceOption(value: "", title: "System Default")]
+                            + microphones.map { PreferenceOption(value: $0.id, title: $0.name) },
+                        width: 190,
+                        isEnabled: microphone
+                    )
+                }
             }
+
+            PreferenceFootnote(text: "Microphone recording requires macOS microphone permission. System audio excludes Shotnix sounds to avoid feedback.")
         }
-        .formStyle(.grouped)
-        .frame(width: 500, height: 430)
     }
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.15.4"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.16.0"
     
     var body: some View {
-        VStack(alignment: .center, spacing: 16) {
-            Image(nsImage: NSImage(named: "NSApplicationIcon") ?? NSImage(systemSymbolName: "camera.viewfinder", accessibilityDescription: nil)!)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 80, height: 80)
-            
-            VStack(spacing: 4) {
-                Text("Shotnix")
-                    .font(.system(size: 22, weight: .bold))
-                Text("Version \(version)")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+        PreferencesPane {
+            HStack(spacing: 14) {
+                Image(nsImage: NSImage(named: "NSApplicationIcon") ?? NSImage(systemSymbolName: "camera.viewfinder", accessibilityDescription: nil)!)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 58, height: 58)
+                    .clipShape(RoundedRectangle(cornerRadius: 13, style: .continuous))
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Shotnix")
+                        .font(.system(size: 22, weight: .bold))
+                        .foregroundStyle(Color.white.opacity(0.94))
+                    Text("Version \(version)")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(Color.white.opacity(0.48))
+                }
+
+                Spacer(minLength: 12)
+
+                Button("Check for Updates") {
+                    (NSApp.delegate as? AppDelegate)?.checkForUpdates(nil)
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.small)
             }
-            
-            Divider()
+            .padding(14)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color.white.opacity(0.055), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .stroke(Color.white.opacity(0.08), lineWidth: 1)
+            )
             
             VStack(alignment: .leading, spacing: 8) {
                 Text("What's New")
-                    .font(.headline)
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundStyle(Color.white.opacity(0.86))
                 
                 ScrollView {
                     Text("""
+                    Version 0.16.0
+                    • New Command Center replaces the plain menu bar dropdown
+                    • Health status now surfaces permissions, shortcuts, updates, save folder, and version
+                    • Quick Access, History, and pinned screenshot menus now share the premium HUD style
+
                     Version 0.15.4
                     • Quick Access thumbnails now show the full screenshot with a premium blurred backdrop
                     • DisplayLink still screenshots now retry through a stream capture path when the still image path returns black
@@ -549,66 +928,88 @@ struct AboutSettingsView: View {
                     • Full settings window
                     """)
                     .font(.system(size: 12))
+                    .foregroundStyle(Color.white.opacity(0.72))
                     .padding(10)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .background(Color(NSColor.textBackgroundColor))
-                .border(Color(NSColor.gridColor))
-                .frame(height: 160)
+                .background(Color.white.opacity(0.055), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .stroke(Color.white.opacity(0.08), lineWidth: 1)
+                )
+                .frame(height: 220)
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             
-            VStack(spacing: 4) {
+            VStack(spacing: 8) {
                 Text("© 2026 Shotnix Contributors")
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(Color.white.opacity(0.42))
                 Text("MIT License — Free and open source")
-                    .font(.system(size: 10))
-                    .foregroundColor(Color(NSColor.tertiaryLabelColor))
-                
-                HStack(spacing: 12) {
-                    Button("Website") {
-                        openURL("https://shotnix.com/")
-                    }
-                    .buttonStyle(.link)
+                    .font(.system(size: 10, weight: .medium))
+                    .foregroundStyle(Color.white.opacity(0.36))
 
-                    Button("Privacy Policy") {
-                        openURL("https://shotnix.com/privacy")
-                    }
-                    .buttonStyle(.link)
+                VStack(spacing: 8) {
+                    HStack(spacing: 8) {
+                        AboutLinkButton(title: "Website") {
+                            openURL("https://shotnix.com/")
+                        }
 
-                    Button("Support") {
-                        openURL("https://shotnix.com/support")
-                    }
-                    .buttonStyle(.link)
+                        AboutLinkButton(title: "Support") {
+                            openURL("https://shotnix.com/support")
+                        }
 
-                    Button("Check for Updates") {
-                        (NSApp.delegate as? AppDelegate)?.checkForUpdates(nil)
+                        AboutLinkButton(title: "GitHub") {
+                            openURL("https://github.com/OMARVII/Shotnix")
+                        }
                     }
-                    .buttonStyle(.link)
 
-                    Button("GitHub") {
-                        openURL("https://github.com/OMARVII/Shotnix")
-                    }
-                    .buttonStyle(.link)
+                    HStack(spacing: 8) {
+                        AboutLinkButton(title: "Privacy Policy") {
+                            openURL("https://shotnix.com/privacy")
+                        }
 
-                    Button("Report Issue") {
-                        openURL("https://github.com/OMARVII/Shotnix/issues/new")
+                        AboutLinkButton(title: "Report Issue") {
+                            openURL("https://github.com/OMARVII/Shotnix/issues/new")
+                        }
                     }
-                    .buttonStyle(.link)
                 }
-                .font(.caption)
+                .frame(maxWidth: 378)
+                .padding(.top, 4)
             }
-            .padding(.top, 8)
-            
-            Spacer()
+            .padding(.top, 2)
+            .frame(maxWidth: .infinity, alignment: .center)
         }
-        .padding(30)
-        .frame(width: 500, height: 500)
     }
 
     private func openURL(_ string: String) {
         if let url = URL(string: string) {
             NSWorkspace.shared.open(url)
         }
+    }
+}
+
+private struct AboutLinkButton: View {
+    let title: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Text(title)
+                .font(.system(size: 12, weight: .semibold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.9)
+                .frame(maxWidth: .infinity)
+                .frame(height: 26)
+        }
+        .buttonStyle(.plain)
+        .foregroundStyle(Color.white.opacity(0.82))
+        .background(Color.white.opacity(0.075), in: RoundedRectangle(cornerRadius: 7, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 7, style: .continuous)
+                .stroke(Color.white.opacity(0.08), lineWidth: 1)
+        )
+        .contentShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
+        .help(title)
     }
 }

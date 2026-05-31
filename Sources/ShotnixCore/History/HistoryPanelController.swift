@@ -501,15 +501,21 @@ final class HistoryCollectionItem: NSCollectionViewItem {
 
     override func rightMouseDown(with event: NSEvent) {
         guard historyItem != nil else { return }
-        let menu = NSMenu()
-        menu.addItem(NSMenuItem(title: "Copy", action: #selector(copyImage), keyEquivalent: ""))
-        menu.addItem(NSMenuItem(title: "Edit", action: #selector(editImage), keyEquivalent: ""))
-        menu.addItem(NSMenuItem(title: "Save As\u{2026}", action: #selector(saveImage), keyEquivalent: ""))
-        menu.addItem(NSMenuItem(title: "Pin to Screen", action: #selector(pinImage), keyEquivalent: ""))
-        menu.addItem(.separator())
-        menu.addItem(NSMenuItem(title: "Delete", action: #selector(deleteItem), keyEquivalent: ""))
-        for menuItem in menu.items { menuItem.target = self }
-        NSMenu.popUpContextMenu(menu, with: event, for: view)
+        ShotnixContextMenu.show(
+            sections: [
+                ShotnixMenuSection(id: "history.capture", title: "Capture", actions: [
+                    ShotnixMenuAction(id: "history.copy", title: "Copy", symbolName: "doc.on.doc", role: .primary) { [weak self] in self?.copyImage() },
+                    ShotnixMenuAction(id: "history.edit", title: "Edit", symbolName: "pencil") { [weak self] in self?.editImage() },
+                    ShotnixMenuAction(id: "history.save", title: "Save As", symbolName: "square.and.arrow.down") { [weak self] in self?.saveImage() },
+                    ShotnixMenuAction(id: "history.pin", title: "Pin to Screen", symbolName: "pin") { [weak self] in self?.pinImage() },
+                ]),
+                ShotnixMenuSection(id: "history.manage", title: "Manage", actions: [
+                    ShotnixMenuAction(id: "history.delete", title: "Delete", symbolName: "trash", role: .destructive) { [weak self] in self?.deleteItem() },
+                ])
+            ],
+            at: event,
+            in: view
+        )
     }
 
     // MARK: Actions

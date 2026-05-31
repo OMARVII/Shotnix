@@ -127,22 +127,22 @@ final class PinnedWindow: NSWindow {
     // MARK: – Right-click menu
 
     override func rightMouseDown(with event: NSEvent) {
-        let menu = NSMenu()
-        let items: [(String, Selector)] = [
-            ("Copy",            #selector(copyPinnedImage)),
-            ("Save As…",        #selector(savePinnedImage)),
-            ("Edit",            #selector(editPinnedImage)),
-            ("Close Pin",       #selector(closeTapped)),
-            ("Close All Pins",  #selector(closeAllPins)),
-        ]
-        for (title, sel) in items {
-            let item = NSMenuItem(title: title, action: sel, keyEquivalent: "")
-            item.target = self
-            menu.addItem(item)
-            if title == "Edit" { menu.addItem(.separator()) }
-        }
         guard let view = contentView else { return }
-        NSMenu.popUpContextMenu(menu, with: event, for: view)
+        ShotnixContextMenu.show(
+            sections: [
+                ShotnixMenuSection(id: "pin.capture", title: "Pinned Screenshot", actions: [
+                    ShotnixMenuAction(id: "pin.copy", title: "Copy", symbolName: "doc.on.doc", role: .primary) { [weak self] in self?.copyPinnedImage() },
+                    ShotnixMenuAction(id: "pin.save", title: "Save As", symbolName: "square.and.arrow.down") { [weak self] in self?.savePinnedImage() },
+                    ShotnixMenuAction(id: "pin.edit", title: "Edit", symbolName: "pencil") { [weak self] in self?.editPinnedImage() },
+                ]),
+                ShotnixMenuSection(id: "pin.manage", title: "Manage", actions: [
+                    ShotnixMenuAction(id: "pin.close", title: "Close Pin", symbolName: "xmark") { [weak self] in self?.closeTapped() },
+                    ShotnixMenuAction(id: "pin.close-all", title: "Close All Pins", symbolName: "rectangle.stack.badge.minus", role: .destructive) { [weak self] in self?.closeAllPins() },
+                ])
+            ],
+            at: event,
+            in: view
+        )
     }
 
     @objc private func copyPinnedImage() {

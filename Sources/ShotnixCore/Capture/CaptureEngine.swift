@@ -18,13 +18,16 @@ final class CaptureEngine {
     private var recordingControlsWindow: RecordingControlsWindow?
     private var recordingScreenChooserWindow: RecordingScreenChooserWindow?
     private var recordingWindowChooserWindow: RecordingWindowChooserWindow?
+    private var recordingSelectionActive = false
     private let recordingEngine = RecordingEngine()
 
     var recordingActive: Bool { recordingEngine.active }
+    var recordingStopEnabled: Bool { recordingEngine.active || recordingSetupActive }
+    var recordingStopTitle: String { recordingEngine.active ? "Stop Recording" : "Cancel Recording" }
     var recordingActionsEnabled: Bool { !recordingEngine.active && !recordingSetupActive }
 
     private var recordingSetupActive: Bool {
-        areaSelectionWindow != nil || recordingControlsWindow != nil || recordingScreenChooserWindow != nil || recordingWindowChooserWindow != nil
+        recordingSelectionActive || recordingControlsWindow != nil || recordingScreenChooserWindow != nil || recordingWindowChooserWindow != nil
     }
 
     private func hideDesktopIconsForCaptureIfNeeded() async -> Bool {
@@ -159,8 +162,10 @@ final class CaptureEngine {
         }
         guard canBeginRecordingSetup() else { return }
 
+        recordingSelectionActive = true
         areaSelectionWindow = AreaSelectionWindow(mode: .area) { [weak self] rect, screen in
             guard let self else { return }
+            self.recordingSelectionActive = false
             self.areaSelectionWindow = nil
             guard let rect else { return }
             self.lastCaptureRect = rect
@@ -240,7 +245,7 @@ final class CaptureEngine {
             ToastWindow.show(message: "Recording already in progress")
             return false
         }
-        guard !recordingSetupActive else {
+        guard !recordingSetupActive, areaSelectionWindow == nil else {
             ToastWindow.show(message: "Finish or cancel the current recording setup")
             return false
         }
@@ -389,11 +394,42 @@ final class CaptureEngine {
     }
 
     func stopRecording() {
-        guard recordingEngine.active else {
-            ToastWindow.show(message: "No recording in progress")
+        if recordingEngine.active {
+            recordingEngine.stopRecording()
             return
         }
-        recordingEngine.stopRecording()
+
+        if recordingSetupActive {
+            cancelRecordingSetup()
+            ToastWindow.show(message: "Recording canceled")
+            return
+        }
+
+        ToastWindow.show(message: "No recording in progress")
+    }
+
+    private func cancelRecordingSetup() {
+        if recordingSelectionActive {
+            recordingSelectionActive = false
+            let selectionWindow = areaSelectionWindow
+            areaSelectionWindow = nil
+            selectionWindow?.cancel()
+        }
+
+        if let controlsWindow = recordingControlsWindow {
+            recordingControlsWindow = nil
+            controlsWindow.closeControls()
+        }
+
+        if let chooserWindow = recordingScreenChooserWindow {
+            recordingScreenChooserWindow = nil
+            chooserWindow.closeChooser()
+        }
+
+        if let chooserWindow = recordingWindowChooserWindow {
+            recordingWindowChooserWindow = nil
+            chooserWindow.closeChooser()
+        }
     }
 
     // MARK: – Previous Area
@@ -970,6 +1006,10 @@ private final class RecordingWindowChooserWindow: NSWindow {
             }
             return event
         }
+    }
+
+    func closeChooser() {
+        closeChooser(notify: true)
     }
 
     private func closeChooser(notify: Bool = true) {
