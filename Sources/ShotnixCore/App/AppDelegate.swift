@@ -17,8 +17,30 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         updateController = AppUpdateController()
         captureEngine = CaptureEngine()
+        captureEngine.recordingFinishedHandler = { url in
+            Settings.lastRecordingPath = url.path
+            let shouldAutoOpen = Settings.openVideoEditorAfterRecording
+            let openEditor = {
+                DispatchQueue.main.async {
+                    guard FileManager.default.fileExists(atPath: url.path) else { return }
+                    VideoDemoPostRecordingPanel.dismissActive()
+                    VideoDemoEditorWindowController.open(videoURL: url)
+                }
+            }
+            VideoDemoPostRecordingPanel.show(
+                videoURL: url,
+                autoOpen: false,
+                openHandler: openEditor
+            )
+            if shouldAutoOpen {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) {
+                    openEditor()
+                }
+            }
+        }
         hotkeyManager = HotkeyManager()
         historyManager = HistoryManager()
+        setupMainMenu()
         setupStatusItem()
         registerHotkeys()
         CaptureEngine.warmCaptureSound()
@@ -60,6 +82,48 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     // MARK: – Status bar
 
+    private func setupMainMenu() {
+        let mainMenu = NSMenu(title: "Shotnix")
+
+        let appMenuItem = NSMenuItem()
+        let appMenu = NSMenu(title: "Shotnix")
+        let preferencesItem = NSMenuItem(title: "Preferences...", action: #selector(openPreferences), keyEquivalent: ",")
+        preferencesItem.target = self
+        appMenu.addItem(preferencesItem)
+        appMenu.addItem(NSMenuItem.separator())
+        appMenu.addItem(NSMenuItem(title: "Quit Shotnix", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+        appMenuItem.submenu = appMenu
+        mainMenu.addItem(appMenuItem)
+
+        let timelineMenuItem = NSMenuItem()
+        let timelineMenu = NSMenu(title: "Timeline")
+        timelineMenu.addItem(menuItem("Split at Playhead", action: #selector(timelineSplit(_:)), key: "s", modifiers: []))
+        timelineMenu.addItem(menuItem("Delete Selection", action: #selector(timelineDeleteSelection(_:)), key: "\u{8}", modifiers: []))
+        timelineMenu.addItem(NSMenuItem.separator())
+        timelineMenu.addItem(menuItem("Set In to Playhead", action: #selector(timelineTrimIn(_:)), key: "i", modifiers: []))
+        timelineMenu.addItem(menuItem("Set Out to Playhead", action: #selector(timelineTrimOut(_:)), key: "o", modifiers: []))
+        timelineMenu.addItem(menuItem("Mute Clip", action: #selector(timelineMuteClip(_:)), key: "m", modifiers: []))
+        timelineMenu.addItem(NSMenuItem.separator())
+        timelineMenu.addItem(menuItem("Undo Timeline Edit", action: #selector(timelineUndo(_:)), key: "z", modifiers: [.command]))
+        timelineMenu.addItem(menuItem("Redo Timeline Edit", action: #selector(timelineRedo(_:)), key: "Z", modifiers: [.command, .shift]))
+        timelineMenuItem.submenu = timelineMenu
+        mainMenu.addItem(timelineMenuItem)
+
+        NSApp.mainMenu = mainMenu
+    }
+
+    private func menuItem(
+        _ title: String,
+        action: Selector,
+        key: String,
+        modifiers: NSEvent.ModifierFlags
+    ) -> NSMenuItem {
+        let item = NSMenuItem(title: title, action: action, keyEquivalent: key)
+        item.target = self
+        item.keyEquivalentModifierMask = modifiers
+        return item
+    }
+
     private func setupStatusItem() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         guard let button = statusItem.button else { return }
@@ -87,6 +151,36 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func captureText()         { Task { await captureEngine.startOCRCapture() } }
     @objc func scanQRCode()          { Task { await captureEngine.startQRCodeCapture() } }
     @objc func showEditor()          { AnnotationWindowController.bringOpenEditorsToFront() }
+    @objc func showVideoEditor() {
+        if VideoDemoEditorWindowController.hasOpenEditors {
+            VideoDemoEditorWindowController.bringOpenEditorsToFront()
+        } else if let url = Settings.resolvedLastRecordingURL {
+            Settings.lastRecordingPath = url.path
+            VideoDemoEditorWindowController.open(videoURL: url)
+        } else {
+            openVideoEditor()
+        }
+    }
+    @objc func editLastRecording() {
+        guard let url = Settings.resolvedLastRecordingURL else {
+            openVideoEditor()
+            return
+        }
+        Settings.lastRecordingPath = url.path
+        VideoDemoEditorWindowController.open(videoURL: url)
+    }
+    @objc func openVideoEditor() {
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+        panel.canChooseFiles = true
+        panel.allowedContentTypes = [.mpeg4Movie, .quickTimeMovie, .movie]
+        panel.directoryURL = URL(fileURLWithPath: Settings.autoSaveLocation, isDirectory: true)
+
+        guard panel.runModal() == .OK, let url = panel.url else { return }
+        Settings.lastRecordingPath = url.path
+        VideoDemoEditorWindowController.open(videoURL: url)
+    }
     @objc func annotateLastScreenshot() {
         guard let last = historyManager.items.first else { return }
         AnnotationWindowController.open(image: last.fullImage, historyItem: last, historyManager: historyManager)
@@ -97,6 +191,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func openShortcutsPreferences() { PreferencesWindowController.shared.show(tab: .shortcuts) }
     @objc func openAbout()           { PreferencesWindowController.shared.show(tab: .about) }
     @objc func checkForUpdates(_ sender: Any?) { updateController?.checkForUpdates(sender) }
+    @objc func timelineSplit(_ sender: Any?) { VideoDemoEditorWindowController.splitActiveEditor() }
+    @objc func timelineDeleteSelection(_ sender: Any?) { VideoDemoEditorWindowController.deleteActiveSelection() }
+    @objc func timelineTrimIn(_ sender: Any?) { VideoDemoEditorWindowController.trimActiveInToPlayhead() }
+    @objc func timelineTrimOut(_ sender: Any?) { VideoDemoEditorWindowController.trimActiveOutToPlayhead() }
+    @objc func timelineMuteClip(_ sender: Any?) { VideoDemoEditorWindowController.muteActiveClip() }
+    @objc func timelineUndo(_ sender: Any?) { VideoDemoEditorWindowController.undoActiveTimelineEdit() }
+    @objc func timelineRedo(_ sender: Any?) { VideoDemoEditorWindowController.redoActiveTimelineEdit() }
 
     @objc private func toggleCommandCenter(_ sender: Any?) {
         if menuPresenter.isShown {
@@ -137,11 +238,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             ShotnixMenuSection(id: "tools", title: "Tools", actions: [
                 action(id: "tools.ocr", title: "Capture Text", symbol: "text.viewfinder", shortcut: .shotnixCaptureText) { [weak self] in self?.captureText() },
                 action(id: "tools.qr", title: "Scan QR Code", symbol: "qrcode.viewfinder") { [weak self] in self?.scanQRCode() },
+                action(id: "tools.video-editor", title: "Open Video Editor", symbol: "film.stack", role: .primary) { [weak self] in self?.openVideoEditor() },
+                action(id: "tools.last-recording", title: "Edit Last Recording", symbol: "play.rectangle.on.rectangle") { [weak self] in self?.editLastRecording() },
                 action(id: "tools.annotate-last", title: "Annotate Last Screenshot", symbol: "pencil.tip.crop.circle", isEnabled: !(historyManager?.items.isEmpty ?? true)) { [weak self] in self?.annotateLastScreenshot() },
             ]),
             ShotnixMenuSection(id: "utility", title: "Utility", actions: [
                 action(id: "utility.history", title: "Open History", symbol: "clock.arrow.circlepath") { [weak self] in self?.openHistory() },
                 action(id: "utility.editor", title: "Show Editor", symbol: "pencil.and.outline", isEnabled: AnnotationWindowController.hasOpenEditors) { [weak self] in self?.showEditor() },
+                action(id: "utility.video-editor", title: "Show Video Editor", symbol: "film") { [weak self] in self?.showVideoEditor() },
                 action(id: "utility.desktop-icons", title: DesktopIconsManager.desktopIconsVisible ? "Hide Desktop Icons" : "Show Desktop Icons", symbol: DesktopIconsManager.desktopIconsVisible ? "eye.slash" : "eye") { [weak self] in self?.toggleDesktopIcons() },
             ]),
             ShotnixMenuSection(id: "settings", title: "Settings", actions: [

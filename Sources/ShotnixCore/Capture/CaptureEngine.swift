@@ -7,6 +7,15 @@ import ScreenCaptureKit
 import AudioToolbox
 import os.log
 
+private enum CapturePerformance {
+    private static let log = OSLog(subsystem: "com.shotnix.app", category: "CapturePerformance")
+
+    static func mark(_ label: String, since start: CFAbsoluteTime) {
+        let elapsedMS = (CFAbsoluteTimeGetCurrent() - start) * 1000
+        os_log("%{public}@ took %.1f ms", log: log, type: .debug, label, elapsedMS)
+    }
+}
+
 /// Central coordinator for all capture modes.
 @MainActor
 final class CaptureEngine {
@@ -25,6 +34,10 @@ final class CaptureEngine {
     var recordingStopEnabled: Bool { recordingEngine.active || recordingSetupActive }
     var recordingStopTitle: String { recordingEngine.active ? "Stop Recording" : "Cancel Recording" }
     var recordingActionsEnabled: Bool { !recordingEngine.active && !recordingSetupActive }
+    var recordingFinishedHandler: ((URL) -> Void)? {
+        get { recordingEngine.recordingFinishedHandler }
+        set { recordingEngine.recordingFinishedHandler = newValue }
+    }
 
     private var recordingSetupActive: Bool {
         recordingSelectionActive || recordingControlsWindow != nil || recordingScreenChooserWindow != nil || recordingWindowChooserWindow != nil
@@ -175,6 +188,7 @@ final class CaptureEngine {
     }
 
     func startWindowRecording() async {
+        let started = CFAbsoluteTimeGetCurrent()
         guard PermissionsManager.hasScreenRecordingPermission else {
             PermissionsManager.showPermissionDeniedAlert(); return
         }
@@ -206,6 +220,7 @@ final class CaptureEngine {
             )
             recordingWindowChooserWindow = chooser
             chooser.show()
+            CapturePerformance.mark("Record Window picker", since: started)
         } catch {
             ToastWindow.show(message: "Could not list windows. Check permissions.")
             print("[Shotnix] Window picker failed: \(error)")
@@ -370,6 +385,7 @@ final class CaptureEngine {
     }
 
     private func showRecordingControls(rect: CGRect, on screen: NSScreen, target: RecordingTargetKind, selectedWindow: SCWindow? = nil) {
+        let started = CFAbsoluteTimeGetCurrent()
         recordingControlsWindow?.closeControls()
         let window = RecordingControlsWindow(
             rect: rect,
@@ -391,6 +407,7 @@ final class CaptureEngine {
         )
         recordingControlsWindow = window
         window.show()
+        CapturePerformance.mark("Recording controls", since: started)
     }
 
     func stopRecording() {
@@ -1534,6 +1551,7 @@ private final class RecordingControlsWindow: NSWindow {
     private var microphoneMonitorSession: AVCaptureSession?
     private var microphoneMonitorOutput: AVCaptureAudioDataOutput?
     private var microphoneMonitorDelegate: MicrophoneLevelMonitor?
+    private var microphoneMonitorStartupTask: Task<Void, Never>?
 
     init(rect: CGRect, screen: NSScreen, target: RecordingTargetKind, selectedWindow: SCWindow?, startHandler: @escaping (CGRect, NSScreen, SCWindow?) -> Void, closeHandler: @escaping () -> Void) {
         self.captureRect = rect
@@ -1593,6 +1611,8 @@ private final class RecordingControlsWindow: NSWindow {
             context.timingFunction = CAMediaTimingFunction(name: .easeOut)
             animator().alphaValue = 1
         }
+
+        scheduleDeferredMicrophoneMonitor()
     }
 
     private func buildContent() {
@@ -1702,7 +1722,7 @@ private final class RecordingControlsWindow: NSWindow {
         selectItem(in: qualityPopup, representedObject: Settings.recordingQuality)
         selectItem(in: fpsPopup, representedObject: String(Settings.recordingFPS))
         reloadMicrophones()
-        updateMicrophoneVisibility()
+        updateMicrophoneVisibility(startMonitor: false)
     }
 
     private func reloadMicrophones() {
@@ -1719,16 +1739,30 @@ private final class RecordingControlsWindow: NSWindow {
         }
     }
 
-    private func updateMicrophoneVisibility() {
+    private func updateMicrophoneVisibility(startMonitor: Bool = true) {
         microphoneContainer.isHidden = !Settings.recordingMicrophone
         microphoneLevelMeter.isHidden = !Settings.recordingMicrophone
         if Settings.recordingMicrophone {
-            startMicrophoneMonitorIfNeeded()
+            if startMonitor {
+                startMicrophoneMonitorIfNeeded()
+            }
         } else {
+            microphoneMonitorStartupTask?.cancel()
+            microphoneMonitorStartupTask = nil
             stopMicrophoneMonitor()
             microphoneLevelMeter.setLevel(0)
         }
         resizeForMicrophoneState()
+    }
+
+    private func scheduleDeferredMicrophoneMonitor() {
+        guard Settings.recordingMicrophone else { return }
+        microphoneMonitorStartupTask?.cancel()
+        microphoneMonitorStartupTask = Task { @MainActor [weak self] in
+            try? await Task.sleep(nanoseconds: 180_000_000)
+            guard let self, !Task.isCancelled, !self.didClose, Settings.recordingMicrophone else { return }
+            self.startMicrophoneMonitorIfNeeded()
+        }
     }
 
     private func startMicrophoneMonitorIfNeeded() {
@@ -1920,6 +1954,8 @@ private final class RecordingControlsWindow: NSWindow {
     private func closePanel() {
         guard !didClose else { return }
         didClose = true
+        microphoneMonitorStartupTask?.cancel()
+        microphoneMonitorStartupTask = nil
         stopMicrophoneMonitor()
         if let keyMonitor {
             NSEvent.removeMonitor(keyMonitor)
@@ -1998,7 +2034,15 @@ private enum RecordingControlsError: Error {
 }
 
 private enum RecordingMicrophoneDeviceProvider {
+    private static var cachedOptions: [RecordingMicrophoneOption]?
+    private static var cachedAt: CFAbsoluteTime = 0
+
     static var options: [RecordingMicrophoneOption] {
+        let now = CFAbsoluteTimeGetCurrent()
+        if let cachedOptions, now - cachedAt < 5 {
+            return cachedOptions
+        }
+
         let deviceTypes: [AVCaptureDevice.DeviceType]
         if #available(macOS 14.0, *) {
             deviceTypes = [.microphone, .externalUnknown]
@@ -2006,10 +2050,13 @@ private enum RecordingMicrophoneDeviceProvider {
             deviceTypes = [.builtInMicrophone, .externalUnknown]
         }
 
-        return AVCaptureDevice.DiscoverySession(deviceTypes: deviceTypes, mediaType: .audio, position: .unspecified)
+        let options = AVCaptureDevice.DiscoverySession(deviceTypes: deviceTypes, mediaType: .audio, position: .unspecified)
             .devices
             .sorted { $0.localizedName.localizedCaseInsensitiveCompare($1.localizedName) == .orderedAscending }
             .map { RecordingMicrophoneOption(id: $0.uniqueID, name: $0.localizedName) }
+        cachedOptions = options
+        cachedAt = now
+        return options
     }
 
     static func device(for deviceID: String) -> AVCaptureDevice? {

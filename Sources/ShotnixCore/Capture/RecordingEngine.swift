@@ -29,7 +29,10 @@ final class RecordingEngine: NSObject {
     private var finishTimeoutWorkItem: DispatchWorkItem?
     private var hud: RecordingHUDWindow?
     private var configuration = RecordingConfiguration.current
+    private var metadataRecorder: VideoDemoRecordingMetadataRecorder?
+    private var pendingRecordingMetadata: VideoDemoRecordingMetadata?
 
+    var recordingFinishedHandler: ((URL) -> Void)?
     var active: Bool { isRecording || isFinishing }
 
     func startRecording(rect: CGRect, on screen: NSScreen) async {
@@ -81,10 +84,19 @@ final class RecordingEngine: NSObject {
             microphoneInput = prepared.microphoneInput
             outputURL = prepared.url
             self.configuration = configuration
+            let metadataRecorder = VideoDemoRecordingMetadataRecorder(
+                videoURL: prepared.url,
+                captureRect: prepared.captureRect,
+                sourcePixelSize: CGSize(width: prepared.pixelWidth, height: prepared.pixelHeight),
+                fps: configuration.fps,
+                nativeCursorVisible: configuration.showsCursor
+            )
+            self.metadataRecorder = metadataRecorder
             resetTimingState()
             isFinishing = false
             isRecording = true
             recordingStartedAt = CACurrentMediaTime()
+            metadataRecorder.start()
 
             if configuration.recordsMicrophone {
                 try startMicrophoneCapture(deviceID: configuration.microphoneDeviceID)
@@ -169,7 +181,10 @@ final class RecordingEngine: NSObject {
         videoInput: AVAssetWriterInput,
         systemAudioInput: AVAssetWriterInput?,
         microphoneInput: AVAssetWriterInput?,
-        url: URL
+        url: URL,
+        pixelWidth: Int,
+        pixelHeight: Int,
+        captureRect: CGRect
     ) {
         let preparedSource = try await prepareCaptureSource(source, configuration: configuration, excludingWindowNumbers: excludingWindowNumbers)
 
@@ -213,7 +228,18 @@ final class RecordingEngine: NSObject {
 
         guard writer.startWriting() else { throw writer.error ?? RecordingError.cannotStartWriter }
 
-        return (stream, output, writer, videoInput, systemAudioInput, microphoneInput, url)
+        return (
+            stream,
+            output,
+            writer,
+            videoInput,
+            systemAudioInput,
+            microphoneInput,
+            url,
+            preparedSource.pixelWidth,
+            preparedSource.pixelHeight,
+            preparedSource.captureRect
+        )
     }
 
     private func prepareCaptureSource(
@@ -314,7 +340,13 @@ final class RecordingEngine: NSObject {
         let streamConfig = Self.streamConfiguration(width: pixelWidth, height: pixelHeight, configuration: configuration)
         streamConfig.sourceRect = sourceRect
 
-        return PreparedCaptureSource(filter: filter, streamConfig: streamConfig, pixelWidth: pixelWidth, pixelHeight: pixelHeight)
+        return PreparedCaptureSource(
+            filter: filter,
+            streamConfig: streamConfig,
+            pixelWidth: pixelWidth,
+            pixelHeight: pixelHeight,
+            captureRect: rect
+        )
     }
 
     private static func streamConfiguration(width: Int, height: Int, configuration: RecordingConfiguration) -> SCStreamConfiguration {
@@ -428,12 +460,17 @@ final class RecordingEngine: NSObject {
                 DispatchQueue.main.async {
                     guard let self, self.finishSessionID == sessionID else { return }
                     self.cancelFinishTimeout()
+                    let recordingMetadata = self.pendingRecordingMetadata
                     self.cleanup()
                     if let error {
                         ToastWindow.show(message: "Recording stopped unexpectedly.")
                         print("[Shotnix] Recording stream error: \(error)")
                     } else if writerStatus == .completed, writerError == nil {
+                        if let recordingMetadata {
+                            VideoDemoSidecarStore.save(recordingMetadata, for: url)
+                        }
                         ToastWindow.show(message: Self.savedRecordingMessage(for: url), duration: 3.0)
+                        self.recordingFinishedHandler?(url)
                     } else {
                         ToastWindow.show(message: "Could not save recording.")
                         if let writerError { print("[Shotnix] Recording finish failed: \(writerError)") }
@@ -444,6 +481,9 @@ final class RecordingEngine: NSObject {
     }
 
     private func beginFinishing() {
+        let elapsed = recordingStartedAt > 0 ? CACurrentMediaTime() - recordingStartedAt : 0
+        pendingRecordingMetadata = metadataRecorder?.finish(duration: elapsed)
+        metadataRecorder = nil
         isRecording = false
         isFinishing = true
         hud?.closeHUD()
@@ -536,6 +576,11 @@ final class RecordingEngine: NSObject {
         systemAudioInput = nil
         microphoneInput = nil
         outputURL = nil
+        if let metadataRecorder {
+            _ = metadataRecorder.finish(duration: 0)
+        }
+        metadataRecorder = nil
+        pendingRecordingMetadata = nil
         resetTimingState()
         recordingStartedAt = 0
         isRecording = false
@@ -744,6 +789,7 @@ final class RecordingEngine: NSObject {
         let streamConfig: SCStreamConfiguration
         let pixelWidth: Int
         let pixelHeight: Int
+        let captureRect: CGRect
     }
 
     private enum RecordingError: Error {

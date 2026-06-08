@@ -193,4 +193,77 @@ enum Settings {
         get { defaults.string(forKey: "recordingMicrophoneDeviceID") ?? "" }
         set { defaults.set(newValue, forKey: "recordingMicrophoneDeviceID") }
     }
+
+    static var openVideoEditorAfterRecording: Bool {
+        get {
+            if defaults.object(forKey: "openVideoEditorAfterRecording") == nil { return true }
+            return defaults.bool(forKey: "openVideoEditorAfterRecording")
+        }
+        set { defaults.set(newValue, forKey: "openVideoEditorAfterRecording") }
+    }
+
+    static var lastRecordingPath: String {
+        get { defaults.string(forKey: "lastRecordingPath") ?? "" }
+        set {
+            if newValue.isEmpty {
+                defaults.removeObject(forKey: "lastRecordingPath")
+            } else {
+                defaults.set(newValue, forKey: "lastRecordingPath")
+            }
+        }
+    }
+
+    static var lastRecordingURL: URL? {
+        let path = lastRecordingPath
+        guard !path.isEmpty, FileManager.default.fileExists(atPath: path) else { return nil }
+        return URL(fileURLWithPath: path)
+    }
+
+    static var latestRecordingURL: URL? {
+        let directories = Array(Set([
+            autoSaveLocation,
+            defaultAutoSaveLocation,
+        ]))
+
+        return directories
+            .compactMap { latestRecordingURL(in: URL(fileURLWithPath: $0, isDirectory: true)) }
+            .max { lhs, rhs in
+                modificationDate(for: lhs) < modificationDate(for: rhs)
+            }
+    }
+
+    static var resolvedLastRecordingURL: URL? {
+        if let lastRecordingURL {
+            return lastRecordingURL
+        }
+        guard let latestRecordingURL else { return nil }
+        lastRecordingPath = latestRecordingURL.path
+        return latestRecordingURL
+    }
+
+    private static func latestRecordingURL(in directory: URL) -> URL? {
+        guard let urls = try? FileManager.default.contentsOfDirectory(
+            at: directory,
+            includingPropertiesForKeys: [.contentModificationDateKey, .isRegularFileKey],
+            options: [.skipsHiddenFiles]
+        ) else {
+            return nil
+        }
+
+        return urls
+            .filter { url in
+                url.pathExtension.lowercased() == "mp4" &&
+                url.lastPathComponent.hasPrefix("Shotnix ")
+            }
+            .filter { url in
+                (try? url.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile) == true
+            }
+            .max { lhs, rhs in
+                modificationDate(for: lhs) < modificationDate(for: rhs)
+            }
+    }
+
+    private static func modificationDate(for url: URL) -> Date {
+        (try? url.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate) ?? .distantPast
+    }
 }

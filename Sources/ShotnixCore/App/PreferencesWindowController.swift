@@ -691,6 +691,7 @@ struct RecordingSettingsView: View {
     @AppStorage("recordingSystemAudio") var systemAudio = false
     @AppStorage("recordingMicrophone") var microphone = false
     @AppStorage("recordingMicrophoneDeviceID") var microphoneDeviceID = ""
+    @AppStorage("openVideoEditorAfterRecording") var openVideoEditorAfterRecording = true
 
     private var microphones: [MicrophoneOption] { MicrophoneDeviceProvider.options }
 
@@ -724,6 +725,14 @@ struct RecordingSettingsView: View {
 
                 PreferenceRow("Show cursor") {
                     Toggle("", isOn: $showsCursor)
+                        .labelsHidden()
+                        .toggleStyle(.switch)
+                }
+
+                PreferenceDivider()
+
+                PreferenceRow("Open editor after recording") {
+                    Toggle("", isOn: $openVideoEditorAfterRecording)
                         .labelsHidden()
                         .toggleStyle(.switch)
                 }
@@ -765,7 +774,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.16.0"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.17.3"
     
     var body: some View {
         PreferencesPane {
@@ -808,6 +817,25 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.17.3
+                    • Premium effects: text labels, arrows, highlights, blur boxes, and exported callout layers
+                    • Auto zoom presets, effect lane markers, smoother cursor interpolation, and social export polish
+
+                    Version 0.17.2
+                    • Per-segment speed controls: 0.5x, 1x, 1.5x, and 2x
+                    • Clip mute plus fade-in/fade-out controls while preserving recorded audio tracks
+
+                    Version 0.17.1
+                    • Proper clip timeline with split at playhead, delete, ripple delete, undo/redo, and selected clip trim
+                    • Export now stitches multi-segment compositions with cuts, speed, audio, cursor, and zoom mapping
+
+                    Version 0.17.0
+                    • Video Demo Editor foundation with preview stage, frame presets, backgrounds, trim, and MP4 export
+                    • Video timeline now supports split, delete, ripple, selected clip trim, and stitched MP4 export
+                    • Timeline UI now uses a ruler, video/audio track, zoom lane, trim handles, and full-height playhead
+                    • Recordings can open directly into the video editor
+                    • Command Center can open a video file or reopen the last recording
+
                     Version 0.16.0
                     • New Command Center replaces the plain menu bar dropdown
                     • Health status now surfaces permissions, shortcuts, updates, save folder, and version
