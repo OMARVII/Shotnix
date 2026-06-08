@@ -28,7 +28,7 @@ final class AnnotationWindowController: NSWindowController {
     static func bringOpenEditorsToFront() {
         guard hasOpenEditors else { return }
         NSApp.unhide(nil)
-        NSApp.setActivationPolicy(.accessory)
+        ShotnixEditorActivation.sync()
         NSApp.activate(ignoringOtherApps: true)
         for controller in openControllers {
             controller.bringEditorToFront()
@@ -38,7 +38,7 @@ final class AnnotationWindowController: NSWindowController {
     static func open(image: NSImage, historyItem: HistoryItem? = nil, historyManager: HistoryManager? = nil) {
         let controller = AnnotationWindowController(image: image, historyItem: historyItem, historyManager: historyManager)
         openControllers.append(controller)
-        NSApp.setActivationPolicy(.accessory)
+        ShotnixEditorActivation.sync()
         NSApp.activate(ignoringOtherApps: true)
         controller.showWindow(nil)
         if let win = controller.window {
@@ -189,7 +189,7 @@ final class AnnotationWindowController: NSWindowController {
     private func bringEditorToFront() {
         guard let window else { return }
         NSApp.unhide(nil)
-        NSApp.setActivationPolicy(.accessory)
+        ShotnixEditorActivation.sync()
         NSApp.activate(ignoringOtherApps: true)
         showWindow(nil)
         window.level = .floating
@@ -281,9 +281,7 @@ extension AnnotationWindowController: NSWindowDelegate {
 
     func windowWillClose(_ notification: Notification) {
         AnnotationWindowController.openControllers.removeAll { $0 === self }
-        if AnnotationWindowController.openControllers.isEmpty {
-            NSApp.restoreBackgroundOnlyActivationPolicyIfNeeded(excluding: notification.object as? NSWindow)
-        }
+        ShotnixEditorActivation.sync()
     }
 }
 

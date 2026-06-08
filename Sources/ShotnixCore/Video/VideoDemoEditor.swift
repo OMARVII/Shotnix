@@ -277,8 +277,12 @@ struct VideoDemoProject: Codable, Equatable, Identifiable {
     var enlargeCursor: Bool
     var showClickRipple: Bool
     var smoothCursor: Bool
+    var cursorScale: Double
+    var clickSpotlight: Bool
+    var cursorMotionBlur: Bool
 
     static let minimumClipDuration = 0.1
+    static let cursorScaleRange: ClosedRange<Double> = 1.0...2.5
 
     var sourceURL: URL { URL(fileURLWithPath: sourcePath) }
     var sourceSize: CGSize { CGSize(width: sourceWidth, height: sourceHeight) }
@@ -314,7 +318,10 @@ struct VideoDemoProject: Codable, Equatable, Identifiable {
             showCursorOverlay: false,
             enlargeCursor: true,
             showClickRipple: true,
-            smoothCursor: true
+            smoothCursor: true,
+            cursorScale: 1.4,
+            clickSpotlight: false,
+            cursorMotionBlur: false
         )
     }
 
@@ -328,6 +335,7 @@ struct VideoDemoProject: Codable, Equatable, Identifiable {
         showClickRipple = true
         enlargeCursor = true
         smoothCursor = true
+        cursorScale = 1.4
         if trimEnd <= 0 {
             trimEnd = metadata.duration
         }
@@ -770,6 +778,9 @@ extension VideoDemoProject {
         case enlargeCursor
         case showClickRipple
         case smoothCursor
+        case cursorScale
+        case clickSpotlight
+        case cursorMotionBlur
     }
 
     init(from decoder: Decoder) throws {
@@ -798,6 +809,10 @@ extension VideoDemoProject {
         enlargeCursor = try container.decode(Bool.self, forKey: .enlargeCursor)
         showClickRipple = try container.decode(Bool.self, forKey: .showClickRipple)
         smoothCursor = try container.decode(Bool.self, forKey: .smoothCursor)
+        // Drafts predating the cursor polish pack migrate from the old binary `enlargeCursor`.
+        cursorScale = try container.decodeIfPresent(Double.self, forKey: .cursorScale) ?? (enlargeCursor ? 1.4 : 1.0)
+        clickSpotlight = try container.decodeIfPresent(Bool.self, forKey: .clickSpotlight) ?? false
+        cursorMotionBlur = try container.decodeIfPresent(Bool.self, forKey: .cursorMotionBlur) ?? false
     }
 
     func encode(to encoder: Encoder) throws {
@@ -826,6 +841,9 @@ extension VideoDemoProject {
         try container.encode(enlargeCursor, forKey: .enlargeCursor)
         try container.encode(showClickRipple, forKey: .showClickRipple)
         try container.encode(smoothCursor, forKey: .smoothCursor)
+        try container.encode(cursorScale, forKey: .cursorScale)
+        try container.encode(clickSpotlight, forKey: .clickSpotlight)
+        try container.encode(cursorMotionBlur, forKey: .cursorMotionBlur)
     }
 }
 
@@ -1337,6 +1355,15 @@ enum VideoDemoExporter {
             duration: duration
         )
 
+        if project.clickSpotlight {
+            addClickSpotlightLayers(
+                to: parent,
+                project: project,
+                renderSize: renderSize,
+                timelineSegments: timelineSegments,
+                duration: duration
+            )
+        }
         if project.showClickRipple {
             addClickLayers(
                 to: parent,
@@ -1499,7 +1526,49 @@ enum VideoDemoExporter {
         .sorted { $0.timelineTime < $1.timelineTime }
         guard samples.count >= 2, duration > 0 else { return }
 
-        let size: CGFloat = project.enlargeCursor ? 42 : 30
+        let size = CGFloat(30 * min(max(project.cursorScale, VideoDemoProject.cursorScaleRange.lowerBound), VideoDemoProject.cursorScaleRange.upperBound))
+        let values = samples.map {
+            project.canvasPoint(for: CGPoint(x: $0.sample.x, y: $0.sample.y), in: renderSize, at: $0.sample.time)
+        }
+        let keyTimes = samples.map { max(0, min($0.timelineTime / duration, 1)) }
+
+        // Motion-blur trail: faint echoes lag the live cursor, so fast moves smear and slow moves stay crisp.
+        if project.cursorMotionBlur {
+            let echoes: [(lag: Double, opacity: Float)] = [(0.05, 0.28), (0.10, 0.16)]
+            for echo in echoes {
+                let layer = makeCursorShapeLayer(size: size)
+                layer.opacity = echo.opacity
+                let trail = laggedTrail(values: values, keyTimes: keyTimes, lagFraction: echo.lag / max(duration, 0.001))
+                guard trail.values.count >= 2 else { continue }
+                let anim = CAKeyframeAnimation(keyPath: "position")
+                anim.values = trail.values.map { NSValue(point: $0) }
+                anim.keyTimes = trail.keyTimes.map { NSNumber(value: $0) }
+                anim.duration = duration
+                anim.beginTime = AVCoreAnimationBeginTimeAtZero
+                anim.calculationMode = .linear
+                anim.isRemovedOnCompletion = false
+                anim.fillMode = .forwards
+                layer.position = trail.values.first ?? .zero
+                layer.add(anim, forKey: "position")
+                parent.addSublayer(layer)
+            }
+        }
+
+        let cursor = makeCursorShapeLayer(size: size)
+        cursor.position = values.first ?? .zero
+        let animation = CAKeyframeAnimation(keyPath: "position")
+        animation.values = values.map { NSValue(point: $0) }
+        animation.keyTimes = keyTimes.map { NSNumber(value: $0) }
+        animation.duration = duration
+        animation.beginTime = AVCoreAnimationBeginTimeAtZero
+        animation.calculationMode = project.smoothCursor ? .paced : .linear
+        animation.isRemovedOnCompletion = false
+        animation.fillMode = .forwards
+        cursor.add(animation, forKey: "position")
+        parent.addSublayer(cursor)
+    }
+
+    private static func makeCursorShapeLayer(size: CGFloat) -> CAShapeLayer {
         let cursor = CAShapeLayer()
         cursor.path = cursorPath(size: size)
         cursor.bounds = CGRect(x: 0, y: 0, width: size, height: size)
@@ -1510,21 +1579,71 @@ enum VideoDemoExporter {
         cursor.shadowOpacity = 0.28
         cursor.shadowRadius = 8
         cursor.shadowOffset = CGSize(width: 0, height: -4)
+        return cursor
+    }
 
-        let values = samples.map {
-            project.canvasPoint(for: CGPoint(x: $0.sample.x, y: $0.sample.y), in: renderSize, at: $0.sample.time)
+    /// Shifts cursor keyframes later in time so an echo layer trails the live cursor by `lagFraction` of the timeline.
+    private static func laggedTrail(values: [CGPoint], keyTimes: [Double], lagFraction: Double) -> (values: [CGPoint], keyTimes: [Double]) {
+        guard let first = values.first, lagFraction > 0 else { return (values, keyTimes) }
+        var outValues: [CGPoint] = [first]
+        var outKeyTimes: [Double] = [0]
+        for (value, keyTime) in zip(values, keyTimes) {
+            let shifted = keyTime + lagFraction
+            outValues.append(value)
+            if shifted >= 1 {
+                outKeyTimes.append(1)
+                break
+            }
+            outKeyTimes.append(shifted)
         }
-        cursor.position = values.first ?? .zero
-        let animation = CAKeyframeAnimation(keyPath: "position")
-        animation.values = values.map { NSValue(point: $0) }
-        animation.keyTimes = samples.map { NSNumber(value: max(0, min($0.timelineTime / duration, 1))) }
-        animation.duration = duration
-        animation.beginTime = AVCoreAnimationBeginTimeAtZero
-        animation.calculationMode = project.smoothCursor ? .paced : .linear
-        animation.isRemovedOnCompletion = false
-        animation.fillMode = .forwards
-        cursor.add(animation, forKey: "position")
-        parent.addSublayer(cursor)
+        return (outValues, outKeyTimes)
+    }
+
+    private static func addClickSpotlightLayers(
+        to parent: CALayer,
+        project: VideoDemoProject,
+        renderSize: CGSize,
+        timelineSegments: [VideoDemoTimelineSegment],
+        duration: Double
+    ) {
+        guard duration > 0 else { return }
+        let radius = max(min(renderSize.width, renderSize.height) * 0.16, 80)
+        let hold = 0.7
+        for click in project.clickEvents {
+            guard let timelineTime = project.timelineTimeIfIncluded(sourceTime: click.time, segments: timelineSegments) else {
+                continue
+            }
+            let point = project.canvasPoint(for: CGPoint(x: click.x, y: click.y), in: renderSize, at: click.time)
+            let dim = CAShapeLayer()
+            dim.frame = CGRect(origin: .zero, size: renderSize)
+            let cover = CGMutablePath()
+            cover.addRect(CGRect(origin: .zero, size: renderSize))
+            cover.addEllipse(in: CGRect(x: point.x - radius, y: point.y - radius, width: radius * 2, height: radius * 2))
+            dim.path = cover
+            dim.fillRule = .evenOdd
+            dim.fillColor = NSColor.black.withAlphaComponent(0.55).cgColor
+
+            let fadeIn = CABasicAnimation(keyPath: "opacity")
+            fadeIn.fromValue = 0
+            fadeIn.toValue = 1
+            fadeIn.duration = 0.16
+
+            let fadeOut = CABasicAnimation(keyPath: "opacity")
+            fadeOut.fromValue = 1
+            fadeOut.toValue = 0
+            fadeOut.beginTime = max(hold - 0.22, 0.16)
+            fadeOut.duration = 0.22
+
+            let group = CAAnimationGroup()
+            group.animations = [fadeIn, fadeOut]
+            group.duration = hold
+            group.beginTime = AVCoreAnimationBeginTimeAtZero + max(timelineTime, 0)
+            group.isRemovedOnCompletion = false
+            group.fillMode = .both
+            dim.opacity = 0
+            dim.add(group, forKey: "spotlight")
+            parent.addSublayer(dim)
+        }
     }
 
     private static func addClickLayers(
@@ -1642,6 +1761,12 @@ final class VideoDemoEditorWindowController: NSWindowController, NSWindowDelegat
         openControllers.forEach { $0.bringEditorToFront() }
     }
 
+    /// Keeps the Dock icon / ⌘-Tab entry in sync across both editors so the user can always
+    /// return to this window even after switching apps. See `ShotnixEditorActivation`.
+    private static func syncActivationPolicy() {
+        ShotnixEditorActivation.sync()
+    }
+
     static func splitActiveEditor() {
         frontController()?.model.splitAtPlayhead()
     }
@@ -1721,6 +1846,7 @@ final class VideoDemoEditorWindowController: NSWindowController, NSWindowDelegat
         model.flushAutosave()
         model.stop()
         Self.openControllers.removeAll { $0 === self }
+        Self.syncActivationPolicy()
     }
 
     func windowDidBecomeKey(_ notification: Notification) {
@@ -1735,7 +1861,7 @@ final class VideoDemoEditorWindowController: NSWindowController, NSWindowDelegat
     private func bringEditorToFront() {
         guard let window else { return }
         NSApp.unhide(nil)
-        NSApp.setActivationPolicy(.accessory)
+        Self.syncActivationPolicy()
         NSRunningApplication.current.activate(options: [.activateAllWindows, .activateIgnoringOtherApps])
         NSApp.activate(ignoringOtherApps: true)
         showWindow(nil)
@@ -3582,9 +3708,16 @@ private struct VideoDemoEditorView: View {
     private var cursorSection: some View {
         controlSection("Cursor") {
             toggleRow("Demo cursor", value: $model.project.showCursorOverlay)
-            toggleRow("Large cursor", value: $model.project.enlargeCursor)
-            toggleRow("Click ripple", value: $model.project.showClickRipple)
+            sliderRow(
+                "Size",
+                value: $model.project.cursorScale,
+                range: VideoDemoProject.cursorScaleRange,
+                label: String(format: "%.0f%%", model.project.cursorScale * 100)
+            )
             toggleRow("Smooth cursor", value: $model.project.smoothCursor)
+            toggleRow("Motion blur", value: $model.project.cursorMotionBlur)
+            toggleRow("Click ripple", value: $model.project.showClickRipple)
+            toggleRow("Click spotlight", value: $model.project.clickSpotlight)
         }
     }
 
@@ -4046,6 +4179,24 @@ private struct VideoDemoOverlayView: View {
 
     var body: some View {
         ZStack {
+            if model.project.clickSpotlight,
+               let spot = model.activeClicks(at: model.currentTime).min(by: { $0.progress < $1.progress }) {
+                let radius = min(stageSize.width, stageSize.height) * 0.16
+                Rectangle()
+                    .fill(Color.black.opacity(0.55 * (1 - spot.progress)))
+                    .mask(
+                        ZStack {
+                            Rectangle().fill(Color.black)
+                            Circle()
+                                .frame(width: radius * 2, height: radius * 2)
+                                .position(point(for: spot.event.x, spot.event.y))
+                                .blendMode(.destinationOut)
+                        }
+                        .compositingGroup()
+                    )
+                    .allowsHitTesting(false)
+            }
+
             ForEach(model.activeEffects(at: model.currentTime)) { effect in
                 effectView(effect)
             }
@@ -4061,10 +4212,11 @@ private struct VideoDemoOverlayView: View {
             }
 
             if model.project.showCursorOverlay, let sample = model.cursorSample(at: model.currentTime) {
+                let cursorSide = 25 * min(max(model.project.cursorScale, VideoDemoProject.cursorScaleRange.lowerBound), VideoDemoProject.cursorScaleRange.upperBound)
                 CursorShape()
                     .fill(.white)
                     .overlay(CursorShape().stroke(.black.opacity(0.66), lineWidth: 1.6))
-                    .frame(width: model.project.enlargeCursor ? 34 : 25, height: model.project.enlargeCursor ? 34 : 25)
+                    .frame(width: cursorSide, height: cursorSide)
                     .shadow(color: .black.opacity(0.35), radius: 5, x: 0, y: 3)
                     .position(point(for: sample.x, sample.y))
             }

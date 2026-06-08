@@ -14,6 +14,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var updateController: AppUpdateController!
     private var didRegisterHotkeys = false
 
+    // Clicking the Dock icon (shown while an editor is open) restores a buried or minimized editor.
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows: Bool) -> Bool {
+        if !hasVisibleWindows {
+            if VideoDemoEditorWindowController.hasOpenEditors {
+                VideoDemoEditorWindowController.bringOpenEditorsToFront()
+            }
+            if AnnotationWindowController.hasOpenEditors {
+                AnnotationWindowController.bringOpenEditorsToFront()
+            }
+        }
+        return true
+    }
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         updateController = AppUpdateController()
         captureEngine = CaptureEngine()
