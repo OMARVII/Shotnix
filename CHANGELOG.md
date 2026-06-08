@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.17.3-beta] - 2026-06-08
+
+### Added
+- **Video Demo Editor** — recordings can open into a dedicated video editor with a preview stage, frame presets, backgrounds, trim, and MP4 export.
+- **Clip timeline** — split at playhead, delete, ripple delete, undo/redo, and selected-clip trim, with a ruler, video/audio track, zoom lane, trim handles, and a full-height playhead.
+- **Per-segment speed controls** — 0.5x, 1x, 1.5x, and 2x per clip, plus clip mute and fade-in/fade-out while preserving recorded audio tracks.
+- **Premium effects** — text labels, arrows, highlights, and blur boxes exported as callout layers, with auto zoom presets, effect lane markers, smoother cursor interpolation, and social export polish.
+- **Command Center video actions** — open a video file or reopen the last recording directly from the menu bar.
+
+### Changed
+- **Export pipeline** — exports now stitch multi-segment compositions with cuts, speed, audio, cursor, and zoom mapping into a single MP4.
+
 ## [0.16.0-beta] - 2026-05-31
 
 ### Added
