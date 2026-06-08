@@ -774,7 +774,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.17.3"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.17.4"
     
     var body: some View {
         PreferencesPane {
@@ -817,6 +817,10 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.17.4
+                    • Cursor polish: adjustable cursor size, click spotlight, and motion-blur trail on fast moves
+                    • Editors now stay reachable — open a photo or video editor and Shotnix gets a Dock icon and ⌘-Tab entry so you can always switch back
+
                     Version 0.17.3
                     • Premium effects: text labels, arrows, highlights, blur boxes, and exported callout layers
                     • Auto zoom presets, effect lane markers, smoother cursor interpolation, and social export polish

@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.17.4-beta] - 2026-06-09
+
+### Added
+- **Cursor polish pack** — the video editor gains an adjustable cursor size slider, a click spotlight that dims the frame around each click, and an optional motion-blur trail that smears fast cursor moves while keeping slow moves crisp.
+
+### Changed
+- **Editors stay reachable** — opening a photo or video editor now gives Shotnix a Dock icon and a ⌘-Tab entry, so you can switch to another app and always return to the editor. The Dock icon appears while either editor is open and disappears once the last one closes; clicking it restores a minimized editor.
+
 ## [0.17.3-beta] - 2026-06-08
 
 ### Added

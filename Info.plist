@@ -9,9 +9,9 @@
     <key>CFBundleDisplayName</key>
     <string>Shotnix</string>
     <key>CFBundleVersion</key>
-    <string>42</string>
+    <string>43</string>
     <key>CFBundleShortVersionString</key>
-    <string>0.17.3</string>
+    <string>0.17.4</string>
     <key>CFBundleExecutable</key>
     <string>Shotnix</string>
     <key>CFBundlePackageType</key>
