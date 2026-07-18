@@ -1,5 +1,33 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- **Recording hotkeys** — Record Area, Record Window, Record Fullscreen, and Stop Recording can now be assigned global shortcuts in a new Recording section of the Shortcuts preferences, and Escape stops a recording in progress.
+- **Fullscreen display chooser** — on multi-monitor setups, fullscreen screenshot now asks which display to capture, including an All Displays option; single-display capture is instant as before.
+- **Custom file names** — a new File Name template in Screenshots preferences (date/time tokens with live preview) names every screenshot, recording, and drag export.
+- **Copy Text on the overlay** — extract text from a capture directly from the post-capture thumbnail, and click the post-save toast to reveal the saved file in Finder.
+- **All barcode types** — barcode scanning now decodes Code 128, EAN, UPC, Aztec, Data Matrix, PDF417 and more (not just QR), and names the detected type in the results window.
+- **Annotation editor upgrades** — pinch/⌘+/⌘−/⌘0 canvas zoom with fit-to-window, Shift/Option drawing constraints (squares, circles, 45° arrows, draw-from-center), arrow-key nudging, ⌘S/⌘C/Escape shortcuts, and the editor now remembers your last tool, color, and line width.
+- **Video editor transport** — frame-step (,/.), 1-second jumps (Shift+arrows), Home/End, and J/K/L shuttle controls, with shortcuts listed in the command palette.
+- **Edit menu** — standard Edit and Window menus so ⌘X/⌘C/⌘V/⌘A/⌘Z work in text fields and save panels.
+
+### Changed
+- **Post-capture UI follows the capture** — the quick-access overlay, toasts, and pinned screenshots now appear on the display where the capture happened, and pins open at the exact spot that was captured.
+- **The video "Blur" effect is now "Redact"** — it was always an opaque cover, not a blur; it is now named honestly, fully opaque, and holds hard on/off in exports (no fade leaking the covered content).
+- **Preview audio matches export** — muted clips and fade ramps are now silent/ramped during editor preview, and export reports audio problems instead of silently dropping tracks.
+- **Captures exclude Shotnix** — pinned screenshots, toasts, and HUDs no longer appear inside new captures.
+
+### Fixed
+- **Recordings survive errors** — if the screen-capture stream dies mid-recording (display disconnect, sleep), Shotnix now saves everything captured so far instead of discarding the file; disk-full is detected immediately, and recording refuses to start when the disk is critically low.
+- **Clipboard safety** — a failed or empty text extraction no longer erases what you had copied, with distinct messages for "failed" vs "no text found".
+- **Permission recovery** — the Screen Recording permission alert now offers Open System Settings and Quit & Reopen instead of a dead-end Quit.
+- **Cursor timing in the video editor** — click ripples and cursor motion no longer render late relative to the video.
+- **Magnifier accuracy** — the selection loupe now samples the correct pixels on secondary and Retina displays.
+- **Multi-display selection speed** — the capture crosshair appears faster on multi-monitor setups (screens are snapshotted in parallel).
+- **Shortcut-conflict prompt** — declining the Apple-shortcuts takeover is now remembered, and a Restore Apple Shortcuts button was added to preferences.
+- **Menu bar icon preference** — the "Show menu bar icon" toggle now works, with a confirmation explaining how to get back (relaunching opens Preferences).
+
 ## [0.17.4-beta] - 2026-06-09
 
 ### Added
