@@ -9,6 +9,7 @@ final class QRCodeResultWindow: NSWindow, NSWindowDelegate {
     private let payloads: [QRCodePayload]
     private let payloadText: String
     private let primaryPayload: QRCodePayload?
+    private let allQRCodes: Bool
 
     static func show(results: [QRCodeResult]) {
         guard !results.isEmpty else { return }
@@ -21,8 +22,9 @@ final class QRCodeResultWindow: NSWindow, NSWindowDelegate {
     private init(results: [QRCodeResult]) {
         self.results = results
         self.payloads = results.map { QRCodePayload.parse($0.payload) }
-        self.payloadText = Self.displayText(for: payloads)
+        self.payloadText = Self.displayText(for: results, payloads: payloads)
         self.primaryPayload = payloads.first(where: { $0.actionURL != nil })
+        self.allQRCodes = results.allSatisfy(\.isQRCode)
 
         let height: CGFloat = results.count > 1 ? 326 : 292
         super.init(
@@ -32,7 +34,7 @@ final class QRCodeResultWindow: NSWindow, NSWindowDelegate {
             defer: false
         )
 
-        title = payloads.count == 1 ? payloads[0].title.replacingOccurrences(of: " found", with: "") : "QR Codes"
+        title = results.count == 1 ? results[0].symbologyName : (allQRCodes ? "QR Codes" : "Barcodes")
         titleVisibility = .hidden
         titlebarAppearsTransparent = true
         isReleasedWhenClosed = false
@@ -60,11 +62,16 @@ final class QRCodeResultWindow: NSWindow, NSWindowDelegate {
         background.addSubview(iconWrap)
 
         let icon = NSImageView(frame: NSRect(x: 9, y: 9, width: 24, height: 24))
-        icon.image = NSImage(systemSymbolName: "qrcode.viewfinder", accessibilityDescription: nil)
+        icon.image = NSImage(systemSymbolName: allQRCodes ? "qrcode.viewfinder" : "barcode.viewfinder", accessibilityDescription: nil)
         icon.contentTintColor = .controlAccentColor
         iconWrap.addSubview(icon)
 
-        let titleText = payloads.count == 1 ? payloads[0].title : "\(payloads.count) QR codes found"
+        let titleText: String
+        if payloads.count == 1 {
+            titleText = allQRCodes ? payloads[0].title : "\(results[0].symbologyName) found"
+        } else {
+            titleText = allQRCodes ? "\(payloads.count) QR codes found" : "\(payloads.count) barcodes found"
+        }
         let titleLabel = NSTextField(labelWithString: titleText)
         titleLabel.font = .boldSystemFont(ofSize: 19)
         titleLabel.frame = NSRect(x: 78, y: height - 68, width: width - 102, height: 24)
@@ -151,7 +158,7 @@ final class QRCodeResultWindow: NSWindow, NSWindowDelegate {
     @objc private func copyPayload() {
         NSPasteboard.general.clearContents()
         NSPasteboard.general.setString(payloads.map(\.copyValue).joined(separator: "\n\n"), forType: .string)
-        ToastWindow.show(message: "QR copied to clipboard")
+        ToastWindow.show(message: allQRCodes ? "QR copied to clipboard" : "Barcode copied to clipboard")
     }
 
     @objc private func openPrimaryAction() {
@@ -171,12 +178,16 @@ final class QRCodeResultWindow: NSWindow, NSWindowDelegate {
         NSApp.restoreBackgroundOnlyActivationPolicyIfNeeded(excluding: self)
     }
 
-    private static func displayText(for payloads: [QRCodePayload]) -> String {
+    private static func displayText(for results: [QRCodeResult], payloads: [QRCodePayload]) -> String {
         if payloads.count == 1 {
             return payloads[0].displayText
         }
-        return payloads.enumerated().map { index, payload in
-            "QR \(index + 1) — \(payload.title.replacingOccurrences(of: " found", with: ""))\n\(payload.displayText)"
+        return zip(results, payloads).enumerated().map { index, pair in
+            let (result, payload) = pair
+            let kind = payload.title
+                .replacingOccurrences(of: " QR found", with: "")
+                .replacingOccurrences(of: " found", with: "")
+            return "\(index + 1). \(result.symbologyName) — \(kind)\n\(payload.displayText)"
         }.joined(separator: "\n\n")
     }
 }

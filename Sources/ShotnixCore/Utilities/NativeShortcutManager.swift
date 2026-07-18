@@ -12,6 +12,9 @@ enum NativeShortcutManager {
     // 184 = ⌘⇧5 (screenshot/recording toolbar)
     private static let screenshotHotkeyIDs = [28, 29, 30, 31, 184]
     private static let promptKey = "didPromptNativeShortcuts"
+    // Set when the user picks "Don't Ask Again" — suppresses the conflict prompt
+    // until they opt back in via restoreNativeShortcuts().
+    private static let declinedPromptKey = "declinedNativeShortcutsPrompt"
     private static let appID = "com.apple.symbolichotkeys"
     private static let hotkeysKey = "AppleSymbolicHotKeys"
     private static let screenshotHotkeyParameters: [Int: [Int]] = [
@@ -43,29 +46,41 @@ enum NativeShortcutManager {
     /// but most apps pick up the change immediately.
     @discardableResult
     static func disableNativeShortcuts() -> Bool {
+        setNativeShortcuts(enabled: false) && !nativeShortcutsEnabled
+    }
+
+    /// Re-enables Apple's native screenshot shortcuts (⌘⇧3, ⌘⇧4, ⌘⇧5) —
+    /// an escape hatch for users who want the system shortcuts back.
+    /// Also clears the "Don't Ask Again" flag so the conflict prompt can reappear.
+    @discardableResult
+    static func restoreNativeShortcuts() -> Bool {
+        UserDefaults.standard.removeObject(forKey: declinedPromptKey)
+        UserDefaults.standard.removeObject(forKey: promptKey)
+        return setNativeShortcuts(enabled: true) && nativeShortcutsEnabled
+    }
+
+    private static func setNativeShortcuts(enabled: Bool) -> Bool {
         guard let currentDict = readHotkeys(host: kCFPreferencesAnyHost) ?? readHotkeys(host: kCFPreferencesCurrentHost) else { return false }
-        
+
         var newDict = currentDict
         for id in screenshotHotkeyIDs {
-            if var entry = newDict["\(id)"] as? [String: Any] {
-                entry["enabled"] = false
-                if entry["value"] == nil {
-                    entry["value"] = defaultHotkeyValue(for: id)
-                }
-                newDict["\(id)"] = entry
-            } else {
-                newDict["\(id)"] = defaultHotkeyEntry(for: id)
+            var entry = newDict["\(id)"] as? [String: Any] ?? defaultHotkeyEntry(for: id)
+            entry["enabled"] = enabled
+            if entry["value"] == nil {
+                entry["value"] = defaultHotkeyValue(for: id)
             }
+            newDict["\(id)"] = entry
         }
 
         let cfWrite = writeWithCFPreferences(newDict, host: kCFPreferencesAnyHost)
         let currentHostWrite = writeWithCFPreferences(newDict, host: kCFPreferencesCurrentHost)
         reloadSystemShortcutPreferences()
-        return (cfWrite || currentHostWrite) && !nativeShortcutsEnabled
+        return cfWrite || currentHostWrite
     }
 
-    /// Shows a one-time dialog offering to disable conflicting native shortcuts.
-    /// Only shown once (tracked via UserDefaults).
+    /// Shows a dialog offering to disable conflicting native shortcuts.
+    /// Suppressed once the user picks "Don't Ask Again" (tracked via UserDefaults)
+    /// until they opt back in via restoreNativeShortcuts().
     @MainActor
     static func promptIfNeeded(onDisabled: (() -> Void)? = nil) {
         guard nativeShortcutsEnabled else {
@@ -73,6 +88,8 @@ enum NativeShortcutManager {
             onDisabled?()
             return
         }
+
+        guard !UserDefaults.standard.bool(forKey: declinedPromptKey) else { return }
 
         if UserDefaults.standard.bool(forKey: promptKey) {
             UserDefaults.standard.removeObject(forKey: promptKey)
@@ -99,6 +116,7 @@ enum NativeShortcutManager {
         alert.icon = NSImage(systemSymbolName: "keyboard", accessibilityDescription: "Keyboard")
         alert.addButton(withTitle: "Disable Apple Shortcuts")
         alert.addButton(withTitle: "Open Keyboard Settings")
+        alert.addButton(withTitle: "Don't Ask Again")
 
         let response = alert.runModal()
 
@@ -110,8 +128,10 @@ enum NativeShortcutManager {
             } else {
                 showManualInstructionsAlert()
             }
-        } else {
+        } else if response == .alertSecondButtonReturn {
             openKeyboardSettings()
+        } else {
+            UserDefaults.standard.set(true, forKey: declinedPromptKey)
         }
 
         NSApp.restoreBackgroundOnlyActivationPolicyIfNeeded()
@@ -119,12 +139,13 @@ enum NativeShortcutManager {
 
     private static func reloadSystemShortcutPreferences() {
         CFPreferencesAppSynchronize(appID as CFString)
-        runSystemTool("/usr/bin/defaults", arguments: ["read", "com.apple.symbolichotkeys.plist"])
-        runSystemTool("/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings", arguments: ["-u"])
-        runSystemTool("/usr/bin/killall", arguments: ["SystemUIServer"])
-        runSystemTool("/usr/bin/killall", arguments: ["cfprefsd"])
-        runSystemTool("/usr/bin/defaults", arguments: ["read", "com.apple.symbolichotkeys.plist"])
-        runSystemTool("/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings", arguments: ["-u"])
+        // Run each reload tool once, off the main thread — waitUntilExit blocks.
+        DispatchQueue.global(qos: .utility).async {
+            runSystemTool("/usr/bin/defaults", arguments: ["read", "com.apple.symbolichotkeys.plist"])
+            runSystemTool("/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings", arguments: ["-u"])
+            runSystemTool("/usr/bin/killall", arguments: ["SystemUIServer"])
+            runSystemTool("/usr/bin/killall", arguments: ["cfprefsd"])
+        }
     }
 
     private static func readHotkeys(host: CFString) -> [String: Any]? {
