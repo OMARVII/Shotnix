@@ -852,7 +852,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.17.4"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.18.0"
     
     var body: some View {
         PreferencesPane {
@@ -895,6 +895,14 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.18.0
+                    • Recording hotkeys — assign shortcuts to start and stop recording, and Escape stops a recording in progress
+                    • Multi-display polish — fullscreen capture asks which display (or all), and overlays, toasts, and pins appear on the screen you captured
+                    • Custom file names — template with date/time tokens and live preview in Screenshots settings
+                    • Copy Text from the post-capture overlay, and click the save toast to reveal the file in Finder
+                    • Annotation editor — canvas zoom, Shift/Option drawing constraints, arrow-key nudging, and it remembers your tool, color, and line width
+                    • Reliability — interrupted recordings are saved instead of lost, failed text extraction no longer clears your clipboard, and barcode scanning goes beyond QR
+
                     Version 0.17.4
                     • Cursor polish: adjustable cursor size, click spotlight, and motion-blur trail on fast moves
                     • Editors now stay reachable — open a photo or video editor and Shotnix gets a Dock icon and ⌘-Tab entry so you can always switch back

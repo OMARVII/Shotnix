@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [0.18.0-beta] - 2026-07-18
 
 ### Added
 - **Recording hotkeys** — Record Area, Record Window, Record Fullscreen, and Stop Recording can now be assigned global shortcuts in a new Recording section of the Shortcuts preferences, and Escape stops a recording in progress.
