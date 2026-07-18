@@ -14,12 +14,19 @@ final class AnnotationCanvas: NSView {
         didSet {
             window?.invalidateCursorRects(for: self)
             onToolChanged?(activeTool)
+            Settings.annotationLastTool = activeTool.rawValue
         }
     }
-    var activeColor: NSColor = .systemRed
-    var activeLineWidth: CGFloat = 3
+    var activeColor: NSColor = .systemRed {
+        didSet { persistActiveColor() }
+    }
+    var activeLineWidth: CGFloat = 3 {
+        didSet { Settings.annotationLastLineWidth = Double(activeLineWidth) }
+    }
 
     var onToolChanged: ((AnnotationTool) -> Void)?
+    var onSaveRequested: (() -> Void)?
+    var onCopyRequested: (() -> Void)?
 
     // Undo/redo managed via undoSnapshots/redoSnapshots below
 
@@ -44,6 +51,7 @@ final class AnnotationCanvas: NSView {
 
     override init(frame: NSRect) {
         super.init(frame: frame)
+        restorePersistedStyle()
     }
 
     required init?(coder: NSCoder) { fatalError() }
@@ -407,7 +415,7 @@ final class AnnotationCanvas: NSView {
         }
 
         let previousBounds = currentObject?.bounds
-        updateCurrentObject(to: point)
+        updateCurrentObject(to: point, modifiers: event.modifierFlags)
         lastDragPoint = point
         invalidate(previousBounds, currentObject?.bounds, padding: activeLineWidth + 12)
     }
@@ -690,21 +698,51 @@ final class AnnotationCanvas: NSView {
         }
     }
 
-    private func updateCurrentObject(to point: CGPoint) {
+    private func updateCurrentObject(to point: CGPoint, modifiers: NSEvent.ModifierFlags) {
         guard let start = dragStart else { return }
+        let square = modifiers.contains(.shift)
+        let fromCenter = modifiers.contains(.option)
+        // ⇧ with line-style tools snaps the angle to 45° increments
+        let endPoint = square ? snappedEndPoint(from: start, to: point) : point
         switch currentObject {
-        case let a as ArrowAnnotation:       a.endPoint = point
-        case let r as RectangleAnnotation:   r.rect = rectFrom(start, to: point)
-        case let e as EllipseAnnotation:     e.rect = rectFrom(start, to: point)
-        case let l as LineAnnotation:        l.endPoint = point
+        case let a as ArrowAnnotation:       a.endPoint = endPoint
+        case let r as RectangleAnnotation:   r.rect = dragRect(from: start, to: point, square: square, fromCenter: fromCenter)
+        case let e as EllipseAnnotation:     e.rect = dragRect(from: start, to: point, square: square, fromCenter: fromCenter)
+        case let l as LineAnnotation:        l.endPoint = endPoint
         case let f as FreehandAnnotation:
             if let last = f.points.last, hypot(point.x - last.x, point.y - last.y) < 1.5 { return }
             f.points.append(point)
-        case let h as HighlighterAnnotation: h.endPoint = point
-        case let b as BlurAnnotation:        b.rect = rectFrom(start, to: point)
-        case let p as PixelateAnnotation:    p.rect = rectFrom(start, to: point)
+        case let h as HighlighterAnnotation: h.endPoint = endPoint
+        case let b as BlurAnnotation:        b.rect = dragRect(from: start, to: point, square: square, fromCenter: fromCenter)
+        case let p as PixelateAnnotation:    p.rect = dragRect(from: start, to: point, square: square, fromCenter: fromCenter)
         default: break
         }
+    }
+
+    /// Snaps the drag endpoint to 45° increments around the drag start.
+    private func snappedEndPoint(from start: CGPoint, to point: CGPoint) -> CGPoint {
+        let dx = point.x - start.x
+        let dy = point.y - start.y
+        let length = hypot(dx, dy)
+        guard length > 0 else { return point }
+        let step = CGFloat.pi / 4
+        let angle = (atan2(dy, dx) / step).rounded() * step
+        return CGPoint(x: start.x + cos(angle) * length, y: start.y + sin(angle) * length)
+    }
+
+    /// Builds the drag rect honoring ⇧ (constrain to square) and ⌥ (draw from center).
+    private func dragRect(from start: CGPoint, to point: CGPoint, square: Bool, fromCenter: Bool) -> CGRect {
+        var dx = point.x - start.x
+        var dy = point.y - start.y
+        if square {
+            let side = max(abs(dx), abs(dy))
+            dx = dx < 0 ? -side : side
+            dy = dy < 0 ? -side : side
+        }
+        if fromCenter {
+            return CGRect(x: start.x - abs(dx), y: start.y - abs(dy), width: abs(dx) * 2, height: abs(dy) * 2)
+        }
+        return rectFrom(start, to: CGPoint(x: start.x + dx, y: start.y + dy))
     }
 
     private func rectFrom(_ a: CGPoint, to b: CGPoint) -> CGRect {
@@ -755,6 +793,25 @@ final class AnnotationCanvas: NSView {
         field.removeFromSuperview()
         activeTextField = nil
         setNeedsDisplay(bounds)
+    }
+
+    // MARK: – Style persistence
+
+    /// Restores the last-used tool, color, and line width from Settings.
+    private func restorePersistedStyle() {
+        if let tool = AnnotationTool(rawValue: Settings.annotationLastTool) {
+            activeTool = tool
+        }
+        if let data = Settings.annotationLastColorData,
+           let color = try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSColor.self, from: data) {
+            activeColor = color
+        }
+        activeLineWidth = CGFloat(Settings.annotationLastLineWidth)
+    }
+
+    private func persistActiveColor() {
+        // Archived with secure coding so custom colors from any color space round-trip safely.
+        Settings.annotationLastColorData = try? NSKeyedArchiver.archivedData(withRootObject: activeColor, requiringSecureCoding: true)
     }
 
     // MARK: – Styling
@@ -818,10 +875,12 @@ final class AnnotationCanvas: NSView {
     func pushUndo() {
         undoSnapshots.append((objects: objects.map { $0.copy() }, selected: selectedObjects.map { $0.copy() }))
         redoSnapshots.removeAll()
+        lastNudgeDate = nil // any new undo-tracked operation ends a nudge-coalescing burst
     }
 
     func performUndo() {
         guard let prev = undoSnapshots.popLast() else { return }
+        lastNudgeDate = nil // undo/redo ends any nudge-coalescing burst
         redoSnapshots.append((objects: objects.map { $0.copy() }, selected: selectedObjects.map { $0.copy() }))
         objects = prev.objects
         selectedObjects = []
@@ -830,6 +889,7 @@ final class AnnotationCanvas: NSView {
 
     func performRedo() {
         guard let next = redoSnapshots.popLast() else { return }
+        lastNudgeDate = nil // undo/redo ends any nudge-coalescing burst
         undoSnapshots.append((objects: objects.map { $0.copy() }, selected: selectedObjects.map { $0.copy() }))
         objects = next.objects
         selectedObjects = []
@@ -846,8 +906,59 @@ final class AnnotationCanvas: NSView {
             }
             return
         }
+
+        // ⌘-key editor shortcuts: save, copy, zoom
+        if event.modifierFlags.contains(.command) {
+            switch event.charactersIgnoringModifiers?.lowercased() {
+            case "s":
+                onSaveRequested?()
+                return
+            case "c":
+                // Only when no text annotation is being edited — copying inside
+                // an active text field must keep native behavior
+                if activeTextField == nil {
+                    onCopyRequested?()
+                    return
+                }
+            case "=", "+":
+                if let scrollView = enclosingScrollView, scrollView.allowsMagnification {
+                    zoom(to: scrollView.magnification * 1.25, in: scrollView)
+                    return
+                }
+            case "-":
+                if let scrollView = enclosingScrollView, scrollView.allowsMagnification {
+                    zoom(to: scrollView.magnification / 1.25, in: scrollView)
+                    return
+                }
+            case "0":
+                if let scrollView = enclosingScrollView, scrollView.allowsMagnification {
+                    zoom(to: 1, in: scrollView) // Actual size
+                    return
+                }
+            default: break
+            }
+        }
+
         if event.keyCode == 51 || event.keyCode == 117 { // Delete/Backspace
             deleteSelected()
+            return
+        }
+        if event.keyCode == 53 { // Escape: cancel an in-progress crop first, else clear selection
+            if cropRect != nil {
+                cropRect = nil
+                dragStart = nil
+                onCropChanged?(nil)
+                setNeedsDisplay(bounds)
+            } else if !selectedObjects.isEmpty {
+                selectedObjects = []
+                setNeedsDisplay(bounds)
+            }
+            return
+        }
+
+        // Arrow keys nudge the current selection (1px, ⇧ = 10px)
+        if !event.modifierFlags.contains(.command), let delta = nudgeDelta(for: event) {
+            nudgeSelection(by: delta)
             return
         }
 
@@ -881,6 +992,47 @@ final class AnnotationCanvas: NSView {
         objects.removeAll { ids.contains($0.id) }
         selectedObjects = []
         setNeedsDisplay(bounds)
+    }
+
+    // MARK: – Zoom
+
+    private func zoom(to magnification: CGFloat, in scrollView: NSScrollView) {
+        // Keep the current visible center stable while zooming
+        let center = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
+        scrollView.setMagnification(magnification, centeredAt: center)
+    }
+
+    // MARK: – Arrow-key nudging
+
+    private var lastNudgeDate: Date?
+
+    private func nudgeDelta(for event: NSEvent) -> CGPoint? {
+        let step: CGFloat = event.modifierFlags.contains(.shift) ? 10 : 1
+        switch event.keyCode {
+        case 123: return CGPoint(x: -step, y: 0)  // Left
+        case 124: return CGPoint(x: step, y: 0)   // Right
+        case 125: return CGPoint(x: 0, y: step)   // Down (isFlipped: +y is down)
+        case 126: return CGPoint(x: 0, y: -step)  // Up
+        default:  return nil
+        }
+    }
+
+    private func nudgeSelection(by delta: CGPoint) {
+        guard !selectedObjects.isEmpty else { return }
+        // Coalesce a burst of nudges into one undo step. Any other undo-tracked
+        // operation (pushUndo clears the timestamp) or a >1s pause ends the burst.
+        let now = Date()
+        if lastNudgeDate == nil || now.timeIntervalSince(lastNudgeDate ?? now) > 1 {
+            pushUndo()
+        }
+        lastNudgeDate = now
+        let previousRects = selectedObjects.map(\.bounds)
+        for obj in selectedObjects {
+            obj.move(by: delta)
+        }
+        for rect in previousRects + selectedObjects.map(\.bounds) {
+            setNeedsDisplay(rect.insetBy(dx: -12, dy: -12).intersection(bounds))
+        }
     }
 
     // MARK: – Crop

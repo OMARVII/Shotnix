@@ -117,6 +117,10 @@ final class AnnotationWindowController: NSWindowController {
         scrollView.autoresizingMask = [.width, .height]
         scrollView.horizontalScrollElasticity = .none
         scrollView.verticalScrollElasticity = .none
+        // Zoom: pinch-to-zoom plus ⌘+/⌘-/⌘0 handled in AnnotationCanvas.keyDown
+        scrollView.allowsMagnification = true
+        scrollView.minMagnification = 0.1
+        scrollView.maxMagnification = 8
         scrollView.wantsLayer = true
         scrollView.layer?.cornerRadius = 18
         scrollView.layer?.cornerCurve = .continuous
@@ -154,6 +158,10 @@ final class AnnotationWindowController: NSWindowController {
         toolbar.onApplyCrop       = { [weak self] in self?.applyCrop() }
         toolbar.onBackgroundOptionsChanged = { [weak self] options in self?.applyBackgroundOptions(options) }
 
+        // Keyboard shortcuts from the canvas (⌘S / ⌘C — no main menu in an LSUIElement app)
+        canvas.onSaveRequested = { [weak self] in self?.save() }
+        canvas.onCopyRequested = { [weak self] in self?.copyToClipboard() }
+
         // Sync tool changes from canvas keyboard shortcuts back to toolbar
         canvas.onToolChanged = { [weak self] tool in
             self?.toolbar.selectToolExternally(tool)
@@ -180,6 +188,19 @@ final class AnnotationWindowController: NSWindowController {
         // NOW layers exist — set masksToBounds on the clip view (the actual clipping mechanism)
         scrollView.contentView.wantsLayer = true
         scrollView.contentView.layer?.masksToBounds = true
+
+        // Reflect the restored last-used tool/color/width in the toolbar
+        // (the canvas restored its own state from Settings at init)
+        toolbar.selectToolExternally(canvas.activeTool)
+        toolbar.setColorExternally(canvas.activeColor)
+        toolbar.setLineWidthExternally(canvas.activeLineWidth)
+
+        // Fit oversized captures to the visible area on open; smaller images stay at 1:1
+        let fitSize = scrollView.contentView.bounds.size
+        if fitSize.width > 0, fitSize.height > 0,
+           canvasSize.width > fitSize.width || canvasSize.height > fitSize.height {
+            scrollView.magnification = min(fitSize.width / canvasSize.width, fitSize.height / canvasSize.height)
+        }
 
         win.makeFirstResponder(canvas)
     }
@@ -368,6 +389,8 @@ final class AnnotationToolbar: NSView {
     private var toolButtons: [AnnotationTool: NSButton] = [:]
     private var selectedTool: AnnotationTool = .arrow
     private var colorButton: NSButton?
+    private var currentColor: NSColor = .systemRed
+    private var lineWidthSlider: NSSlider?
     private var colorPopover: NSPopover?
     private var cropApplyButton: NSButton?
     private var backgroundButton: NSButton?
@@ -480,6 +503,7 @@ final class AnnotationToolbar: NSView {
         let slider = NSSlider(value: 3, minValue: 1, maxValue: 20, target: self, action: #selector(lineWidthChanged))
         slider.frame = NSRect(x: x, y: 12, width: 80, height: 28)
         addSubview(slider); x += 88
+        lineWidthSlider = slider
 
         x += 10
 
@@ -568,14 +592,24 @@ final class AnnotationToolbar: NSView {
         selectTool(tool)
     }
 
+    func setColorExternally(_ color: NSColor) {
+        currentColor = color
+        colorButton?.layer?.backgroundColor = color.cgColor
+    }
+
+    func setLineWidthExternally(_ width: CGFloat) {
+        lineWidthSlider?.doubleValue = Double(width)
+    }
+
     func setBackgroundOptionsExternally(_ options: ScreenshotBackgroundOptions) {
         backgroundOptions = options
         backgroundButton?.contentTintColor = options.isEnabled ? .controlAccentColor : NSColor.labelColor.withAlphaComponent(0.86)
     }
 
     @objc private func showColorPopover(_ sender: NSButton) {
-        let controller = ColorPopoverController()
+        let controller = ColorPopoverController(currentColor: currentColor)
         controller.onColorPicked = { [weak self] color in
+            self?.currentColor = color
             self?.onColorChanged?(color)
             sender.layer?.backgroundColor = color.cgColor
         }
@@ -1142,12 +1176,19 @@ private final class PremiumToolbarActionButton: NSButton {
 @MainActor
 final class ColorPopoverController: NSViewController {
     var onColorPicked: ((NSColor) -> Void)?
-    private var currentColor: NSColor = .systemRed
+    private var currentColor: NSColor
 
     private let presets: [NSColor] = [
         .systemRed, .systemOrange, .systemYellow, .systemGreen,
         .systemBlue, .systemPurple, .white, .black
     ]
+
+    init(currentColor: NSColor = .systemRed) {
+        self.currentColor = currentColor
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) { fatalError() }
 
     override func loadView() {
         let width: CGFloat = 160
