@@ -2,6 +2,15 @@ import AppKit
 
 enum SelectionMode { case area, window }
 
+/// Task-group child result for the concurrent frozen-screen captures.
+/// `@unchecked Sendable` because NSImage's Sendable conformance is macOS 14+
+/// while the project targets macOS 13; safe here since every child task is
+/// @MainActor, so the image never actually leaves the main actor.
+private struct IndexedScreenCapture: @unchecked Sendable {
+    let index: Int
+    let image: NSImage?
+}
+
 /// Full-screen translucent overlay that lets the user drag-select a region.
 /// In `.window` mode it highlights the window under the cursor instead.
 @MainActor
@@ -26,8 +35,26 @@ final class AreaSelectionWindow: NSObject {
         NSApp.setActivationPolicy(.accessory)
         NSApp.activate(ignoringOtherApps: true)
 
-        for screen in NSScreen.screens {
-            let image = await engine.captureRectToImage(screen.frame, on: screen)
+        // Capture every screen's frozen image concurrently — each SCK
+        // screenshot costs tens of ms, and serializing them makes the
+        // crosshair visibly lag the hotkey on multi-display setups. The
+        // child tasks stay @MainActor, but captureRectToImage suspends at
+        // its internal awaits, so the actual captures overlap.
+        let screens = NSScreen.screens
+        let frozenImages: [NSImage?] = await withTaskGroup(of: IndexedScreenCapture.self) { group in
+            for (index, screen) in screens.enumerated() {
+                group.addTask { @MainActor in
+                    IndexedScreenCapture(index: index, image: await engine.captureRectToImage(screen.frame, on: screen))
+                }
+            }
+            var images = [NSImage?](repeating: nil, count: screens.count)
+            for await capture in group {
+                images[capture.index] = capture.image
+            }
+            return images
+        }
+
+        for (screen, image) in zip(screens, frozenImages) {
             var rect = NSRect(origin: .zero, size: screen.frame.size)
             let frozenCG = image?.cgImage(forProposedRect: &rect, context: nil, hints: nil)
             let overlay = SelectionOverlayWindow(screen: screen, mode: mode, frozenImage: frozenCG)
@@ -247,28 +274,44 @@ private final class SelectionOverlayView: NSView {
     // MARK: – Magnifier Loupe
 
     private func drawMagnifierLoupe(at point: NSPoint) {
-        guard let window = window else { return }
-        
+        guard let window = window, let frozenImage = frozenImage else { return }
+
         // Convert cursor point to the AppKit screen coordinate space
         let screenPoint = window.convertToScreen(NSRect(origin: point, size: .zero)).origin
 
-        // Capture region: 24x24 pixels around cursor
+        // The frozen image covers only THIS screen, so sample in screen-local
+        // coordinates — subtract the screen's global origin (nonzero on
+        // secondary displays).
+        let screenFrame = window.screen?.frame ?? NSRect(origin: .zero, size: bounds.size)
+        guard screenFrame.width > 0, screenFrame.height > 0 else { return }
+        let localX = screenPoint.x - screenFrame.origin.x
+        let localY = screenPoint.y - screenFrame.origin.y
+
+        // The frozen image is at the display's pixel resolution (2x on Retina,
+        // 1x on non-Retina panels). Derive the true pixel-per-point scale from
+        // the image itself instead of assuming a backing factor.
+        let scaleX = CGFloat(frozenImage.width) / screenFrame.width
+        let scaleY = CGFloat(frozenImage.height) / screenFrame.height
+
+        // Capture region: 24x24 device pixels around cursor, so the loupe's
+        // per-pixel magnification (and the pixel grid) is identical on Retina
+        // and non-Retina displays.
         let captureSize: CGFloat = 24
-        
+
         // Use the frozen screen image to get pixels instantly!
-        // The frozenImage is full-screen, top-left origin (CoreGraphics standard).
-        // screenPoint.y is AppKit bottom-left, so we must invert it to sample the CGImage.
-        let screenHeight = window.screen?.frame.height ?? bounds.height
-        let cgY = screenHeight - screenPoint.y
-        
+        // The frozenImage is top-left origin (CoreGraphics standard); localY is
+        // AppKit bottom-left, so invert within the screen, then scale to pixels.
+        let pixelX = localX * scaleX
+        let pixelY = (screenFrame.height - localY) * scaleY
+
         let captureRect = CGRect(
-            x: screenPoint.x - captureSize / 2,
-            y: cgY - captureSize / 2,
+            x: pixelX - captureSize / 2,
+            y: pixelY - captureSize / 2,
             width: captureSize,
             height: captureSize
         )
 
-        guard let cgImage = frozenImage?.cropping(to: captureRect) else { return }
+        guard let cgImage = frozenImage.cropping(to: captureRect) else { return }
         let loupeSize: CGFloat = 120
         let offset: CGFloat = 20
 
@@ -300,12 +343,13 @@ private final class SelectionOverlayView: NSView {
         ctx.interpolationQuality = .none
         ctx.draw(cgImage, in: loupeRect)
 
-        // Pixel grid overlay
-        let pixelSize = loupeSize / captureSize
+        // Pixel grid overlay — one cell per device pixel in the crop
+        let pixelColumns = max(cgImage.width, 1)
+        let pixelSize = loupeSize / CGFloat(pixelColumns)
         if pixelSize > 4 {
             ctx.setStrokeColor(NSColor.white.withAlphaComponent(0.1).cgColor)
             ctx.setLineWidth(0.5)
-            for i in 0...Int(captureSize) {
+            for i in 0...pixelColumns {
                 let x = loupeRect.minX + CGFloat(i) * pixelSize
                 ctx.move(to: CGPoint(x: x, y: loupeRect.minY))
                 ctx.addLine(to: CGPoint(x: x, y: loupeRect.maxY))
@@ -359,24 +403,48 @@ private final class SelectionOverlayView: NSView {
         guard bytesPerPixel >= 3 else { return }
 
         let offset = centerY * bytesPerRow + centerX * bytesPerPixel
-        guard offset + 2 < CFDataGetLength(data) else { return }
+        guard offset + bytesPerPixel <= CFDataGetLength(data) else { return }
 
-        // Pixel order depends on bitmap info; most CG captures are BGRA or RGBA
+        // Component order depends on BOTH alpha placement and byte order:
+        // SCK frames are typically BGRA (alpha-first, 32-bit little-endian),
+        // CGWindowList captures can be ARGB (alpha-first, big-endian).
         let alphaInfo = image.alphaInfo
         let byteOrder = image.bitmapInfo.intersection(.byteOrderMask)
+        let alphaFirst = alphaInfo == .premultipliedFirst || alphaInfo == .first
+            || alphaInfo == .noneSkipFirst
         let r: UInt8, g: UInt8, b: UInt8
-        if byteOrder == .byteOrder32Little {
-            // BGRA layout
-            b = ptr[offset]
-            g = ptr[offset + 1]
-            r = ptr[offset + 2]
+        if bytesPerPixel >= 4 {
+            if byteOrder == .byteOrder32Little {
+                if alphaFirst {
+                    // ARGB read little-endian → BGRA in memory
+                    b = ptr[offset]
+                    g = ptr[offset + 1]
+                    r = ptr[offset + 2]
+                } else {
+                    // RGBA read little-endian → ABGR in memory
+                    b = ptr[offset + 1]
+                    g = ptr[offset + 2]
+                    r = ptr[offset + 3]
+                }
+            } else {
+                if alphaFirst {
+                    // ARGB in memory (big-endian / host default)
+                    r = ptr[offset + 1]
+                    g = ptr[offset + 2]
+                    b = ptr[offset + 3]
+                } else {
+                    // RGBA in memory
+                    r = ptr[offset]
+                    g = ptr[offset + 1]
+                    b = ptr[offset + 2]
+                }
+            }
         } else {
-            // RGBA layout
+            // 24-bit RGB, no alpha channel
             r = ptr[offset]
             g = ptr[offset + 1]
             b = ptr[offset + 2]
         }
-        _ = alphaInfo // silence unused warning
 
         let hex = String(format: "#%02X%02X%02X", r, g, b)
         let attrs: [NSAttributedString.Key: Any] = [

@@ -1,22 +1,28 @@
 import Vision
 import AppKit
 
+enum OCREngineError: Error {
+    case invalidImage
+}
+
 enum OCREngine {
 
-    /// Recognize text in a CGImage and return the full recognized string.
-    static func recognizeText(in image: NSImage) async -> String {
-        guard let cgImage = image.bestCGImage else { return "" }
-        return await recognizeText(in: cgImage)
+    /// Recognize text in an NSImage and return the full recognized string.
+    /// Returns an empty string when the region genuinely contains no text;
+    /// throws when the image is unusable or Vision recognition fails.
+    static func recognizeText(in image: NSImage) async throws -> String {
+        guard let cgImage = image.bestCGImage else { throw OCREngineError.invalidImage }
+        return try await recognizeText(in: cgImage)
     }
 
-    static func recognizeText(in cgImage: CGImage) async -> String {
-        await withCheckedContinuation { continuation in
+    static func recognizeText(in cgImage: CGImage) async throws -> String {
+        try await withCheckedThrowingContinuation { continuation in
             var didResume = false
             let request = VNRecognizeTextRequest { request, error in
                 guard !didResume else { return }
                 didResume = true
-                if error != nil {
-                    continuation.resume(returning: "")
+                if let error {
+                    continuation.resume(throwing: error)
                     return
                 }
                 let observations = request.results as? [VNRecognizedTextObservation] ?? []
@@ -35,7 +41,7 @@ enum OCREngine {
             } catch {
                 guard !didResume else { return }
                 didResume = true
-                continuation.resume(returning: "")
+                continuation.resume(throwing: error)
             }
         }
     }

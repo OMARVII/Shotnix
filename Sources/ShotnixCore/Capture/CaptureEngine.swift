@@ -27,6 +27,7 @@ final class CaptureEngine {
     private var recordingControlsWindow: RecordingControlsWindow?
     private var recordingScreenChooserWindow: RecordingScreenChooserWindow?
     private var recordingWindowChooserWindow: RecordingWindowChooserWindow?
+    private var fullscreenCaptureChooserWindow: RecordingScreenChooserWindow?
     private var recordingSelectionActive = false
     private let recordingEngine = RecordingEngine()
 
@@ -159,12 +160,51 @@ final class CaptureEngine {
         }
         let screens = NSScreen.screens
         guard !screens.isEmpty else { return }
-        let hiddenByCapture = await hideDesktopIconsForCaptureIfNeeded()
-        defer { restoreDesktopIconsIfNeeded(hiddenByCapture) }
-        // Capture the main (key) screen
-        let screen = NSScreen.main ?? screens[0]
-        let rect = screen.frame
-        await captureRect(rect, on: screen, historyManager: historyManager)
+
+        // Single display: keep the instant capture behavior.
+        guard screens.count > 1 else {
+            let screen = NSScreen.main ?? screens[0]
+            let hiddenByCapture = await hideDesktopIconsForCaptureIfNeeded()
+            defer { restoreDesktopIconsIfNeeded(hiddenByCapture) }
+            await captureRect(screen.frame, on: screen, historyManager: historyManager)
+            return
+        }
+
+        // Multiple displays: let the user pick one (or capture them all),
+        // mirroring the fullscreen recording flow.
+        fullscreenCaptureChooserWindow?.closeChooser()
+        let chooser = RecordingScreenChooserWindow(
+            screens: screens,
+            subtitle: "Select which display to capture fullscreen",
+            actionTitle: "Capture",
+            selectHandler: { [weak self] screen in
+                guard let self else { return }
+                self.fullscreenCaptureChooserWindow = nil
+                Task {
+                    let hiddenByCapture = await self.hideDesktopIconsForCaptureIfNeeded()
+                    await self.captureRect(screen.frame, on: screen, historyManager: historyManager)
+                    self.restoreDesktopIconsIfNeeded(hiddenByCapture)
+                }
+            },
+            allDisplaysHandler: { [weak self] in
+                guard let self else { return }
+                self.fullscreenCaptureChooserWindow = nil
+                Task {
+                    let hiddenByCapture = await self.hideDesktopIconsForCaptureIfNeeded()
+                    // One capture per screen, each through the normal
+                    // post-capture pipeline (history, auto-actions, overlay).
+                    for screen in NSScreen.screens {
+                        await self.captureRect(screen.frame, on: screen, historyManager: historyManager)
+                    }
+                    self.restoreDesktopIconsIfNeeded(hiddenByCapture)
+                }
+            },
+            closeHandler: { [weak self] in
+                self?.fullscreenCaptureChooserWindow = nil
+            }
+        )
+        fullscreenCaptureChooserWindow = chooser
+        chooser.show()
     }
 
     // MARK: – Screen Recording
@@ -492,14 +532,28 @@ final class CaptureEngine {
             }
             Task {
                 guard let image = await self.captureRectToImage(rect, on: screen) else {
+                    ToastWindow.show(message: "Capture failed", on: screen)
                     self.restoreDesktopIconsIfNeeded(hiddenByCapture)
                     return
                 }
-                let text = await OCREngine.recognizeText(in: image)
-                await MainActor.run {
-                    NSPasteboard.general.clearContents()
-                    NSPasteboard.general.setString(text, forType: .string)
-                    self.showOCRNotification(text: text)
+                do {
+                    let text = try await OCREngine.recognizeText(in: image)
+                    await MainActor.run {
+                        // Only touch the pasteboard when there is actual text —
+                        // never clobber the user's clipboard for an empty result.
+                        if text.isEmpty {
+                            ToastWindow.show(message: "No text found in this selection", on: screen)
+                        } else {
+                            NSPasteboard.general.clearContents()
+                            NSPasteboard.general.setString(text, forType: .string)
+                            ToastWindow.show(message: "✓ Text copied to clipboard", on: screen)
+                        }
+                    }
+                } catch {
+                    print("[Shotnix] OCR failed: \(error)")
+                    await MainActor.run {
+                        ToastWindow.show(message: "Text recognition failed", on: screen)
+                    }
                 }
                 self.restoreDesktopIconsIfNeeded(hiddenByCapture)
             }
@@ -524,13 +578,14 @@ final class CaptureEngine {
             }
             Task {
                 guard let image = await self.captureRectToImage(rect, on: screen) else {
+                    ToastWindow.show(message: "Capture failed", on: screen)
                     self.restoreDesktopIconsIfNeeded(hiddenByCapture)
                     return
                 }
                 let results = await QRCodeEngine.detect(in: image)
                 await MainActor.run {
                     if results.isEmpty {
-                        ToastWindow.show(message: "No QR code found in this selection")
+                        ToastWindow.show(message: "No barcode found in this selection", on: screen)
                     } else {
                         QRCodeResultWindow.show(results: results)
                     }
@@ -544,7 +599,11 @@ final class CaptureEngine {
     // MARK: – Core capture
 
     func captureRect(_ rect: CGRect, on screen: NSScreen, historyManager: HistoryManager) async {
-        guard let image = await captureRectToImage(rect, on: screen) else { return }
+        guard let image = await captureRectToImage(rect, on: screen) else {
+            print("[Shotnix] Capture failed for rect \(rect)")
+            ToastWindow.show(message: "Capture failed", on: screen)
+            return
+        }
         playCaptureSound()
         NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .default)
         let item = historyManager.add(image: image, rect: rect)
@@ -604,12 +663,26 @@ final class CaptureEngine {
     @available(macOS 14.0, *)
     private func captureRectSCK(_ rect: CGRect, on screen: NSScreen) async -> NSImage? {
         do {
-            // captureRectSCK only needs the display list — no window enumeration.
+            // captureRectSCK only needs the display and application lists —
+            // no on-screen window enumeration.
             let content = try await Self.shareableContent(includeWindows: false)
             guard let display = content.displays.first(where: { $0.frame.intersects(rect) }) else {
                 return fallbackCapture(rect: rect)
             }
-            let filter = SCContentFilter(display: display, excludingWindows: [])
+            // Exclude Shotnix's own windows (pinned screenshots, toasts, a
+            // previous capture's overlay, the scrolling HUD) so they never
+            // appear inside new captures. Excluding by application is robust
+            // against the cached shareable content's window list going stale —
+            // our SCRunningApplication entry is stable for the process
+            // lifetime, while toast/overlay windows come and go constantly.
+            let currentProcessID = pid_t(ProcessInfo.processInfo.processIdentifier)
+            let filter: SCContentFilter
+            if let ownApp = content.applications.first(where: { $0.processID == currentProcessID }) {
+                filter = SCContentFilter(display: display, excludingApplications: [ownApp], exceptingWindows: [])
+            } else {
+                let ownWindows = content.windows.filter { $0.owningApplication?.processID == currentProcessID }
+                filter = SCContentFilter(display: display, excludingWindows: ownWindows)
+            }
             let s: CGFloat = CGFloat(filter.pointPixelScale)
 
             // Snap rect to integer pixel boundaries to avoid subpixel sampling.
@@ -646,6 +719,7 @@ final class CaptureEngine {
 
             return Self.nsImage(from: cgImage, logicalSize: logicalSize)
         } catch {
+            print("[Shotnix] ScreenCaptureKit capture failed, falling back to CGWindowListCreateImage: \(error)")
             return fallbackCapture(rect: rect)
         }
     }
@@ -656,7 +730,10 @@ final class CaptureEngine {
     }
 
     private func fallbackCapture(rect: CGRect) -> NSImage? {
-        guard let cgImage = CGWindowListCreateImage(rect, .optionAll, kCGNullWindowID, .bestResolution) else { return nil }
+        guard let cgImage = CGWindowListCreateImage(rect, .optionAll, kCGNullWindowID, .bestResolution) else {
+            print("[Shotnix] CGWindowListCreateImage returned nil for rect \(rect)")
+            return nil
+        }
         return Self.nsImage(from: cgImage, logicalSize: rect.size)
     }
 
@@ -700,14 +777,6 @@ final class CaptureEngine {
             }
         }
         return true
-    }
-
-    // MARK: – OCR notification
-
-    private func showOCRNotification(text: String) {
-        let preview = text.count > 80 ? String(text.prefix(80)) + "…" : text
-        let message = preview.isEmpty ? "No text recognized" : "✓ Text copied to clipboard"
-        ToastWindow.show(message: message)
     }
 }
 
@@ -1272,17 +1341,32 @@ private final class RecordingScreenChooserWindow: NSWindow {
     private static let bottomPadding: CGFloat = 16
 
     private let screens: [NSScreen]
+    private let subtitleText: String
+    private let actionTitle: String
     private let selectHandler: (NSScreen) -> Void
+    private let allDisplaysHandler: (() -> Void)?
     private let closeHandler: () -> Void
     private var keyMonitor: Any?
     private var didClose = false
 
-    init(screens: [NSScreen], selectHandler: @escaping (NSScreen) -> Void, closeHandler: @escaping () -> Void) {
+    init(
+        screens: [NSScreen],
+        subtitle: String = "Select which display to record fullscreen",
+        actionTitle: String = "Record",
+        selectHandler: @escaping (NSScreen) -> Void,
+        allDisplaysHandler: (() -> Void)? = nil,
+        closeHandler: @escaping () -> Void
+    ) {
         self.screens = screens
+        self.subtitleText = subtitle
+        self.actionTitle = actionTitle
         self.selectHandler = selectHandler
+        self.allDisplaysHandler = allDisplaysHandler
         self.closeHandler = closeHandler
 
-        let height = Self.headerHeight + CGFloat(screens.count) * Self.rowStride + Self.bottomPadding
+        // The optional "All Displays" row sits below the per-screen rows.
+        let rowCount = screens.count + (allDisplaysHandler == nil ? 0 : 1)
+        let height = Self.headerHeight + CGFloat(rowCount) * Self.rowStride + Self.bottomPadding
         super.init(contentRect: NSRect(x: 0, y: 0, width: Self.panelWidth, height: height), styleMask: [.borderless], backing: .buffered, defer: false)
 
         isOpaque = false
@@ -1355,7 +1439,7 @@ private final class RecordingScreenChooserWindow: NSWindow {
         title.frame = NSRect(x: 20, y: frame.height - 38, width: 220, height: 18)
         panel.addSubview(title)
 
-        let subtitle = label("Select which display to record fullscreen", size: 10.5, weight: .semibold, color: NSColor.white.withAlphaComponent(0.48))
+        let subtitle = label(subtitleText, size: 10.5, weight: .semibold, color: NSColor.white.withAlphaComponent(0.48))
         subtitle.frame = NSRect(x: 20, y: frame.height - 59, width: 288, height: 14)
         panel.addSubview(subtitle)
 
@@ -1369,11 +1453,26 @@ private final class RecordingScreenChooserWindow: NSWindow {
             let button = RecordingScreenChoiceButton(
                 frame: NSRect(x: 14, y: y, width: frame.width - 28, height: Self.rowHeight),
                 title: screenTitle(for: screen, index: index),
-                subtitle: screenSubtitle(for: screen)
+                subtitle: screenSubtitle(for: screen),
+                actionTitle: actionTitle
             )
             button.tag = index
             button.target = self
             button.action = #selector(screenChosen(_:))
+            panel.addSubview(button)
+        }
+
+        if allDisplaysHandler != nil {
+            let y = frame.height - Self.headerHeight - Self.rowHeight - CGFloat(screens.count) * Self.rowStride
+            let button = RecordingScreenChoiceButton(
+                frame: NSRect(x: 14, y: y, width: frame.width - 28, height: Self.rowHeight),
+                title: "All Displays",
+                subtitle: "\(screens.count) screens",
+                symbol: "display.2",
+                actionTitle: actionTitle
+            )
+            button.target = self
+            button.action = #selector(allDisplaysChosen)
             panel.addSubview(button)
         }
     }
@@ -1440,6 +1539,12 @@ private final class RecordingScreenChooserWindow: NSWindow {
         selectHandler(screen)
     }
 
+    @objc private func allDisplaysChosen() {
+        guard let allDisplaysHandler else { return }
+        closeChooser(notify: false)
+        allDisplaysHandler()
+    }
+
     @objc private func closeTapped() {
         closeChooser()
     }
@@ -1448,7 +1553,7 @@ private final class RecordingScreenChooserWindow: NSWindow {
 @MainActor
 private final class RecordingScreenChoiceButton: NSButton {
 
-    init(frame: NSRect, title: String, subtitle: String) {
+    init(frame: NSRect, title: String, subtitle: String, symbol: String = "display", actionTitle: String = "Record") {
         super.init(frame: frame)
         isBordered = false
         self.title = ""
@@ -1461,7 +1566,7 @@ private final class RecordingScreenChoiceButton: NSButton {
         layer?.borderColor = NSColor.white.withAlphaComponent(0.07).cgColor
 
         let icon = NSImageView(frame: NSRect(x: 14, y: 14, width: 16, height: 16))
-        icon.image = NSImage(systemSymbolName: "display", accessibilityDescription: nil)
+        icon.image = NSImage(systemSymbolName: symbol, accessibilityDescription: nil)
         icon.contentTintColor = NSColor.white.withAlphaComponent(0.84)
         addSubview(icon)
 
@@ -1477,7 +1582,7 @@ private final class RecordingScreenChoiceButton: NSButton {
         subtitleField.frame = NSRect(x: 42, y: 8, width: 120, height: 13)
         addSubview(subtitleField)
 
-        let actionField = NSTextField(labelWithString: "Record")
+        let actionField = NSTextField(labelWithString: actionTitle)
         actionField.font = .systemFont(ofSize: 10, weight: .bold)
         actionField.textColor = NSColor.systemRed.withAlphaComponent(0.92)
         actionField.alignment = .right
