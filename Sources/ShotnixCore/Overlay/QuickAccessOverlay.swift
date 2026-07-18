@@ -157,6 +157,7 @@ private final class QuickAccessWindow: NSWindow {
             sections: [
                 ShotnixMenuSection(id: "quick.primary", title: "Capture", actions: [
                     ShotnixMenuAction(id: "quick.copy", title: "Copy", symbolName: "doc.on.doc", shortcut: "⌘C", role: .primary) { [weak self] in self?.copyAction() },
+                    ShotnixMenuAction(id: "quick.copytext", title: "Copy Text", symbolName: "text.viewfinder") { [weak self] in self?.copyTextAction() },
                     ShotnixMenuAction(id: "quick.save", title: "Save", symbolName: "square.and.arrow.down", shortcut: "⌘S") { [weak self] in self?.saveAction() },
                     ShotnixMenuAction(id: "quick.edit", title: "Edit", symbolName: "pencil", shortcut: "⌘E") { [weak self] in self?.editAction() },
                     ShotnixMenuAction(id: "quick.pin", title: "Pin", symbolName: "pin") { [weak self] in self?.pinAction() },
@@ -292,13 +293,14 @@ private final class QuickAccessWindow: NSWindow {
             .font: pillFont,
         ]
 
-        let pills: [(String, Selector)] = [
-            ("Copy", #selector(copyAction)),
-            ("Save", #selector(saveAction)),
+        let pills: [(String, String, Selector)] = [
+            ("Copy", "Copy image to clipboard", #selector(copyAction)),
+            ("Save", "Save screenshot to disk", #selector(saveAction)),
+            ("Text", "Copy recognized text (OCR)", #selector(copyTextAction)),
         ]
 
         // Measure each pill to fit text snugly
-        let pillWidths = pills.map { title, _ in
+        let pillWidths = pills.map { title, _, _ in
             ceil((title as NSString).size(withAttributes: pillAttrs).width) + pillPadding
         }
         let totalPillW = pillWidths.reduce(0, +) + CGFloat(pills.count - 1) * pillGap
@@ -306,10 +308,11 @@ private final class QuickAccessWindow: NSWindow {
         var pillCursorX = round((thumbW - totalPillW) / 2)
 
         let retinaScale = NSScreen.main?.backingScaleFactor ?? 2.0
-        for (i, (title, sel)) in pills.enumerated() {
+        for (i, (title, tip, sel)) in pills.enumerated() {
             let pw = pillWidths[i]
             let pill = OverlayPillButton(frame: NSRect(x: pillCursorX, y: pillY, width: pw, height: pillH))
             pill.attributedTitle = NSAttributedString(string: title, attributes: pillAttrs)
+            pill.toolTip = tip
             pill.target = self
             pill.action = sel
             pill.layer?.contentsScale = retinaScale
@@ -386,8 +389,19 @@ private final class QuickAccessWindow: NSWindow {
         layer.add(shrink, forKey: "timeoutProgress")
     }
 
+    /// Screen the capture was taken on — post-capture UI appears there instead
+    /// of whichever screen happens to be main, so it pops up where the user is
+    /// looking. Falls back to main for items without a stored capture rect.
+    private var captureScreen: NSScreen? {
+        if let rect = historyItem.captureRect?.cgRect,
+           let screen = NSScreen.screenContaining(rect: rect) {
+            return screen
+        }
+        return NSScreen.main
+    }
+
     private func positionOverlay() {
-        guard let screen = NSScreen.main else { return }
+        guard let screen = captureScreen else { return }
         let margin: CGFloat = 36
         let x: CGFloat
         if Settings.overlayOnLeft {
@@ -532,11 +546,51 @@ private final class QuickAccessWindow: NSWindow {
         let url = URL(fileURLWithPath: dir, isDirectory: true).appendingPathComponent("\(name).\(ext)")
 
         guard ImageExporter.save(image: image, to: url) != nil else {
-            ToastWindow.show(message: "Could not save screenshot")
+            ToastWindow.show(message: "Could not save screenshot", on: captureScreen)
             return
         }
 
-        showConfirmation(icon: "checkmark") { [weak self] in self?.animatedClose() }
+        showConfirmation(icon: "checkmark") { [weak self] in
+            guard let self else { return }
+            self.animatedClose()
+            // Clickable toast — reveals the freshly saved file in Finder.
+            ToastWindow.show(
+                message: Self.savedMessage(for: url),
+                duration: 3.0,
+                on: self.captureScreen,
+                action: { NSWorkspace.shared.activateFileViewerSelecting([url]) }
+            )
+        }
+    }
+
+    /// Post-save toast text: destination folder + the reveal affordance hint.
+    private static func savedMessage(for url: URL) -> String {
+        let folder = url.deletingLastPathComponent()
+        let folderName = FileManager.default.displayName(atPath: folder.path)
+        let destination = folderName.isEmpty ? folder.lastPathComponent : folderName
+        return "Saved to \(destination) — click to reveal in Finder"
+    }
+
+    @objc private func copyTextAction() {
+        Task { [weak self] in
+            guard let self else { return }
+            do {
+                let text = try await OCREngine.recognizeText(in: self.image)
+                // Only touch the pasteboard when there is actual text —
+                // never clobber the user's clipboard for an empty result.
+                if text.isEmpty {
+                    ToastWindow.show(message: "No text found in this selection", on: self.captureScreen)
+                } else {
+                    NSPasteboard.general.clearContents()
+                    NSPasteboard.general.setString(text, forType: .string)
+                    ToastWindow.show(message: "✓ Text copied to clipboard", on: self.captureScreen)
+                    self.animatedClose()
+                }
+            } catch {
+                print("[Shotnix] OCR failed: \(error)")
+                ToastWindow.show(message: "Text recognition failed", on: self.captureScreen)
+            }
+        }
     }
 
     /// Flash a confirmation icon over the thumbnail before closing
@@ -591,8 +645,8 @@ private final class QuickAccessWindow: NSWindow {
         showConfirmation(icon: "pin") { [weak self] in
             guard let self else { return }
             self.animatedClose()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [image = self.image] in
-                PinnedWindow.pin(image: image)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [image = self.image, rect = self.historyItem.captureRect?.cgRect] in
+                PinnedWindow.pin(image: image, at: rect)
             }
         }
     }

@@ -537,7 +537,8 @@ final class HistoryCollectionItem: NSCollectionViewItem {
 
     @objc private func pinImage() {
         guard let item = historyItem else { return }
-        PinnedWindow.pin(image: item.fullImage)
+        // Pin back over the original capture location when the rect is known
+        PinnedWindow.pin(image: item.fullImage, at: item.captureRect?.cgRect)
     }
 
     @objc private func deleteItem() {
