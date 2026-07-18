@@ -444,6 +444,12 @@ struct GeneralSettingsView: View {
                     Toggle("", isOn: $showMenuBarIcon)
                         .labelsHidden()
                         .toggleStyle(.switch)
+                        .onChange(of: showMenuBarIcon) { newValue in
+                            guard !newValue else { return }
+                            DispatchQueue.main.async {
+                                confirmHideMenuBarIcon()
+                            }
+                        }
                 }
 
                 PreferenceDivider()
@@ -501,6 +507,21 @@ struct GeneralSettingsView: View {
             PreferenceFootnote(text: "Choose what happens immediately after taking a screenshot.")
         }
     }
+
+    /// The status item is the app's only entry point — confirm before hiding it
+    /// and explain how to get back (relaunching Shotnix reopens Preferences).
+    private func confirmHideMenuBarIcon() {
+        let alert = NSAlert()
+        alert.alertStyle = .warning
+        alert.messageText = "Hide the Menu Bar Icon?"
+        alert.informativeText = "The menu bar icon is Shotnix's main entry point. While it is hidden, open Shotnix again from Finder, Launchpad, or Spotlight to bring these Preferences back."
+        alert.addButton(withTitle: "Hide Icon")
+        alert.addButton(withTitle: "Cancel")
+
+        if alert.runModal() != .alertFirstButtonReturn {
+            showMenuBarIcon = true
+        }
+    }
 }
 struct ShortcutsSettingsView: View {
     private var screenshotShortcuts: [ShotnixShortcut] {
@@ -511,11 +532,19 @@ struct ShortcutsSettingsView: View {
         ShotnixShortcut.allCases.filter { $0.section == .tools }
     }
 
+    private var recordingShortcuts: [ShotnixShortcut] {
+        ShotnixShortcut.allCases.filter { $0.section == .recording }
+    }
+
     var body: some View {
         PreferencesPaneWithFooter {
             ShortcutSection(title: "Screenshots", shortcuts: screenshotShortcuts)
 
             PreferenceFootnote(text: "Hotkeys are system-wide and active while Shotnix is running. The ⌘⇧3 default works best after Apple's screenshot shortcut is disabled.")
+
+            ShortcutSection(title: "Recording", shortcuts: recordingShortcuts)
+
+            PreferenceFootnote(text: "Recording shortcuts are unassigned by default — click a field to set one. Stop Recording also cancels recording setup.")
 
             ShortcutSection(title: "Advanced Tools", shortcuts: toolShortcuts)
         } footer: {
@@ -526,6 +555,17 @@ struct ShortcutsSettingsView: View {
                 .buttonStyle(.bordered)
 
                 Spacer()
+
+                Button("Restore Apple Shortcuts") {
+                    if NativeShortcutManager.restoreNativeShortcuts() {
+                        ToastWindow.show(message: "Apple screenshot shortcuts restored.")
+                    } else {
+                        ToastWindow.show(message: "Could not restore Apple shortcuts.")
+                        NativeShortcutManager.openKeyboardSettings()
+                    }
+                }
+                .buttonStyle(.bordered)
+                .help("Re-enable Apple's ⌘⇧3/4/5 screenshot shortcuts")
             }
         }
     }
@@ -587,9 +627,16 @@ struct ScreenshotsSettingsView: View {
     @AppStorage("jpegQuality") var jpegQuality: Double = 0.95
     @AppStorage("afterCaptureCopyToClipboard") var copyToClipboard = true
     @AppStorage("autoSaveLocation") var autoSaveLocation = ""
+    @AppStorage("filenameTemplate") var filenameTemplate = Settings.defaultFilenameTemplate
 
     var displayLocation: String {
         Settings.autoSaveLocation
+    }
+
+    private var filenamePreview: String {
+        let trimmed = filenameTemplate.trimmingCharacters(in: .whitespaces)
+        let template = trimmed.isEmpty ? Settings.defaultFilenameTemplate : filenameTemplate
+        return "\(ImageExporter.renderFilenameTemplate(template)).\(screenshotFormat)"
     }
 
     var body: some View {
@@ -655,6 +702,37 @@ struct ScreenshotsSettingsView: View {
             }
 
             PreferenceFootnote(text: "Directory where screenshots are saved if Auto-Save is enabled.")
+
+            PreferenceSection("File Name") {
+                PreferenceRow("Template") {
+                    TextField("", text: $filenameTemplate, prompt: Text(Settings.defaultFilenameTemplate))
+                        .textFieldStyle(.plain)
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(Color.white.opacity(0.86))
+                        .padding(.horizontal, 10)
+                        .frame(width: 230, height: 28)
+                        .background(
+                            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                .fill(Color.white.opacity(0.08))
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                .stroke(Color.white.opacity(0.10), lineWidth: 1)
+                        )
+                }
+
+                PreferenceDivider()
+
+                PreferenceRow("Preview") {
+                    Text(filenamePreview)
+                        .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                        .foregroundStyle(Color.white.opacity(0.56))
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+                }
+            }
+
+            PreferenceFootnote(text: "Used for screenshots and recordings. Tokens: %y year, %m month, %d day, %H hour, %M minute, %S second. Leave empty to restore the default.")
         }
     }
 }

@@ -3,6 +3,7 @@ import KeyboardShortcuts
 enum ShotnixShortcutSection: String {
     case screenshots = "Screenshots"
     case tools = "Advanced Tools"
+    case recording = "Recording"
 }
 
 enum ShotnixShortcut: CaseIterable, Identifiable {
@@ -13,6 +14,10 @@ enum ShotnixShortcut: CaseIterable, Identifiable {
     case capturePreviousArea
     case captureText
     case captureScrolling
+    case recordArea
+    case recordWindow
+    case recordFullscreen
+    case stopRecording
 
     var id: String { name.rawValue }
 
@@ -25,6 +30,10 @@ enum ShotnixShortcut: CaseIterable, Identifiable {
         case .capturePreviousArea: return "Capture Previous Area"
         case .captureText: return "OCR / Capture Text"
         case .captureScrolling: return "Scrolling Capture"
+        case .recordArea: return "Record Area"
+        case .recordWindow: return "Record Window"
+        case .recordFullscreen: return "Record Fullscreen"
+        case .stopRecording: return "Stop Recording"
         }
     }
 
@@ -34,6 +43,8 @@ enum ShotnixShortcut: CaseIterable, Identifiable {
             return .screenshots
         case .captureText, .captureScrolling:
             return .tools
+        case .recordArea, .recordWindow, .recordFullscreen, .stopRecording:
+            return .recording
         }
     }
 
@@ -46,6 +57,10 @@ enum ShotnixShortcut: CaseIterable, Identifiable {
         case .capturePreviousArea: return .shotnixCapturePreviousArea
         case .captureText: return .shotnixCaptureText
         case .captureScrolling: return .shotnixCaptureScrolling
+        case .recordArea: return .shotnixRecordArea
+        case .recordWindow: return .shotnixRecordWindow
+        case .recordFullscreen: return .shotnixRecordFullscreen
+        case .stopRecording: return .shotnixStopRecording
         }
     }
 
@@ -62,4 +77,9 @@ extension KeyboardShortcuts.Name {
     static let shotnixCapturePreviousArea = Self("capturePreviousArea", default: KeyboardShortcuts.Shortcut(.seven, modifiers: [.command, .shift]))
     static let shotnixCaptureText = Self("captureText", default: KeyboardShortcuts.Shortcut(.o, modifiers: [.command, .shift]))
     static let shotnixCaptureScrolling = Self("captureScrolling", default: KeyboardShortcuts.Shortcut(.s, modifiers: [.command, .shift]))
+    // Recording shortcuts ship unassigned — users opt in via Preferences → Shortcuts.
+    static let shotnixRecordArea = Self("recordArea")
+    static let shotnixRecordWindow = Self("recordWindow")
+    static let shotnixRecordFullscreen = Self("recordFullscreen")
+    static let shotnixStopRecording = Self("stopRecording")
 }

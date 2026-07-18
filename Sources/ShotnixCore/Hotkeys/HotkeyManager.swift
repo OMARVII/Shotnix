@@ -42,6 +42,27 @@ final class HotkeyManager {
             guard let e = captureEngine, let h = historyManager else { return }
             Task { await e.startScrollingCapture(historyManager: h) }
         }
+
+        KeyboardShortcuts.onKeyDown(for: .shotnixRecordArea) { [weak captureEngine] in
+            guard let e = captureEngine else { return }
+            Task { await e.startAreaRecording() }
+        }
+
+        KeyboardShortcuts.onKeyDown(for: .shotnixRecordWindow) { [weak captureEngine] in
+            guard let e = captureEngine else { return }
+            Task { await e.startWindowRecording() }
+        }
+
+        KeyboardShortcuts.onKeyDown(for: .shotnixRecordFullscreen) { [weak captureEngine] in
+            guard let e = captureEngine else { return }
+            Task { await e.startFullscreenRecording() }
+        }
+
+        // Always registered — CaptureEngine.stopRecording() shows a
+        // "No recording in progress" toast when nothing is being recorded.
+        KeyboardShortcuts.onKeyDown(for: .shotnixStopRecording) { [weak captureEngine] in
+            captureEngine?.stopRecording()
+        }
     }
 
     static func resetDefaults() {

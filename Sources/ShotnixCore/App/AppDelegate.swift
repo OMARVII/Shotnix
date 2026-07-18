@@ -24,6 +24,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 AnnotationWindowController.bringOpenEditorsToFront()
             }
         }
+        // Escape hatch: the status item is the app's only entry point. While it
+        // is hidden, launching Shotnix again (Finder, Spotlight, Launchpad)
+        // lands here — show Preferences so the user can turn the icon back on.
+        if !Settings.showMenuBarIcon {
+            PreferencesWindowController.shared.show(tab: .general)
+        }
         return true
     }
 
@@ -65,6 +71,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         if !welcomeController.showIfNeeded(onClose: promptForNativeShortcuts) {
             promptForNativeShortcuts()
+            // Escape hatch on cold launch: applicationShouldHandleReopen only
+            // fires for an already-running app, so with the status item hidden
+            // a fresh launch would otherwise be completely invisible.
+            if !Settings.showMenuBarIcon {
+                PreferencesWindowController.shared.show(tab: .general)
+            }
         }
     }
 
@@ -108,6 +120,27 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         appMenuItem.submenu = appMenu
         mainMenu.addItem(appMenuItem)
 
+        // Standard Edit menu — LSUIElement apps get no default menus, so without
+        // it ⌘X/C/V/A/Z have no responder route (breaking paste into text
+        // annotation fields and save-panel filename fields). The items target
+        // the app delegate instead of using plain nil-target standard selectors:
+        // a matching menu item consumes its key equivalent even while disabled,
+        // so nil-target items would starve the keyDown-based shortcuts in
+        // custom windows (annotation canvas ⌘Z/⌘C, quick access overlay ⌘C)
+        // and shadow the Timeline menu's ⌘Z. See the Edit menu routing section.
+        let editMenuItem = NSMenuItem()
+        let editMenu = NSMenu(title: "Edit")
+        editMenu.addItem(menuItem("Undo", action: #selector(editUndo(_:)), key: "z", modifiers: [.command]))
+        editMenu.addItem(menuItem("Redo", action: #selector(editRedo(_:)), key: "Z", modifiers: [.command, .shift]))
+        editMenu.addItem(NSMenuItem.separator())
+        editMenu.addItem(menuItem("Cut", action: #selector(editCut(_:)), key: "x", modifiers: [.command]))
+        editMenu.addItem(menuItem("Copy", action: #selector(editCopy(_:)), key: "c", modifiers: [.command]))
+        editMenu.addItem(menuItem("Paste", action: #selector(editPaste(_:)), key: "v", modifiers: [.command]))
+        editMenu.addItem(NSMenuItem.separator())
+        editMenu.addItem(menuItem("Select All", action: #selector(editSelectAll(_:)), key: "a", modifiers: [.command]))
+        editMenuItem.submenu = editMenu
+        mainMenu.addItem(editMenuItem)
+
         let timelineMenuItem = NSMenuItem()
         let timelineMenu = NSMenu(title: "Timeline")
         timelineMenu.addItem(menuItem("Split at Playhead", action: #selector(timelineSplit(_:)), key: "s", modifiers: []))
@@ -121,6 +154,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         timelineMenu.addItem(menuItem("Redo Timeline Edit", action: #selector(timelineRedo(_:)), key: "Z", modifiers: [.command, .shift]))
         timelineMenuItem.submenu = timelineMenu
         mainMenu.addItem(timelineMenuItem)
+
+        // Minimal Window menu with the standard window-management commands.
+        let windowMenuItem = NSMenuItem()
+        let windowMenu = NSMenu(title: "Window")
+        windowMenu.addItem(responderMenuItem("Minimize", action: #selector(NSWindow.performMiniaturize(_:)), key: "m"))
+        windowMenu.addItem(responderMenuItem("Zoom", action: #selector(NSWindow.performZoom(_:)), key: ""))
+        windowMenu.addItem(NSMenuItem.separator())
+        windowMenu.addItem(responderMenuItem("Bring All to Front", action: #selector(NSApplication.arrangeInFront(_:)), key: ""))
+        windowMenuItem.submenu = windowMenu
+        mainMenu.addItem(windowMenuItem)
+        NSApp.windowsMenu = windowMenu
 
         NSApp.mainMenu = mainMenu
     }
@@ -137,8 +181,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         return item
     }
 
+    /// Menu item with no explicit target — the action resolves through the
+    /// responder chain (text fields, editors, key window).
+    private func responderMenuItem(
+        _ title: String,
+        action: Selector,
+        key: String,
+        modifiers: NSEvent.ModifierFlags = [.command]
+    ) -> NSMenuItem {
+        let item = NSMenuItem(title: title, action: action, keyEquivalent: key)
+        item.keyEquivalentModifierMask = modifiers
+        return item
+    }
+
     private func setupStatusItem() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
+        statusItem.isVisible = Settings.showMenuBarIcon
         guard let button = statusItem.button else { return }
         let config = NSImage.SymbolConfiguration(pointSize: 14, weight: .medium, scale: .medium)
         let icon = NSImage(systemSymbolName: "crop", accessibilityDescription: "Shotnix")?
@@ -148,6 +206,34 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         button.target = self
         button.action = #selector(toggleCommandCenter)
         button.sendAction(on: [.leftMouseUp, .rightMouseUp])
+
+        // Keep the icon in sync with the "Show menu bar icon" preference,
+        // which is toggled live from the General preferences pane.
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(userDefaultsDidChange),
+            name: UserDefaults.didChangeNotification,
+            object: nil
+        )
+    }
+
+    @objc private func userDefaultsDidChange(_ notification: Notification) {
+        // Posted on whichever thread wrote the defaults (Sparkle writes from
+        // background queues); NSStatusItem must only be touched on main.
+        if Thread.isMainThread {
+            updateStatusItemVisibility()
+        } else {
+            DispatchQueue.main.async { [weak self] in
+                self?.updateStatusItemVisibility()
+            }
+        }
+    }
+
+    private func updateStatusItemVisibility() {
+        guard let statusItem else { return }
+        let shouldShow = Settings.showMenuBarIcon
+        guard statusItem.isVisible != shouldShow else { return }
+        statusItem.isVisible = shouldShow
     }
 
     // MARK: – Actions
@@ -212,6 +298,74 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func timelineUndo(_ sender: Any?) { VideoDemoEditorWindowController.undoActiveTimelineEdit() }
     @objc func timelineRedo(_ sender: Any?) { VideoDemoEditorWindowController.redoActiveTimelineEdit() }
 
+    // MARK: – Edit menu routing
+    //
+    // AppKit consumes a menu item's key equivalent even when the item is
+    // disabled, so plain nil-target Edit items would swallow ⌘Z/⌘C before the
+    // keyDown-based shortcuts in custom windows (annotation canvas, quick
+    // access overlay) or the Timeline menu ever see them. These handlers try
+    // the focused responder first and then fall back to app-specific handling.
+
+    @objc func editUndo(_ sender: Any?) {
+        // Focused text contexts (field editors, save panels) win.
+        if let undoManager = NSApp.keyWindow?.firstResponder?.undoManager, undoManager.canUndo {
+            undoManager.undo()
+            return
+        }
+        // The video editor's timeline undo stack is separate from NSUndoManager.
+        if NSApp.keyWindow?.delegate is VideoDemoEditorWindowController {
+            VideoDemoEditorWindowController.undoActiveTimelineEdit()
+            return
+        }
+        // Windows with keyDown-based undo (annotation canvas) get the raw event.
+        replayKeyEquivalent(characters: "z", keyCode: 6, modifiers: [.command])
+    }
+
+    @objc func editRedo(_ sender: Any?) {
+        if let undoManager = NSApp.keyWindow?.firstResponder?.undoManager, undoManager.canRedo {
+            undoManager.redo()
+            return
+        }
+        if NSApp.keyWindow?.delegate is VideoDemoEditorWindowController {
+            VideoDemoEditorWindowController.redoActiveTimelineEdit()
+            return
+        }
+        replayKeyEquivalent(characters: "z", keyCode: 6, modifiers: [.command, .shift])
+    }
+
+    @objc func editCut(_ sender: Any?)       { dispatchEditAction(#selector(NSText.cut(_:)), characters: "x", keyCode: 7) }
+    @objc func editCopy(_ sender: Any?)      { dispatchEditAction(#selector(NSText.copy(_:)), characters: "c", keyCode: 8) }
+    @objc func editPaste(_ sender: Any?)     { dispatchEditAction(#selector(NSText.paste(_:)), characters: "v", keyCode: 9) }
+    @objc func editSelectAll(_ sender: Any?) { dispatchEditAction(#selector(NSText.selectAll(_:)), characters: "a", keyCode: 0) }
+
+    /// Sends a standard editing action through the responder chain (text views,
+    /// field editors). If nothing claims it, replays the shortcut as a plain
+    /// keyDown so custom windows keep their keyDown-based ⌘-key handling.
+    private func dispatchEditAction(_ action: Selector, characters: String, keyCode: UInt16) {
+        if NSApp.sendAction(action, to: nil, from: nil) { return }
+        replayKeyEquivalent(characters: characters, keyCode: keyCode, modifiers: [.command])
+    }
+
+    /// Re-delivers a shortcut to the key window's first responder as a keyDown.
+    /// Safe from re-entry: direct keyDown dispatch never re-enters menu
+    /// key-equivalent processing.
+    private func replayKeyEquivalent(characters: String, keyCode: UInt16, modifiers: NSEvent.ModifierFlags) {
+        guard let window = NSApp.keyWindow,
+              let event = NSEvent.keyEvent(
+                  with: .keyDown,
+                  location: .zero,
+                  modifierFlags: modifiers,
+                  timestamp: ProcessInfo.processInfo.systemUptime,
+                  windowNumber: window.windowNumber,
+                  context: nil,
+                  characters: characters,
+                  charactersIgnoringModifiers: characters,
+                  isARepeat: false,
+                  keyCode: keyCode
+              ) else { return }
+        window.firstResponder?.keyDown(with: event)
+    }
+
     @objc private func toggleCommandCenter(_ sender: Any?) {
         if menuPresenter.isShown {
             menuPresenter.dismiss()
@@ -237,13 +391,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 action(id: "capture.scrolling", title: "Scrolling Capture", symbol: "scroll", shortcut: .shotnixCaptureScrolling) { [weak self] in self?.captureScrolling() },
             ]),
             ShotnixMenuSection(id: "record", title: "Record", actions: [
-                action(id: "record.area", title: "Record Area", symbol: "record.circle", isEnabled: captureEngine?.recordingActionsEnabled ?? false) { [weak self] in self?.recordArea() },
-                action(id: "record.window", title: "Record Window", symbol: "macwindow.badge.plus", isEnabled: captureEngine?.recordingActionsEnabled ?? false) { [weak self] in self?.recordWindow() },
-                action(id: "record.fullscreen", title: "Record Fullscreen", symbol: "rectangle.fill.on.rectangle.fill", isEnabled: captureEngine?.recordingActionsEnabled ?? false) { [weak self] in self?.recordFullscreen() },
+                action(id: "record.area", title: "Record Area", symbol: "record.circle", shortcut: .shotnixRecordArea, isEnabled: captureEngine?.recordingActionsEnabled ?? false) { [weak self] in self?.recordArea() },
+                action(id: "record.window", title: "Record Window", symbol: "macwindow.badge.plus", shortcut: .shotnixRecordWindow, isEnabled: captureEngine?.recordingActionsEnabled ?? false) { [weak self] in self?.recordWindow() },
+                action(id: "record.fullscreen", title: "Record Fullscreen", symbol: "rectangle.fill.on.rectangle.fill", shortcut: .shotnixRecordFullscreen, isEnabled: captureEngine?.recordingActionsEnabled ?? false) { [weak self] in self?.recordFullscreen() },
                 action(
                     id: "record.stop",
                     title: captureEngine?.recordingStopTitle ?? "Stop Recording",
                     symbol: "stop.circle",
+                    shortcut: .shotnixStopRecording,
                     isEnabled: captureEngine?.recordingStopEnabled ?? false,
                     role: .destructive
                 ) { [weak self] in self?.stopRecording() },

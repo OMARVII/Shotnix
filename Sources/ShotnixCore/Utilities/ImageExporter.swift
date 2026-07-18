@@ -42,14 +42,60 @@ enum ImageExporter {
         pb.setData(png, forType: .png)
     }
 
-    private static let nameFormatter: DateFormatter = {
-        let df = DateFormatter()
-        df.dateFormat = "yyyy-MM-dd 'at' HH.mm.ss"
-        return df
-    }()
+    // MARK: – Filename template
 
+    /// Base name (no extension) for every screenshot/recording/drag export,
+    /// rendered from the user's filename template (Preferences → Screenshots).
     static var timestampedName: String {
-        "Shotnix \(nameFormatter.string(from: Date()))"
+        renderFilenameTemplate(Settings.filenameTemplate)
+    }
+
+    /// Renders a filename template. Tokens: %y year (4-digit), %m month,
+    /// %d day, %H hour (24h), %M minute, %S second, %% literal percent.
+    /// Path-hostile characters are sanitized; an empty result falls back to
+    /// the default template so callers always get a usable name.
+    static func renderFilenameTemplate(_ template: String, date: Date = Date()) -> String {
+        let c = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+        func pad(_ value: Int?, _ width: Int = 2) -> String {
+            String(format: "%0\(width)d", value ?? 0)
+        }
+
+        var rendered = ""
+        rendered.reserveCapacity(template.count + 16)
+        var index = template.startIndex
+        while index < template.endIndex {
+            let ch = template[index]
+            let next = template.index(after: index)
+            if ch == "%", next < template.endIndex {
+                switch template[next] {
+                case "y": rendered += pad(c.year, 4)
+                case "m": rendered += pad(c.month)
+                case "d": rendered += pad(c.day)
+                case "H": rendered += pad(c.hour)
+                case "M": rendered += pad(c.minute)
+                case "S": rendered += pad(c.second)
+                case "%": rendered += "%"
+                default:
+                    rendered.append(ch)
+                    rendered.append(template[next])
+                }
+                index = template.index(after: next)
+            } else {
+                rendered.append(ch)
+                index = next
+            }
+        }
+
+        // "/" would create directories and ":" renders as "/" in Finder.
+        rendered = rendered
+            .replacingOccurrences(of: "/", with: "-")
+            .replacingOccurrences(of: ":", with: "-")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        if rendered.isEmpty {
+            return renderFilenameTemplate(Settings.defaultFilenameTemplate, date: date)
+        }
+        return rendered
     }
 
     // MARK: – Save with panel

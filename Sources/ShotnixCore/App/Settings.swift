@@ -150,6 +150,21 @@ enum Settings {
         set { defaults.set(newValue, forKey: "jpegQuality") }
     }
 
+    /// Default filename template — renders to the historical
+    /// "Shotnix 2026-04-12 at 10.30.48" naming.
+    static let defaultFilenameTemplate = "Shotnix %y-%m-%d at %H.%M.%S"
+
+    /// Filename template for screenshots, recordings, and drag exports.
+    /// Tokens: %y year, %m month, %d day, %H hour, %M minute, %S second,
+    /// %% literal percent. Rendering lives in ImageExporter.
+    static var filenameTemplate: String {
+        get {
+            let v = defaults.string(forKey: "filenameTemplate") ?? ""
+            return v.trimmingCharacters(in: .whitespaces).isEmpty ? defaultFilenameTemplate : v
+        }
+        set { defaults.set(newValue, forKey: "filenameTemplate") }
+    }
+
     // MARK: – Recording
 
     static var recordingFPS: Int {
@@ -250,10 +265,19 @@ enum Settings {
             return nil
         }
 
+        // The actual last-recording URL is persisted via lastRecordingPath when
+        // a recording finishes; this fallback is best-effort recovery. Match the
+        // legacy "Shotnix " prefix plus the current template's static leading
+        // segment so unrelated .mp4 files in the save folder (e.g. downloads)
+        // are never mistaken for a Shotnix recording. If the template starts
+        // with a token (no static prefix), the fallback simply finds nothing.
+        let templatePrefix = String(filenameTemplate.prefix(while: { $0 != "%" })).trimmingCharacters(in: .whitespaces)
         return urls
             .filter { url in
-                url.pathExtension.lowercased() == "mp4" &&
-                url.lastPathComponent.hasPrefix("Shotnix ")
+                guard url.pathExtension.lowercased() == "mp4" else { return false }
+                let name = url.lastPathComponent
+                return name.hasPrefix("Shotnix ")
+                    || (!templatePrefix.isEmpty && name.hasPrefix(templatePrefix))
             }
             .filter { url in
                 (try? url.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile) == true
@@ -265,5 +289,35 @@ enum Settings {
 
     private static func modificationDate(for url: URL) -> Date {
         (try? url.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate) ?? .distantPast
+    }
+
+    // MARK: – Annotation editor
+
+    /// Raw value of the last-used annotation tool (AnnotationTool.rawValue).
+    static var annotationLastTool: String {
+        get { defaults.string(forKey: "annotationLastTool") ?? "arrow" }
+        set { defaults.set(newValue, forKey: "annotationLastTool") }
+    }
+
+    /// Last-used annotation line width in points. 0 = never set, so fall back to 3.
+    static var annotationLastLineWidth: Double {
+        get {
+            let v = defaults.double(forKey: "annotationLastLineWidth")
+            return v == 0 ? 3 : v
+        }
+        set { defaults.set(newValue, forKey: "annotationLastLineWidth") }
+    }
+
+    /// Last-used annotation color as archived NSColor data (secure coding).
+    /// Archiving/unarchiving lives in the annotation editor so this file stays AppKit-free.
+    static var annotationLastColorData: Data? {
+        get { defaults.data(forKey: "annotationLastColorData") }
+        set {
+            if let newValue {
+                defaults.set(newValue, forKey: "annotationLastColorData")
+            } else {
+                defaults.removeObject(forKey: "annotationLastColorData")
+            }
+        }
     }
 }
