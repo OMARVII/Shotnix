@@ -191,6 +191,34 @@ final class VideoDemoRecordingMetadataRecorder {
         }
     }
 
+    /// Re-anchors t=0 to the wall-clock time of the first appended video frame
+    /// so cursor/click timestamps align with the video timeline. Samples taken
+    /// before the first frame are shifted back; the newest pre-frame cursor
+    /// sample is clamped to t=0 so the cursor has a known starting position.
+    func alignStart(to wallClockTime: CFTimeInterval) {
+        let offset = wallClockTime - startedAt
+        guard offset > 0 else { return }
+        startedAt = wallClockTime
+
+        var shiftedSamples: [VideoDemoCursorSample] = []
+        for sample in cursorSamples {
+            let time = sample.time - offset
+            if time < 0 {
+                // Samples are chronological, so this keeps only the newest pre-frame one.
+                shiftedSamples = [VideoDemoCursorSample(time: 0, x: sample.x, y: sample.y)]
+            } else {
+                shiftedSamples.append(VideoDemoCursorSample(time: time, x: sample.x, y: sample.y))
+            }
+        }
+        cursorSamples = shiftedSamples
+
+        clickEvents = clickEvents.compactMap { event in
+            let time = event.time - offset
+            guard time >= 0 else { return nil }
+            return VideoDemoClickEvent(id: event.id, time: time, x: event.x, y: event.y, button: event.button)
+        }
+    }
+
     func finish(duration: Double) -> VideoDemoRecordingMetadata {
         timer?.invalidate()
         timer = nil

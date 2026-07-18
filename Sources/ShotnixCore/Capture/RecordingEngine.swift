@@ -18,10 +18,12 @@ final class RecordingEngine: NSObject {
     private var microphoneDelegate: MicrophoneCaptureDelegate?
     private var outputURL: URL?
     private var firstPresentationTime: CMTime?
+    private var firstFrameWallClockTime: CFTimeInterval = 0
     private var lastPresentationTime: CMTime?
     private var lastCompleteSampleBuffer: CMSampleBuffer?
     private var pendingSystemAudioSamples: [CMSampleBuffer] = []
     private var pendingMicrophoneSamples: [CMSampleBuffer] = []
+    private var droppedPendingAudioSampleCount = 0
     private var recordingStartedAt: CFTimeInterval = 0
     private var isRecording = false
     private var isFinishing = false
@@ -46,6 +48,11 @@ final class RecordingEngine: NSObject {
     private func startRecording(source: RecordingSource) async {
         guard !active else {
             ToastWindow.show(message: "Recording already in progress")
+            return
+        }
+
+        guard Self.destinationHasSufficientDiskSpace() else {
+            ToastWindow.show(message: "Not enough free disk space to record.")
             return
         }
 
@@ -376,6 +383,10 @@ final class RecordingEngine: NSObject {
         let sourcePresentationTime = sampleBuffer.presentationTimeStamp
         if firstPresentationTime == nil {
             firstPresentationTime = sourcePresentationTime
+            firstFrameWallClockTime = CACurrentMediaTime()
+            // Video t=0 is this frame, not stream start — re-anchor cursor/click
+            // metadata so its timestamps line up with the video timeline.
+            metadataRecorder?.alignStart(to: firstFrameWallClockTime)
             writer.startSession(atSourceTime: .zero)
             flushPendingAudioSamples()
         }
@@ -391,6 +402,32 @@ final class RecordingEngine: NSObject {
             lastCompleteSampleBuffer = sampleBuffer
         } else if let error = writer.error {
             print("[Shotnix] Asset writer append failed: \(error)")
+            if writer.status == .failed {
+                handleWriterFailure()
+            }
+        }
+    }
+
+    /// The writer entered .failed mid-recording (disk full is the classic cause).
+    /// Stop immediately so the user gets feedback instead of a dead HUD timer.
+    private func handleWriterFailure() {
+        guard isRecording, !isFinishing else { return }
+        beginFinishing()
+
+        let streamToStop = stream
+        let outputToRemove = streamOutput
+        let writerError = assetWriter?.error
+        Task {
+            do {
+                try await streamToStop?.stopCapture()
+            } catch {
+                print("[Shotnix] Recording stop failed: \(error)")
+            }
+            if let streamToStop, let outputToRemove {
+                try? streamToStop.removeStreamOutput(outputToRemove, type: .screen)
+                try? streamToStop.removeStreamOutput(outputToRemove, type: .audio)
+            }
+            finishRecording(error: writerError)
         }
     }
 
@@ -398,8 +435,18 @@ final class RecordingEngine: NSObject {
         guard !isFinishing else { return }
         guard firstPresentationTime != nil else {
             switch target {
-            case .system: pendingSystemAudioSamples.append(sampleBuffer)
-            case .microphone: pendingMicrophoneSamples.append(sampleBuffer)
+            case .system:
+                pendingSystemAudioSamples.append(sampleBuffer)
+                if pendingSystemAudioSamples.count > Self.maximumPendingAudioSamples {
+                    pendingSystemAudioSamples.removeFirst()
+                    droppedPendingAudioSampleCount += 1
+                }
+            case .microphone:
+                pendingMicrophoneSamples.append(sampleBuffer)
+                if pendingMicrophoneSamples.count > Self.maximumPendingAudioSamples {
+                    pendingMicrophoneSamples.removeFirst()
+                    droppedPendingAudioSampleCount += 1
+                }
             }
             return
         }
@@ -407,6 +454,10 @@ final class RecordingEngine: NSObject {
     }
 
     private func flushPendingAudioSamples() {
+        if droppedPendingAudioSampleCount > 0 {
+            print("[Shotnix] Dropped \(droppedPendingAudioSampleCount) audio sample buffers while waiting for the first video frame")
+            droppedPendingAudioSampleCount = 0
+        }
         pendingSystemAudioSamples.forEach { appendReadyAudioSample($0, to: .system) }
         pendingSystemAudioSamples.removeAll()
         pendingMicrophoneSamples.forEach { appendReadyAudioSample($0, to: .microphone) }
@@ -448,6 +499,15 @@ final class RecordingEngine: NSObject {
                 return
             }
 
+            guard writer.status == .writing else {
+                // Writer already failed (e.g. disk full) — finishWriting would throw.
+                let writerError = writer.error
+                self.cleanup()
+                ToastWindow.show(message: "Could not save recording.")
+                if let writerError { print("[Shotnix] Recording finish failed: \(writerError)") }
+                return
+            }
+
             videoInput.markAsFinished()
             self.systemAudioInput?.markAsFinished()
             self.microphoneInput?.markAsFinished()
@@ -462,15 +522,22 @@ final class RecordingEngine: NSObject {
                     self.cancelFinishTimeout()
                     let recordingMetadata = self.pendingRecordingMetadata
                     self.cleanup()
-                    if let error {
-                        ToastWindow.show(message: "Recording stopped unexpectedly.")
-                        print("[Shotnix] Recording stream error: \(error)")
-                    } else if writerStatus == .completed, writerError == nil {
+                    if writerStatus == .completed, writerError == nil, Self.fileHasContent(at: url) {
                         if let recordingMetadata {
                             VideoDemoSidecarStore.save(recordingMetadata, for: url)
                         }
-                        ToastWindow.show(message: Self.savedRecordingMessage(for: url), duration: 3.0)
+                        if let error {
+                            // Stream died (display disconnect, sleep, revoked permission)
+                            // but the writer finalized a playable file — salvage it.
+                            ToastWindow.show(message: "Recording stopped early — saved what was captured.", duration: 3.0)
+                            print("[Shotnix] Recording stream error: \(error)")
+                        } else {
+                            ToastWindow.show(message: Self.savedRecordingMessage(for: url), duration: 3.0)
+                        }
                         self.recordingFinishedHandler?(url)
+                    } else if let error {
+                        ToastWindow.show(message: "Recording stopped unexpectedly.")
+                        print("[Shotnix] Recording stream error: \(error)")
                     } else {
                         ToastWindow.show(message: "Could not save recording.")
                         if let writerError { print("[Shotnix] Recording finish failed: \(writerError)") }
@@ -481,7 +548,10 @@ final class RecordingEngine: NSObject {
     }
 
     private func beginFinishing() {
-        let elapsed = recordingStartedAt > 0 ? CACurrentMediaTime() - recordingStartedAt : 0
+        // Duration is anchored to the first appended frame (video t=0), falling
+        // back to stream start if no frame ever arrived.
+        let anchor = firstFrameWallClockTime > 0 ? firstFrameWallClockTime : recordingStartedAt
+        let elapsed = anchor > 0 ? CACurrentMediaTime() - anchor : 0
         pendingRecordingMetadata = metadataRecorder?.finish(duration: elapsed)
         metadataRecorder = nil
         isRecording = false
@@ -514,8 +584,11 @@ final class RecordingEngine: NSObject {
     private func appendFinalStaticFrameIfNeeded() {
         guard let input = videoInput,
               input.isReadyForMoreMediaData,
+              firstFrameWallClockTime > 0,
               let lastSampleBuffer = lastCompleteSampleBuffer else { return }
-        let elapsed = CACurrentMediaTime() - recordingStartedAt
+        // Video t=0 is the first appended frame, so the final PTS must be
+        // measured from the same anchor — not from stream start.
+        let elapsed = CACurrentMediaTime() - firstFrameWallClockTime
         let finalPresentationTime = CMTime(seconds: max(elapsed, 0), preferredTimescale: 600)
         let minimumStep = frameDuration
         let last = lastPresentationTime ?? .zero
@@ -593,10 +666,12 @@ final class RecordingEngine: NSObject {
 
     private func resetTimingState() {
         firstPresentationTime = nil
+        firstFrameWallClockTime = 0
         lastPresentationTime = nil
         lastCompleteSampleBuffer = nil
         pendingSystemAudioSamples.removeAll()
         pendingMicrophoneSamples.removeAll()
+        droppedPendingAudioSampleCount = 0
     }
 
     private var frameDuration: CMTime {
@@ -741,6 +816,30 @@ final class RecordingEngine: NSObject {
 
     private static func evenCeil(_ value: Int) -> Int {
         value.isMultiple(of: 2) ? value : value + 1
+    }
+
+    /// ~3 seconds of audio buffers (≈47 buffers/sec at 48 kHz / 1024 frames)
+    /// kept per track while waiting for the first video frame.
+    private static let maximumPendingAudioSamples = 150
+
+    /// Refuse to start below this so the writer doesn't fail mid-recording on a full disk.
+    private static let minimumFreeDiskSpace: Int64 = 500 * 1_024 * 1_024
+
+    private static func destinationHasSufficientDiskSpace() -> Bool {
+        let directory = URL(fileURLWithPath: Settings.autoSaveLocation, isDirectory: true)
+        guard let capacity = try? directory.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey])
+            .volumeAvailableCapacityForImportantUsage else {
+            // If the capacity query fails, let the writer surface the real error.
+            return true
+        }
+        return capacity >= minimumFreeDiskSpace
+    }
+
+    private static func fileHasContent(at url: URL) -> Bool {
+        guard let size = try? FileManager.default.attributesOfItem(atPath: url.path)[.size] as? NSNumber else {
+            return false
+        }
+        return size.int64Value > 0
     }
 
     private static func makeOutputURL() -> URL {

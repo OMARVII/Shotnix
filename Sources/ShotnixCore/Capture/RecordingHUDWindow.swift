@@ -1,4 +1,5 @@
 import AppKit
+import ApplicationServices
 
 @MainActor
 final class RecordingHUDWindow: NSWindow {
@@ -11,6 +12,8 @@ final class RecordingHUDWindow: NSWindow {
     private let stopButton = RecordingHUDStopButton()
     private var startedAt = Date()
     private var timer: Timer?
+    private var escapeKeyMonitor: Any?
+    private var globalEscapeKeyMonitor: Any?
 
     init() {
         super.init(
@@ -122,6 +125,41 @@ final class RecordingHUDWindow: NSWindow {
         let origin = NSPoint(x: visibleFrame.midX - frame.width / 2, y: visibleFrame.maxY - frame.height - 18)
         setFrameOrigin(pixelAligned(origin, scale: screen.backingScaleFactor))
         orderFrontRegardless()
+        installEscapeMonitors()
+    }
+
+    // Escape stops the recording. The HUD is a nonactivating panel that never
+    // becomes key, so it watches for Escape with local + global monitors that
+    // live only while the recording session runs. The local monitor only covers
+    // Shotnix-active cases; the global monitor delivers keyboard events only
+    // when the process is trusted for Accessibility, so it is installed just
+    // when it can actually fire. Cross-app stopping without Accessibility trust
+    // is handled by the Carbon-based "Stop Recording" hotkey.
+    private func installEscapeMonitors() {
+        removeEscapeMonitors()
+        escapeKeyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
+            guard let self, event.keyCode == 53,
+                  event.modifierFlags.intersection([.command, .option, .control, .shift]).isEmpty
+            else { return event }
+            // Another Shotnix window is key (selection overlay, editor…) —
+            // let it keep its own Escape handling.
+            if let keyWindow = NSApp.keyWindow, keyWindow !== self { return event }
+            self.stopHandler?()
+            return nil
+        }
+        if AXIsProcessTrusted() {
+            globalEscapeKeyMonitor = NSEvent.addGlobalMonitorForEvents(matching: .keyDown) { [weak self] event in
+                guard event.keyCode == 53,
+                      event.modifierFlags.intersection([.command, .option, .control, .shift]).isEmpty
+                else { return }
+                DispatchQueue.main.async { self?.stopHandler?() }
+            }
+        }
+    }
+
+    private func removeEscapeMonitors() {
+        if let m = escapeKeyMonitor { NSEvent.removeMonitor(m); escapeKeyMonitor = nil }
+        if let m = globalEscapeKeyMonitor { NSEvent.removeMonitor(m); globalEscapeKeyMonitor = nil }
     }
 
     private func pixelAligned(_ point: NSPoint, scale: CGFloat) -> NSPoint {
@@ -129,6 +167,7 @@ final class RecordingHUDWindow: NSWindow {
     }
 
     func closeHUD() {
+        removeEscapeMonitors()
         timer?.invalidate()
         timer = nil
         microphoneLevelMeter.setLevel(0)
