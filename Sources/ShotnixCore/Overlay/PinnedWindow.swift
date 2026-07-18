@@ -7,8 +7,14 @@ final class PinnedWindow: NSWindow {
 
     private static var pinned: [PinnedWindow] = []
 
-    static func pin(image: NSImage) {
+    /// Pins a screenshot as a floating window. When the original capture rect
+    /// is known, the pin appears exactly over where the capture was taken;
+    /// otherwise it falls back to centering on the main screen.
+    static func pin(image: NSImage, at rect: CGRect? = nil) {
         let win = PinnedWindow(image: image)
+        if let rect {
+            win.positionOverCaptureRect(rect)
+        }
         win.show()
         pinned.append(win)
     }
@@ -65,6 +71,41 @@ final class PinnedWindow: NSWindow {
 
         contentView = imageView
         center()
+    }
+
+    /// Places the window exactly over the original capture rect, on the screen
+    /// where the capture happened. `HistoryItem.captureRect` is stored in AppKit
+    /// screen coordinates (bottom-left origin, via AreaSelectionWindow's
+    /// convertToScreen), so no CG top-left flip is needed — only clamping to the
+    /// target screen's visibleFrame.
+    private func positionOverCaptureRect(_ rect: CGRect) {
+        guard rect.width > 1, rect.height > 1 else { return }
+        guard let screen = NSScreen.screenContaining(rect: rect) ?? NSScreen.main else { return }
+        let visible = screen.visibleFrame
+
+        let imageAspect = frame.height > 0 ? frame.width / frame.height : 1
+        let rectAspect = rect.width / rect.height
+        let size: NSSize
+        let origin: NSPoint
+        if abs(imageAspect - rectAspect) < 0.01 * max(imageAspect, rectAspect) {
+            // Aspect matches (normal area/window captures): sit exactly over the
+            // capture, shrinking proportionally if it exceeds the usable screen
+            // area (menu bar / Dock overlap) so the pin always fits on screen.
+            let scale = min(1.0, min(visible.width / rect.width, visible.height / rect.height))
+            size = NSSize(width: rect.width * scale, height: rect.height * scale)
+            origin = rect.origin
+        } else {
+            // Image aspect differs from the capture rect (e.g. stitched scrolling
+            // capture): keep the image-derived size from init and just center the
+            // pin over the rect.
+            size = frame.size
+            origin = NSPoint(x: rect.midX - size.width / 2, y: rect.midY - size.height / 2)
+        }
+
+        // Clamp the origin so the pin stays fully inside the visible frame.
+        let x = min(max(origin.x, visible.minX), visible.maxX - size.width)
+        let y = min(max(origin.y, visible.minY), visible.maxY - size.height)
+        setFrame(NSRect(origin: NSPoint(x: x, y: y), size: size), display: false)
     }
 
     func show() {
@@ -148,14 +189,14 @@ final class PinnedWindow: NSWindow {
     @objc private func copyPinnedImage() {
         guard let image = imageView.image else { return }
         ImageExporter.copyToClipboard(image: image)
-        ToastWindow.show(message: "✓ Copied to clipboard")
+        ToastWindow.show(message: "✓ Copied to clipboard", on: screen)
     }
 
     @objc private func savePinnedImage() {
         guard let image = imageView.image else { return }
-        ImageExporter.saveWithPanel(image: image, suggestedName: ImageExporter.timestampedName, presentingWindow: self) { result in
+        ImageExporter.saveWithPanel(image: image, suggestedName: ImageExporter.timestampedName, presentingWindow: self) { [weak self] result in
             if result.didSave {
-                ToastWindow.show(message: "✓ Saved screenshot")
+                ToastWindow.show(message: "✓ Saved screenshot", on: self?.screen)
             }
         }
     }

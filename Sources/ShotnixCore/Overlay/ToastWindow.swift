@@ -7,10 +7,15 @@ final class ToastWindow: NSWindow {
     private static var current: ToastWindow?
     private var finalOrigin: NSPoint = .zero
 
-    static func show(message: String, duration: TimeInterval = 2.0, anchorView: NSView? = nil) {
+    /// - Parameters:
+    ///   - anchorView: when set, the toast points at this view (wins over `screen`).
+    ///   - screen: non-anchored toasts appear on this screen instead of `NSScreen.main`
+    ///     — pass the capture screen so feedback shows where the user is looking.
+    ///   - action: when set, the toast becomes clickable and runs this on click.
+    static func show(message: String, duration: TimeInterval = 2.0, anchorView: NSView? = nil, on screen: NSScreen? = nil, action: (() -> Void)? = nil) {
         current?.orderOut(nil)
 
-        let toast = ToastWindow(message: message, anchorView: anchorView)
+        let toast = ToastWindow(message: message, anchorView: anchorView, screen: screen, action: action)
         current = toast
 
         // Start 12px below final position, scaled down
@@ -55,14 +60,15 @@ final class ToastWindow: NSWindow {
         }
     }
 
-    private init(message: String, anchorView: NSView?) {
+    private init(message: String, anchorView: NSView?, screen: NSScreen?, action: (() -> Void)?) {
         let font = NSFont.systemFont(ofSize: 13, weight: .semibold)
         let paragraph = NSMutableParagraphStyle()
         paragraph.alignment = .center
         paragraph.lineBreakMode = .byCharWrapping
         let attrs: [NSAttributedString.Key: Any] = [.font: font, .paragraphStyle: paragraph]
-        let screenFrame = NSScreen.main?.visibleFrame ?? NSRect(x: 0, y: 0, width: 900, height: 700)
-        let screenScale = NSScreen.main?.backingScaleFactor ?? 2
+        let targetScreen = screen ?? NSScreen.main
+        let screenFrame = targetScreen?.visibleFrame ?? NSRect(x: 0, y: 0, width: 900, height: 700)
+        let screenScale = targetScreen?.backingScaleFactor ?? 2
         let horizontalInset: CGFloat = 40
         let paddingX: CGFloat = 28
         let paddingY: CGFloat = 12
@@ -96,7 +102,7 @@ final class ToastWindow: NSWindow {
         alphaValue = 0
         ignoresMouseEvents = true
 
-        let container = NSView(frame: NSRect(x: 0, y: 0, width: width, height: height))
+        let container = ToastClickCatcherView(frame: NSRect(x: 0, y: 0, width: width, height: height))
         container.wantsLayer = true
         container.layer?.masksToBounds = false
         container.layer?.shadowColor = NSColor.black.cgColor
@@ -136,6 +142,17 @@ final class ToastWindow: NSWindow {
         label.frame = NSRect(x: paddingX, y: (bubbleHeight - labelHeight) / 2, width: labelWidth, height: labelHeight)
         clipView.addSubview(label)
 
+        // Clickable toasts (e.g. "click to reveal in Finder") accept mouse events;
+        // plain toasts stay fully click-through.
+        if let action {
+            ignoresMouseEvents = false
+            container.onClick = { [weak self, weak container] in
+                container?.onClick = nil // fire at most once
+                action()
+                self?.dismissNow()
+            }
+        }
+
         if let anchorFrame = Self.screenFrame(for: anchorView), let screen = Self.screen(containing: anchorFrame) {
             let visible = screen.visibleFrame
             let x = max(visible.minX + 8, min(anchorFrame.midX - width / 2, visible.maxX - width - 8))
@@ -143,13 +160,27 @@ final class ToastWindow: NSWindow {
             finalOrigin = Self.pixelAligned(NSPoint(x: x, y: y), scale: screenScale)
             pointer?.frame.origin.x = Self.pixelAligned(max(14, min(anchorFrame.midX - finalOrigin.x - 10, width - 34)), scale: screenScale)
             setFrameOrigin(finalOrigin)
-        } else if let screen = NSScreen.main {
+        } else if let screen = targetScreen {
             let visible = screen.visibleFrame
             let x = max(visible.minX + horizontalInset, min(visible.midX - width / 2, visible.maxX - width - horizontalInset))
             let y = visible.maxY - height - 40
             finalOrigin = Self.pixelAligned(NSPoint(x: x, y: y), scale: screenScale)
             setFrameOrigin(finalOrigin)
         }
+    }
+
+    /// Immediate fade-out after a click — the scheduled auto-dismiss becomes a no-op.
+    private func dismissNow() {
+        NSAnimationContext.runAnimationGroup({ ctx in
+            ctx.duration = 0.15
+            self.animator().alphaValue = 0
+        }, completionHandler: { [weak self] in
+            DispatchQueue.main.async {
+                guard let self else { return }
+                self.orderOut(nil)
+                if ToastWindow.current === self { ToastWindow.current = nil }
+            }
+        })
     }
 
     private static func screenFrame(for view: NSView?) -> NSRect? {
@@ -170,6 +201,31 @@ final class ToastWindow: NSWindow {
     }
 }
 
+/// Container view that turns the whole toast into a single click target when
+/// an action is attached. First click lands even while the app is inactive
+/// (LSUIElement apps are background processes most of the time).
+@MainActor
+private final class ToastClickCatcherView: NSView {
+    var onClick: (() -> Void)?
+
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+
+    override func hitTest(_ point: NSPoint) -> NSView? {
+        guard onClick != nil else { return super.hitTest(point) }
+        // Swallow subview hits (label, effect view) so the click always reaches us
+        let local = convert(point, from: superview)
+        return bounds.contains(local) ? self : nil
+    }
+
+    override func mouseDown(with event: NSEvent) {
+        if let onClick {
+            onClick()
+        } else {
+            super.mouseDown(with: event)
+        }
+    }
+}
+
 private final class ToastPointerView: NSView {
     override func draw(_ dirtyRect: NSRect) {
         NSColor.black.withAlphaComponent(0.72).setFill()
@@ -180,5 +236,27 @@ private final class ToastPointerView: NSView {
         path.line(to: NSPoint(x: bounds.maxX, y: bounds.minY))
         path.close()
         path.fill()
+    }
+}
+
+// MARK: – Capture-screen lookup (shared by overlay/pin/toast placement)
+
+extension NSScreen {
+    /// The screen whose frame overlaps the given rect the most, or nil when the
+    /// rect touches no screen (e.g. a display was disconnected since capture).
+    /// The rect is expected in AppKit screen coordinates (bottom-left origin) —
+    /// the space `HistoryItem.captureRect` is stored in. Callers should fall
+    /// back to `NSScreen.main` on nil so post-capture UI always appears somewhere.
+    @MainActor
+    static func screenContaining(rect: NSRect) -> NSScreen? {
+        var best: (screen: NSScreen, area: CGFloat)?
+        for screen in screens {
+            let overlap = screen.frame.intersection(rect)
+            let area = overlap.width * overlap.height
+            if area > (best?.area ?? 0) {
+                best = (screen, area)
+            }
+        }
+        return best?.screen
     }
 }
