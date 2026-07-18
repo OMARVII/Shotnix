@@ -101,6 +101,7 @@ enum VideoDemoOverlayEffectKind: String, Codable, CaseIterable, Identifiable {
     case text
     case arrow
     case highlight
+    // Presented as "Redact" — the case name / rawValue stays "blur" so existing saved drafts keep decoding.
     case blur
 
     var id: String { rawValue }
@@ -110,7 +111,7 @@ enum VideoDemoOverlayEffectKind: String, Codable, CaseIterable, Identifiable {
         case .text: return "Text"
         case .arrow: return "Arrow"
         case .highlight: return "Highlight"
-        case .blur: return "Blur"
+        case .blur: return "Redact"
         }
     }
 
@@ -877,6 +878,7 @@ enum VideoDemoExportPreset: String, CaseIterable, Identifiable {
 struct VideoDemoMetadata: Equatable {
     let duration: Double
     let sourceSize: CGSize
+    let fps: Double
 }
 
 struct VideoTimelineThumbnail: Identifiable {
@@ -931,18 +933,23 @@ enum VideoDemoExporter {
         guard let videoTrack = try await asset.loadTracks(withMediaType: .video).first else {
             throw VideoDemoExportError.missingVideoTrack
         }
+        let nominalFrameRate = Double(try await videoTrack.load(.nominalFrameRate))
         return VideoDemoMetadata(
             duration: seconds(try await asset.load(.duration)),
-            sourceSize: try await orientedSize(for: videoTrack)
+            sourceSize: try await orientedSize(for: videoTrack),
+            fps: nominalFrameRate > 1 ? nominalFrameRate : 30
         )
     }
 
+    /// Returns user-facing warnings for non-fatal problems (currently audio segments
+    /// that could not be added to the composition).
+    @discardableResult
     static func export(
         project: VideoDemoProject,
         destinationURL: URL,
         progress: @escaping @Sendable (Double) async -> Void = { _ in },
         shouldCancel: @escaping @Sendable () async -> Bool = { false }
-    ) async throws {
+    ) async throws -> [String] {
         let asset = AVURLAsset(url: project.sourceURL)
         guard let sourceVideoTrack = try await asset.loadTracks(withMediaType: .video).first else {
             throw VideoDemoExportError.missingVideoTrack
@@ -981,11 +988,15 @@ enum VideoDemoExporter {
         }
 
         var audioMixParameters: [AVMutableAudioMixInputParameters] = []
+        var audioWarnings: [String] = []
         for sourceAudioTrack in try await asset.loadTracks(withMediaType: .audio) {
             guard let compositionAudioTrack = composition.addMutableTrack(
                 withMediaType: .audio,
                 preferredTrackID: kCMPersistentTrackID_Invalid
-            ) else { continue }
+            ) else {
+                audioWarnings.append("Could not prepare an audio track, so the export may be missing audio.")
+                continue
+            }
 
             let parameters = AVMutableAudioMixInputParameters(track: compositionAudioTrack)
             for segment in timelineSegments {
@@ -995,7 +1006,18 @@ enum VideoDemoExporter {
                     duration: CMTime(seconds: segment.clip.sourceDuration, preferredTimescale: 600)
                 )
                 let timelineStart = CMTime(seconds: segment.timelineStart, preferredTimescale: 600)
-                try? compositionAudioTrack.insertTimeRange(sourceRange, of: sourceAudioTrack, at: timelineStart)
+                do {
+                    try compositionAudioTrack.insertTimeRange(sourceRange, of: sourceAudioTrack, at: timelineStart)
+                } catch {
+                    // A silently dropped insert would export without this clip's audio and
+                    // desync everything after it — surface the problem instead.
+                    audioWarnings.append(String(
+                        format: "Audio for the clip at %.1fs could not be included (%@).",
+                        segment.timelineStart,
+                        error.localizedDescription
+                    ))
+                    continue
+                }
                 scaleIfNeeded(
                     track: compositionAudioTrack,
                     at: timelineStart,
@@ -1091,6 +1113,8 @@ enum VideoDemoExporter {
                 }
             }
         }
+
+        return audioWarnings
     }
 
     private static func scaleIfNeeded(
@@ -1466,35 +1490,53 @@ enum VideoDemoExporter {
                 arrow.lineJoin = .round
                 layer = arrow
             case .blur:
-                let blur = CALayer()
-                blur.frame = frame
-                blur.cornerRadius = 16
-                blur.backgroundColor = NSColor(calibratedWhite: 0.06, alpha: 0.72).cgColor
-                blur.borderColor = NSColor.white.withAlphaComponent(0.20).cgColor
-                blur.borderWidth = 1
-                blur.masksToBounds = true
-                layer = blur
+                // Redact: an opaque cover so the content underneath stays fully hidden.
+                let redact = CALayer()
+                redact.frame = frame
+                redact.cornerRadius = 16
+                redact.backgroundColor = NSColor(calibratedWhite: 0.06, alpha: 1).cgColor
+                redact.borderColor = NSColor.white.withAlphaComponent(0.20).cgColor
+                redact.borderWidth = 1
+                redact.masksToBounds = true
+                layer = redact
             }
 
-            let fade = CAAnimationGroup()
-            let opacityIn = CABasicAnimation(keyPath: "opacity")
-            opacityIn.fromValue = 0
-            opacityIn.toValue = 1
-            opacityIn.duration = min(0.18, entry.duration / 3)
+            if effect.kind == .blur {
+                // Redact must never be semi-transparent: hold opacity at 1 for the
+                // whole window, with a hard on/off matching the preview. fillMode
+                // defaults to .removed, so the layer shows its model opacity (0)
+                // outside the window. Do not add fillMode = .both here, or the
+                // cover would persist outside the redaction window.
+                let visibility = CAKeyframeAnimation(keyPath: "opacity")
+                visibility.calculationMode = .discrete
+                visibility.values = [1]
+                visibility.keyTimes = [0, 1]
+                visibility.beginTime = AVCoreAnimationBeginTimeAtZero + entry.timelineTime
+                visibility.duration = entry.duration
+                visibility.isRemovedOnCompletion = false
+                layer.opacity = 0
+                layer.add(visibility, forKey: "visibility")
+            } else {
+                let fade = CAAnimationGroup()
+                let opacityIn = CABasicAnimation(keyPath: "opacity")
+                opacityIn.fromValue = 0
+                opacityIn.toValue = 1
+                opacityIn.duration = min(0.18, entry.duration / 3)
 
-            let opacityOut = CABasicAnimation(keyPath: "opacity")
-            opacityOut.fromValue = 1
-            opacityOut.toValue = 0
-            opacityOut.beginTime = max(entry.duration - min(0.18, entry.duration / 3), 0)
-            opacityOut.duration = min(0.18, entry.duration / 3)
+                let opacityOut = CABasicAnimation(keyPath: "opacity")
+                opacityOut.fromValue = 1
+                opacityOut.toValue = 0
+                opacityOut.beginTime = max(entry.duration - min(0.18, entry.duration / 3), 0)
+                opacityOut.duration = min(0.18, entry.duration / 3)
 
-            fade.animations = [opacityIn, opacityOut]
-            fade.duration = entry.duration
-            fade.beginTime = AVCoreAnimationBeginTimeAtZero + entry.timelineTime
-            fade.isRemovedOnCompletion = false
-            fade.fillMode = .both
-            layer.opacity = 0
-            layer.add(fade, forKey: "visibility")
+                fade.animations = [opacityIn, opacityOut]
+                fade.duration = entry.duration
+                fade.beginTime = AVCoreAnimationBeginTimeAtZero + entry.timelineTime
+                fade.isRemovedOnCompletion = false
+                fade.fillMode = .both
+                layer.opacity = 0
+                layer.add(fade, forKey: "visibility")
+            }
             parent.addSublayer(layer)
         }
     }
@@ -1911,6 +1953,8 @@ final class VideoDemoEditorViewModel: ObservableObject {
     let player: AVPlayer
     private var didLoadMetadata = false
     private var timeObserver: Any?
+    private var sourceFPS: Double = 30
+    private var shuttleRate: Double = 1
     private var undoSnapshots: [VideoDemoProject] = []
     private var redoSnapshots: [VideoDemoProject] = []
     private var timelineTrimUndoActive = false
@@ -1941,6 +1985,7 @@ final class VideoDemoEditorViewModel: ObservableObject {
             let metadata = try await VideoDemoExporter.metadata(for: project.sourceURL)
             duration = metadata.duration
             sourceSize = metadata.sourceSize
+            sourceFPS = metadata.fps
 
             if let draft = VideoDemoDraftStore.load(for: project.sourceURL),
                draft.sourcePath == project.sourceURL.standardizedFileURL.path {
@@ -1995,6 +2040,7 @@ final class VideoDemoEditorViewModel: ObservableObject {
     }
 
     func playPause() {
+        shuttleRate = 1
         if player.timeControlStatus == .playing {
             player.pause()
         } else {
@@ -2013,7 +2059,38 @@ final class VideoDemoEditorViewModel: ObservableObject {
     }
 
     func stop() {
+        shuttleRate = 1
         player.pause()
+    }
+
+    func stepFrame(by frames: Int) {
+        shuttleRate = 1
+        player.pause()
+        seekToTimeline(timelineTime + Double(frames) / max(sourceFPS, 1))
+    }
+
+    /// J in the J/K/L shuttle. Reverse playback is approximated by pausing and jumping back one second.
+    func shuttleReverse() {
+        shuttleRate = 1
+        player.pause()
+        seekToTimeline(timelineTime - 1)
+    }
+
+    /// K in the J/K/L shuttle.
+    func shuttlePause() {
+        shuttleRate = 1
+        player.pause()
+    }
+
+    /// L in the J/K/L shuttle: play, and speed up to 2x on repeated presses.
+    func shuttlePlay() {
+        if player.timeControlStatus == .playing {
+            shuttleRate = min(shuttleRate + 0.5, 2)
+            updatePlaybackRate()
+            status = String(format: "Shuttle %.1fx", shuttleRate)
+        } else {
+            playPause()
+        }
     }
 
     func applyPreset(_ preset: VideoDemoExportPreset) {
@@ -2613,6 +2690,28 @@ final class VideoDemoEditorViewModel: ObservableObject {
             return true
         }
 
+        // Cmd+Left/Right (what compact keyboards produce for Home/End) jumps to the timeline start/end.
+        if modifiers == [.command], event.keyCode == 123 {
+            seekToTimeline(0)
+            return true
+        }
+
+        if modifiers == [.command], event.keyCode == 124 {
+            seekToTimeline(timelineDuration)
+            return true
+        }
+
+        // Shift+arrows make coarse one-second jumps.
+        if modifiers == [.shift], event.keyCode == 123 {
+            seekToTimeline(timelineTime - 1)
+            return true
+        }
+
+        if modifiers == [.shift], event.keyCode == 124 {
+            seekToTimeline(timelineTime + 1)
+            return true
+        }
+
         guard modifiers.isEmpty else { return false }
 
         if event.characters == "?" {
@@ -2645,6 +2744,21 @@ final class VideoDemoEditorViewModel: ObservableObject {
         case "]":
             seekToTimeline(timelineTime + 0.25)
             return true
+        case ",":
+            stepFrame(by: -1)
+            return true
+        case ".":
+            stepFrame(by: 1)
+            return true
+        case "j":
+            shuttleReverse()
+            return true
+        case "k":
+            shuttlePause()
+            return true
+        case "l":
+            shuttlePlay()
+            return true
         default:
             break
         }
@@ -2661,6 +2775,12 @@ final class VideoDemoEditorViewModel: ObservableObject {
             return true
         case 124:
             seekToTimeline(timelineTime + 0.25)
+            return true
+        case 115:
+            seekToTimeline(0)
+            return true
+        case 119:
+            seekToTimeline(timelineDuration)
             return true
         default:
             return false
@@ -2741,7 +2861,7 @@ final class VideoDemoEditorViewModel: ObservableObject {
         status = "Exporting..."
         let exportBridge = VideoDemoExportBridge(self)
         do {
-            try await VideoDemoExporter.export(
+            let audioWarnings = try await VideoDemoExporter.export(
                 project: project,
                 destinationURL: destination,
                 progress: { value in
@@ -2754,8 +2874,16 @@ final class VideoDemoEditorViewModel: ObservableObject {
             exportProgress = 1
             exportCompletedURL = destination
             recentExports = VideoDemoRecentExportStore.add(exportURL: destination, sourceURL: project.sourceURL)
-            status = "Exported \(destination.lastPathComponent)"
-            ToastWindow.show(message: "Video exported: \(destination.lastPathComponent)", duration: 3.0)
+            if audioWarnings.isEmpty {
+                status = "Exported \(destination.lastPathComponent)"
+                ToastWindow.show(message: "Video exported: \(destination.lastPathComponent)", duration: 3.0)
+            } else {
+                status = "Exported with audio warnings"
+                ToastWindow.show(
+                    message: "Video exported with audio issues: \(audioWarnings.joined(separator: " "))",
+                    duration: 4.5
+                )
+            }
         } catch {
             let message = exportCancellationRequested ? "Export cancelled." : error.localizedDescription
             exportErrorMessage = message
@@ -2778,6 +2906,7 @@ final class VideoDemoEditorViewModel: ObservableObject {
                 self.currentTime = seconds
                 self.skipCutSegmentsIfNeeded(sourceTime: seconds)
                 self.updatePlaybackRate()
+                self.updatePreviewVolume(sourceTime: seconds)
             }
         }
     }
@@ -2808,7 +2937,33 @@ final class VideoDemoEditorViewModel: ObservableObject {
     private func updatePlaybackRate() {
         guard player.timeControlStatus == .playing else { return }
         let speed = timelineSegments.first(where: { $0.contains(sourceTime: currentTime) })?.clip.normalizedSpeed ?? 1
-        player.rate = Float(speed)
+        player.rate = Float(speed * shuttleRate)
+    }
+
+    /// Mirrors the export audio mix during preview: muted clips play silent and fade
+    /// ramps attenuate the volume inside their fade windows (measured in timeline time).
+    private func updatePreviewVolume(sourceTime: Double) {
+        guard let segment = timelineSegments.first(where: { $0.contains(sourceTime: sourceTime) }) else {
+            player.volume = 1
+            return
+        }
+        guard !segment.clip.muted else {
+            player.volume = 0
+            return
+        }
+
+        var volume = 1.0
+        let timelineOffset = segment.timelineTime(forSourceTime: sourceTime) - segment.timelineStart
+        let fadeIn = min(max(segment.clip.fadeIn, 0), segment.duration / 2)
+        if fadeIn > 0, timelineOffset < fadeIn {
+            volume = min(volume, timelineOffset / fadeIn)
+        }
+        let fadeOut = min(max(segment.clip.fadeOut, 0), segment.duration / 2)
+        let remaining = segment.duration - timelineOffset
+        if fadeOut > 0, remaining < fadeOut {
+            volume = min(volume, remaining / fadeOut)
+        }
+        player.volume = Float(min(max(volume, 0), 1))
     }
 
     private func pushUndo() {
@@ -3958,6 +4113,21 @@ private struct VideoDemoCommandPalette: View {
             command("redo", "Redo", "Last edit", "arrow.uturn.forward", "Shift-Cmd-Z", enabled: model.canRedoTimelineEdit) {
                 model.redoTimelineEdit()
             },
+            command("play-pause", "Play / Pause", "Transport", "playpause.fill", "Space") {
+                model.playPause()
+            },
+            command("step-back", "Step Back One Frame", "Transport", "backward.frame", ",") {
+                model.stepFrame(by: -1)
+            },
+            command("step-forward", "Step Forward One Frame", "Transport", "forward.frame", ".") {
+                model.stepFrame(by: 1)
+            },
+            command("jump-start", "Jump to Start", "Transport", "backward.end", "Home") {
+                model.seekToTimeline(0)
+            },
+            command("jump-end", "Jump to End", "Transport", "forward.end", "End") {
+                model.seekToTimeline(model.timelineDuration)
+            },
             command("zoom", "Add Zoom", "Camera lane", "plus.magnifyingglass", "") {
                 model.addZoom()
             },
@@ -4255,8 +4425,9 @@ private struct VideoDemoOverlayView: View {
                 .frame(width: size.width, height: size.height)
                 .position(position)
         case .blur:
+            // Redact: opaque in preview to match the export cover.
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(.black.opacity(0.68))
+                .fill(.black)
                 .overlay(
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
                         .stroke(.white.opacity(0.22), lineWidth: 1)
