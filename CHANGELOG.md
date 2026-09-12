@@ -1,5 +1,35 @@
 # Changelog
 
+## [0.19.0-beta] - 2026-09-12
+
+### Added
+- **True window capture** — window mode now captures the clicked window itself (isolated, nothing overlapping bakes in) with optional CleanShot-style transparent padding and drop shadow (Preferences → Screenshots).
+- **Timed capture** — select an area, then a cancellable 3/5/10-second countdown runs before the shot; in the menu, with an assignable shortcut, delay configurable in Preferences.
+- **Space-drag selection** — holding Space while drag-selecting moves the selection instead of resizing it, matching the native macOS screenshot tool.
+- **Menu bar recording indicator** — while recording, the menu bar icon becomes a red dot with a live elapsed timer; left-click stops the recording, right-click still opens the menu.
+- **Setup checklist onboarding** — the welcome window is now a live three-step checklist (grant Screen Recording with Quit & Reopen built in, free up Apple's shortcuts, take a test screenshot). It tracks real state, reappears until setup is done or skipped, and finishes by pointing at the menu bar icon.
+- **History search** — a search field in the history panel filters captures live by the text inside them (screenshots are OCR-indexed in the background) and by date.
+- **Undo delete in history** — deleting a capture moves it to a trash kept for 7 days, with a click-to-undo toast; Clear All is undoable the same way.
+
+### Changed
+- **~80ms faster shutter** — the selection overlay no longer waits for the dimming to leave the screen before capturing (Shotnix's own windows are already excluded from captures on macOS 14+). Applies to area, OCR, and barcode captures.
+- **Rock-solid recording pipeline** — video and audio buffers are now written on a dedicated queue instead of hopping through the main thread at up to 60fps. Recording no longer stutters or drops frames when you open the menu, hover UI, or the app is otherwise busy.
+- **Smooth history scrolling** — grid thumbnails decode off the main thread with an in-memory cache, so scrolling a large library never hitches; the open panel also updates live when captures are added, deleted, or restored anywhere in the app.
+- **Video editor scrubbing feels like a real editor** — dragging the playhead now uses chained, keyframe-tolerant seeks (exact on release), the 30Hz playback clock no longer re-renders the entire editor every tick, and timeline snap points are cached instead of recomputed per frame.
+- **Screenshots no longer steal focus** — the post-capture overlay is now a non-activating panel: it slides in without interrupting typing in the app you're using. Hovering it engages ⌘C/⌘S/⌘E/Esc without activating Shotnix, and moving the mouse away hands keyboard focus straight back.
+- **The crosshair appears instantly** — the selection overlay no longer waits for the frozen screen snapshots; they load in the background and only the magnifier loupe appears a beat later. Window-selection mode skips the snapshots entirely.
+- **Smoother post-capture** — clipboard copy and auto-save now encode off the main thread, so the overlay's entrance animation no longer stutters on large captures.
+- **Faster window captures** — the isolated window capture reuses the cached window list (refetching only when stale) instead of a fresh 30–100ms system query per shot.
+- **⌘⇧3 fullscreen capture is instant again** — no display chooser: it immediately captures the display you're working on (where the mouse is). On multi-monitor setups, "Capture All Displays" is its own menu action.
+- **Faster recording window picker** — window previews are captured in parallel instead of one at a time.
+- **Choosers open where you are** — the display and window pickers appear on the screen with the mouse instead of always the main display.
+- **All Displays capture plays one shutter sound** instead of one per screen.
+- **Scrolling capture dedup** — duplicate frames are now detected with a small luminance fingerprint instead of comparing full frame buffers: faster, lighter, and it also catches near-duplicates (cursor blink) the old exact compare missed.
+
+### Fixed
+- **History grid corruption after deletes** — recycled tiles no longer carry stale hover effects, and the grid layout is properly invalidated after items are removed.
+- **Window-mode selection on secondary displays** — clicking a highlighted window on a non-primary screen captured the wrong region (view-local vs global coordinates).
+
 ## [0.18.1-beta] - 2026-09-12
 
 ### Fixed
