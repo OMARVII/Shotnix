@@ -317,7 +317,7 @@ final class CaptureEngine {
             let title = (window.title ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
             guard !title.isEmpty || appName != "App" else { return nil }
 
-            let screen = screen(containing: window.frame) ?? NSScreen.main ?? NSScreen.screens.first
+            let screen = screen(containingWindowFrame: window.frame) ?? NSScreen.main ?? NSScreen.screens.first
             guard let screen else { return nil }
             let previewRect = CGRect(
                 x: screen.frame.midX - window.frame.width / 2,
@@ -418,10 +418,16 @@ final class CaptureEngine {
         return !blockedFragments.contains { searchText.contains($0) }
     }
 
-    private func screen(containing rect: CGRect) -> NSScreen? {
-        NSScreen.screens.max { lhs, rhs in
-            lhs.frame.intersection(rect).width * lhs.frame.intersection(rect).height < rhs.frame.intersection(rect).width * rhs.frame.intersection(rect).height
-        }
+    /// The NSScreen showing the largest share of an SCWindow frame.
+    /// SCWindow frames are CG-space — convert before comparing against
+    /// NSScreen frames (AppKit-space).
+    private func screen(containingWindowFrame windowFrame: CGRect) -> NSScreen? {
+        let rect = ScreenCoordinates.appKitRect(fromCG: windowFrame)
+        return NSScreen.screens
+            .map { (screen: $0, overlap: $0.frame.intersection(rect)) }
+            .filter { !$0.overlap.isEmpty }
+            .max { $0.overlap.width * $0.overlap.height < $1.overlap.width * $1.overlap.height }?
+            .screen
     }
 
     private func showRecordingControls(rect: CGRect, on screen: NSScreen, target: RecordingTargetKind, selectedWindow: SCWindow? = nil) {
@@ -666,7 +672,12 @@ final class CaptureEngine {
             // captureRectSCK only needs the display and application lists —
             // no on-screen window enumeration.
             let content = try await Self.shareableContent(includeWindows: false)
-            guard let display = content.displays.first(where: { $0.frame.intersects(rect) }) else {
+            // SCDisplay frames are CG-space (top-left origin) while `rect` and
+            // `screen` are AppKit-space (bottom-left origin) — the spaces only
+            // agree on the primary display, so match by display ID. Geometric
+            // intersection picks the wrong display (or none) for secondary
+            // screens, and SCK renders an out-of-bounds sourceRect as black.
+            guard let display = ScreenCoordinates.display(for: screen, in: content.displays) else {
                 return fallbackCapture(rect: rect)
             }
             // Exclude Shotnix's own windows (pinned screenshots, toasts, a
@@ -730,7 +741,10 @@ final class CaptureEngine {
     }
 
     private func fallbackCapture(rect: CGRect) -> NSImage? {
-        guard let cgImage = CGWindowListCreateImage(rect, .optionAll, kCGNullWindowID, .bestResolution) else {
+        // CGWindowListCreateImage takes CG global coordinates (top-left
+        // origin); `rect` arrives in AppKit global coordinates (bottom-left).
+        let cgRect = ScreenCoordinates.cgRect(fromAppKit: rect)
+        guard let cgImage = CGWindowListCreateImage(cgRect, .optionAll, kCGNullWindowID, .bestResolution) else {
             print("[Shotnix] CGWindowListCreateImage returned nil for rect \(rect)")
             return nil
         }

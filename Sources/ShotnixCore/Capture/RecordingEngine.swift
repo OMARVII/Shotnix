@@ -278,27 +278,32 @@ final class RecordingEngine: NSObject {
     ) async throws -> PreparedCaptureSource {
         let content = try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: false)
         let selectedWindow = content.windows.first { $0.windowID == window.windowID } ?? window
-        let appKitRect = Self.appKitRect(fromScreenCaptureKitWindowFrame: selectedWindow.frame, on: screen)
-        guard let display = content.displays.first(where: { $0.frame.intersects(selectedWindow.frame) }) ?? content.displays.first else {
+        // SCWindow.frame and SCDisplay.frame are both CG-space (top-left
+        // origin), so pick the display showing the largest share of the window.
+        guard let display = Self.display(mostOverlapping: selectedWindow.frame, in: content.displays)
+                ?? ScreenCoordinates.display(for: screen, in: content.displays) else {
             throw RecordingError.noDisplay
         }
+        // The sourceRect math in prepareDisplaySource is relative to the
+        // NSScreen, so it must be the screen backing the display we filter on.
+        let targetScreen = NSScreen.screens.first { $0.displayID == display.displayID } ?? screen
+        let appKitRect = ScreenCoordinates.appKitRect(fromCG: selectedWindow.frame)
 
         let filter = SCContentFilter(display: display, including: [selectedWindow])
         return prepareDisplaySource(
             rect: appKitRect,
-            on: screen,
+            on: targetScreen,
             configuration: configuration,
             filter: filter
         )
     }
 
-    private static func appKitRect(fromScreenCaptureKitWindowFrame frame: CGRect, on screen: NSScreen) -> CGRect {
-        CGRect(
-            x: frame.minX,
-            y: screen.frame.origin.y + screen.frame.height - frame.maxY,
-            width: frame.width,
-            height: frame.height
-        )
+    private static func display(mostOverlapping cgRect: CGRect, in displays: [SCDisplay]) -> SCDisplay? {
+        displays
+            .map { (display: $0, overlap: $0.frame.intersection(cgRect)) }
+            .filter { !$0.overlap.isEmpty }
+            .max { $0.overlap.width * $0.overlap.height < $1.overlap.width * $1.overlap.height }?
+            .display
     }
 
     private func prepareDisplaySource(
@@ -308,7 +313,9 @@ final class RecordingEngine: NSObject {
         excludingWindowNumbers: [CGWindowID]
     ) async throws -> PreparedCaptureSource {
         let content = try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: false)
-        guard let display = content.displays.first(where: { $0.frame.intersects(rect) }) ?? content.displays.first else {
+        // `rect` is AppKit-space while SCDisplay frames are CG-space —
+        // match the display by ID, never by cross-space geometry.
+        guard let display = ScreenCoordinates.display(for: screen, in: content.displays) else {
             throw RecordingError.noDisplay
         }
         let excludedWindows = excludingWindowNumbers.compactMap { windowNumber in
