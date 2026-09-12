@@ -2,15 +2,6 @@ import AppKit
 
 enum SelectionMode { case area, window }
 
-/// Task-group child result for the concurrent frozen-screen captures.
-/// `@unchecked Sendable` because NSImage's Sendable conformance is macOS 14+
-/// while the project targets macOS 13; safe here since every child task is
-/// @MainActor, so the image never actually leaves the main actor.
-private struct IndexedScreenCapture: @unchecked Sendable {
-    let index: Int
-    let image: NSImage?
-}
-
 /// Full-screen translucent overlay that lets the user drag-select a region.
 /// In `.window` mode it highlights the window under the cursor instead.
 @MainActor
@@ -24,6 +15,10 @@ final class AreaSelectionWindow: NSObject {
     private var overlays: [SelectionOverlayWindow] = []
     private var activeOverlay: SelectionOverlayWindow?
 
+    /// In `.window` mode: the CGWindowID of the clicked window, set just
+    /// before the completion fires. Enables isolated single-window capture.
+    private(set) var selectedWindowID: CGWindowID?
+
     init(mode: SelectionMode, completion: @escaping Completion) {
         self.mode = mode
         self.completion = completion
@@ -35,33 +30,32 @@ final class AreaSelectionWindow: NSObject {
         NSApp.setActivationPolicy(.accessory)
         NSApp.activate(ignoringOtherApps: true)
 
-        // Capture every screen's frozen image concurrently — each SCK
-        // screenshot costs tens of ms, and serializing them makes the
-        // crosshair visibly lag the hotkey on multi-display setups. The
-        // child tasks stay @MainActor, but captureRectToImage suspends at
-        // its internal awaits, so the actual captures overlap.
+        // Show the overlays IMMEDIATELY — the crosshair must never wait on a
+        // screenshot. The frozen per-screen images only feed the loupe and hex
+        // readout, so they load in the background and the loupe appears a beat
+        // later; everything else (crosshair, drag, dimension label) is instant.
         let screens = NSScreen.screens
-        let frozenImages: [NSImage?] = await withTaskGroup(of: IndexedScreenCapture.self) { group in
-            for (index, screen) in screens.enumerated() {
-                group.addTask { @MainActor in
-                    IndexedScreenCapture(index: index, image: await engine.captureRectToImage(screen.frame, on: screen))
-                }
+        for screen in screens {
+            let overlay = SelectionOverlayWindow(screen: screen, mode: mode, frozenImage: nil)
+            overlay.selectionHandler = { [weak self] rect, windowID in
+                self?.selectedWindowID = windowID
+                self?.finish(rect: rect, screen: screen)
             }
-            var images = [NSImage?](repeating: nil, count: screens.count)
-            for await capture in group {
-                images[capture.index] = capture.image
-            }
-            return images
-        }
-
-        for (screen, image) in zip(screens, frozenImages) {
-            var rect = NSRect(origin: .zero, size: screen.frame.size)
-            let frozenCG = image?.cgImage(forProposedRect: &rect, context: nil, hints: nil)
-            let overlay = SelectionOverlayWindow(screen: screen, mode: mode, frozenImage: frozenCG)
-            overlay.selectionHandler = { [weak self] rect in self?.finish(rect: rect, screen: screen) }
             overlay.cancelHandler = { [weak self] in self?.cancel() }
             overlay.show()
             overlays.append(overlay)
+        }
+
+        // Window mode never uses the frozen images — skip the captures entirely.
+        if mode == .area {
+            for (screen, overlay) in zip(screens, overlays) {
+                Task { @MainActor [weak overlay] in
+                    let image = await engine.captureRectToImage(screen.frame, on: screen)
+                    var rect = NSRect(origin: .zero, size: screen.frame.size)
+                    let frozenCG = image?.cgImage(forProposedRect: &rect, context: nil, hints: nil)
+                    overlay?.updateFrozenImage(frozenCG)
+                }
+            }
         }
 
         focusFirstOverlay()
@@ -91,8 +85,19 @@ final class AreaSelectionWindow: NSObject {
     private func finish(rect: CGRect, screen: NSScreen) {
         NSCursor.pop()
         tearDown()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.08) { [weak self] in
-            self?.completion(rect, screen)
+        if #available(macOS 14.0, *) {
+            // SCK captures exclude Shotnix's own windows, so there's no need
+            // to wait for the dimming overlay to leave the compositor —
+            // fire on the next runloop tick and shave ~80ms off the shutter.
+            // Local copy: the completion releases self (engine drops its ref).
+            let completion = completion
+            DispatchQueue.main.async { completion(rect, screen) }
+        } else {
+            // The CGWindowList fallback would catch the overlay — give the
+            // orderOut a beat to land before capturing.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.08) { [weak self] in
+                self?.completion(rect, screen)
+            }
         }
     }
 
@@ -117,7 +122,7 @@ final class AreaSelectionWindow: NSObject {
 @MainActor
 private final class SelectionOverlayWindow: NSWindow {
 
-    var selectionHandler: ((CGRect) -> Void)?
+    var selectionHandler: ((CGRect, CGWindowID?) -> Void)?
     var cancelHandler: (() -> Void)?
 
     private let overlayView: SelectionOverlayView
@@ -142,7 +147,7 @@ private final class SelectionOverlayWindow: NSWindow {
         collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         contentView = overlayView
         overlayView.frame = NSRect(origin: .zero, size: screen.frame.size)
-        overlayView.selectionHandler = { [weak self] rect in self?.selectionHandler?(rect) }
+        overlayView.selectionHandler = { [weak self] rect, windowID in self?.selectionHandler?(rect, windowID) }
         overlayView.cancelHandler   = { [weak self] in self?.cancelHandler?() }
     }
     override var canBecomeKey: Bool { true }
@@ -151,6 +156,12 @@ private final class SelectionOverlayWindow: NSWindow {
     func show() {
         orderFrontRegardless()
     }
+
+    /// The loupe's pixel source arrives asynchronously after the overlay is
+    /// already on screen — swap it in and repaint if the loupe is visible.
+    func updateFrozenImage(_ image: CGImage?) {
+        overlayView.updateFrozenImage(image)
+    }
 }
 
 // MARK: – Overlay NSView
@@ -158,7 +169,7 @@ private final class SelectionOverlayWindow: NSWindow {
 @MainActor
 private final class SelectionOverlayView: NSView {
 
-    var selectionHandler: ((CGRect) -> Void)?
+    var selectionHandler: ((CGRect, CGWindowID?) -> Void)?
     var cancelHandler:    (() -> Void)?
 
     private let mode: SelectionMode
@@ -171,11 +182,17 @@ private final class SelectionOverlayView: NSView {
 
     // For window mode
     private var highlightedWindowRect: NSRect?
+    private var highlightedWindowID: CGWindowID?
     private var trackingArea: NSTrackingArea?
-    private var cachedWindowRects: [NSRect] = []
+    private var cachedWindows: [(rect: NSRect, windowID: CGWindowID)] = []
     private var lastWindowListRefresh: TimeInterval = 0
 
-    private let frozenImage: CGImage?
+    // Space-drag: holding space while dragging moves the selection instead of
+    // resizing it (matches the native macOS screenshot behavior).
+    private var isSpaceDown = false
+    private var lastDragPoint: NSPoint?
+
+    private var frozenImage: CGImage?
 
     init(mode: SelectionMode, frozenImage: CGImage?) {
         self.mode = mode
@@ -190,6 +207,14 @@ private final class SelectionOverlayView: NSView {
     override func updateTrackingAreas() {
         super.updateTrackingAreas()
         updateTrackingArea()
+    }
+
+    func updateFrozenImage(_ image: CGImage?) {
+        frozenImage = image
+        // Loupe pixels just became available — paint it at the current cursor.
+        if let position = mousePosition {
+            invalidateCursorArtifacts(at: position)
+        }
     }
 
     private func updateTrackingArea() {
@@ -578,11 +603,14 @@ private final class SelectionOverlayView: NSView {
 
         if mode == .window {
             if let r = highlightedWindowRect {
-                selectionHandler?(r)
+                // Convert to global AppKit coordinates — view-local rects are
+                // only correct on the primary display (screen origin 0,0).
+                selectionHandler?(convertToScreen(r), highlightedWindowID)
             }
             return
         }
         startPoint = event.locationInWindow
+        lastDragPoint = event.locationInWindow
         isSelecting = true
         currentRect = .zero
         mousePosition = nil  // Hide crosshair once drag starts
@@ -593,12 +621,23 @@ private final class SelectionOverlayView: NSView {
         guard mode == .area, let start = startPoint else { return }
         let current = event.locationInWindow
         let previousRect = currentRect
-        currentRect = NSRect(
-            x: min(start.x, current.x),
-            y: min(start.y, current.y),
-            width: abs(current.x - start.x),
-            height: abs(current.y - start.y)
-        )
+        if isSpaceDown, !currentRect.isEmpty, let last = lastDragPoint {
+            // Space held: translate the whole selection by the cursor delta,
+            // and shift the anchor with it so releasing space resumes resizing
+            // from the moved rect.
+            let dx = current.x - last.x
+            let dy = current.y - last.y
+            startPoint = NSPoint(x: start.x + dx, y: start.y + dy)
+            currentRect = currentRect.offsetBy(dx: dx, dy: dy)
+        } else {
+            currentRect = NSRect(
+                x: min(start.x, current.x),
+                y: min(start.y, current.y),
+                width: abs(current.x - start.x),
+                height: abs(current.y - start.y)
+            )
+        }
+        lastDragPoint = current
 
         // First drag frame: pre-drag branch only painted a near-clear tint
         // across the screen, so we need a full-screen redraw to establish the
@@ -620,7 +659,7 @@ private final class SelectionOverlayView: NSView {
         isSelecting = false
         if currentRect.width > 4 && currentRect.height > 4 {
             NSHapticFeedbackManager.defaultPerformer.perform(.generic, performanceTime: .now)
-            selectionHandler?(convertToScreen(currentRect))
+            selectionHandler?(convertToScreen(currentRect), nil)
         } else {
             // Tiny click / accidental tap — cancel cleanly; never leave overlay stuck
             cancelHandler?()
@@ -631,7 +670,9 @@ private final class SelectionOverlayView: NSView {
     override func mouseMoved(with event: NSEvent) {
         if mode == .window {
             let previous = highlightedWindowRect
-            highlightedWindowRect = windowRect(under: event.locationInWindow)
+            let hit = windowUnder(event.locationInWindow)
+            highlightedWindowRect = hit?.rect
+            highlightedWindowID = hit?.windowID
             if previous != highlightedWindowRect {
                 invalidateWindowHighlight(from: previous, to: highlightedWindowRect)
             }
@@ -685,6 +726,14 @@ private final class SelectionOverlayView: NSView {
     override func keyDown(with event: NSEvent) {
         if event.keyCode == 53 { // Escape
             cancelHandler?()
+        } else if event.keyCode == 49, !event.isARepeat { // Space — move selection while dragging
+            isSpaceDown = true
+        }
+    }
+
+    override func keyUp(with event: NSEvent) {
+        if event.keyCode == 49 {
+            isSpaceDown = false
         }
     }
 
@@ -701,13 +750,13 @@ private final class SelectionOverlayView: NSView {
         return screenRect
     }
 
-    private func windowRect(under point: NSPoint) -> NSRect? {
+    private func windowUnder(_ point: NSPoint) -> (rect: NSRect, windowID: CGWindowID)? {
         guard let win = window else { return nil }
         let screenPoint = win.convertToScreen(NSRect(origin: point, size: .zero)).origin
         refreshWindowRectsIfNeeded()
-        for appKitRect in cachedWindowRects where appKitRect.contains(screenPoint) {
-            let viewOrigin = win.convertFromScreen(NSRect(origin: appKitRect.origin, size: .zero)).origin
-            return NSRect(origin: viewOrigin, size: appKitRect.size)
+        for cached in cachedWindows where cached.rect.contains(screenPoint) {
+            let viewOrigin = win.convertFromScreen(NSRect(origin: cached.rect.origin, size: .zero)).origin
+            return (NSRect(origin: viewOrigin, size: cached.rect.size), cached.windowID)
         }
         return nil
     }
@@ -718,9 +767,10 @@ private final class SelectionOverlayView: NSView {
         lastWindowListRefresh = now
         let windowList = CGWindowListCopyWindowInfo([.optionOnScreenOnly, .excludeDesktopElements], kCGNullWindowID) as? [[String: Any]] ?? []
         let screenHeight = NSScreen.screens.first?.frame.height ?? 0
-        cachedWindowRects = windowList.compactMap { info in
+        cachedWindows = windowList.compactMap { info in
             guard
                 let layer = info[kCGWindowLayer as String] as? Int, layer == 0,
+                let windowNumber = info[kCGWindowNumber as String] as? Int,
                 let boundsDict = info[kCGWindowBounds as String] as? [String: CGFloat]
             else { return nil }
             let bounds = CGRect(
@@ -729,12 +779,13 @@ private final class SelectionOverlayView: NSView {
                 width: boundsDict["Width"] ?? 0,
                 height: boundsDict["Height"] ?? 0
             )
-            return CGRect(
+            let appKitRect = CGRect(
                 x: bounds.origin.x,
                 y: screenHeight - bounds.origin.y - bounds.height,
                 width: bounds.width,
                 height: bounds.height
             )
+            return (rect: appKitRect, windowID: CGWindowID(windowNumber))
         }
     }
 

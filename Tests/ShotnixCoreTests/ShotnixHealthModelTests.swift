@@ -66,7 +66,7 @@ final class ShotnixHealthModelTests: XCTestCase {
             configuredNames.contains(name.rawValue) ? KeyboardShortcuts.Shortcut(.a, modifiers: [.command]) : nil
         }
 
-        XCTAssertEqual(ShotnixShortcut.allCases.count, 7)
+        XCTAssertEqual(ShotnixShortcut.allCases.count, 12)
         XCTAssertEqual(count, 2)
     }
 }

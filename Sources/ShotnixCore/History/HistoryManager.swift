@@ -1,13 +1,36 @@
 import AppKit
 import Darwin
 
+extension Notification.Name {
+    /// Posted on the main actor after any user-visible history mutation
+    /// (add / delete / restore / clear) so an open history panel stays live.
+    static let shotnixHistoryDidChange = Notification.Name("shotnixHistoryDidChange")
+}
+
+/// Tombstone for a deleted capture. The item's paths still point at the
+/// original History/ locations; the actual files sit in History/Trash/ under
+/// the same file names until the entry is restored or purged.
+struct HistoryTrashEntry: Codable {
+    let item: HistoryItem
+    let deletedAt: Date
+    /// Position the item occupied in `items` when it was deleted, so undo can
+    /// reinsert it where it was (clamped to the current count).
+    let originalIndex: Int
+}
+
 /// Persists captures to ~/Library/Application Support/Shotnix/History/
 @MainActor
 final class HistoryManager: ObservableObject {
 
     private(set) var items: [HistoryItem] = []
+    private(set) var trashEntries: [HistoryTrashEntry] = []
     private let storageDir: URL
     private let indexURL: URL
+    private let trashDir: URL
+    private let trashIndexURL: URL
+
+    /// Trash entries older than this are permanently deleted on launch.
+    private static let trashRetention: TimeInterval = 7 * 24 * 60 * 60
 
     init(storageDir overrideStorageDir: URL? = nil) {
         if let overrideStorageDir {
@@ -18,9 +41,15 @@ final class HistoryManager: ObservableObject {
             }
             storageDir = appSupport.appendingPathComponent("Shotnix/History", isDirectory: true)
         }
-        indexURL   = storageDir.appendingPathComponent("index.json")
+        indexURL      = storageDir.appendingPathComponent("index.json")
+        trashDir      = storageDir.appendingPathComponent("Trash", isDirectory: true)
+        trashIndexURL = trashDir.appendingPathComponent("trash.json")
         try? FileManager.default.createDirectory(at: storageDir, withIntermediateDirectories: true)
+        try? FileManager.default.createDirectory(at: trashDir, withIntermediateDirectories: true)
         load()
+        loadTrash()
+        purgeExpiredTrash()
+        scheduleOCRIndexing()
     }
 
     // MARK: – Add
@@ -62,7 +91,17 @@ final class HistoryManager: ObservableObject {
                 manager: self
             )
         }
+        // Index the new capture for text search in the background.
+        scheduleOCRIndexing()
+        notifyChanged()
         return item
+    }
+
+    /// Posted after any user-visible history mutation so an open history panel
+    /// refreshes live. Background OCR-text writes deliberately do NOT post —
+    /// that would spam one refresh per indexed item.
+    private func notifyChanged() {
+        NotificationCenter.default.post(name: .shotnixHistoryDidChange, object: self)
     }
 
     /// Called from the detached encode task once the index needs to be written.
@@ -73,34 +112,192 @@ final class HistoryManager: ObservableObject {
 
     // MARK: – Thumbnail access (UI convenience)
 
+    /// Pure in-memory lookup — never hits disk. The history grid decodes
+    /// misses off the main thread instead of stalling cell population.
     func cachedThumbnail(for item: HistoryItem) -> NSImage? {
-        HistoryImageCache.thumbnail(for: item.thumbnailPath)
+        HistoryImageCache.thumbnailIfCached(for: item.thumbnailPath)
     }
 
-    // MARK: – Delete
+    // MARK: – Delete (moves to trash, undoable)
 
+    /// Moves the item's files into History/Trash/ and records a tombstone so
+    /// the delete can be undone. Files are permanently removed only when the
+    /// tombstone expires (see `purgeExpiredTrash`).
     func delete(_ item: HistoryItem) {
-        items.removeAll { $0.id == item.id }
-        HistoryImageCache.evict(fullPath: item.imagePath, thumbnailPath: item.thumbnailPath)
-        let imgPath = item.imagePath
-        let thumbPath = item.thumbnailPath
+        guard let index = items.firstIndex(where: { $0.id == item.id }) else { return }
+        let removed = items.remove(at: index)
+        HistoryImageCache.evict(fullPath: removed.imagePath, thumbnailPath: removed.thumbnailPath)
+        moveToTrash(HistoryTrashEntry(item: removed, deletedAt: Date(), originalIndex: index))
         persistCurrentIndex()
-        Task.detached(priority: .utility) {
-            try? FileManager.default.removeItem(atPath: imgPath)
-            try? FileManager.default.removeItem(atPath: thumbPath)
-        }
+        persistTrashIndex()
+        notifyChanged()
     }
 
     func deleteAll() {
+        guard !items.isEmpty else { return }
         let removed = items
         items.removeAll()
         HistoryImageCache.evictAll()
+        let now = Date()
+        for (index, item) in removed.enumerated() {
+            moveToTrash(HistoryTrashEntry(item: item, deletedAt: now, originalIndex: index))
+        }
         persistCurrentIndex()
+        persistTrashIndex()
+        notifyChanged()
+    }
+
+    /// Undo a delete: move the files back out of History/Trash/ and reinsert
+    /// the item at the position it was deleted from (clamped).
+    @discardableResult
+    func restoreFromTrash(id: UUID) -> HistoryItem? {
+        guard let entryIndex = trashEntries.firstIndex(where: { $0.item.id == id }) else { return nil }
+        let entry = trashEntries.remove(at: entryIndex)
+        restoreFileFromTrash(toPath: entry.item.imagePath)
+        restoreFileFromTrash(toPath: entry.item.thumbnailPath)
+        let insertAt = min(max(entry.originalIndex, 0), items.count)
+        items.insert(entry.item, at: insertAt)
+        persistCurrentIndex()
+        persistTrashIndex()
+        // The restored item may predate OCR indexing.
+        scheduleOCRIndexing()
+        notifyChanged()
+        return entry.item
+    }
+
+    // MARK: – Trash internals
+
+    private func moveToTrash(_ entry: HistoryTrashEntry) {
+        moveFileToTrash(atPath: entry.item.imagePath)
+        moveFileToTrash(atPath: entry.item.thumbnailPath)
+        trashEntries.append(entry)
+    }
+
+    private func moveFileToTrash(atPath path: String) {
+        let source = URL(fileURLWithPath: path)
+        guard FileManager.default.fileExists(atPath: path) else { return }
+        let destination = trashDir.appendingPathComponent(source.lastPathComponent)
+        try? FileManager.default.removeItem(at: destination)
+        do {
+            try FileManager.default.moveItem(at: source, to: destination)
+        } catch {
+            print("[Shotnix] Failed to move \(path) to trash: \(error)")
+        }
+    }
+
+    private func restoreFileFromTrash(toPath path: String) {
+        let destination = URL(fileURLWithPath: path)
+        let source = trashDir.appendingPathComponent(destination.lastPathComponent)
+        guard FileManager.default.fileExists(atPath: source.path) else { return }
+        try? FileManager.default.removeItem(at: destination)
+        do {
+            try FileManager.default.moveItem(at: source, to: destination)
+        } catch {
+            print("[Shotnix] Failed to restore \(path) from trash: \(error)")
+        }
+    }
+
+    /// Permanently deletes trash entries older than `trashRetention`.
+    private func purgeExpiredTrash() {
+        let cutoff = Date().addingTimeInterval(-Self.trashRetention)
+        let expired = trashEntries.filter { $0.deletedAt < cutoff }
+        guard !expired.isEmpty else { return }
+        trashEntries.removeAll { $0.deletedAt < cutoff }
+        persistTrashIndex()
+        let trashDir = self.trashDir
+        let fileURLs = expired
+            .flatMap { [$0.item.imagePath, $0.item.thumbnailPath] }
+            .map { trashDir.appendingPathComponent(URL(fileURLWithPath: $0).lastPathComponent) }
         Task.detached(priority: .utility) {
-            removed.forEach {
-                try? FileManager.default.removeItem(atPath: $0.imagePath)
-                try? FileManager.default.removeItem(atPath: $0.thumbnailPath)
+            fileURLs.forEach { try? FileManager.default.removeItem(at: $0) }
+        }
+    }
+
+    private func loadTrash() {
+        guard FileManager.default.fileExists(atPath: trashIndexURL.path) else { return }
+        do {
+            let data = try Data(contentsOf: trashIndexURL)
+            trashEntries = try JSONDecoder().decode([HistoryTrashEntry].self, from: data)
+        } catch {
+            print("[Shotnix] Trash index corrupted, starting fresh: \(error)")
+            // Don't overwrite — the corrupt file may be recoverable manually.
+        }
+    }
+
+    private func persistTrashIndex() {
+        Self.persistTrash(entries: trashEntries, to: trashIndexURL)
+    }
+
+    nonisolated private static func persistTrash(entries: [HistoryTrashEntry], to url: URL) {
+        do {
+            let data = try JSONEncoder().encode(entries)
+            try data.write(to: url, options: .atomic)
+        } catch {
+            print("[Shotnix] Trash persist failed: \(error)")
+        }
+    }
+
+    // MARK: – OCR indexing
+    //
+    // A single low-priority serial loop OCRs every item whose `ocrText` is
+    // still nil (oldest index files predate the field; new captures start
+    // nil). Image decode + Vision recognition run off the main actor; only
+    // the result write-back touches manager state. Results are persisted
+    // every few items so progress survives a quit mid-index. Failures store
+    // "" so an unreadable capture is never re-queued forever.
+
+    private var ocrIndexingActive = false
+    private var ocrProcessedSinceSave = 0
+    private static let ocrSaveInterval = 4
+
+    private func scheduleOCRIndexing() {
+        guard !ocrIndexingActive else { return }
+        guard items.contains(where: { $0.ocrText == nil }) else { return }
+        ocrIndexingActive = true
+        Task(priority: .utility) { [weak self] in
+            while let job = self?.nextOCRJob() {
+                let text = await Self.recognizeText(atImagePath: job.imagePath)
+                self?.storeOCRText(text, forItemID: job.id)
             }
+            self?.finishOCRIndexing()
+        }
+    }
+
+    private func nextOCRJob() -> (id: UUID, imagePath: String)? {
+        guard let item = items.first(where: { $0.ocrText == nil }) else { return nil }
+        return (item.id, item.imagePath)
+    }
+
+    private func storeOCRText(_ text: String, forItemID id: UUID) {
+        // The item may have been deleted while OCR was running — drop the result.
+        guard let index = items.firstIndex(where: { $0.id == id }) else { return }
+        items[index].ocrText = text
+        ocrProcessedSinceSave += 1
+        if ocrProcessedSinceSave >= Self.ocrSaveInterval {
+            ocrProcessedSinceSave = 0
+            persistCurrentIndex()
+        }
+    }
+
+    private func finishOCRIndexing() {
+        if ocrProcessedSinceSave > 0 {
+            ocrProcessedSinceSave = 0
+            persistCurrentIndex()
+        }
+        ocrIndexingActive = false
+    }
+
+    /// Loads the image and runs Vision OCR, entirely off the main actor.
+    /// Returns "" on any failure so the item is marked as indexed regardless.
+    nonisolated private static func recognizeText(atImagePath path: String) async -> String {
+        // Prefer a fresh decode from disk (avoids churning the shared cache);
+        // fall back to the primed in-memory image for captures whose PNG
+        // hasn't landed on disk yet (two-phase add).
+        let image = NSImage(contentsOfFile: path) ?? HistoryImageCache.fullImage(for: path)
+        do {
+            return try await OCREngine.recognizeText(in: image)
+        } catch {
+            return ""
         }
     }
 

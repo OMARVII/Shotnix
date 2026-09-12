@@ -16,6 +16,21 @@ private enum CapturePerformance {
     }
 }
 
+extension Notification.Name {
+    /// Posted once, when the very first capture completes onboarding.
+    static let shotnixDidFinishFirstCapture = Notification.Name("shotnixDidFinishFirstCapture")
+}
+
+/// The screen the mouse is currently on — choosers and pickers should appear
+/// where the user is working, not on whichever display is "main".
+@MainActor
+private func screenUnderMouse() -> NSScreen? {
+    let mouse = NSEvent.mouseLocation
+    return NSScreen.screens.first { NSMouseInRect(mouse, $0.frame, false) }
+        ?? NSScreen.main
+        ?? NSScreen.screens.first
+}
+
 /// Central coordinator for all capture modes.
 @MainActor
 final class CaptureEngine {
@@ -23,11 +38,11 @@ final class CaptureEngine {
     // Remembers the last selected area for "Capture Previous Area"
     private(set) var lastCaptureRect: CGRect?
     private var areaSelectionWindow: AreaSelectionWindow?
+    private var countdownWindow: CountdownWindow?
     private var scrollingCapture: ScrollingCaptureController?
     private var recordingControlsWindow: RecordingControlsWindow?
     private var recordingScreenChooserWindow: RecordingScreenChooserWindow?
     private var recordingWindowChooserWindow: RecordingWindowChooserWindow?
-    private var fullscreenCaptureChooserWindow: RecordingScreenChooserWindow?
     private var recordingSelectionActive = false
     private let recordingEngine = RecordingEngine()
 
@@ -35,9 +50,16 @@ final class CaptureEngine {
     var recordingStopEnabled: Bool { recordingEngine.active || recordingSetupActive }
     var recordingStopTitle: String { recordingEngine.active ? "Stop Recording" : "Cancel Recording" }
     var recordingActionsEnabled: Bool { !recordingEngine.active && !recordingSetupActive }
+    var recordingElapsedSeconds: TimeInterval? { recordingEngine.elapsedSeconds }
     var recordingFinishedHandler: ((URL) -> Void)? {
         get { recordingEngine.recordingFinishedHandler }
         set { recordingEngine.recordingFinishedHandler = newValue }
+    }
+    /// Fired whenever recording starts or fully stops — drives the menu bar
+    /// recording indicator.
+    var recordingStateChangedHandler: (() -> Void)? {
+        get { recordingEngine.stateChangedHandler }
+        set { recordingEngine.stateChangedHandler = newValue }
     }
 
     private var recordingSetupActive: Bool {
@@ -90,6 +112,12 @@ final class CaptureEngine {
     }
 
     @available(macOS 14.0, *)
+    private static func invalidateCachedContent() {
+        cachedContent = nil
+        cachedContentIncludesWindows = false
+    }
+
+    @available(macOS 14.0, *)
     private static func shareableContent(includeWindows: Bool) async throws -> SCShareableContent {
         // Only reuse the cache if it covers what the caller needs. A cache
         // populated for "displays only" can't serve window-capture mode.
@@ -129,6 +157,37 @@ final class CaptureEngine {
         await areaSelectionWindow?.prepareAndShow(engine: self)
     }
 
+    // MARK: – Timed Capture
+
+    /// Area capture with a countdown: select the region first, then a
+    /// cancellable on-screen countdown runs before the shot is taken —
+    /// time to open menus, hover states, or tooltips.
+    func startTimedCapture(historyManager: HistoryManager) async {
+        guard PermissionsManager.hasScreenRecordingPermission else {
+            PermissionsManager.showPermissionDeniedAlert(); return
+        }
+        guard areaSelectionWindow == nil, countdownWindow == nil else { return }
+        areaSelectionWindow = AreaSelectionWindow(mode: .area) { [weak self] rect, screen in
+            guard let self else { return }
+            self.areaSelectionWindow = nil
+            guard let rect else { return }
+            self.lastCaptureRect = rect
+            let countdown = CountdownWindow(seconds: Settings.timedCaptureDelaySeconds, on: screen) { [weak self] finished in
+                guard let self else { return }
+                self.countdownWindow = nil
+                guard finished else { return }
+                Task {
+                    let hiddenByCapture = await self.hideDesktopIconsForCaptureIfNeeded()
+                    await self.captureRect(rect, on: screen, historyManager: historyManager)
+                    self.restoreDesktopIconsIfNeeded(hiddenByCapture)
+                }
+            }
+            self.countdownWindow = countdown
+            countdown.start()
+        }
+        await areaSelectionWindow?.prepareAndShow(engine: self)
+    }
+
     // MARK: – Window Capture
 
     func startWindowCapture(historyManager: HistoryManager) async {
@@ -139,17 +198,109 @@ final class CaptureEngine {
         let hiddenByCapture = await hideDesktopIconsForCaptureIfNeeded()
         areaSelectionWindow = AreaSelectionWindow(mode: .window) { [weak self] rect, screen in
             guard let self else { return }
+            // Read before releasing the selection window — the clicked
+            // window's ID enables the clean isolated-window capture path.
+            let windowID = self.areaSelectionWindow?.selectedWindowID
             self.areaSelectionWindow = nil
             guard let rect else {
                 self.restoreDesktopIconsIfNeeded(hiddenByCapture)
                 return
             }
             Task {
-                await self.captureRect(rect, on: screen, historyManager: historyManager)
+                await self.captureWindow(windowID: windowID, fallbackRect: rect, on: screen, historyManager: historyManager)
                 self.restoreDesktopIconsIfNeeded(hiddenByCapture)
             }
         }
         await areaSelectionWindow?.prepareAndShow(engine: self)
+    }
+
+    /// Captures the clicked window as an isolated image (no overlapping
+    /// windows, no background) via SCK's desktop-independent window filter,
+    /// optionally composited over a drawn shadow with transparent padding.
+    /// Falls back to the display-region crop when the window can't be
+    /// resolved or on macOS 13.
+    private func captureWindow(windowID: CGWindowID?, fallbackRect: CGRect, on screen: NSScreen, historyManager: HistoryManager) async {
+        if #available(macOS 14.0, *), let windowID,
+           let image = await captureIsolatedWindowImage(windowID: windowID, expectedSize: fallbackRect.size) {
+            finishCapture(image: image, rect: fallbackRect, historyManager: historyManager)
+            return
+        }
+        await captureRect(fallbackRect, on: screen, historyManager: historyManager)
+    }
+
+    @available(macOS 14.0, *)
+    private func captureIsolatedWindowImage(windowID: CGWindowID, expectedSize: CGSize) async -> NSImage? {
+        do {
+            // Try the cached shareable content first — a fresh fetch costs
+            // 30-100ms on every window capture. The cached window list can be
+            // stale, so refetch when the clicked window is missing or its
+            // cached frame no longer matches the just-measured size
+            // (expectedSize comes from a ≤150ms-old CGWindowList snapshot).
+            func lookup(_ content: SCShareableContent) -> SCWindow? {
+                content.windows.first { $0.windowID == windowID }
+            }
+            func sizeMatches(_ window: SCWindow) -> Bool {
+                abs(window.frame.width - expectedSize.width) < 2
+                    && abs(window.frame.height - expectedSize.height) < 2
+            }
+            var window = lookup(try await Self.shareableContent(includeWindows: true))
+            if window.map(sizeMatches) != true {
+                Self.invalidateCachedContent()
+                window = lookup(try await Self.shareableContent(includeWindows: true))
+            }
+            guard let window else { return nil }
+
+            let filter = SCContentFilter(desktopIndependentWindow: window)
+            let scale = CGFloat(filter.pointPixelScale)
+            let config = SCStreamConfiguration()
+            config.width = max(2, Int(window.frame.width * scale))
+            config.height = max(2, Int(window.frame.height * scale))
+            config.scalesToFit = false
+            config.showsCursor = false
+            config.captureResolution = .best
+
+            let cgImage = try await SCScreenshotManager.captureImage(contentFilter: filter, configuration: config)
+            let logicalSize = NSSize(width: window.frame.width, height: window.frame.height)
+            guard Settings.windowCaptureShadow else {
+                return Self.nsImage(from: cgImage, logicalSize: logicalSize)
+            }
+            return Self.compositeWindowShadow(around: cgImage, logicalSize: logicalSize, scale: scale)
+        } catch {
+            print("[Shotnix] Isolated window capture failed, falling back to region crop: \(error)")
+            return nil
+        }
+    }
+
+    /// Draws the window image onto a larger transparent canvas with a soft
+    /// drop shadow — the CleanShot-style window screenshot look. Output keeps
+    /// the source pixel density; the alpha padding survives PNG export.
+    nonisolated private static func compositeWindowShadow(around cgImage: CGImage, logicalSize: NSSize, scale: CGFloat) -> NSImage? {
+        let padding: CGFloat = 32
+        let paddingPx = Int(padding * scale)
+        let width = cgImage.width + paddingPx * 2
+        let height = cgImage.height + paddingPx * 2
+        let colorSpace = cgImage.colorSpace ?? CGColorSpace(name: CGColorSpace.sRGB)!
+
+        guard let context = CGContext(
+            data: nil,
+            width: width,
+            height: height,
+            bitsPerComponent: 8,
+            bytesPerRow: 0,
+            space: colorSpace,
+            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+        ) else { return nil }
+
+        context.setShadow(
+            offset: CGSize(width: 0, height: -8 * scale),
+            blur: 20 * scale,
+            color: CGColor(colorSpace: CGColorSpaceCreateDeviceRGB(), components: [0, 0, 0, 0.38])
+        )
+        context.draw(cgImage, in: CGRect(x: paddingPx, y: paddingPx, width: cgImage.width, height: cgImage.height))
+
+        guard let composited = context.makeImage() else { return nil }
+        let paddedLogical = NSSize(width: logicalSize.width + padding * 2, height: logicalSize.height + padding * 2)
+        return nsImage(from: composited, logicalSize: paddedLogical)
     }
 
     // MARK: – Fullscreen
@@ -161,50 +312,26 @@ final class CaptureEngine {
         let screens = NSScreen.screens
         guard !screens.isEmpty else { return }
 
-        // Single display: keep the instant capture behavior.
-        guard screens.count > 1 else {
-            let screen = NSScreen.main ?? screens[0]
-            let hiddenByCapture = await hideDesktopIconsForCaptureIfNeeded()
-            defer { restoreDesktopIconsIfNeeded(hiddenByCapture) }
-            await captureRect(screen.frame, on: screen, historyManager: historyManager)
-            return
-        }
+        // Instant, always — a hotkey capture must never open a modal chooser.
+        // On multi-monitor setups the shot is the display the user is working
+        // on (mouse location); All Displays lives as its own menu action.
+        let screen = screenUnderMouse() ?? NSScreen.main ?? screens[0]
+        let hiddenByCapture = await hideDesktopIconsForCaptureIfNeeded()
+        defer { restoreDesktopIconsIfNeeded(hiddenByCapture) }
+        await captureRect(screen.frame, on: screen, historyManager: historyManager)
+    }
 
-        // Multiple displays: let the user pick one (or capture them all),
-        // mirroring the fullscreen recording flow.
-        fullscreenCaptureChooserWindow?.closeChooser()
-        let chooser = RecordingScreenChooserWindow(
-            screens: screens,
-            subtitle: "Select which display to capture fullscreen",
-            actionTitle: "Capture",
-            selectHandler: { [weak self] screen in
-                guard let self else { return }
-                self.fullscreenCaptureChooserWindow = nil
-                Task {
-                    let hiddenByCapture = await self.hideDesktopIconsForCaptureIfNeeded()
-                    await self.captureRect(screen.frame, on: screen, historyManager: historyManager)
-                    self.restoreDesktopIconsIfNeeded(hiddenByCapture)
-                }
-            },
-            allDisplaysHandler: { [weak self] in
-                guard let self else { return }
-                self.fullscreenCaptureChooserWindow = nil
-                Task {
-                    let hiddenByCapture = await self.hideDesktopIconsForCaptureIfNeeded()
-                    // One capture per screen, each through the normal
-                    // post-capture pipeline (history, auto-actions, overlay).
-                    for screen in NSScreen.screens {
-                        await self.captureRect(screen.frame, on: screen, historyManager: historyManager)
-                    }
-                    self.restoreDesktopIconsIfNeeded(hiddenByCapture)
-                }
-            },
-            closeHandler: { [weak self] in
-                self?.fullscreenCaptureChooserWindow = nil
-            }
-        )
-        fullscreenCaptureChooserWindow = chooser
-        chooser.show()
+    /// Captures every connected display, one image per screen, each through
+    /// the normal post-capture pipeline — one shutter sound for the batch.
+    func captureAllDisplays(historyManager: HistoryManager) async {
+        guard PermissionsManager.hasScreenRecordingPermission else {
+            PermissionsManager.showPermissionDeniedAlert(); return
+        }
+        let hiddenByCapture = await hideDesktopIconsForCaptureIfNeeded()
+        defer { restoreDesktopIconsIfNeeded(hiddenByCapture) }
+        for (index, screen) in NSScreen.screens.enumerated() {
+            await captureRect(screen.frame, on: screen, historyManager: historyManager, playSound: index == 0)
+        }
     }
 
     // MARK: – Screen Recording
@@ -334,10 +461,29 @@ final class CaptureEngine {
             return lhs < rhs
         }
 
+        // One SCK screenshot per window — serialized this dominated picker
+        // latency (tens of ms × window count). The child tasks stay
+        // @MainActor but suspend at the capture awaits, so they overlap.
+        struct IndexedPreview: @unchecked Sendable {
+            let index: Int
+            let image: NSImage?
+        }
+        let previews: [NSImage?] = await withTaskGroup(of: IndexedPreview.self) { group in
+            for (index, candidate) in candidates.enumerated() {
+                group.addTask { @MainActor in
+                    IndexedPreview(index: index, image: await self.windowPreviewImage(for: candidate.window))
+                }
+            }
+            var images = [NSImage?](repeating: nil, count: candidates.count)
+            for await preview in group {
+                images[preview.index] = preview.image
+            }
+            return images
+        }
+
         var choices: [RecordingWindowChoice] = []
         choices.reserveCapacity(candidates.count)
-        for candidate in candidates {
-            let previewImage = await windowPreviewImage(for: candidate.window)
+        for (candidate, previewImage) in zip(candidates, previews) {
             choices.append(
                 RecordingWindowChoice(
                     window: candidate.window,
@@ -604,29 +750,42 @@ final class CaptureEngine {
 
     // MARK: – Core capture
 
-    func captureRect(_ rect: CGRect, on screen: NSScreen, historyManager: HistoryManager) async {
+    func captureRect(_ rect: CGRect, on screen: NSScreen, historyManager: HistoryManager, playSound: Bool = true) async {
         guard let image = await captureRectToImage(rect, on: screen) else {
             print("[Shotnix] Capture failed for rect \(rect)")
             ToastWindow.show(message: "Capture failed", on: screen)
             return
         }
-        playCaptureSound()
+        finishCapture(image: image, rect: rect, historyManager: historyManager, playSound: playSound)
+    }
+
+    /// Shared post-capture pipeline: sound, haptic, history, auto-actions,
+    /// overlay — and the first successful capture completes onboarding.
+    private func finishCapture(image: NSImage, rect: CGRect, historyManager: HistoryManager, playSound: Bool = true) {
+        if playSound { playCaptureSound() }
         NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .default)
         let item = historyManager.add(image: image, rect: rect)
 
-        // After-capture auto-actions (from Preferences)
+        // After-capture auto-actions (from Preferences). Both encode off the
+        // main thread — a 5K PNG encode here used to stutter the overlay's
+        // entrance animation.
         if Settings.afterCaptureCopyToClipboard {
-            ImageExporter.copyToClipboard(image: image)
+            ImageExporter.copyToClipboardAsync(image: image)
         }
         if Settings.afterCaptureSaveAutomatically {
             let dir = Settings.autoSaveLocation
             let name = ImageExporter.timestampedName
             let ext = Settings.screenshotFormat
             let url = URL(fileURLWithPath: dir).appendingPathComponent("\(name).\(ext)")
-            ImageExporter.save(image: image, to: url)
+            ImageExporter.saveAsync(image: image, to: url)
         }
         if Settings.afterCaptureShowOverlay {
             QuickAccessOverlay.show(image: image, historyItem: item, historyManager: historyManager)
+        }
+
+        if !Settings.onboardingCompleted {
+            Settings.onboardingCompleted = true
+            NotificationCenter.default.post(name: .shotnixDidFinishFirstCapture, object: nil)
         }
     }
 
@@ -724,8 +883,14 @@ final class CaptureEngine {
 
             let logicalSize = NSSize(width: w, height: h)
             let cgImage = try await SCScreenshotManager.captureImage(contentFilter: filter, configuration: config)
-            if Self.isEffectivelyBlack(cgImage), let streamImage = try? await captureRectStream(filter: filter, configuration: config) {
-                return Self.nsImage(from: streamImage, logicalSize: logicalSize)
+            if Self.isEffectivelyBlack(cgImage) {
+                // Diagnostic breadcrumb: a black frame here either means the
+                // content really is black or SCScreenshotManager glitched —
+                // the stream retry rescues the latter at ~0.5-1.5s cost.
+                os_log("Screenshot came back black for rect %{public}@ — retrying via SCStream", type: .info, NSStringFromRect(rect))
+                if let streamImage = try? await captureRectStream(filter: filter, configuration: config) {
+                    return Self.nsImage(from: streamImage, logicalSize: logicalSize)
+                }
             }
 
             return Self.nsImage(from: cgImage, logicalSize: logicalSize)
@@ -1092,7 +1257,7 @@ private final class RecordingWindowChooserWindow: NSWindow {
     }
 
     private func positionChooser() {
-        guard let visible = (NSScreen.main ?? NSScreen.screens.first)?.visibleFrame else { return }
+        guard let visible = screenUnderMouse()?.visibleFrame else { return }
         let origin = NSPoint(x: visible.midX - frame.width / 2, y: visible.maxY - frame.height - 72)
         setFrameOrigin(NSPoint(x: max(visible.minX + 24, min(origin.x, visible.maxX - frame.width - 24)), y: max(visible.minY + 24, origin.y)))
     }
@@ -1510,7 +1675,7 @@ private final class RecordingScreenChooserWindow: NSWindow {
     }
 
     private func positionChooser() {
-        let screen = NSScreen.main ?? screens.first
+        let screen = screenUnderMouse() ?? screens.first
         guard let visible = screen?.visibleFrame else { return }
         let origin = NSPoint(x: visible.midX - frame.width / 2, y: visible.maxY - frame.height - 72)
         setFrameOrigin(pixelAligned(NSPoint(x: max(visible.minX + 24, min(origin.x, visible.maxX - frame.width - 24)), y: max(visible.minY + 24, origin.y)), scale: screen?.backingScaleFactor ?? 2))

@@ -7,6 +7,9 @@ import ScreenCaptureKit
 final class RecordingEngine: NSObject {
 
     private let writerQueue = DispatchQueue(label: "com.shotnix.recording.writer", qos: .userInitiated)
+    /// All per-buffer append state lives here, confined to writerQueue —
+    /// see RecordingWriterCore. The engine keeps only lifecycle state.
+    private let writerCore = RecordingWriterCore()
     private var stream: SCStream?
     private var streamOutput: RecordingStreamOutput?
     private var assetWriter: AVAssetWriter?
@@ -17,13 +20,9 @@ final class RecordingEngine: NSObject {
     private var microphoneOutput: AVCaptureAudioDataOutput?
     private var microphoneDelegate: MicrophoneCaptureDelegate?
     private var outputURL: URL?
-    private var firstPresentationTime: CMTime?
+    /// Main-actor mirror of the core's first-frame anchor, set via the
+    /// onFirstFrame hop — used for the HUD-facing duration in beginFinishing.
     private var firstFrameWallClockTime: CFTimeInterval = 0
-    private var lastPresentationTime: CMTime?
-    private var lastCompleteSampleBuffer: CMSampleBuffer?
-    private var pendingSystemAudioSamples: [CMSampleBuffer] = []
-    private var pendingMicrophoneSamples: [CMSampleBuffer] = []
-    private var droppedPendingAudioSampleCount = 0
     private var recordingStartedAt: CFTimeInterval = 0
     private var isRecording = false
     private var isFinishing = false
@@ -35,7 +34,13 @@ final class RecordingEngine: NSObject {
     private var pendingRecordingMetadata: VideoDemoRecordingMetadata?
 
     var recordingFinishedHandler: ((URL) -> Void)?
+    /// Fired on every recording lifecycle transition (started, finishing,
+    /// fully stopped) — drives the menu bar recording indicator.
+    var stateChangedHandler: (() -> Void)?
     var active: Bool { isRecording || isFinishing }
+    var elapsedSeconds: TimeInterval? {
+        isRecording && recordingStartedAt > 0 ? CACurrentMediaTime() - recordingStartedAt : nil
+    }
 
     func startRecording(rect: CGRect, on screen: NSScreen) async {
         await startRecording(source: .displayRect(rect: rect, screen: screen))
@@ -99,11 +104,48 @@ final class RecordingEngine: NSObject {
                 nativeCursorVisible: configuration.showsCursor
             )
             self.metadataRecorder = metadataRecorder
-            resetTimingState()
+            firstFrameWallClockTime = 0
             isFinishing = false
             isRecording = true
             recordingStartedAt = CACurrentMediaTime()
             metadataRecorder.start()
+            stateChangedHandler?()
+
+            // Arm the queue-confined writer core before any buffer can arrive
+            // (the stream hasn't started yet; the serial queue preserves order).
+            let core = writerCore
+            let handles = WriterHandles(
+                writer: prepared.writer,
+                videoInput: prepared.videoInput,
+                systemAudioInput: prepared.systemAudioInput,
+                microphoneInput: prepared.microphoneInput
+            )
+            let frameDuration = CMTime(value: 1, timescale: CMTimeScale(max(configuration.fps, 1)))
+            let onFirstFrame: (CFTimeInterval) -> Void = { [weak self] wallClock in
+                Task { @MainActor in
+                    guard let self else { return }
+                    self.firstFrameWallClockTime = wallClock
+                    // Re-anchor cursor/click metadata so its timestamps line
+                    // up with the video timeline (t=0 = first appended frame).
+                    self.metadataRecorder?.alignStart(to: wallClock)
+                }
+            }
+            let onWriterFailure: () -> Void = { [weak self] in
+                Task { @MainActor in
+                    self?.handleWriterFailure()
+                }
+            }
+            writerQueue.async {
+                core.begin(
+                    writer: handles.writer,
+                    videoInput: handles.videoInput,
+                    systemAudioInput: handles.systemAudioInput,
+                    microphoneInput: handles.microphoneInput,
+                    frameDuration: frameDuration,
+                    onFirstFrame: onFirstFrame,
+                    onWriterFailure: onWriterFailure
+                )
+            }
 
             if configuration.recordsMicrophone {
                 try startMicrophoneCapture(deviceID: configuration.microphoneDeviceID)
@@ -148,6 +190,10 @@ final class RecordingEngine: NSObject {
         }
     }
 
+    // These run on writerQueue (SCStream and the mic delegate deliver there)
+    // and append directly via the queue-confined core — no per-buffer
+    // main-actor hop. Only the tiny mic-level float crosses to the HUD.
+
     fileprivate nonisolated func processScreenSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
         guard sampleBuffer.isValid, CMSampleBufferDataIsReady(sampleBuffer) else { return }
         guard let attachments = CMSampleBufferGetSampleAttachmentsArray(sampleBuffer, createIfNecessary: false) as? [[SCStreamFrameInfo: Any]],
@@ -155,25 +201,20 @@ final class RecordingEngine: NSObject {
               Self.frameStatus(from: rawStatus) == .complete else {
             return
         }
-
-        Task { @MainActor [weak self] in
-            self?.appendCompleteFrame(sampleBuffer)
-        }
+        writerCore.appendVideo(sampleBuffer)
     }
 
     fileprivate nonisolated func processSystemAudioSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
         guard sampleBuffer.isValid, CMSampleBufferDataIsReady(sampleBuffer) else { return }
-        Task { @MainActor [weak self] in
-            self?.appendAudioSample(sampleBuffer, to: .system)
-        }
+        writerCore.appendAudio(sampleBuffer, to: .system)
     }
 
     fileprivate nonisolated func processMicrophoneSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
         guard sampleBuffer.isValid, CMSampleBufferDataIsReady(sampleBuffer) else { return }
         let level = Self.microphoneLevel(from: sampleBuffer)
+        writerCore.appendAudio(sampleBuffer, to: .microphone)
         Task { @MainActor [weak self] in
             self?.hud?.updateMicrophoneLevel(level)
-            self?.appendAudioSample(sampleBuffer, to: .microphone)
         }
     }
 
@@ -384,37 +425,6 @@ final class RecordingEngine: NSObject {
         return streamConfig
     }
 
-    private func appendCompleteFrame(_ sampleBuffer: CMSampleBuffer) {
-        guard !isFinishing, let writer = assetWriter, let input = videoInput else { return }
-
-        let sourcePresentationTime = sampleBuffer.presentationTimeStamp
-        if firstPresentationTime == nil {
-            firstPresentationTime = sourcePresentationTime
-            firstFrameWallClockTime = CACurrentMediaTime()
-            // Video t=0 is this frame, not stream start — re-anchor cursor/click
-            // metadata so its timestamps line up with the video timeline.
-            metadataRecorder?.alignStart(to: firstFrameWallClockTime)
-            writer.startSession(atSourceTime: .zero)
-            flushPendingAudioSamples()
-        }
-
-        guard let firstPresentationTime else { return }
-        let relativePresentationTime = CMTimeSubtract(sourcePresentationTime, firstPresentationTime)
-        guard relativePresentationTime >= .zero else { return }
-        guard input.isReadyForMoreMediaData else { return }
-        guard let retimed = Self.copy(sampleBuffer: sampleBuffer, presentationTime: relativePresentationTime, duration: frameDuration) else { return }
-
-        if input.append(retimed) {
-            lastPresentationTime = relativePresentationTime
-            lastCompleteSampleBuffer = sampleBuffer
-        } else if let error = writer.error {
-            print("[Shotnix] Asset writer append failed: \(error)")
-            if writer.status == .failed {
-                handleWriterFailure()
-            }
-        }
-    }
-
     /// The writer entered .failed mid-recording (disk full is the classic cause).
     /// Stop immediately so the user gets feedback instead of a dead HUD timer.
     private func handleWriterFailure() {
@@ -438,56 +448,6 @@ final class RecordingEngine: NSObject {
         }
     }
 
-    private func appendAudioSample(_ sampleBuffer: CMSampleBuffer, to target: AudioTarget) {
-        guard !isFinishing else { return }
-        guard firstPresentationTime != nil else {
-            switch target {
-            case .system:
-                pendingSystemAudioSamples.append(sampleBuffer)
-                if pendingSystemAudioSamples.count > Self.maximumPendingAudioSamples {
-                    pendingSystemAudioSamples.removeFirst()
-                    droppedPendingAudioSampleCount += 1
-                }
-            case .microphone:
-                pendingMicrophoneSamples.append(sampleBuffer)
-                if pendingMicrophoneSamples.count > Self.maximumPendingAudioSamples {
-                    pendingMicrophoneSamples.removeFirst()
-                    droppedPendingAudioSampleCount += 1
-                }
-            }
-            return
-        }
-        appendReadyAudioSample(sampleBuffer, to: target)
-    }
-
-    private func flushPendingAudioSamples() {
-        if droppedPendingAudioSampleCount > 0 {
-            print("[Shotnix] Dropped \(droppedPendingAudioSampleCount) audio sample buffers while waiting for the first video frame")
-            droppedPendingAudioSampleCount = 0
-        }
-        pendingSystemAudioSamples.forEach { appendReadyAudioSample($0, to: .system) }
-        pendingSystemAudioSamples.removeAll()
-        pendingMicrophoneSamples.forEach { appendReadyAudioSample($0, to: .microphone) }
-        pendingMicrophoneSamples.removeAll()
-    }
-
-    private func appendReadyAudioSample(_ sampleBuffer: CMSampleBuffer, to target: AudioTarget) {
-        let input: AVAssetWriterInput? = switch target {
-        case .system: systemAudioInput
-        case .microphone: microphoneInput
-        }
-        guard let input, input.isReadyForMoreMediaData,
-              let presentationTime = relativeAudioPresentationTime(for: sampleBuffer),
-              let retimed = Self.copy(sampleBuffer: sampleBuffer, presentationTime: presentationTime, duration: sampleBuffer.duration) else { return }
-        _ = input.append(retimed)
-    }
-
-    private func relativeAudioPresentationTime(for sampleBuffer: CMSampleBuffer) -> CMTime? {
-        guard let firstPresentationTime else { return nil }
-        let relative = CMTimeSubtract(sampleBuffer.presentationTimeStamp, firstPresentationTime)
-        return relative >= .zero ? relative : .zero
-    }
-
     private func finishRecording(error: Error?) {
         guard isFinishing else { return }
         stopMicrophoneCapture()
@@ -496,7 +456,14 @@ final class RecordingEngine: NSObject {
 
         Task { @MainActor [weak self] in
             guard let self else { return }
-            self.appendFinalStaticFrameIfNeeded()
+            // Freeze-frame + hard stop for the delegate append paths. The
+            // sync hop guarantees every already-queued buffer has landed and
+            // nothing appends after markAsFinished below.
+            let core = self.writerCore
+            self.writerQueue.sync {
+                core.appendFinalStaticFrame()
+                core.deactivate()
+            }
 
             guard let writer = self.assetWriter,
                   let videoInput = self.videoInput,
@@ -565,6 +532,11 @@ final class RecordingEngine: NSObject {
         isFinishing = true
         hud?.closeHUD()
         hud = nil
+        // Matches the old `!isFinishing` append guard: buffers arriving after
+        // the user hits stop are dropped (queued ones still land first).
+        let core = writerCore
+        writerQueue.async { core.deactivate() }
+        stateChangedHandler?()
     }
 
     private func scheduleFinishTimeout(sessionID: UUID, url: URL) {
@@ -586,22 +558,6 @@ final class RecordingEngine: NSObject {
     private func cancelFinishTimeout() {
         finishTimeoutWorkItem?.cancel()
         finishTimeoutWorkItem = nil
-    }
-
-    private func appendFinalStaticFrameIfNeeded() {
-        guard let input = videoInput,
-              input.isReadyForMoreMediaData,
-              firstFrameWallClockTime > 0,
-              let lastSampleBuffer = lastCompleteSampleBuffer else { return }
-        // Video t=0 is the first appended frame, so the final PTS must be
-        // measured from the same anchor — not from stream start.
-        let elapsed = CACurrentMediaTime() - firstFrameWallClockTime
-        let finalPresentationTime = CMTime(seconds: max(elapsed, 0), preferredTimescale: 600)
-        let minimumStep = frameDuration
-        let last = lastPresentationTime ?? .zero
-        guard finalPresentationTime > CMTimeAdd(last, minimumStep) else { return }
-        guard let retimed = Self.copy(sampleBuffer: lastSampleBuffer, presentationTime: finalPresentationTime, duration: frameDuration) else { return }
-        _ = input.append(retimed)
     }
 
     private func requestMicrophonePermissionIfNeeded() async -> Bool {
@@ -661,7 +617,9 @@ final class RecordingEngine: NSObject {
         }
         metadataRecorder = nil
         pendingRecordingMetadata = nil
-        resetTimingState()
+        firstFrameWallClockTime = 0
+        let core = writerCore
+        writerQueue.async { core.reset() }
         recordingStartedAt = 0
         isRecording = false
         isFinishing = false
@@ -669,20 +627,7 @@ final class RecordingEngine: NSObject {
         hud = nil
         finishSessionID = UUID()
         NSApp.restoreBackgroundOnlyActivationPolicyIfNeeded()
-    }
-
-    private func resetTimingState() {
-        firstPresentationTime = nil
-        firstFrameWallClockTime = 0
-        lastPresentationTime = nil
-        lastCompleteSampleBuffer = nil
-        pendingSystemAudioSamples.removeAll()
-        pendingMicrophoneSamples.removeAll()
-        droppedPendingAudioSampleCount = 0
-    }
-
-    private var frameDuration: CMTime {
-        CMTime(value: 1, timescale: CMTimeScale(max(configuration.fps, 1)))
+        stateChangedHandler?()
     }
 
     private static func videoSettings(width: Int, height: Int, fps: Int, quality: RecordingQuality) -> [String: Any] {
@@ -717,24 +662,6 @@ final class RecordingEngine: NSObject {
         let pixels = Double(max(width, 1) * max(height, 1))
         let raw = pixels * Double(max(fps, 1)) * quality.bitsPerPixelPerFrame
         return min(max(Int(raw.rounded()), quality.minimumBitrate), quality.maximumBitrate)
-    }
-
-    private static func copy(sampleBuffer: CMSampleBuffer, presentationTime: CMTime, duration: CMTime) -> CMSampleBuffer? {
-        var timing = CMSampleTimingInfo(
-            duration: duration.isValid ? duration : .invalid,
-            presentationTimeStamp: presentationTime,
-            decodeTimeStamp: .invalid
-        )
-        var copied: CMSampleBuffer?
-        let status = CMSampleBufferCreateCopyWithNewTiming(
-            allocator: kCFAllocatorDefault,
-            sampleBuffer: sampleBuffer,
-            sampleTimingEntryCount: 1,
-            sampleTimingArray: &timing,
-            sampleBufferOut: &copied
-        )
-        guard status == noErr else { return nil }
-        return copied
     }
 
     nonisolated private static func frameStatus(from rawValue: Any) -> SCFrameStatus? {
@@ -825,10 +752,6 @@ final class RecordingEngine: NSObject {
         value.isMultiple(of: 2) ? value : value + 1
     }
 
-    /// ~3 seconds of audio buffers (≈47 buffers/sec at 48 kHz / 1024 frames)
-    /// kept per track while waiting for the first video frame.
-    private static let maximumPendingAudioSamples = 150
-
     /// Refuse to start below this so the writer doesn't fail mid-recording on a full disk.
     private static let minimumFreeDiskSpace: Int64 = 500 * 1_024 * 1_024
 
@@ -866,11 +789,6 @@ final class RecordingEngine: NSObject {
         let folderName = FileManager.default.displayName(atPath: folder.path)
         let destination = folderName.isEmpty ? folder.lastPathComponent : folderName
         return "Saved to \(destination): \(url.lastPathComponent)"
-    }
-
-    private enum AudioTarget {
-        case system
-        case microphone
     }
 
     private enum RecordingSource {
@@ -970,6 +888,211 @@ private final class AssetWriterBox: @unchecked Sendable {
 
     init(_ writer: AVAssetWriter) {
         self.writer = writer
+    }
+}
+
+private enum RecordingAudioTarget {
+    case system
+    case microphone
+}
+
+/// Carries the writer + inputs across the writerQueue boundary once, at
+/// recording start. AVAssetWriter/-Input aren't Sendable, but after this
+/// hand-off they're only ever touched on the writer queue (appends) plus the
+/// engine's finish flow, which synchronizes via `writerQueue.sync` first.
+private struct WriterHandles: @unchecked Sendable {
+    let writer: AVAssetWriter
+    let videoInput: AVAssetWriterInput
+    let systemAudioInput: AVAssetWriterInput?
+    let microphoneInput: AVAssetWriterInput?
+}
+
+/// Per-buffer writer state, confined to the recording writer queue — the same
+/// serial queue SCStream and the microphone delegate already deliver on, so
+/// appends run right where the samples arrive. The previous design hopped
+/// every buffer (up to 60fps of full-resolution frames) to the main actor,
+/// which backed frames up and starved SCK's buffer pool whenever the main
+/// thread was busy (opening the menu to stop, hovering UI).
+///
+/// `@unchecked Sendable`: every member is documented queue-confined — the
+/// main actor talks to it only via `writerQueue.async`/`sync`.
+private final class RecordingWriterCore: @unchecked Sendable {
+
+    /// ~3 seconds of audio buffers (≈47 buffers/sec at 48 kHz / 1024 frames)
+    /// kept per track while waiting for the first video frame.
+    private static let maximumPendingAudioSamples = 150
+
+    // All state below is touched ONLY on the writer queue.
+    private var writer: AVAssetWriter?
+    private var videoInput: AVAssetWriterInput?
+    private var systemAudioInput: AVAssetWriterInput?
+    private var microphoneInput: AVAssetWriterInput?
+    private var frameDuration = CMTime(value: 1, timescale: 30)
+    private var firstPresentationTime: CMTime?
+    private var firstFrameWallClockTime: CFTimeInterval = 0
+    private var lastPresentationTime: CMTime?
+    private var lastCompleteSampleBuffer: CMSampleBuffer?
+    private var pendingSystemAudioSamples: [CMSampleBuffer] = []
+    private var pendingMicrophoneSamples: [CMSampleBuffer] = []
+    private var droppedPendingAudioSampleCount = 0
+    private var isActive = false
+    private var onFirstFrame: ((CFTimeInterval) -> Void)?
+    private var onWriterFailure: (() -> Void)?
+
+    func begin(
+        writer: AVAssetWriter,
+        videoInput: AVAssetWriterInput,
+        systemAudioInput: AVAssetWriterInput?,
+        microphoneInput: AVAssetWriterInput?,
+        frameDuration: CMTime,
+        onFirstFrame: @escaping (CFTimeInterval) -> Void,
+        onWriterFailure: @escaping () -> Void
+    ) {
+        reset()
+        self.writer = writer
+        self.videoInput = videoInput
+        self.systemAudioInput = systemAudioInput
+        self.microphoneInput = microphoneInput
+        self.frameDuration = frameDuration
+        self.onFirstFrame = onFirstFrame
+        self.onWriterFailure = onWriterFailure
+        isActive = true
+    }
+
+    /// Stops accepting delegate-path buffers. Serial-queue ordering guarantees
+    /// nothing appends after a caller has seen this take effect via `sync`.
+    func deactivate() {
+        isActive = false
+    }
+
+    func reset() {
+        writer = nil
+        videoInput = nil
+        systemAudioInput = nil
+        microphoneInput = nil
+        firstPresentationTime = nil
+        firstFrameWallClockTime = 0
+        lastPresentationTime = nil
+        lastCompleteSampleBuffer = nil
+        pendingSystemAudioSamples.removeAll()
+        pendingMicrophoneSamples.removeAll()
+        droppedPendingAudioSampleCount = 0
+        isActive = false
+        onFirstFrame = nil
+        onWriterFailure = nil
+    }
+
+    func appendVideo(_ sampleBuffer: CMSampleBuffer) {
+        guard isActive, let writer, let input = videoInput else { return }
+
+        let sourcePresentationTime = sampleBuffer.presentationTimeStamp
+        if firstPresentationTime == nil {
+            firstPresentationTime = sourcePresentationTime
+            firstFrameWallClockTime = CACurrentMediaTime()
+            // Video t=0 is this frame, not stream start — the engine re-anchors
+            // cursor/click metadata to this wall-clock time on the main actor.
+            writer.startSession(atSourceTime: .zero)
+            onFirstFrame?(firstFrameWallClockTime)
+            flushPendingAudioSamples()
+        }
+
+        guard let firstPresentationTime else { return }
+        let relativePresentationTime = CMTimeSubtract(sourcePresentationTime, firstPresentationTime)
+        guard relativePresentationTime >= .zero else { return }
+        guard input.isReadyForMoreMediaData else { return }
+        guard let retimed = Self.copy(sampleBuffer: sampleBuffer, presentationTime: relativePresentationTime, duration: frameDuration) else { return }
+
+        if input.append(retimed) {
+            lastPresentationTime = relativePresentationTime
+            lastCompleteSampleBuffer = sampleBuffer
+        } else if let error = writer.error {
+            print("[Shotnix] Asset writer append failed: \(error)")
+            if writer.status == .failed {
+                onWriterFailure?()
+            }
+        }
+    }
+
+    func appendAudio(_ sampleBuffer: CMSampleBuffer, to target: RecordingAudioTarget) {
+        guard isActive else { return }
+        guard firstPresentationTime != nil else {
+            switch target {
+            case .system:
+                pendingSystemAudioSamples.append(sampleBuffer)
+                if pendingSystemAudioSamples.count > Self.maximumPendingAudioSamples {
+                    pendingSystemAudioSamples.removeFirst()
+                    droppedPendingAudioSampleCount += 1
+                }
+            case .microphone:
+                pendingMicrophoneSamples.append(sampleBuffer)
+                if pendingMicrophoneSamples.count > Self.maximumPendingAudioSamples {
+                    pendingMicrophoneSamples.removeFirst()
+                    droppedPendingAudioSampleCount += 1
+                }
+            }
+            return
+        }
+        appendReadyAudioSample(sampleBuffer, to: target)
+    }
+
+    /// The freeze-frame appended at stop so the video runs to the moment the
+    /// user hit stop. Explicit call from the finish flow — works after
+    /// `deactivate()`, which only gates the delegate paths.
+    func appendFinalStaticFrame() {
+        guard let input = videoInput,
+              input.isReadyForMoreMediaData,
+              firstFrameWallClockTime > 0,
+              let lastSampleBuffer = lastCompleteSampleBuffer else { return }
+        // Video t=0 is the first appended frame, so the final PTS must be
+        // measured from the same anchor — not from stream start.
+        let elapsed = CACurrentMediaTime() - firstFrameWallClockTime
+        let finalPresentationTime = CMTime(seconds: max(elapsed, 0), preferredTimescale: 600)
+        let last = lastPresentationTime ?? .zero
+        guard finalPresentationTime > CMTimeAdd(last, frameDuration) else { return }
+        guard let retimed = Self.copy(sampleBuffer: lastSampleBuffer, presentationTime: finalPresentationTime, duration: frameDuration) else { return }
+        _ = input.append(retimed)
+    }
+
+    private func flushPendingAudioSamples() {
+        if droppedPendingAudioSampleCount > 0 {
+            print("[Shotnix] Dropped \(droppedPendingAudioSampleCount) audio sample buffers while waiting for the first video frame")
+            droppedPendingAudioSampleCount = 0
+        }
+        pendingSystemAudioSamples.forEach { appendReadyAudioSample($0, to: .system) }
+        pendingSystemAudioSamples.removeAll()
+        pendingMicrophoneSamples.forEach { appendReadyAudioSample($0, to: .microphone) }
+        pendingMicrophoneSamples.removeAll()
+    }
+
+    private func appendReadyAudioSample(_ sampleBuffer: CMSampleBuffer, to target: RecordingAudioTarget) {
+        let input: AVAssetWriterInput? = switch target {
+        case .system: systemAudioInput
+        case .microphone: microphoneInput
+        }
+        guard let input, input.isReadyForMoreMediaData,
+              let firstPresentationTime else { return }
+        let relative = CMTimeSubtract(sampleBuffer.presentationTimeStamp, firstPresentationTime)
+        let presentationTime = relative >= .zero ? relative : .zero
+        guard let retimed = Self.copy(sampleBuffer: sampleBuffer, presentationTime: presentationTime, duration: sampleBuffer.duration) else { return }
+        _ = input.append(retimed)
+    }
+
+    private static func copy(sampleBuffer: CMSampleBuffer, presentationTime: CMTime, duration: CMTime) -> CMSampleBuffer? {
+        var timing = CMSampleTimingInfo(
+            duration: duration.isValid ? duration : .invalid,
+            presentationTimeStamp: presentationTime,
+            decodeTimeStamp: .invalid
+        )
+        var copied: CMSampleBuffer?
+        let status = CMSampleBufferCreateCopyWithNewTiming(
+            allocator: kCFAllocatorDefault,
+            sampleBuffer: sampleBuffer,
+            sampleTimingEntryCount: 1,
+            sampleTimingArray: &timing,
+            sampleBufferOut: &copied
+        )
+        guard status == noErr else { return nil }
+        return copied
     }
 }
 

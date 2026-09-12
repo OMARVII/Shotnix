@@ -13,8 +13,12 @@ final class QuickAccessOverlay {
     }
 }
 
+/// Non-activating panel: the overlay appears without stealing focus from the
+/// app the user is working in — they keep typing, the thumbnail just slides
+/// in. Keyboard shortcuts engage on hover, when the panel takes key status
+/// without activating the app (the Spotlight mechanism).
 @MainActor
-private final class QuickAccessWindow: NSWindow {
+private final class QuickAccessWindow: NSPanel {
 
     /// Keep strong refs so ARC doesn't deallocate while visible.
     private static var openWindows: [QuickAccessWindow] = []
@@ -47,7 +51,7 @@ private final class QuickAccessWindow: NSWindow {
 
         super.init(
             contentRect: NSRect(x: 0, y: 0, width: thumbW, height: totalH),
-            styleMask: [.borderless],
+            styleMask: [.borderless, .nonactivatingPanel],
             backing: .buffered,
             defer: false
         )
@@ -57,6 +61,7 @@ private final class QuickAccessWindow: NSWindow {
         hasShadow = true
         isMovableByWindowBackground = false
         acceptsMouseMovedEvents = true
+        hidesOnDeactivate = false
         collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary]
 
         buildContent(thumbW: thumbW, thumbH: thumbH, progressH: progressH, totalH: totalH)
@@ -99,7 +104,10 @@ private final class QuickAccessWindow: NSWindow {
             return event
         }
 
-        // Global mouse: activates app when cursor enters overlay frame (works even when app is inactive)
+        // Global mouse: hover tracking while the app is inactive. On enter the
+        // nonactivating panel takes key status for ⌘C/⌘S/⌘E/Esc WITHOUT
+        // activating the app; on exit it hands keyboard focus straight back to
+        // whatever app the user is working in.
         globalMouseMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.mouseMoved, .leftMouseDragged]) { [weak self] _ in
             guard let self, !self.isClosing else { return }
             let inside = self.frame.contains(NSEvent.mouseLocation)
@@ -108,10 +116,13 @@ private final class QuickAccessWindow: NSWindow {
             DispatchQueue.main.async {
                 self.setHovered(inside)
                 if inside {
-                    NSApp.setActivationPolicy(.accessory)
-                    NSApp.activate(ignoringOtherApps: true)
                     self.makeKeyAndOrderFront(nil)
                     self.makeFirstResponder(self)
+                } else if self.isKeyWindow {
+                    // Ordering out drops key status back to the user's app;
+                    // both calls land in one transaction, so no visible blink.
+                    self.orderOut(nil)
+                    self.orderFrontRegardless()
                 }
             }
         }
@@ -414,28 +425,10 @@ private final class QuickAccessWindow: NSWindow {
         setFrameOrigin(NSPoint(x: x, y: y))
         alphaValue = 0
 
-        // LSUIElement apps have .prohibited activation policy — activate() is
-        // unreliable without temporarily escalating to .accessory first.
-        NSApp.setActivationPolicy(.accessory)
-        NSApp.activate(ignoringOtherApps: true)
+        // Order front WITHOUT activating or taking key — the user keeps typing
+        // in their app. Hover engages keyboard via the nonactivating panel.
         orderFrontRegardless()
-        makeKeyAndOrderFront(nil)
-        makeFirstResponder(self)
         setHovered(frame.contains(NSEvent.mouseLocation))
-
-        // Deferred re-checks: activate() is async and completion time varies.
-        // 100ms catches the common case; 300ms catches slow activation handshakes.
-        for delay in [0.1, 0.3] {
-            DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
-                guard let self, !self.isClosing else { return }
-                if !self.isKeyWindow {
-                    NSApp.setActivationPolicy(.accessory)
-                    NSApp.activate(ignoringOtherApps: true)
-                    self.makeKeyAndOrderFront(nil)
-                    self.makeFirstResponder(self)
-                }
-            }
-        }
 
         // Scale entrance: start at 92% and spring to 100%
         if let layer = contentView?.layer {

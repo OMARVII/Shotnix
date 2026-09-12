@@ -35,6 +35,23 @@ enum Settings {
         set { defaults.set(newValue, forKey: "didShowReadyToast") }
     }
 
+    /// True once the setup checklist is done — either the user took their
+    /// first screenshot or explicitly skipped setup. Until then the welcome
+    /// checklist reappears on every launch.
+    static var onboardingCompleted: Bool {
+        get { defaults.bool(forKey: "onboardingCompleted") }
+        set { defaults.set(newValue, forKey: "onboardingCompleted") }
+    }
+
+    /// One-time migration: users who finished the old single-screen welcome
+    /// flow (any button set hasLaunchedBefore) must not see the new checklist.
+    static func migrateOnboardingFlagIfNeeded() {
+        guard defaults.object(forKey: "onboardingCompleted") == nil else { return }
+        if hasLaunchedBefore {
+            onboardingCompleted = true
+        }
+    }
+
     // MARK: – Overlay
 
     /// Auto-dismiss timeout in seconds. -1 = never dismiss automatically.
@@ -136,6 +153,25 @@ enum Settings {
     }
 
     // MARK: – Screenshots
+
+    /// Window captures are isolated (no overlapping windows) and, with this
+    /// on, composited over transparent padding with a soft drop shadow.
+    static var windowCaptureShadow: Bool {
+        get {
+            if defaults.object(forKey: "windowCaptureShadow") == nil { return true }
+            return defaults.bool(forKey: "windowCaptureShadow")
+        }
+        set { defaults.set(newValue, forKey: "windowCaptureShadow") }
+    }
+
+    /// Countdown length for Timed Capture. Clamped to the offered choices.
+    static var timedCaptureDelaySeconds: Int {
+        get {
+            let v = defaults.integer(forKey: "timedCaptureDelaySeconds")
+            return [3, 5, 10].contains(v) ? v : 5
+        }
+        set { defaults.set([3, 5, 10].contains(newValue) ? newValue : 5, forKey: "timedCaptureDelaySeconds") }
+    }
 
     static var screenshotFormat: String {
         get { defaults.string(forKey: "screenshotFormat") ?? "png" }

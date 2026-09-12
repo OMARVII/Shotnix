@@ -2,6 +2,13 @@ import AppKit
 import UniformTypeIdentifiers
 import ImageIO
 
+/// CGImage is immutable and safe to read from any thread; this box just
+/// carries one across a Task.detached boundary without a Sendable warning.
+private struct SendableCGImage: @unchecked Sendable {
+    let image: CGImage
+    init(_ image: CGImage) { self.image = image }
+}
+
 enum ImageExporter {
 
     enum ExportError: LocalizedError {
@@ -40,6 +47,38 @@ enum ImageExporter {
         guard let cg = image.bestCGImage, let png = pngData(from: cg) else { return }
         pb.declareTypes([.png], owner: nil)
         pb.setData(png, forType: .png)
+    }
+
+    /// Clipboard copy with the PNG encode off the main thread — a 5K capture's
+    /// encode otherwise lands exactly while the overlay animates in. The
+    /// pasteboard itself is only touched back on the main actor.
+    @MainActor
+    static func copyToClipboardAsync(image: NSImage) {
+        guard let cg = image.bestCGImage else { return }
+        let box = SendableCGImage(cg)
+        Task.detached(priority: .userInitiated) {
+            guard let png = pngData(from: box.image) else { return }
+            await MainActor.run {
+                let pb = NSPasteboard.general
+                pb.clearContents()
+                pb.declareTypes([.png], owner: nil)
+                pb.setData(png, forType: .png)
+            }
+        }
+    }
+
+    /// Silent save with encode + disk write off the main thread.
+    @MainActor
+    static func saveAsync(image: NSImage, to url: URL) {
+        guard let cg = image.bestCGImage else {
+            print("[Shotnix] Save failed: image has no CGImage backing")
+            return
+        }
+        let box = SendableCGImage(cg)
+        let quality = CGFloat(Settings.jpegQuality)
+        Task.detached(priority: .utility) {
+            _ = encodeAndWrite(cg: box.image, to: url, jpegQuality: quality)
+        }
     }
 
     // MARK: – Filename template
@@ -178,11 +217,18 @@ enum ImageExporter {
             print("[Shotnix] Save failed: image has no CGImage backing")
             return nil
         }
+        return encodeAndWrite(cg: cg, to: url, jpegQuality: CGFloat(Settings.jpegQuality))
+    }
+
+    /// Encode + atomic write core, safe on any thread — the format switch on
+    /// the destination extension, the WebP→PNG fallback, and metadata tagging.
+    @discardableResult
+    private static func encodeAndWrite(cg: CGImage, to url: URL, jpegQuality: CGFloat) -> URL? {
         let ext = url.pathExtension.lowercased()
         var outputURL = url
         let data: Data?
         switch ext {
-        case "jpg", "jpeg": data = jpegData(from: cg, quality: CGFloat(Settings.jpegQuality))
+        case "jpg", "jpeg": data = jpegData(from: cg, quality: jpegQuality)
         case "webp":
             if isWebPSupported, let webp = webpData(from: cg) {
                 data = webp

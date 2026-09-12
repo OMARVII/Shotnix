@@ -628,6 +628,8 @@ struct ScreenshotsSettingsView: View {
     @AppStorage("afterCaptureCopyToClipboard") var copyToClipboard = true
     @AppStorage("autoSaveLocation") var autoSaveLocation = ""
     @AppStorage("filenameTemplate") var filenameTemplate = Settings.defaultFilenameTemplate
+    @AppStorage("windowCaptureShadow") var windowCaptureShadow = true
+    @AppStorage("timedCaptureDelaySeconds") var timedCaptureDelay = 5
 
     var displayLocation: String {
         Settings.autoSaveLocation
@@ -679,6 +681,31 @@ struct ScreenshotsSettingsView: View {
             }
 
             PreferenceFootnote(text: "New screenshots are copied automatically. Turn this off if you only want to use the overlay or history actions.")
+
+            PreferenceSection("Window Capture") {
+                PreferenceRow("Shadow and transparent padding") {
+                    Toggle("", isOn: $windowCaptureShadow)
+                        .labelsHidden()
+                        .toggleStyle(.switch)
+                }
+            }
+
+            PreferenceFootnote(text: "Window captures are isolated — nothing overlapping shows through. With this on they get CleanShot-style padding and a soft drop shadow.")
+
+            PreferenceSection("Timed Capture") {
+                PreferenceRow("Countdown") {
+                    PreferenceMenuSelector(
+                        selection: $timedCaptureDelay,
+                        options: [
+                            PreferenceOption(value: 3, title: "3 seconds"),
+                            PreferenceOption(value: 5, title: "5 seconds"),
+                            PreferenceOption(value: 10, title: "10 seconds")
+                        ]
+                    )
+                }
+            }
+
+            PreferenceFootnote(text: "Timed Capture selects the area first, then counts down before the shot — time to open menus or hover states. Esc cancels.")
 
             PreferenceSection("Save Location") {
                 PreferenceRow("Auto-save folder", detail: displayLocation) {
@@ -852,7 +879,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.18.1"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.19.0"
     
     var body: some View {
         PreferencesPane {
@@ -895,6 +922,13 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.19.0
+                    • True window capture — isolated windows with optional shadow and transparent padding, nothing overlapping bakes in
+                    • Timed capture with a cancellable 3/5/10s countdown, and hold Space to move a selection while dragging
+                    • History search — find captures by the text inside them — plus undo delete with a 7-day trash
+                    • Setup checklist onboarding, a menu bar recording timer (click to stop), and instant ⌘⇧3 with no display chooser
+                    • Faster everywhere: instant crosshair, ~80ms quicker shutter, no focus stealing, smoother recording, history scrolling, and editor scrubbing
+
                     Version 0.18.1
                     • Fixed black screenshots and recordings on external displays — captures on secondary monitors now grab the correct screen
 

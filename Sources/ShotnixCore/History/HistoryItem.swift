@@ -6,6 +6,10 @@ struct HistoryItem: Codable, Identifiable {
     let imagePath: String     // Full-res PNG on disk
     let thumbnailPath: String // Smaller PNG for list UI
     let captureRect: CodableRect?
+    /// Text recognized in the capture (Vision OCR), used for history search.
+    /// nil = not indexed yet; "" = indexed, no text found (never re-OCRed).
+    /// Optional so index.json files written before this field existed still decode.
+    var ocrText: String? = nil
 
     var fullImage: NSImage { HistoryImageCache.fullImage(for: imagePath) }
     var thumbnail: NSImage { HistoryImageCache.thumbnail(for: thumbnailPath) }
@@ -50,6 +54,27 @@ enum HistoryImageCache {
         guard let img = NSImage(contentsOfFile: path) else { return NSImage() }
         thumbCache.setObject(img, forKey: key, cost: imageCost(img))
         return img
+    }
+
+    /// Pure cache lookup — never touches disk. Cell population uses this and
+    /// decodes misses off the main thread.
+    static func thumbnailIfCached(for path: String) -> NSImage? {
+        thumbCache.object(forKey: path as NSString)
+    }
+
+    /// Loads AND fully decodes a thumbnail (NSCache is thread-safe, so this is
+    /// safe off the main thread) and primes the cache. `NSImage(contentsOfFile:)`
+    /// defers pixel decode to first draw — forcing `rep.cgImage` here keeps that
+    /// cost off the main thread too.
+    static func loadThumbnailDecoded(for path: String) -> NSImage? {
+        if let hit = thumbCache.object(forKey: path as NSString) { return hit }
+        guard let data = FileManager.default.contents(atPath: path),
+              let rep = NSBitmapImageRep(data: data) else { return nil }
+        _ = rep.cgImage
+        let image = NSImage(size: rep.size)
+        image.addRepresentation(rep)
+        thumbCache.setObject(image, forKey: path as NSString, cost: imageCost(image))
+        return image
     }
 
     static func primeFull(_ image: NSImage, for path: String) {

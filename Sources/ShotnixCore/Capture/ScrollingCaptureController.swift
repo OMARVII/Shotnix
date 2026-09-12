@@ -140,6 +140,16 @@ final class ScrollingCaptureController: NSObject {
 
 enum FrameStitcher {
 
+    /// Side length of the square grayscale fingerprint grid used for duplicate detection.
+    private static let signatureGridSize = 32
+
+    /// Two frames are duplicates when the mean absolute luminance difference across their
+    /// 32×32 signatures is below this (0–255 scale). Cursor blink and antialiasing shimmer
+    /// perturb only a handful of grid cells by a few levels (MAD well under 1), while a real
+    /// scroll shifts most rows of the grid (MAD typically 5+), so 2.0 separates the two with
+    /// comfortable margin on both sides.
+    private static let duplicateMADThreshold: Double = 2.0
+
     /// Convert any NSImage to NSBitmapImageRep reliably (handles CGImage-backed images).
     private static func bitmapRep(from image: NSImage) -> NSBitmapImageRep? {
         // First try direct cast — works for images created from NSBitmapImageRep
@@ -152,6 +162,40 @@ enum FrameStitcher {
         return rep
     }
 
+    /// Cheap perceptual fingerprint: downsample the frame into a 32×32 average-luminance
+    /// grid (1 KB) by drawing into a tiny grayscale CGContext. No Vision, no PNG encoding.
+    private static func signature(of rep: NSBitmapImageRep) -> [UInt8]? {
+        guard let cgImage = rep.cgImage else { return nil }
+        let side = signatureGridSize
+        var pixels = [UInt8](repeating: 0, count: side * side)
+        let drewOK = pixels.withUnsafeMutableBytes { buffer -> Bool in
+            guard let base = buffer.baseAddress,
+                  let ctx = CGContext(
+                    data: base,
+                    width: side,
+                    height: side,
+                    bitsPerComponent: 8,
+                    bytesPerRow: side,
+                    space: CGColorSpaceCreateDeviceGray(),
+                    bitmapInfo: CGImageAlphaInfo.none.rawValue
+                  ) else { return false }
+            ctx.interpolationQuality = .medium // area-averaging downsample
+            ctx.draw(cgImage, in: CGRect(x: 0, y: 0, width: side, height: side))
+            return true
+        }
+        return drewOK ? pixels : nil
+    }
+
+    /// Mean absolute difference between two signatures, on the 0–255 luminance scale.
+    private static func meanAbsoluteDifference(_ a: [UInt8], _ b: [UInt8]) -> Double {
+        guard a.count == b.count, !a.isEmpty else { return .greatestFiniteMagnitude }
+        var total = 0
+        for i in 0..<a.count {
+            total += abs(Int(a[i]) - Int(b[i]))
+        }
+        return Double(total) / Double(a.count)
+    }
+
     /// Simple vertical stitch: deduplicates overlapping content by finding matching rows.
     static func stitch(frames: [NSImage]) -> NSImage {
         guard frames.count > 1 else { return frames[0] }
@@ -159,18 +203,23 @@ enum FrameStitcher {
 
         let width = firstRep.pixelsWide
         var uniqueFrames: [NSBitmapImageRep] = [firstRep]
+        // Signature of the most recently accepted frame — each candidate is compared
+        // against this instead of byte-comparing full bitmaps.
+        var lastSignature = signature(of: firstRep)
 
         for i in 1..<frames.count {
             guard let rep = bitmapRep(from: frames[i]) else { continue }
+            let sig = signature(of: rep)
             if let prev = uniqueFrames.last,
                rep.pixelsWide == prev.pixelsWide,
                rep.pixelsHigh == prev.pixelsHigh,
-               let d1 = rep.bitmapData,
-               let d2 = prev.bitmapData {
-                let byteCount = rep.bytesPerRow * rep.pixelsHigh
-                if memcmp(d1, d2, byteCount) == 0 { continue }
+               let sig,
+               let prevSig = lastSignature,
+               meanAbsoluteDifference(sig, prevSig) < duplicateMADThreshold {
+                continue // near-identical to the last accepted frame — user didn't scroll
             }
             uniqueFrames.append(rep)
+            lastSignature = sig
         }
 
         let totalHeight = uniqueFrames.reduce(0) { $0 + $1.pixelsHigh }

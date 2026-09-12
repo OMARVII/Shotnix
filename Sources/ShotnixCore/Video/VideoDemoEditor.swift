@@ -1922,15 +1922,35 @@ final class VideoDemoEditorWindowController: NSWindowController, NSWindowDelegat
     }
 }
 
+/// Carries the 30Hz playhead signal separately from the editor model so only
+/// the views that actually draw the playhead re-render on every tick.
+@MainActor
+final class VideoDemoPlaybackClock: ObservableObject {
+    @Published var time: Double = 0
+}
+
 @MainActor
 final class VideoDemoEditorViewModel: ObservableObject {
     @Published var project: VideoDemoProject {
         didSet {
+            cachedSnapPoints = nil
             scheduleAutosave()
         }
     }
-    @Published var duration: Double = 0
-    @Published var currentTime: Double = 0
+    @Published var duration: Double = 0 {
+        didSet { cachedSnapPoints = nil }
+    }
+
+    /// Views that track the playhead observe this instead of the model — the
+    /// 30Hz playback tick must not re-render the entire editor.
+    let playbackClock = VideoDemoPlaybackClock()
+
+    /// Source-time of the playhead. Deliberately NOT @Published: per-tick
+    /// invalidation of the whole editor is what made playback and scrubbing
+    /// feel heavy. The clock above carries the per-tick signal.
+    var currentTime: Double = 0 {
+        didSet { playbackClock.time = currentTime }
+    }
     @Published var isExporting = false
     @Published var exportProgress: Double = 0
     @Published var exportDestinationURL: URL?
@@ -2024,10 +2044,51 @@ final class VideoDemoEditorViewModel: ObservableObject {
         project.setSingleTrim(start: project.trimStart, end: value, totalDuration: duration)
     }
 
+    /// True while a scrub drag is active — seeks run with loose tolerance so
+    /// AVPlayer can land on nearby keyframes fast. Ending a scrub re-issues
+    /// the final position exactly.
+    var isScrubbing = false {
+        didSet {
+            if oldValue && !isScrubbing {
+                requestSeek(to: currentTime)
+            }
+        }
+    }
+
+    private var seekInFlight = false
+    private var pendingSeekSeconds: Double?
+
     func seek(to seconds: Double) {
         let safe = min(max(seconds, 0), max(duration, 0))
         currentTime = safe
-        player.seek(to: CMTime(seconds: safe, preferredTimescale: 600), toleranceBefore: .zero, toleranceAfter: .zero)
+        requestSeek(to: safe)
+    }
+
+    /// Chained seeking: at most one AVPlayer seek in flight. While one runs,
+    /// only the LATEST requested time is kept; the completion issues it. The
+    /// old per-drag-tick zero-tolerance seeks piled up inside AVPlayer and made
+    /// scrubbing long recordings feel like a slideshow.
+    private func requestSeek(to seconds: Double) {
+        guard !seekInFlight else {
+            pendingSeekSeconds = seconds
+            return
+        }
+        seekInFlight = true
+        let tolerance: CMTime = isScrubbing ? CMTime(seconds: 0.1, preferredTimescale: 600) : .zero
+        player.seek(
+            to: CMTime(seconds: seconds, preferredTimescale: 600),
+            toleranceBefore: tolerance,
+            toleranceAfter: tolerance
+        ) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                self.seekInFlight = false
+                if let pending = self.pendingSeekSeconds {
+                    self.pendingSeekSeconds = nil
+                    self.requestSeek(to: pending)
+                }
+            }
+        }
     }
 
     func seekToTimeline(_ seconds: Double, snapping: Bool = false, snapThreshold: Double? = nil) {
@@ -2652,7 +2713,14 @@ final class VideoDemoEditorViewModel: ObservableObject {
         return min(max(nearest.point, 0), max(timelineDuration, 0))
     }
 
+    /// Every input to the snap points flows through `project` (segments,
+    /// clicks, keyframes, effects), so its didSet is the one invalidation
+    /// point. Cached because the timeline body — which re-renders per playback
+    /// tick for the playhead — iterates these in a ForEach.
+    private var cachedSnapPoints: [Double]?
+
     func timelineSnapPoints() -> [Double] {
+        if let cachedSnapPoints { return cachedSnapPoints }
         var points: [Double] = [0, timelineDuration]
         points.append(contentsOf: timelineSegments.flatMap { [$0.timelineStart, $0.timelineEnd] })
         points.append(contentsOf: project.clickEvents.compactMap { project.timelineTimeIfIncluded(sourceTime: $0.time, totalDuration: duration) })
@@ -2662,7 +2730,9 @@ final class VideoDemoEditorViewModel: ObservableObject {
             let end = project.timelineTimeIfIncluded(sourceTime: effect.time + effect.duration, totalDuration: duration)
             return [start, end].compactMap { $0 }
         })
-        return Array(Set(points.map { ($0 * 1000).rounded() / 1000 })).sorted()
+        let result = Array(Set(points.map { ($0 * 1000).rounded() / 1000 })).sorted()
+        cachedSnapPoints = result
+        return result
     }
 
     func handleEditorShortcut(_ event: NSEvent) -> Bool {
@@ -3078,11 +3148,11 @@ private struct VideoDemoEditorView: View {
                 draftNotice(notice)
                     .padding(.horizontal, 28)
             }
-            VideoDemoStageView(model: model)
+            VideoDemoStageView(model: model, clock: model.playbackClock)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .padding(.horizontal, 28)
             transport
-            VideoDemoTimelineView(model: model)
+            VideoDemoTimelineView(model: model, clock: model.playbackClock)
                 .frame(height: 178)
                 .padding(.horizontal, 28)
         }
@@ -3181,12 +3251,7 @@ private struct VideoDemoEditorView: View {
             .buttonStyle(.plain)
             .background(Color.white.opacity(0.10), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
 
-            Text(timeLabel(model.timelineTime))
-                .font(.system(size: 11, weight: .bold, design: .monospaced))
-                .foregroundStyle(.secondary)
-
-            Slider(value: Binding(get: { model.timelineTime }, set: { model.seekToTimeline($0) }), in: 0...max(model.timelineDuration, 0.1))
-                .frame(maxWidth: 260)
+            VideoDemoTransportClockView(model: model, clock: model.playbackClock)
 
             Text(timeLabel(model.timelineDuration))
                 .font(.system(size: 11, weight: .bold, design: .monospaced))
@@ -4231,8 +4296,31 @@ private struct VideoDemoKeyboardShortcutBridge: NSViewRepresentable {
     }
 }
 
+/// The transport's live time readout + scrub slider — the only part of the
+/// root editor chrome that must re-render on every playback tick.
+private struct VideoDemoTransportClockView: View {
+    @ObservedObject var model: VideoDemoEditorViewModel
+    @ObservedObject var clock: VideoDemoPlaybackClock
+
+    var body: some View {
+        Text(timeLabel(model.timelineTime))
+            .font(.system(size: 11, weight: .bold, design: .monospaced))
+            .foregroundStyle(.secondary)
+
+        Slider(value: Binding(get: { model.timelineTime }, set: { model.seekToTimeline($0) }), in: 0...max(model.timelineDuration, 0.1))
+            .frame(maxWidth: 260)
+    }
+
+    private func timeLabel(_ value: Double) -> String {
+        let safe = max(value, 0)
+        return String(format: "%d:%02d", Int(safe) / 60, Int(safe) % 60)
+    }
+}
+
 private struct VideoDemoStageView: View {
     @ObservedObject var model: VideoDemoEditorViewModel
+    // Playhead-tracking view: re-renders per playback tick via the clock.
+    @ObservedObject var clock: VideoDemoPlaybackClock
 
     var body: some View {
         GeometryReader { proxy in
@@ -4272,7 +4360,7 @@ private struct VideoDemoStageView: View {
 
         return ZStack {
             ShotnixVideoPlayerView(player: model.player)
-            VideoDemoOverlayView(model: model, stageSize: size)
+            VideoDemoOverlayView(model: model, clock: clock, stageSize: size)
         }
         .scaleEffect(zoom.scale)
         .offset(offset)
@@ -4345,6 +4433,8 @@ private struct VideoDemoBackgroundView: View {
 
 private struct VideoDemoOverlayView: View {
     @ObservedObject var model: VideoDemoEditorViewModel
+    // Playhead-tracking view: re-renders per playback tick via the clock.
+    @ObservedObject var clock: VideoDemoPlaybackClock
     let stageSize: CGSize
 
     var body: some View {
@@ -4489,6 +4579,8 @@ private struct ActiveTimelineTrim {
 
 private struct VideoDemoTimelineView: View {
     @ObservedObject var model: VideoDemoEditorViewModel
+    // Playhead-tracking view: re-renders per playback tick via the clock.
+    @ObservedObject var clock: VideoDemoPlaybackClock
     @State private var hoveredClipID: UUID?
     @State private var activeTrim: ActiveTimelineTrim?
     @State private var hoverTimelineTime: Double?
@@ -4545,15 +4637,22 @@ private struct VideoDemoTimelineView: View {
         }
         .contentShape(Rectangle())
         .gesture(
-            DragGesture(minimumDistance: 0).onChanged { gesture in
-                guard activeTrim == nil, !isSelectingRange else { return }
-                model.clearTimelineSelection()
-                model.seekToTimeline(
-                    timelineTime(at: gesture.location.x, width: width, duration: duration),
-                    snapping: true,
-                    snapThreshold: snapThreshold(duration: duration, width: width)
-                )
-            }
+            DragGesture(minimumDistance: 0)
+                .onChanged { gesture in
+                    guard activeTrim == nil, !isSelectingRange else { return }
+                    model.clearTimelineSelection()
+                    // Tolerant chained seeks while dragging; the exact seek
+                    // lands when isScrubbing flips off in onEnded.
+                    model.isScrubbing = true
+                    model.seekToTimeline(
+                        timelineTime(at: gesture.location.x, width: width, duration: duration),
+                        snapping: true,
+                        snapThreshold: snapThreshold(duration: duration, width: width)
+                    )
+                }
+                .onEnded { _ in
+                    model.isScrubbing = false
+                }
         )
     }
 
@@ -4684,10 +4783,12 @@ private struct VideoDemoTimelineView: View {
                 } else if !isSelectingRange {
                     model.clearTimelineSelection()
                     model.selectClip(segment.id)
+                    model.isScrubbing = true
                     model.seekToTimeline(current, snapping: true, snapThreshold: threshold)
                 }
             }
             .onEnded { value in
+                defer { model.isScrubbing = false }
                 guard activeTrim == nil else { return }
                 let current = timelineTime(in: segment, x: value.location.x, width: clipWidth)
                 let threshold = snapThreshold(duration: segment.duration, width: clipWidth)

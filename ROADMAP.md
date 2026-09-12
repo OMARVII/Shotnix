@@ -120,13 +120,11 @@ Everything here is shippable in one or two sessions. Do the reliability fixes fi
 
 ## Phase 2 — Core UX Upgrades (target: v0.19) — Medium effort, ordered by impact
 
-- [ ] **Non-activating quick-access overlay** — M / HIGH
-  Every screenshot yanks focus from the app the user is in (`NSApp.activate` on show + on every hover-enter, plus two retry timers). Convert to `NSPanel` with `.nonactivatingPanel`; the local key monitor is already hover-gated so ⌘C/⌘S/⌘E/Esc keep working.
-  `QuickAccessOverlay.swift:103-117, 404-424, 87-100`
+- [x] **Non-activating quick-access overlay** — M / HIGH ✅ 2026-09-12
+  Converted to `NSPanel` + `.nonactivatingPanel`: show never activates or takes key (typing continues in the user's app); hover-enter makes the panel key without app activation (Spotlight mechanism) so ⌘C/⌘S/⌘E/Esc work; hover-exit orders out/in to hand keyboard focus back. Removed the activate-retry timers.
 
-- [ ] **True window capture with shadow/padding/styling** — M / HIGH
-  Window mode is a screen-rect crop — overlapping windows and notifications get baked in; no shadow, transparent padding, or rounded corners (Xnapper's core value prop, and an unchecked item in your own README). `SCContentFilter(desktopIndependentWindow:)` is already used for recording previews — carry the `SCWindow` through instead of a `CGRect`, add include-shadow/padding options.
-  `CaptureEngine.swift:133-152` vs `:325-341` · `AreaSelectionWindow.swift:636-671`
+- [x] **True window capture with shadow/padding/styling** — M / HIGH ✅ 2026-09-12
+  Window mode now carries the clicked window's CGWindowID through the selection overlay and captures via `SCContentFilter(desktopIndependentWindow:)` — isolated window, no overlap bleed-through — composited over transparent padding with a drawn drop shadow (toggle in Preferences → Screenshots). Falls back to the region crop on macOS 13 or when the window can't be resolved. Also fixed: window-mode selection rects were view-local, not global (wrong region on secondary displays).
 
 - [ ] **Pause/resume recording (+ cancel/discard on the HUD, persist HUD position)** — M / HIGH
   Frames are already retimed against `firstPresentationTime` — pause = drop samples while paused + subtract accumulated pause duration in `relativePresentationTime`.
@@ -140,9 +138,8 @@ Everything here is shippable in one or two sessions. Do the reliability fixes fi
   Fades, zoom-keyframe sliders, effect bindings, moveZoom drags, aspect/background presets all mutate with no snapshot — ⌘Z then reverts the last *timeline* edit instead. Route everything through one `mutate(undoable:)` helper with drag coalescing (the `beginTimelineTrim`/`finishTimelineTrim` pattern already exists).
   `VideoDemoEditor.swift:2275-2287, 2441-2474, 2505-2525, 3710-3721, 2601-2603`
 
-- [ ] **Move sample-buffer appends off the main actor** — M / HIGH
-  All three `process*SampleBuffer` paths hop every buffer to the main actor despite SCStream delivering on `writerQueue` — 60fps of full-res appends on the UI thread, buffer-pool starvation whenever the main thread is busy (e.g. while opening the menu to stop). Append directly on `writerQueue` with queue-confined timing state.
-  `RecordingEngine.swift:9, 144-171, 193-196, 386`
+- [x] **Move sample-buffer appends off the main actor** — M / HIGH ✅ 2026-09-12
+  New `RecordingWriterCore` (@unchecked Sendable, writerQueue-confined) owns all per-buffer state; appends run where SCStream/mic deliver. Main actor keeps lifecycle only, syncs via `writerQueue.sync` before markAsFinished, mirrors the first-frame anchor for HUD duration. Only the mic-level float hops to main.
 
 - [ ] **Window recordings follow window move/resize** — M / HIGH
   Source rect resolved once at start; `updateConfiguration` never called — move the window mid-demo and it slides out of frame (cursor metadata `captureRect` goes stale the same way).
@@ -160,9 +157,8 @@ Everything here is shippable in one or two sessions. Do the reliability fixes fi
   Preview shows gradient background + blur slider; export paints flat color, never applies blur. Preview text is 16pt; export uses `max(width*0.026, 26)`. Fix export (CAGradientLayer + CIGaussianBlur) and match preview text sizing to the export formula.
   `VideoDemoEditor.swift:4153-4174` vs `:1306-1321` · `:4238` vs `:1431-1432`
 
-- [ ] **Timer/delayed capture (3/5/10s) + pre-recording countdown** — M / MED
-  No delay path exists anywhere (only way to capture menus/hover states; Apple's built-in tool has it). Recordings also start instantly, capturing the user releasing the mouse. One countdown overlay serves both, Escape aborts.
-  `CaptureEngine.swift:107-543` · `RecordingEngine.swift:62-105` · `Settings.swift`
+- [x] **Timer/delayed capture (3/5/10s)** — M / MED ✅ 2026-09-12 *(screenshot side)*
+  Timed Capture: select area → cancellable countdown pill (Esc/click) → shot. Delay configurable (3/5/10s) in Preferences → Screenshots; menu action + assignable shortcut (`shotnixCaptureTimed`, ships unbound). Remaining: reuse `CountdownWindow` as a pre-recording countdown in `RecordingEngine.startRecording`.
 
 - [ ] **Stack simultaneous overlays** — M / HIGH
   `openWindows` supports multiple overlays but `positionOverlay()` puts every one at the identical corner origin — the older capture is unreachable. Offset by existing heights, re-flow on close.
@@ -172,12 +168,12 @@ Everything here is shippable in one or two sessions. Do the reliability fixes fi
   Full-res PNG + thumbnail per capture, forever; `load()` drops index entries with missing PNGs but never deletes orphaned PNGs. Ship "keep N days / max N items," a startup sweep, and a "History is using X MB" readout.
   `HistoryManager.swift:36-66, 109-119`
 
-- [ ] **History panel correctness batch** — M / HIGH
-  (1) `isSelectable = false` blocks NSCollectionView item drags entirely — the header's "drag any card to Finder" promise is broken; (2) `items` isn't `@Published`, so an open panel never shows new captures; (3) sync `NSImage(contentsOfFile:)` during cell population; drags re-encode the PNG and strip Spotlight xattrs — copy the file instead; (4) deletes call `reloadData()` (grid flash; likely the known mid-grid corruption) — use `performBatchUpdates` + grace-period undo (file removal is already deferred).
-  `HistoryPanelController.swift:124-125, 240-250, 332, 356-367, 446` · `HistoryManager.swift:6-8, 82-92`
+- [ ] **History panel correctness batch** — M / HIGH *(partially done 2026-09-12)*
+  (1) `isSelectable = false` blocks NSCollectionView item drags entirely — the header's "drag any card to Finder" promise is broken; (2) `items` isn't `@Published`, so an open panel never shows new captures; (3) sync `NSImage(contentsOfFile:)` during cell population; drags re-encode the PNG and strip Spotlight xattrs — copy the file instead; ~~(4) deletes call `reloadData()` (grid flash; likely the known mid-grid corruption)~~ ✅ fixed: `prepareForReuse` override resets stale hover state, layout invalidated after reload, bounds-guarded subscripts; grace-period undo shipped via the new 7-day trash + undo toast.
+  `HistoryPanelController.swift` · `HistoryManager.swift`
 
-- [ ] **Fix pre-existing AppKit-vs-CG coordinate mismatch in fullscreen capture of non-primary displays** — S / MED *(found during the Phase-1 review, pre-dates Phase 1)*
-  `CaptureEngine.swift` intersects an AppKit bottom-left-origin rect against `SCDisplay.frame` (CG top-left-origin), and `fallbackCapture` passes the AppKit rect to `CGWindowListCreateImage` (CG space) — full-frame captures of non-primary displays in vertically-arranged setups can select the wrong display or fail. Convert explicitly between coordinate spaces at both sites.
+- [x] **Fix pre-existing AppKit-vs-CG coordinate mismatch in fullscreen capture of non-primary displays** — S / MED ✅ shipped in v0.18.1-beta
+  Displays now matched by display ID via `ScreenCoordinates` (Utilities/ScreenCoordinates.swift); `fallbackCapture` converts AppKit→CG. Same fix applied to `RecordingEngine` display/window source resolution.
 
 - [ ] **Desktop-icon hiding without restarting Finder** — M / HIGH
   Currently terminates and relaunches Finder *twice per capture* (closing the user's Finder windows, ~2s), and returns before icons actually disappear, so the shot can fire too early. Replace with per-screen wallpaper-colored overlay windows (CleanShot's approach).
@@ -187,9 +183,8 @@ Everything here is shippable in one or two sessions. Do the reliability fixes fi
   PNG-encoding a 5K capture + atomic write happens synchronously on the main actor exactly while the overlay animates in. Detached task, completion posted back; `bestCGImage` is already cached.
   `ImageExporter.swift:34-43, 129-163` · `CaptureEngine.swift:553-563`
 
-- [ ] **Video-editor scrubbing responsiveness** — M / MED
-  Every drag tick issues a zero-tolerance seek (use chained-seek: one in-flight, loose tolerance while dragging, exact on release). The 30Hz time observer publishes on the ObservableObject driving the whole editor — move the clock to a separate observable; stop recomputing `timelineSnapPoints()` inside a ForEach.
-  `VideoDemoEditor.swift:1985, 4377-4386, 4499-4530, 2769-2783, 4450`
+- [x] **Video-editor scrubbing responsiveness** — M / MED ✅ 2026-09-12
+  Chained seeks (one in flight, latest-wins pending, 0.1s tolerance while `isScrubbing`, exact on release); `currentTime` de-@Published into `VideoDemoPlaybackClock` observed only by stage/overlay/timeline/transport-clock views; `timelineSnapPoints()` cached, invalidated by `project`/`duration` didSet.
 
 ---
 
@@ -197,7 +192,7 @@ Everything here is shippable in one or two sessions. Do the reliability fixes fi
 
 - [ ] **Real scrolling-capture stitcher** — L / HIGH ← *the most broken advertised feature*
   `FrameStitcher.stitch` only drops byte-identical frames (full-buffer memcmp vs the immediate predecessor) and stacks every frame at full height — output contains large repeated bands. Frames accumulate unbounded (~17 MB / 300ms); the only stop is a HUD button that can sit off-screen, no Escape.
-  Fix: row-signature/cross-correlation search for where the previous frame's bottom rows reappear; frame-count cap + downsampled-hash dedup; Escape/hotkey stop; `visibleFrame`-clamp the HUD.
+  Fix: row-signature/cross-correlation search for where the previous frame's bottom rows reappear; frame-count cap + ~~downsampled-hash dedup~~ ✅ (2026-09-12: 32×32 luminance-grid dedup with MAD threshold replaced the full-buffer memcmp); Escape/hotkey stop; `visibleFrame`-clamp the HUD.
   `ScrollingCaptureController.swift:156-204, 163-173, 64-79, 44-62, 256-259`
 
 - [ ] **Export sheet: GIF + fps + resolution + HEVC** — L / HIGH ← *loudest competitive gap (3 analyzers)*

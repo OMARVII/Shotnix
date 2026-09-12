@@ -11,7 +11,10 @@ final class HistoryPanelController: NSObject {
     private var collectionView: NSCollectionView?
     private var emptyOverlay: NSView?
     private var countLabel: NSTextField?
+    private var searchField: NSSearchField?
+    private var searchQuery = ""
     private var closeObserver: NSObjectProtocol?
+    private var historyObserver: NSObjectProtocol?
 
     private struct Section {
         let title: String
@@ -28,9 +31,7 @@ final class HistoryPanelController: NSObject {
         NSApp.activate(ignoringOtherApps: true)
         if let existing = panel {
             existing.makeKeyAndOrderFront(nil)
-            buildSections()
-            collectionView?.reloadData()
-            updateEmptyState()
+            reload()
             return
         }
         let p = NSPanel(
@@ -55,6 +56,17 @@ final class HistoryPanelController: NSObject {
             queue: .main
         ) { [weak self] notification in
             Task { @MainActor in self?.panelDidClose(notification) }
+        }
+        // Live updates: new captures, deletes from the quick-access overlay,
+        // and undo-restores all reflow the open grid.
+        historyObserver = NotificationCenter.default.addObserver(
+            forName: .shotnixHistoryDidChange,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                self?.scheduleReload()
+            }
         }
         p.makeKeyAndOrderFront(nil)
         NSAnimationContext.runAnimationGroup { ctx in
@@ -97,6 +109,21 @@ final class HistoryPanelController: NSObject {
         clearBtn.autoresizingMask = [.minXMargin]
         clearBtn.toolTip = "Delete every saved capture"
         header.addSubview(clearBtn)
+
+        // Live text search: matches OCR-recognized text and the capture date.
+        let search = NSSearchField(frame: NSRect(x: 500, y: 44, width: 250, height: 30))
+        search.autoresizingMask = [.minXMargin]
+        search.placeholderString = "Search text in captures"
+        search.font = .systemFont(ofSize: 13)
+        search.appearance = NSAppearance(named: .darkAqua)
+        search.focusRingType = .none
+        search.sendsWholeSearchString = false
+        search.sendsSearchStringImmediately = true
+        search.target = self
+        search.action = #selector(searchFieldChanged(_:))
+        search.delegate = self
+        header.addSubview(search)
+        searchField = search
         container.addSubview(header)
 
         // Collection view
@@ -193,16 +220,60 @@ final class HistoryPanelController: NSObject {
     }
 
     private func updateEmptyState() {
-        emptyOverlay?.isHidden = !sections.isEmpty
+        // The "No captures yet" card only means truly empty history — a search
+        // with zero matches keeps the grid blank and explains itself in the
+        // count label instead.
+        emptyOverlay?.isHidden = !(historyManager?.items.isEmpty ?? true)
         updateHeader()
     }
 
     private func updateHeader() {
         let total = sections.reduce(0) { $0 + $1.items.count }
+        let query = trimmedSearchQuery
+        if !query.isEmpty {
+            let all = historyManager?.items.count ?? 0
+            let captureWord = total == 1 ? "capture matches" : "captures match"
+            countLabel?.stringValue = total == 0
+                ? "No captures match \u{201C}\(query)\u{201D}"
+                : "\(total) of \(all) \(captureWord) \u{201C}\(query)\u{201D}"
+            return
+        }
         let captureWord = total == 1 ? "capture" : "captures"
         countLabel?.stringValue = total == 0
             ? "No saved captures yet"
             : "\(total) saved \(captureWord) · drag any card to Finder · right-click for more actions"
+    }
+
+    // MARK: - Search
+
+    private var trimmedSearchQuery: String {
+        searchQuery.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    /// Items to display: everything when the query is empty, otherwise a
+    /// case- and diacritic-insensitive match against the OCR text and the
+    /// capture date string shown on the card.
+    private func filteredItems(in manager: HistoryManager) -> [HistoryItem] {
+        let query = trimmedSearchQuery
+        guard !query.isEmpty else { return manager.items }
+        let options: String.CompareOptions = [.caseInsensitive, .diacriticInsensitive]
+        return manager.items.filter { item in
+            if let text = item.ocrText, text.range(of: query, options: options) != nil {
+                return true
+            }
+            let dateString = item.createdAt.formatted(date: .abbreviated, time: .shortened)
+            return dateString.range(of: query, options: options) != nil
+        }
+    }
+
+    @objc private func searchFieldChanged(_ sender: NSSearchField) {
+        applySearchQuery(sender.stringValue)
+    }
+
+    private func applySearchQuery(_ query: String) {
+        guard query != searchQuery else { return }
+        searchQuery = query
+        reload()
     }
 
     // MARK: - Sections
@@ -215,7 +286,7 @@ final class HistoryPanelController: NSObject {
         var thisWeek: [HistoryItem] = []
         var older: [HistoryItem] = []
 
-        for item in manager.items {
+        for item in filteredItems(in: manager) {
             if calendar.isDateInToday(item.createdAt) {
                 today.append(item)
             } else if calendar.isDateInYesterday(item.createdAt) {
@@ -238,15 +309,53 @@ final class HistoryPanelController: NSObject {
     // MARK: - Reload
 
     func reloadAfterDelete() {
-        buildSections()
-        collectionView?.reloadData()
-        updateEmptyState()
+        reload()
+    }
+
+    private var reloadScheduled = false
+
+    /// Coalesces bursts of change notifications (undoing Clear All restores
+    /// every item individually, All Displays capture adds one per screen)
+    /// into a single grid rebuild on the next runloop tick.
+    private func scheduleReload() {
+        guard panel != nil, !reloadScheduled else { return }
+        reloadScheduled = true
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            self.reloadScheduled = false
+            guard self.panel != nil else { return }
+            self.reload()
+        }
     }
 
     private func reload() {
         buildSections()
         collectionView?.reloadData()
+        // A bare reloadData leaves NSCollectionViewFlowLayout's cached item and
+        // header frames (and the scroll content size) stale when the item or
+        // section count shrinks — the source of the corrupted grid after
+        // mid-grid deletes. Force a full layout pass so every tile reflows.
+        collectionView?.collectionViewLayout?.invalidateLayout()
         updateEmptyState()
+    }
+
+    // MARK: - Delete + Undo
+
+    /// Deletes an item (moved to History/Trash/, not destroyed) and offers a
+    /// clickable undo toast that restores it to its original grid position.
+    func deleteWithUndo(_ item: HistoryItem) {
+        guard let manager = historyManager else { return }
+        // The manager's change notification reflows the grid — no manual reload.
+        manager.delete(item)
+        let id = item.id
+        ToastWindow.show(
+            message: "Screenshot deleted — click to undo",
+            duration: 5.0,
+            on: panel?.screen
+        ) { [weak self] in
+            guard let self, let manager = self.historyManager else { return }
+            _ = manager.restoreFromTrash(id: id)
+        }
     }
 
     // MARK: - Actions
@@ -257,22 +366,54 @@ final class HistoryPanelController: NSObject {
             NotificationCenter.default.removeObserver(closeObserver)
             self.closeObserver = nil
         }
+        if let historyObserver {
+            NotificationCenter.default.removeObserver(historyObserver)
+            self.historyObserver = nil
+        }
         panel = nil
         collectionView = nil
         emptyOverlay = nil
         countLabel = nil
+        searchField = nil
+        searchQuery = ""
         NSApp.restoreBackgroundOnlyActivationPolicyIfNeeded(excluding: closedWindow)
     }
 
     @objc private func clearAll() {
+        guard let manager = historyManager, !manager.items.isEmpty else { return }
         let alert = NSAlert()
         alert.messageText = "Clear History?"
-        alert.informativeText = "This will permanently delete all captured screenshots."
+        alert.informativeText = "All captures are moved to Shotnix's trash and permanently deleted after 7 days."
         alert.addButton(withTitle: "Delete All")
         alert.addButton(withTitle: "Cancel")
         guard alert.runModal() == .alertFirstButtonReturn else { return }
-        historyManager?.deleteAll()
-        reload()
+        let ids = manager.items.map(\.id)
+        manager.deleteAll()
+        ToastWindow.show(
+            message: "History cleared — click to undo",
+            duration: 5.0,
+            on: panel?.screen
+        ) { [weak self] in
+            guard let self, let manager = self.historyManager else { return }
+            for id in ids {
+                _ = manager.restoreFromTrash(id: id)
+            }
+        }
+    }
+}
+
+// MARK: - NSSearchFieldDelegate
+
+extension HistoryPanelController: NSSearchFieldDelegate {
+
+    /// Escape in the search field clears the query (and never bubbles up to
+    /// close the panel while there is text to clear).
+    func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
+        guard control === searchField,
+              commandSelector == #selector(NSResponder.cancelOperation(_:)) else { return false }
+        searchField?.stringValue = ""
+        applySearchQuery("")
+        return true
     }
 }
 
@@ -297,8 +438,11 @@ extension HistoryPanelController: NSCollectionViewDataSource {
             withIdentifier: HistoryCollectionItem.identifier,
             for: indexPath
         ) as! HistoryCollectionItem
+        guard indexPath.section < sections.count,
+              indexPath.item < sections[indexPath.section].items.count,
+              let manager = historyManager else { return cell }
         let historyItem = sections[indexPath.section].items[indexPath.item]
-        cell.configure(with: historyItem, historyManager: historyManager!)
+        cell.configure(with: historyItem, historyManager: manager)
         return cell
     }
 
@@ -312,9 +456,10 @@ extension HistoryPanelController: NSCollectionViewDataSource {
             withIdentifier: HistorySectionHeader.identifier,
             for: indexPath
         ) as! HistorySectionHeader
-        if !sections.isEmpty {
-            header.configure(title: sections[indexPath.section].title)
-        }
+        // Always configure: reused headers would otherwise keep a stale title
+        // after a delete empties their section.
+        let title = indexPath.section < sections.count ? sections[indexPath.section].title : ""
+        header.configure(title: title)
         return header
     }
 }
@@ -327,7 +472,8 @@ extension HistoryPanelController: NSCollectionViewDelegate {
         _ collectionView: NSCollectionView,
         pasteboardWriterForItemAt indexPath: IndexPath
     ) -> (any NSPasteboardWriting)? {
-        guard !sections.isEmpty else { return nil }
+        guard indexPath.section < sections.count,
+              indexPath.item < sections[indexPath.section].items.count else { return nil }
         let item = sections[indexPath.section].items[indexPath.item]
         return NSFilePromiseProvider(fileType: "public.png", delegate: HistoryImageFilePromiseDelegate(image: item.fullImage))
     }
@@ -374,6 +520,13 @@ private final class HistoryImageFilePromiseDelegate: NSObject, NSFilePromiseProv
 // MARK: - Collection View Item
 
 @MainActor
+/// NSImage is immutable once built; the box just carries a freshly decoded
+/// thumbnail across the detached-decode boundary without a Sendable warning.
+private struct SendableImageBox: @unchecked Sendable {
+    let image: NSImage
+    nonisolated init(_ image: NSImage) { self.image = image }
+}
+
 final class HistoryCollectionItem: NSCollectionViewItem {
 
     static let identifier = NSUserInterfaceItemIdentifier("HistoryCollectionItem")
@@ -443,18 +596,61 @@ final class HistoryCollectionItem: NSCollectionViewItem {
     func configure(with item: HistoryItem, historyManager: HistoryManager) {
         self.historyItem = item
         self.historyManager = historyManager
-        thumbView.image = historyManager.cachedThumbnail(for: item) ?? item.thumbnail
         dateLabel.stringValue = item.createdAt.formatted(date: .abbreviated, time: .shortened)
-        detailLabel.stringValue = detailText(for: item)
+        if let cached = historyManager.cachedThumbnail(for: item) {
+            thumbView.image = cached
+            detailLabel.stringValue = detailText(for: item, thumbnail: cached)
+        } else {
+            // Cache miss: decode off the main thread — synchronous disk
+            // decodes during cell population are what made scrolling a large
+            // history hitch. The card background stands in until it lands.
+            thumbView.image = nil
+            detailLabel.stringValue = detailText(for: item, thumbnail: nil)
+            let itemID = item.id
+            let path = item.thumbnailPath
+            Task { [weak self] in
+                guard let box = await Self.decodeThumbnail(atPath: path) else { return }
+                // Reuse guard: the cell may represent a different item by now —
+                // the decode still primed the cache for its own cell's turn.
+                guard let self, self.historyItem?.id == itemID else { return }
+                self.thumbView.image = box.image
+                self.detailLabel.stringValue = self.detailText(for: item, thumbnail: box.image)
+            }
+        }
         setupTracking()
     }
 
-    private func detailText(for item: HistoryItem) -> String {
+    nonisolated private static func decodeThumbnail(atPath path: String) async -> SendableImageBox? {
+        await Task.detached(priority: .userInitiated) {
+            HistoryImageCache.loadThumbnailDecoded(for: path).map(SendableImageBox.init)
+        }.value
+    }
+
+    /// Recycled cells must start clean. Deleting the tile under the cursor
+    /// (the common right-click → Delete flow) removes the view before
+    /// `mouseExited` ever fires, so without this reset the reused cell keeps
+    /// the hover scale transform, shadow, and hovered card colors — the
+    /// visual corruption seen after mid-grid deletes.
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        historyItem = nil
+        thumbView.image = nil
+        thumbView.layer?.removeAllAnimations()
+        thumbView.layer?.transform = CATransform3DIdentity
+        thumbView.layer?.shadowOpacity = 0
+        cardView.isHovered = false
+        previewWell.isHovered = false
+        cardView.alphaValue = 1
+        previewWell.alphaValue = 1
+    }
+
+    private func detailText(for item: HistoryItem, thumbnail: NSImage?) -> String {
         if let rect = item.captureRect?.cgRect {
             return String(format: "%.0f x %.0f capture", rect.width, rect.height)
         }
-        let size = item.thumbnail.size
-        guard size.width > 0, size.height > 0 else { return "Saved capture" }
+        // No stored rect: size comes from the thumbnail — but never decode one
+        // from disk here; the async load refreshes this label when it arrives.
+        guard let size = thumbnail?.size, size.width > 0, size.height > 0 else { return "Saved capture" }
         return String(format: "%.0f x %.0f image", size.width, size.height)
     }
 
@@ -542,9 +738,8 @@ final class HistoryCollectionItem: NSCollectionViewItem {
     }
 
     @objc private func deleteItem() {
-        guard let item = historyItem, let manager = historyManager else { return }
-        manager.delete(item)
-        HistoryPanelController.shared.reloadAfterDelete()
+        guard let item = historyItem else { return }
+        HistoryPanelController.shared.deleteWithUndo(item)
     }
 }
 

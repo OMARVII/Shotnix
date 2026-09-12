@@ -12,6 +12,7 @@ enum ShotnixShortcut: CaseIterable, Identifiable {
     case captureFullscreenNative
     case captureFullscreenFallback
     case capturePreviousArea
+    case captureTimed
     case captureText
     case captureScrolling
     case recordArea
@@ -28,6 +29,7 @@ enum ShotnixShortcut: CaseIterable, Identifiable {
         case .captureFullscreenNative: return "Capture Fullscreen"
         case .captureFullscreenFallback: return "Capture Fullscreen Alt"
         case .capturePreviousArea: return "Capture Previous Area"
+        case .captureTimed: return "Timed Capture"
         case .captureText: return "OCR / Capture Text"
         case .captureScrolling: return "Scrolling Capture"
         case .recordArea: return "Record Area"
@@ -39,7 +41,7 @@ enum ShotnixShortcut: CaseIterable, Identifiable {
 
     var section: ShotnixShortcutSection {
         switch self {
-        case .captureArea, .captureWindow, .captureFullscreenNative, .captureFullscreenFallback, .capturePreviousArea:
+        case .captureArea, .captureWindow, .captureFullscreenNative, .captureFullscreenFallback, .capturePreviousArea, .captureTimed:
             return .screenshots
         case .captureText, .captureScrolling:
             return .tools
@@ -55,6 +57,7 @@ enum ShotnixShortcut: CaseIterable, Identifiable {
         case .captureFullscreenNative: return .shotnixCaptureFullscreenNative
         case .captureFullscreenFallback: return .shotnixCaptureFullscreenFallback
         case .capturePreviousArea: return .shotnixCapturePreviousArea
+        case .captureTimed: return .shotnixCaptureTimed
         case .captureText: return .shotnixCaptureText
         case .captureScrolling: return .shotnixCaptureScrolling
         case .recordArea: return .shotnixRecordArea
@@ -75,6 +78,8 @@ extension KeyboardShortcuts.Name {
     static let shotnixCaptureFullscreenNative = Self("captureFullscreenNative", default: KeyboardShortcuts.Shortcut(.three, modifiers: [.command, .shift]))
     static let shotnixCaptureFullscreenFallback = Self("captureFullscreenFallback", default: KeyboardShortcuts.Shortcut(.six, modifiers: [.command, .shift]))
     static let shotnixCapturePreviousArea = Self("capturePreviousArea", default: KeyboardShortcuts.Shortcut(.seven, modifiers: [.command, .shift]))
+    // Timed capture ships unassigned — users opt in via Preferences → Shortcuts.
+    static let shotnixCaptureTimed = Self("captureTimed")
     static let shotnixCaptureText = Self("captureText", default: KeyboardShortcuts.Shortcut(.o, modifiers: [.command, .shift]))
     static let shotnixCaptureScrolling = Self("captureScrolling", default: KeyboardShortcuts.Shortcut(.s, modifiers: [.command, .shift]))
     // Recording shortcuts ship unassigned — users opt in via Preferences → Shortcuts.

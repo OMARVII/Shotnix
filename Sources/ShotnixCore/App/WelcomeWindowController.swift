@@ -1,22 +1,38 @@
 import AppKit
 
+/// First-launch setup checklist. Unlike the old one-shot welcome screen, this
+/// window reflects live state, offers the restart macOS requires after
+/// granting Screen Recording, and only counts onboarding as complete once the
+/// user takes their first screenshot (or explicitly skips setup). Until then
+/// it reappears on every launch.
 @MainActor
 final class WelcomeWindowController: NSObject, NSWindowDelegate {
 
+    /// Set by the AppDelegate — triggers a real area capture for step 3.
+    var testCaptureHandler: (() -> Void)?
+
     private var window: NSWindow?
     private var onClose: (() -> Void)?
+    private var refreshTimer: Timer?
+    private var captureObserver: NSObjectProtocol?
+
+    private var permissionRow: ChecklistStepRow?
+    private var shortcutsRow: ChecklistStepRow?
+    private var captureRow: ChecklistStepRow?
 
     @discardableResult
     func showIfNeeded(onClose: (() -> Void)? = nil) -> Bool {
-        guard !Settings.hasLaunchedBefore else { return false }
+        guard !Settings.onboardingCompleted else { return false }
+        guard window == nil else { return true }
+        Settings.hasLaunchedBefore = true
         self.onClose = onClose
         showWindow()
         return true
     }
 
     private func showWindow() {
-        let width: CGFloat = 460
-        let height: CGFloat = 360
+        let width: CGFloat = 490
+        let height: CGFloat = 470
 
         let win = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: width, height: height),
@@ -37,122 +53,194 @@ final class WelcomeWindowController: NSObject, NSWindowDelegate {
         win.contentView = background
 
         buildContent(in: background, width: width, height: height)
+        refresh()
 
         NSApp.setActivationPolicy(.accessory)
         NSApp.activate(ignoringOtherApps: true)
         win.makeKeyAndOrderFront(nil)
         window = win
+
+        // Permission and shortcut state change outside this window (System
+        // Settings, the macOS grant dialog) — poll so rows update live.
+        let timer = Timer(timeInterval: 1.0, repeats: true) { [weak self] _ in
+            Task { @MainActor in self?.refresh() }
+        }
+        RunLoop.main.add(timer, forMode: .common)
+        refreshTimer = timer
+
+        captureObserver = NotificationCenter.default.addObserver(
+            forName: .shotnixDidFinishFirstCapture,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in self?.firstCaptureCompleted() }
+        }
     }
 
     private func buildContent(in container: NSView, width: CGFloat, height: CGFloat) {
         let centerX = width / 2
-        var y = height - 34
+        var y = height - 30
 
-        // App icon
-        let iconSize: CGFloat = 56
+        let iconSize: CGFloat = 52
         let iconView = NSImageView(frame: NSRect(x: centerX - iconSize / 2, y: y - iconSize, width: iconSize, height: iconSize))
         iconView.image = NSImage(named: "NSApplicationIcon")
         iconView.imageScaling = .scaleProportionallyUpOrDown
         container.addSubview(iconView)
-        y -= iconSize + 8
+        y -= iconSize + 6
 
-        // Title
         let title = NSTextField(labelWithString: "Welcome to Shotnix")
-        title.font = .boldSystemFont(ofSize: 22)
+        title.font = .boldSystemFont(ofSize: 21)
         title.alignment = .center
         title.frame = NSRect(x: 20, y: y - 24, width: width - 40, height: 24)
         container.addSubview(title)
-        y -= 32
+        y -= 28
 
-        let desc = NSTextField(wrappingLabelWithString: "A fast menu bar workflow for screenshots, recordings, annotation, OCR, QR scanning, pinning, and local history.")
+        let desc = NSTextField(labelWithString: "Three quick steps and you're capturing.")
         desc.font = .systemFont(ofSize: 12)
         desc.textColor = .secondaryLabelColor
         desc.alignment = .center
-        desc.frame = NSRect(x: 44, y: y - 42, width: width - 88, height: 42)
+        desc.frame = NSRect(x: 44, y: y - 18, width: width - 88, height: 16)
         container.addSubview(desc)
-        y -= 52
+        y -= 32
 
-        // Permission notice
-        let sep = NSBox()
-        sep.boxType = .separator
-        sep.frame = NSRect(x: 30, y: y, width: width - 60, height: 1)
-        container.addSubview(sep)
-        y -= 16
+        let rowHeight: CGFloat = 78
+        let rowX: CGFloat = 24
+        let rowWidth = width - 48
 
-        let lockIcon = NSImageView(frame: NSRect(x: 44, y: y - 18, width: 18, height: 18))
-        lockIcon.image = NSImage(systemSymbolName: "lock.shield", accessibilityDescription: nil)
-        lockIcon.contentTintColor = .systemOrange
-        container.addSubview(lockIcon)
+        let permission = ChecklistStepRow(
+            frame: NSRect(x: rowX, y: y - rowHeight, width: rowWidth, height: rowHeight),
+            step: "1",
+            title: "Allow Screen Recording"
+        )
+        container.addSubview(permission)
+        permissionRow = permission
+        y -= rowHeight + 8
 
-        let permLabel = NSTextField(wrappingLabelWithString: "Step 1 · Allow Screen Recording so Shotnix can capture screenshots, recordings, OCR selections, and QR scans.")
-        permLabel.font = .systemFont(ofSize: 11)
-        permLabel.textColor = .secondaryLabelColor
-        permLabel.frame = NSRect(x: 70, y: y - 36, width: width - 114, height: 36)
-        container.addSubview(permLabel)
+        let shortcuts = ChecklistStepRow(
+            frame: NSRect(x: rowX, y: y - rowHeight, width: rowWidth, height: rowHeight),
+            step: "2",
+            title: "Free up ⌘⇧ shortcuts · optional"
+        )
+        container.addSubview(shortcuts)
+        shortcutsRow = shortcuts
+        y -= rowHeight + 8
 
-        let shortcutIcon = NSImageView(frame: NSRect(x: 44, y: y - 62, width: 18, height: 18))
-        shortcutIcon.image = NSImage(systemSymbolName: "keyboard", accessibilityDescription: nil)
-        shortcutIcon.contentTintColor = .systemBlue
-        container.addSubview(shortcutIcon)
+        let capture = ChecklistStepRow(
+            frame: NSRect(x: rowX, y: y - rowHeight, width: rowWidth, height: rowHeight),
+            step: "3",
+            title: "Take your first screenshot"
+        )
+        container.addSubview(capture)
+        captureRow = capture
+        y -= rowHeight + 6
 
-        let shortcutLabel = NSTextField(wrappingLabelWithString: "Step 2 · Shotnix will help disable macOS screenshot shortcuts so captures do not double-trigger.")
-        shortcutLabel.font = .systemFont(ofSize: 11)
-        shortcutLabel.textColor = .secondaryLabelColor
-        shortcutLabel.frame = NSRect(x: 70, y: y - 82, width: width - 114, height: 36)
-        container.addSubview(shortcutLabel)
-        y -= 96
+        let hint = NSTextField(labelWithString: "⌘⇧4 area · ⌘⇧5 window · ⌘⇧3 fullscreen — Shotnix lives in your menu bar")
+        hint.font = .systemFont(ofSize: 10.5)
+        hint.textColor = .tertiaryLabelColor
+        hint.alignment = .center
+        hint.frame = NSRect(x: 20, y: 52, width: width - 40, height: 14)
+        container.addSubview(hint)
 
-        // Buttons
-        let btnWidth: CGFloat = 154
-        let btnHeight: CGFloat = 32
-        let gap: CGFloat = 12
-        let totalBtnWidth = btnWidth * 2 + gap
-        let btnX = centerX - totalBtnWidth / 2
-
-        let skipBtn = NSButton(title: "Later", target: self, action: #selector(skipClicked))
+        let skipBtn = NSButton(title: "Skip Setup", target: self, action: #selector(skipClicked))
         skipBtn.bezelStyle = .rounded
-        skipBtn.frame = NSRect(x: btnX, y: 20, width: btnWidth, height: btnHeight)
+        skipBtn.controlSize = .regular
+        skipBtn.frame = NSRect(x: centerX - 60, y: 14, width: 120, height: 30)
         container.addSubview(skipBtn)
-
-        let grantBtn = NSButton(title: "Enable Capture", target: self, action: #selector(grantClicked))
-        grantBtn.bezelStyle = .rounded
-        grantBtn.keyEquivalent = "\r"
-        grantBtn.frame = NSRect(x: btnX + btnWidth + gap, y: 20, width: btnWidth, height: btnHeight)
-        container.addSubview(grantBtn)
     }
 
-    @objc private func grantClicked() {
-        Settings.hasLaunchedBefore = true
-        let granted = PermissionsManager.requestScreenRecordingPermission()
-        if granted {
-            closeWindow()
-            return
+    // MARK: – Live state
+
+    private func refresh() {
+        let hasPermission = PermissionsManager.hasScreenRecordingPermission
+
+        if hasPermission {
+            permissionRow?.update(
+                done: true,
+                subtitle: "Granted — captures, recordings, and OCR are ready.",
+                primary: nil,
+                secondary: nil
+            )
+        } else if Settings.didRequestScreenRecordingPermission {
+            permissionRow?.update(
+                done: false,
+                subtitle: "Enable Shotnix in System Settings, then relaunch so macOS applies it.",
+                primary: ("Open Settings", { PermissionsManager.openScreenRecordingSettings() }),
+                secondary: ("Quit & Reopen", { PermissionsManager.quitAndReopen() })
+            )
+        } else {
+            permissionRow?.update(
+                done: false,
+                subtitle: "Needed to capture the screen. macOS will ask once.",
+                primary: ("Allow Screen Recording", { [weak self] in self?.allowPermissionClicked() }),
+                secondary: nil
+            )
         }
 
-        if Settings.didRequestScreenRecordingPermission {
-            showRestartAfterPermissionAlert()
+        if NativeShortcutManager.nativeShortcutsEnabled {
+            shortcutsRow?.update(
+                done: false,
+                subtitle: "Apple's screenshot shortcuts still own ⌘⇧3/4/5 — captures can double-trigger.",
+                primary: ("Disable Apple Shortcuts", { [weak self] in self?.disableShortcutsClicked() }),
+                secondary: nil
+            )
         } else {
+            shortcutsRow?.update(
+                done: true,
+                subtitle: "Apple's shortcuts are out of the way.",
+                primary: nil,
+                secondary: nil
+            )
+        }
+
+        if Settings.onboardingCompleted {
+            captureRow?.update(
+                done: true,
+                subtitle: "Nice shot. You're all set.",
+                primary: nil,
+                secondary: nil
+            )
+        } else {
+            captureRow?.update(
+                done: false,
+                subtitle: hasPermission
+                    ? "Press ⌘⇧4 anytime — or try it right now."
+                    : "Grant Screen Recording first, then try it here.",
+                primary: ("Take a Test Screenshot", { [weak self] in self?.testCaptureHandler?() }),
+                secondary: nil,
+                primaryEnabled: hasPermission
+            )
+        }
+    }
+
+    private func allowPermissionClicked() {
+        let alreadyRequested = Settings.didRequestScreenRecordingPermission
+        let granted = PermissionsManager.requestScreenRecordingPermission()
+        if !granted && alreadyRequested {
             PermissionsManager.openScreenRecordingSettings()
         }
-        closeWindow()
+        refresh()
+    }
+
+    private func disableShortcutsClicked() {
+        if NativeShortcutManager.disableNativeShortcuts() {
+            ToastWindow.show(message: "Apple screenshot shortcuts disabled.")
+        } else {
+            NativeShortcutManager.openKeyboardSettings()
+        }
+        refresh()
+    }
+
+    private func firstCaptureCompleted() {
+        refresh()
+        // Let the completed state land visually, then get out of the way.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            self?.closeWindow()
+        }
     }
 
     @objc private func skipClicked() {
-        Settings.hasLaunchedBefore = true
+        Settings.onboardingCompleted = true
         closeWindow()
-    }
-
-    private func showRestartAfterPermissionAlert() {
-        let alert = NSAlert()
-        alert.messageText = "Finish Permission in System Settings"
-        alert.informativeText = "After enabling Shotnix in Screen & System Audio Recording, quit and reopen Shotnix so macOS applies the permission."
-        alert.alertStyle = .informational
-        alert.addButton(withTitle: "Open Settings")
-        alert.addButton(withTitle: "OK")
-
-        if alert.runModal() == .alertFirstButtonReturn {
-            PermissionsManager.openScreenRecordingSettings()
-        }
     }
 
     private func closeWindow() {
@@ -160,10 +248,126 @@ final class WelcomeWindowController: NSObject, NSWindowDelegate {
     }
 
     func windowWillClose(_ notification: Notification) {
+        refreshTimer?.invalidate()
+        refreshTimer = nil
+        if let captureObserver {
+            NotificationCenter.default.removeObserver(captureObserver)
+            self.captureObserver = nil
+        }
         window = nil
         let closeHandler = onClose
         onClose = nil
         closeHandler?()
         NSApp.restoreBackgroundOnlyActivationPolicyIfNeeded(excluding: notification.object as? NSWindow)
     }
+}
+
+// MARK: – Checklist row
+
+/// One step in the setup checklist: status icon, title, live subtitle, and up
+/// to two action buttons whose handlers are swapped on every refresh.
+@MainActor
+private final class ChecklistStepRow: NSView {
+
+    private let statusIcon = NSImageView()
+    private let titleField: NSTextField
+    private let subtitleField = NSTextField(wrappingLabelWithString: "")
+    private let primaryButton = NSButton(title: "", target: nil, action: nil)
+    private let secondaryButton = NSButton(title: "", target: nil, action: nil)
+    private var primaryHandler: (() -> Void)?
+    private var secondaryHandler: (() -> Void)?
+
+    init(frame: NSRect, step: String, title: String) {
+        titleField = NSTextField(labelWithString: title)
+        super.init(frame: frame)
+
+        wantsLayer = true
+        layer?.cornerRadius = 10
+        layer?.cornerCurve = .continuous
+        layer?.backgroundColor = NSColor.labelColor.withAlphaComponent(0.045).cgColor
+
+        statusIcon.frame = NSRect(x: 14, y: frame.height - 34, width: 20, height: 20)
+        statusIcon.contentTintColor = .tertiaryLabelColor
+        addSubview(statusIcon)
+
+        titleField.font = .systemFont(ofSize: 13, weight: .semibold)
+        titleField.frame = NSRect(x: 44, y: frame.height - 32, width: frame.width - 60, height: 17)
+        addSubview(titleField)
+
+        subtitleField.font = .systemFont(ofSize: 11)
+        subtitleField.textColor = .secondaryLabelColor
+        subtitleField.frame = NSRect(x: 44, y: frame.height - 62, width: frame.width - 220, height: 28)
+        addSubview(subtitleField)
+
+        primaryButton.bezelStyle = .rounded
+        primaryButton.controlSize = .small
+        primaryButton.font = .systemFont(ofSize: 11, weight: .medium)
+        primaryButton.target = self
+        primaryButton.action = #selector(primaryTapped)
+        addSubview(primaryButton)
+
+        secondaryButton.bezelStyle = .rounded
+        secondaryButton.controlSize = .small
+        secondaryButton.font = .systemFont(ofSize: 11, weight: .medium)
+        secondaryButton.target = self
+        secondaryButton.action = #selector(secondaryTapped)
+        addSubview(secondaryButton)
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+
+    func update(
+        done: Bool,
+        subtitle: String,
+        primary: (title: String, handler: () -> Void)?,
+        secondary: (title: String, handler: () -> Void)?,
+        primaryEnabled: Bool = true
+    ) {
+        let symbol = done ? "checkmark.circle.fill" : "circle"
+        statusIcon.image = NSImage(systemSymbolName: symbol, accessibilityDescription: done ? "Done" : "Pending")?
+            .withSymbolConfiguration(NSImage.SymbolConfiguration(pointSize: 16, weight: .semibold))
+        statusIcon.contentTintColor = done ? .systemGreen : .tertiaryLabelColor
+        if subtitleField.stringValue != subtitle {
+            subtitleField.stringValue = subtitle
+        }
+
+        if let primary {
+            primaryHandler = primary.handler
+            primaryButton.isHidden = false
+            primaryButton.isEnabled = primaryEnabled
+            if primaryButton.title != primary.title {
+                primaryButton.title = primary.title
+            }
+        } else {
+            primaryHandler = nil
+            primaryButton.isHidden = true
+        }
+
+        if let secondary {
+            secondaryHandler = secondary.handler
+            secondaryButton.isHidden = false
+            if secondaryButton.title != secondary.title {
+                secondaryButton.title = secondary.title
+            }
+        } else {
+            secondaryHandler = nil
+            secondaryButton.isHidden = true
+        }
+
+        layoutButtons()
+    }
+
+    private func layoutButtons() {
+        var x = frame.width - 14
+        for button in [primaryButton, secondaryButton] where !button.isHidden {
+            button.sizeToFit()
+            let size = NSSize(width: button.frame.width + 8, height: 24)
+            x -= size.width
+            button.frame = NSRect(x: x, y: frame.height - 60, width: size.width, height: size.height)
+            x -= 8
+        }
+    }
+
+    @objc private func primaryTapped() { primaryHandler?() }
+    @objc private func secondaryTapped() { secondaryHandler?() }
 }

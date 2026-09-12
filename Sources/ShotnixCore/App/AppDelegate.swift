@@ -13,6 +13,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let menuPresenter = ShotnixModernMenuPresenter()
     private var updateController: AppUpdateController!
     private var didRegisterHotkeys = false
+    private var recordingIndicatorTimer: Timer?
+    private var idleStatusIcon: NSImage?
 
     // Clicking the Dock icon (shown while an editor is open) restores a buried or minimized editor.
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows: Bool) -> Bool {
@@ -34,8 +36,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        Settings.migrateOnboardingFlagIfNeeded()
         updateController = AppUpdateController()
         captureEngine = CaptureEngine()
+        captureEngine.recordingStateChangedHandler = { [weak self] in
+            self?.recordingStateDidChange()
+        }
         captureEngine.recordingFinishedHandler = { url in
             Settings.lastRecordingPath = url.path
             let shouldAutoOpen = Settings.openVideoEditorAfterRecording
@@ -69,7 +75,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 self?.showReadyToastIfNeeded(delay: 2.2)
             }
         }
-        if !welcomeController.showIfNeeded(onClose: promptForNativeShortcuts) {
+        welcomeController.testCaptureHandler = { [weak self] in self?.captureArea() }
+        let welcomeCloseHandler = { [weak self] in
+            promptForNativeShortcuts()
+            // Point at where Shotnix actually lives — a menu bar app with no
+            // dock icon is otherwise invisible after the welcome window closes.
+            if let button = self?.statusItem.button {
+                let message = Settings.onboardingCompleted
+                    ? "You're all set — Shotnix lives here"
+                    : "Shotnix lives here — setup continues next launch"
+                ToastWindow.show(message: message, duration: 4.0, anchorView: button)
+            }
+        }
+        if !welcomeController.showIfNeeded(onClose: welcomeCloseHandler) {
             promptForNativeShortcuts()
             // Escape hatch on cold launch: applicationShouldHandleReopen only
             // fires for an already-running app, so with the status item hidden
@@ -78,6 +96,63 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 PreferencesWindowController.shared.show(tab: .general)
             }
         }
+    }
+
+    // MARK: – Recording indicator
+
+    /// While recording, the status item becomes a red dot + elapsed timer and
+    /// a left click stops the recording (right click still opens the menu).
+    private func recordingStateDidChange() {
+        if captureEngine.recordingElapsedSeconds != nil {
+            guard recordingIndicatorTimer == nil else { return }
+            updateRecordingIndicator()
+            let timer = Timer(timeInterval: 0.5, repeats: true) { [weak self] _ in
+                Task { @MainActor in self?.updateRecordingIndicator() }
+            }
+            RunLoop.main.add(timer, forMode: .common)
+            recordingIndicatorTimer = timer
+        } else {
+            recordingIndicatorTimer?.invalidate()
+            recordingIndicatorTimer = nil
+            restoreIdleStatusItem()
+        }
+    }
+
+    private func updateRecordingIndicator() {
+        guard let button = statusItem.button else { return }
+        guard let elapsed = captureEngine.recordingElapsedSeconds else {
+            restoreIdleStatusItem()
+            return
+        }
+        let total = Int(elapsed)
+        let time = String(format: "%d:%02d", total / 60, total % 60)
+        statusItem.length = NSStatusItem.variableLength
+        button.image = nil
+        let title = NSMutableAttributedString(
+            string: "● ",
+            attributes: [
+                .font: NSFont.systemFont(ofSize: 10, weight: .bold),
+                .foregroundColor: NSColor.systemRed,
+                .baselineOffset: 1.5,
+            ]
+        )
+        title.append(NSAttributedString(
+            string: time,
+            attributes: [
+                .font: NSFont.monospacedDigitSystemFont(ofSize: 12, weight: .semibold),
+                .foregroundColor: NSColor.labelColor,
+            ]
+        ))
+        button.attributedTitle = title
+        button.toolTip = "Recording — click to stop"
+    }
+
+    private func restoreIdleStatusItem() {
+        guard let button = statusItem.button else { return }
+        statusItem.length = NSStatusItem.squareLength
+        button.attributedTitle = NSAttributedString(string: "")
+        button.image = idleStatusIcon
+        button.toolTip = nil
     }
 
     private func registerHotkeys() {
@@ -202,6 +277,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let icon = NSImage(systemSymbolName: "crop", accessibilityDescription: "Shotnix")?
             .withSymbolConfiguration(config)
         icon?.isTemplate = true
+        idleStatusIcon = icon
         button.image = icon
         button.target = self
         button.action = #selector(toggleCommandCenter)
@@ -241,7 +317,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func captureArea()         { Task { await captureEngine.startAreaCapture(historyManager: historyManager) } }
     @objc func captureWindow()       { Task { await captureEngine.startWindowCapture(historyManager: historyManager) } }
     @objc func captureFullscreen()   { Task { await captureEngine.captureFullscreen(historyManager: historyManager) } }
+    @objc func captureAllDisplays()  { Task { await captureEngine.captureAllDisplays(historyManager: historyManager) } }
     @objc func capturePrevious()     { Task { await captureEngine.capturePreviousArea(historyManager: historyManager) } }
+    @objc func captureTimed()        { Task { await captureEngine.startTimedCapture(historyManager: historyManager) } }
     @objc func captureScrolling()    { Task { await captureEngine.startScrollingCapture(historyManager: historyManager) } }
     @objc func recordArea()          { Task { await captureEngine.startAreaRecording() } }
     @objc func recordWindow()        { Task { await captureEngine.startWindowRecording() } }
@@ -367,6 +445,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func toggleCommandCenter(_ sender: Any?) {
+        // While recording, a left click on the red timer stops the recording
+        // immediately; the menu stays reachable via right click.
+        if captureEngine.recordingActive, NSApp.currentEvent?.type == .leftMouseUp {
+            stopRecording()
+            return
+        }
         if menuPresenter.isShown {
             menuPresenter.dismiss()
             return
@@ -382,14 +466,24 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func commandCenterSections() -> [ShotnixMenuSection] {
-        [
-            ShotnixMenuSection(id: "capture", title: "Capture", actions: [
-                action(id: "capture.area", title: "Capture Area", symbol: "rectangle.dashed", shortcut: .shotnixCaptureArea, role: .primary) { [weak self] in self?.captureArea() },
-                action(id: "capture.window", title: "Capture Window", symbol: "macwindow", shortcut: .shotnixCaptureWindow) { [weak self] in self?.captureWindow() },
-                action(id: "capture.fullscreen", title: "Capture Fullscreen", symbol: "rectangle.on.rectangle", shortcut: .shotnixCaptureFullscreenNative) { [weak self] in self?.captureFullscreen() },
-                action(id: "capture.previous", title: "Capture Previous Area", symbol: "arrow.counterclockwise.circle", shortcut: .shotnixCapturePreviousArea) { [weak self] in self?.capturePrevious() },
+        var captureActions = [
+            action(id: "capture.area", title: "Capture Area", symbol: "rectangle.dashed", shortcut: .shotnixCaptureArea, role: .primary) { [weak self] in self?.captureArea() },
+            action(id: "capture.window", title: "Capture Window", symbol: "macwindow", shortcut: .shotnixCaptureWindow) { [weak self] in self?.captureWindow() },
+            action(id: "capture.fullscreen", title: "Capture Fullscreen", symbol: "rectangle.on.rectangle", shortcut: .shotnixCaptureFullscreenNative) { [weak self] in self?.captureFullscreen() },
+        ]
+        if NSScreen.screens.count > 1 {
+            captureActions.append(
+                action(id: "capture.all-displays", title: "Capture All Displays", symbol: "display.2") { [weak self] in self?.captureAllDisplays() }
+            )
+        }
+        captureActions.append(contentsOf: [
+            action(id: "capture.previous", title: "Capture Previous Area", symbol: "arrow.counterclockwise.circle", shortcut: .shotnixCapturePreviousArea) { [weak self] in self?.capturePrevious() },
+                action(id: "capture.timed", title: "Timed Capture (\(Settings.timedCaptureDelaySeconds)s)", symbol: "timer", shortcut: .shotnixCaptureTimed) { [weak self] in self?.captureTimed() },
                 action(id: "capture.scrolling", title: "Scrolling Capture", symbol: "scroll", shortcut: .shotnixCaptureScrolling) { [weak self] in self?.captureScrolling() },
-            ]),
+        ])
+
+        return [
+            ShotnixMenuSection(id: "capture", title: "Capture", actions: captureActions),
             ShotnixMenuSection(id: "record", title: "Record", actions: [
                 action(id: "record.area", title: "Record Area", symbol: "record.circle", shortcut: .shotnixRecordArea, isEnabled: captureEngine?.recordingActionsEnabled ?? false) { [weak self] in self?.recordArea() },
                 action(id: "record.window", title: "Record Window", symbol: "macwindow.badge.plus", shortcut: .shotnixRecordWindow, isEnabled: captureEngine?.recordingActionsEnabled ?? false) { [weak self] in self?.recordWindow() },

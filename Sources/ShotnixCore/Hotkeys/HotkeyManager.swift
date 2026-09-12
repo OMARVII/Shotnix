@@ -33,6 +33,11 @@ final class HotkeyManager {
             Task { await e.capturePreviousArea(historyManager: h) }
         }
 
+        KeyboardShortcuts.onKeyDown(for: .shotnixCaptureTimed) { [weak captureEngine, weak historyManager] in
+            guard let e = captureEngine, let h = historyManager else { return }
+            Task { await e.startTimedCapture(historyManager: h) }
+        }
+
         KeyboardShortcuts.onKeyDown(for: .shotnixCaptureText) { [weak captureEngine] in
             guard let e = captureEngine else { return }
             Task { await e.startOCRCapture() }
