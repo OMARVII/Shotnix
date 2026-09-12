@@ -852,7 +852,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.18.0"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.18.1"
     
     var body: some View {
         PreferencesPane {
@@ -895,6 +895,9 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.18.1
+                    • Fixed black screenshots and recordings on external displays — captures on secondary monitors now grab the correct screen
+
                     Version 0.18.0
                     • Recording hotkeys — assign shortcuts to start and stop recording, and Escape stops a recording in progress
                     • Multi-display polish — fullscreen capture asks which display (or all), and overlays, toasts, and pins appear on the screen you captured

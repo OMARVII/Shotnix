@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.18.1-beta] - 2026-09-12
+
+### Fixed
+- **Black screenshots on external displays** — capturing an area, window, or fullscreen on a secondary monitor no longer produces an empty black image. The capture engine matched displays by comparing rectangles from two different coordinate systems (AppKit bottom-left vs CoreGraphics top-left), which only agree on the primary display; displays are now matched by their display ID. The same fix applies to screen recordings, scrolling capture, OCR/barcode capture, and the frozen selection preview.
+
 ## [0.18.0-beta] - 2026-07-18
 
 ### Added
