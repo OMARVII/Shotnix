@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.19.1-beta] - 2026-09-13
+
+### Fixed
+- **The app crashed instantly on launch on every Mac except the machine it was built on** (reported as issue #25 against 0.18.0; present in all recent releases). SwiftPM's generated resource-bundle accessor only searched the .app root and the build machine's absolute `.build` path, so the capture-sound bundle lookup fatalErrored at startup for everyone else — local testing never caught it because the build-path fallback exists on the build machine. Shotnix now locates its resource bundle in `Contents/Resources` directly and degrades gracefully if it's missing. The KeyboardShortcuts dependency is vendored with the same one-line fix, since its localization lookup would have hit the identical crash in the Shortcuts preferences pane.
+
 ## [0.19.0-beta] - 2026-09-12
 
 ### Added
