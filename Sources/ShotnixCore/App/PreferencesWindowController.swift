@@ -879,7 +879,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.19.1"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.19.2"
     
     var body: some View {
         PreferencesPane {
@@ -922,6 +922,9 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.19.2
+                    • A one-time ask to star Shotnix on GitHub after your tenth screenshot — a clickable toast, then a dismissible line in the history panel. Choose once and it never returns
+
                     Version 0.19.1
                     • Fixed the app crashing instantly on launch on many Macs — app resources are now located correctly inside the app package
 
