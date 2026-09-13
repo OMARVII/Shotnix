@@ -17,7 +17,7 @@
 ---
 
 > [!NOTE]
-> **Shotnix is in beta (v0.18.0-beta).** Official downloads are signed and notarized with Apple Developer ID. The source code is available here for review and local builds.
+> **Shotnix is in beta (v0.19.2-beta).** Official downloads are signed and notarized with Apple Developer ID. The source code is available here for review and local builds.
 
 <p align="center">
   <img src="assets/screenshots/shotnix-annotation-editor-demo.png" width="720" alt="Shotnix annotation editor demo" />
@@ -33,13 +33,15 @@ Visit **[shotnix.com](https://shotnix.com/)** for the latest download and projec
 
 **Capture anything**
 - **Area** — drag to select any region
-- **Window** — click any window to capture it
+- **Window** — click any window to capture it in isolation, with optional drop shadow and transparent padding
 - **Fullscreen** — grab the entire screen instantly
 - **Previous area** — re-capture the last selected region with one shortcut
 - **Scrolling** — capture content beyond the visible area
-- **Screen recording** — record an area, window, or display with system audio, microphone audio, cursor control, quality, and FPS options
+- **Timed** — a cancellable 3/5/10-second countdown before the shot
+- **Screen recording** — record an area, window, or display to MP4 with system audio, microphone audio, cursor control, quality, and FPS options
+- **Video demo editor** — open any recording in a built-in editor with a clip timeline, per-clip speed, auto zoom, cursor effects, text callouts, backgrounds, and MP4 export
 - **OCR** — extract and copy text from any part of the screen
-- **QR scanning** — scan QR codes from a selected screen area
+- **QR and barcode scanning** — decode QR, Code 128, EAN, UPC, Aztec, Data Matrix, PDF417 and more from a selected screen area
 
 **Annotate and edit**
 - Arrows, rectangles, ellipses, lines, freehand drawing
@@ -59,7 +61,7 @@ Visit **[shotnix.com](https://shotnix.com/)** for the latest download and projec
 - Right-click context menu on overlay
 - Spring animations and micro-interactions for a premium feel
 - Pin screenshots to float on your desktop (draggable, resizable)
-- Full capture history with grid browser
+- Full capture history with grid browser, search by the text inside screenshots, and a 7-day undo for deletes
 - Global hotkeys that work from anywhere
 
 **Configurable**
@@ -130,6 +132,7 @@ Sources/
     ├── Hotkeys/       Customizable global shortcuts
     ├── OCR/           Text recognition via Vision framework
     ├── Overlay/       Quick access thumbnail, pinned windows, toasts
+    ├── Video/         Recording demo editor: timeline, speed, zoom, cursor effects, MP4 export
     └── Utilities/     Image export, permissions, desktop icon toggle
 ```
 
@@ -156,8 +159,8 @@ The app still keeps dependencies intentionally narrow.
 - [x] Snappy overlay animations + haptic feedback + pixel-perfect buttons
 - [x] Native macOS APIs (replaced legacy shell `Process()` calls)
 - [x] Customizable hotkeys
-- [ ] Window capture with shadow and padding
-- [ ] Delay/timer capture (3s, 5s, 10s)
+- [x] Window capture with shadow and padding
+- [x] Delay/timer capture (3s, 5s, 10s)
 - [x] Auto-update mechanism
 - [x] Developer signing + notarization workflow
 
