@@ -765,6 +765,7 @@ final class CaptureEngine {
         if playSound { playCaptureSound() }
         NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .default)
         let item = historyManager.add(image: image, rect: rect)
+        StarNudge.captureDidFinish(rect: rect)
 
         // After-capture auto-actions (from Preferences). Both encode off the
         // main thread — a 5K PNG encode here used to stutter the overlay's

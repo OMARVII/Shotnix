@@ -12,6 +12,8 @@ final class HistoryPanelController: NSObject {
     private var emptyOverlay: NSView?
     private var countLabel: NSTextField?
     private var searchField: NSSearchField?
+    private var scrollView: NSScrollView?
+    private var nudgeBanner: NSView?
     private var searchQuery = ""
     private var closeObserver: NSObjectProtocol?
     private var historyObserver: NSObjectProtocol?
@@ -151,7 +153,16 @@ final class HistoryPanelController: NSObject {
         cv.isSelectable = false
         cv.setDraggingSourceOperationMask(.copy, forLocal: false)
 
-        let scroll = NSScrollView(frame: NSRect(x: 16, y: 16, width: 888, height: 508))
+        // One-time "star us" line, only while the nudge is live (see StarNudge).
+        let bannerHeight: CGFloat = StarNudge.shouldShowInHistoryPanel ? Self.nudgeBannerHeight : 0
+        if bannerHeight > 0 {
+            let banner = buildNudgeBanner(frame: NSRect(x: 16, y: 524 - Self.nudgeBannerHeight + Self.nudgeBannerGap, width: 888, height: Self.nudgeBannerHeight - Self.nudgeBannerGap))
+            banner.autoresizingMask = [.width, .minYMargin]
+            container.addSubview(banner)
+            nudgeBanner = banner
+        }
+
+        let scroll = NSScrollView(frame: NSRect(x: 16, y: 16, width: 888, height: 508 - bannerHeight))
         scroll.documentView = cv
         scroll.hasVerticalScroller = true
         scroll.autohidesScrollers = true
@@ -161,6 +172,7 @@ final class HistoryPanelController: NSObject {
         container.addSubview(scroll)
 
         collectionView = cv
+        scrollView = scroll
 
         // Empty state overlay
         let empty = buildEmptyOverlay(frame: scroll.frame)
@@ -173,6 +185,72 @@ final class HistoryPanelController: NSObject {
         updateEmptyState()
 
         return container
+    }
+
+    // MARK: - GitHub star nudge
+
+    private static let nudgeBannerHeight: CGFloat = 46
+    private static let nudgeBannerGap: CGFloat = 8
+
+    private func buildNudgeBanner(frame: NSRect) -> NSView {
+        let banner = HistoryNudgeBannerView(frame: frame)
+
+        let star = NSTextField(labelWithString: "★")
+        star.font = .systemFont(ofSize: 15, weight: .semibold)
+        star.textColor = NSColor.controlAccentColor
+        star.frame = NSRect(x: 16, y: 9, width: 20, height: 20)
+        banner.addSubview(star)
+
+        let message = NSTextField(labelWithString: "Enjoying Shotnix? Star it on GitHub so more people find it.")
+        message.font = .systemFont(ofSize: 13, weight: .medium)
+        message.textColor = NSColor.white.withAlphaComponent(0.88)
+        message.lineBreakMode = .byTruncatingTail
+        message.frame = NSRect(x: 40, y: 10, width: frame.width - 40 - 260, height: 18)
+        message.autoresizingMask = [.width]
+        banner.addSubview(message)
+
+        let dismiss = HistoryActionButton(title: "Not now", variant: .secondary, target: self, action: #selector(starNudgeDismissClicked))
+        dismiss.frame = NSRect(x: frame.width - 14 - 84, y: 5, width: 84, height: 28)
+        dismiss.autoresizingMask = [.minXMargin]
+        banner.addSubview(dismiss)
+
+        let starButton = HistoryActionButton(title: "Star on GitHub", variant: .primary, target: self, action: #selector(starNudgeStarClicked))
+        starButton.frame = NSRect(x: dismiss.frame.minX - 8 - 126, y: 5, width: 126, height: 28)
+        starButton.autoresizingMask = [.minXMargin]
+        banner.addSubview(starButton)
+
+        return banner
+    }
+
+    @objc private func starNudgeStarClicked() {
+        StarNudge.openRepository()
+        removeNudgeBanner()
+    }
+
+    @objc private func starNudgeDismissClicked() {
+        StarNudge.markDismissed()
+        removeNudgeBanner()
+    }
+
+    /// Fades the banner out and gives its row back to the grid.
+    private func removeNudgeBanner() {
+        guard let banner = nudgeBanner else { return }
+        nudgeBanner = nil
+        NSAnimationContext.runAnimationGroup({ ctx in
+            ctx.duration = 0.18
+            banner.animator().alphaValue = 0
+        }, completionHandler: { [weak self] in
+            Task { @MainActor in
+                banner.removeFromSuperview()
+                guard let self else { return }
+                for view in [self.scrollView, self.emptyOverlay] {
+                    guard let view else { continue }
+                    var frame = view.frame
+                    frame.size.height += Self.nudgeBannerHeight
+                    view.frame = frame
+                }
+            }
+        })
     }
 
     private func buildEmptyOverlay(frame: NSRect) -> NSView {
@@ -375,6 +453,8 @@ final class HistoryPanelController: NSObject {
         emptyOverlay = nil
         countLabel = nil
         searchField = nil
+        scrollView = nil
+        nudgeBanner = nil
         searchQuery = ""
         NSApp.restoreBackgroundOnlyActivationPolicyIfNeeded(excluding: closedWindow)
     }
@@ -890,6 +970,26 @@ private final class HistoryCaptureCardView: NSView {
 }
 
 @MainActor
+/// Accent-tinted strip for the one-time GitHub star nudge.
+private final class HistoryNudgeBannerView: NSView {
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        wantsLayer = true
+    }
+
+    required init?(coder: NSCoder) { fatalError() }
+
+    override func draw(_ dirtyRect: NSRect) {
+        let rect = bounds.insetBy(dx: 0.5, dy: 0.5)
+        let path = NSBezierPath(roundedRect: rect, xRadius: 14, yRadius: 14)
+        NSColor.controlAccentColor.withAlphaComponent(0.12).setFill()
+        path.fill()
+        NSColor.controlAccentColor.withAlphaComponent(0.32).setStroke()
+        path.lineWidth = 1
+        path.stroke()
+    }
+}
+
 private final class HistoryEmptyStateCard: NSView {
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)

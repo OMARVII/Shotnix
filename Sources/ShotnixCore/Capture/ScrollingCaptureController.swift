@@ -116,6 +116,7 @@ final class ScrollingCaptureController: NSObject {
                     return
                 }
                 let item = historyManager.add(image: stitched, rect: rect)
+                StarNudge.captureDidFinish(rect: rect)
 
                 if Settings.afterCaptureCopyToClipboard {
                     ImageExporter.copyToClipboard(image: stitched)

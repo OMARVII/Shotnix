@@ -327,6 +327,20 @@ enum Settings {
         (try? url.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate) ?? .distantPast
     }
 
+    // MARK: – GitHub star nudge
+
+    /// Successful screenshots taken on this Mac. Drives the one-time star nudge (see StarNudge).
+    static var captureCount: Int {
+        get { defaults.integer(forKey: "captureCount") }
+        set { defaults.set(newValue, forKey: "captureCount") }
+    }
+
+    /// Raw `StarNudge.State`. Empty until the nudge machinery first runs.
+    static var starNudgeState: String {
+        get { defaults.string(forKey: "starNudgeState") ?? "" }
+        set { defaults.set(newValue, forKey: "starNudgeState") }
+    }
+
     // MARK: – Annotation editor
 
     /// Raw value of the last-used annotation tool (AnnotationTool.rawValue).

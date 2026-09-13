@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- **GitHub star nudge** — after the tenth screenshot, a one-time clickable toast asks "Enjoying Shotnix? Click to star it on GitHub". From then on a dismissible line sits at the top of the history panel with Star on GitHub and Not now; either choice retires the nudge for good. The count and state live in UserDefaults and nothing is sent anywhere.
+
 ## [0.19.1-beta] - 2026-09-13
 
 ### Fixed
