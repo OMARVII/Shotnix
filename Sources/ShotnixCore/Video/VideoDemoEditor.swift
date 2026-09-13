@@ -1,6 +1,9 @@
 import AppKit
 import AVFoundation
 import AVKit
+import CoreImage
+import CoreImage.CIFilterBuiltins
+import ImageIO
 import QuartzCore
 import SwiftUI
 import UniformTypeIdentifiers
@@ -697,7 +700,7 @@ struct VideoDemoProject: Codable, Equatable, Identifiable {
         var previousTime = first.time
 
         if sorted.count == 1 || time <= first.time {
-            return previous
+            return previous.edgeClamped
         }
 
         for keyframe in sorted.dropFirst() {
@@ -709,13 +712,13 @@ struct VideoDemoProject: Codable, Equatable, Identifiable {
                     scale: lerp(previous.scale, current.scale, progress),
                     focusX: lerp(previous.focusX, current.focusX, progress),
                     focusY: lerp(previous.focusY, current.focusY, progress)
-                )
+                ).edgeClamped
             }
             previous = current
             previousTime = keyframe.time
         }
 
-        return previous
+        return previous.edgeClamped
     }
 
     func zoomedStageRect(in canvasSize: CGSize, at time: Double) -> CGRect {
@@ -947,6 +950,7 @@ enum VideoDemoExporter {
     static func export(
         project: VideoDemoProject,
         destinationURL: URL,
+        options: VideoDemoExportOptions = VideoDemoExportOptions(),
         progress: @escaping @Sendable (Double) async -> Void = { _ in },
         shouldCancel: @escaping @Sendable () async -> Bool = { false }
     ) async throws -> [String] {
@@ -1034,10 +1038,13 @@ enum VideoDemoExporter {
         exportProject.sourceWidth = Double(sourceSize.width)
         exportProject.sourceHeight = Double(sourceSize.height)
 
-        let renderSize = exportProject.canvasSize()
+        var renderSize = exportProject.canvasSize()
+        if options.halfResolution {
+            renderSize = CGSize(width: evenPixels(renderSize.width / 2), height: evenPixels(renderSize.height / 2))
+        }
         let videoComposition = AVMutableVideoComposition()
         videoComposition.renderSize = renderSize
-        videoComposition.frameDuration = CMTime(value: 1, timescale: 30)
+        videoComposition.frameDuration = CMTime(value: 1, timescale: CMTimeScale(max(options.fps, 1)))
 
         let instruction = AVMutableVideoCompositionInstruction()
         instruction.timeRange = CMTimeRange(start: .zero, duration: compositionDuration)
@@ -1059,7 +1066,8 @@ enum VideoDemoExporter {
             project: exportProject,
             renderSize: renderSize,
             timelineSegments: timelineSegments,
-            duration: compositionDuration.secondsValue
+            duration: compositionDuration.secondsValue,
+            endCard: options.endCard && options.format == .mp4
         )
         videoComposition.animationTool = AVVideoCompositionCoreAnimationTool(
             postProcessingAsVideoLayer: layers.videoLayer,
@@ -1070,10 +1078,19 @@ enum VideoDemoExporter {
             try FileManager.default.removeItem(at: destinationURL)
         }
 
+        // GIF goes through a temp MP4 first: the Core Animation overlay tool
+        // (background, zooms, cursor, callouts) only renders through an export
+        // session, so the GIF pass transcodes the finished MP4 frames.
+        let isGIF = options.format == .gif
+        let mp4URL = isGIF
+            ? FileManager.default.temporaryDirectory.appendingPathComponent("shotnix-gif-\(UUID().uuidString).mp4")
+            : destinationURL
+        let mp4ProgressShare = isGIF ? 0.62 : 1.0
+
         guard let exportSession = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality) else {
             throw VideoDemoExportError.cannotCreateExportSession
         }
-        exportSession.outputURL = destinationURL
+        exportSession.outputURL = mp4URL
         exportSession.outputFileType = .mp4
         exportSession.shouldOptimizeForNetworkUse = true
         exportSession.videoComposition = videoComposition
@@ -1090,7 +1107,7 @@ enum VideoDemoExporter {
                     exportBox.session.cancelExport()
                     return
                 }
-                await progress(Double(exportBox.session.progress))
+                await progress(Double(exportBox.session.progress) * mp4ProgressShare)
                 try? await Task.sleep(nanoseconds: 120_000_000)
             }
         }
@@ -1103,7 +1120,6 @@ enum VideoDemoExporter {
             exportBox.session.exportAsynchronously {
                 switch exportBox.session.status {
                 case .completed:
-                    Task { await progress(1) }
                     continuation.resume()
                 case .failed, .cancelled:
                     let message = exportBox.session.error?.localizedDescription ?? "Video export failed."
@@ -1114,7 +1130,126 @@ enum VideoDemoExporter {
             }
         }
 
+        if isGIF {
+            defer { try? FileManager.default.removeItem(at: mp4URL) }
+            try await transcodeToGIF(
+                from: mp4URL,
+                to: destinationURL,
+                fps: 15,
+                maxWidth: 1280,
+                progress: { value in
+                    await progress(mp4ProgressShare + value * (1 - mp4ProgressShare))
+                },
+                shouldCancel: shouldCancel
+            )
+        }
+
+        await progress(1)
         return audioWarnings
+    }
+
+    /// Reads the rendered MP4 back frame by frame and writes an infinitely
+    /// looping GIF — sampled at `fps`, downscaled to at most `maxWidth`.
+    /// READMEs and pull requests can't embed MP4s; this is the export they need.
+    private static func transcodeToGIF(
+        from sourceURL: URL,
+        to destinationURL: URL,
+        fps: Double,
+        maxWidth: CGFloat,
+        progress: @escaping @Sendable (Double) async -> Void,
+        shouldCancel: @escaping @Sendable () async -> Bool
+    ) async throws {
+        let asset = AVURLAsset(url: sourceURL)
+        guard let track = try await asset.loadTracks(withMediaType: .video).first else {
+            throw VideoDemoExportError.missingVideoTrack
+        }
+        let duration = seconds(try await asset.load(.duration))
+        let naturalSize = try await track.load(.naturalSize)
+        guard naturalSize.width > 0, naturalSize.height > 0, duration > 0 else {
+            throw VideoDemoExportError.exportFailed("Nothing to write into the GIF.")
+        }
+        let scale = min(1, maxWidth / naturalSize.width)
+        let outputSize = CGSize(
+            width: max((naturalSize.width * scale).rounded(), 2),
+            height: max((naturalSize.height * scale).rounded(), 2)
+        )
+
+        let reader = try AVAssetReader(asset: asset)
+        let output = AVAssetReaderTrackOutput(track: track, outputSettings: [
+            kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA,
+        ])
+        output.alwaysCopiesSampleData = false
+        guard reader.canAdd(output) else {
+            throw VideoDemoExportError.exportFailed("Could not read frames for the GIF.")
+        }
+        reader.add(output)
+        guard reader.startReading() else {
+            throw VideoDemoExportError.exportFailed(reader.error?.localizedDescription ?? "Could not read frames for the GIF.")
+        }
+
+        let estimatedFrames = max(Int(duration * fps), 1)
+        guard let destination = CGImageDestinationCreateWithURL(
+            destinationURL as CFURL,
+            UTType.gif.identifier as CFString,
+            estimatedFrames,
+            nil
+        ) else {
+            throw VideoDemoExportError.exportFailed("Could not create the GIF file.")
+        }
+        let gifProperties = [
+            kCGImagePropertyGIFDictionary: [kCGImagePropertyGIFLoopCount: 0]
+        ] as CFDictionary
+        CGImageDestinationSetProperties(destination, gifProperties)
+        let frameDelay = 1.0 / fps
+        let frameProperties = [
+            kCGImagePropertyGIFDictionary: [
+                kCGImagePropertyGIFUnclampedDelayTime: frameDelay,
+                kCGImagePropertyGIFDelayTime: frameDelay,
+            ]
+        ] as CFDictionary
+
+        let ciContext = CIContext(options: [.cacheIntermediates: false])
+        let downscale = CGAffineTransform(
+            scaleX: outputSize.width / naturalSize.width,
+            y: outputSize.height / naturalSize.height
+        )
+        var nextFrameTime = 0.0
+        var written = 0
+
+        while let sample = output.copyNextSampleBuffer() {
+            if await shouldCancel() {
+                reader.cancelReading()
+                throw VideoDemoExportError.exportFailed("Export cancelled.")
+            }
+            let presentationTime = CMSampleBufferGetPresentationTimeStamp(sample).secondsValue
+            guard presentationTime + 0.0001 >= nextFrameTime,
+                  let pixelBuffer = CMSampleBufferGetImageBuffer(sample) else {
+                continue
+            }
+            let frame = CIImage(cvPixelBuffer: pixelBuffer).transformed(by: downscale)
+            guard let cgImage = ciContext.createCGImage(frame, from: CGRect(origin: .zero, size: outputSize)) else {
+                continue
+            }
+            CGImageDestinationAddImage(destination, cgImage, frameProperties)
+            written += 1
+            nextFrameTime += frameDelay
+            if written.isMultiple(of: 8) {
+                await progress(min(Double(written) / Double(estimatedFrames), 1))
+                await Task.yield()
+            }
+        }
+
+        if reader.status == .failed {
+            throw VideoDemoExportError.exportFailed(reader.error?.localizedDescription ?? "Could not read frames for the GIF.")
+        }
+        guard written > 0, CGImageDestinationFinalize(destination) else {
+            throw VideoDemoExportError.exportFailed("Could not write the GIF.")
+        }
+    }
+
+    private static func evenPixels(_ value: CGFloat) -> CGFloat {
+        let rounded = max(2, Int(value.rounded()))
+        return CGFloat(rounded.isMultiple(of: 2) ? rounded : rounded + 1)
     }
 
     private static func scaleIfNeeded(
@@ -1322,7 +1457,8 @@ enum VideoDemoExporter {
         project: VideoDemoProject,
         renderSize: CGSize,
         timelineSegments: [VideoDemoTimelineSegment],
-        duration: Double
+        duration: Double,
+        endCard: Bool = false
     ) -> (videoLayer: CALayer, parentLayer: CALayer) {
         let bounds = CGRect(origin: .zero, size: renderSize)
         let stage = project.stageRect(in: renderSize)
@@ -1332,16 +1468,29 @@ enum VideoDemoExporter {
         parent.backgroundColor = project.backgroundPreset.exportColor.cgColor
         parent.masksToBounds = true
 
-        let background = CALayer()
-        background.frame = bounds
-        background.backgroundColor = project.backgroundPreset.exportColor.cgColor
+        // WYSIWYG: the preview paints a gradient (or a blur-able custom image);
+        // the export used to paint a flat color and ignore the blur slider.
+        let background: CALayer
         if !project.usesRawSourceFrame,
            let url = project.customBackgroundURL,
            let image = NSImage(contentsOf: url),
            let cgImage = image.bestCGImage {
-            background.contents = cgImage
-            background.contentsGravity = .resizeAspectFill
+            let imageLayer = CALayer()
+            imageLayer.contents = blurredBackground(cgImage, blur: project.backgroundBlur, renderWidth: renderSize.width) ?? cgImage
+            imageLayer.contentsGravity = .resizeAspectFill
+            imageLayer.masksToBounds = true
+            background = imageLayer
+        } else {
+            let gradient = CAGradientLayer()
+            gradient.colors = project.backgroundPreset.previewColors.map { NSColor($0).cgColor }
+            // Preview is topLeading → bottomTrailing; CALayer unit space has
+            // its origin at the bottom-left on macOS.
+            gradient.startPoint = CGPoint(x: 0, y: 1)
+            gradient.endPoint = CGPoint(x: 1, y: 0)
+            background = gradient
         }
+        background.frame = bounds
+        background.backgroundColor = project.backgroundPreset.exportColor.cgColor
         parent.addSublayer(background)
 
         if !project.usesRawSourceFrame {
@@ -1356,11 +1505,30 @@ enum VideoDemoExporter {
             parent.addSublayer(shadow)
         }
 
+        // The video renders into videoLayer at full canvas coordinates; a
+        // rounded-rect mask on its container clips overflow to the stage —
+        // replacing the old flat rectangular cover layers, which both broke
+        // gradient backgrounds and left the video's corners square while the
+        // preview showed them rounded.
         let videoLayer = CALayer()
         videoLayer.frame = bounds
-        parent.addSublayer(videoLayer)
-
-        addStageMaskCovers(to: parent, stage: stage, bounds: bounds, color: project.backgroundPreset.exportColor)
+        let videoContainer = CALayer()
+        videoContainer.frame = bounds
+        videoContainer.addSublayer(videoLayer)
+        if !project.usesRawSourceFrame {
+            let radius = max(project.effectiveCornerRadius, 0)
+            let mask = CAShapeLayer()
+            mask.frame = bounds
+            mask.path = CGPath(
+                roundedRect: stage,
+                cornerWidth: min(radius, stage.width / 2),
+                cornerHeight: min(radius, stage.height / 2),
+                transform: nil
+            )
+            mask.fillColor = NSColor.black.cgColor
+            videoContainer.mask = mask
+        }
+        parent.addSublayer(videoContainer)
 
         if !project.usesRawSourceFrame {
             let border = CALayer()
@@ -1407,23 +1575,95 @@ enum VideoDemoExporter {
             )
         }
 
+        if endCard {
+            addEndCardLayer(to: parent, bounds: bounds, duration: duration)
+        }
+
         return (videoLayer, parent)
     }
 
-    private static func addStageMaskCovers(to parent: CALayer, stage: CGRect, bounds: CGRect, color: NSColor) {
-        let rects = [
-            CGRect(x: 0, y: 0, width: bounds.width, height: max(stage.minY, 0)),
-            CGRect(x: 0, y: stage.maxY, width: bounds.width, height: max(bounds.maxY - stage.maxY, 0)),
-            CGRect(x: 0, y: stage.minY, width: max(stage.minX, 0), height: stage.height),
-            CGRect(x: stage.maxX, y: stage.minY, width: max(bounds.maxX - stage.maxX, 0), height: stage.height),
-        ]
+    /// Pre-blurs the custom background image so the export matches the
+    /// preview's blur slider. The radius scales with the render width because
+    /// the slider was tuned against the on-screen preview size.
+    private static func blurredBackground(_ cgImage: CGImage, blur: Double, renderWidth: CGFloat) -> CGImage? {
+        guard blur > 0.5 else { return nil }
+        let radius = blur * Double(max(renderWidth, 1)) / 900.0
+        let input = CIImage(cgImage: cgImage)
+        let filter = CIFilter.gaussianBlur()
+        filter.inputImage = input.clampedToExtent()
+        filter.radius = Float(radius)
+        guard let output = filter.outputImage else { return nil }
+        let context = CIContext(options: [.cacheIntermediates: false])
+        return context.createCGImage(output, from: input.extent)
+    }
 
-        for rect in rects where rect.width > 0 && rect.height > 0 {
-            let cover = CALayer()
-            cover.frame = rect
-            cover.backgroundColor = color.cgColor
-            parent.addSublayer(cover)
+    /// Short "Made with Shotnix" outro over the last moments of the export.
+    /// Skipped for clips too short to carry it.
+    private static func addEndCardLayer(to parent: CALayer, bounds: CGRect, duration: Double) {
+        let cardDuration = 1.6
+        guard duration > cardDuration + 2.5 else { return }
+
+        let card = CALayer()
+        card.frame = bounds
+        card.backgroundColor = NSColor(calibratedRed: 0.045, green: 0.047, blue: 0.06, alpha: 1).cgColor
+        card.opacity = 0
+
+        let fade = CABasicAnimation(keyPath: "opacity")
+        fade.fromValue = 0
+        fade.toValue = 1
+        fade.beginTime = AVCoreAnimationBeginTimeAtZero + duration - cardDuration
+        fade.duration = 0.4
+        fade.fillMode = .forwards
+        fade.isRemovedOnCompletion = false
+        card.add(fade, forKey: "endCardFade")
+
+        let iconSize = bounds.width * 0.085
+        if let icon = NSImage(named: NSImage.applicationIconName)?.bestCGImage {
+            let iconLayer = CALayer()
+            iconLayer.contents = icon
+            iconLayer.contentsGravity = .resizeAspect
+            iconLayer.frame = CGRect(
+                x: bounds.midX - iconSize / 2,
+                y: bounds.midY + bounds.height * 0.015,
+                width: iconSize,
+                height: iconSize
+            )
+            card.addSublayer(iconLayer)
         }
+
+        let title = CATextLayer()
+        title.string = "Made with Shotnix"
+        let titleSize = bounds.width * 0.030
+        title.font = NSFont.systemFont(ofSize: titleSize, weight: .bold)
+        title.fontSize = titleSize
+        title.foregroundColor = NSColor.white.cgColor
+        title.alignmentMode = .center
+        title.contentsScale = 2
+        title.frame = CGRect(
+            x: 0,
+            y: bounds.midY - bounds.height * 0.045 - titleSize,
+            width: bounds.width,
+            height: titleSize * 1.4
+        )
+        card.addSublayer(title)
+
+        let link = CATextLayer()
+        link.string = "shotnix.com — free & open source"
+        let linkSize = bounds.width * 0.017
+        link.font = NSFont.systemFont(ofSize: linkSize, weight: .semibold)
+        link.fontSize = linkSize
+        link.foregroundColor = NSColor.white.withAlphaComponent(0.55).cgColor
+        link.alignmentMode = .center
+        link.contentsScale = 2
+        link.frame = CGRect(
+            x: 0,
+            y: title.frame.minY - linkSize * 2.0,
+            width: bounds.width,
+            height: linkSize * 1.4
+        )
+        card.addSublayer(link)
+
+        parent.addSublayer(card)
     }
 
     private static func addOverlayEffectLayers(
@@ -2007,6 +2247,7 @@ final class VideoDemoEditorViewModel: ObservableObject {
             sourceSize = metadata.sourceSize
             sourceFPS = metadata.fps
 
+            var isFreshRecording = false
             if let draft = VideoDemoDraftStore.load(for: project.sourceURL),
                draft.sourcePath == project.sourceURL.standardizedFileURL.path {
                 project = draft.project
@@ -2014,6 +2255,7 @@ final class VideoDemoEditorViewModel: ObservableObject {
                 status = "Draft restored"
             } else if let sidecar = VideoDemoSidecarStore.load(for: project.sourceURL) {
                 project.apply(metadata: sidecar)
+                isFreshRecording = true
             }
             project.sourceWidth = Double(metadata.sourceSize.width)
             project.sourceHeight = Double(metadata.sourceSize.height)
@@ -2022,6 +2264,19 @@ final class VideoDemoEditorViewModel: ObservableObject {
             }
             project.ensureTimeline(totalDuration: metadata.duration)
             selectedClipID = project.timelineClips.first?.id
+
+            // Auto-polish: a fresh recording opens already "produced" — zooms
+            // follow the recorded clicks with zero editing. Undoable (the
+            // generator pushes an undo snapshot), clearable in the Zoom panel,
+            // and off-switchable in Preferences → Recording.
+            if isFreshRecording,
+               Settings.autoZoomNewRecordings,
+               project.zoomKeyframes.isEmpty,
+               !project.clickEvents.isEmpty {
+                addAutoZoomPreset()
+                selectedZoomID = nil
+                status = "Auto-zoom applied — tweak or clear it in the Zoom panel"
+            }
             seekToTimeline(0)
             recentExports = VideoDemoRecentExportStore.load(for: project.sourceURL)
             suppressAutosave = false
@@ -2915,12 +3170,26 @@ final class VideoDemoEditorViewModel: ObservableObject {
     func export() async {
         guard !isExporting else { return }
         let panel = NSSavePanel()
-        panel.allowedContentTypes = [.mpeg4Movie]
+        let optionsModel = VideoDemoExportOptionsModel(options: .fromSettings)
+        panel.allowedContentTypes = optionsModel.options.format == .gif ? [.gif] : [.mpeg4Movie]
         panel.canCreateDirectories = true
-        panel.nameFieldStringValue = "Shotnix Demo \(ImageExporter.timestampedName).mp4"
+        panel.nameFieldStringValue = "Shotnix Demo \(ImageExporter.timestampedName).\(optionsModel.options.fileExtension)"
         panel.directoryURL = URL(fileURLWithPath: Settings.autoSaveLocation, isDirectory: true)
 
+        // Format / fps / size / end-card choices live inside the save panel.
+        let accessory = NSHostingView(rootView: VideoDemoExportAccessoryView(model: optionsModel))
+        accessory.frame = NSRect(x: 0, y: 0, width: 560, height: 44)
+        panel.accessoryView = accessory
+        optionsModel.onFormatChange = { [weak panel] format in
+            guard let panel else { return }
+            panel.allowedContentTypes = format == .gif ? [.gif] : [.mpeg4Movie]
+            let base = (panel.nameFieldStringValue as NSString).deletingPathExtension
+            panel.nameFieldStringValue = "\(base).\(format == .gif ? "gif" : "mp4")"
+        }
+
         guard panel.runModal() == .OK, let destination = panel.url else { return }
+        let options = optionsModel.options
+        options.saveAsDefaults()
 
         isExporting = true
         exportCancellationRequested = false
@@ -2928,12 +3197,13 @@ final class VideoDemoEditorViewModel: ObservableObject {
         exportDestinationURL = destination
         exportCompletedURL = nil
         exportErrorMessage = nil
-        status = "Exporting..."
+        status = options.format == .gif ? "Exporting GIF..." : "Exporting..."
         let exportBridge = VideoDemoExportBridge(self)
         do {
             let audioWarnings = try await VideoDemoExporter.export(
                 project: project,
                 destinationURL: destination,
+                options: options,
                 progress: { value in
                     await exportBridge.setProgress(value)
                 },
@@ -3479,7 +3749,7 @@ private struct VideoDemoEditorView: View {
     }
 
     private var exportDestinationLabel: some View {
-        Text((model.exportCompletedURL ?? model.exportDestinationURL)?.lastPathComponent ?? "Export MP4")
+        Text((model.exportCompletedURL ?? model.exportDestinationURL)?.lastPathComponent ?? "Export Video")
             .font(.system(size: 10, weight: .semibold))
             .foregroundStyle(.secondary)
             .lineLimit(1)
@@ -3487,7 +3757,7 @@ private struct VideoDemoEditorView: View {
     }
 
     private var exportStatusTitle: String {
-        if model.isExporting { return "Exporting MP4" }
+        if model.isExporting { return "Exporting" }
         if model.exportCompletedURL != nil { return "Export Ready" }
         return "Export Failed"
     }
@@ -3575,7 +3845,7 @@ private struct VideoDemoEditorView: View {
         } label: {
             HStack(spacing: 8) {
                 Image(systemName: model.isExporting ? "hourglass" : "square.and.arrow.up")
-                Text(model.isExporting ? "Exporting" : "Export MP4")
+                Text(model.isExporting ? "Exporting" : "Export…")
             }
             .font(.system(size: 13, weight: .bold))
             .padding(.horizontal, 12)
@@ -4205,7 +4475,7 @@ private struct VideoDemoCommandPalette: View {
             command("highlight", "Add Highlight", "Effect lane", "rectangle.roundedtop", "") {
                 model.addEffect(.highlight)
             },
-            command("export", model.isExporting ? "Cancel Export" : "Export MP4", model.isExporting ? "In progress" : "Edited composition", model.isExporting ? "xmark" : "square.and.arrow.up", "", enabled: model.duration > 0, destructive: model.isExporting) {
+            command("export", model.isExporting ? "Cancel Export" : "Export Video", model.isExporting ? "In progress" : "Edited composition", model.isExporting ? "xmark" : "square.and.arrow.up", "", enabled: model.duration > 0, destructive: model.isExporting) {
                 if model.isExporting {
                     model.cancelExport()
                 } else {
@@ -4494,8 +4764,10 @@ private struct VideoDemoOverlayView: View {
 
         switch effect.kind {
         case .text:
+            // WYSIWYG: match the export's width-proportional type size
+            // (export uses renderWidth * 0.026) instead of a fixed 16pt.
             Text(effect.text)
-                .font(.system(size: 16, weight: .bold))
+                .font(.system(size: max(stageSize.width * 0.026, 11), weight: .bold))
                 .foregroundStyle(.white)
                 .frame(width: size.width, height: size.height)
                 .background(.black.opacity(0.68), in: RoundedRectangle(cornerRadius: 12, style: .continuous))

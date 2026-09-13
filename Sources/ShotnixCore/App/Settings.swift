@@ -341,6 +341,46 @@ enum Settings {
         set { defaults.set(newValue, forKey: "starNudgeState") }
     }
 
+    // MARK: – Video export
+
+    /// "mp4" or "gif" — last format chosen in the export save panel.
+    static var videoExportFormat: String {
+        get { defaults.string(forKey: "videoExportFormat") ?? "mp4" }
+        set { defaults.set(newValue == "gif" ? "gif" : "mp4", forKey: "videoExportFormat") }
+    }
+
+    static var videoExportFPS: Int {
+        get {
+            let v = defaults.integer(forKey: "videoExportFPS")
+            return v == 60 ? 60 : 30
+        }
+        set { defaults.set(newValue == 60 ? 60 : 30, forKey: "videoExportFPS") }
+    }
+
+    static var videoExportHalfResolution: Bool {
+        get { defaults.bool(forKey: "videoExportHalfResolution") }
+        set { defaults.set(newValue, forKey: "videoExportHalfResolution") }
+    }
+
+    /// Appends the short "Made with Shotnix" outro to MP4 exports.
+    static var videoExportEndCard: Bool {
+        get {
+            if defaults.object(forKey: "videoExportEndCard") == nil { return true }
+            return defaults.bool(forKey: "videoExportEndCard")
+        }
+        set { defaults.set(newValue, forKey: "videoExportEndCard") }
+    }
+
+    /// Auto-generate click-following zooms when a fresh recording opens in the
+    /// video editor (the recording feels "produced" with zero editing).
+    static var autoZoomNewRecordings: Bool {
+        get {
+            if defaults.object(forKey: "autoZoomNewRecordings") == nil { return true }
+            return defaults.bool(forKey: "autoZoomNewRecordings")
+        }
+        set { defaults.set(newValue, forKey: "autoZoomNewRecordings") }
+    }
+
     // MARK: – Annotation editor
 
     /// Raw value of the last-used annotation tool (AnnotationTool.rawValue).

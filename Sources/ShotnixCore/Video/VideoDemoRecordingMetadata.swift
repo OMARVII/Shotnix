@@ -24,6 +24,24 @@ struct VideoDemoZoomState: Equatable {
 
     static let identity = VideoDemoZoomState(scale: 1, focusX: 0.5, focusY: 0.5)
 
+    /// Focus clamped so the zoomed camera never pans past the video's edge.
+    /// At scale s the visible window is 1/s of the frame, so a focus outside
+    /// [1/(2s), 1 − 1/(2s)] slides the video inward and exposes black
+    /// beyond-content regions (clicks near a corner used to do exactly that).
+    /// The clamp is applied to the *interpolated* state, so the bound follows
+    /// the scale smoothly through zoom ramps.
+    var edgeClamped: VideoDemoZoomState {
+        guard scale > 1.0001 else {
+            return VideoDemoZoomState(scale: scale, focusX: 0.5, focusY: 0.5)
+        }
+        let minFocus = 1 / (2 * scale)
+        return VideoDemoZoomState(
+            scale: scale,
+            focusX: min(max(focusX, minFocus), 1 - minFocus),
+            focusY: min(max(focusY, minFocus), 1 - minFocus)
+        )
+    }
+
     func isMeaningfullyDifferent(from other: VideoDemoZoomState) -> Bool {
         abs(scale - other.scale) > 0.01 ||
         abs(focusX - other.focusX) > 0.01 ||

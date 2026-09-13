@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.20.0-beta] - 2026-09-13
+
+### Added
+- **Recordings open already produced** — a fresh recording now lands in the editor with auto-zoom applied: the camera zooms in and follows your recorded clicks with zero editing, ready to export. Undoable, tweakable in the Zoom panel, and can be turned off in Preferences → Recording.
+- **GIF export** — the export panel now offers GIF alongside MP4: 15 fps, capped at 1280px wide, looping forever — the format READMEs, pull requests, and chat apps actually embed.
+- **Export options** — format, frame rate (30/60 fps), and size (Full/Half) live in the export save panel and are remembered between exports.
+- **"Made with Shotnix" end card** — an optional 1.6-second outro on MP4 exports (toggle in the export panel).
+
+### Changed
+- **Exports finally match the preview** — video exports now render the same gradient backgrounds the editor shows (instead of a flat color), respect the background blur slider, clip the video to the same rounded corners, and size text callouts with the same width-proportional formula as the preview.
+
+### Fixed
+- **Zoom can no longer reveal black beyond the video's edge** — zooming toward a click near a corner used to slide the video inward and expose empty black regions. The camera now clamps to the frame edge (in preview and export), so the zoomed view is always full content.
+
 ## [0.19.2-beta] - 2026-09-13
 
 ### Added

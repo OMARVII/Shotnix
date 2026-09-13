@@ -797,6 +797,7 @@ struct RecordingSettingsView: View {
     @AppStorage("recordingMicrophone") var microphone = false
     @AppStorage("recordingMicrophoneDeviceID") var microphoneDeviceID = ""
     @AppStorage("openVideoEditorAfterRecording") var openVideoEditorAfterRecording = true
+    @AppStorage("autoZoomNewRecordings") var autoZoomNewRecordings = true
 
     private var microphones: [MicrophoneOption] { MicrophoneDeviceProvider.options }
 
@@ -841,9 +842,17 @@ struct RecordingSettingsView: View {
                         .labelsHidden()
                         .toggleStyle(.switch)
                 }
+
+                PreferenceDivider()
+
+                PreferenceRow("Auto-zoom new recordings") {
+                    Toggle("", isOn: $autoZoomNewRecordings)
+                        .labelsHidden()
+                        .toggleStyle(.switch)
+                }
             }
 
-            PreferenceFootnote(text: "High is the default. Max keeps more detail for demos, but creates larger files.")
+            PreferenceFootnote(text: "Auto-zoom makes a fresh recording open already produced: the camera zooms to follow your clicks, ready to export. Tweak or clear it in the editor's Zoom panel. High quality is the default; Max keeps more detail for demos, but creates larger files.")
 
             PreferenceSection("Audio") {
                 PreferenceRow("Record system audio") {
@@ -879,7 +888,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.19.2"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.20.0"
     
     var body: some View {
         PreferencesPane {
@@ -922,6 +931,13 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.20.0
+                    • Recordings open already produced — auto-zoom follows your recorded clicks with zero editing, ready to export (toggle in Preferences → Recording)
+                    • GIF export — pick MP4 or GIF in the export panel, with frame rate and size options that are remembered
+                    • Exports now match the preview exactly: gradient backgrounds, background blur, rounded corners, and text sizing
+                    • Zoom never shows black beyond the video edge — the camera clamps to the frame
+                    • Optional "Made with Shotnix" end card on MP4 exports
+
                     Version 0.19.2
                     • A one-time ask to star Shotnix on GitHub after your tenth screenshot — a clickable toast, then a dismissible line in the history panel. Choose once and it never returns
 
