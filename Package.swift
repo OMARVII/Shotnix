@@ -5,7 +5,11 @@ let package = Package(
     name: "Shotnix",
     platforms: [.macOS(.v13)],
     dependencies: [
-        .package(url: "https://github.com/sindresorhus/KeyboardShortcuts", from: "2.4.0"),
+        // Vendored (MIT, from sindresorhus/KeyboardShortcuts 2.4.x) with one
+        // patch: its `Bundle.module`-based localization crashed released .app
+        // bundles on machines other than the build machine (issue #25) — the
+        // vendored copy locates its resource bundle in Contents/Resources.
+        .package(path: "Vendor/KeyboardShortcuts"),
         .package(url: "https://github.com/sparkle-project/Sparkle", from: "2.9.2"),
     ],
     targets: [

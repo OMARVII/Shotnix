@@ -799,8 +799,10 @@ final class CaptureEngine {
     }
 
     /// Registered once and reused for the process lifetime.
+    /// Uses ShotnixResources, NOT Bundle.module — the generated accessor
+    /// fatalErrors in released .app bundles (issue #25).
     private static let bundledCaptureSoundID: SystemSoundID? = {
-        guard let url = Bundle.module.url(forResource: "capture", withExtension: "aiff") else {
+        guard let url = ShotnixResources.url(forResource: "capture", withExtension: "aiff") else {
             os_log("Bundled capture sound resource missing", type: .error)
             return nil
         }
