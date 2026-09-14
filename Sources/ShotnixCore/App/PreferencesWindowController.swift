@@ -888,7 +888,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.20.4"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.20.5"
     
     var body: some View {
         PreferencesPane {
@@ -931,6 +931,9 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.20.5
+                    • Menu bar full? Shotnix now notices when macOS hides its icon: a heads-up toast, relaunching the app opens the menu as a floating panel, and a new assignable Open Command Center shortcut works without the icon
+
                     Version 0.20.4
                     • Command center opens instantly with a quick settle animation, collapses Health to one line when all is well, shows full-width warning tiles with real badges, hides rows that can't be used, and scrolls bar-free
                     • Exported cursor now follows the recorded timeline exactly — no more drift out of sync with clicks and zooms

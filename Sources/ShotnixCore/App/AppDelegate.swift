@@ -31,6 +31,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // lands here — show Preferences so the user can turn the icon back on.
         if !Settings.showMenuBarIcon {
             PreferencesWindowController.shared.show(tab: .general)
+        } else if !statusItemIsEffectivelyVisible {
+            // Icon enabled but macOS hid it (menu bar full) — relaunching the
+            // app is the natural user move, so answer it with the menu itself.
+            openCommandCenterFromAnywhere()
         }
         return true
     }
@@ -72,6 +76,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // Pre-build the command center's SwiftUI tree so the first menu open
         // is as instant as every later one.
         menuPresenter.warmUp()
+        // Give the status bar a moment to lay out, then check whether the
+        // icon actually made it on screen; re-check when displays change.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [weak self] in
+            self?.warnIfMenuBarIconHidden()
+        }
+        NotificationCenter.default.addObserver(
+            forName: NSApplication.didChangeScreenParametersNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                self?.warnIfMenuBarIconHidden()
+            }
+        }
         let promptForNativeShortcuts = { [weak self] in
             NativeShortcutManager.promptIfNeeded {
                 self?.registerHotkeys()
@@ -159,8 +177,64 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func registerHotkeys() {
-        hotkeyManager.register(captureEngine: captureEngine, historyManager: historyManager)
+        hotkeyManager.register(captureEngine: captureEngine, historyManager: historyManager) { [weak self] in
+            self?.openCommandCenterFromAnywhere()
+        }
         didRegisterHotkeys = true
+    }
+
+    // MARK: – Menu bar overflow rescue
+
+    /// A crowded menu bar makes macOS hide status icons outright (worse on
+    /// notched MacBooks) — users think the app didn't launch. Detect it so
+    /// reopening the app, the rescue toast, and the assignable shortcut can
+    /// present the command center without the icon.
+    private var statusItemIsEffectivelyVisible: Bool {
+        guard Settings.showMenuBarIcon,
+              let button = statusItem.button,
+              let window = button.window else { return false }
+        guard window.occlusionState.contains(.visible) else { return false }
+        guard let screen = window.screen ?? NSScreen.main else { return true }
+        return screen.frame.intersects(window.frame)
+    }
+
+    /// Opens the command center anchored to the icon when it's visible, or as
+    /// a floating top-center panel when the menu bar has swallowed the icon.
+    func openCommandCenterFromAnywhere() {
+        if menuPresenter.isShown {
+            menuPresenter.dismiss()
+            return
+        }
+        if statusItemIsEffectivelyVisible, let button = statusItem.button {
+            menuPresenter.showCommandCenter(
+                sections: commandCenterSections(),
+                healthRows: ShotnixHealthModel.rows(snapshot: .live(updatesConfigured: AppUpdateConfiguration.current != nil)),
+                healthActions: healthActions(),
+                relativeTo: button
+            )
+        } else {
+            menuPresenter.showCommandCenterDetached(
+                sections: commandCenterSections(),
+                healthRows: ShotnixHealthModel.rows(snapshot: .live(updatesConfigured: AppUpdateConfiguration.current != nil)),
+                healthActions: healthActions()
+            )
+        }
+    }
+
+    private var didWarnHiddenIcon = false
+
+    /// One toast per launch when the icon can't be seen: tells the user the
+    /// app IS running, that hotkeys work, and offers the menu on click.
+    private func warnIfMenuBarIconHidden() {
+        guard !didWarnHiddenIcon,
+              Settings.showMenuBarIcon,
+              !statusItemIsEffectivelyVisible else { return }
+        didWarnHiddenIcon = true
+        ToastWindow.show(
+            message: "Menu bar is full, so macOS hid the Shotnix icon — ⌘⇧4 still captures. Click here for the menu.",
+            duration: 7.0,
+            action: { [weak self] in self?.openCommandCenterFromAnywhere() }
+        )
     }
 
     private func showReadyToastIfNeeded(delay: TimeInterval = 0) {

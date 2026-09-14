@@ -15,6 +15,7 @@ enum ShotnixShortcut: CaseIterable, Identifiable {
     case captureTimed
     case captureText
     case captureScrolling
+    case openCommandCenter
     case recordArea
     case recordWindow
     case recordFullscreen
@@ -32,6 +33,7 @@ enum ShotnixShortcut: CaseIterable, Identifiable {
         case .captureTimed: return "Timed Capture"
         case .captureText: return "OCR / Capture Text"
         case .captureScrolling: return "Scrolling Capture"
+        case .openCommandCenter: return "Open Command Center"
         case .recordArea: return "Record Area"
         case .recordWindow: return "Record Window"
         case .recordFullscreen: return "Record Fullscreen"
@@ -43,7 +45,7 @@ enum ShotnixShortcut: CaseIterable, Identifiable {
         switch self {
         case .captureArea, .captureWindow, .captureFullscreenNative, .captureFullscreenFallback, .capturePreviousArea, .captureTimed:
             return .screenshots
-        case .captureText, .captureScrolling:
+        case .captureText, .captureScrolling, .openCommandCenter:
             return .tools
         case .recordArea, .recordWindow, .recordFullscreen, .stopRecording:
             return .recording
@@ -60,6 +62,7 @@ enum ShotnixShortcut: CaseIterable, Identifiable {
         case .captureTimed: return .shotnixCaptureTimed
         case .captureText: return .shotnixCaptureText
         case .captureScrolling: return .shotnixCaptureScrolling
+        case .openCommandCenter: return .shotnixOpenCommandCenter
         case .recordArea: return .shotnixRecordArea
         case .recordWindow: return .shotnixRecordWindow
         case .recordFullscreen: return .shotnixRecordFullscreen
@@ -82,6 +85,9 @@ extension KeyboardShortcuts.Name {
     static let shotnixCaptureTimed = Self("captureTimed")
     static let shotnixCaptureText = Self("captureText", default: KeyboardShortcuts.Shortcut(.o, modifiers: [.command, .shift]))
     static let shotnixCaptureScrolling = Self("captureScrolling", default: KeyboardShortcuts.Shortcut(.s, modifiers: [.command, .shift]))
+    // Ships unassigned — the rescue hatch for menu bars so full that macOS
+    // hides the Shotnix icon entirely.
+    static let shotnixOpenCommandCenter = Self("openCommandCenter")
     // Recording shortcuts ship unassigned — users opt in via Preferences → Shortcuts.
     static let shotnixRecordArea = Self("recordArea")
     static let shotnixRecordWindow = Self("recordWindow")

@@ -5,7 +5,7 @@ import KeyboardShortcuts
 @MainActor
 final class HotkeyManager {
 
-    func register(captureEngine: CaptureEngine, historyManager: HistoryManager) {
+    func register(captureEngine: CaptureEngine, historyManager: HistoryManager, openCommandCenter: @escaping () -> Void) {
         KeyboardShortcuts.removeAllHandlers()
 
         KeyboardShortcuts.onKeyDown(for: .shotnixCaptureArea) { [weak captureEngine, weak historyManager] in
@@ -67,6 +67,12 @@ final class HotkeyManager {
         // "No recording in progress" toast when nothing is being recorded.
         KeyboardShortcuts.onKeyDown(for: .shotnixStopRecording) { [weak captureEngine] in
             captureEngine?.stopRecording()
+        }
+
+        // Menu-bar-independent access: opens the command center even when a
+        // crowded menu bar makes macOS hide the status icon.
+        KeyboardShortcuts.onKeyDown(for: .shotnixOpenCommandCenter) {
+            openCommandCenter()
         }
     }
 

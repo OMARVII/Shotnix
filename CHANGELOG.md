@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.20.5-beta] - 2026-09-14
+
+### Added
+- **Menu bar overflow rescue** — on crowded menu bars (especially notched MacBooks) macOS silently hides status icons, and Shotnix looked like it never launched. Now the app detects it: a one-time toast explains the icon is hidden and that hotkeys still work (click it for the menu), relaunching the app from Spotlight/Finder opens the command center as a floating panel instead of doing nothing, and a new assignable "Open Command Center" shortcut summons the menu without the icon at all.
+
 ## [0.20.4-beta] - 2026-09-14
 
 ### Changed

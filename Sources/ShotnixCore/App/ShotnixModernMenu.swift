@@ -19,8 +19,70 @@ final class ShotnixModernMenuPresenter {
     private var commandCenterPopover: NSPopover?
     private var commandCenterController: NSHostingController<ShotnixCommandCenterView>?
 
+    // Menu-bar rescue: when a full menu bar makes macOS hide the status icon,
+    // the same command center presents as a floating panel instead.
+    private var detachedPanel: NSPanel?
+    private var detachedPanelObserver: NSObjectProtocol?
+
     var isShown: Bool {
-        (popover?.isShown ?? false) || (commandCenterPopover?.isShown ?? false)
+        (popover?.isShown ?? false)
+            || (commandCenterPopover?.isShown ?? false)
+            || (detachedPanel?.isVisible ?? false)
+    }
+
+    /// Presents the command center as a floating panel at the top-center of
+    /// the main screen — for menu bars so crowded that the status icon is
+    /// hidden, and for the assignable Open Command Center shortcut.
+    func showCommandCenterDetached(
+        sections: [ShotnixMenuSection],
+        healthRows: [ShotnixHealthRow],
+        healthActions: [ShotnixHealthKind: () -> Void]
+    ) {
+        dismiss()
+        let controller = NSHostingController(
+            rootView: ShotnixCommandCenterView(
+                sections: sections,
+                healthRows: healthRows,
+                healthActions: healthActions,
+                dismiss: { [weak self] in self?.dismiss() }
+            )
+        )
+        let panel = ShotnixDetachedMenuPanel(contentViewController: controller)
+        panel.styleMask = [.borderless, .nonactivatingPanel]
+        panel.isOpaque = false
+        panel.backgroundColor = .clear
+        panel.level = .floating
+        panel.hasShadow = true
+        panel.isReleasedWhenClosed = false
+        panel.hidesOnDeactivate = false
+        panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
+
+        let screen = NSScreen.main ?? NSScreen.screens.first
+        let visible = screen?.visibleFrame ?? NSRect(x: 0, y: 0, width: 1200, height: 800)
+        let height = min(620, max(420, visible.height - 80))
+        panel.setFrame(
+            NSRect(
+                x: visible.midX - ShotnixMenuMetrics.commandCenterWidth / 2,
+                y: visible.maxY - height - 6,
+                width: ShotnixMenuMetrics.commandCenterWidth,
+                height: height
+            ),
+            display: false
+        )
+
+        detachedPanel = panel
+        NSApp.setActivationPolicy(.accessory)
+        NSApp.activate(ignoringOtherApps: true)
+        panel.makeKeyAndOrderFront(nil)
+        animateEntrance(on: controller.view)
+
+        detachedPanelObserver = NotificationCenter.default.addObserver(
+            forName: NSWindow.didResignKeyNotification,
+            object: panel,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in self?.dismiss() }
+        }
     }
 
     /// Builds the command center's SwiftUI hierarchy once at launch so the
@@ -117,6 +179,15 @@ final class ShotnixModernMenuPresenter {
         popover = nil
         // The command center popover is cached — close it but keep it warm.
         commandCenterPopover?.performClose(nil)
+        if let detachedPanelObserver {
+            NotificationCenter.default.removeObserver(detachedPanelObserver)
+            self.detachedPanelObserver = nil
+        }
+        if let detachedPanel {
+            detachedPanel.orderOut(nil)
+            self.detachedPanel = nil
+            NSApp.restoreBackgroundOnlyActivationPolicyIfNeeded()
+        }
     }
 
     private func makePopover(width: CGFloat) -> NSPopover {
@@ -132,6 +203,13 @@ final class ShotnixModernMenuPresenter {
         let height = CGFloat(actionCount * 40 + sections.count * 26 + 20)
         return NSSize(width: ShotnixMenuMetrics.actionMenuWidth, height: min(max(height, 120), 460))
     }
+}
+
+/// Borderless panels refuse key status by default; the detached command
+/// center needs it for Escape and arrow-key navigation.
+@MainActor
+private final class ShotnixDetachedMenuPanel: NSPanel {
+    override var canBecomeKey: Bool { true }
 }
 
 @MainActor
