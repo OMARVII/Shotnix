@@ -25,6 +25,11 @@ final class VideoDemoExportTests: XCTestCase {
         let sourceURL = try await makeSampleVideo(seconds: 1.2)
         var project = VideoDemoProject.make(sourceURL: sourceURL, duration: 1.2, sourceSize: CGSize(width: 320, height: 240))
         project.aspectPreset = .source
+        // Exercise the scene-zoom animation path in a real render.
+        project.zoomKeyframes = [
+            VideoDemoZoomKeyframe(time: 0.2, scale: 1.6, focusX: 0.1, focusY: 0.9),
+            VideoDemoZoomKeyframe(time: 0.9, scale: 1, focusX: 0.5, focusY: 0.5),
+        ]
 
         let gifURL = workDirectory.appendingPathComponent("out.gif")
         let warnings = try await VideoDemoExporter.export(
@@ -64,28 +69,41 @@ final class VideoDemoExportTests: XCTestCase {
         XCTAssertEqual(size.height, 540, accuracy: 2)
     }
 
-    func testCornerZoomNeverExposesBeyondVideoEdge() {
+    func testZoomWindowStaysInsideCanvasThroughCornerRamp() {
         var project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/x.mp4"), duration: 10, sourceSize: CGSize(width: 1920, height: 1080))
-        // A click in the extreme top-left corner used to slide the video inward
-        // and expose black beyond its edge.
+        // A click in the extreme top-left corner used to expose black beyond
+        // the video edge; the scene-zoom window must always stay inside the
+        // canvas (background fills any slack, black is impossible).
         project.zoomKeyframes = [
             VideoDemoZoomKeyframe(time: 0, scale: 1, focusX: 0.5, focusY: 0.5),
             VideoDemoZoomKeyframe(time: 2, scale: 1.8, focusX: 0.02, focusY: 0.97),
             VideoDemoZoomKeyframe(time: 4, scale: 1, focusX: 0.5, focusY: 0.5),
         ]
         let canvas = CGSize(width: 1920, height: 1080)
-        let stage = project.stageRect(in: canvas)
 
-        // Sample densely through the ramp — every zoomed rect must fully
-        // cover the stage or the uncovered strip renders black.
         for step in 0...80 {
             let time = Double(step) * 0.05
-            let zoomed = project.zoomedStageRect(in: canvas, at: time)
-            XCTAssertLessThanOrEqual(zoomed.minX, stage.minX + 0.001, "gap at t=\(time)")
-            XCTAssertGreaterThanOrEqual(zoomed.maxX, stage.maxX - 0.001, "gap at t=\(time)")
-            XCTAssertLessThanOrEqual(zoomed.minY, stage.minY + 0.001, "gap at t=\(time)")
-            XCTAssertGreaterThanOrEqual(zoomed.maxY, stage.maxY - 0.001, "gap at t=\(time)")
+            let window = project.zoomWindow(in: canvas, at: time)
+            XCTAssertGreaterThanOrEqual(window.minX, -0.001, "escapes left at t=\(time)")
+            XCTAssertGreaterThanOrEqual(window.minY, -0.001, "escapes top at t=\(time)")
+            XCTAssertLessThanOrEqual(window.maxX, canvas.width + 0.001, "escapes right at t=\(time)")
+            XCTAssertLessThanOrEqual(window.maxY, canvas.height + 0.001, "escapes bottom at t=\(time)")
+            // Aspect preserved: uniform scale.
+            XCTAssertEqual(window.width / window.height, canvas.width / canvas.height, accuracy: 0.001)
         }
+    }
+
+    func testZoomWindowCentersInteriorFocus() {
+        var project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/x.mp4"), duration: 10, sourceSize: CGSize(width: 1920, height: 1080))
+        project.zoomKeyframes = [VideoDemoZoomKeyframe(time: 1, scale: 1.8, focusX: 0.5, focusY: 0.5)]
+        let canvas = CGSize(width: 1920, height: 1080)
+
+        // "Zooms where I made it": an interior focus must land dead-center in
+        // the visible window.
+        let window = project.zoomWindow(in: canvas, at: 5)
+        XCTAssertEqual(window.midX, canvas.width / 2, accuracy: 0.5)
+        XCTAssertEqual(window.midY, canvas.height / 2, accuracy: 0.5)
+        XCTAssertEqual(window.width, canvas.width / 1.8, accuracy: 0.5)
     }
 
     // MARK: - Sample video synthesis

@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.20.1-beta] - 2026-09-14
+
+### Fixed
+- **Zoom rebuilt on a single scene-camera model** — the editor preview and the export used two different zoom systems (the preview anchor-scaled the video in place, the export re-centered it), so the preview never showed where the camera was going and exports zoomed somewhere else. Both now share one model: the camera zooms the whole composed scene (background and video together, Screen-Studio style), so the point you pick genuinely centers — the background fills the slack near edges — and black regions are impossible. The export animates the identical eased path the preview shows, sampled at 30Hz through cuts and speed changes.
+- **Auto-zoom camera no longer darts** — the shot planner allowed transitions as short as 0.18 seconds and pumped the scale down and back up between nearby click bursts, producing quick, jerky camera actions. Every move now gets a real duration (zoom-ins 0.65s, pans 0.55–1.2s scaled by distance — settling a beat late instead of whipping), clicks close together on screen merge into one held shot instead of re-aiming the camera, back-to-back shots glide directly between focus points at hold scale, and zoom-outs are a single smooth motion instead of a two-step stutter.
+
 ## [0.20.0-beta] - 2026-09-13
 
 ### Added

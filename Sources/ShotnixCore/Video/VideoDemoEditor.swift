@@ -700,7 +700,7 @@ struct VideoDemoProject: Codable, Equatable, Identifiable {
         var previousTime = first.time
 
         if sorted.count == 1 || time <= first.time {
-            return previous.edgeClamped
+            return previous
         }
 
         for keyframe in sorted.dropFirst() {
@@ -712,35 +712,63 @@ struct VideoDemoProject: Codable, Equatable, Identifiable {
                     scale: lerp(previous.scale, current.scale, progress),
                     focusX: lerp(previous.focusX, current.focusX, progress),
                     focusY: lerp(previous.focusY, current.focusY, progress)
-                ).edgeClamped
+                )
             }
             previous = current
             previousTime = keyframe.time
         }
 
-        return previous.edgeClamped
+        return previous
     }
 
-    func zoomedStageRect(in canvasSize: CGSize, at time: Double) -> CGRect {
-        let stage = stageRect(in: canvasSize)
+    /// THE single source of truth for how zoom renders, shared verbatim by the
+    /// preview and the export (they used to disagree — anchor-zoom in preview,
+    /// center-the-focus in export).
+    ///
+    /// Model: the camera looks at the whole composed CANVAS (background +
+    /// video), Screen-Studio style. At scale s the visible window is a
+    /// canvas/s crop centered on the focus point (mapped through the stage),
+    /// clamped inside the canvas. Because the canvas extends past the video,
+    /// a focus near the video's corner still centers — the background fills
+    /// the slack — and nothing beyond the canvas can ever appear, so black
+    /// regions are impossible by construction.
+    ///
+    /// Returned in TOP-LEFT canvas coordinates; the export converts to
+    /// CALayer's bottom-left space at its boundary.
+    func zoomWindow(in canvasSize: CGSize, at time: Double) -> CGRect {
+        let full = CGRect(origin: .zero, size: canvasSize)
         let zoom = zoomState(at: time)
-        guard zoom.scale > 1.001 else { return stage }
+        guard zoom.scale > 1.001, canvasSize.width > 0, canvasSize.height > 0 else { return full }
 
-        let scaledWidth = stage.width * zoom.scale
-        let scaledHeight = stage.height * zoom.scale
-        let focusX = min(max(zoom.focusX, 0), 1)
-        let focusYBottom = 1 - min(max(zoom.focusY, 0), 1)
-
+        let stageBL = stageRect(in: canvasSize)
+        let stageTop = CGRect(
+            x: stageBL.minX,
+            y: canvasSize.height - stageBL.maxY,
+            width: stageBL.width,
+            height: stageBL.height
+        )
+        // focusX/focusY are video-normalized with y pointing DOWN (same
+        // convention as recorded clicks and the preview overlays).
+        let focus = CGPoint(
+            x: stageTop.minX + stageTop.width * min(max(zoom.focusX, 0), 1),
+            y: stageTop.minY + stageTop.height * min(max(zoom.focusY, 0), 1)
+        )
+        let width = canvasSize.width / zoom.scale
+        let height = canvasSize.height / zoom.scale
         return CGRect(
-            x: stage.midX - scaledWidth * focusX,
-            y: stage.midY - scaledHeight * focusYBottom,
-            width: scaledWidth,
-            height: scaledHeight
+            x: min(max(focus.x - width / 2, 0), canvasSize.width - width),
+            y: min(max(focus.y - height / 2, 0), canvasSize.height - height),
+            width: width,
+            height: height
         )
     }
 
+    /// Static (unzoomed) canvas position for a video-normalized point, in
+    /// CALayer bottom-left coordinates. Export overlays live inside the scene
+    /// layer, whose animated transform applies the zoom — so their own
+    /// coordinates must stay unzoomed.
     func canvasPoint(for normalizedPoint: CGPoint, in canvasSize: CGSize, at time: Double) -> CGPoint {
-        let stage = zoomedStageRect(in: canvasSize, at: time)
+        let stage = stageRect(in: canvasSize)
         let x = stage.minX + stage.width * min(max(normalizedPoint.x, 0), 1)
         let y = stage.minY + stage.height * (1 - min(max(normalizedPoint.y, 0), 1))
         return CGPoint(x: x, y: y)
@@ -1067,6 +1095,7 @@ enum VideoDemoExporter {
             renderSize: renderSize,
             timelineSegments: timelineSegments,
             duration: compositionDuration.secondsValue,
+            sourceTotalDuration: totalDuration,
             endCard: options.endCard && options.format == .mp4
         )
         videoComposition.animationTool = AVVideoCompositionCoreAnimationTool(
@@ -1298,6 +1327,10 @@ enum VideoDemoExporter {
         }
     }
 
+    /// The video track gets ONE static transform: fit into the (unzoomed)
+    /// stage. Zoom is no longer applied per-track — the whole scene layer
+    /// (background + video + overlays) animates together through the shared
+    /// `zoomWindow` model, so the export moves exactly like the preview.
     private static func applyZoomTransforms(
         to layerInstruction: AVMutableVideoCompositionLayerInstruction,
         track: AVAssetTrack,
@@ -1306,56 +1339,55 @@ enum VideoDemoExporter {
         renderSize: CGSize,
         timelineSegments: [VideoDemoTimelineSegment]
     ) async throws {
-        let timelineKeyframes = zoomTimelineKeyframes(project: project, segments: timelineSegments)
-
-        guard let first = timelineKeyframes.first else {
-            let rect = project.stageRect(in: renderSize)
-            layerInstruction.setTransform(
-                try await exportTransform(for: track, project: project, sourceSize: sourceSize, renderSize: renderSize, targetRect: rect),
-                at: .zero
-            )
-            return
-        }
-
-        let firstRect = project.zoomedStageRect(in: renderSize, at: first.sourceTime)
-        let firstTransform = try await exportTransform(
-            for: track,
-            project: project,
-            sourceSize: sourceSize,
-            renderSize: renderSize,
-            targetRect: firstRect
+        let rect = project.stageRect(in: renderSize)
+        layerInstruction.setTransform(
+            try await exportTransform(for: track, project: project, sourceSize: sourceSize, renderSize: renderSize, targetRect: rect),
+            at: .zero
         )
-        layerInstruction.setTransform(firstTransform, at: .zero)
+    }
 
-        guard timelineKeyframes.count > 1 else { return }
-        for pair in zip(timelineKeyframes, timelineKeyframes.dropFirst()) {
-            let start = pair.0
-            let end = pair.1
-            let startTransform = try await exportTransform(
-                for: track,
-                project: project,
-                sourceSize: sourceSize,
-                renderSize: renderSize,
-                targetRect: project.zoomedStageRect(in: renderSize, at: start.sourceTime)
-            )
-            let endTransform = try await exportTransform(
-                for: track,
-                project: project,
-                sourceSize: sourceSize,
-                renderSize: renderSize,
-                targetRect: project.zoomedStageRect(in: renderSize, at: end.sourceTime)
-            )
-            guard let duration = zoomRampDuration(from: start.timelineTime, to: end.timelineTime) else {
-                layerInstruction.setTransform(endTransform, at: CMTime(seconds: max(end.timelineTime, 0), preferredTimescale: exportTimescale))
-                continue
-            }
-            let range = CMTimeRange(
-                start: CMTime(seconds: max(start.timelineTime, 0), preferredTimescale: exportTimescale),
-                duration: CMTime(seconds: duration, preferredTimescale: exportTimescale)
-            )
-            guard range.start.isNumeric, range.duration.isNumeric, range.duration.value > 0 else { continue }
-            layerInstruction.setTransformRamp(fromStart: startTransform, toEnd: endTransform, timeRange: range)
+    /// Samples `zoomWindow` at 30Hz across the timeline (mapping timeline →
+    /// source time through cuts and speed changes) and drives the scene
+    /// layer's transform with one keyframe animation — the same eased values
+    /// the preview reads, so what you scrub is what exports.
+    private static func addSceneZoomAnimation(
+        to scene: CALayer,
+        project: VideoDemoProject,
+        renderSize: CGSize,
+        duration: Double,
+        sourceTotalDuration: Double
+    ) {
+        guard !project.zoomKeyframes.isEmpty, duration > 0 else { return }
+
+        let sampleRate = 30.0
+        let count = max(Int(duration * sampleRate) + 1, 2)
+        var values: [NSValue] = []
+        var keyTimes: [NSNumber] = []
+        values.reserveCapacity(count)
+        keyTimes.reserveCapacity(count)
+
+        for index in 0..<count {
+            let timelineTime = min(Double(index) / sampleRate, duration)
+            let sourceTime = project.sourceTime(forTimelineTime: timelineTime, totalDuration: sourceTotalDuration)
+            let window = project.zoomWindow(in: renderSize, at: sourceTime)
+            let scale = renderSize.width / max(window.width, 1)
+            // zoomWindow is top-left; CALayer space is bottom-left.
+            let windowBottomY = renderSize.height - window.maxY
+            var transform = CATransform3DMakeTranslation(-window.minX * scale, -windowBottomY * scale, 0)
+            transform = CATransform3DScale(transform, scale, scale, 1)
+            values.append(NSValue(caTransform3D: transform))
+            keyTimes.append(NSNumber(value: timelineTime / duration))
         }
+
+        let animation = CAKeyframeAnimation(keyPath: "transform")
+        animation.values = values
+        animation.keyTimes = keyTimes
+        animation.calculationMode = .linear
+        animation.beginTime = AVCoreAnimationBeginTimeAtZero
+        animation.duration = duration
+        animation.isRemovedOnCompletion = false
+        animation.fillMode = .forwards
+        scene.add(animation, forKey: "sceneZoom")
     }
 
     static func zoomRampDuration(from startTimelineTime: Double, to endTimelineTime: Double) -> Double? {
@@ -1458,6 +1490,7 @@ enum VideoDemoExporter {
         renderSize: CGSize,
         timelineSegments: [VideoDemoTimelineSegment],
         duration: Double,
+        sourceTotalDuration: Double,
         endCard: Bool = false
     ) -> (videoLayer: CALayer, parentLayer: CALayer) {
         let bounds = CGRect(origin: .zero, size: renderSize)
@@ -1467,6 +1500,16 @@ enum VideoDemoExporter {
         parent.frame = bounds
         parent.backgroundColor = project.backgroundPreset.exportColor.cgColor
         parent.masksToBounds = true
+
+        // Everything that zooms lives on the scene layer — background, video,
+        // border, callouts, cursor — and one animated transform (driven by the
+        // shared zoomWindow model) moves it all in lockstep with the preview.
+        // Only the end card sits outside, so it never zooms.
+        let scene = CALayer()
+        scene.bounds = bounds
+        scene.anchorPoint = .zero
+        scene.position = .zero
+        parent.addSublayer(scene)
 
         // WYSIWYG: the preview paints a gradient (or a blur-able custom image);
         // the export used to paint a flat color and ignore the blur slider.
@@ -1491,7 +1534,7 @@ enum VideoDemoExporter {
         }
         background.frame = bounds
         background.backgroundColor = project.backgroundPreset.exportColor.cgColor
-        parent.addSublayer(background)
+        scene.addSublayer(background)
 
         if !project.usesRawSourceFrame {
             let shadow = CALayer()
@@ -1502,7 +1545,7 @@ enum VideoDemoExporter {
             shadow.shadowOpacity = Float(max(0, min(project.effectiveShadowStrength, 0.85)))
             shadow.shadowRadius = 34
             shadow.shadowOffset = CGSize(width: 0, height: -20)
-            parent.addSublayer(shadow)
+            scene.addSublayer(shadow)
         }
 
         // The video renders into videoLayer at full canvas coordinates; a
@@ -1528,7 +1571,7 @@ enum VideoDemoExporter {
             mask.fillColor = NSColor.black.cgColor
             videoContainer.mask = mask
         }
-        parent.addSublayer(videoContainer)
+        scene.addSublayer(videoContainer)
 
         if !project.usesRawSourceFrame {
             let border = CALayer()
@@ -1536,11 +1579,11 @@ enum VideoDemoExporter {
             border.cornerRadius = max(project.effectiveCornerRadius, 0)
             border.borderWidth = 2
             border.borderColor = NSColor.white.withAlphaComponent(0.16).cgColor
-            parent.addSublayer(border)
+            scene.addSublayer(border)
         }
 
         addOverlayEffectLayers(
-            to: parent,
+            to: scene,
             project: project,
             renderSize: renderSize,
             timelineSegments: timelineSegments,
@@ -1549,7 +1592,7 @@ enum VideoDemoExporter {
 
         if project.clickSpotlight {
             addClickSpotlightLayers(
-                to: parent,
+                to: scene,
                 project: project,
                 renderSize: renderSize,
                 timelineSegments: timelineSegments,
@@ -1558,7 +1601,7 @@ enum VideoDemoExporter {
         }
         if project.showClickRipple {
             addClickLayers(
-                to: parent,
+                to: scene,
                 project: project,
                 renderSize: renderSize,
                 timelineSegments: timelineSegments,
@@ -1567,13 +1610,21 @@ enum VideoDemoExporter {
         }
         if project.showCursorOverlay {
             addCursorLayer(
-                to: parent,
+                to: scene,
                 project: project,
                 renderSize: renderSize,
                 timelineSegments: timelineSegments,
                 duration: duration
             )
         }
+
+        addSceneZoomAnimation(
+            to: scene,
+            project: project,
+            renderSize: renderSize,
+            duration: duration,
+            sourceTotalDuration: sourceTotalDuration
+        )
 
         if endCard {
             addEndCardLayer(to: parent, bounds: bounds, duration: duration)
@@ -1677,7 +1728,8 @@ enum VideoDemoExporter {
 
         for effect in project.overlayEffects {
             guard let entry = timelineEntry(for: effect, segments: timelineSegments) else { continue }
-            let stage = project.zoomedStageRect(in: renderSize, at: effect.time)
+            // Static stage coords: the scene transform applies the zoom.
+            let stage = project.stageRect(in: renderSize)
             let effectWidth = stage.width * min(max(effect.width, 0.04), 0.9)
             let effectHeight = stage.height * min(max(effect.height, 0.04), 0.6)
             let frame = CGRect(
@@ -2691,11 +2743,29 @@ final class VideoDemoEditorViewModel: ObservableObject {
         status = "Zoom keyframe added"
     }
 
+    /// Tuning for the auto-zoom shot planner. Times are seconds of edited
+    /// timeline; distances are in video-normalized focus space.
+    private enum AutoZoomTuning {
+        static let clusterGap = 1.35        // clicks within this gap form one cluster
+        static let mergeDistance = 0.15     // clusters this close in focus space share one shot
+        static let mergeWindow = 3.5        // ...if the next cluster starts within this many seconds
+        static let zoomInDuration = 0.65
+        static let zoomOutDuration = 0.9
+        static let minimumHold = 0.6
+        static let holdTail = 0.85          // keep holding this long after the shot's last click
+        static let leadBeforeClick = 0.06   // camera settles just before the click lands
+        static let minimumPan = 0.55
+        static let maximumPan = 1.2
+        static let panDistanceFactor = 1.4  // pan duration grows with focus distance
+        static let outInBreather = 1.6      // unzoomed time required to prefer zoom-out/in over a pan
+        static let maximumShots = 8
+    }
+
     func addAutoZoomPreset() {
         let segments = timelineSegments
         guard !segments.isEmpty else { return }
         let editedDuration = max(timelineDuration, 0.1)
-        let targets = Array(autoZoomTargets().prefix(6))
+        let targets = Array(autoZoomTargets().prefix(AutoZoomTuning.maximumShots))
 
         pushUndo()
         project.zoomKeyframes.removeAll()
@@ -2704,37 +2774,59 @@ final class VideoDemoEditorViewModel: ObservableObject {
 
         if targets.isEmpty {
             let midpoint = editedDuration * 0.45
-            appendAutoZoomKeyframe(&generated, timelineTime: max(midpoint - 0.85, 0), scale: 1.02, focusX: 0.5, focusY: 0.5)
+            appendAutoZoomKeyframe(&generated, timelineTime: max(midpoint - AutoZoomTuning.zoomInDuration, 0), scale: 1, focusX: 0.5, focusY: 0.5)
             appendAutoZoomKeyframe(&generated, timelineTime: midpoint, scale: 1.42, focusX: 0.5, focusY: 0.5)
-            appendAutoZoomKeyframe(&generated, timelineTime: min(midpoint + 1.55, editedDuration), scale: 1.42, focusX: 0.5, focusY: 0.5)
-            appendAutoZoomKeyframe(&generated, timelineTime: min(midpoint + 2.25, editedDuration), scale: 1, focusX: 0.5, focusY: 0.5)
+            appendAutoZoomKeyframe(&generated, timelineTime: min(midpoint + 1.6, editedDuration), scale: 1.42, focusX: 0.5, focusY: 0.5)
+            appendAutoZoomKeyframe(&generated, timelineTime: min(midpoint + 1.6 + AutoZoomTuning.zoomOutDuration, editedDuration), scale: 1, focusX: 0.5, focusY: 0.5)
         } else {
+            // Shot planner. Every camera move gets a real duration — a move is
+            // never compressed below its minimum, even if that means settling
+            // on a click a beat late; smooth beats punctual. Shots close in
+            // time pan directly at hold scale (no zoom-out dip in between);
+            // shots far apart zoom out, breathe at 1x, and zoom back in.
             var previousExit = 0.0
+            var chainedArrival: Double?
             for index in targets.indices {
                 let target = targets[index]
-                let nextTargetTime = targets.indices.contains(index + 1) ? targets[index + 1].timelineTime : nil
-                let gapBefore = max(target.timelineTime - previousExit, 0)
-                let lead = min(0.9, max(0.42, gapBefore * 0.36))
-                let approachTime = max(previousExit, target.timelineTime - lead)
-                let arrivalTime = max(approachTime + 0.18, target.timelineTime - 0.08)
-                let nextGap = (nextTargetTime ?? editedDuration) - target.timelineTime
-                let holdEnd = min(
-                    target.timelineTime + (nextGap < 1.65 ? max(0.28, nextGap * 0.34) : 0.92),
-                    editedDuration
-                )
+                let next = targets.indices.contains(index + 1) ? targets[index + 1] : nil
 
-                appendAutoZoomKeyframe(&generated, timelineTime: approachTime, scale: index == 0 || gapBefore > 1.8 ? 1 : 1.34, focusX: target.focusX, focusY: target.focusY)
-                appendAutoZoomKeyframe(&generated, timelineTime: arrivalTime, scale: target.scale, focusX: target.focusX, focusY: target.focusY)
-                appendAutoZoomKeyframe(&generated, timelineTime: holdEnd, scale: target.scale, focusX: target.focusX, focusY: target.focusY)
-
-                if nextGap > 2.05 || nextTargetTime == nil {
-                    let settleTime = min(holdEnd + 0.72, editedDuration)
-                    let returnTime = min(settleTime + 0.68, editedDuration)
-                    appendAutoZoomKeyframe(&generated, timelineTime: settleTime, scale: 1.22, focusX: target.focusX, focusY: target.focusY)
-                    appendAutoZoomKeyframe(&generated, timelineTime: returnTime, scale: 1, focusX: 0.5, focusY: 0.5)
-                    previousExit = returnTime
+                let arrival: Double
+                if let chained = chainedArrival {
+                    // The previous shot's hold-end keyframe starts this pan.
+                    arrival = chained
                 } else {
-                    previousExit = holdEnd
+                    let ideal = max(target.startTime - AutoZoomTuning.leadBeforeClick, 0)
+                    let approach = max(previousExit, ideal - AutoZoomTuning.zoomInDuration)
+                    arrival = approach + AutoZoomTuning.zoomInDuration
+                    appendAutoZoomKeyframe(&generated, timelineTime: approach, scale: 1, focusX: target.focusX, focusY: target.focusY)
+                }
+                appendAutoZoomKeyframe(&generated, timelineTime: arrival, scale: target.scale, focusX: target.focusX, focusY: target.focusY)
+
+                var holdEnd = max(arrival + AutoZoomTuning.minimumHold, target.endTime + AutoZoomTuning.holdTail)
+
+                if let next {
+                    let idealNextArrival = max(next.startTime - AutoZoomTuning.leadBeforeClick, 0)
+                    let distance = ((next.focusX - target.focusX) * (next.focusX - target.focusX)
+                        + (next.focusY - target.focusY) * (next.focusY - target.focusY)).squareRoot()
+                    let panDuration = min(
+                        max(AutoZoomTuning.minimumPan + distance * AutoZoomTuning.panDistanceFactor, AutoZoomTuning.minimumPan),
+                        AutoZoomTuning.maximumPan
+                    )
+                    let roomToBreathe = AutoZoomTuning.zoomOutDuration + AutoZoomTuning.outInBreather + AutoZoomTuning.zoomInDuration
+
+                    if idealNextArrival - holdEnd >= roomToBreathe {
+                        appendAutoZoomKeyframe(&generated, timelineTime: holdEnd, scale: target.scale, focusX: target.focusX, focusY: target.focusY)
+                        appendAutoZoomKeyframe(&generated, timelineTime: holdEnd + AutoZoomTuning.zoomOutDuration, scale: 1, focusX: target.focusX, focusY: target.focusY)
+                        previousExit = holdEnd + AutoZoomTuning.zoomOutDuration
+                        chainedArrival = nil
+                    } else {
+                        holdEnd = max(arrival + 0.4, min(holdEnd, idealNextArrival - panDuration))
+                        appendAutoZoomKeyframe(&generated, timelineTime: holdEnd, scale: target.scale, focusX: target.focusX, focusY: target.focusY)
+                        chainedArrival = max(idealNextArrival, holdEnd + panDuration)
+                    }
+                } else {
+                    appendAutoZoomKeyframe(&generated, timelineTime: holdEnd, scale: target.scale, focusX: target.focusX, focusY: target.focusY)
+                    appendAutoZoomKeyframe(&generated, timelineTime: min(holdEnd + AutoZoomTuning.zoomOutDuration, editedDuration), scale: 1, focusX: target.focusX, focusY: target.focusY)
                 }
             }
         }
@@ -2747,7 +2839,8 @@ final class VideoDemoEditorViewModel: ObservableObject {
     }
 
     private struct AutoZoomTarget {
-        let timelineTime: Double
+        let startTime: Double
+        let endTime: Double
         let focusX: Double
         let focusY: Double
         let scale: Double
@@ -2767,24 +2860,59 @@ final class VideoDemoEditorViewModel: ObservableObject {
         for click in clicks {
             if let last = clusters.indices.last,
                let previous = clusters[last].last,
-               click.timelineTime - previous.timelineTime <= 1.35 {
+               click.timelineTime - previous.timelineTime <= AutoZoomTuning.clusterGap {
                 clusters[last].append(click)
             } else {
                 clusters.append([click])
             }
         }
 
-        return clusters.compactMap { cluster in
-            guard !cluster.isEmpty else { return nil }
+        struct Shot {
+            var start: Double
+            var end: Double
+            var x: Double
+            var y: Double
+            var count: Int
+        }
+
+        let shots = clusters.compactMap { cluster -> Shot? in
+            guard let first = cluster.first, let last = cluster.last else { return nil }
             let count = Double(cluster.count)
-            let timelineTime = cluster.map(\.timelineTime).reduce(0, +) / count
-            let x = cluster.map(\.x).reduce(0, +) / count
-            let y = cluster.map(\.y).reduce(0, +) / count
-            return AutoZoomTarget(
-                timelineTime: timelineTime,
-                focusX: softenedFocus(x),
-                focusY: softenedFocus(y),
-                scale: cluster.count > 1 ? 1.74 : 1.66
+            return Shot(
+                start: first.timelineTime,
+                end: last.timelineTime,
+                x: cluster.map(\.x).reduce(0, +) / count,
+                y: cluster.map(\.y).reduce(0, +) / count,
+                count: cluster.count
+            )
+        }
+
+        // Re-targeting the camera for a focus it already covers reads as
+        // jitter — spatially close consecutive shots merge into one longer
+        // hold instead.
+        var merged: [Shot] = []
+        for shot in shots {
+            if var last = merged.last,
+               shot.start - last.end < AutoZoomTuning.mergeWindow,
+               ((shot.x - last.x) * (shot.x - last.x) + (shot.y - last.y) * (shot.y - last.y)).squareRoot() < AutoZoomTuning.mergeDistance {
+                let total = Double(last.count + shot.count)
+                last.x = (last.x * Double(last.count) + shot.x * Double(shot.count)) / total
+                last.y = (last.y * Double(last.count) + shot.y * Double(shot.count)) / total
+                last.end = shot.end
+                last.count += shot.count
+                merged[merged.count - 1] = last
+            } else {
+                merged.append(shot)
+            }
+        }
+
+        return merged.map { shot in
+            AutoZoomTarget(
+                startTime: shot.start,
+                endTime: shot.end,
+                focusX: softenedFocus(shot.x),
+                focusY: softenedFocus(shot.y),
+                scale: shot.count > 1 ? 1.74 : 1.66
             )
         }
     }
@@ -4595,45 +4723,67 @@ private struct VideoDemoStageView: View {
     var body: some View {
         GeometryReader { proxy in
             let layout = stageLayout(in: proxy.size)
+            let cornerRadius: CGFloat = model.project.usesRawSourceFrame ? 0 : 24
 
             ZStack {
-                if !model.project.usesRawSourceFrame {
-                    VideoDemoBackgroundView(project: model.project)
-                        .frame(width: layout.canvas.width, height: layout.canvas.height)
-                        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                                .stroke(Color.white.opacity(0.12), lineWidth: 1)
-                        )
-                        .position(x: layout.canvas.midX, y: layout.canvas.midY)
-                }
-
-                stageContent(size: layout.stage.size)
-                    .frame(width: layout.stage.width, height: layout.stage.height)
-                    .clipShape(RoundedRectangle(cornerRadius: model.project.effectiveCornerRadius, style: .continuous))
-                    .shadow(color: .black.opacity(model.project.effectiveShadowStrength), radius: 28, x: 0, y: 22)
-                    .overlay(safeAreaGuide(size: layout.stage.size))
-                    .contentShape(RoundedRectangle(cornerRadius: model.project.effectiveCornerRadius, style: .continuous))
-                    .gesture(stageSeekGesture(stageWidth: layout.stage.width))
-                    .position(x: layout.stage.midX, y: layout.stage.midY)
+                zoomedScene(layout: layout)
+                    .frame(width: layout.canvas.width, height: layout.canvas.height)
+                    .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                            .stroke(Color.white.opacity(model.project.usesRawSourceFrame ? 0 : 0.12), lineWidth: 1)
+                    )
+                    .contentShape(Rectangle())
+                    .gesture(stageSeekGesture(stageWidth: layout.canvas.width))
+                    .position(x: layout.canvas.midX, y: layout.canvas.midY)
             }
             .frame(width: proxy.size.width, height: proxy.size.height)
         }
     }
 
-    private func stageContent(size: CGSize) -> some View {
-        let zoom = model.project.zoomState(at: model.currentTime)
-        let offset = CGSize(
-            width: (0.5 - zoom.focusX) * size.width * max(zoom.scale - 1, 0),
-            height: (0.5 - zoom.focusY) * size.height * max(zoom.scale - 1, 0)
+    /// The whole composed scene — background + video + overlays — zooming as
+    /// ONE unit through the shared `zoomWindow` model (byte-identical math to
+    /// the export's scene animation). The old preview anchor-scaled just the
+    /// video, so it neither matched the export nor visibly showed where the
+    /// camera was going.
+    private func zoomedScene(layout: (canvas: CGRect, stage: CGRect)) -> some View {
+        let canvasSize = model.project.canvasSize()
+        let window = model.project.zoomWindow(in: canvasSize, at: model.currentTime)
+        let zoomScale = canvasSize.width / max(window.width, 1)
+        let viewScale = layout.canvas.width / max(canvasSize.width, 1)
+        let stageLocal = CGRect(
+            x: layout.stage.minX - layout.canvas.minX,
+            y: layout.stage.minY - layout.canvas.minY,
+            width: layout.stage.width,
+            height: layout.stage.height
         )
 
-        return ZStack {
+        return ZStack(alignment: .topLeading) {
+            if !model.project.usesRawSourceFrame {
+                VideoDemoBackgroundView(project: model.project)
+                    .frame(width: layout.canvas.width, height: layout.canvas.height)
+            }
+
+            stageContent(size: stageLocal.size)
+                .frame(width: stageLocal.width, height: stageLocal.height)
+                .clipShape(RoundedRectangle(cornerRadius: model.project.effectiveCornerRadius, style: .continuous))
+                .shadow(color: .black.opacity(model.project.effectiveShadowStrength), radius: 28, x: 0, y: 22)
+                .overlay(safeAreaGuide(size: stageLocal.size))
+                .offset(x: stageLocal.minX, y: stageLocal.minY)
+        }
+        .frame(width: layout.canvas.width, height: layout.canvas.height, alignment: .topLeading)
+        .scaleEffect(zoomScale, anchor: .topLeading)
+        .offset(
+            x: -window.minX * viewScale * zoomScale,
+            y: -window.minY * viewScale * zoomScale
+        )
+    }
+
+    private func stageContent(size: CGSize) -> some View {
+        ZStack {
             ShotnixVideoPlayerView(player: model.player)
             VideoDemoOverlayView(model: model, clock: clock, stageSize: size)
         }
-        .scaleEffect(zoom.scale)
-        .offset(offset)
     }
 
     private func stageSeekGesture(stageWidth: CGFloat) -> some Gesture {
