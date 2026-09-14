@@ -183,6 +183,43 @@ private final class QuickAccessWindow: NSPanel {
         )
     }
 
+    /// Renders the capture scaled to FILL the given point size — center-
+    /// cropping overflow and upscaling small captures — with high-quality
+    /// interpolation. The GPU's default layer scaling softens small text;
+    /// pre-scaling on the CPU keeps UI captures (menus, dialogs) crisp.
+    /// Preserves the source's RGB color space so ICC-correct captures don't
+    /// shift. Falls back to the original image on any failure.
+    private func crispPreviewImage(for source: NSImage, filling size: NSSize) -> NSImage {
+        guard size.width > 1, size.height > 1, let cgImage = source.bestCGImage else { return source }
+        let scale = NSScreen.main?.backingScaleFactor ?? 2.0
+        let targetWidth = Int((size.width * scale).rounded())
+        let targetHeight = Int((size.height * scale).rounded())
+        guard targetWidth > 0, targetHeight > 0 else { return source }
+        let colorSpace = cgImage.colorSpace.flatMap { $0.model == .rgb ? $0 : nil }
+            ?? CGColorSpace(name: CGColorSpace.sRGB)!
+        guard let context = CGContext(
+            data: nil,
+            width: targetWidth,
+            height: targetHeight,
+            bitsPerComponent: 8,
+            bytesPerRow: 0,
+            space: colorSpace,
+            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+        ) else { return source }
+        context.interpolationQuality = .high
+        let fillScale = max(CGFloat(targetWidth) / CGFloat(max(cgImage.width, 1)), CGFloat(targetHeight) / CGFloat(max(cgImage.height, 1)))
+        let drawWidth = CGFloat(cgImage.width) * fillScale
+        let drawHeight = CGFloat(cgImage.height) * fillScale
+        context.draw(cgImage, in: CGRect(
+            x: (CGFloat(targetWidth) - drawWidth) / 2,
+            y: (CGFloat(targetHeight) - drawHeight) / 2,
+            width: drawWidth,
+            height: drawHeight
+        ))
+        guard let scaled = context.makeImage() else { return source }
+        return NSImage(cgImage: scaled, size: size)
+    }
+
     private func buildContent(thumbW: CGFloat, thumbH: CGFloat, progressH: CGFloat, totalH: CGFloat) {
         let container = OverlayContentView(frame: NSRect(x: 0, y: 0, width: thumbW, height: totalH))
         container.wantsLayer = true
@@ -220,32 +257,17 @@ private final class QuickAccessWindow: NSPanel {
         // that can interfere with hit-testing on the controls overlay above.
         let thumbFrame = NSRect(x: 0, y: progressH, width: thumbW, height: thumbH)
 
-        let backdrop = PassthroughView(frame: thumbFrame)
-        backdrop.wantsLayer = true
-        backdrop.layer?.backgroundColor = ShotnixColors.overlayContainerFill.cgColor
-        if let cgImage = image.bestCGImage {
-            backdrop.layer?.contents = cgImage
-            backdrop.layer?.contentsGravity = .resizeAspectFill
-            backdrop.layer?.contentsScale = NSScreen.main?.backingScaleFactor ?? 2.0
-            if let blur = CIFilter(name: "CIGaussianBlur") {
-                blur.setValue(18, forKey: kCIInputRadiusKey)
-                backdrop.layer?.filters = [blur]
-            }
-            backdrop.layer?.opacity = 0.26
-        }
-        clipView.addSubview(backdrop)
-
-        let backdropDim = PassthroughView(frame: thumbFrame)
-        backdropDim.wantsLayer = true
-        backdropDim.layer?.backgroundColor = NSColor.black.withAlphaComponent(0.58).cgColor
-        clipView.addSubview(backdropDim)
-
+        // ── Full-bleed capture, CleanShot-style: fixed card size, and the
+        // screenshot scaled to FILL the entire card — center-cropped when the
+        // aspect differs, zoomed up when the capture is smaller than the
+        // card. Bold and instantly readable; the card's own rounded corners
+        // and border do all the framing.
         let thumb = DraggableImageView(frame: thumbFrame)
-        thumb.image = image
+        thumb.image = crispPreviewImage(for: image, filling: thumbFrame.size)
         thumb.imageScaling = .scaleProportionallyUpOrDown
         thumb.imageAlignment = .alignCenter
         thumb.wantsLayer = true
-        thumb.layer?.backgroundColor = NSColor.clear.cgColor
+        thumb.layer?.backgroundColor = ShotnixColors.overlayContainerFill.cgColor
         thumb.layer?.contentsScale = NSScreen.main?.backingScaleFactor ?? 2.0
         thumb.dragImage = image
         thumb.onDoubleClick = { [weak self] in self?.editAction() }
@@ -414,13 +436,16 @@ private final class QuickAccessWindow: NSPanel {
     private func positionOverlay() {
         guard let screen = captureScreen else { return }
         let margin: CGFloat = 36
+        // Sits noticeably above the bottom edge (Dock line) — comfortable to
+        // glance at without looking "docked" to the corner.
+        let bottomMargin: CGFloat = 84
         let x: CGFloat
         if Settings.overlayOnLeft {
             x = screen.visibleFrame.minX + margin
         } else {
             x = screen.visibleFrame.maxX - frame.width - margin
         }
-        let y = screen.visibleFrame.minY + margin
+        let y = screen.visibleFrame.minY + bottomMargin
         // Start at final position (slide-up is handled by scale spring, not position offset)
         setFrameOrigin(NSPoint(x: x, y: y))
         alphaValue = 0

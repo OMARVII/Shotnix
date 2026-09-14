@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.20.2-beta] - 2026-09-14
+
+### Changed
+- **Post-capture thumbnail fills the card** — the quick-access preview now shows the capture edge-to-edge in a fixed-size card: center-cropped when the shape differs, zoomed to fill when the capture is small. Previews are pre-scaled with high-quality interpolation in the capture's own color space, so small text in menus and dialogs stays crisp instead of going soft.
+- **Thumbnail floats higher** — the post-capture overlay now sits comfortably above the bottom edge of the screen instead of hugging the corner.
+
 ## [0.20.1-beta] - 2026-09-14
 
 ### Fixed
