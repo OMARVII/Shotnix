@@ -888,7 +888,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.20.2"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.20.3"
     
     var body: some View {
         PreferencesPane {
@@ -931,6 +931,9 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.20.3
+                    • The Health tile no longer warns about shortcuts you chose not to set — Timed Capture and Recording shortcuts are optional, and a fresh install now shows green
+
                     Version 0.20.2
                     • The post-capture thumbnail now fills the whole card — small captures zoom to fill, and small text renders noticeably crisper
                     • The thumbnail floats a bit higher on screen, clear of the Dock
