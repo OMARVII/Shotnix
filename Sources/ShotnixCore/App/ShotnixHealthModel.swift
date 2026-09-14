@@ -43,6 +43,7 @@ struct ShotnixHealthSnapshot: Equatable {
     let autoSaveWritable: Bool
     let configuredShortcutCount: Int
     let expectedShortcutCount: Int
+    let optionalUnassignedShortcutCount: Int
     let version: String
     let build: String
 
@@ -54,8 +55,9 @@ struct ShotnixHealthSnapshot: Equatable {
             updatesConfigured: updatesConfigured,
             autoSavePath: autoSavePath,
             autoSaveWritable: isWritableAutoSavePath(autoSavePath),
-            configuredShortcutCount: ShotnixShortcut.configuredShortcutCount(),
-            expectedShortcutCount: ShotnixShortcut.allCases.count,
+            configuredShortcutCount: ShotnixShortcut.requiredConfiguredCount(),
+            expectedShortcutCount: ShotnixShortcut.requiredShortcutCount,
+            optionalUnassignedShortcutCount: ShotnixShortcut.optionalUnassignedCount(),
             version: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.16.0",
             build: Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "25"
         )
@@ -135,11 +137,22 @@ enum ShotnixHealthModel {
     }
 
     private static func shortcutsRow(_ snapshot: ShotnixHealthSnapshot) -> ShotnixHealthRow {
+        // Only shortcuts that ship WITH a default count toward health.
+        // Optional ones (timed capture, recording) are opt-in by design —
+        // leaving them unassigned is a valid choice, never a yellow warning.
         let ready = snapshot.configuredShortcutCount == snapshot.expectedShortcutCount
+        let detail: String
+        if ready {
+            detail = snapshot.optionalUnassignedShortcutCount > 0
+                ? "Ready · \(snapshot.optionalUnassignedShortcutCount) optional off"
+                : "All configured"
+        } else {
+            detail = "\(snapshot.configuredShortcutCount)/\(snapshot.expectedShortcutCount) configured"
+        }
         return ShotnixHealthRow(
             kind: .shortcuts,
             title: "Shortcuts",
-            detail: ready ? "All configured" : "\(snapshot.configuredShortcutCount)/\(snapshot.expectedShortcutCount) configured",
+            detail: detail,
             symbolName: ready ? "command.circle" : "command.circle.fill",
             state: ready ? .ok : .warning,
             actionTitle: ready ? nil : "Fix"
@@ -159,9 +172,23 @@ enum ShotnixHealthModel {
 }
 
 extension ShotnixShortcut {
-    static func configuredShortcutCount(getShortcut: (KeyboardShortcuts.Name) -> KeyboardShortcuts.Shortcut? = KeyboardShortcuts.getShortcut) -> Int {
-        allCases.reduce(0) { count, shortcut in
+    /// Optional shortcuts ship without a factory default (timed capture and
+    /// the recording set) — the user opts in via Preferences → Shortcuts.
+    var isOptional: Bool { name.defaultShortcut == nil }
+
+    static var requiredShortcutCount: Int {
+        allCases.filter { !$0.isOptional }.count
+    }
+
+    static func requiredConfiguredCount(getShortcut: (KeyboardShortcuts.Name) -> KeyboardShortcuts.Shortcut? = KeyboardShortcuts.getShortcut) -> Int {
+        allCases.filter { !$0.isOptional }.reduce(0) { count, shortcut in
             getShortcut(shortcut.name) == nil ? count : count + 1
+        }
+    }
+
+    static func optionalUnassignedCount(getShortcut: (KeyboardShortcuts.Name) -> KeyboardShortcuts.Shortcut? = KeyboardShortcuts.getShortcut) -> Int {
+        allCases.filter(\.isOptional).reduce(0) { count, shortcut in
+            getShortcut(shortcut.name) == nil ? count + 1 : count
         }
     }
 }

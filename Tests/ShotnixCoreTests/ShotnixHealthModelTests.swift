@@ -10,8 +10,9 @@ final class ShotnixHealthModelTests: XCTestCase {
             updatesConfigured: true,
             autoSavePath: "/tmp",
             autoSaveWritable: true,
-            configuredShortcutCount: ShotnixShortcut.allCases.count,
-            expectedShortcutCount: ShotnixShortcut.allCases.count,
+            configuredShortcutCount: ShotnixShortcut.requiredShortcutCount,
+            expectedShortcutCount: ShotnixShortcut.requiredShortcutCount,
+            optionalUnassignedShortcutCount: 0,
             version: "0.16.0",
             build: "25"
         )
@@ -22,6 +23,30 @@ final class ShotnixHealthModelTests: XCTestCase {
         XCTAssertEqual(ShotnixHealthModel.summary(snapshot: snapshot), .ok)
         XCTAssertEqual(rows.first(where: { $0.kind == .updates })?.detail, "Enabled")
         XCTAssertEqual(rows.first(where: { $0.kind == .version })?.detail, "0.16.0 (25)")
+        XCTAssertEqual(rows.first(where: { $0.kind == .shortcuts })?.detail, "All configured")
+    }
+
+    func testUnassignedOptionalShortcutsAreHealthy() {
+        let snapshot = ShotnixHealthSnapshot(
+            screenRecordingGranted: true,
+            nativeShortcutsEnabled: false,
+            updatesConfigured: true,
+            autoSavePath: "/tmp",
+            autoSaveWritable: true,
+            configuredShortcutCount: ShotnixShortcut.requiredShortcutCount,
+            expectedShortcutCount: ShotnixShortcut.requiredShortcutCount,
+            optionalUnassignedShortcutCount: 5,
+            version: "0.20.2",
+            build: "51"
+        )
+
+        let rows = ShotnixHealthModel.rows(snapshot: snapshot)
+        let shortcuts = rows.first(where: { $0.kind == .shortcuts })
+
+        XCTAssertEqual(ShotnixHealthModel.summary(snapshot: snapshot), .ok)
+        XCTAssertEqual(shortcuts?.state, .ok)
+        XCTAssertNil(shortcuts?.actionTitle)
+        XCTAssertEqual(shortcuts?.detail, "Ready · 5 optional off")
     }
 
     func testRowsReportFixableIssues() {
@@ -33,6 +58,7 @@ final class ShotnixHealthModelTests: XCTestCase {
             autoSaveWritable: false,
             configuredShortcutCount: 5,
             expectedShortcutCount: 7,
+            optionalUnassignedShortcutCount: 5,
             version: "0.16.0",
             build: "25"
         )
@@ -56,17 +82,24 @@ final class ShotnixHealthModelTests: XCTestCase {
         XCTAssertFalse(ShotnixHealthSnapshot.isWritableAutoSavePath(directory.appendingPathComponent("missing").path))
     }
 
-    func testShortcutHealthCountsMissingShortcuts() {
+    func testShortcutHealthCountsOnlyRequiredShortcuts() {
         let configuredNames: Set<String> = [
             KeyboardShortcuts.Name.shotnixCaptureArea.rawValue,
             KeyboardShortcuts.Name.shotnixCaptureText.rawValue
         ]
 
-        let count = ShotnixShortcut.configuredShortcutCount { name in
+        let required = ShotnixShortcut.requiredConfiguredCount { name in
             configuredNames.contains(name.rawValue) ? KeyboardShortcuts.Shortcut(.a, modifiers: [.command]) : nil
         }
+        let optionalOff = ShotnixShortcut.optionalUnassignedCount { _ in nil }
 
         XCTAssertEqual(ShotnixShortcut.allCases.count, 12)
-        XCTAssertEqual(count, 2)
+        XCTAssertEqual(ShotnixShortcut.requiredShortcutCount, 7)
+        XCTAssertEqual(required, 2)
+        XCTAssertEqual(optionalOff, 5)
+        XCTAssertFalse(ShotnixShortcut.captureArea.isOptional)
+        XCTAssertTrue(ShotnixShortcut.recordArea.isOptional)
+        XCTAssertTrue(ShotnixShortcut.stopRecording.isOptional)
+        XCTAssertTrue(ShotnixShortcut.captureTimed.isOptional)
     }
 }

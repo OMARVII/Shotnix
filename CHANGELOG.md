@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.20.3-beta] - 2026-09-14
+
+### Fixed
+- **Health no longer nags about optional shortcuts** — the menu bar Health tile showed a permanent yellow "7/12 configured · Fix" because Timed Capture and the four Recording shortcuts ship unassigned by design. Opt-in shortcuts no longer count against health: a fresh install now reads green "Ready · 5 optional off", and yellow only appears when a core shortcut with a factory default is actually missing.
+
 ## [0.20.2-beta] - 2026-09-14
 
 ### Changed
