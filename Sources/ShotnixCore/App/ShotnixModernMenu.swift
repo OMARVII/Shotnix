@@ -12,8 +12,21 @@ enum ShotnixMenuMetrics {
 final class ShotnixModernMenuPresenter {
     private var popover: NSPopover?
 
+    // The command center reuses ONE popover + hosting controller for the
+    // app's lifetime: building the SwiftUI tree fresh on every open cost
+    // 15-40ms, and NSPopover's default zoom animation made even a fast open
+    // feel sluggish. Cached content + no animation = the menu just appears.
+    private var commandCenterPopover: NSPopover?
+    private var commandCenterController: NSHostingController<ShotnixCommandCenterView>?
+
     var isShown: Bool {
-        popover?.isShown ?? false
+        (popover?.isShown ?? false) || (commandCenterPopover?.isShown ?? false)
+    }
+
+    /// Builds the command center's SwiftUI hierarchy once at launch so the
+    /// very first open pays no layout cost.
+    func warmUp() {
+        _ = commandCenterInfrastructure()
     }
 
     func showCommandCenter(
@@ -22,21 +35,62 @@ final class ShotnixModernMenuPresenter {
         healthActions: [ShotnixHealthKind: () -> Void],
         relativeTo button: NSStatusBarButton
     ) {
-        let popover = makePopover(width: ShotnixMenuMetrics.commandCenterWidth)
-        let controller = NSHostingController(
-            rootView: ShotnixCommandCenterView(
-                sections: sections,
-                healthRows: healthRows,
-                healthActions: healthActions,
-                dismiss: { [weak self] in self?.dismiss() }
-            )
+        let (popover, controller) = commandCenterInfrastructure()
+        controller.rootView = ShotnixCommandCenterView(
+            sections: sections,
+            healthRows: healthRows,
+            healthActions: healthActions,
+            dismiss: { [weak self] in self?.dismiss() }
         )
-        popover.contentViewController = controller
         let screenHeight = button.window?.screen?.visibleFrame.height ?? NSScreen.main?.visibleFrame.height ?? 700
         let height = min(620, max(420, screenHeight - 80))
         popover.contentSize = NSSize(width: ShotnixMenuMetrics.commandCenterWidth, height: height)
-        self.popover = popover
         popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+        animateEntrance(on: controller.view)
+    }
+
+    /// Quick settle-in on the popover content: pure Core Animation on the
+    /// hosting view's layer, applied AFTER the popover is shown — it can never
+    /// touch SwiftUI state or re-enter AppKit layout (a SwiftUI-state version
+    /// of this crashed inside NSView layout). The popover window still appears
+    /// with zero latency; the content fades and settles over ~0.2s.
+    private func animateEntrance(on view: NSView) {
+        view.wantsLayer = true
+        guard let layer = view.layer else { return }
+        layer.removeAnimation(forKey: "entranceFade")
+        layer.removeAnimation(forKey: "entranceSlide")
+
+        let fade = CABasicAnimation(keyPath: "opacity")
+        fade.fromValue = 0
+        fade.toValue = 1
+        fade.duration = 0.16
+        fade.timingFunction = CAMediaTimingFunction(name: .easeOut)
+        layer.add(fade, forKey: "entranceFade")
+
+        let slide = CASpringAnimation(keyPath: "transform.translation.y")
+        slide.fromValue = 6
+        slide.toValue = 0
+        slide.mass = 1
+        slide.stiffness = 380
+        slide.damping = 26
+        slide.duration = slide.settlingDuration
+        layer.add(slide, forKey: "entranceSlide")
+    }
+
+    private func commandCenterInfrastructure() -> (NSPopover, NSHostingController<ShotnixCommandCenterView>) {
+        if let commandCenterPopover, let commandCenterController {
+            return (commandCenterPopover, commandCenterController)
+        }
+        let popover = NSPopover()
+        popover.behavior = .transient
+        popover.animates = false
+        let controller = NSHostingController(
+            rootView: ShotnixCommandCenterView(sections: [], healthRows: [], healthActions: [:], dismiss: {})
+        )
+        popover.contentViewController = controller
+        commandCenterPopover = popover
+        commandCenterController = controller
+        return (popover, controller)
     }
 
     func showActionMenu(sections: [ShotnixMenuSection], at event: NSEvent, in view: NSView) {
@@ -61,6 +115,8 @@ final class ShotnixModernMenuPresenter {
     func dismiss() {
         popover?.performClose(nil)
         popover = nil
+        // The command center popover is cached — close it but keep it warm.
+        commandCenterPopover?.performClose(nil)
     }
 
     private func makePopover(width: CGFloat) -> NSPopover {
@@ -113,7 +169,7 @@ struct ShotnixCommandCenterView: View {
         VStack(spacing: 0) {
             header
 
-            ScrollView {
+            ShotnixSmoothScrollView {
                 VStack(alignment: .leading, spacing: 12) {
                     healthSection
 
@@ -121,11 +177,21 @@ struct ShotnixCommandCenterView: View {
                         ShotnixMenuSectionView(section: section, dismiss: dismiss)
                     }
                 }
-                .padding(.leading, 12)
-                .padding(.trailing, 24)
+                .padding(.horizontal, 12)
                 .padding(.top, 12)
-                .padding(.bottom, 12)
+                .padding(.bottom, 14)
+                .frame(width: ShotnixMenuMetrics.commandCenterWidth)
             }
+            // Soft edge fades hint at scrollability now that no bar renders.
+            .mask(
+                VStack(spacing: 0) {
+                    LinearGradient(colors: [.clear, .black], startPoint: .top, endPoint: .bottom)
+                        .frame(height: 8)
+                    Rectangle().fill(Color.black)
+                    LinearGradient(colors: [.black, .clear], startPoint: .top, endPoint: .bottom)
+                        .frame(height: 10)
+                }
+            )
             .frame(maxHeight: 560)
 
             if !footerActions.isEmpty {
@@ -166,21 +232,55 @@ struct ShotnixCommandCenterView: View {
         .background(.black.opacity(0.12))
     }
 
+    private var attentionRows: [ShotnixHealthRow] {
+        visibleHealthRows.filter { $0.state == .warning || $0.state == .issue }
+    }
+
+    /// When everything is green the old 2×N tile grid burned ~120pt at the
+    /// top of every menu open. Healthy state collapses to one quiet line;
+    /// tiles appear only for the rows that actually need attention.
     private var healthSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             ShotnixMenuSectionLabel("Health")
 
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
-                ForEach(visibleHealthRows) { row in
-                    ShotnixHealthTile(
-                        row: row,
-                        action: healthActions[row.kind].map { action in
-                            {
-                                dismiss()
-                                action()
+            if attentionRows.isEmpty {
+                HStack(spacing: 8) {
+                    Image(systemName: "checkmark.seal.fill")
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundStyle(Color(NSColor.systemGreen))
+                    Text("Everything is ready")
+                        .font(.system(size: 11.5, weight: .semibold))
+                        .foregroundStyle(Color.primary.opacity(0.85))
+                    Spacer(minLength: 4)
+                    Text("Capture · Record · Updates")
+                        .font(.system(size: 9.5, weight: .semibold))
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
+                .padding(.horizontal, 10)
+                .frame(height: 32)
+                .background(Color(NSColor.systemGreen).opacity(0.07), in: RoundedRectangle(cornerRadius: 9, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 9, style: .continuous)
+                        .stroke(Color(NSColor.systemGreen).opacity(0.14), lineWidth: 1)
+                )
+            } else {
+                // Full-width rows, not half-width grid cells: attention tiles
+                // are rare, and titles like "Apple Shortcuts · Conflict
+                // detected" were truncating to "Apple Sho… / Conflict det…"
+                // when squeezed into a 2-column grid.
+                VStack(spacing: 6) {
+                    ForEach(attentionRows) { row in
+                        ShotnixHealthTile(
+                            row: row,
+                            action: healthActions[row.kind].map { action in
+                                {
+                                    dismiss()
+                                    action()
+                                }
                             }
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }
@@ -469,40 +569,54 @@ private struct ShotnixHealthTile: View {
     }
 
     private var content: some View {
-        HStack(spacing: 8) {
-            Image(systemName: row.symbolName)
-                .font(.system(size: 11, weight: .bold))
+        HStack(spacing: 10) {
+            // A real warning badge, not the feature's own icon tinted yellow —
+            // the state must be readable at a glance.
+            Image(systemName: stateSymbol)
+                .font(.system(size: 12, weight: .bold))
                 .foregroundStyle(color)
-                .frame(width: 18, height: 18)
+                .frame(width: 26, height: 26)
+                .background(color.opacity(0.16), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
 
             VStack(alignment: .leading, spacing: 1) {
                 Text(row.title)
-                    .font(.system(size: 10.5, weight: .bold))
+                    .font(.system(size: 11.5, weight: .bold))
                     .lineLimit(1)
                 Text(row.detail)
-                    .font(.system(size: 9.5, weight: .semibold))
+                    .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
             }
+            .layoutPriority(1)
 
-            Spacer(minLength: 4)
+            Spacer(minLength: 6)
 
             if action != nil, let actionTitle = row.actionTitle {
                 Text(actionTitle)
-                    .font(.system(size: 9.5, weight: .bold))
-                    .foregroundStyle(Color.accentColor.opacity(0.9))
-                    .padding(.horizontal, 6)
-                    .frame(height: 18)
-                    .background(Color.accentColor.opacity(0.12), in: Capsule())
+                    .font(.system(size: 10, weight: .bold))
+                    .foregroundStyle(color)
+                    .padding(.horizontal, 8)
+                    .frame(height: 20)
+                    .background(color.opacity(0.14), in: Capsule())
+                    .fixedSize()
             }
         }
-        .padding(.horizontal, 8)
-        .frame(height: 36)
-        .background(Color.white.opacity(0.045), in: RoundedRectangle(cornerRadius: 9, style: .continuous))
+        .padding(.horizontal, 10)
+        .frame(height: 44)
+        .background(color.opacity(0.055), in: RoundedRectangle(cornerRadius: 9, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 9, style: .continuous)
-                .stroke(Color.white.opacity(0.035), lineWidth: 1)
+                .stroke(color.opacity(0.16), lineWidth: 1)
         )
+    }
+
+    private var stateSymbol: String {
+        switch row.state {
+        case .warning: return "exclamationmark.triangle.fill"
+        case .issue: return "exclamationmark.octagon.fill"
+        case .ok: return "checkmark.circle.fill"
+        case .info: return row.symbolName
+        }
     }
 
     private var color: Color {
@@ -512,6 +626,42 @@ private struct ShotnixHealthTile: View {
         case .issue: return Color(NSColor.systemRed)
         case .info: return .accentColor
         }
+    }
+}
+
+/// SwiftUI's ScrollView on macOS ignores `.scrollIndicators(.hidden)` whenever
+/// a mouse is connected or "Show scroll bars: Always" is set — the legacy
+/// scroller still renders as a thick gray slab down the menu. Wrapping the
+/// real NSScrollView guarantees a bar-free, elastic, buttery scroll.
+private struct ShotnixSmoothScrollView<Content: View>: NSViewRepresentable {
+    let content: Content
+
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
+
+    func makeNSView(context: Context) -> NSScrollView {
+        let scroll = NSScrollView()
+        scroll.drawsBackground = false
+        scroll.hasVerticalScroller = false
+        scroll.hasHorizontalScroller = false
+        scroll.verticalScrollElasticity = .allowed
+        scroll.horizontalScrollElasticity = .none
+        scroll.automaticallyAdjustsContentInsets = false
+
+        let host = NSHostingView(rootView: content)
+        host.translatesAutoresizingMaskIntoConstraints = false
+        scroll.documentView = host
+        NSLayoutConstraint.activate([
+            host.leadingAnchor.constraint(equalTo: scroll.contentView.leadingAnchor),
+            host.topAnchor.constraint(equalTo: scroll.contentView.topAnchor),
+            host.widthAnchor.constraint(equalTo: scroll.contentView.widthAnchor),
+        ])
+        return scroll
+    }
+
+    func updateNSView(_ nsView: NSScrollView, context: Context) {
+        (nsView.documentView as? NSHostingView<Content>)?.rootView = content
     }
 }
 

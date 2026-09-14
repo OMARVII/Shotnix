@@ -69,6 +69,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         setupStatusItem()
         registerHotkeys()
         CaptureEngine.warmCaptureSound()
+        // Pre-build the command center's SwiftUI tree so the first menu open
+        // is as instant as every later one.
+        menuPresenter.warmUp()
         let promptForNativeShortcuts = { [weak self] in
             NativeShortcutManager.promptIfNeeded {
                 self?.registerHotkeys()
@@ -466,16 +469,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func commandCenterSections() -> [ShotnixMenuSection] {
+        // "Capture All Displays" stays reachable through Capture Fullscreen's
+        // engine API but earns no menu row — fullscreen already captures the
+        // display you're on, and the extra row just taxed every menu open.
         var captureActions = [
             action(id: "capture.area", title: "Capture Area", symbol: "rectangle.dashed", shortcut: .shotnixCaptureArea, role: .primary) { [weak self] in self?.captureArea() },
             action(id: "capture.window", title: "Capture Window", symbol: "macwindow", shortcut: .shotnixCaptureWindow) { [weak self] in self?.captureWindow() },
             action(id: "capture.fullscreen", title: "Capture Fullscreen", symbol: "rectangle.on.rectangle", shortcut: .shotnixCaptureFullscreenNative) { [weak self] in self?.captureFullscreen() },
         ]
-        if NSScreen.screens.count > 1 {
-            captureActions.append(
-                action(id: "capture.all-displays", title: "Capture All Displays", symbol: "display.2") { [weak self] in self?.captureAllDisplays() }
-            )
-        }
         captureActions.append(contentsOf: [
             action(id: "capture.previous", title: "Capture Previous Area", symbol: "arrow.counterclockwise.circle", shortcut: .shotnixCapturePreviousArea) { [weak self] in self?.capturePrevious() },
                 action(id: "capture.timed", title: "Timed Capture (\(Settings.timedCaptureDelaySeconds)s)", symbol: "timer", shortcut: .shotnixCaptureTimed) { [weak self] in self?.captureTimed() },
@@ -484,19 +485,25 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         return [
             ShotnixMenuSection(id: "capture", title: "Capture", actions: captureActions),
-            ShotnixMenuSection(id: "record", title: "Record", actions: [
-                action(id: "record.area", title: "Record Area", symbol: "record.circle", shortcut: .shotnixRecordArea, isEnabled: captureEngine?.recordingActionsEnabled ?? false) { [weak self] in self?.recordArea() },
-                action(id: "record.window", title: "Record Window", symbol: "macwindow.badge.plus", shortcut: .shotnixRecordWindow, isEnabled: captureEngine?.recordingActionsEnabled ?? false) { [weak self] in self?.recordWindow() },
-                action(id: "record.fullscreen", title: "Record Fullscreen", symbol: "rectangle.fill.on.rectangle.fill", shortcut: .shotnixRecordFullscreen, isEnabled: captureEngine?.recordingActionsEnabled ?? false) { [weak self] in self?.recordFullscreen() },
-                action(
-                    id: "record.stop",
-                    title: captureEngine?.recordingStopTitle ?? "Stop Recording",
-                    symbol: "stop.circle",
-                    shortcut: .shotnixStopRecording,
-                    isEnabled: captureEngine?.recordingStopEnabled ?? false,
-                    role: .destructive
-                ) { [weak self] in self?.stopRecording() },
-            ]),
+            ShotnixMenuSection(id: "record", title: "Record", actions: {
+                var recordActions = [
+                    action(id: "record.area", title: "Record Area", symbol: "record.circle", shortcut: .shotnixRecordArea, isEnabled: captureEngine?.recordingActionsEnabled ?? false) { [weak self] in self?.recordArea() },
+                    action(id: "record.window", title: "Record Window", symbol: "macwindow.badge.plus", shortcut: .shotnixRecordWindow, isEnabled: captureEngine?.recordingActionsEnabled ?? false) { [weak self] in self?.recordWindow() },
+                    action(id: "record.fullscreen", title: "Record Fullscreen", symbol: "rectangle.fill.on.rectangle.fill", shortcut: .shotnixRecordFullscreen, isEnabled: captureEngine?.recordingActionsEnabled ?? false) { [weak self] in self?.recordFullscreen() },
+                ]
+                // Stop/Cancel only exists while there is something to stop —
+                // a permanently visible disabled red row was pure noise.
+                if captureEngine?.recordingStopEnabled == true {
+                    recordActions.append(action(
+                        id: "record.stop",
+                        title: captureEngine?.recordingStopTitle ?? "Stop Recording",
+                        symbol: "stop.circle",
+                        shortcut: .shotnixStopRecording,
+                        role: .destructive
+                    ) { [weak self] in self?.stopRecording() })
+                }
+                return recordActions
+            }()),
             ShotnixMenuSection(id: "tools", title: "Tools", actions: [
                 action(id: "tools.ocr", title: "Capture Text", symbol: "text.viewfinder", shortcut: .shotnixCaptureText) { [weak self] in self?.captureText() },
                 action(id: "tools.qr", title: "Scan QR Code", symbol: "qrcode.viewfinder") { [weak self] in self?.scanQRCode() },
@@ -504,12 +511,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 action(id: "tools.last-recording", title: "Edit Last Recording", symbol: "play.rectangle.on.rectangle") { [weak self] in self?.editLastRecording() },
                 action(id: "tools.annotate-last", title: "Annotate Last Screenshot", symbol: "pencil.tip.crop.circle", isEnabled: !(historyManager?.items.isEmpty ?? true)) { [weak self] in self?.annotateLastScreenshot() },
             ]),
-            ShotnixMenuSection(id: "utility", title: "Utility", actions: [
-                action(id: "utility.history", title: "Open History", symbol: "clock.arrow.circlepath") { [weak self] in self?.openHistory() },
-                action(id: "utility.editor", title: "Show Editor", symbol: "pencil.and.outline", isEnabled: AnnotationWindowController.hasOpenEditors) { [weak self] in self?.showEditor() },
-                action(id: "utility.video-editor", title: "Show Video Editor", symbol: "film") { [weak self] in self?.showVideoEditor() },
-                action(id: "utility.desktop-icons", title: DesktopIconsManager.desktopIconsVisible ? "Hide Desktop Icons" : "Show Desktop Icons", symbol: DesktopIconsManager.desktopIconsVisible ? "eye.slash" : "eye") { [weak self] in self?.toggleDesktopIcons() },
-            ]),
+            ShotnixMenuSection(id: "utility", title: "Utility", actions: {
+                var utilityActions = [
+                    action(id: "utility.history", title: "Open History", symbol: "clock.arrow.circlepath") { [weak self] in self?.openHistory() },
+                ]
+                // Editor-window rows only exist while an editor is open —
+                // disabled rows earn no space.
+                if AnnotationWindowController.hasOpenEditors {
+                    utilityActions.append(action(id: "utility.editor", title: "Show Editor", symbol: "pencil.and.outline") { [weak self] in self?.showEditor() })
+                }
+                if VideoDemoEditorWindowController.hasOpenEditors {
+                    utilityActions.append(action(id: "utility.video-editor", title: "Show Video Editor", symbol: "film") { [weak self] in self?.showVideoEditor() })
+                }
+                utilityActions.append(action(id: "utility.desktop-icons", title: DesktopIconsManager.desktopIconsVisible ? "Hide Desktop Icons" : "Show Desktop Icons", symbol: DesktopIconsManager.desktopIconsVisible ? "eye.slash" : "eye") { [weak self] in self?.toggleDesktopIcons() })
+                return utilityActions
+            }()),
             ShotnixMenuSection(id: "settings", title: "Settings", actions: [
                 action(id: "settings.preferences", title: "Preferences", symbol: "gearshape", shortcutText: "⌘,") { [weak self] in self?.openPreferences() },
                 action(id: "settings.about", title: "About Shotnix", symbol: "info.circle") { [weak self] in self?.openAbout() },

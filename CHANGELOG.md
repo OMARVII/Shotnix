@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.20.4-beta] - 2026-09-14
+
+### Changed
+- **Command center opens instantly** — the menu's interface is built once at launch and reused (instead of rebuilt on every open), and the popover's sluggish zoom animation is gone: click the icon and the menu is simply there. Problem tiles carry proper warning badges (yellow triangle / red octagon) with state-tinted styling instead of a recolored feature icon.
+- **Command center slimmed down and smoothed out** — the Health section collapses to a single quiet "Everything is ready" line when nothing needs attention, and problem tiles now span the full menu width so nothing truncates ("Apple Sho…", "Conflict det…", "Updat…" are gone). The always-disabled Cancel Recording row and closed-editor rows are hidden until they're actionable, Capture All Displays no longer takes a menu row, and the thick legacy scrollbar is gone for good — the menu scrolls bar-free with native elastic feel and soft edge fades (an AppKit-level fix, since macOS ignores SwiftUI's indicator hiding whenever a mouse is connected).
+
+### Fixed
+- **Exported cursor now follows the recorded timestamps** — with Smooth Cursor on, exports animated the cursor in "paced" mode, which ignores keyframe timing entirely and drifted the cursor uniformly across the clip, out of sync with clicks, zooms, and the preview. Smoothing now uses cubic interpolation that honors the real timeline. Found by frame-diffing a real exported file against the editor preview.
+- **Export save panel default filename** no longer reads "Shotnix Demo Shotnix …".
+
 ## [0.20.3-beta] - 2026-09-14
 
 ### Fixed

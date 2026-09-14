@@ -1895,7 +1895,12 @@ enum VideoDemoExporter {
         animation.keyTimes = keyTimes.map { NSNumber(value: $0) }
         animation.duration = duration
         animation.beginTime = AVCoreAnimationBeginTimeAtZero
-        animation.calculationMode = project.smoothCursor ? .paced : .linear
+        // NEVER .paced here: paced mode discards keyTimes and re-times the
+        // whole path for constant velocity, so the exported cursor drifted
+        // uniformly across the clip — desynced from clicks, zooms, and the
+        // preview whenever the real cursor paused. .cubic smooths the path
+        // while honoring the recorded timestamps.
+        animation.calculationMode = project.smoothCursor ? .cubic : .linear
         animation.isRemovedOnCompletion = false
         animation.fillMode = .forwards
         cursor.add(animation, forKey: "position")
@@ -3301,7 +3306,11 @@ final class VideoDemoEditorViewModel: ObservableObject {
         let optionsModel = VideoDemoExportOptionsModel(options: .fromSettings)
         panel.allowedContentTypes = optionsModel.options.format == .gif ? [.gif] : [.mpeg4Movie]
         panel.canCreateDirectories = true
-        panel.nameFieldStringValue = "Shotnix Demo \(ImageExporter.timestampedName).\(optionsModel.options.fileExtension)"
+        // timestampedName renders the user's template, which usually starts
+        // with "Shotnix " — strip it so the default isn't "Shotnix Demo Shotnix …".
+        let stamp = ImageExporter.timestampedName
+        let cleanedStamp = stamp.hasPrefix("Shotnix ") ? String(stamp.dropFirst("Shotnix ".count)) : stamp
+        panel.nameFieldStringValue = "Shotnix Demo \(cleanedStamp).\(optionsModel.options.fileExtension)"
         panel.directoryURL = URL(fileURLWithPath: Settings.autoSaveLocation, isDirectory: true)
 
         // Format / fps / size / end-card choices live inside the save panel.

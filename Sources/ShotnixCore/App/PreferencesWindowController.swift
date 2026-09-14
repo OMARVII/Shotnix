@@ -888,7 +888,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.20.3"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.20.4"
     
     var body: some View {
         PreferencesPane {
@@ -931,6 +931,11 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.20.4
+                    • Command center opens instantly with a quick settle animation, collapses Health to one line when all is well, shows full-width warning tiles with real badges, hides rows that can't be used, and scrolls bar-free
+                    • Exported cursor now follows the recorded timeline exactly — no more drift out of sync with clicks and zooms
+                    • Export save panel suggests a clean file name
+
                     Version 0.20.3
                     • The Health tile no longer warns about shortcuts you chose not to set — Timed Capture and Recording shortcuts are optional, and a fresh install now shows green
 
