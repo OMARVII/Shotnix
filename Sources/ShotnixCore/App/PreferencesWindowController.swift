@@ -888,7 +888,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.20.1"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.20.2"
     
     var body: some View {
         PreferencesPane {
@@ -931,6 +931,10 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.20.2
+                    • The post-capture thumbnail now fills the whole card — small captures zoom to fill, and small text renders noticeably crisper
+                    • The thumbnail floats a bit higher on screen, clear of the Dock
+
                     Version 0.20.1
                     • Smoother auto-zoom — the camera no longer darts: every move gets a real duration, nearby clicks share one held shot, back-to-back shots glide directly between focus points, and zoom-outs are one smooth motion
                     • Preview and export now share a single zoom camera — the point you pick genuinely centers, and black beyond the frame is impossible
