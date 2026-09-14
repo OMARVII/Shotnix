@@ -2,47 +2,47 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>CFBundleIdentifier</key>
-    <string>com.shotnix.app</string>
-    <key>CFBundleName</key>
-    <string>Shotnix</string>
-    <key>CFBundleDisplayName</key>
-    <string>Shotnix</string>
-    <key>CFBundleVersion</key>
-    <string>49</string>
-    <key>CFBundleShortVersionString</key>
-    <string>0.20.0</string>
-    <key>CFBundleExecutable</key>
-    <string>Shotnix</string>
-    <key>CFBundlePackageType</key>
-    <string>APPL</string>
-    <key>LSMinimumSystemVersion</key>
-    <string>13.0</string>
-    <key>LSUIElement</key>
-    <true/>
-    <key>NSPrincipalClass</key>
-    <string>NSApplication</string>
-    <key>CFBundleIconFile</key>
-    <string>Shotnix</string>
-    <key>NSHighResolutionCapable</key>
-    <true/>
-    <key>NSSupportsAutomaticGraphicsSwitching</key>
-    <true/>
-    <key>NSScreenCaptureUsageDescription</key>
-    <string>Shotnix needs screen recording permission to capture screenshots and screen recordings.</string>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>Shotnix needs microphone access when you enable microphone audio for screen recordings.</string>
-    <key>NSHumanReadableCopyright</key>
-    <string>Copyright © 2026 Shotnix Contributors. MIT License.</string>
-    <key>CFBundleInfoDictionaryVersion</key>
-    <string>6.0</string>
-    <key>CFBundleSupportedPlatforms</key>
-    <array>
-        <string>MacOSX</string>
-    </array>
-    <key>SUFeedURL</key>
-    <string>https://shotnix.com/downloads/appcast.xml</string>
-    <key>SUPublicEDKey</key>
-    <string>SET_SPARKLE_PUBLIC_ED_KEY_IN_RELEASE_BUILD</string>
+	<key>CFBundleDisplayName</key>
+	<string>Shotnix</string>
+	<key>CFBundleExecutable</key>
+	<string>Shotnix</string>
+	<key>CFBundleIconFile</key>
+	<string>Shotnix</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.shotnix.app</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Shotnix</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>0.20.1</string>
+	<key>CFBundleSupportedPlatforms</key>
+	<array>
+		<string>MacOSX</string>
+	</array>
+	<key>CFBundleVersion</key>
+	<string>50</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>13.0</string>
+	<key>LSUIElement</key>
+	<true/>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2026 Shotnix Contributors. MIT License.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Shotnix needs microphone access when you enable microphone audio for screen recordings.</string>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+	<key>NSScreenCaptureUsageDescription</key>
+	<string>Shotnix needs screen recording permission to capture screenshots and screen recordings.</string>
+	<key>NSSupportsAutomaticGraphicsSwitching</key>
+	<true/>
+	<key>SUFeedURL</key>
+	<string>https://shotnix.com/downloads/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>SET_SPARKLE_PUBLIC_ED_KEY_IN_RELEASE_BUILD</string>
 </dict>
 </plist>

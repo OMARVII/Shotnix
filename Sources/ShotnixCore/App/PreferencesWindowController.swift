@@ -888,7 +888,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.20.0"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.20.1"
     
     var body: some View {
         PreferencesPane {
@@ -931,6 +931,10 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.20.1
+                    • Smoother auto-zoom — the camera no longer darts: every move gets a real duration, nearby clicks share one held shot, back-to-back shots glide directly between focus points, and zoom-outs are one smooth motion
+                    • Preview and export now share a single zoom camera — the point you pick genuinely centers, and black beyond the frame is impossible
+
                     Version 0.20.0
                     • Recordings open already produced — auto-zoom follows your recorded clicks with zero editing, ready to export (toggle in Preferences → Recording)
                     • GIF export — pick MP4 or GIF in the export panel, with frame rate and size options that are remembered
