@@ -97,6 +97,36 @@ final class AnnotationCanvasInteractionTests: XCTestCase {
         XCTAssertEqual(restored?.fontSize ?? 0, 24, accuracy: 0.1, "edited text must keep its original size")
     }
 
+    func testSwitchingToolsCommitsPendingTextFieldImmediately() {
+        canvas.activeTool = .text
+        canvas.mouseDown(with: event(.leftMouseDown, at: CGPoint(x: 100, y: 100)))
+        let field = canvas.subviews.compactMap { $0 as? NSTextField }.first
+        XCTAssertNotNil(field, "text tool click must open a live field")
+        field?.stringValue = "Note"
+
+        // Switching tools commits the field right away — not on the next
+        // canvas click, where the appearing annotation looks like the new
+        // tool spawned it.
+        canvas.activeTool = .select
+        XCTAssertTrue(canvas.subviews.compactMap { $0 as? NSTextField }.isEmpty)
+        XCTAssertEqual(canvas.objects.compactMap { $0 as? TextAnnotation }.first?.text, "Note")
+
+        let countBefore = canvas.objects.count
+        canvas.mouseDown(with: event(.leftMouseDown, at: CGPoint(x: 300, y: 250)))
+        canvas.mouseUp(with: event(.leftMouseUp, at: CGPoint(x: 300, y: 250)))
+        XCTAssertEqual(canvas.objects.count, countBefore, "clicking with Select must never create anything")
+    }
+
+    func testSwitchingToolsDiscardsEmptyPendingTextField() {
+        canvas.activeTool = .text
+        canvas.mouseDown(with: event(.leftMouseDown, at: CGPoint(x: 100, y: 100)))
+        XCTAssertFalse(canvas.subviews.compactMap { $0 as? NSTextField }.isEmpty)
+
+        canvas.activeTool = .select
+        XCTAssertTrue(canvas.subviews.compactMap { $0 as? NSTextField }.isEmpty, "empty field must vanish on tool switch")
+        XCTAssertTrue(canvas.objects.isEmpty, "no annotation from an empty field")
+    }
+
     // MARK: - Event synthesis
 
     private func drag(from start: CGPoint, to end: CGPoint) {

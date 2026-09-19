@@ -8,7 +8,7 @@ enum AnnotationTool: String, CaseIterable {
 
     var icon: String {
         switch self {
-        case .select:          return "arrow.up.left.and.arrow.down.right"
+        case .select:          return "cursorarrow"
         case .arrow:           return "arrow.up.right"
         case .rectangle:       return "rectangle"
         case .filledRectangle: return "rectangle.fill"

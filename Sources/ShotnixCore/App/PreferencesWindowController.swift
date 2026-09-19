@@ -888,7 +888,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.21.0"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.21.1"
     
     var body: some View {
         PreferencesPane {
@@ -931,6 +931,10 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.21.1
+                    • The Select tool in the screenshot editor now uses a proper pointer icon, so it reads as Select at a glance
+                    • Fixed: switching tools while a text box was still open no longer drops a surprise text annotation on your next click — the text commits the moment you switch tools
+
                     Version 0.21.0
                     • The video timeline is redesigned as a pro editing surface — labeled zoom blocks you drag to retime ("1.8×"), color-coded callout pills spanning exactly when they're on screen, click dots, and the clip strip anchoring the bottom
                     • Callouts are fully editable: drag them on the video itself with resize handles, drag their pill in time, drag an edge to set when they appear and disappear, and drag up or down to move between lanes — every gesture is one undo step

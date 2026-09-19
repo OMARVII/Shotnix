@@ -12,6 +12,12 @@ final class AnnotationCanvas: NSView {
     var selectedObjects: [any AnnotationObject] = []
     var activeTool: AnnotationTool = .arrow {
         didSet {
+            // A live text field must not outlive its tool: left open, it
+            // silently commits on the NEXT canvas click, which looks like the
+            // new tool spawned a text annotation out of nowhere.
+            if oldValue != activeTool {
+                commitTextField()
+            }
             window?.invalidateCursorRects(for: self)
             onToolChanged?(activeTool)
             Settings.annotationLastTool = activeTool.rawValue

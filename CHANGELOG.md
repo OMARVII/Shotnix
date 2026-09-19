@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.21.1-beta] - 2026-09-19
+
+### Changed
+- **The Select tool got a proper pointer icon** — the old diagonal-arrows glyph read as "resize", so nobody recognized it as Select.
+
+### Fixed
+- **Switching tools no longer spawns a surprise text annotation** — an in-progress text field from the Text tool used to stay open across a tool switch and silently commit on the next canvas click, so clicking with Select appeared to create a text out of nowhere. The field now commits (or, if empty, disappears) the moment the tool changes.
+
 ## [0.21.0-beta] - 2026-09-19
 
 ### Added
