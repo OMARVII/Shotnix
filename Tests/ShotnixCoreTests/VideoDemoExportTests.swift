@@ -64,9 +64,28 @@ final class VideoDemoExportTests: XCTestCase {
         let tracks = try await asset.loadTracks(withMediaType: .video)
         let track = try XCTUnwrap(tracks.first)
         let size = try await track.load(.naturalSize)
-        // Widescreen canvas is 1920x1080; half resolution must land at 960x540.
-        XCTAssertEqual(size.width, 960, accuracy: 2)
-        XCTAssertEqual(size.height, 540, accuracy: 2)
+        // The canvas adapts to avoid upscaling small sources; half resolution
+        // must land at exactly half of whatever canvas the project computes.
+        let canvas = project.canvasSize()
+        XCTAssertEqual(size.width, canvas.width / 2, accuracy: 2)
+        XCTAssertEqual(size.height, canvas.height / 2, accuracy: 2)
+    }
+
+    func testCanvasNeverUpscalesSmallSources() {
+        // Small 1x-display area recording: the widescreen canvas must shrink
+        // so the stage renders the source at native 1:1, not stretched.
+        var small = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/s.mp4"), duration: 5, sourceSize: CGSize(width: 700, height: 500))
+        small.aspectPreset = .widescreen
+        let smallCanvas = small.canvasSize()
+        XCTAssertLessThan(smallCanvas.width, 1920)
+        let stage = small.stageRect(in: smallCanvas)
+        XCTAssertEqual(stage.width, 700, accuracy: 3, "stage must match source pixels")
+
+        // A big retina capture keeps the full 1920x1080 canvas (downscaling
+        // is sharp; only upscaling was the problem).
+        var big = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/b.mp4"), duration: 5, sourceSize: CGSize(width: 5120, height: 2880))
+        big.aspectPreset = .widescreen
+        XCTAssertEqual(big.canvasSize(), CGSize(width: 1920, height: 1080))
     }
 
     func testZoomWindowStaysInsideCanvasThroughCornerRamp() {

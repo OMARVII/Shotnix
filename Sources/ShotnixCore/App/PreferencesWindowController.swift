@@ -888,7 +888,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.20.5"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.21.0"
     
     var body: some View {
         PreferencesPane {
@@ -931,6 +931,14 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.21.0
+                    • The video timeline is redesigned as a pro editing surface — labeled zoom blocks you drag to retime ("1.8×"), color-coded callout pills spanning exactly when they're on screen, click dots, and the clip strip anchoring the bottom
+                    • Callouts are fully editable: drag them on the video itself with resize handles, drag their pill in time, drag an edge to set when they appear and disappear, and drag up or down to move between lanes — every gesture is one undo step
+                    • Overlapping callouts stack into lanes automatically, drags are smooth with clean snapping, and recorded clicks can be retimed or deleted right on the timeline
+                    • New preview mute button (or press M) silences the editor while you review — export audio is untouched
+                    • Annotation editor: grab and move any drawn shape with any tool, hover shows what's draggable, resize from the handles, and double-click text to edit it
+                    • Fixed: a freeze when pressing ⌘X/⌘C with the post-capture thumbnail focused, blurry area recordings, screenshots of Shotnix's own windows, and capture feedback now appears before you move the mouse
+
                     Version 0.20.5
                     • Menu bar full? Shotnix now notices when macOS hides its icon: a heads-up toast, relaunching the app opens the menu as a floating panel, and a new assignable Open Command Center shortcut works without the icon
 

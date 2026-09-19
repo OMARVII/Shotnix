@@ -72,6 +72,9 @@ final class AreaSelectionWindow: NSObject {
         }
 
         NSCursor.crosshair.push()
+        // push() alone can be overridden by the cursor rect that was active
+        // under the mouse when the overlay appeared; set() applies it NOW.
+        NSCursor.crosshair.set()
     }
     private func focusFirstOverlay() {
         guard !overlays.isEmpty, let first = overlays.first else { return }
@@ -155,6 +158,12 @@ private final class SelectionOverlayWindow: NSWindow {
 
     func show() {
         orderFrontRegardless()
+        // Feedback must not wait for the first mouse move: draw the crosshair
+        // (or window highlight) at the CURRENT cursor position right away, and
+        // register a cursor rect so the pointer becomes a crosshair while the
+        // mouse is still stationary.
+        overlayView.primeInitialMouseState()
+        invalidateCursorRects(for: overlayView)
     }
 
     /// The loupe's pixel source arrives asynchronously after the overlay is
@@ -214,6 +223,36 @@ private final class SelectionOverlayView: NSView {
         // Loupe pixels just became available — paint it at the current cursor.
         if let position = mousePosition {
             invalidateCursorArtifacts(at: position)
+        }
+    }
+
+    /// AppKit keeps the pointer a crosshair over the overlay even while the
+    /// mouse hasn't moved yet — a pushed NSCursor alone gets overridden by
+    /// whatever cursor rect was active when the overlay appeared.
+    override func resetCursorRects() {
+        super.resetCursorRects()
+        addCursorRect(bounds, cursor: .crosshair)
+    }
+
+    /// Renders feedback for the mouse's CURRENT position the moment the
+    /// overlay appears. Testers pressed the hotkey, saw nothing change, and
+    /// assumed capture hadn't started — the crosshair and window highlight
+    /// only initialized from mouse-MOVE events.
+    func primeInitialMouseState() {
+        guard let window else { return }
+        let screenPoint = NSEvent.mouseLocation
+        // Overlays exist per display; only the one under the mouse paints.
+        guard window.frame.contains(screenPoint) else { return }
+        let viewPoint = window.convertPoint(fromScreen: screenPoint)
+
+        if mode == .area {
+            mousePosition = viewPoint
+            invalidateCursorArtifacts(at: viewPoint)
+        } else {
+            let hit = windowUnder(viewPoint)
+            highlightedWindowRect = hit?.rect
+            highlightedWindowID = hit?.windowID
+            invalidateWindowHighlight(from: nil, to: highlightedWindowRect)
         }
     }
 

@@ -370,6 +370,96 @@ final class VideoDemoProjectTests: XCTestCase {
         XCTAssertLessThanOrEqual(model.project.zoomKeyframes.map(\.scale).max() ?? 0, 1.75)
     }
 
+    @MainActor
+    func testStageEffectDragIsOneUndoStepAndClampsToStage() {
+        var project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/demo.mp4"), duration: 5)
+        let effect = VideoDemoOverlayEffect(kind: .highlight, time: 1, x: 0.5, y: 0.5, width: 0.3, height: 0.2)
+        project.overlayEffects = [effect]
+        let model = VideoDemoEditorViewModel(project: project)
+        model.duration = 5
+
+        // One drag = many incremental moves but exactly one undo snapshot,
+        // and the callout can never be dragged off the stage.
+        XCTAssertFalse(model.canUndoTimelineEdit)
+        model.moveEffect(id: effect.id, toX: 0.6, y: 0.55)
+        model.moveEffect(id: effect.id, toX: 1.8, y: -0.4)
+        model.endEffectStageEdit()
+
+        let moved = model.project.overlayEffects[0]
+        XCTAssertEqual(moved.x, 0.98, accuracy: 0.0001)
+        XCTAssertEqual(moved.y, 0.02, accuracy: 0.0001)
+        XCTAssertEqual(model.selectedEffectID, effect.id)
+
+        model.undoTimelineEdit()
+        XCTAssertEqual(model.project.overlayEffects[0].x, 0.5, accuracy: 0.0001)
+        XCTAssertEqual(model.project.overlayEffects[0].y, 0.5, accuracy: 0.0001)
+
+        // Corner resize clamps size and is again a single undo step.
+        model.resizeEffect(id: effect.id, x: 0.5, y: 0.5, width: 4, height: 0.01)
+        model.endEffectStageEdit()
+        let resized = model.project.overlayEffects[0]
+        XCTAssertEqual(resized.width, 0.9, accuracy: 0.0001)
+        XCTAssertEqual(resized.height, 0.04, accuracy: 0.0001)
+
+        // Timeline pill: setting the visible window in timeline seconds
+        // lands in source time/duration (identical here — no cuts).
+        model.setEffectWindow(id: effect.id, timelineStart: 1.5, timelineEnd: 3.0)
+        model.endEffectStageEdit()
+        XCTAssertEqual(model.project.overlayEffects[0].time, 1.5, accuracy: 0.001)
+        XCTAssertEqual(model.project.overlayEffects[0].duration, 1.5, accuracy: 0.001)
+
+        // A too-short window clamps to the 0.2s minimum instead of vanishing.
+        model.setEffectWindow(id: effect.id, timelineStart: 2, timelineEnd: 2.01)
+        model.endEffectStageEdit()
+        XCTAssertGreaterThanOrEqual(model.project.overlayEffects[0].duration, 0.2 - 0.001)
+    }
+
+    @MainActor
+    func testEffectLayerNormalizationSpreadsConflictsAndCompacts() {
+        // Legacy drafts decode everything as layer 0: overlapping callouts
+        // must spread onto separate lanes, in time order.
+        let a = VideoDemoOverlayEffect(kind: .highlight, time: 4, duration: 3)
+        let b = VideoDemoOverlayEffect(kind: .text, time: 5, duration: 3.5)
+        let c = VideoDemoOverlayEffect(kind: .arrow, time: 6, duration: 1.5)
+        var d = VideoDemoOverlayEffect(kind: .blur, time: 18, duration: 3)
+        d.layer = 6 // stranded on a distant lane → compacts down
+
+        let normalized = VideoDemoProject.normalizedEffectLayers([a, b, c, d])
+        let layers = Dictionary(uniqueKeysWithValues: normalized.map { ($0.id, $0.layer) })
+        XCTAssertEqual(layers[a.id], 0)
+        XCTAssertEqual(layers[b.id], 1, "overlaps a → next lane")
+        XCTAssertEqual(layers[c.id], 2, "overlaps a and b → third lane")
+        XCTAssertEqual(layers[d.id], 3, "no conflict, but empty lanes 3-5 compact away")
+
+        // A deliberate user-chosen lane with no conflict is preserved.
+        var solo = VideoDemoOverlayEffect(kind: .text, time: 1, duration: 2)
+        solo.layer = 1
+        var neighbor = VideoDemoOverlayEffect(kind: .highlight, time: 1, duration: 2)
+        neighbor.layer = 0
+        let kept = VideoDemoProject.normalizedEffectLayers([solo, neighbor])
+        XCTAssertEqual(Dictionary(uniqueKeysWithValues: kept.map { ($0.id, $0.layer) })[solo.id], 1)
+
+        // The timeline reserves height for exactly the lanes in use.
+        var project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/demo.mp4"), duration: 30)
+        project.overlayEffects = normalized
+        XCTAssertEqual(VideoDemoTimelineView.effectAreaHeight(for: project), 4 * 28 + 3 * 4)
+    }
+
+    @MainActor
+    func testSetEffectLayerIsUndoableAndSettlesOnDragEnd() {
+        var project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/demo.mp4"), duration: 30)
+        let a = VideoDemoOverlayEffect(kind: .highlight, time: 4, duration: 3)
+        project.overlayEffects = [a]
+        let model = VideoDemoEditorViewModel(project: project)
+        model.duration = 30
+
+        model.setEffectLayer(id: a.id, layer: 3)
+        model.endEffectStageEdit()
+        // Alone on the timeline, the pill settles back onto lane 0.
+        XCTAssertEqual(model.project.overlayEffects[0].layer, 0)
+        XCTAssertTrue(model.canUndoTimelineEdit)
+    }
+
     func testRecordingMetadataAppliesCursorDefaults() {
         var project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/demo.mp4"))
         let metadata = VideoDemoRecordingMetadata(

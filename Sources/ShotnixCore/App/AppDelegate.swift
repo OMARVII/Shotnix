@@ -502,10 +502,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     /// Re-delivers a shortcut to the key window's first responder as a keyDown.
-    /// Safe from re-entry: direct keyDown dispatch never re-enters menu
-    /// key-equivalent processing.
+    ///
+    /// TWO guards against infinite recursion, both load-bearing: NSWindow's
+    /// own `keyDown` re-enters menu key-equivalent routing, so when a window
+    /// is its OWN first responder (the hover-focused post-capture overlay,
+    /// the detached command center) the replay came straight back here —
+    /// ⌘X/⌘C with one of those focused livelocked the main thread until the
+    /// app had to be force-killed. Never replay into a window-as-responder,
+    /// and never replay while already replaying.
+    private var isReplayingKeyEquivalent = false
+
     private func replayKeyEquivalent(characters: String, keyCode: UInt16, modifiers: NSEvent.ModifierFlags) {
+        guard !isReplayingKeyEquivalent else { return }
         guard let window = NSApp.keyWindow,
+              let responder = window.firstResponder,
+              !(responder is NSWindow),
               let event = NSEvent.keyEvent(
                   with: .keyDown,
                   location: .zero,
@@ -518,7 +529,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                   isARepeat: false,
                   keyCode: keyCode
               ) else { return }
-        window.firstResponder?.keyDown(with: event)
+        isReplayingKeyEquivalent = true
+        defer { isReplayingKeyEquivalent = false }
+        responder.keyDown(with: event)
     }
 
     @objc private func toggleCommandCenter(_ sender: Any?) {

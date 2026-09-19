@@ -842,16 +842,32 @@ final class CaptureEngine {
             guard let display = ScreenCoordinates.display(for: screen, in: content.displays) else {
                 return fallbackCapture(rect: rect)
             }
-            // Exclude Shotnix's own windows (pinned screenshots, toasts, a
-            // previous capture's overlay, the scrolling HUD) so they never
-            // appear inside new captures. Excluding by application is robust
-            // against the cached shareable content's window list going stale —
-            // our SCRunningApplication entry is stable for the process
-            // lifetime, while toast/overlay windows come and go constantly.
+            // Exclude Shotnix's floating chrome (selection overlays, toasts,
+            // the quick-access thumbnail, pinned screenshots, countdowns,
+            // recording HUDs) so it never bakes into captures — but the app's
+            // REAL windows (video editor, annotation editor, history,
+            // preferences) must stay capturable: users screenshot the editor
+            // itself. Chrome is always borderless; content windows are titled
+            // or normal-level, so except those back into the capture.
             let currentProcessID = pid_t(ProcessInfo.processInfo.processIdentifier)
             let filter: SCContentFilter
             if let ownApp = content.applications.first(where: { $0.processID == currentProcessID }) {
-                filter = SCContentFilter(display: display, excludingApplications: [ownApp], exceptingWindows: [])
+                let contentWindowIDs = Set(NSApp.windows.compactMap { window -> CGWindowID? in
+                    guard window.isVisible,
+                          window.level == .normal || window.styleMask.contains(.titled) else { return nil }
+                    return CGWindowID(window.windowNumber)
+                })
+                var exceptedWindows: [SCWindow] = []
+                if !contentWindowIDs.isEmpty {
+                    // The cached shareable content's window list can be stale
+                    // (it only refreshes on display changes) — fetch fresh so
+                    // a just-opened editor window is actually in the filter.
+                    let windowContent = try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: true)
+                    exceptedWindows = windowContent.windows.filter {
+                        $0.owningApplication?.processID == currentProcessID && contentWindowIDs.contains($0.windowID)
+                    }
+                }
+                filter = SCContentFilter(display: display, excludingApplications: [ownApp], exceptingWindows: exceptedWindows)
             } else {
                 let ownWindows = content.windows.filter { $0.owningApplication?.processID == currentProcessID }
                 filter = SCContentFilter(display: display, excludingWindows: ownWindows)

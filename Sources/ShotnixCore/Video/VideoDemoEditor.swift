@@ -138,6 +138,9 @@ struct VideoDemoOverlayEffect: Codable, Equatable, Identifiable {
     var width: Double
     var height: Double
     var text: String
+    /// Timeline lane. Stored explicitly so horizontal drags never re-layer
+    /// the pill under the cursor; vertical drags change it deliberately.
+    var layer: Int
 
     init(
         id: UUID = UUID(),
@@ -148,7 +151,8 @@ struct VideoDemoOverlayEffect: Codable, Equatable, Identifiable {
         y: Double = 0.5,
         width: Double = 0.28,
         height: Double = 0.14,
-        text: String = "Callout"
+        text: String = "Callout",
+        layer: Int = 0
     ) {
         self.id = id
         self.kind = kind
@@ -159,6 +163,22 @@ struct VideoDemoOverlayEffect: Codable, Equatable, Identifiable {
         self.width = width
         self.height = height
         self.text = text
+        self.layer = layer
+    }
+
+    // Custom decode so drafts saved before `layer` existed keep loading.
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(UUID.self, forKey: .id)
+        kind = try container.decode(VideoDemoOverlayEffectKind.self, forKey: .kind)
+        time = try container.decode(Double.self, forKey: .time)
+        duration = try container.decode(Double.self, forKey: .duration)
+        x = try container.decode(Double.self, forKey: .x)
+        y = try container.decode(Double.self, forKey: .y)
+        width = try container.decode(Double.self, forKey: .width)
+        height = try container.decode(Double.self, forKey: .height)
+        text = try container.decode(String.self, forKey: .text)
+        layer = try container.decodeIfPresent(Int.self, forKey: .layer) ?? 0
     }
 }
 
@@ -629,6 +649,41 @@ struct VideoDemoProject: Codable, Equatable, Identifiable {
         }
     }
 
+    /// Makes effect layers consistent: each effect keeps its chosen layer
+    /// unless it overlaps an earlier effect on that layer (then it takes the
+    /// next free one), and empty layers are compacted away. Returns the
+    /// effects sorted by time. Runs at load (drafts saved before layers
+    /// existed decode as all-zero) and when a drag ends — never mid-drag,
+    /// which is what kept re-layering pills under the cursor.
+    static func normalizedEffectLayers(_ effects: [VideoDemoOverlayEffect]) -> [VideoDemoOverlayEffect] {
+        var placed: [VideoDemoOverlayEffect] = []
+        let ordered = effects.sorted {
+            $0.time != $1.time ? $0.time < $1.time : $0.id.uuidString < $1.id.uuidString
+        }
+        for var effect in ordered {
+            let start = effect.time
+            let end = effect.time + max(effect.duration, 0.05)
+            func conflicts(_ layer: Int) -> Bool {
+                placed.contains {
+                    $0.layer == layer && $0.time < end - 0.0001 && ($0.time + max($0.duration, 0.05)) > start + 0.0001
+                }
+            }
+            var layer = max(effect.layer, 0)
+            while conflicts(layer) { layer += 1 }
+            effect.layer = layer
+            placed.append(effect)
+        }
+
+        // Compact: remap the used layers onto 0...n with no gaps.
+        let usedLayers = Set(placed.map(\.layer)).sorted()
+        let remap = Dictionary(uniqueKeysWithValues: usedLayers.enumerated().map { ($0.element, $0.offset) })
+        return placed.map { effect in
+            var updated = effect
+            updated.layer = remap[effect.layer] ?? 0
+            return updated
+        }
+    }
+
     mutating func setSingleTrim(start: Double, end: Double, totalDuration: Double) {
         let total = max(totalDuration, 0)
         guard total > 0 else {
@@ -656,7 +711,25 @@ struct VideoDemoProject: Codable, Equatable, Identifiable {
     }
 
     func canvasSize() -> CGSize {
-        aspectPreset.canvasSize(sourceSize: sourceSize)
+        let base = aspectPreset.canvasSize(sourceSize: sourceSize)
+        guard !usesRawSourceFrame, sourceWidth > 0, sourceHeight > 0 else { return base }
+
+        // NEVER upscale the recording. A small area capture stretched to fill
+        // a fixed 1920x1080 stage — then zoomed on top — is what made
+        // recordings look mushy in both preview and export. When the source
+        // has fewer pixels than the stage would give it, shrink the whole
+        // canvas proportionally so the video renders 1:1 at native pixels:
+        // identical composition, sharp output.
+        let stage = stageRect(in: base)
+        guard stage.width > 0, stage.height > 0 else { return base }
+        let factor = sourceSize.width / stage.width
+        guard factor < 1 else { return base }
+
+        func even(_ value: CGFloat) -> CGFloat {
+            let rounded = max(2, Int(value.rounded()))
+            return CGFloat(rounded.isMultiple(of: 2) ? rounded : rounded + 1)
+        }
+        return CGSize(width: even(base.width * factor), height: even(base.height * factor))
     }
 
     func stageRect(in canvasSize: CGSize) -> CGRect {
@@ -726,7 +799,7 @@ struct VideoDemoProject: Codable, Equatable, Identifiable {
     /// center-the-focus in export).
     ///
     /// Model: the camera looks at the whole composed CANVAS (background +
-    /// video), Screen-Studio style. At scale s the visible window is a
+    /// video). At scale s the visible window is a
     /// canvas/s crop centered on the focus point (mapped through the stage),
     /// clamped inside the canvas. Because the canvas extends past the video,
     /// a focus near the video's corner still centers — the background fills
@@ -833,7 +906,9 @@ extension VideoDemoProject {
         shadowStrength = try container.decode(Double.self, forKey: .shadowStrength)
         cornerRadius = try container.decode(Double.self, forKey: .cornerRadius)
         zoomKeyframes = try container.decode([VideoDemoZoomKeyframe].self, forKey: .zoomKeyframes)
-        overlayEffects = try container.decodeIfPresent([VideoDemoOverlayEffect].self, forKey: .overlayEffects) ?? []
+        overlayEffects = Self.normalizedEffectLayers(
+            try container.decodeIfPresent([VideoDemoOverlayEffect].self, forKey: .overlayEffects) ?? []
+        )
         cursorSamples = try container.decode([VideoDemoCursorSample].self, forKey: .cursorSamples)
         clickEvents = try container.decode([VideoDemoClickEvent].self, forKey: .clickEvents)
         nativeCursorVisible = try container.decode(Bool.self, forKey: .nativeCursorVisible)
@@ -2262,10 +2337,18 @@ final class VideoDemoEditorViewModel: ObservableObject {
     @Published var selectedZoomID: UUID?
     @Published var selectedClipID: UUID?
     @Published var selectedEffectID: UUID?
+    @Published var selectedClickID: UUID?
     @Published var timelineThumbnails: [VideoTimelineThumbnail] = []
     @Published var selectedTimelineRange: VideoDemoTimelineRange?
     @Published var timelineEditFlash: VideoDemoTimelineRange?
     @Published var timelineZoom: Double = 1
+
+    /// Preview-only mute: silences the editor player while reviewing.
+    /// Uses `isMuted` so the continuous fade-ramp volume writes don't fight
+    /// it, and the export audio mix is never affected.
+    @Published var previewMuted = false {
+        didSet { player.isMuted = previewMuted }
+    }
 
     let player: AVPlayer
     private var didLoadMetadata = false
@@ -2510,19 +2593,120 @@ final class VideoDemoEditorViewModel: ObservableObject {
         selectedClipID = id
         selectedZoomID = nil
         selectedEffectID = nil
+        selectedClickID = nil
         selectedTimelineRange = nil
     }
 
     func selectZoom(_ id: UUID) {
         selectedZoomID = id
         selectedEffectID = nil
+        selectedClickID = nil
         selectedTimelineRange = nil
     }
 
     func selectEffect(_ id: UUID) {
         selectedEffectID = id
         selectedZoomID = nil
+        selectedClickID = nil
         selectedTimelineRange = nil
+    }
+
+    // MARK: - Stage editing of overlay effects
+
+    // Coalesced undo for continuous drags (stage callouts, timeline pills,
+    // zoom blocks, click dots): one whole gesture is a single undo step.
+    private var effectStageEditUndoPushed = false
+
+    private func beginEffectStageEditIfNeeded() {
+        guard !effectStageEditUndoPushed else { return }
+        pushUndo()
+        effectStageEditUndoPushed = true
+    }
+
+    func endEffectStageEdit() {
+        effectStageEditUndoPushed = false
+        // Settle layers only when the gesture ends — normalizing mid-drag is
+        // what made pills re-layer under the cursor.
+        project.overlayEffects = VideoDemoProject.normalizedEffectLayers(project.overlayEffects)
+    }
+
+    /// Moves a callout to another timeline lane (vertical pill drag). The
+    /// value is applied raw during the drag; conflicts and gaps settle in
+    /// `endEffectStageEdit`.
+    func setEffectLayer(id: UUID, layer: Int) {
+        guard let index = project.overlayEffects.firstIndex(where: { $0.id == id }) else { return }
+        let clamped = min(max(layer, 0), 7)
+        guard project.overlayEffects[index].layer != clamped else { return }
+        beginEffectStageEditIfNeeded()
+        project.overlayEffects[index].layer = clamped
+        selectedEffectID = id
+    }
+
+    /// Pill editing on the Effects lane: sets when a
+    /// callout appears and disappears. Inputs are timeline seconds; storage
+    /// stays in source seconds so cuts and clip speeds keep working.
+    func setEffectWindow(id: UUID, timelineStart: Double, timelineEnd: Double) {
+        guard let index = project.overlayEffects.firstIndex(where: { $0.id == id }) else { return }
+        beginEffectStageEditIfNeeded()
+        let start = min(max(timelineStart, 0), max(timelineDuration - 0.2, 0))
+        let end = min(max(timelineEnd, start + 0.2), max(timelineDuration, 0.2))
+        let startSource = project.sourceTime(forTimelineTime: start, totalDuration: duration)
+        let endSource = project.sourceTime(forTimelineTime: end, totalDuration: duration)
+        project.overlayEffects[index].time = startSource
+        project.overlayEffects[index].duration = max(endSource - startSource, 0.2)
+        selectedEffectID = id
+    }
+
+    /// Moves a callout's center to normalized stage coordinates.
+    func moveEffect(id: UUID, toX x: Double, y: Double) {
+        guard let index = project.overlayEffects.firstIndex(where: { $0.id == id }) else { return }
+        beginEffectStageEditIfNeeded()
+        project.overlayEffects[index].x = min(max(x, 0.02), 0.98)
+        project.overlayEffects[index].y = min(max(y, 0.02), 0.98)
+        selectedEffectID = id
+    }
+
+    /// Sets a callout's normalized center and size in one shot (corner resize).
+    func resizeEffect(id: UUID, x: Double, y: Double, width: Double, height: Double) {
+        guard let index = project.overlayEffects.firstIndex(where: { $0.id == id }) else { return }
+        beginEffectStageEditIfNeeded()
+        project.overlayEffects[index].x = min(max(x, 0.02), 0.98)
+        project.overlayEffects[index].y = min(max(y, 0.02), 0.98)
+        project.overlayEffects[index].width = min(max(width, 0.04), 0.9)
+        project.overlayEffects[index].height = min(max(height, 0.04), 0.6)
+        selectedEffectID = id
+    }
+
+    func selectClick(_ id: UUID) {
+        selectedClickID = id
+        selectedZoomID = nil
+        selectedEffectID = nil
+        selectedTimelineRange = nil
+        status = "Click selected — drag to retime, Delete to remove"
+    }
+
+    /// Recorded clicks drive ripples, spotlights, and Auto Zoom planning —
+    /// a stray click used to be uneditable. Retiming keeps the click's screen
+    /// position; re-run Auto Zoom afterwards to re-plan the camera.
+    func moveClick(id: UUID, toTimelineTime timelineTime: Double) {
+        guard let index = project.clickEvents.firstIndex(where: { $0.id == id }) else { return }
+        beginEffectStageEditIfNeeded()
+        let safeTimeline = min(max(timelineTime, 0), max(timelineDuration, 0))
+        let sourceTime = project.sourceTime(forTimelineTime: safeTimeline, totalDuration: duration)
+        project.clickEvents[index].time = sourceTime
+        project.clickEvents.sort { $0.time < $1.time }
+        selectedClickID = id
+        seekToTimeline(safeTimeline)
+        status = "Click moved — run Auto Zoom to re-plan the camera"
+    }
+
+    func deleteSelectedClick() {
+        guard let selectedClickID else { return }
+        pushUndo()
+        project.clickEvents.removeAll { $0.id == selectedClickID }
+        self.selectedClickID = nil
+        status = "Click removed"
+        ToastWindow.show(message: "Click removed. Press Cmd-Z to undo.", duration: 2.4)
     }
 
     func setTimelineSelection(start: Double, end: Double) {
@@ -2545,6 +2729,9 @@ final class VideoDemoEditorViewModel: ObservableObject {
 
     func clearTimelineSelection() {
         selectedTimelineRange = nil
+        selectedEffectID = nil
+        selectedClickID = nil
+        selectedZoomID = nil
     }
 
     func deleteSelectedTimelineRange() {
@@ -2966,6 +3153,7 @@ final class VideoDemoEditorViewModel: ObservableObject {
 
     func moveZoom(id: UUID, toTimelineTime timelineTime: Double) {
         guard let index = project.zoomKeyframes.firstIndex(where: { $0.id == id }) else { return }
+        beginEffectStageEditIfNeeded()
         let safeTimeline = min(max(timelineTime, 0), max(timelineDuration, 0))
         let sourceTime = project.sourceTime(forTimelineTime: safeTimeline, totalDuration: duration)
         project.zoomKeyframes[index] = VideoDemoZoomKeyframe(
@@ -3015,6 +3203,8 @@ final class VideoDemoEditorViewModel: ObservableObject {
             text: kind == .text ? "Important" : kind.title
         )
         project.overlayEffects.append(effect)
+        // Give the newcomer a free lane if it overlaps existing callouts.
+        project.overlayEffects = VideoDemoProject.normalizedEffectLayers(project.overlayEffects)
         selectEffect(effect.id)
         status = "\(kind.title) added"
     }
@@ -3023,7 +3213,10 @@ final class VideoDemoEditorViewModel: ObservableObject {
         guard let selectedEffectID else { return }
         pushUndo()
         project.overlayEffects.removeAll { $0.id == selectedEffectID }
-        self.selectedEffectID = project.overlayEffects.first?.id
+        // Deliberately no auto-advance: Delete is routed here from the key
+        // handler, and advancing would let repeated presses silently mow
+        // through every callout.
+        self.selectedEffectID = nil
         status = "Effect removed"
         ToastWindow.show(message: "Effect removed. Press Cmd-Z to undo.", duration: 2.4)
     }
@@ -3043,7 +3236,8 @@ final class VideoDemoEditorViewModel: ObservableObject {
                     y: min(max(updated.y, 0.02), 0.92),
                     width: min(max(updated.width, 0.04), 0.9),
                     height: min(max(updated.height, 0.04), 0.6),
-                    text: updated.text
+                    text: updated.text,
+                    layer: updated.layer
                 )
                 self.project.overlayEffects.sort { $0.time < $1.time }
             }
@@ -3088,13 +3282,18 @@ final class VideoDemoEditorViewModel: ObservableObject {
         setTimelineZoom(timelineZoom + delta)
     }
 
-    func snappedTimelineTime(_ time: Double, threshold: Double? = nil) -> Double {
+    /// `excluding` drops the snap points contributed by that object — while
+    /// an object is being dragged, its own start/end must not be snap
+    /// targets, or every tick pulls it back toward where it already is and
+    /// the drag visibly shakes.
+    func snappedTimelineTime(_ time: Double, threshold: Double? = nil, excluding excludedSource: UUID? = nil) -> Double {
         let safe = min(max(time, 0), max(timelineDuration, 0))
         let snapThreshold = threshold ?? max(0.045, timelineDuration * 0.008)
         guard snapThreshold > 0 else { return safe }
 
         let nearest = timelineSnapPoints()
-            .map { point in (point: point, distance: abs(point - safe)) }
+            .filter { excludedSource == nil || $0.source != excludedSource }
+            .map { candidate in (point: candidate.point, distance: abs(candidate.point - safe)) }
             .min { $0.distance < $1.distance }
 
         guard let nearest, nearest.distance <= snapThreshold else { return safe }
@@ -3103,24 +3302,38 @@ final class VideoDemoEditorViewModel: ObservableObject {
 
     /// Every input to the snap points flows through `project` (segments,
     /// clicks, keyframes, effects), so its didSet is the one invalidation
-    /// point. Cached because the timeline body — which re-renders per playback
-    /// tick for the playhead — iterates these in a ForEach.
-    private var cachedSnapPoints: [Double]?
+    /// point. Cached because snapping runs on every drag tick. Each point
+    /// carries the id of the object that contributed it (nil for structural
+    /// points like clip boundaries) so drags can exclude their own object.
+    private var cachedSnapPoints: [(point: Double, source: UUID?)]?
 
-    func timelineSnapPoints() -> [Double] {
+    func timelineSnapPoints() -> [(point: Double, source: UUID?)] {
         if let cachedSnapPoints { return cachedSnapPoints }
-        var points: [Double] = [0, timelineDuration]
-        points.append(contentsOf: timelineSegments.flatMap { [$0.timelineStart, $0.timelineEnd] })
-        points.append(contentsOf: project.clickEvents.compactMap { project.timelineTimeIfIncluded(sourceTime: $0.time, totalDuration: duration) })
-        points.append(contentsOf: project.zoomKeyframes.compactMap { project.timelineTimeIfIncluded(sourceTime: $0.time, totalDuration: duration) })
-        points.append(contentsOf: project.overlayEffects.flatMap { effect -> [Double] in
-            let start = project.timelineTimeIfIncluded(sourceTime: effect.time, totalDuration: duration)
-            let end = project.timelineTimeIfIncluded(sourceTime: effect.time + effect.duration, totalDuration: duration)
-            return [start, end].compactMap { $0 }
-        })
-        let result = Array(Set(points.map { ($0 * 1000).rounded() / 1000 })).sorted()
-        cachedSnapPoints = result
-        return result
+        var points: [(point: Double, source: UUID?)] = [(0, nil), (timelineDuration, nil)]
+        for segment in timelineSegments {
+            points.append((segment.timelineStart, nil))
+            points.append((segment.timelineEnd, nil))
+        }
+        for click in project.clickEvents {
+            if let time = project.timelineTimeIfIncluded(sourceTime: click.time, totalDuration: duration) {
+                points.append((time, click.id))
+            }
+        }
+        for keyframe in project.zoomKeyframes {
+            if let time = project.timelineTimeIfIncluded(sourceTime: keyframe.time, totalDuration: duration) {
+                points.append((time, keyframe.id))
+            }
+        }
+        for effect in project.overlayEffects {
+            if let start = project.timelineTimeIfIncluded(sourceTime: effect.time, totalDuration: duration) {
+                points.append((start, effect.id))
+            }
+            if let end = project.timelineTimeIfIncluded(sourceTime: effect.time + effect.duration, totalDuration: duration) {
+                points.append((end, effect.id))
+            }
+        }
+        cachedSnapPoints = points
+        return points
     }
 
     func handleEditorShortcut(_ event: NSEvent) -> Bool {
@@ -3193,9 +3406,10 @@ final class VideoDemoEditorViewModel: ObservableObject {
         case "m":
             if let selectedClipID {
                 toggleClipMuted(id: selectedClipID)
-                return true
+            } else {
+                previewMuted.toggle()
             }
-            return false
+            return true
         case "[":
             seekToTimeline(timelineTime - 0.25)
             return true
@@ -3226,7 +3440,13 @@ final class VideoDemoEditorViewModel: ObservableObject {
             clearTimelineSelection()
             return true
         case 51, 117:
-            deleteSelectedClip()
+            if selectedEffectID != nil {
+                deleteSelectedEffect()
+            } else if selectedClickID != nil {
+                deleteSelectedClick()
+            } else {
+                deleteSelectedClip()
+            }
             return true
         case 123:
             seekToTimeline(timelineTime - 0.25)
@@ -3279,12 +3499,6 @@ final class VideoDemoEditorViewModel: ObservableObject {
     func revealCompletedExport() {
         guard let exportCompletedURL else { return }
         NSWorkspace.shared.activateFileViewerSelecting([exportCompletedURL])
-    }
-
-    func copySourcePath() {
-        NSPasteboard.general.clearContents()
-        NSPasteboard.general.setString(project.sourceURL.path, forType: .string)
-        ToastWindow.show(message: "Video path copied.")
     }
 
     func copyCompletedExportPath() {
@@ -3560,7 +3774,7 @@ private struct VideoDemoEditorView: View {
                 .padding(.horizontal, 28)
             transport
             VideoDemoTimelineView(model: model, clock: model.playbackClock)
-                .frame(height: 178)
+                .frame(height: VideoDemoTimelineView.preferredHeight(for: model.project))
                 .padding(.horizontal, 28)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -3596,16 +3810,6 @@ private struct VideoDemoEditorView: View {
             .buttonStyle(.plain)
             .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
             .help("Reveal video")
-
-            Button {
-                model.copySourcePath()
-            } label: {
-                Image(systemName: "doc.on.doc")
-                    .frame(width: 30, height: 28)
-            }
-            .buttonStyle(.plain)
-            .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-            .help("Copy path")
 
             Text(model.status)
                 .font(.system(size: 11, weight: .semibold))
@@ -3691,6 +3895,21 @@ private struct VideoDemoEditorView: View {
             .buttonStyle(.plain)
             .disabled(model.timelineZoom >= 5.99)
             .foregroundStyle(model.timelineZoom >= 5.99 ? Color.secondary.opacity(0.45) : Color.white.opacity(0.86))
+
+            Divider()
+                .frame(height: 16)
+                .overlay(Color.white.opacity(0.14))
+
+            Button {
+                model.previewMuted.toggle()
+            } label: {
+                Image(systemName: model.previewMuted ? "speaker.slash.fill" : "speaker.wave.2.fill")
+                    .font(.system(size: 11, weight: .bold))
+                    .frame(width: 24, height: 24)
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(model.previewMuted ? Color.orange : Color.white.opacity(0.86))
+            .help(model.previewMuted ? "Unmute preview" : "Mute preview — export audio is not affected")
         }
         .padding(.horizontal, 14)
         .frame(height: 36)
@@ -4913,14 +5132,61 @@ private struct VideoDemoOverlayView: View {
         .frame(width: stageSize.width, height: stageSize.height)
     }
 
-    @ViewBuilder
+    // MARK: - Direct manipulation of callouts on the stage
+
+    /// Geometry snapshot taken when a stage drag starts, so translations
+    /// apply against the gesture's origin instead of compounding.
+    private struct EffectGestureOrigin: Equatable {
+        let id: UUID
+        let x: Double
+        let y: Double
+        let width: Double
+        let height: Double
+
+        init(_ effect: VideoDemoOverlayEffect) {
+            id = effect.id
+            x = effect.x
+            y = effect.y
+            width = effect.width
+            height = effect.height
+        }
+    }
+
+    @State private var moveOrigin: EffectGestureOrigin?
+    @State private var resizeOrigin: EffectGestureOrigin?
+
     private func effectView(_ effect: VideoDemoOverlayEffect) -> some View {
         let size = CGSize(
             width: stageSize.width * min(max(effect.width, 0.04), 0.9),
             height: stageSize.height * min(max(effect.height, 0.04), 0.6)
         )
-        let position = point(for: effect.x, effect.y)
+        let isSelected = model.selectedEffectID == effect.id
 
+        return ZStack {
+            effectContent(effect, size: size)
+            if isSelected {
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .stroke(Color.accentColor, style: StrokeStyle(lineWidth: 1.5, dash: [5, 4]))
+                    .frame(width: size.width + 10, height: size.height + 10)
+            }
+        }
+        .frame(width: size.width, height: size.height)
+        .contentShape(Rectangle().inset(by: -6))
+        .onHover { inside in
+            (inside ? NSCursor.openHand : NSCursor.arrow).set()
+        }
+        .gesture(moveGesture(effect))
+        .overlay {
+            if isSelected {
+                cornerHandles(effect, size: size)
+            }
+        }
+        .help("Drag to move · drag a corner to resize · Delete removes")
+        .position(point(for: effect.x, effect.y))
+    }
+
+    @ViewBuilder
+    private func effectContent(_ effect: VideoDemoOverlayEffect, size: CGSize) -> some View {
         switch effect.kind {
         case .text:
             // WYSIWYG: match the export's width-proportional type size
@@ -4930,7 +5196,6 @@ private struct VideoDemoOverlayView: View {
                 .foregroundStyle(.white)
                 .frame(width: size.width, height: size.height)
                 .background(.black.opacity(0.68), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-                .position(position)
         case .highlight:
             RoundedRectangle(cornerRadius: 12, style: .continuous)
                 .fill(.yellow.opacity(0.12))
@@ -4939,12 +5204,10 @@ private struct VideoDemoOverlayView: View {
                         .stroke(.yellow.opacity(0.9), lineWidth: 3)
                 )
                 .frame(width: size.width, height: size.height)
-                .position(position)
         case .arrow:
             TimelineArrowShape()
                 .stroke(.yellow, style: StrokeStyle(lineWidth: 5, lineCap: .round, lineJoin: .round))
                 .frame(width: size.width, height: size.height)
-                .position(position)
         case .blur:
             // Redact: opaque in preview to match the export cover.
             RoundedRectangle(cornerRadius: 12, style: .continuous)
@@ -4954,8 +5217,90 @@ private struct VideoDemoOverlayView: View {
                         .stroke(.white.opacity(0.22), lineWidth: 1)
                 )
                 .frame(width: size.width, height: size.height)
-                .position(position)
         }
+    }
+
+    /// Body drag: select on click, move the callout on drag. Consumes the
+    /// event so the stage's seek-on-click gesture never fires through it.
+    private func moveGesture(_ effect: VideoDemoOverlayEffect) -> some Gesture {
+        DragGesture(minimumDistance: 0)
+            .onChanged { value in
+                if moveOrigin?.id != effect.id {
+                    moveOrigin = EffectGestureOrigin(effect)
+                    model.selectEffect(effect.id)
+                }
+                guard let origin = moveOrigin,
+                      abs(value.translation.width) > 2 || abs(value.translation.height) > 2 else { return }
+                NSCursor.closedHand.set()
+                model.moveEffect(
+                    id: effect.id,
+                    toX: origin.x + Double(value.translation.width / max(stageSize.width, 1)),
+                    y: origin.y + Double(value.translation.height / max(stageSize.height, 1))
+                )
+            }
+            .onEnded { _ in
+                moveOrigin = nil
+                model.endEffectStageEdit()
+                NSCursor.openHand.set()
+            }
+    }
+
+    private func cornerHandles(_ effect: VideoDemoOverlayEffect, size: CGSize) -> some View {
+        ForEach(Corner.allCases, id: \.self) { corner in
+            Circle()
+                .fill(Color.white)
+                .overlay(Circle().stroke(Color.accentColor, lineWidth: 1.5))
+                .frame(width: 11, height: 11)
+                .shadow(color: .black.opacity(0.35), radius: 2, y: 1)
+                .contentShape(Circle().inset(by: -7))
+                .position(
+                    x: corner.sx > 0 ? size.width + 5 : -5,
+                    y: corner.sy > 0 ? size.height + 5 : -5
+                )
+                .onHover { inside in
+                    (inside ? NSCursor.crosshair : NSCursor.openHand).set()
+                }
+                .gesture(resizeGesture(effect, corner: corner))
+        }
+    }
+
+    private enum Corner: CaseIterable {
+        case topLeft, topRight, bottomLeft, bottomRight
+
+        var sx: Double { self == .topRight || self == .bottomRight ? 1 : -1 }
+        var sy: Double { self == .bottomLeft || self == .bottomRight ? 1 : -1 }
+    }
+
+    /// Corner drag: resizes keeping the opposite corner anchored.
+    private func resizeGesture(_ effect: VideoDemoOverlayEffect, corner: Corner) -> some Gesture {
+        DragGesture(minimumDistance: 0)
+            .onChanged { value in
+                if resizeOrigin?.id != effect.id {
+                    resizeOrigin = EffectGestureOrigin(effect)
+                    model.selectEffect(effect.id)
+                }
+                guard let origin = resizeOrigin else { return }
+
+                let fixedX = origin.x - corner.sx * origin.width / 2
+                let fixedY = origin.y - corner.sy * origin.height / 2
+                var movingX = origin.x + corner.sx * origin.width / 2 + Double(value.translation.width / max(stageSize.width, 1))
+                var movingY = origin.y + corner.sy * origin.height / 2 + Double(value.translation.height / max(stageSize.height, 1))
+                // The dragged corner stays on its own side of the anchor.
+                movingX = corner.sx > 0 ? max(movingX, fixedX + 0.04) : min(movingX, fixedX - 0.04)
+                movingY = corner.sy > 0 ? max(movingY, fixedY + 0.04) : min(movingY, fixedY - 0.04)
+
+                model.resizeEffect(
+                    id: effect.id,
+                    x: (fixedX + movingX) / 2,
+                    y: (fixedY + movingY) / 2,
+                    width: abs(movingX - fixedX),
+                    height: abs(movingY - fixedY)
+                )
+            }
+            .onEnded { _ in
+                resizeOrigin = nil
+                model.endEffectStageEdit()
+            }
     }
 
     private func point(for x: Double, _ y: Double) -> CGPoint {
@@ -5008,7 +5353,7 @@ private struct ActiveTimelineTrim {
     let speed: Double
 }
 
-private struct VideoDemoTimelineView: View {
+struct VideoDemoTimelineView: View {
     @ObservedObject var model: VideoDemoEditorViewModel
     // Playhead-tracking view: re-renders per playback tick via the clock.
     @ObservedObject var clock: VideoDemoPlaybackClock
@@ -5016,6 +5361,48 @@ private struct VideoDemoTimelineView: View {
     @State private var activeTrim: ActiveTimelineTrim?
     @State private var hoverTimelineTime: Double?
     @State private var isSelectingRange = false
+    @State private var effectPillOrigin: EffectPillOrigin?
+
+    // Pro-editor layout: no lane boxes, no label column — the ruler
+    // on top, self-describing blocks (camera moves, effect pills, click dots)
+    // floating on the flat surface, and the big clip strip at the bottom.
+    // Rows only exist when they have content.
+    private static let rulerHeight: CGFloat = 20
+    private static let cameraRowHeight: CGFloat = 30
+    private static let effectRowHeight: CGFloat = 28
+    private static let effectRowGap: CGFloat = 4
+    private static let clickRowHeight: CGFloat = 16
+    private static let videoRowHeight: CGFloat = 72
+    private static let rowSpacing: CGFloat = 8
+
+    /// Lanes come straight from each effect's stored `layer` — assignment
+    /// happens in `VideoDemoProject.normalizedEffectLayers` (on load, add,
+    /// and drag end), never during rendering, so pills hold still mid-drag.
+    static func effectRowAssignments(for project: VideoDemoProject) -> [UUID: Int] {
+        Dictionary(uniqueKeysWithValues: project.overlayEffects.map { ($0.id, max($0.layer, 0)) })
+    }
+
+    static func effectAreaHeight(for project: VideoDemoProject) -> CGFloat {
+        guard !project.overlayEffects.isEmpty else { return 0 }
+        let rows = (project.overlayEffects.map { max($0.layer, 0) }.max() ?? 0) + 1
+        return CGFloat(rows) * effectRowHeight + CGFloat(rows - 1) * effectRowGap
+    }
+
+    /// The exact height this timeline wants for a given project, so the
+    /// editor never clips a row and never reserves dead space.
+    static func preferredHeight(for project: VideoDemoProject) -> CGFloat {
+        var height = rulerHeight + cameraRowHeight + videoRowHeight + rowSpacing * 2 + 6
+        if !project.overlayEffects.isEmpty { height += effectAreaHeight(for: project) + rowSpacing }
+        if !project.clickEvents.isEmpty { height += clickRowHeight + rowSpacing }
+        return height
+    }
+
+    private var videoRowTop: CGFloat {
+        var top = Self.rulerHeight + Self.rowSpacing + Self.cameraRowHeight + Self.rowSpacing
+        if !model.project.overlayEffects.isEmpty { top += Self.effectAreaHeight(for: model.project) + Self.rowSpacing }
+        if !model.project.clickEvents.isEmpty { top += Self.clickRowHeight + Self.rowSpacing }
+        return top
+    }
 
     var body: some View {
         GeometryReader { proxy in
@@ -5045,15 +5432,24 @@ private struct VideoDemoTimelineView: View {
         let playheadX = CGFloat(model.timelineTime / duration) * width
 
         return ZStack(alignment: .topLeading) {
-            VStack(spacing: 6) {
+            // Every lane gets an explicit full-width, leading-aligned frame:
+            // the block rows position children by offset, which doesn't grow
+            // layout bounds — without this the VStack would center each lane.
+            VStack(alignment: .leading, spacing: Self.rowSpacing) {
                 ruler(width: width, duration: duration)
-                    .frame(height: 22)
-                videoTrack(width: width, duration: duration)
-                    .frame(height: 78)
+                    .frame(width: width, height: Self.rulerHeight, alignment: .topLeading)
                 zoomTrack(width: width, duration: duration)
-                    .frame(height: 30)
-                effectTrack(width: width, duration: duration)
-                    .frame(height: 28)
+                    .frame(width: width, height: Self.cameraRowHeight, alignment: .topLeading)
+                if !model.project.overlayEffects.isEmpty {
+                    effectTrack(width: width, duration: duration)
+                        .frame(width: width, height: Self.effectAreaHeight(for: model.project), alignment: .topLeading)
+                }
+                if !model.project.clickEvents.isEmpty {
+                    clickTrack(width: width, duration: duration)
+                        .frame(width: width, height: Self.clickRowHeight, alignment: .topLeading)
+                }
+                videoTrack(width: width, duration: duration)
+                    .frame(width: width, height: Self.videoRowHeight, alignment: .leading)
             }
 
             if let hoverTimelineTime {
@@ -5061,10 +5457,10 @@ private struct VideoDemoTimelineView: View {
             }
 
             playhead(height: height - 2)
-                .offset(x: playheadX - 1, y: 1)
+                .offset(x: playheadX - 3, y: 1)
 
             splitBladeMarker
-                .offset(x: min(max(playheadX - 11, 0), max(width - 22, 0)), y: 25)
+                .offset(x: min(max(playheadX - 11, 0), max(width - 22, 0)), y: videoRowTop + 4)
         }
         .contentShape(Rectangle())
         .gesture(
@@ -5141,41 +5537,17 @@ private struct VideoDemoTimelineView: View {
 
     private func videoTrack(width: CGFloat, duration: Double) -> some View {
         ZStack(alignment: .leading) {
-            RoundedRectangle(cornerRadius: 10, style: .continuous)
-                .fill(Color.black.opacity(0.30))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .stroke(Color.white.opacity(0.10), lineWidth: 1)
-                )
-
-            ForEach(model.timelineSnapPoints(), id: \.self) { point in
-                Rectangle()
-                    .fill(Color.white.opacity(point == 0 || abs(point - duration) < 0.001 ? 0.20 : 0.10))
-                    .frame(width: 1, height: 70)
-                    .offset(x: CGFloat(point / duration) * width, y: 4)
-                    .allowsHitTesting(false)
-            }
-
             ForEach(Array(model.timelineSegments.enumerated()), id: \.element.id) { index, segment in
                 let segmentX = CGFloat(segment.timelineStart / duration) * width
                 let segmentWidth = max(CGFloat(segment.duration / duration) * width - 4, 64)
                 videoClip(segment: segment, index: index, timelineWidth: width, timelineDuration: duration)
-                    .frame(width: segmentWidth, height: 70)
+                    .frame(width: segmentWidth, height: Self.videoRowHeight)
                     .offset(x: segmentX + 2)
                     .contentShape(RoundedRectangle(cornerRadius: 9, style: .continuous))
                     .highPriorityGesture(clipSeekGesture(segment: segment, clipWidth: segmentWidth))
                     .onHover { hovering in
                         hoveredClipID = hovering ? segment.id : (hoveredClipID == segment.id ? nil : hoveredClipID)
                     }
-            }
-
-            ForEach(model.project.clickEvents) { click in
-                if let markerTime = model.project.timelineTimeIfIncluded(sourceTime: click.time, totalDuration: model.duration) {
-                    Circle()
-                        .fill(Color.green)
-                        .frame(width: 6, height: 6)
-                        .offset(x: CGFloat(markerTime / duration) * width - 3, y: 58)
-                }
             }
 
             if let range = model.selectedTimelineRange?.normalized {
@@ -5191,7 +5563,7 @@ private struct VideoDemoTimelineView: View {
                     let segmentX = CGFloat(segment.timelineStart / duration) * width
                     let segmentWidth = max(CGFloat(segment.duration / duration) * width - 4, 64)
                     inlineClipTools(segment: segment)
-                        .offset(x: min(segmentX + segmentWidth - 130, max(width - 132, 2)), y: 7)
+                        .offset(x: min(segmentX + segmentWidth - 130, max(width - 132, 2)), y: 5)
                 }
             }
         }
@@ -5278,116 +5650,281 @@ private struct VideoDemoTimelineView: View {
                 RoundedRectangle(cornerRadius: 9, style: .continuous)
                     .stroke(color.opacity(strokeOpacity), lineWidth: 1.4)
             )
-            .frame(width: max(endX - startX, 4), height: 70)
-            .offset(x: startX + 2, y: 4)
+            .frame(width: max(endX - startX, 4), height: Self.videoRowHeight)
+            .offset(x: startX + 2)
             .allowsHitTesting(false)
     }
 
+    /// Camera row: every zoom move is a labeled block ("1.8×") spanning
+    /// until the next move — the block itself is the draggable object.
+    /// A scale-1 keyframe (camera reset) renders as a compact "1×" chip.
     private func zoomTrack(width: CGFloat, duration: Double) -> some View {
-        ZStack(alignment: .leading) {
-            RoundedRectangle(cornerRadius: 8, style: .continuous)
-                .fill(Color.black.opacity(0.24))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .stroke(Color.white.opacity(0.08), lineWidth: 1)
-                )
-
-            ForEach(zoomMoveRanges(duration: duration), id: \.id) { move in
-                RoundedRectangle(cornerRadius: 7, style: .continuous)
-                    .fill(Color.blue.opacity(move.selected ? 0.58 : 0.34))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 7, style: .continuous)
-                            .stroke(Color.white.opacity(move.selected ? 0.32 : 0.12), lineWidth: 1)
-                    )
-                    .frame(width: max(CGFloat(move.duration / duration) * width, 22), height: 22)
-                    .offset(x: CGFloat(move.start / duration) * width, y: 4)
+        ZStack(alignment: .topLeading) {
+            if model.project.zoomKeyframes.isEmpty {
+                Text("Auto zoom — camera follows your clicks")
+                    .font(.system(size: 9.5, weight: .bold))
+                    .foregroundStyle(Color.white.opacity(0.28))
+                    .frame(height: Self.cameraRowHeight)
+                    .padding(.horizontal, 2)
                     .allowsHitTesting(false)
             }
 
-            HStack(spacing: 7) {
-                Image(systemName: "plus.magnifyingglass")
-                    .font(.system(size: 10, weight: .bold))
-                Text("Camera")
-                    .font(.system(size: 10, weight: .heavy))
-                Text(model.project.zoomKeyframes.isEmpty ? "Auto" : "\(model.project.zoomKeyframes.count) moves")
-                    .font(.system(size: 9, weight: .bold))
-                    .foregroundStyle(Color.white.opacity(0.72))
-                Spacer(minLength: 0)
-            }
-            .padding(.horizontal, 10)
-            .frame(width: max(width - 4, 0), height: 28)
-            .offset(x: 2)
+            ForEach(zoomMoveRanges(duration: duration), id: \.id) { move in
+                let isReset = move.scale <= 1.02
+                let blockWidth = isReset ? 34 : max(CGFloat(move.duration / duration) * width, 42)
 
-            ForEach(model.project.zoomKeyframes) { keyframe in
-                if let markerTime = model.project.timelineTimeIfIncluded(sourceTime: keyframe.time, totalDuration: model.duration) {
-                    Capsule()
-                        .fill(model.selectedZoomID == keyframe.id ? Color.accentColor : Color.white)
-                        .frame(width: model.selectedZoomID == keyframe.id ? 7 : 4, height: 24)
-                        .offset(x: CGFloat(markerTime / duration) * width - 2, y: 3)
-                        .contentShape(Rectangle())
-                        .gesture(
-                            DragGesture(minimumDistance: 0)
-                                .onChanged { value in
-                                    let next = timelineTime(
-                                        at: CGFloat(markerTime / duration) * width + value.translation.width,
-                                        width: width,
-                                        duration: duration
-                                    )
-                                    model.moveZoom(id: keyframe.id, toTimelineTime: model.snappedTimelineTime(next, threshold: snapThreshold(duration: duration, width: width)))
-                                }
-                                .onEnded { value in
-                                    if abs(value.translation.width) <= 4 {
-                                        model.selectZoom(keyframe.id)
-                                        model.seekToTimeline(markerTime)
-                                    }
-                                }
+                ZStack {
+                    RoundedRectangle(cornerRadius: 7, style: .continuous)
+                        .fill(Color.blue.opacity(move.selected ? 0.52 : (isReset ? 0.12 : 0.26)))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 7, style: .continuous)
+                                .stroke(move.selected ? Color.accentColor : Color.blue.opacity(isReset ? 0.35 : 0.55), lineWidth: move.selected ? 1.5 : 1)
                         )
+                    Text(isReset ? "1×" : String(format: "%.1f×", move.scale))
+                        .font(.system(size: 9.5, weight: .heavy, design: .monospaced))
+                        .foregroundStyle(Color.white.opacity(isReset ? 0.6 : 0.94))
+                        .lineLimit(1)
+                }
+                .frame(width: blockWidth, height: Self.cameraRowHeight)
+                .contentShape(Rectangle())
+                .help(isReset ? "Camera reset — drag to retime" : "Zoom move — drag to retime, click to select")
+                .gesture(markerDragGesture(
+                    id: move.id,
+                    startTime: move.start,
+                    width: width,
+                    duration: duration,
+                    onMove: { model.moveZoom(id: move.id, toTimelineTime: $0) },
+                    onTap: {
+                        model.selectZoom(move.id)
+                        model.seekToTimeline(move.start)
+                    }
+                ))
+                .offset(x: CGFloat(move.start / duration) * width)
+            }
+        }
+    }
+
+    /// Origin captured when a marker drag starts — translations always apply
+    /// against it, so mid-drag view rebuilds can't compound the movement.
+    @State private var markerDragOrigin: (id: UUID, start: Double)?
+
+    private func markerDragGesture(
+        id: UUID,
+        startTime: Double,
+        width: CGFloat,
+        duration: Double,
+        onMove: @escaping (Double) -> Void,
+        onTap: @escaping () -> Void
+    ) -> some Gesture {
+        DragGesture(minimumDistance: 0)
+            .onChanged { value in
+                if markerDragOrigin?.id != id {
+                    markerDragOrigin = (id, startTime)
+                }
+                guard let origin = markerDragOrigin, abs(value.translation.width) > 2 else { return }
+                let next = origin.start + Double(value.translation.width / max(width, 1)) * duration
+                onMove(model.snappedTimelineTime(next, threshold: snapThreshold(duration: duration, width: width), excluding: id))
+            }
+            .onEnded { value in
+                markerDragOrigin = nil
+                model.endEffectStageEdit()
+                if abs(value.translation.width) <= 2 {
+                    onTap()
+                }
+            }
+    }
+
+    /// Clicks row: a thin strip of dots on a hairline — tap to select (and
+    /// seek there), drag to retime, Delete to remove. Ripples, spotlights,
+    /// and the next Auto Zoom run all follow the edited list.
+    private func clickTrack(width: CGFloat, duration: Double) -> some View {
+        ZStack(alignment: .topLeading) {
+            Rectangle()
+                .fill(Color.white.opacity(0.06))
+                .frame(width: width, height: 2)
+                .offset(y: Self.clickRowHeight / 2 - 1)
+                .allowsHitTesting(false)
+
+            ForEach(model.project.clickEvents) { click in
+                if let markerTime = model.project.timelineTimeIfIncluded(sourceTime: click.time, totalDuration: model.duration) {
+                    Circle()
+                        .strokeBorder(model.selectedClickID == click.id ? Color.accentColor : Color.white.opacity(0.7), lineWidth: 1.5)
+                        .background(Circle().fill(Color.blue.opacity(model.selectedClickID == click.id ? 0.6 : 0.25)))
+                        .frame(width: 12, height: 12)
+                        .contentShape(Rectangle().inset(by: -5))
+                        .help("Click — drag to retime, Delete removes")
+                        .gesture(markerDragGesture(
+                            id: click.id,
+                            startTime: markerTime,
+                            width: width,
+                            duration: duration,
+                            onMove: { model.moveClick(id: click.id, toTimelineTime: $0) },
+                            onTap: {
+                                model.selectClick(click.id)
+                                model.seekToTimeline(markerTime)
+                            }
+                        ))
+                        .offset(x: CGFloat(markerTime / duration) * width - 6, y: Self.clickRowHeight / 2 - 6)
                 }
             }
         }
     }
 
     private func effectTrack(width: CGFloat, duration: Double) -> some View {
-        ZStack(alignment: .leading) {
-            RoundedRectangle(cornerRadius: 8, style: .continuous)
-                .fill(Color.black.opacity(0.24))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .stroke(Color.white.opacity(0.08), lineWidth: 1)
-                )
-
-            HStack(spacing: 7) {
-                Image(systemName: "sparkles.rectangle.stack")
-                    .font(.system(size: 10, weight: .bold))
-                Text("Effects")
-                    .font(.system(size: 10, weight: .heavy))
-                Text(effectLaneSummary)
-                    .font(.system(size: 9, weight: .bold))
-                    .foregroundStyle(Color.white.opacity(0.72))
-                Spacer(minLength: 0)
-            }
-            .padding(.horizontal, 10)
-            .frame(width: max(width - 4, 0), height: 26)
-            .offset(x: 2)
-
+        let rows = Self.effectRowAssignments(for: model.project)
+        return ZStack(alignment: .topLeading) {
             ForEach(model.project.overlayEffects) { effect in
-                if let markerTime = model.project.timelineTimeIfIncluded(sourceTime: effect.time, totalDuration: model.duration) {
-                    Image(systemName: effect.kind.icon)
-                        .font(.system(size: 9, weight: .heavy))
-                        .foregroundStyle(Color.white)
-                        .frame(width: 18, height: 18)
-                        .background(model.selectedEffectID == effect.id ? Color.accentColor.opacity(0.72) : Color.black.opacity(0.34), in: Circle())
-                        .offset(x: CGFloat(markerTime / duration) * width - 9, y: 5)
-                        .onTapGesture {
-                            model.selectEffect(effect.id)
-                            model.seekToTimeline(markerTime)
-                        }
+                if let start = model.project.timelineTimeIfIncluded(sourceTime: effect.time, totalDuration: model.duration) {
+                    let rawEnd = model.project.timelineTimeIfIncluded(sourceTime: effect.time + effect.duration, totalDuration: model.duration)
+                    let end = min(max(rawEnd ?? start + effect.duration, start + 0.1), duration)
+                    effectPill(effect, start: start, end: end, width: width, duration: duration, row: rows[effect.id] ?? 0)
                 }
             }
         }
     }
 
-    private func zoomMoveRanges(duration: Double) -> [(id: UUID, start: Double, duration: Double, selected: Bool)] {
+    // MARK: - Effect pills (duration blocks)
+
+    /// The effect window captured when a pill gesture starts, so drags apply
+    /// against the origin instead of compounding.
+    private struct EffectPillOrigin {
+        let id: UUID
+        let start: Double
+        let end: Double
+        let layer: Int
+    }
+
+    private enum PillEdge {
+        case leading
+        case trailing
+    }
+
+    /// A callout on the Effects lane is a pill spanning its visible window:
+    /// drag the body to move it in time, drag an edge grip to set when it
+    /// appears or disappears, click to select and jump there.
+    private func effectPill(_ effect: VideoDemoOverlayEffect, start: Double, end: Double, width: CGFloat, duration: Double, row: Int) -> some View {
+        let isSelected = model.selectedEffectID == effect.id
+        let x = CGFloat(start / duration) * width
+        let pillWidth = max(CGFloat((end - start) / duration) * width, 30)
+        let tint = pillTint(for: effect.kind)
+
+        return ZStack {
+            RoundedRectangle(cornerRadius: 7, style: .continuous)
+                .fill(tint.opacity(isSelected ? 0.5 : 0.26))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 7, style: .continuous)
+                        .stroke(isSelected ? Color.accentColor : tint.opacity(0.6), lineWidth: isSelected ? 1.5 : 1)
+                )
+
+            HStack(spacing: 4) {
+                Image(systemName: effect.kind.icon)
+                    .font(.system(size: 9, weight: .heavy))
+                if pillWidth > 76 {
+                    Text(effect.kind.title)
+                        .font(.system(size: 9, weight: .bold))
+                        .lineLimit(1)
+                }
+            }
+            .foregroundStyle(Color.white)
+            .padding(.horizontal, 8)
+
+            HStack {
+                pillEdgeGrip()
+                    .gesture(pillTrimGesture(effect, edge: .leading, start: start, end: end, width: width, duration: duration))
+                Spacer(minLength: 0)
+                pillEdgeGrip()
+                    .gesture(pillTrimGesture(effect, edge: .trailing, start: start, end: end, width: width, duration: duration))
+            }
+        }
+        .frame(width: pillWidth, height: Self.effectRowHeight)
+        .contentShape(Rectangle())
+        .help("Drag to move · drag up/down to change lane · edges set when it appears and disappears")
+        .gesture(pillMoveGesture(effect, start: start, end: end, width: width, duration: duration))
+        .offset(x: x, y: CGFloat(row) * (Self.effectRowHeight + Self.effectRowGap))
+    }
+
+    private func pillTint(for kind: VideoDemoOverlayEffectKind) -> Color {
+        switch kind {
+        case .highlight, .arrow: return .yellow
+        case .text: return .purple
+        case .blur: return .gray
+        }
+    }
+
+    private func pillEdgeGrip() -> some View {
+        RoundedRectangle(cornerRadius: 1.5)
+            .fill(Color.white.opacity(0.6))
+            .frame(width: 3, height: 12)
+            .padding(.horizontal, 3)
+            .contentShape(Rectangle().inset(by: -5))
+            .onHover { inside in
+                (inside ? NSCursor.resizeLeftRight : NSCursor.arrow).set()
+            }
+    }
+
+    private func pillMoveGesture(_ effect: VideoDemoOverlayEffect, start: Double, end: Double, width: CGFloat, duration: Double) -> some Gesture {
+        DragGesture(minimumDistance: 0)
+            .onChanged { value in
+                if effectPillOrigin?.id != effect.id {
+                    effectPillOrigin = EffectPillOrigin(id: effect.id, start: start, end: end, layer: effect.layer)
+                    model.selectEffect(effect.id)
+                }
+                guard let origin = effectPillOrigin else { return }
+
+                if abs(value.translation.width) > 2 {
+                    let delta = Double(value.translation.width / max(width, 1)) * duration
+                    let length = origin.end - origin.start
+                    let newStart = model.snappedTimelineTime(
+                        min(max(origin.start + delta, 0), max(duration - length, 0)),
+                        threshold: snapThreshold(duration: duration, width: width),
+                        excluding: effect.id
+                    )
+                    model.setEffectWindow(id: effect.id, timelineStart: newStart, timelineEnd: newStart + length)
+                }
+
+                // Vertical drag moves the pill between lanes: one row of
+                // travel per lane height, applied live.
+                let rowStride = Self.effectRowHeight + Self.effectRowGap
+                let rowDelta = Int((value.translation.height / rowStride).rounded())
+                model.setEffectLayer(id: effect.id, layer: origin.layer + rowDelta)
+            }
+            .onEnded { value in
+                let origin = effectPillOrigin
+                effectPillOrigin = nil
+                model.endEffectStageEdit()
+                if abs(value.translation.width) <= 2, abs(value.translation.height) <= 2, let origin {
+                    model.selectEffect(effect.id)
+                    model.seekToTimeline(origin.start)
+                }
+            }
+    }
+
+    private func pillTrimGesture(_ effect: VideoDemoOverlayEffect, edge: PillEdge, start: Double, end: Double, width: CGFloat, duration: Double) -> some Gesture {
+        DragGesture(minimumDistance: 0)
+            .onChanged { value in
+                if effectPillOrigin?.id != effect.id {
+                    effectPillOrigin = EffectPillOrigin(id: effect.id, start: start, end: end, layer: effect.layer)
+                    model.selectEffect(effect.id)
+                }
+                guard let origin = effectPillOrigin else { return }
+                let delta = Double(value.translation.width / max(width, 1)) * duration
+                let threshold = snapThreshold(duration: duration, width: width)
+                switch edge {
+                case .leading:
+                    let newStart = model.snappedTimelineTime(origin.start + delta, threshold: threshold, excluding: effect.id)
+                    model.setEffectWindow(id: effect.id, timelineStart: min(newStart, origin.end - 0.2), timelineEnd: origin.end)
+                case .trailing:
+                    let newEnd = model.snappedTimelineTime(origin.end + delta, threshold: threshold, excluding: effect.id)
+                    model.setEffectWindow(id: effect.id, timelineStart: origin.start, timelineEnd: max(newEnd, origin.start + 0.2))
+                }
+            }
+            .onEnded { _ in
+                effectPillOrigin = nil
+                model.endEffectStageEdit()
+            }
+    }
+
+    private func zoomMoveRanges(duration: Double) -> [(id: UUID, start: Double, duration: Double, scale: Double, selected: Bool)] {
         let sorted = model.project.zoomKeyframes.sorted { $0.time < $1.time }
         return sorted.compactMap { keyframe in
             guard let start = model.project.timelineTimeIfIncluded(sourceTime: keyframe.time, totalDuration: model.duration) else { return nil }
@@ -5396,16 +5933,8 @@ private struct VideoDemoTimelineView: View {
                 .compactMap { model.project.timelineTimeIfIncluded(sourceTime: $0.time, totalDuration: model.duration) }
                 .first
             let end = min(next ?? start + 1.2, duration)
-            return (keyframe.id, start, max(end - start, 0.25), model.selectedZoomID == keyframe.id)
+            return (keyframe.id, start, max(end - start, 0.25), keyframe.scale, model.selectedZoomID == keyframe.id)
         }
-    }
-
-    private var effectLaneSummary: String {
-        var parts: [String] = []
-        if model.project.showCursorOverlay { parts.append("Cursor") }
-        if model.project.showClickRipple { parts.append("Clicks") }
-        if !model.project.overlayEffects.isEmpty { parts.append("\(model.project.overlayEffects.count) callouts") }
-        return parts.isEmpty ? "None" : parts.joined(separator: " · ")
     }
 
     private var thumbnailStrip: some View {
@@ -5617,14 +6146,17 @@ private struct VideoDemoTimelineView: View {
 
     private func playhead(height: CGFloat) -> some View {
         VStack(spacing: 0) {
-            Circle()
+            // Grabber: a rounded knob at the ruler
+            // feeding a hairline that spans every row.
+            RoundedRectangle(cornerRadius: 2.5, style: .continuous)
                 .fill(Color.purple)
-                .frame(width: 8, height: 8)
+                .frame(width: 7, height: 14)
             Rectangle()
-                .fill(Color.purple)
-                .frame(width: 2, height: max(height - 8, 0))
+                .fill(Color.purple.opacity(0.92))
+                .frame(width: 2, height: max(height - 14, 0))
         }
-        .shadow(color: Color.purple.opacity(0.38), radius: 5, x: 0, y: 0)
+        .shadow(color: Color.purple.opacity(0.42), radius: 4, x: 0, y: 0)
+        .allowsHitTesting(false)
     }
 
     private func timelineTime(at x: CGFloat, width: CGFloat, duration: Double) -> Double {

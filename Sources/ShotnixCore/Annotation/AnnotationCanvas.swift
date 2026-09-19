@@ -59,20 +59,110 @@ final class AnnotationCanvas: NSView {
     override var acceptsFirstResponder: Bool { true }
     override var isFlipped: Bool { true } // Easier coordinate math (top-left origin)
 
+    // Clicking into an unfocused editor window interacts immediately instead
+    // of eating the first click just to focus the window.
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+
+    // MARK: - Hover feedback
+
+    private var hoverTrackingArea: NSTrackingArea?
+    private(set) var hoveredObjectID: UUID?
+
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+        if let hoverTrackingArea { removeTrackingArea(hoverTrackingArea) }
+        let area = NSTrackingArea(
+            rect: .zero,
+            options: [.mouseMoved, .mouseEnteredAndExited, .activeInKeyWindow, .inVisibleRect],
+            owner: self,
+            userInfo: nil
+        )
+        addTrackingArea(area)
+        hoverTrackingArea = area
+    }
+
+    override func mouseMoved(with event: NSEvent) {
+        updateHoverFeedback(at: convert(event.locationInWindow, from: nil))
+    }
+
+    override func mouseExited(with event: NSEvent) {
+        setHoveredObject(nil)
+    }
+
+    private func updateHoverFeedback(at point: CGPoint) {
+        guard activeTextField == nil, activeTool != .crop, cropRect == nil else {
+            setHoveredObject(nil)
+            return
+        }
+        if let handleHit = editHandleHit(at: point) {
+            setHoveredObject(nil)
+            cursor(for: handleHit.action).set()
+            return
+        }
+        let hit = grabbableObject(at: point)
+        setHoveredObject(hit?.id)
+        if hit != nil {
+            NSCursor.openHand.set()
+        } else {
+            defaultToolCursor.set()
+        }
+    }
+
+    private func setHoveredObject(_ id: UUID?) {
+        guard hoveredObjectID != id else { return }
+        let previous = hoveredObjectID.flatMap { old in objects.first(where: { $0.id == old })?.bounds }
+        hoveredObjectID = id
+        let current = id.flatMap { new in objects.first(where: { $0.id == new })?.bounds }
+        for rect in [previous, current].compactMap({ $0 }) {
+            setNeedsDisplay(rect.insetBy(dx: -8, dy: -8).intersection(bounds))
+        }
+    }
+
+    private func cursor(for action: SelectDragAction) -> NSCursor {
+        switch action {
+        case .move:
+            return .openHand
+        case .arrowHandle, .lineEndpoint, .highlighterEndpoint:
+            return .pointingHand
+        case .resize(_, let handle):
+            switch handle {
+            case .left, .right:
+                return .resizeLeftRight
+            case .top, .bottom:
+                return .resizeUpDown
+            case .topLeft, .bottomRight, .topRight, .bottomLeft:
+                if #available(macOS 15.0, *) {
+                    let position: NSCursor.FrameResizePosition = {
+                        switch handle {
+                        case .topLeft: return .topLeft
+                        case .topRight: return .topRight
+                        case .bottomLeft: return .bottomLeft
+                        default: return .bottomRight
+                        }
+                    }()
+                    return .frameResize(position: position, directions: .all)
+                }
+                return .crosshair
+            }
+        }
+    }
+
+    private var defaultToolCursor: NSCursor {
+        switch activeTool {
+        case .select:                                        return .arrow
+        case .arrow, .rectangle, .filledRectangle, .ellipse: return .crosshair
+        case .line, .freehand, .highlighter:                 return .crosshair
+        case .text:                                          return .iBeam
+        case .numberedStep:                                  return .pointingHand
+        case .blur, .pixelate, .crop:                        return .crosshair
+        }
+    }
+
     // MARK: - Cursor Management
 
     override func resetCursorRects() {
         discardCursorRects()
-        let cursor: NSCursor
-        switch activeTool {
-        case .select:                                      cursor = .arrow
-        case .arrow, .rectangle, .filledRectangle, .ellipse: cursor = .crosshair
-        case .line, .freehand, .highlighter:               cursor = .crosshair
-        case .text:                                        cursor = .iBeam
-        case .numberedStep:                                cursor = .pointingHand
-        case .blur, .pixelate, .crop:                      cursor = .crosshair
-        }
-        addCursorRect(bounds, cursor: cursor)
+        addCursorRect(bounds, cursor: defaultToolCursor)
     }
 
     // MARK: – Drawing
@@ -103,12 +193,25 @@ final class AnnotationCanvas: NSView {
         // 4. In-progress object
         currentObject?.draw(in: ctx, scale: window?.backingScaleFactor ?? 2)
 
-        // 5. Selection handles
+        // 5. Hover affordance: a faint outline on the grabbable object under
+        // the cursor, so "you can drag this" is visible before any click.
+        if let hoveredObjectID,
+           !selectedObjects.contains(where: { $0.id == hoveredObjectID }),
+           let hovered = objects.first(where: { $0.id == hoveredObjectID }) {
+            ctx.saveGState()
+            ctx.setStrokeColor(NSColor.controlAccentColor.withAlphaComponent(0.42).cgColor)
+            ctx.setLineWidth(1)
+            ctx.setLineDash(phase: 0, lengths: [4, 3])
+            ctx.stroke(hovered.bounds.insetBy(dx: -3, dy: -3))
+            ctx.restoreGState()
+        }
+
+        // 6. Selection handles
         for obj in selectedObjects {
             drawSelectionHandle(for: obj, ctx: ctx)
         }
 
-        // 6. Crop overlay
+        // 7. Crop overlay
         if let crop = cropRect {
             drawCropOverlay(crop, ctx: ctx)
         }
@@ -366,10 +469,22 @@ final class AnnotationCanvas: NSView {
 
     override func mouseDown(with event: NSEvent) {
         let point = convert(event.locationInWindow, from: nil)
+        let editingField = activeTextField
         commitTextField()
+        setHoveredObject(nil)
+
+        // Double-click a text annotation with any non-crop tool reopens it
+        // for editing in place. (Skipped when the click just committed an
+        // active field — that commit is what the double-click landed on.)
+        if event.clickCount == 2, activeTool != .crop, editingField == nil,
+           let text = objects.last(where: { $0 is TextAnnotation && $0.contains(point: point) }) as? TextAnnotation {
+            beginEditingText(text)
+            return
+        }
 
         if activeTool == .select {
             handleSelectDown(point: point)
+            updateDragCursor()
             return
         }
         if activeTool == .crop {
@@ -377,6 +492,18 @@ final class AnnotationCanvas: NSView {
             cropRect = CGRect(origin: point, size: .zero)
             return
         }
+
+        // Direct manipulation with any tool: clicking an existing annotation
+        // (or a visible handle) grabs it instead of drawing on top of it —
+        // that's what everyone tries first. Drawing still starts anywhere
+        // that isn't covered by an object.
+        if shouldGrabExistingObject(at: point) {
+            isGrabSession = true
+            handleSelectDown(point: point)
+            updateDragCursor()
+            return
+        }
+
         if activeTool == .text {
             beginTextEntry(at: point)
             return
@@ -386,6 +513,7 @@ final class AnnotationCanvas: NSView {
             let step = NumberedStepAnnotation(center: point, number: nextStepNumber())
             step.color = activeColor
             objects.append(step)
+            selectedObjects = [step]
             setNeedsDisplay(bounds)
             return
         }
@@ -399,7 +527,7 @@ final class AnnotationCanvas: NSView {
     override func mouseDragged(with event: NSEvent) {
         let point = convert(event.locationInWindow, from: nil)
 
-        if activeTool == .select {
+        if activeTool == .select || isGrabSession {
             handleSelectDrag(point: point)
             return
         }
@@ -423,8 +551,10 @@ final class AnnotationCanvas: NSView {
     override func mouseUp(with event: NSEvent) {
         let point = convert(event.locationInWindow, from: nil)
 
-        if activeTool == .select {
+        if activeTool == .select || isGrabSession {
             handleSelectUp(point: point)
+            isGrabSession = false
+            updateHoverFeedback(at: point)
             return
         }
         if activeTool == .crop {
@@ -434,6 +564,7 @@ final class AnnotationCanvas: NSView {
         }
         if let obj = currentObject {
             objects.append(obj)
+            selectedObjects = [obj]
             currentObject = nil
         }
         dragStart = nil
@@ -441,6 +572,38 @@ final class AnnotationCanvas: NSView {
     }
 
     // MARK: – Select tool
+
+    /// True while a drag that started on an existing object is being routed
+    /// through the select machinery even though a drawing tool is active.
+    private var isGrabSession = false
+
+    /// The annotation a click at this point would grab, given the active
+    /// tool. Freehand never grabs bodies (scribbling over annotations is
+    /// legitimate), and the click-to-place tools (text, numbered step) only
+    /// grab their own kind so placing one on top of a shape stays easy.
+    private func grabbableObject(at point: CGPoint) -> (any AnnotationObject)? {
+        guard let hit = objects.last(where: { $0.contains(point: point) }) else { return nil }
+        switch activeTool {
+        case .select:           return hit
+        case .crop, .freehand:  return nil
+        case .text:             return hit is TextAnnotation ? hit : nil
+        case .numberedStep:     return hit is NumberedStepAnnotation ? hit : nil
+        default:                return hit
+        }
+    }
+
+    /// Whether a click at this point should grab an existing annotation
+    /// instead of starting a new drawing. Handles of the current selection
+    /// always win.
+    private func shouldGrabExistingObject(at point: CGPoint) -> Bool {
+        editHandleHit(at: point) != nil || grabbableObject(at: point) != nil
+    }
+
+    private func updateDragCursor() {
+        if case .move = selectDragAction, !selectedObjects.isEmpty {
+            NSCursor.closedHand.set()
+        }
+    }
 
     private var selectDragStart: CGPoint?
     private var selectObjectStart: [(UUID, CGPoint)] = []
@@ -779,19 +942,60 @@ final class AnnotationCanvas: NSView {
         activeTextField = field
     }
 
+    /// Reopens an existing text annotation for in-place editing: the
+    /// annotation is lifted into a live text field (keeping its style) and
+    /// re-created on commit. Deleting all the text deletes the annotation.
+    private func beginEditingText(_ annotation: TextAnnotation) {
+        pushUndo()
+        objects.removeAll { $0.id == annotation.id }
+        selectedObjects.removeAll { $0.id == annotation.id }
+        setNeedsDisplay(bounds)
+
+        let frame = NSRect(
+            x: annotation.origin.x,
+            y: annotation.origin.y,
+            width: max(annotation.bounds.width + 80, 200),
+            height: max(annotation.bounds.height + 8, 30)
+        )
+        let field = NSTextField(frame: frame)
+        field.backgroundColor = .clear
+        field.isBordered = false
+        field.isEditable = true
+        field.font = .boldSystemFont(ofSize: annotation.fontSize)
+        field.textColor = annotation.color
+        field.stringValue = annotation.text
+        field.delegate = self
+        addSubview(field)
+        field.becomeFirstResponder()
+        field.currentEditor()?.selectAll(nil)
+        activeTextField = field
+        editingTextColor = annotation.color
+        editingTextFontSize = annotation.fontSize
+        editSessionSkipsUndoPush = true
+    }
+
+    // Style carried through an edit session so committing a re-opened text
+    // annotation keeps its original color/size instead of the toolbar's.
+    private var editingTextColor: NSColor?
+    private var editingTextFontSize: CGFloat?
+    private var editSessionSkipsUndoPush = false
+
     func commitTextField() {
         guard let field = activeTextField else { return }
         let text = field.stringValue.trimmingCharacters(in: .whitespaces)
         if !text.isEmpty {
-            pushUndo()
+            if !editSessionSkipsUndoPush { pushUndo() }
             let ann = TextAnnotation(origin: field.frame.origin)
             ann.text = text
-            ann.color = activeColor
-            ann.fontSize = 18
+            ann.color = editingTextColor ?? activeColor
+            ann.fontSize = editingTextFontSize ?? 18
             objects.append(ann)
         }
         field.removeFromSuperview()
         activeTextField = nil
+        editingTextColor = nil
+        editingTextFontSize = nil
+        editSessionSkipsUndoPush = false
         setNeedsDisplay(bounds)
     }
 

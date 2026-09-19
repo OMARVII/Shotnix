@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.21.0-beta] - 2026-09-19
+
+### Added
+- **Recorded clicks are now editable** — a new Clicks lane on the editor timeline shows every recorded click: tap a marker to select it (and jump there), drag to retime it, press Delete to remove it (undoable). Ripples, spotlights, and the next Auto Zoom run follow the edited list.
+- **Preview mute button** — a speaker toggle next to the timeline zoom controls silences the editor preview while you review a recording. It never touches the export audio or per-clip mutes. Press M (with no clip selected) to toggle it from the keyboard.
+- **Callouts are editable right on the video stage** — highlight, arrow, text, and redact overlays were render-only: clicking one just seeked the video, and position/size could only be nudged from inspector sliders. Now clicking a callout selects it (dashed border + corner handles), dragging moves it, dragging a corner resizes it with the opposite corner anchored, and Delete removes it — each gesture is a single undo step, clamped to the stage, and the preview position matches the export exactly.
+- **Effects lane shows duration pills** — each callout is now a color-coded block spanning exactly when it's on screen, instead of a dot at its start time. Drag the pill to move the whole window, drag either edge grip to set when it appears and disappears (snapping to clips, clicks, and other effects), click to select and jump there. One undo step per gesture; timing survives cuts and clip speed changes because windows are stored in source time.
+
+### Removed
+- **Copy-video-path button** — the doc-on-doc icon next to Reveal Video in the editor header copied the raw source file path, which nobody needs; Reveal in Finder covers the real use case.
+
+### Changed
+- **Timeline redesigned as a pro editing surface** — the boxy per-lane containers and label column are gone; the timeline is now a flat surface with self-describing blocks. Zoom moves are labeled blocks ("1.8×") you drag directly, with compact "1×" chips where the camera resets; callouts are color-coded duration pills; clicks are dots on a hairline; and the big clip strip anchors the bottom under a cleaner ruler and a proper playhead grabber. Rows appear only when they have content, so a simple recording gets a simple timeline, and every marker explains itself on hover.
+- **Timeline drags are now precise and undoable** — dragging a zoom block or click dot used to compound its own movement mid-drag (the further you dragged, the faster it ran away) and left nothing on the undo stack. Drags now measure from the gesture's origin and each full drag is exactly one ⌘Z step.
+- **Dragging no longer shakes** — while an object moved, snapping still counted the object's own start/end as snap targets, so every tick pulled it back toward where it already was and the drag visibly juddered. A dragged object's own snap points are now excluded; snapping to clips, clicks, and *other* effects still works.
+- **Callouts live on real timeline lanes** — overlapping effects used to render on top of each other; now each callout has its own lane, and you can drag a pill up or down to move it to another lane deliberately. Lanes are stable while you drag horizontally (no more re-shuffling under the cursor — the source of the shaking and flashing), conflicts spread onto free lanes and empty lanes compact away when you let go, and the timeline grows to fit. Old drafts pick up lanes automatically on load.
+- **Annotations are grabbable with any tool** — clicking an existing highlight, arrow, box, or step while a drawing tool is active now selects and moves it (with resize/endpoint handles), instead of silently drawing a new shape on top — no need to find the Select tool first. Newly drawn annotations select themselves so their handles are visible immediately. Drawing still starts anywhere that isn't an object; freehand always draws, and the text/step tools only grab their own kind so you can still place labels inside shapes.
+- **The annotation editor shows you what's draggable** — hovering any annotation outlines it faintly and switches the pointer to an open hand (closed hand while dragging, resize arrows over edge handles, a pointing hand over arrow/line endpoints). Double-clicking a text annotation reopens it for editing in place, keeping its color and size — clearing the text deletes it. The first click into an unfocused editor window now acts immediately instead of just focusing the window.
+
+### Fixed
+- **Pressing ⌘X/⌘C with the post-capture thumbnail focused froze the entire app** — the Edit menu's key replay could bounce a shortcut back into menu routing forever when a window was its own key responder, livelocking the main thread until force-quit. The replay now refuses window-as-responder targets and guards against re-entry.
+- **Shotnix can screenshot its own windows again** — excluding the app's floating chrome (toasts, overlays, pins) from captures also made the video editor, annotation editor, history, and preferences windows invisible to screenshots. Real titled windows are now excepted back into the capture; only the chrome stays excluded.
+- **Area recordings no longer look blurry in the editor and exports** — small recordings (especially from non-Retina displays) were stretched to fill a fixed 1920×1080 canvas, and auto-zoom magnified the stretch further. The canvas now shrinks to match small sources so the video renders at native 1:1 pixels; large captures keep the full canvas as before.
+- **Capture feedback appears before you move the mouse** — pressing a capture hotkey now immediately shows the crosshair (or the window highlight) at the cursor's current position and switches the pointer to a crosshair. Previously everything waited for the first mouse movement, so a stationary user saw nothing and assumed capture hadn't started.
+
 ## [0.20.5-beta] - 2026-09-14
 
 ### Added
@@ -29,7 +54,7 @@
 ## [0.20.1-beta] - 2026-09-14
 
 ### Fixed
-- **Zoom rebuilt on a single scene-camera model** — the editor preview and the export used two different zoom systems (the preview anchor-scaled the video in place, the export re-centered it), so the preview never showed where the camera was going and exports zoomed somewhere else. Both now share one model: the camera zooms the whole composed scene (background and video together, Screen-Studio style), so the point you pick genuinely centers — the background fills the slack near edges — and black regions are impossible. The export animates the identical eased path the preview shows, sampled at 30Hz through cuts and speed changes.
+- **Zoom rebuilt on a single scene-camera model** — the editor preview and the export used two different zoom systems (the preview anchor-scaled the video in place, the export re-centered it), so the preview never showed where the camera was going and exports zoomed somewhere else. Both now share one model: the camera zooms the whole composed scene (background and video together), so the point you pick genuinely centers — the background fills the slack near edges — and black regions are impossible. The export animates the identical eased path the preview shows, sampled at 30Hz through cuts and speed changes.
 - **Auto-zoom camera no longer darts** — the shot planner allowed transitions as short as 0.18 seconds and pumped the scale down and back up between nearby click bursts, producing quick, jerky camera actions. Every move now gets a real duration (zoom-ins 0.65s, pans 0.55–1.2s scaled by distance — settling a beat late instead of whipping), clicks close together on screen merge into one held shot instead of re-aiming the camera, back-to-back shots glide directly between focus points at hold scale, and zoom-outs are a single smooth motion instead of a two-step stutter.
 
 ## [0.20.0-beta] - 2026-09-13
