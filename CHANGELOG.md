@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.22.0-beta] - 2026-09-19
+
+### Added
+- **Post-capture thumbnails stack** — take several screenshots in a row and the thumbnails pile into a tidy column instead of covering each other: each new capture lands on top of the pile. Dismiss any card (timeout, swipe, Esc, or an action) and the cards above drop down into the freed space with a soft landing. Each screen keeps its own pile, capped at five — beyond that the oldest card bows out. Hover-pause still works per card, even when a card slides under (or away from) a stationary cursor.
+
+### Fixed
+- **Swipe-dismiss actually slides now** — the overlay's swipe-away animation silently never moved the window (only the fade ran) because window origin isn't animatable on macOS; the card now visibly slides off toward the swipe direction.
+
 ## [0.21.1-beta] - 2026-09-19
 
 ### Changed

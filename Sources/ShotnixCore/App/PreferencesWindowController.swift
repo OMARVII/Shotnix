@@ -888,7 +888,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.21.1"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.22.0"
     
     var body: some View {
         PreferencesPane {
@@ -931,6 +931,10 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.22.0
+                    • Post-capture thumbnails now stack: take several screenshots in a row and they pile into a tidy column, each new capture landing on top. Dismiss any card and the ones above drop down smoothly. Five per screen; the oldest bows out beyond that
+                    • Swiping a thumbnail away now visibly slides it off screen (the slide animation silently never ran before)
+
                     Version 0.21.1
                     • The Select tool in the screenshot editor now uses a proper pointer icon, so it reads as Select at a glance
                     • Fixed: switching tools while a text box was still open no longer drops a surprise text annotation on your next click — the text commits the moment you switch tools

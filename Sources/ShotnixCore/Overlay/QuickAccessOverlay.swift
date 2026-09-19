@@ -433,8 +433,18 @@ private final class QuickAccessWindow: NSPanel {
         return NSScreen.main
     }
 
-    private func positionOverlay() {
-        guard let screen = captureScreen else { return }
+    // MARK: – Stack layout (multiple captures pile into a column)
+
+    /// Vertical gap between stacked thumbnails.
+    private static let stackGap: CGFloat = 12
+    /// More than this per screen and the oldest card is dismissed.
+    private static let maxStackPerScreen = 5
+
+    /// Origin for a given stack slot on this window's screen. Slot 0 is the
+    /// anchor at the bottom (the oldest card); new captures land on TOP of
+    /// the pile, and cards drop down a slot when one below them leaves.
+    private func slotOrigin(index: Int) -> NSPoint? {
+        guard let screen = captureScreen else { return nil }
         let margin: CGFloat = 36
         // Sits noticeably above the bottom edge (Dock line) — comfortable to
         // glance at without looking "docked" to the corner.
@@ -445,9 +455,72 @@ private final class QuickAccessWindow: NSPanel {
         } else {
             x = screen.visibleFrame.maxX - frame.width - margin
         }
-        let y = screen.visibleFrame.minY + bottomMargin
+        let y = screen.visibleFrame.minY + bottomMargin + CGFloat(index) * (frame.height + Self.stackGap)
+        return NSPoint(x: x, y: y)
+    }
+
+    private var screenKey: CGDirectDisplayID {
+        (captureScreen?.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? CGDirectDisplayID) ?? 0
+    }
+
+    /// Slides every open card to its slot: oldest at the bottom anchor,
+    /// newer cards on top. Runs when a card leaves — the cards above drop
+    /// down into the freed space. (Arrivals don't move anyone: the newcomer
+    /// simply lands on top of the pile.)
+    private static func relayoutStacks(animated: Bool) {
+        let active = openWindows.filter { !$0.isClosing }
+        let byScreen = Dictionary(grouping: active, by: { $0.screenKey })
+
+        for (_, group) in byScreen {
+            // openWindows is oldest→newest; oldest keeps the bottom anchor.
+            for (index, window) in group.enumerated() {
+                guard let target = window.slotOrigin(index: index),
+                      window.frame.origin != target else { continue }
+                if animated {
+                    NSAnimationContext.runAnimationGroup({ ctx in
+                        ctx.duration = 0.35
+                        // Fast start, soft landing — the "drop" feel.
+                        ctx.timingFunction = CAMediaTimingFunction(controlPoints: 0.22, 1.0, 0.36, 1.0)
+                        // NSWindow only animates `frame` — animator().setFrameOrigin
+                        // is silently swallowed (not an animatable key).
+                        window.animator().setFrame(NSRect(origin: target, size: window.frame.size), display: true)
+                    }, completionHandler: {
+                        // A card that moved under (or away from) a stationary
+                        // cursor gets no mouse event — re-evaluate hover so
+                        // its dismiss timer pauses/resumes correctly.
+                        Task { @MainActor in
+                            guard !window.isClosing else { return }
+                            window.setHovered(window.frame.contains(NSEvent.mouseLocation))
+                        }
+                    })
+                } else {
+                    window.setFrameOrigin(target)
+                }
+            }
+        }
+    }
+
+    /// Keeps each screen's pile manageable — beyond the cap, the oldest
+    /// card animates out (its history entry is untouched).
+    private static func enforceStackLimit() {
+        let active = openWindows.filter { !$0.isClosing }
+        let byScreen = Dictionary(grouping: active, by: { $0.screenKey })
+        for (_, group) in byScreen where group.count > maxStackPerScreen {
+            for window in group.prefix(group.count - maxStackPerScreen) {
+                window.animatedClose()
+            }
+        }
+    }
+
+    private func positionOverlay() {
+        // New captures land on top of the pile: my slot is however many
+        // cards are already stacked on this screen (self isn't in
+        // openWindows yet — show() appends after init).
+        let key = screenKey
+        let slot = Self.openWindows.filter { !$0.isClosing && $0.screenKey == key }.count
+        guard let origin = slotOrigin(index: slot) else { return }
         // Start at final position (slide-up is handled by scale spring, not position offset)
-        setFrameOrigin(NSPoint(x: x, y: y))
+        setFrameOrigin(origin)
         alphaValue = 0
 
         // Order front WITHOUT activating or taking key — the user keeps typing
@@ -486,6 +559,8 @@ private final class QuickAccessWindow: NSPanel {
         guard !isClosing else { return }
         isClosing = true
         dismissTimer?.invalidate()
+        // Cards above drop down while this one slides away.
+        Self.relayoutStacks(animated: true)
 
         let slideDistance: CGFloat = frame.width + 40
         let targetX = frame.origin.x + (direction * slideDistance)
@@ -498,7 +573,9 @@ private final class QuickAccessWindow: NSPanel {
             ctx.duration = 0.25
             ctx.timingFunction = CAMediaTimingFunction(name: .easeIn)
             self.animator().alphaValue = 0
-            self.animator().setFrameOrigin(NSPoint(x: targetX, y: self.frame.origin.y))
+            // setFrame, not setFrameOrigin: origin alone isn't an animatable
+            // NSWindow key, so the slide silently never happened.
+            self.animator().setFrame(NSRect(x: targetX, y: self.frame.origin.y, width: self.frame.width, height: self.frame.height), display: true)
         }, completionHandler: { [weak self] in
             DispatchQueue.main.async { self?.forceCleanup() }
         })
@@ -511,6 +588,8 @@ private final class QuickAccessWindow: NSPanel {
         guard !isClosing else { return }
         isClosing = true
         dismissTimer?.invalidate()
+        // Cards above drop down while this one fades out.
+        Self.relayoutStacks(animated: true)
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
             self?.forceCleanup()
@@ -543,6 +622,10 @@ private final class QuickAccessWindow: NSPanel {
         removeEventMonitors()
         orderOut(nil)
         QuickAccessWindow.openWindows.removeAll { $0 === self }
+        // Idempotent safety net: close paths relayout at close start, but a
+        // window torn down without animating (e.g. app-level cleanup) still
+        // frees its slot for the cards above.
+        QuickAccessWindow.relayoutStacks(animated: true)
         // Restore background-only policy so app doesn't appear in Cmd-Tab
         // (skip when transitioning to another window like editor or pin)
         if QuickAccessWindow.openWindows.isEmpty && !skipPolicyReset {
@@ -680,6 +763,10 @@ private final class QuickAccessWindow: NSPanel {
 
     func show() {
         QuickAccessWindow.openWindows.append(self)
+        // The newcomer already sits on top of the pile (positionOverlay put
+        // it there); nobody else moves on arrival.
+        Self.relayoutStacks(animated: true)
+        Self.enforceStackLimit()
     }
 }
 
