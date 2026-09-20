@@ -2696,7 +2696,7 @@ final class VideoDemoEditorViewModel: ObservableObject {
         project.clickEvents[index].time = sourceTime
         project.clickEvents.sort { $0.time < $1.time }
         selectedClickID = id
-        seekToTimeline(safeTimeline)
+        // No per-tick seek — the gesture seeks once when the drag ends.
         status = "Click moved — run Auto Zoom to re-plan the camera"
     }
 
@@ -3146,9 +3146,27 @@ final class VideoDemoEditorViewModel: ObservableObject {
         guard let selectedZoomID else { return }
         pushUndo()
         project.zoomKeyframes.removeAll { $0.id == selectedZoomID }
-        self.selectedZoomID = project.zoomKeyframes.first?.id
+        // No auto-advance: Delete is routed here from the key handler, and
+        // advancing would let repeated presses silently mow every zoom.
+        self.selectedZoomID = nil
         status = "Zoom removed"
         ToastWindow.show(message: "Zoom removed. Press Cmd-Z to undo.", duration: 2.4)
+    }
+
+    /// Moves where a zoom keyframe's camera points (stage reticle drag).
+    /// Coalesced into one undo step per drag via the shared edit session.
+    func setZoomFocus(id: UUID, focusX: Double, focusY: Double) {
+        guard let index = project.zoomKeyframes.firstIndex(where: { $0.id == id }) else { return }
+        beginEffectStageEditIfNeeded()
+        let keyframe = project.zoomKeyframes[index]
+        project.zoomKeyframes[index] = VideoDemoZoomKeyframe(
+            id: id,
+            time: keyframe.time,
+            scale: keyframe.scale,
+            focusX: min(max(focusX, 0), 1),
+            focusY: min(max(focusY, 0), 1)
+        )
+        selectedZoomID = id
     }
 
     func moveZoom(id: UUID, toTimelineTime timelineTime: Double) {
@@ -3165,7 +3183,8 @@ final class VideoDemoEditorViewModel: ObservableObject {
         )
         project.zoomKeyframes.sort { $0.time < $1.time }
         selectZoom(id)
-        seekToTimeline(safeTimeline)
+        // No per-tick seek: the playhead chasing the drag in snapped steps
+        // reads as flicker. The gesture seeks once when the drag ends.
         status = "Zoom moved"
     }
 
@@ -3442,6 +3461,8 @@ final class VideoDemoEditorViewModel: ObservableObject {
         case 51, 117:
             if selectedEffectID != nil {
                 deleteSelectedEffect()
+            } else if selectedZoomID != nil {
+                deleteSelectedZoom()
             } else if selectedClickID != nil {
                 deleteSelectedClick()
             } else {
@@ -3910,6 +3931,23 @@ private struct VideoDemoEditorView: View {
             .buttonStyle(.plain)
             .foregroundStyle(model.previewMuted ? Color.orange : Color.white.opacity(0.86))
             .help(model.previewMuted ? "Unmute preview" : "Mute preview — export audio is not affected")
+
+            Button {
+                model.addAutoZoomPreset()
+            } label: {
+                HStack(spacing: 4) {
+                    Image(systemName: "sparkles")
+                        .font(.system(size: 10, weight: .bold))
+                    Text("Auto Zoom")
+                        .font(.system(size: 10.5, weight: .bold))
+                }
+                .padding(.horizontal, 9)
+                .frame(height: 26)
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(Color.white.opacity(0.88))
+            .background(Color.white.opacity(0.10), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+            .help("Plan camera zoom moves from your recorded clicks — replaces the current Camera lane (one undo step)")
         }
         .padding(.horizontal, 14)
         .frame(height: 36)
@@ -4416,30 +4454,16 @@ private struct VideoDemoEditorView: View {
                 .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
             }
 
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 6) {
-                    ForEach(model.project.zoomKeyframes.sorted { $0.time < $1.time }) { keyframe in
-                        Button {
-                            model.selectedZoomID = keyframe.id
-                            model.seek(to: keyframe.time)
-                        } label: {
-                            Text("\(timeLabel(keyframe.time))  \(String(format: "%.1fx", keyframe.scale))")
-                                .font(.system(size: 10, weight: .bold, design: .monospaced))
-                                .padding(.horizontal, 8)
-                                .frame(height: 26)
-                                .background(model.selectedZoomID == keyframe.id ? Color.accentColor.opacity(0.28) : Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 7, style: .continuous))
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-            }
-
+            // The timeline's zoom blocks handle selection/retiming and the
+            // stage reticle handles focus — the inspector keeps only what
+            // has no direct-manipulation equivalent: the scale.
             if let binding = model.selectedZoomBinding() {
                 VStack(spacing: 10) {
-                    sliderRow("Time", value: binding.time, range: 0...max(model.duration, 0.1), label: timeLabel(binding.wrappedValue.time))
                     sliderRow("Scale", value: binding.scale, range: 1...3, label: String(format: "%.2fx", binding.wrappedValue.scale))
-                    sliderRow("Focus X", value: binding.focusX, range: 0...1, label: String(format: "%.0f%%", binding.wrappedValue.focusX * 100))
-                    sliderRow("Focus Y", value: binding.focusY, range: 0...1, label: String(format: "%.0f%%", binding.wrappedValue.focusY * 100))
+                    Text("Drag the focus ring on the video to aim the camera; drag the block on the timeline to retime.")
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
         }
@@ -4976,7 +5000,15 @@ private struct VideoDemoStageView: View {
     /// camera was going.
     private func zoomedScene(layout: (canvas: CGRect, stage: CGRect)) -> some View {
         let canvasSize = model.project.canvasSize()
-        let window = model.project.zoomWindow(in: canvasSize, at: model.currentTime)
+        // Aiming mode: while a zoom move is selected (and playback is
+        // paused), show the FULL frame instead of the zoomed camera.
+        // Dragging the focus ring on a zoomed-in preview re-aims the camera
+        // every tick, which pans the whole scene under the cursor — a
+        // feedback loop that feels like dragging the entire video.
+        let isAiming = model.selectedZoomID != nil && model.player.timeControlStatus != .playing
+        let window = isAiming
+            ? CGRect(origin: .zero, size: canvasSize)
+            : model.project.zoomWindow(in: canvasSize, at: model.currentTime)
         let zoomScale = canvasSize.width / max(window.width, 1)
         let viewScale = layout.canvas.width / max(canvasSize.width, 1)
         let stageLocal = CGRect(
@@ -5109,6 +5141,14 @@ private struct VideoDemoOverlayView: View {
                 effectView(effect)
             }
 
+            // Focus ring for the selected zoom move: drag it to aim the
+            // camera exactly where you want, instead of slider archaeology.
+            if let zoomID = model.selectedZoomID,
+               let zoom = model.project.zoomKeyframes.first(where: { $0.id == zoomID }),
+               zoom.scale > 1.02 {
+                zoomFocusReticle(zoom)
+            }
+
             if model.project.showClickRipple {
                 ForEach(model.activeClicks(at: model.currentTime), id: \.event.id) { entry in
                     let point = point(for: entry.event.x, entry.event.y)
@@ -5154,6 +5194,49 @@ private struct VideoDemoOverlayView: View {
 
     @State private var moveOrigin: EffectGestureOrigin?
     @State private var resizeOrigin: EffectGestureOrigin?
+    @State private var focusDragOrigin: (id: UUID, x: Double, y: Double)?
+
+    /// Draggable focus ring for the selected zoom keyframe. Gesture
+    /// translations arrive in stage-local units (SwiftUI de-scales through
+    /// the preview's zoom transform), so normalizing by stageSize is exact
+    /// even while the camera is zoomed in.
+    private func zoomFocusReticle(_ zoom: VideoDemoZoomKeyframe) -> some View {
+        ZStack {
+            Circle()
+                .stroke(Color.accentColor, lineWidth: 2)
+                .frame(width: 34, height: 34)
+                .shadow(color: .black.opacity(0.5), radius: 3)
+            Circle()
+                .fill(Color.accentColor)
+                .frame(width: 6, height: 6)
+        }
+        .contentShape(Circle().inset(by: -10))
+        .onHover { inside in
+            (inside ? NSCursor.openHand : NSCursor.arrow).set()
+        }
+        .help("Zoom focus — drag to aim the camera")
+        .gesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { value in
+                    if focusDragOrigin?.id != zoom.id {
+                        focusDragOrigin = (zoom.id, zoom.focusX, zoom.focusY)
+                    }
+                    guard let origin = focusDragOrigin else { return }
+                    NSCursor.closedHand.set()
+                    model.setZoomFocus(
+                        id: zoom.id,
+                        focusX: origin.x + Double(value.translation.width / max(stageSize.width, 1)),
+                        focusY: origin.y + Double(value.translation.height / max(stageSize.height, 1))
+                    )
+                }
+                .onEnded { _ in
+                    focusDragOrigin = nil
+                    model.endEffectStageEdit()
+                    NSCursor.openHand.set()
+                }
+        )
+        .position(point(for: zoom.focusX, zoom.focusY))
+    }
 
     private func effectView(_ effect: VideoDemoOverlayEffect) -> some View {
         let size = CGSize(
@@ -5452,7 +5535,12 @@ struct VideoDemoTimelineView: View {
                     .frame(width: width, height: Self.videoRowHeight, alignment: .leading)
             }
 
-            if let hoverTimelineTime {
+            // The scrubber preview hides during any drag — it snaps to nearby
+            // points, and a line teleporting next to the cursor mid-drag
+            // reads as flicker.
+            if let hoverTimelineTime,
+               effectPillOrigin == nil, markerDragOrigin == nil,
+               activeTrim == nil, !isSelectingRange, !model.isScrubbing {
                 hoverScrubber(time: hoverTimelineTime, width: width, height: height, duration: duration)
             }
 
@@ -5544,7 +5632,11 @@ struct VideoDemoTimelineView: View {
                     .frame(width: segmentWidth, height: Self.videoRowHeight)
                     .offset(x: segmentX + 2)
                     .contentShape(RoundedRectangle(cornerRadius: 9, style: .continuous))
-                    .highPriorityGesture(clipSeekGesture(segment: segment, clipWidth: segmentWidth))
+                    // Normal priority, NOT highPriorityGesture: an ancestor's
+                    // high-priority gesture beats every child gesture, which
+                    // silently disabled the trim handles — grabbing an edge
+                    // seeked instead of trimming.
+                    .gesture(clipSeekGesture(segment: segment, clipWidth: segmentWidth))
                     .onHover { hovering in
                         hoveredClipID = hovering ? segment.id : (hoveredClipID == segment.id ? nil : hoveredClipID)
                     }
@@ -5661,12 +5753,25 @@ struct VideoDemoTimelineView: View {
     private func zoomTrack(width: CGFloat, duration: Double) -> some View {
         ZStack(alignment: .topLeading) {
             if model.project.zoomKeyframes.isEmpty {
-                Text("Auto zoom — camera follows your clicks")
-                    .font(.system(size: 9.5, weight: .bold))
-                    .foregroundStyle(Color.white.opacity(0.28))
-                    .frame(height: Self.cameraRowHeight)
-                    .padding(.horizontal, 2)
-                    .allowsHitTesting(false)
+                // Empty lane doubles as the Auto Zoom entry point.
+                Button {
+                    model.addAutoZoomPreset()
+                } label: {
+                    HStack(spacing: 5) {
+                        Image(systemName: "sparkles")
+                            .font(.system(size: 9, weight: .bold))
+                        Text("Auto Zoom — camera follows your clicks")
+                            .font(.system(size: 9.5, weight: .bold))
+                    }
+                    .foregroundStyle(Color.white.opacity(0.55))
+                    .padding(.horizontal, 9)
+                    .frame(height: Self.cameraRowHeight - 6)
+                    .background(Color.white.opacity(0.05), in: Capsule())
+                    .overlay(Capsule().stroke(Color.white.opacity(0.14), lineWidth: 1))
+                }
+                .buttonStyle(.plain)
+                .padding(.top, 3)
+                .help("Plan zoom moves automatically from your recorded clicks")
             }
 
             ForEach(zoomMoveRanges(duration: duration), id: \.id) { move in
@@ -5680,14 +5785,24 @@ struct VideoDemoTimelineView: View {
                             RoundedRectangle(cornerRadius: 7, style: .continuous)
                                 .stroke(move.selected ? Color.accentColor : Color.blue.opacity(isReset ? 0.35 : 0.55), lineWidth: move.selected ? 1.5 : 1)
                         )
-                    Text(isReset ? "1×" : String(format: "%.1f×", move.scale))
-                        .font(.system(size: 9.5, weight: .heavy, design: .monospaced))
-                        .foregroundStyle(Color.white.opacity(isReset ? 0.6 : 0.94))
-                        .lineLimit(1)
+                    HStack(spacing: 3) {
+                        if !isReset, blockWidth > 56 {
+                            Image(systemName: "plus.magnifyingglass")
+                                .font(.system(size: 8.5, weight: .heavy))
+                                .foregroundStyle(Color.white.opacity(0.7))
+                        }
+                        Text(isReset ? "1×" : String(format: "%.1f×", move.scale))
+                            .font(.system(size: 9.5, weight: .heavy, design: .monospaced))
+                            .foregroundStyle(Color.white.opacity(isReset ? 0.6 : 0.94))
+                            .lineLimit(1)
+                    }
                 }
                 .frame(width: blockWidth, height: Self.cameraRowHeight)
                 .contentShape(Rectangle())
-                .help(isReset ? "Camera reset — drag to retime" : "Zoom move — drag to retime, click to select")
+                .onHover { inside in
+                    (inside ? NSCursor.openHand : NSCursor.arrow).set()
+                }
+                .help(isReset ? "Camera reset — drag to retime" : "Zoom move — drag to retime, click to select, Delete removes")
                 .gesture(markerDragGesture(
                     id: move.id,
                     startTime: move.start,
@@ -5708,6 +5823,10 @@ struct VideoDemoTimelineView: View {
     /// against it, so mid-drag view rebuilds can't compound the movement.
     @State private var markerDragOrigin: (id: UUID, start: Double)?
 
+    /// Snap-on-release drag: the object tracks the cursor RAW and 1:1 while
+    /// dragging (live snapping on a dense timeline is a staircase of
+    /// teleports), then the magnet applies once when you let go — a ≤9px
+    /// correction nobody perceives as a jump.
     private func markerDragGesture(
         id: UUID,
         startTime: Double,
@@ -5723,13 +5842,28 @@ struct VideoDemoTimelineView: View {
                 }
                 guard let origin = markerDragOrigin, abs(value.translation.width) > 2 else { return }
                 let next = origin.start + Double(value.translation.width / max(width, 1)) * duration
-                onMove(model.snappedTimelineTime(next, threshold: snapThreshold(duration: duration, width: width), excluding: id))
+                onMove(min(max(next, 0), max(duration, 0)))
             }
             .onEnded { value in
+                let origin = markerDragOrigin
                 markerDragOrigin = nil
-                model.endEffectStageEdit()
                 if abs(value.translation.width) <= 2 {
+                    model.endEffectStageEdit()
                     onTap()
+                    return
+                }
+                if let origin {
+                    let raw = origin.start + Double(value.translation.width / max(width, 1)) * duration
+                    let landed = model.snappedTimelineTime(
+                        min(max(raw, 0), max(duration, 0)),
+                        threshold: snapThreshold(duration: duration, width: width),
+                        excluding: id
+                    )
+                    onMove(landed)
+                    model.endEffectStageEdit()
+                    model.seekToTimeline(landed)
+                } else {
+                    model.endEffectStageEdit()
                 }
             }
     }
@@ -5838,6 +5972,9 @@ struct VideoDemoTimelineView: View {
         }
         .frame(width: pillWidth, height: Self.effectRowHeight)
         .contentShape(Rectangle())
+        .onHover { inside in
+            (inside ? NSCursor.openHand : NSCursor.arrow).set()
+        }
         .help("Drag to move · drag up/down to change lane · edges set when it appears and disappears")
         .gesture(pillMoveGesture(effect, start: start, end: end, width: width, duration: duration))
         .offset(x: x, y: CGFloat(row) * (Self.effectRowHeight + Self.effectRowGap))
@@ -5872,13 +6009,10 @@ struct VideoDemoTimelineView: View {
                 guard let origin = effectPillOrigin else { return }
 
                 if abs(value.translation.width) > 2 {
+                    // Raw 1:1 tracking — the snap magnet applies on release.
                     let delta = Double(value.translation.width / max(width, 1)) * duration
                     let length = origin.end - origin.start
-                    let newStart = model.snappedTimelineTime(
-                        min(max(origin.start + delta, 0), max(duration - length, 0)),
-                        threshold: snapThreshold(duration: duration, width: width),
-                        excluding: effect.id
-                    )
+                    let newStart = min(max(origin.start + delta, 0), max(duration - length, 0))
                     model.setEffectWindow(id: effect.id, timelineStart: newStart, timelineEnd: newStart + length)
                 }
 
@@ -5891,6 +6025,17 @@ struct VideoDemoTimelineView: View {
             .onEnded { value in
                 let origin = effectPillOrigin
                 effectPillOrigin = nil
+                if let origin, abs(value.translation.width) > 2 {
+                    let delta = Double(value.translation.width / max(width, 1)) * duration
+                    let length = origin.end - origin.start
+                    let raw = min(max(origin.start + delta, 0), max(duration - length, 0))
+                    let landed = model.snappedTimelineTime(
+                        raw,
+                        threshold: snapThreshold(duration: duration, width: width),
+                        excluding: effect.id
+                    )
+                    model.setEffectWindow(id: effect.id, timelineStart: landed, timelineEnd: landed + length)
+                }
                 model.endEffectStageEdit()
                 if abs(value.translation.width) <= 2, abs(value.translation.height) <= 2, let origin {
                     model.selectEffect(effect.id)
@@ -5907,19 +6052,30 @@ struct VideoDemoTimelineView: View {
                     model.selectEffect(effect.id)
                 }
                 guard let origin = effectPillOrigin else { return }
+                // Raw while dragging; the snap magnet applies on release.
                 let delta = Double(value.translation.width / max(width, 1)) * duration
-                let threshold = snapThreshold(duration: duration, width: width)
                 switch edge {
                 case .leading:
-                    let newStart = model.snappedTimelineTime(origin.start + delta, threshold: threshold, excluding: effect.id)
-                    model.setEffectWindow(id: effect.id, timelineStart: min(newStart, origin.end - 0.2), timelineEnd: origin.end)
+                    model.setEffectWindow(id: effect.id, timelineStart: min(origin.start + delta, origin.end - 0.2), timelineEnd: origin.end)
                 case .trailing:
-                    let newEnd = model.snappedTimelineTime(origin.end + delta, threshold: threshold, excluding: effect.id)
-                    model.setEffectWindow(id: effect.id, timelineStart: origin.start, timelineEnd: max(newEnd, origin.start + 0.2))
+                    model.setEffectWindow(id: effect.id, timelineStart: origin.start, timelineEnd: max(origin.end + delta, origin.start + 0.2))
                 }
             }
-            .onEnded { _ in
+            .onEnded { value in
+                let origin = effectPillOrigin
                 effectPillOrigin = nil
+                if let origin {
+                    let delta = Double(value.translation.width / max(width, 1)) * duration
+                    let threshold = snapThreshold(duration: duration, width: width)
+                    switch edge {
+                    case .leading:
+                        let landed = model.snappedTimelineTime(origin.start + delta, threshold: threshold, excluding: effect.id)
+                        model.setEffectWindow(id: effect.id, timelineStart: min(landed, origin.end - 0.2), timelineEnd: origin.end)
+                    case .trailing:
+                        let landed = model.snappedTimelineTime(origin.end + delta, threshold: threshold, excluding: effect.id)
+                        model.setEffectWindow(id: effect.id, timelineStart: origin.start, timelineEnd: max(landed, origin.start + 0.2))
+                    }
+                }
                 model.endEffectStageEdit()
             }
     }
@@ -5997,20 +6153,17 @@ struct VideoDemoTimelineView: View {
                 }
 
                 Spacer(minLength: 0)
-
-                Text("\(timeLabel(segment.clip.sourceStart))-\(timeLabel(segment.clip.sourceEnd))")
-                    .font(.system(size: 9, weight: .bold, design: .monospaced))
-                    .foregroundStyle(Color.white.opacity(0.66))
             }
             .padding(.horizontal, 10)
             .padding(.vertical, 7)
 
-            if selected {
-                HStack {
-                    trimHandle(edge: .leading, segment: segment, timelineWidth: timelineWidth, timelineDuration: timelineDuration)
-                    Spacer(minLength: 0)
-                    trimHandle(edge: .trailing, segment: segment, timelineWidth: timelineWidth, timelineDuration: timelineDuration)
-                }
+            // Trim zones live on every clip all the time — grab an edge and
+            // drag to set the in/out point, no need to select first. They
+            // render as quiet grips until the clip is hovered or selected.
+            HStack {
+                trimHandle(edge: .leading, segment: segment, emphasized: selected || hovered, timelineWidth: timelineWidth, timelineDuration: timelineDuration)
+                Spacer(minLength: 0)
+                trimHandle(edge: .trailing, segment: segment, emphasized: selected || hovered, timelineWidth: timelineWidth, timelineDuration: timelineDuration)
             }
         }
         .clipShape(RoundedRectangle(cornerRadius: 9, style: .continuous))
@@ -6084,23 +6237,33 @@ struct VideoDemoTimelineView: View {
         .disabled(model.timelineSegments.count <= 1)
     }
 
-    private func trimHandle(edge: TimelineTrimEdge, segment: VideoDemoTimelineSegment, timelineWidth: CGFloat, timelineDuration: Double) -> some View {
+    private func trimHandle(edge: TimelineTrimEdge, segment: VideoDemoTimelineSegment, emphasized: Bool, timelineWidth: CGFloat, timelineDuration: Double) -> some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 5, style: .continuous)
-                .fill(Color.black.opacity(0.34))
-                .frame(width: 18, height: 58)
-            RoundedRectangle(cornerRadius: 3, style: .continuous)
-                .fill(Color.accentColor)
-                .frame(width: 5, height: 46)
-                .shadow(color: Color.accentColor.opacity(0.35), radius: 4, x: 0, y: 0)
-            Image(systemName: edge == .leading ? "chevron.left" : "chevron.right")
-                .font(.system(size: 8, weight: .heavy))
-                .foregroundStyle(.white.opacity(0.82))
-                .offset(x: edge == .leading ? -5 : 5)
+            if emphasized {
+                RoundedRectangle(cornerRadius: 5, style: .continuous)
+                    .fill(Color.black.opacity(0.34))
+                    .frame(width: 18, height: 58)
+                RoundedRectangle(cornerRadius: 3, style: .continuous)
+                    .fill(Color.accentColor)
+                    .frame(width: 5, height: 46)
+                    .shadow(color: Color.accentColor.opacity(0.35), radius: 4, x: 0, y: 0)
+                Image(systemName: edge == .leading ? "chevron.left" : "chevron.right")
+                    .font(.system(size: 8, weight: .heavy))
+                    .foregroundStyle(.white.opacity(0.82))
+                    .offset(x: edge == .leading ? -5 : 5)
+            } else {
+                // Quiet grip: the edge always looks grabbable.
+                RoundedRectangle(cornerRadius: 2, style: .continuous)
+                    .fill(Color.white.opacity(0.5))
+                    .frame(width: 3, height: 26)
+            }
         }
         .frame(width: 22, height: 68)
         .contentShape(Rectangle())
-        .help(edge == .leading ? "Drag clip in point" : "Drag clip out point")
+        .onHover { inside in
+            (inside ? NSCursor.resizeLeftRight : NSCursor.arrow).set()
+        }
+        .help(edge == .leading ? "Drag to set where the clip starts" : "Drag to set where the clip ends")
         .highPriorityGesture(
             DragGesture(minimumDistance: 0)
                 .onChanged { value in
@@ -6119,25 +6282,35 @@ struct VideoDemoTimelineView: View {
                     }
 
                     guard let activeTrim else { return }
+                    // Raw 1:1 while dragging (the live boundary-frame preview
+                    // stays); the snap magnet applies once on release.
                     let timelineDelta = Double(value.translation.width / max(timelineWidth, 1)) * timelineDuration
                     switch edge {
                     case .leading:
-                        let timeline = model.snappedTimelineTime(
-                            activeTrim.timelineStart + timelineDelta,
-                            threshold: snapThreshold(duration: timelineDuration, width: timelineWidth)
-                        )
+                        let timeline = activeTrim.timelineStart + timelineDelta
                         let source = activeTrim.sourceStart + (timeline - activeTrim.timelineStart) * activeTrim.speed
                         model.setClipStart(id: segment.id, sourceStart: source, seekToBoundary: true)
                     case .trailing:
-                        let timeline = model.snappedTimelineTime(
-                            activeTrim.timelineEnd + timelineDelta,
-                            threshold: snapThreshold(duration: timelineDuration, width: timelineWidth)
-                        )
+                        let timeline = activeTrim.timelineEnd + timelineDelta
                         let source = activeTrim.sourceEnd + (timeline - activeTrim.timelineEnd) * activeTrim.speed
                         model.setClipEnd(id: segment.id, sourceEnd: source, seekToBoundary: true)
                     }
                 }
-                .onEnded { _ in
+                .onEnded { value in
+                    if let trim = activeTrim {
+                        let timelineDelta = Double(value.translation.width / max(timelineWidth, 1)) * timelineDuration
+                        let threshold = snapThreshold(duration: timelineDuration, width: timelineWidth)
+                        switch trim.edge {
+                        case .leading:
+                            let timeline = model.snappedTimelineTime(trim.timelineStart + timelineDelta, threshold: threshold)
+                            let source = trim.sourceStart + (timeline - trim.timelineStart) * trim.speed
+                            model.setClipStart(id: trim.clipID, sourceStart: source, seekToBoundary: true)
+                        case .trailing:
+                            let timeline = model.snappedTimelineTime(trim.timelineEnd + timelineDelta, threshold: threshold)
+                            let source = trim.sourceEnd + (timeline - trim.timelineEnd) * trim.speed
+                            model.setClipEnd(id: trim.clipID, sourceEnd: source, seekToBoundary: true)
+                        }
+                    }
                     activeTrim = nil
                     model.finishTimelineTrim()
                 }

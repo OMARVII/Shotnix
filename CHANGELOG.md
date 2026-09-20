@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.23.0-beta] - 2026-09-20
+
+### Added
+- **Drag where the camera zooms** — selecting a zoom move now shows a focus ring on the video itself: drag it to aim the camera exactly where you want. While a zoom is selected (and paused) the preview switches to an un-zoomed aiming view, so the ring moves over a stable image instead of re-aiming the camera under your cursor; play or deselect to see the zoom as authored. The inspector's Focus X/Y and Time sliders (and the redundant keyframe chip strip) are gone — the ring, the timeline blocks, and a single Scale slider cover everything with less clutter.
+- **Auto Zoom is one click away** — a permanent ✨ Auto Zoom button in the transport bar re-plans the camera from your recorded clicks (one undo step), and an empty Camera lane shows a clickable "Auto Zoom — camera follows your clicks" chip instead of a passive hint. Zoom blocks now carry a magnifier icon so the lane reads as camera moves at a glance.
+- **Timed-capture countdown redesigned** — the number is optically centered in the circle (it used to sit visibly off), an accent ring depletes smoothly across the wait, each tick lands with a soft pop, and the cancel hint moved out of the circle's curvature into a readable dark capsule below it. Springs in, and Esc/click still cancel.
+
+### Fixed
+- **Delete no longer removes the clip when a zoom move is selected** — the Delete key never routed to zoom selections, so trying to delete a camera move nuked the video clip under it. Delete now removes the selected effect, zoom, or click before ever falling back to the clip, and deleting never auto-selects the next item (repeated presses can't silently mow through a lane).
+- **Timeline blocks show a grab cursor on hover** — zoom blocks and callout pills switch the pointer to an open hand, and the clip card dropped its redundant source-range caption.
+- **Dragging on the timeline is calm now** — two things flickered next to the cursor during every drag: the hover scrubber (a preview line that snaps to nearby points, so it kept teleporting) and, for zoom/click drags, the playhead being re-seeked on every tick. The scrubber now hides while any drag is active, and retiming drags seek once when you release instead of continuously.
+- **Drags track the cursor 1:1; snapping happens on release** — live snapping teleported the dragged object onto every nearby click, edge, and boundary, so moving anything across a busy timeline felt like it was jumping from place to place. All timeline drags (zoom blocks, click dots, callout pills and their edges, clip trim handles) now follow the mouse exactly, and the snap magnet applies once when you let go — an imperceptible correction instead of a staircase.
+
+### Changed
+- **Clip trimming is direct: just grab an edge** — the in/out trim handles used to appear only after selecting the clip, so dragging an edge did nothing and trimming felt impossible to find. Every clip now shows a quiet grip at each edge at all times (full accent handles on hover or selection), the pointer becomes a resize cursor as you approach, and the first drag trims immediately — start from the left edge to set where the clip begins, the right edge for where it ends, with snapping and single-step undo as before.
+- **Trim handles actually receive the drag now** — the clip's click-to-seek gesture was registered at a priority that overrode every child gesture, so grabbing a trim handle seeked the playhead to that spot instead of trimming (the handles never worked by dragging). The seek gesture now yields to the handles in their edge zones; clicking or scrubbing the clip body behaves as before.
+
 ## [0.22.0-beta] - 2026-09-19
 
 ### Added

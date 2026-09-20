@@ -888,7 +888,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.22.0"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.23.0"
     
     var body: some View {
         PreferencesPane {
@@ -931,6 +931,14 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.23.0
+                    • Timeline dragging is silky: everything tracks your cursor 1:1 and snapping applies once on release — no more jumpy staircase drags — and nothing flickers next to the cursor mid-drag
+                    • Trim clips by just grabbing an edge: every clip shows grips at both ends, the pointer becomes a resize cursor, and the first drag trims (handles finally receive the drag instead of the seek gesture eating it)
+                    • Aim the camera by dragging: select a zoom move and drag its focus ring right on the video; the cluttered zoom sliders are gone, leaving one Scale control
+                    • Auto Zoom is one click away: a permanent ✨ button in the transport bar, plus a clickable chip in the empty Camera lane; zoom blocks now show a magnifier icon
+                    • The timed-capture countdown is redesigned: a centered number in a dark circle, a smoothly depleting ring, a soft tick pop, and a readable cancel hint below
+                    • Fixed: pressing Delete with a zoom move selected removed the clip instead; switching tools while a text box was open spawned a stray annotation
+
                     Version 0.22.0
                     • Post-capture thumbnails now stack: take several screenshots in a row and they pile into a tidy column, each new capture landing on top. Dismiss any card and the ones above drop down smoothly. Five per screen; the oldest bows out beyond that
                     • Swiping a thumbnail away now visibly slides it off screen (the slide animation silently never ran before)
