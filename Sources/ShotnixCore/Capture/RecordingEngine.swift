@@ -416,28 +416,47 @@ final class RecordingEngine: NSObject {
         filter: SCContentFilter
     ) -> PreparedCaptureSource {
         let scale = Self.pixelScale(for: filter, fallbackScreen: screen)
-        let originX = floor((rect.origin.x - screen.frame.origin.x) * scale) / scale
-        let originY = floor((rect.origin.y - screen.frame.origin.y) * scale) / scale
-        let width = ceil(rect.width * scale) / scale
-        let height = ceil(rect.height * scale) / scale
-        let sourceRect = CGRect(
-            x: originX,
-            y: screen.frame.height - originY - height,
-            width: width,
-            height: height
-        )
-
-        let pixelWidth = max(2, Self.evenCeil(Int(ceil(width * scale))))
-        let pixelHeight = max(2, Self.evenCeil(Int(ceil(height * scale))))
-        let streamConfig = Self.streamConfiguration(width: pixelWidth, height: pixelHeight, configuration: configuration)
-        streamConfig.sourceRect = sourceRect
+        let geometry = Self.captureGeometry(rect: rect, screenFrame: screen.frame, scale: scale)
+        let streamConfig = Self.streamConfiguration(width: geometry.pixelWidth, height: geometry.pixelHeight, configuration: configuration)
+        streamConfig.sourceRect = geometry.sourceRect
 
         return PreparedCaptureSource(
             filter: filter,
             streamConfig: streamConfig,
+            pixelWidth: geometry.pixelWidth,
+            pixelHeight: geometry.pixelHeight,
+            captureRect: geometry.capturedRect
+        )
+    }
+
+    struct CaptureGeometry: Equatable {
+        /// Display-local, top-left origin, in points.
+        let sourceRect: CGRect
+        let pixelWidth: Int
+        let pixelHeight: Int
+        /// The region actually recorded, AppKit space.
+        let capturedRect: CGRect
+    }
+
+    /// Whole physical pixels, even-sized (the encoder needs even
+    /// dimensions), and a captured region exactly that size — so nothing
+    /// is resampled and no edge is left unfilled. The pointer data is
+    /// normalized to `capturedRect`, so it matches the pixels exactly.
+    static func captureGeometry(rect: CGRect, screenFrame: CGRect, scale: CGFloat) -> CaptureGeometry {
+        let pixelWidth = max(2, evenCeil(Int(ceil(rect.width * scale - 0.0001))))
+        let pixelHeight = max(2, evenCeil(Int(ceil(rect.height * scale - 0.0001))))
+        let width = CGFloat(pixelWidth) / scale
+        let height = CGFloat(pixelHeight) / scale
+        var originX = floor((rect.origin.x - screenFrame.origin.x) * scale + 0.0001) / scale
+        var originY = floor((rect.origin.y - screenFrame.origin.y) * scale + 0.0001) / scale
+        // Rounding up to even can reach past the screen edge: step back in.
+        originX = max(min(originX, screenFrame.width - width), 0)
+        originY = max(min(originY, screenFrame.height - height), 0)
+        return CaptureGeometry(
+            sourceRect: CGRect(x: originX, y: screenFrame.height - originY - height, width: width, height: height),
             pixelWidth: pixelWidth,
             pixelHeight: pixelHeight,
-            captureRect: rect
+            capturedRect: CGRect(x: screenFrame.origin.x + originX, y: screenFrame.origin.y + originY, width: width, height: height)
         )
     }
 
@@ -453,6 +472,9 @@ final class RecordingEngine: NSObject {
         streamConfig.showsCursor = configuration.bakesCursorIntoVideo
         streamConfig.scalesToFit = false
         streamConfig.pixelFormat = kCVPixelFormatType_32BGRA
+        // Frames arrive tagged sRGB; the encoder is set to HD colors to
+        // match, so reds, greens, and brand colors come out exact.
+        streamConfig.colorSpaceName = CGColorSpace.sRGB
         if #available(macOS 14.0, *) {
             streamConfig.captureResolution = .best
         }
@@ -715,7 +737,7 @@ final class RecordingEngine: NSObject {
         stateChangedHandler?()
     }
 
-    private static func videoSettings(width: Int, height: Int, fps: Int, quality: RecordingQuality) -> [String: Any] {
+    static func videoSettings(width: Int, height: Int, fps: Int, quality: RecordingQuality) -> [String: Any] {
         [
             AVVideoCodecKey: AVVideoCodecType.h264,
             AVVideoWidthKey: width,
@@ -728,6 +750,13 @@ final class RecordingEngine: NSObject {
                 AVVideoAllowFrameReorderingKey: false,
                 AVVideoH264EntropyModeKey: AVVideoH264EntropyModeCABAC,
                 AVVideoProfileLevelKey: AVVideoProfileLevelH264HighAutoLevel
+            ],
+            // Without explicit colors the encoder guessed and shifted them
+            // (pure red came back as 234,0,2); tagged HD colors round-trip.
+            AVVideoColorPropertiesKey: [
+                AVVideoColorPrimariesKey: AVVideoColorPrimaries_ITU_R_709_2,
+                AVVideoTransferFunctionKey: AVVideoTransferFunction_ITU_R_709_2,
+                AVVideoYCbCrMatrixKey: AVVideoYCbCrMatrix_ITU_R_709_2,
             ]
         ]
     }
@@ -833,7 +862,7 @@ final class RecordingEngine: NSObject {
         return fallbackScale
     }
 
-    private static func evenCeil(_ value: Int) -> Int {
+    static func evenCeil(_ value: Int) -> Int {
         value.isMultiple(of: 2) ? value : value + 1
     }
 
@@ -940,7 +969,7 @@ private struct RecordingConfiguration {
     }
 }
 
-private enum RecordingQuality: String {
+enum RecordingQuality: String {
     case balanced
     case high
     case max
