@@ -147,4 +147,47 @@ final class VideoTimelineInteractionTests: XCTestCase {
         XCTAssertEqual(clip.sourceEnd, 8, accuracy: 0.06, "200 pt left = 2 s trimmed, even as the timeline shrinks")
         XCTAssertNil(model.layoutDurationLock)
     }
+
+    private func scrollViews(in view: NSView) -> [NSScrollView] {
+        ((view as? NSScrollView).map { [$0] } ?? []) + view.subviews.flatMap { scrollViews(in: $0) }
+    }
+
+    /// A trackpad-style scroll at a point (top-left view coordinates).
+    private func scroll(dx: Int32 = 0, dy: Int32 = 0, at point: CGPoint) {
+        guard let window else { return }
+        let flipped = NSPoint(x: point.x, y: Self.size.height - point.y)
+        let screen = window.convertPoint(toScreen: flipped)
+        let mainHeight = NSScreen.screens.first?.frame.height ?? 0
+        guard let cgEvent = CGEvent(scrollWheelEvent2Source: nil, units: .pixel, wheelCount: 2, wheel1: dy, wheel2: dx, wheel3: 0) else { return }
+        cgEvent.location = CGPoint(x: screen.x, y: mainHeight - screen.y)
+        if let event = NSEvent(cgEvent: cgEvent) { window.sendEvent(event) }
+    }
+
+    func testLanesThatDontFitScrollVertically() async throws {
+        let model = try await makeModel()
+        // Eight overlapping annotations stack into eight lanes: taller than
+        // the timeline, so the clip track must be reached by scrolling.
+        for index in 0..<8 {
+            model.seek(to: 1 + Double(index) * 0.3)
+            model.addOverlay(.highlight)
+        }
+        model.selection = .none
+        XCTAssertGreaterThan(VideoTimelineMetrics.contentHeight(model.project), Self.size.height - Self.surfaceTop + 40)
+        await mount(model)
+        let views = scrollViews(in: try XCTUnwrap(window?.contentView))
+        let vertical = try XCTUnwrap(views.first { ($0.documentView?.frame.height ?? 0) > $0.contentSize.height + 20 }, "an outer vertical scroller")
+        let before = vertical.contentView.bounds.origin.y
+        scroll(dy: -60, at: CGPoint(x: 500, y: 200))
+        await settle(0.4)
+        XCTAssertGreaterThan(abs(vertical.contentView.bounds.origin.y - before), 20, "vertical scrolling over the lanes moves them")
+
+        // Zoomed in, sideways scrolling still pans the timeline.
+        model.timelineZoom = 3
+        await settle(0.3)
+        let horizontal = try XCTUnwrap(scrollViews(in: try XCTUnwrap(window?.contentView)).first { ($0.documentView?.frame.width ?? 0) > $0.contentSize.width + 100 })
+        let left = horizontal.contentView.bounds.origin.x
+        scroll(dx: -120, at: CGPoint(x: 500, y: 200))
+        await settle(0.4)
+        XCTAssertGreaterThan(abs(horizontal.contentView.bounds.origin.x - left), 40, "sideways scrolling pans")
+    }
 }
