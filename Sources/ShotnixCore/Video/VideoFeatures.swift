@@ -308,6 +308,20 @@ struct VideoCropRect: Codable, Equatable {
     func unmap(_ point: CGPoint) -> CGPoint {
         CGPoint(x: CGFloat(x) + point.x * CGFloat(width), y: CGFloat(y) + point.y * CGFloat(height))
     }
+
+    /// Whether a source-normalized point survives the crop.
+    func keeps(_ point: CGPoint) -> Bool {
+        let inside = map(point)
+        return inside.x >= -0.005 && inside.x <= 1.005 && inside.y >= -0.005 && inside.y <= 1.005
+    }
+}
+
+extension VideoDemoProject {
+    /// Recorded clicks the crop keeps (ripples and Auto Zoom ignore the rest).
+    var clicksInsideCrop: [VideoDemoClickEvent] {
+        let crop = self.crop.normalized
+        return crop.isFull ? clickEvents : clickEvents.filter { crop.keeps(CGPoint(x: $0.x, y: $0.y)) }
+    }
 }
 
 // MARK: - Keystroke capture

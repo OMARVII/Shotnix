@@ -70,6 +70,7 @@ final class VideoCursorTrack: @unchecked Sendable {
         smoothing: VideoCursorSettings.Smoothing,
         hideWhenIdle: Bool,
         tidyEnding: Bool = false,
+        crop: VideoCropRect = .full,
         duration: Double
     ) -> VideoCursorTrack? {
         let samples = rawSamples.filter { $0.time.isFinite && $0.x.isFinite && $0.y.isFinite }.sorted { $0.time < $1.time }
@@ -134,14 +135,17 @@ final class VideoCursorTrack: @unchecked Sendable {
             smoothY[index] += (rawY[index] - smoothY[index]) * w
         }
 
-        // Visibility target: outside the captured area → hidden; idle → hidden.
+        // Visibility target: outside the captured area (or cropped away) →
+        // hidden; idle → hidden.
+        let kept = crop.normalized
         var target = [Double](repeating: 1, count: count)
         var lastActivity = -Double.infinity
         var clickIndex = 0
         let sortedClicks = clicks.sorted { $0.time < $1.time }
         for index in 0..<count {
             let t = Double(index) / sampleRate
-            let inside = rawX[index] >= -0.005 && rawX[index] <= 1.005 && rawY[index] >= -0.005 && rawY[index] <= 1.005
+            let inCrop = kept.map(CGPoint(x: rawX[index], y: rawY[index]))
+            let inside = inCrop.x >= -0.005 && inCrop.x <= 1.005 && inCrop.y >= -0.005 && inCrop.y <= 1.005
             if index > 0 {
                 let dx = rawX[index] - rawX[index - 1]
                 let dy = rawY[index] - rawY[index - 1]

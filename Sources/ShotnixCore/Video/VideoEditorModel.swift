@@ -279,6 +279,7 @@ final class VideoEditorModel: ObservableObject {
         let smoothing: VideoCursorSettings.Smoothing
         let hideWhenIdle: Bool
         let tidyEnding: Bool
+        let crop: VideoCropRect
         let duration: Double
     }
 
@@ -351,7 +352,7 @@ final class VideoEditorModel: ObservableObject {
             // A fresh recording opens already produced.
             if isFresh, Settings.autoZoomNewRecordings, loaded.zoomRegions.isEmpty, !loaded.clickEvents.isEmpty {
                 loaded.zoomRegions = VideoAutoZoomPlanner.regions(
-                    clicks: loaded.clickEvents,
+                    clicks: loaded.clicksInsideCrop,
                     cursorSamples: loaded.cursorSamples,
                     segments: loaded.timelineSegments(totalDuration: source.duration),
                     scale: loaded.defaultZoomScale,
@@ -412,6 +413,7 @@ final class VideoEditorModel: ObservableObject {
             smoothing: project.cursor.smoothing,
             hideWhenIdle: project.cursor.hideWhenIdle,
             tidyEnding: project.cursor.tidyEnding,
+            crop: project.crop.normalized,
             duration: sourceDuration
         )
         let cursorTrack: VideoCursorTrack?
@@ -424,6 +426,7 @@ final class VideoEditorModel: ObservableObject {
                 smoothing: project.cursor.smoothing,
                 hideWhenIdle: project.cursor.hideWhenIdle,
                 tidyEnding: project.cursor.tidyEnding,
+                crop: project.crop.normalized,
                 duration: sourceDuration
             )
             cursorTrackCache = (key, cursorTrack)
@@ -969,7 +972,7 @@ final class VideoEditorModel: ObservableObject {
 
     func autoZoom() {
         let generated = VideoAutoZoomPlanner.regions(
-            clicks: project.clickEvents,
+            clicks: project.clicksInsideCrop,
             cursorSamples: project.cursorSamples,
             segments: segments,
             scale: project.defaultZoomScale,

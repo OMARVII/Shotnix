@@ -254,6 +254,9 @@ final class VideoCameraTrack: @unchecked Sendable {
         var springPosition: CGPoint?
         var springVelocity = CGVector.zero
         var frozenAim: CGPoint?
+        /// Where the current chained pan set off from — fixed for the whole
+        /// pan, so its easing isn't compounded sample over sample.
+        var panOrigin: (from: Double, to: Double, point: CGPoint)?
 
         for index in 0..<count {
             let t = min(Double(index) * dt, timelineDuration)
@@ -264,6 +267,7 @@ final class VideoCameraTrack: @unchecked Sendable {
                 springPosition = nil
                 springVelocity = .zero
                 frozenAim = nil
+                panOrigin = nil
             }
             guard groupIndex < groups.count,
                   let groupStart = groups[groupIndex].first?.start,
@@ -341,8 +345,15 @@ final class VideoCameraTrack: @unchecked Sendable {
                 return leash ?? piece.focus
             }
 
+            if chainBlend == nil { panOrigin = nil }
             if let blend = chainBlend {
-                let from = blend.from.follows ? (springPosition ?? followAim(for: blend.from)) : blend.from.focus
+                let from: CGPoint
+                if let origin = panOrigin, origin.from == blend.from.start, origin.to == blend.to.start {
+                    from = origin.point
+                } else {
+                    from = blend.from.follows ? (springPosition ?? followAim(for: blend.from)) : blend.from.focus
+                    panOrigin = (blend.from.start, blend.to.start, from)
+                }
                 let to: CGPoint
                 if blend.to.follows {
                     to = canvasCursor(atTimeline: blend.to.start + 0.2) ?? blend.to.focus

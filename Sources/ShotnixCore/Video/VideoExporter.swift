@@ -118,6 +118,7 @@ enum VideoDemoExporter {
             smoothing: project.cursor.smoothing,
             hideWhenIdle: project.cursor.hideWhenIdle,
             tidyEnding: project.cursor.tidyEnding,
+            crop: project.crop.normalized,
             duration: sourceDuration
         )
         let layoutProject = project.reframeActive ? project.reframeScene() : project

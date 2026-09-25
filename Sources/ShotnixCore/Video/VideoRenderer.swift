@@ -319,7 +319,7 @@ final class VideoRenderPlan: @unchecked Sendable {
 
         let segments = self.segments
         let pointerEnd = cursorTrack?.endTime ?? .infinity
-        clicks = project.clickEvents.sorted { $0.time < $1.time }.filter { $0.time < pointerEnd }.compactMap { click in
+        clicks = project.clicksInsideCrop.sorted { $0.time < $1.time }.filter { $0.time < pointerEnd }.compactMap { click in
             guard let start = VideoDemoProject.timelineTimeIfIncluded(sourceTime: click.time, segments: segments) else { return nil }
             let end = VideoDemoProject.timelineTimeIfIncluded(sourceTime: click.time + click.pressDuration, segments: segments) ?? start + 0.12
             return Click(start: start, end: max(end, start + 0.05), x: click.x, y: click.y)
@@ -805,13 +805,12 @@ final class VideoFrameRenderer {
         }
     }
 
+    /// The color matrix works on un-premultiplied color, so only alpha is
+    /// scaled (scaling RGB too would darken every fade: opacity squared).
     private func faded(_ image: CIImage, _ opacity: Double) -> CIImage {
         guard opacity < 0.999 else { return image }
         return image.applyingFilter("CIColorMatrix", parameters: [
-            "inputRVector": CIVector(x: CGFloat(opacity), y: 0, z: 0, w: 0),
-            "inputGVector": CIVector(x: 0, y: CGFloat(opacity), z: 0, w: 0),
-            "inputBVector": CIVector(x: 0, y: 0, z: CGFloat(opacity), w: 0),
-            "inputAVector": CIVector(x: 0, y: 0, z: 0, w: CGFloat(opacity)),
+            "inputAVector": CIVector(x: 0, y: 0, z: 0, w: CGFloat(max(opacity, 0))),
         ])
     }
 
@@ -1092,7 +1091,8 @@ final class VideoFrameRenderer {
                     "inputAVector": CIVector(x: 0, y: 0, z: 0, w: CGFloat(0.45 * look.shadow)),
                 ])
                 .transformed(by: CGAffineTransform(translationX: 0, y: -shortSide * 0.006))
-                .clampedToExtent()
+                // Not clamped: a mask that touches the bubble's edge would
+                // smear its edge pixels outward into a hard gray band.
                 .applyingGaussianBlur(sigma: Double(shortSide * 0.01))
                 .cropped(to: rect.insetBy(dx: -shortSide * 0.05, dy: -shortSide * 0.05))
             return faded(cut.composited(over: shadow), look.opacity).composited(over: scene)

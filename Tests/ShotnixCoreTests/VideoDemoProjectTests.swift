@@ -222,6 +222,44 @@ final class VideoDemoProjectTests: XCTestCase {
         XCTAssertLessThan(track.state(at: 3.0).centerX, track.state(at: 5.5).centerX, "pans toward the second shot")
     }
 
+    func testChainedFollowZoomsPanAtTheirOwnPace() {
+        let project = project()
+        let segments = project.timelineSegments(totalDuration: 10)
+        let a = VideoZoomRegion(start: 1, end: 4, scale: 2, followsCursor: true)
+        let b = VideoZoomRegion(start: 4.6, end: 8, scale: 2, followsCursor: true)
+        // The pointer sits left, then jumps right for the second shot.
+        let pointer: (Double) -> CGPoint? = { t in CGPoint(x: t < 4.3 ? 0.2 : 0.8, y: 0.5) }
+        let track = VideoCameraTrack.build(regions: [a, b], segments: segments, timelineDuration: 10, speed: .smooth, stage: CGRect(x: 0, y: 0, width: 1, height: 1), cursor: pointer)
+        // Pan window: 3.75 → 4.85 s. Halfway through, it's about halfway
+        // there — not almost done (a whip pan).
+        let start = track.state(at: 3.75).centerX
+        let end = track.state(at: 4.85).centerX
+        XCTAssertGreaterThan(end - start, 0.3, "it pans right")
+        let halfway = (track.state(at: 4.3).centerX - start) / (end - start)
+        XCTAssertEqual(halfway, 0.5, accuracy: 0.2)
+    }
+
+    func testCroppedAwayPointerAndClicksDisappear() {
+        // Keep the left 60% of the recording; the pointer wanders right.
+        let crop = VideoCropRect(x: 0, y: 0, width: 0.6, height: 1)
+        let samples = stride(from: 0.0, through: 6, by: 0.05).map { t in
+            VideoDemoCursorSample(time: t, x: t < 3 ? 0.3 : 0.8, y: 0.5)
+        }
+        let clicks = [
+            VideoDemoClickEvent(time: 1, x: 0.3, y: 0.5, button: .left),
+            VideoDemoClickEvent(time: 4, x: 0.8, y: 0.5, button: .left),
+        ]
+        let track = VideoCursorTrack.build(samples: samples, clicks: clicks, smoothing: .off, hideWhenIdle: false, crop: crop, duration: 6)
+        XCTAssertEqual(track?.alpha(at: 1.5) ?? 0, 1, accuracy: 0.01, "inside the crop: shown")
+        XCTAssertEqual(track?.alpha(at: 4.5) ?? 1, 0, accuracy: 0.01, "cropped away: hidden")
+        XCTAssertNil(track?.visiblePosition(at: 4.5), "the camera doesn't chase it")
+
+        var project = project()
+        project.clickEvents = clicks
+        project.crop = crop
+        XCTAssertEqual(project.clicksInsideCrop.map(\.time), [1], "no ripple or Auto Zoom for the cropped-away click")
+    }
+
     func testCameraWindowNeverLeavesTheCanvas() {
         let project = project()
         let segments = project.timelineSegments(totalDuration: 10)

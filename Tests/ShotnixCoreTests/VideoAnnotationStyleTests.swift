@@ -156,6 +156,22 @@ final class VideoAnnotationStyleTests: XCTestCase {
         XCTAssertLessThan(solid.g, 0.5, "the one being edited shows right away")
     }
 
+    func testHalfwayThroughAFadeIsHalfVisible() {
+        let black = CIImage(color: .black).cropped(to: CGRect(x: 0, y: 0, width: 1920, height: 1080))
+        let effect = VideoDemoOverlayEffect(kind: .arrow, time: 1, duration: 3, x: 0.5, y: 0.5, width: 0.4, height: 0.4, color: VideoRGBA(hex: 0xFFFFFF), thickness: .bold)
+        let plan = VideoDemoExporter.makePlan(project: project([effect]), sourceDuration: 5, recording: nil)
+        func brightest(at time: Double) -> Double {
+            let image = VideoFrameRenderer().render(source: black, timelineTime: time, plan: plan, outputSize: CGSize(width: 1920, height: 1080))
+            var pixel = [UInt8](repeating: 0, count: 4)
+            CIContext().render(image.applyingFilter("CIAreaMaximum", parameters: [kCIInputExtentKey: CIVector(cgRect: CGRect(x: 900, y: 480, width: 120, height: 120))]), toBitmap: &pixel, rowBytes: 4, bounds: CGRect(x: 0, y: 0, width: 1, height: 1), format: .RGBA8, colorSpace: CGColorSpace(name: CGColorSpace.sRGB))
+            return Double(pixel[0]) / 255
+        }
+        XCTAssertGreaterThan(brightest(at: 2.5), 0.95)
+        // Half opacity over black: linear 0.5 is sRGB 0.735 (not 0.54, which
+        // is what applying the opacity twice gives).
+        XCTAssertEqual(brightest(at: 1.09), 0.735, accuracy: 0.05)
+    }
+
     func testPickedColorBecomesTheDefault() async throws {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent("shotnix-style-\(UUID().uuidString)", isDirectory: true)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
