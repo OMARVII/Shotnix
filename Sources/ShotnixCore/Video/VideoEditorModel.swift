@@ -1017,7 +1017,9 @@ final class VideoEditorModel: ObservableObject {
             y: kind == .text ? 0.86 : 0.5,
             width: kind == .text ? 0.5 : (kind == .arrow ? 0.18 : 0.3),
             height: kind == .text ? 0.09 : (kind == .arrow ? 0.18 : 0.2),
-            text: kind == .text ? "Add a caption" : kind.title
+            text: kind == .text ? "Add a caption" : kind.title,
+            color: VideoOverlayStyleMemory.color(for: kind),
+            thickness: VideoOverlayStyleMemory.thickness(for: kind)
         )
         if kind != .text, let raw = plan.cursorTrack?.visiblePosition(at: sourceStart) {
             // Annotations live in the (cropped) frame's coordinates.

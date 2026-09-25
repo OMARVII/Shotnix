@@ -7,6 +7,131 @@ extension VideoEditorTheme {
     static let camera = Color(red: 0.3, green: 0.62, blue: 1.0)
 }
 
+// MARK: - Annotation colors
+
+/// Swatches for an annotation, plus any color from the system picker.
+/// New annotations of the same kind start with the last color picked.
+struct VideoOverlayColorPicker: View {
+    @ObservedObject var model: VideoEditorModel
+    let overlay: VideoDemoOverlayEffect
+
+    private func same(_ a: VideoRGBA, _ b: VideoRGBA) -> Bool {
+        abs(a.r - b.r) < 0.01 && abs(a.g - b.g) < 0.01 && abs(a.b - b.b) < 0.01 && abs(a.a - b.a) < 0.02
+    }
+
+    var body: some View {
+        let columns = Array(repeating: GridItem(.fixed(30), spacing: 8), count: 6)
+        let palette = overlay.kind.palette
+        let current = overlay.resolvedColor
+        LazyVGrid(columns: columns, alignment: .leading, spacing: 8) {
+            ForEach(Array(palette.enumerated()), id: \.offset) { _, color in
+                swatch(color)
+            }
+            VideoCustomColorSwatch(
+                color: current,
+                isCustom: !palette.contains { same($0, current) },
+                showsAlpha: overlay.kind == .text
+            ) { [model, id = overlay.id, kind = overlay.kind] picked in
+                // The panel outlives the selection: only recolor while this
+                // annotation is still the one being edited.
+                guard model.selection == .overlay(id) else { return }
+                var rgba = picked
+                // The tag keeps a little see-through unless chosen otherwise.
+                if kind != .text { rgba.a = 1 }
+                model.setOverlayColor(id, rgba, coalesce: "color-panel-\(id)")
+            }
+        }
+    }
+
+    private func swatch(_ color: VideoRGBA) -> some View {
+        let selected = same(overlay.resolvedColor, color)
+        let clear = color.a < 0.05
+        return Button {
+            model.setOverlayColor(overlay.id, color)
+            model.endGesture()
+        } label: {
+            ZStack {
+                if clear {
+                    Circle().strokeBorder(Color.white.opacity(0.45), lineWidth: 1.5)
+                    Rectangle()
+                        .fill(Color.red.opacity(0.85))
+                        .frame(width: 2, height: 24)
+                        .rotationEffect(.degrees(45))
+                } else {
+                    Circle().fill(Color(nsColor: color.withAlpha(1).nsColor))
+                    Circle().strokeBorder(Color.white.opacity(0.18), lineWidth: 1)
+                }
+            }
+            .frame(width: 24, height: 24)
+            .padding(3)
+            .overlay(Circle().strokeBorder(selected ? Color.white : Color.clear, lineWidth: 2))
+            .contentShape(Circle())
+        }
+        .buttonStyle(.plain)
+        .help(clear ? "No background — text only" : "Use this color")
+        .accessibilityLabel(clear ? "No background" : "Color")
+    }
+}
+
+/// "Any color": a rainbow swatch that opens the system color panel. Shows
+/// the chosen color (ringed) when it isn't one of the swatches.
+struct VideoCustomColorSwatch: View {
+    let color: VideoRGBA
+    let isCustom: Bool
+    let showsAlpha: Bool
+    let onChange: (VideoRGBA) -> Void
+
+    var body: some View {
+        Button {
+            VideoColorPanel.shared.open(color: color.nsColor, showsAlpha: showsAlpha, onChange: onChange)
+        } label: {
+            ZStack {
+                Circle().fill(AngularGradient(colors: [.red, .orange, .yellow, .green, .cyan, .blue, .purple, .pink, .red], center: .center))
+                Circle()
+                    .fill(isCustom ? Color(nsColor: color.withAlpha(1).nsColor) : VideoEditorTheme.panel)
+                    .padding(4)
+                if !isCustom {
+                    Image(systemName: "plus")
+                        .font(.system(size: 10, weight: .bold))
+                        .foregroundStyle(VideoEditorTheme.textPrimary)
+                }
+            }
+            .frame(width: 24, height: 24)
+            .padding(3)
+            .overlay(Circle().strokeBorder(isCustom ? Color.white : Color.clear, lineWidth: 2))
+            .contentShape(Circle())
+        }
+        .buttonStyle(.plain)
+        .help("Any color…")
+        .accessibilityLabel("Custom color")
+    }
+}
+
+/// Forwards the shared color panel's changes to whoever opened it last.
+@MainActor
+final class VideoColorPanel: NSObject {
+    static let shared = VideoColorPanel()
+    private var onChange: ((VideoRGBA) -> Void)?
+
+    func open(color: NSColor, showsAlpha: Bool, onChange: @escaping (VideoRGBA) -> Void) {
+        let panel = NSColorPanel.shared
+        // Setting the panel's color fires its action: connect afterwards.
+        self.onChange = nil
+        panel.showsAlpha = showsAlpha
+        panel.color = color
+        panel.isContinuous = true
+        self.onChange = onChange
+        panel.setTarget(self)
+        panel.setAction(#selector(colorChanged(_:)))
+        panel.orderFront(nil)
+    }
+
+    @objc private func colorChanged(_ sender: NSColorPanel) {
+        guard let color = sender.color.usingColorSpace(.sRGB) else { return }
+        onChange?(VideoRGBA(nsColor: color))
+    }
+}
+
 // MARK: - Script
 
 /// Your words: edit the video by editing them, and turn them into captions.

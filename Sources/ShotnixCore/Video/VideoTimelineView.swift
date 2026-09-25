@@ -638,7 +638,10 @@ struct VideoTimelineSurface: View {
         let selected = model.selection == .overlay(effect.id)
         let shown = overlayDrag?.id == effect.id ? (overlayDrag!.start, overlayDrag!.end) : (start, end)
         let width = max(CGFloat(shown.1 - shown.0) * pointsPerSecond, 26)
-        let tint = VideoEditorTheme.overlayTint(effect.kind)
+        // The pill wears the annotation's own color, so the two match up.
+        let custom = effect.color.flatMap { $0.a > 0.1 && effect.kind.hasColor ? $0 : nil }
+        let tint = custom.map { Color(nsColor: $0.withAlpha(1).nsColor) } ?? VideoEditorTheme.overlayTint(effect.kind)
+        let ink: Color = (custom?.luminance ?? 0) > 0.62 ? Color.black.opacity(0.8) : .white
         return ZStack {
             RoundedRectangle(cornerRadius: 7, style: .continuous)
                 .fill(tint.opacity(selected ? 0.9 : 0.62))
@@ -653,7 +656,7 @@ struct VideoTimelineSurface: View {
                         .lineLimit(1)
                 }
             }
-            .foregroundStyle(.white)
+            .foregroundStyle(ink)
             .padding(.horizontal, 8)
             HStack(spacing: 0) {
                 edgeHandle.gesture(overlayEdgeGesture(effect, start: start, end: end, leading: true))

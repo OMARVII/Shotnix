@@ -138,6 +138,10 @@ struct VideoDemoOverlayEffect: Codable, Equatable, Identifiable {
     /// Timeline lane. Stored explicitly so horizontal drags never re-layer
     /// the pill under the cursor; vertical drags change it deliberately.
     var layer: Int
+    /// Arrow / highlight color, or the text tag's background (nil = the
+    /// kind's default). A clear text tag means text only, with a shadow.
+    var color: VideoRGBA?
+    var thickness: VideoOverlayThickness
 
     init(
         id: UUID = UUID(),
@@ -149,7 +153,9 @@ struct VideoDemoOverlayEffect: Codable, Equatable, Identifiable {
         width: Double = 0.28,
         height: Double = 0.14,
         text: String = "Callout",
-        layer: Int = 0
+        layer: Int = 0,
+        color: VideoRGBA? = nil,
+        thickness: VideoOverlayThickness = .regular
     ) {
         self.id = id
         self.kind = kind
@@ -161,7 +167,12 @@ struct VideoDemoOverlayEffect: Codable, Equatable, Identifiable {
         self.height = height
         self.text = text
         self.layer = layer
+        self.color = color
+        self.thickness = thickness
     }
+
+    /// The color actually drawn.
+    var resolvedColor: VideoRGBA { color ?? kind.defaultColor }
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -175,6 +186,83 @@ struct VideoDemoOverlayEffect: Codable, Equatable, Identifiable {
         height = try container.decode(Double.self, forKey: .height)
         text = try container.decode(String.self, forKey: .text)
         layer = try container.decodeIfPresent(Int.self, forKey: .layer) ?? 0
+        color = try container.decodeIfPresent(VideoRGBA.self, forKey: .color)
+        thickness = (try? container.decode(VideoOverlayThickness.self, forKey: .thickness)) ?? .regular
+    }
+}
+
+enum VideoOverlayThickness: String, Codable, CaseIterable, Identifiable {
+    case thin, regular, bold
+
+    var id: String { rawValue }
+    var title: String {
+        switch self {
+        case .thin: return "Thin"
+        case .regular: return "Regular"
+        case .bold: return "Bold"
+        }
+    }
+    var scale: CGFloat {
+        switch self {
+        case .thin: return 0.6
+        case .regular: return 1
+        case .bold: return 1.6
+        }
+    }
+}
+
+extension VideoDemoOverlayEffectKind {
+    var defaultColor: VideoRGBA {
+        switch self {
+        case .arrow, .highlight: return VideoRGBA(hex: 0xFFD60A)
+        case .text: return VideoRGBA(0.06, 0.06, 0.06, 0.84)
+        case .blur: return VideoRGBA(0.5, 0.5, 0.5)
+        }
+    }
+
+    /// Whether a color can be chosen (blur has none).
+    var hasColor: Bool { self != .blur }
+
+    /// Swatches offered for this kind.
+    var palette: [VideoRGBA] {
+        let bright: [VideoRGBA] = [
+            VideoRGBA(hex: 0xFFD60A), VideoRGBA(hex: 0xFF9F0A), VideoRGBA(hex: 0xFF453A), VideoRGBA(hex: 0xFF375F),
+            VideoRGBA(hex: 0xBF5AF2), VideoRGBA(hex: 0x0A84FF), VideoRGBA(hex: 0x30D158), VideoRGBA(hex: 0xFFFFFF),
+        ]
+        switch self {
+        case .text:
+            return [defaultColor] + bright + [VideoRGBA(0, 0, 0, 0)]
+        case .arrow, .highlight:
+            return bright + [VideoRGBA(hex: 0x1C1C1E)]
+        case .blur:
+            return []
+        }
+    }
+}
+
+/// The last color and thickness picked for each kind — new annotations
+/// start with them.
+enum VideoOverlayStyleMemory {
+    static func color(for kind: VideoDemoOverlayEffectKind) -> VideoRGBA? {
+        guard let data = UserDefaults.standard.data(forKey: "videoOverlayColor.\(kind.rawValue)") else { return nil }
+        return try? JSONDecoder().decode(VideoRGBA.self, from: data)
+    }
+
+    static func setColor(_ color: VideoRGBA?, for kind: VideoDemoOverlayEffectKind) {
+        let key = "videoOverlayColor.\(kind.rawValue)"
+        if let color, let data = try? JSONEncoder().encode(color) {
+            UserDefaults.standard.set(data, forKey: key)
+        } else {
+            UserDefaults.standard.removeObject(forKey: key)
+        }
+    }
+
+    static func thickness(for kind: VideoDemoOverlayEffectKind) -> VideoOverlayThickness {
+        UserDefaults.standard.string(forKey: "videoOverlayThickness.\(kind.rawValue)").flatMap(VideoOverlayThickness.init(rawValue:)) ?? .regular
+    }
+
+    static func setThickness(_ thickness: VideoOverlayThickness, for kind: VideoDemoOverlayEffectKind) {
+        UserDefaults.standard.set(thickness.rawValue, forKey: "videoOverlayThickness.\(kind.rawValue)")
     }
 }
 

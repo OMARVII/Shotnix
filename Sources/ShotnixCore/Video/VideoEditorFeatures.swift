@@ -505,6 +505,23 @@ extension VideoEditorModel {
     }
 }
 
+// MARK: - Annotation style
+
+extension VideoEditorModel {
+    /// Recolors an annotation; new ones of that kind start with this color.
+    func setOverlayColor(_ id: UUID, _ color: VideoRGBA?, coalesce: String? = nil) {
+        guard let overlay = project.overlayEffects.first(where: { $0.id == id }) else { return }
+        updateOverlay(id, coalesce: coalesce ?? "color-\(id)") { $0.color = color }
+        VideoOverlayStyleMemory.setColor(color, for: overlay.kind)
+    }
+
+    func setOverlayThickness(_ id: UUID, _ thickness: VideoOverlayThickness) {
+        guard let overlay = project.overlayEffects.first(where: { $0.id == id }) else { return }
+        updateOverlay(id) { $0.thickness = thickness }
+        VideoOverlayStyleMemory.setThickness(thickness, for: overlay.kind)
+    }
+}
+
 // MARK: - Aspect & reframe
 
 extension VideoEditorModel {

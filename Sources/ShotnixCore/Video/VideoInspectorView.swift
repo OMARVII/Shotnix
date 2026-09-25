@@ -1053,6 +1053,19 @@ struct VideoSelectionInspector: View {
                     .onAppear { textFocused = overlay.text == "Add a caption" }
             }
         }
+        if overlay.kind.hasColor {
+            VideoInspectorSection(overlay.kind == .text ? "Tag color" : "Color") {
+                VideoOverlayColorPicker(model: model, overlay: overlay)
+            }
+        }
+        if overlay.kind == .arrow || overlay.kind == .highlight {
+            VideoInspectorSection("Thickness") {
+                VideoSegmented(
+                    options: VideoOverlayThickness.allCases.map { ($0, $0.title) },
+                    selection: Binding(get: { overlay.thickness }, set: { model.setOverlayThickness(overlay.id, $0) })
+                )
+            }
+        }
         VideoInspectorSection("Placement") {
             Text(overlay.kind == .blur
                  ? "Drag the box on the preview over anything private. Blur follows zooms and stays until its bar ends."

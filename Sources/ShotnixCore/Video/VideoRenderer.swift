@@ -783,18 +783,19 @@ final class VideoFrameRenderer {
             let clipped = dimmed.applyingFilter("CISourceInCompositing", parameters: [kCIInputBackgroundImageKey: mask])
             return clipped.composited(over: scene)
         case .highlight:
-            let stroke = max(3 * unit, 1.5)
-            let outer = roundedRect(rect.insetBy(dx: -stroke / 2, dy: -stroke / 2), radius: 14 * unit + stroke / 2, color: CIColor(red: 1, green: 0.84, blue: 0.04, alpha: 0.95 * opacity))
+            let tint = effect.resolvedColor
+            let stroke = max(3 * unit * effect.thickness.scale, 1.5)
+            let outer = roundedRect(rect.insetBy(dx: -stroke / 2, dy: -stroke / 2), radius: 14 * unit + stroke / 2, color: CIColor(red: tint.r, green: tint.g, blue: tint.b, alpha: 0.95 * opacity))
             let inner = roundedRect(rect.insetBy(dx: stroke / 2, dy: stroke / 2), radius: max(14 * unit - stroke / 2, 0), color: CIColor.white)
             let ring = outer.applyingFilter("CISourceOutCompositing", parameters: [kCIInputBackgroundImageKey: inner])
-            let fill = roundedRect(rect, radius: 14 * unit, color: CIColor(red: 1, green: 0.84, blue: 0.04, alpha: 0.10 * opacity))
+            let fill = roundedRect(rect, radius: 14 * unit, color: CIColor(red: tint.r, green: tint.g, blue: tint.b, alpha: 0.10 * opacity))
             let glow = ring.applyingGaussianBlur(sigma: Double(6 * unit)).applyingFilter("CIColorMatrix", parameters: ["inputAVector": CIVector(x: 0, y: 0, z: 0, w: 0.55)])
             return ring.composited(over: fill.composited(over: glow.composited(over: scene)))
         case .arrow:
-            guard let image = arrowImage(size: rect.size, unit: unit) else { return scene }
+            guard let image = arrowImage(size: rect.size, unit: unit, color: effect.resolvedColor, thickness: effect.thickness) else { return scene }
             return faded(image, opacity).transformed(by: CGAffineTransform(translationX: rect.minX, y: rect.minY)).composited(over: scene)
         case .text:
-            guard let image = textImage(effect.text, box: rect.size, unit: unit) else { return scene }
+            guard let image = textImage(effect.text, box: rect.size, unit: unit, background: effect.resolvedColor) else { return scene }
             let x = rect.midX - image.extent.width / 2
             let y = rect.midY - image.extent.height / 2
             return faded(image, opacity).transformed(by: CGAffineTransform(translationX: x.rounded(), y: y.rounded())).composited(over: scene)
@@ -822,16 +823,16 @@ final class VideoFrameRenderer {
         return image
     }
 
-    private func arrowImage(size: CGSize, unit: CGFloat) -> CIImage? {
+    private func arrowImage(size: CGSize, unit: CGFloat, color tint: VideoRGBA, thickness: VideoOverlayThickness) -> CIImage? {
         let width = max(Int(size.width.rounded()), 8)
         let height = max(Int(size.height.rounded()), 8)
-        let key = "arrow-\(width)x\(height)-\(Int(unit * 100))"
+        let key = "arrow-\(width)x\(height)-\(Int(unit * 100))-\(tint.hashValue)-\(thickness.rawValue)"
         return cached(key) {
             guard let space = CGColorSpace(name: CGColorSpace.sRGB),
                   let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0, space: space, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return nil }
             let w = CGFloat(width)
             let h = CGFloat(height)
-            let line = max(7 * unit, 3)
+            let line = max(7 * unit * thickness.scale, 2)
             let start = CGPoint(x: w * 0.1, y: h * 0.1)
             let end = CGPoint(x: w * 0.88, y: h * 0.88)
             let angle = atan2(end.y - start.y, end.x - start.x)
@@ -842,7 +843,7 @@ final class VideoFrameRenderer {
             context.setShadow(offset: CGSize(width: 0, height: -2 * unit), blur: 8 * unit, color: CGColor(gray: 0, alpha: 0.35))
             context.setLineCap(.round)
             context.setLineWidth(line)
-            context.setStrokeColor(CGColor(srgbRed: 1, green: 0.84, blue: 0.04, alpha: 1))
+            context.setStrokeColor(CGColor(srgbRed: tint.r, green: tint.g, blue: tint.b, alpha: 1))
             context.addPath(path)
             context.strokePath()
             let headPath = CGMutablePath()
@@ -850,7 +851,7 @@ final class VideoFrameRenderer {
             headPath.addLine(to: CGPoint(x: end.x - cos(angle - 0.45) * head, y: end.y - sin(angle - 0.45) * head))
             headPath.addLine(to: CGPoint(x: end.x - cos(angle + 0.45) * head, y: end.y - sin(angle + 0.45) * head))
             headPath.closeSubpath()
-            context.setFillColor(CGColor(srgbRed: 1, green: 0.84, blue: 0.04, alpha: 1))
+            context.setFillColor(CGColor(srgbRed: tint.r, green: tint.g, blue: tint.b, alpha: 1))
             context.setLineJoin(.round)
             context.addPath(headPath)
             context.fillPath()
@@ -858,20 +859,30 @@ final class VideoFrameRenderer {
         }
     }
 
-    private func textImage(_ text: String, box: CGSize, unit: CGFloat) -> CIImage? {
+    private func textImage(_ text: String, box: CGSize, unit: CGFloat, background: VideoRGBA) -> CIImage? {
         let content = text.isEmpty ? " " : text
         let fontSize = max(min(box.height * 0.46, 64 * unit), 8)
-        let key = "text-\(content.hashValue)-\(Int(fontSize * 4))-\(Int(box.width))"
+        let key = "text-\(content.hashValue)-\(Int(fontSize * 4))-\(Int(box.width))-\(background.hashValue)"
         return cached(key) {
             let font = NSFont.systemFont(ofSize: fontSize, weight: .semibold)
             let paragraph = NSMutableParagraphStyle()
             paragraph.alignment = .center
             paragraph.lineBreakMode = .byTruncatingTail
-            let attributes: [NSAttributedString.Key: Any] = [
+            // No tag: white text with a soft shadow. A light tag gets dark text.
+            let plain = background.a < 0.05
+            let ink: NSColor = !plain && background.luminance > 0.62 ? NSColor(white: 0.08, alpha: 1) : .white
+            var attributes: [NSAttributedString.Key: Any] = [
                 .font: font,
-                .foregroundColor: NSColor.white,
+                .foregroundColor: ink,
                 .paragraphStyle: paragraph,
             ]
+            if plain {
+                let shadow = NSShadow()
+                shadow.shadowColor = NSColor.black.withAlphaComponent(0.75)
+                shadow.shadowBlurRadius = fontSize * 0.22
+                shadow.shadowOffset = NSSize(width: 0, height: -fontSize * 0.05)
+                attributes[.shadow] = shadow
+            }
             let attributed = NSAttributedString(string: content, attributes: attributes)
             let maxTextWidth = max(box.width - fontSize * 1.4, fontSize)
             let bounds = attributed.boundingRect(with: CGSize(width: maxTextWidth, height: .greatestFiniteMagnitude), options: [.usesLineFragmentOrigin, .usesFontLeading])
@@ -883,13 +894,15 @@ final class VideoFrameRenderer {
                   let space = CGColorSpace(name: CGColorSpace.sRGB),
                   let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0, space: space, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return nil }
             let pill = CGPath(roundedRect: CGRect(x: 0, y: 0, width: width, height: height), cornerWidth: min(CGFloat(height) / 2, fontSize * 0.7), cornerHeight: min(CGFloat(height) / 2, fontSize * 0.7), transform: nil)
-            context.addPath(pill)
-            context.setFillColor(CGColor(gray: 0.06, alpha: 0.82))
-            context.fillPath()
-            context.addPath(pill)
-            context.setStrokeColor(CGColor(gray: 1, alpha: 0.14))
-            context.setLineWidth(max(unit, 1))
-            context.strokePath()
+            if !plain {
+                context.addPath(pill)
+                context.setFillColor(CGColor(srgbRed: background.r, green: background.g, blue: background.b, alpha: background.a))
+                context.fillPath()
+                context.addPath(pill)
+                context.setStrokeColor(CGColor(gray: 1, alpha: 0.14))
+                context.setLineWidth(max(unit, 1))
+                context.strokePath()
+            }
             let graphics = NSGraphicsContext(cgContext: context, flipped: false)
             NSGraphicsContext.saveGraphicsState()
             NSGraphicsContext.current = graphics
