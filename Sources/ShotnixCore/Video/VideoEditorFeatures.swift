@@ -505,6 +505,24 @@ extension VideoEditorModel {
     }
 }
 
+// MARK: - Aspect & reframe
+
+extension VideoEditorModel {
+    /// Switching a wide recording to a narrow shape fills the frame and
+    /// follows the pointer (letterboxing a screen into a phone frame makes
+    /// it unreadable); the aspect menu turns that off.
+    func setAspect(_ preset: VideoDemoProject.AspectPreset) {
+        let wasNarrow = project.canReframe
+        setStyle { project in
+            project.apply(aspectPreset: preset)
+            if project.canReframe, !wasNarrow { project.reframe = true }
+        }
+        if project.reframeActive, !wasNarrow {
+            showNotice("Filling the frame — the view follows your cursor", symbol: "arrow.left.and.right.square")
+        }
+    }
+}
+
 // MARK: - Keyboard shortcuts
 
 extension VideoEditorModel {

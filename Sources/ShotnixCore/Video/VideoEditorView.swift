@@ -199,7 +199,7 @@ struct VideoEditorToolbar: View {
         Menu {
             ForEach(VideoDemoProject.AspectPreset.allCases) { preset in
                 Button {
-                    model.setStyle { $0.apply(aspectPreset: preset) }
+                    model.setAspect(preset)
                 } label: {
                     if preset == model.project.aspectPreset {
                         Label("\(preset.title) — \(preset.detail)", systemImage: "checkmark")
@@ -208,6 +208,12 @@ struct VideoEditorToolbar: View {
                     }
                 }
             }
+            Divider()
+            Toggle("Fill the Frame, Follow the Cursor", isOn: Binding(
+                get: { model.project.reframe },
+                set: { on in model.setStyle { $0.reframe = on } }
+            ))
+            .disabled(!model.project.canReframe)
         } label: {
             HStack(spacing: 6) {
                 Image(systemName: model.project.aspectPreset.symbol)
@@ -541,7 +547,7 @@ struct VideoCommandPalette: View {
             Command(id: "shortcuts", title: "Keyboard Shortcuts", symbol: "keyboard", shortcut: "?") { model.isShortcutsPresented = true },
         ] + VideoDemoProject.AspectPreset.allCases.map { preset in
             Command(id: "aspect-\(preset.rawValue)", title: "Aspect Ratio \(preset.title) — \(preset.detail)", symbol: preset.symbol, shortcut: "") {
-                model.setStyle { $0.apply(aspectPreset: preset) }
+                model.setAspect(preset)
             }
         }
     }

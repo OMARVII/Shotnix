@@ -262,6 +262,11 @@ final class VideoRenderPlan: @unchecked Sendable {
 
     /// Timeline stretches where the camera changes layout.
     let cameraLayouts: [CameraLayoutSpan]
+    /// The frame the video is exported at (differs from `canvasSize` when
+    /// reframing: the scene is landscape, the output is not).
+    let outputCanvasSize: CGSize
+    /// Pan path for narrow outputs (nil when not reframing).
+    let reframe: VideoReframe?
 
     /// The layout at `time` and how far into it we are (0 → 1 → 0 across
     /// the stretch, easing over half a second at each end).
@@ -279,10 +284,14 @@ final class VideoRenderPlan: @unchecked Sendable {
         pointPixelScale: Double?,
         cursorTrack: VideoCursorTrack?,
         camera: VideoCameraTrack,
-        hasWebcam: Bool = false
+        hasWebcam: Bool = false,
+        outputCanvasSize: CGSize? = nil,
+        reframe: VideoReframe? = nil
     ) {
         webcam = hasWebcam ? project.webcam : nil
         canvasSize = project.canvasSize()
+        self.outputCanvasSize = outputCanvasSize ?? project.canvasSize()
+        self.reframe = reframe
         let layoutSegments = project.timelineSegments(totalDuration: sourceDuration)
         cameraLayouts = hasWebcam ? project.cameraLayouts.sorted { $0.start < $1.start }.compactMap { region in
             let ranges = VideoDemoProject.timelineRanges(sourceStart: region.start, sourceEnd: region.end, segments: layoutSegments)
@@ -405,6 +414,8 @@ final class VideoFrameRenderer {
         var webcamFrame: CIImage?
         /// Where the person is in `webcamFrame` (blur/remove/cutout looks).
         var webcamMask: CIImage?
+        /// Render only the scene (reframing draws output layers itself).
+        var sceneOnly = false
     }
 
     private struct BackgroundKey: Equatable {
@@ -478,6 +489,23 @@ final class VideoFrameRenderer {
                 .transformed(by: CGAffineTransform(translationX: (outputSize.width - extent.width * scale) / 2, y: (outputSize.height - extent.height * scale) / 2))
             return placed.composited(over: black).cropped(to: outputRect)
         }
+        // Reframing: render the landscape scene at the output's height,
+        // crop the pointer-following window, then add the output layers.
+        if let reframe = plan.reframe, !options.sceneOnly {
+            let sceneSize = CGSize(width: (outputSize.height * plan.canvasSize.width / max(plan.canvasSize.height, 1)).rounded(), height: outputSize.height)
+            var sceneOptions = options
+            sceneOptions.sceneOnly = true
+            let scene = render(source: source, timelineTime: timelineTime, plan: plan, outputSize: sceneSize, options: sceneOptions)
+            let x0 = reframe.windowOrigin(at: timelineTime, sceneWidth: sceneSize.width)
+            let framed = scene.transformed(by: CGAffineTransform(translationX: -x0, y: 0)).cropped(to: outputRect)
+            let k = sceneSize.width / max(plan.canvasSize.width, 1)
+            let camera = options.cameraOverride ?? plan.camera.state(at: timelineTime)
+            let geometry = Geometry(canvas: plan.canvasSize, output: sceneSize, k: k, camera: camera)
+            let stageOut = geometry.rect(plan.stageRect).offsetBy(dx: -x0, dy: 0)
+            let sourceTime = options.sourceTimeOverride ?? plan.sourceTime(forTimelineTime: timelineTime)
+            return drawOutputLayers(on: framed, plan: plan, timelineTime: timelineTime, sourceTime: sourceTime, cameraScale: camera.scale, stageOut: stageOut, outputSize: outputSize, k: k, options: options)
+                .cropped(to: outputRect)
+        }
         let k = outputSize.width / max(plan.canvasSize.width, 1)
         let camera = options.cameraOverride ?? plan.camera.state(at: timelineTime)
         let geometry = Geometry(canvas: plan.canvasSize, output: outputSize, k: k, camera: camera)
@@ -544,13 +572,35 @@ final class VideoFrameRenderer {
             scene = drawRipples(on: scene, plan: plan, geometry: geometry, time: timelineTime, pointerHeight: 28 * geometry.pixelScale * plan.stageScale * CGFloat(plan.pointPixelScale))
         }
 
-        // 7. The camera bubble, then captions and shortcuts — all on the
-        // output, not the zoomed video, so they stay put and readable.
-        var reserved = (bottom: CGFloat(0), top: CGFloat(0))
+        // 7. The camera, captions, and shortcuts — on the output, not the
+        // zoomed video, so they stay put and readable.
+        if !options.sceneOnly {
+            scene = drawOutputLayers(on: scene, plan: plan, timelineTime: timelineTime, sourceTime: sourceTime, cameraScale: camera.scale, stageOut: stageOut, outputSize: outputSize, k: k, options: options)
+        }
+
+        return scene.cropped(to: outputRect)
+    }
+
+    /// Camera, captions, and shortcuts over a finished scene, in output
+    /// pixels.
+    private func drawOutputLayers(
+        on input: CIImage,
+        plan: VideoRenderPlan,
+        timelineTime: Double,
+        sourceTime: Double,
+        cameraScale: Double,
+        stageOut: CGRect,
+        outputSize: CGSize,
+        k: CGFloat,
+        options: Options
+    ) -> CIImage {
+        var scene = input
+        let outputRect = CGRect(origin: .zero, size: outputSize)
+        /// Where the camera bubble sits — text steps around it.
+        var avoid: CGRect?
         if let webcam = plan.webcam, webcam.visible, let frame = options.webcamFrame {
-            let bubble = Self.webcamRect(webcam, outputSize: outputSize, cameraScale: camera.scale)
+            let bubble = Self.webcamRect(webcam, outputSize: outputSize, cameraScale: cameraScale)
             let bubbleRadius = Self.webcamCornerRadius(webcam, rect: bubble)
-            let shortSide = min(outputSize.width, outputSize.height)
             let camera = CameraPicture(frame: frame, mask: options.webcamMask, settings: webcam)
             switch plan.cameraLayout(at: timelineTime) {
             case let (layout, progress)? where layout == .fullscreen:
@@ -572,15 +622,11 @@ final class VideoFrameRenderer {
             default:
                 let look = CameraLook(radius: bubbleRadius, rim: 1, shadow: 1, opacity: 1, cutout: webcam.shape == .cutout)
                 scene = drawCamera(camera, in: bubble, look: look, plan: plan, outputSize: outputSize, k: k, over: scene)
-                // Captions centered at the same edge stack above/below the bubble.
-                if webcam.anchor == .bottom { reserved.bottom = bubble.maxY }
-                if webcam.anchor == .top { reserved.top = outputSize.height - bubble.minY }
+                avoid = bubble
             }
-            _ = shortSide
         }
-        scene = drawTextLayers(on: scene, plan: plan, outputSize: outputSize, timelineTime: timelineTime, sourceTime: sourceTime, reserved: reserved)
-
-        return scene.cropped(to: outputRect)
+        scene = drawTextLayers(on: scene, plan: plan, outputSize: outputSize, timelineTime: timelineTime, sourceTime: sourceTime, avoid: avoid)
+        return scene
     }
 
     // MARK: Layers
@@ -837,24 +883,32 @@ final class VideoFrameRenderer {
 
     // MARK: Captions and shortcuts
 
-    private func drawTextLayers(on scene: CIImage, plan: VideoRenderPlan, outputSize: CGSize, timelineTime: Double, sourceTime: Double, reserved: (bottom: CGFloat, top: CGFloat)) -> CIImage {
+    private func drawTextLayers(on scene: CIImage, plan: VideoRenderPlan, outputSize: CGSize, timelineTime: Double, sourceTime: Double, avoid: CGRect?) -> CIImage {
         var output = scene
         let shortSide = min(outputSize.width, outputSize.height)
         let margin = (shortSide * 0.055).rounded()
+        let spacing = (shortSide * 0.016).rounded()
         // Distance used from each edge so layers on the same edge stack.
-        var usedBottom = max(margin, reserved.bottom > 0 ? reserved.bottom + (shortSide * 0.016).rounded() : 0)
-        var usedTop = max(margin, reserved.top > 0 ? reserved.top + (shortSide * 0.016).rounded() : 0)
+        var usedBottom = margin
+        var usedTop = margin
 
         func place(_ image: CIImage, position: VideoTextPosition, opacity: Double, pop: CGFloat) {
             let size = image.extent.size
             let x = ((outputSize.width - size.width) / 2).rounded()
-            let y: CGFloat
+            var y: CGFloat
             if position == .bottom {
                 y = usedBottom
-                usedBottom += size.height + (shortSide * 0.016).rounded()
+                // Step above the camera bubble rather than run under it.
+                if let avoid, CGRect(x: x, y: y, width: size.width, height: size.height).intersects(avoid.insetBy(dx: -spacing, dy: -spacing)) {
+                    y = avoid.maxY + spacing
+                }
+                usedBottom = y + size.height + spacing
             } else {
                 y = outputSize.height - usedTop - size.height
-                usedTop += size.height + (shortSide * 0.016).rounded()
+                if let avoid, CGRect(x: x, y: y, width: size.width, height: size.height).intersects(avoid.insetBy(dx: -spacing, dy: -spacing)) {
+                    y = avoid.minY - spacing - size.height
+                }
+                usedTop = outputSize.height - y + spacing
             }
             var placed = image.transformed(by: CGAffineTransform(translationX: x, y: y.rounded()))
             if pop < 0.999 {

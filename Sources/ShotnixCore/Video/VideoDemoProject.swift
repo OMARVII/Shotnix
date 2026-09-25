@@ -545,6 +545,9 @@ struct VideoDemoProject: Codable, Equatable, Identifiable {
     var webcam: VideoWebcamSettings
     /// Where the camera switches to full screen, side by side, or hides.
     var cameraLayouts: [VideoCameraLayoutRegion] = []
+    /// Narrow outputs (9:16, 4:5, 1:1) fill the frame and pan with the
+    /// pointer instead of letterboxing the recording.
+    var reframe = false
     var captions: [VideoCaptionLine]
     var captionStyle: VideoCaptionStyle
     var keystrokes: [VideoKeystrokeEvent]
@@ -968,6 +971,26 @@ struct VideoDemoProject: Codable, Equatable, Identifiable {
         aspectPreset.canvasSize(sourceSize: croppedSourceSize)
     }
 
+    /// The output is narrower than the recording (9:16, 4:5, 1:1 of a wide
+    /// screen): reframing can fill it.
+    var canReframe: Bool {
+        var landscape = self
+        landscape.aspectPreset = .source
+        let output = canvasSize()
+        let scene = landscape.canvasSize()
+        return VideoReframe.windowFraction(outputAspect: output.width / max(output.height, 1), sceneAspect: scene.width / max(scene.height, 1)) != nil
+    }
+
+    var reframeActive: Bool { reframe && canReframe }
+
+    /// What gets rendered before the reframing window crops it: the same
+    /// project at the recording's own shape.
+    func reframeScene() -> VideoDemoProject {
+        var scene = self
+        scene.aspectPreset = .source
+        return scene
+    }
+
     /// Where the recording sits on the canvas when the camera is at rest.
     /// Always centered, so it is the same rect in top-left and bottom-left
     /// coordinates.
@@ -1052,7 +1075,7 @@ extension VideoDemoProject {
         case aspectPreset, background, backgroundBlur, padding, cornerRadius, shadow, outline
         case zoomRegions, zoomSpeed, defaultZoomScale, motionBlur
         case overlayEffects, cursorSamples, clickEvents, nativeCursorVisible, cursor, audio
-        case webcam, cameraLayouts, captions, captionStyle, keystrokes, keystrokeStyle, crop
+        case webcam, cameraLayouts, reframe, captions, captionStyle, keystrokes, keystrokeStyle, crop
         // Legacy (v1) keys
         case backgroundPreset, customBackgroundPath, stageInset, shadowStrength, zoomKeyframes
         case showCursorOverlay, enlargeCursor, showClickRipple, smoothCursor, cursorScale, clickSpotlight, cursorMotionBlur
@@ -1077,6 +1100,7 @@ extension VideoDemoProject {
         version = Self.currentVersion
         webcam = (try? container.decode(VideoWebcamSettings.self, forKey: .webcam)) ?? VideoWebcamSettings()
         cameraLayouts = (try? container.decode([VideoCameraLayoutRegion].self, forKey: .cameraLayouts)) ?? []
+        reframe = try container.decodeIfPresent(Bool.self, forKey: .reframe) ?? false
         captions = (try? container.decode([VideoCaptionLine].self, forKey: .captions)) ?? []
         captionStyle = (try? container.decode(VideoCaptionStyle.self, forKey: .captionStyle)) ?? VideoCaptionStyle()
         keystrokes = (try? container.decode([VideoKeystrokeEvent].self, forKey: .keystrokes)) ?? []
@@ -1165,6 +1189,7 @@ extension VideoDemoProject {
         try container.encode(audio, forKey: .audio)
         try container.encode(webcam, forKey: .webcam)
         try container.encode(cameraLayouts, forKey: .cameraLayouts)
+        try container.encode(reframe, forKey: .reframe)
         try container.encode(captions, forKey: .captions)
         try container.encode(captionStyle, forKey: .captionStyle)
         try container.encode(keystrokes, forKey: .keystrokes)

@@ -54,7 +54,7 @@ enum VideoDemoExporter {
             includeAudio: !project.audio.isSilent(kinds: kinds)
         )
         let plan = makePlan(project: project, sourceDuration: source.duration, recording: recording, hasWebcam: edit.cameraTrack != nil)
-        let canvas = plan.canvasSize
+        let canvas = plan.outputCanvasSize
         let outputSize = settings.outputSize(canvas: canvas)
         let timelineDuration = edit.duration.seconds
 
@@ -120,8 +120,9 @@ enum VideoDemoExporter {
             tidyEnding: project.cursor.tidyEnding,
             duration: sourceDuration
         )
-        let canvas = project.canvasSize()
-        let stage = project.stageRect(in: canvas)
+        let layoutProject = project.reframeActive ? project.reframeScene() : project
+        let canvas = layoutProject.canvasSize()
+        let stage = layoutProject.stageRect(in: canvas)
         let normalizedStage = CGRect(
             x: stage.minX / canvas.width,
             y: stage.minY / canvas.height,
@@ -138,14 +139,31 @@ enum VideoDemoExporter {
             crop: project.crop.normalized,
             cursor: cursorTrack.map { track in { track.visiblePosition(at: $0) } }
         )
+        let outputCanvas = project.canvasSize()
+        var reframe: VideoReframe?
+        if project.reframeActive,
+           let fraction = VideoReframe.windowFraction(outputAspect: outputCanvas.width / max(outputCanvas.height, 1), sceneAspect: canvas.width / max(canvas.height, 1)) {
+            reframe = VideoReframe.build(
+                windowFraction: fraction,
+                camera: camera,
+                cursorTrack: cursorTrack,
+                segments: segments,
+                canvas: canvas,
+                stage: stage,
+                crop: project.crop.normalized,
+                duration: segments.last?.timelineEnd ?? 0
+            )
+        }
         return VideoRenderPlan(
-            project: project,
+            project: layoutProject,
             sourceDuration: sourceDuration,
             artwork: artwork,
             pointPixelScale: recording?.pointPixelScale,
             cursorTrack: cursorTrack,
             camera: camera,
-            hasWebcam: hasWebcam
+            hasWebcam: hasWebcam,
+            outputCanvasSize: outputCanvas,
+            reframe: reframe
         )
     }
 

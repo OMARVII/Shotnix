@@ -230,8 +230,18 @@ struct VideoStageInteractionLayer: View {
     @State private var bubbleDrag: CGSize?
     @State private var hoveringBubble = false
 
-    private var canvas: CGSize { model.project.canvasSize() }
-    private var stage: CGRect { model.project.stageRect(in: canvas) }
+    /// The canvas the scene is laid out on (the recording's own shape when
+    /// reframing a narrow output).
+    private var canvas: CGSize { model.plan.canvasSize }
+    private var stage: CGRect { (model.project.reframeActive ? model.project.reframeScene() : model.project).stageRect(in: canvas) }
+    /// Width of the whole scene in view points, and how far the reframing
+    /// window has panned into it.
+    private var sceneWidth: CGFloat {
+        model.plan.reframe == nil ? viewSize.width : viewSize.height * canvas.width / max(canvas.height, 1)
+    }
+    private var sceneOffset: CGFloat {
+        model.plan.reframe?.windowOrigin(at: clock.time, sceneWidth: sceneWidth) ?? 0
+    }
 
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -349,12 +359,12 @@ struct VideoStageInteractionLayer: View {
     /// Canvas point (top-left) → view point.
     private func viewPoint(_ p: CGPoint) -> CGPoint {
         let s = CGFloat(camera.scale)
-        let x = ((p.x / canvas.width - CGFloat(camera.centerX)) * s + 0.5) * viewSize.width
+        let x = ((p.x / canvas.width - CGFloat(camera.centerX)) * s + 0.5) * sceneWidth - sceneOffset
         let y = ((p.y / canvas.height - CGFloat(camera.centerY)) * s + 0.5) * viewSize.height
         return CGPoint(x: x, y: y)
     }
 
-    private var viewScale: CGFloat { viewSize.width / max(canvas.width, 1) * CGFloat(camera.scale) }
+    private var viewScale: CGFloat { sceneWidth / max(canvas.width, 1) * CGFloat(camera.scale) }
 
     // MARK: Zoom aiming
 
@@ -366,9 +376,9 @@ struct VideoStageInteractionLayer: View {
         let focusY = (stage.minY + stage.height * inCrop.y) / canvas.height
         let cx = VideoCameraState.clampedCenter(Double(focusX), scale: s)
         let cy = VideoCameraState.clampedCenter(Double(focusY), scale: s)
-        let width = viewSize.width / CGFloat(s)
+        let width = sceneWidth / CGFloat(s)
         let height = viewSize.height / CGFloat(s)
-        let rect = CGRect(x: CGFloat(cx) * viewSize.width - width / 2, y: CGFloat(cy) * viewSize.height - height / 2, width: width, height: height)
+        let rect = CGRect(x: CGFloat(cx) * sceneWidth - width / 2 - sceneOffset, y: CGFloat(cy) * viewSize.height - height / 2, width: width, height: height)
 
         return ZStack(alignment: .topLeading) {
             // Dim everything outside the shot.
@@ -409,7 +419,7 @@ struct VideoStageInteractionLayer: View {
                             }
                             guard let origin = aimOrigin else { return }
                             NSCursor.closedHand.set()
-                            let newX = VideoCameraState.clampedCenter(origin.centerX + Double(value.translation.width / viewSize.width), scale: origin.scale)
+                            let newX = VideoCameraState.clampedCenter(origin.centerX + Double(value.translation.width / sceneWidth), scale: origin.scale)
                             let newY = VideoCameraState.clampedCenter(origin.centerY + Double(value.translation.height / viewSize.height), scale: origin.scale)
                             // Canvas-normalized center → recording-normalized focus.
                             let inCrop = CGPoint(
@@ -447,10 +457,10 @@ struct VideoStageInteractionLayer: View {
                                     aimOrigin = (zoom.id, cx, cy, s)
                                 }
                                 guard let origin = aimOrigin else { return }
-                                let originWidth = viewSize.width / CGFloat(origin.scale)
+                                let originWidth = sceneWidth / CGFloat(origin.scale)
                                 let delta = (isRight ? value.translation.width : -value.translation.width) * 2
-                                let newWidth = max(originWidth + delta, viewSize.width / CGFloat(VideoZoomRegion.scaleRange.upperBound))
-                                let newScale = Double(viewSize.width / newWidth)
+                                let newWidth = max(originWidth + delta, sceneWidth / CGFloat(VideoZoomRegion.scaleRange.upperBound))
+                                let newScale = Double(sceneWidth / newWidth)
                                 model.updateZoom(zoom.id, coalesce: "aim-\(zoom.id)") { region in
                                     region.scale = min(max(newScale, VideoZoomRegion.scaleRange.lowerBound), VideoZoomRegion.scaleRange.upperBound)
                                 }

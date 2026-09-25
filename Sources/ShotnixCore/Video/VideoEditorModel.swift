@@ -196,6 +196,7 @@ final class VideoEditorModel: ObservableObject {
     private var noticeWork: DispatchWorkItem?
     private var cursorTrackCache: (key: CursorTrackKey, track: VideoCursorTrack?)?
     private var cameraTrackCache: (key: CameraTrackKey, track: VideoCameraTrack)?
+    private var reframeCache: (key: CameraTrackKey, fraction: CGFloat, reframe: VideoReframe)?
     private var transcriptCache: (captions: [VideoCaptionLine], words: [VideoTranscriptWord])?
     private var activityCache: (key: [Int], times: [Double])?
 
@@ -422,8 +423,11 @@ final class VideoEditorModel: ObservableObject {
             )
             cursorTrackCache = (key, cursorTrack)
         }
-        let canvas = project.canvasSize()
-        let stage = project.stageRect(in: canvas)
+        // Reframing renders the recording's own shape, then crops a moving
+        // window: the camera path is built for that landscape scene.
+        let layoutProject = project.reframeActive ? project.reframeScene() : project
+        let canvas = layoutProject.canvasSize()
+        let stage = layoutProject.stageRect(in: canvas)
         let normalizedStage = CGRect(x: stage.minX / canvas.width, y: stage.minY / canvas.height, width: stage.width / canvas.width, height: stage.height / canvas.height)
         let cameraKey = CameraTrackKey(
             regions: project.zoomRegions,
@@ -448,14 +452,37 @@ final class VideoEditorModel: ObservableObject {
             )
             cameraTrackCache = (cameraKey, camera)
         }
+        let outputCanvas = project.canvasSize()
+        var reframe: VideoReframe?
+        if project.reframeActive,
+           let fraction = VideoReframe.windowFraction(outputAspect: outputCanvas.width / max(outputCanvas.height, 1), sceneAspect: canvas.width / max(canvas.height, 1)) {
+            if let cache = reframeCache, cache.key == cameraKey, cache.fraction == fraction {
+                reframe = cache.reframe
+            } else {
+                let built = VideoReframe.build(
+                    windowFraction: fraction,
+                    camera: camera,
+                    cursorTrack: cursorTrack,
+                    segments: segments,
+                    canvas: canvas,
+                    stage: stage,
+                    crop: project.crop.normalized,
+                    duration: segments.last?.timelineEnd ?? 0
+                )
+                reframeCache = (cameraKey, fraction, built)
+                reframe = built
+            }
+        }
         plan = VideoRenderPlan(
-            project: project,
+            project: layoutProject,
             sourceDuration: sourceDuration,
             artwork: artwork,
             pointPixelScale: recording?.pointPixelScale,
             cursorTrack: cursorTrack,
             camera: camera,
-            hasWebcam: hasWebcamFootage
+            hasWebcam: hasWebcamFootage,
+            outputCanvasSize: outputCanvas,
+            reframe: reframe
         )
     }
 
