@@ -62,6 +62,8 @@ final class RecordingEngine: NSObject {
         }
 
         guard Self.destinationHasSufficientDiskSpace() else {
+            // The recording bar left the camera preview running for us.
+            CameraCapture.shared.stop()
             ToastWindow.show(message: "Not enough free disk space to record.")
             return
         }

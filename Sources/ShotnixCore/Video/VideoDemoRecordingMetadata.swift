@@ -89,17 +89,10 @@ struct VideoDemoRecordingMetadata: Codable, Equatable {
     var shouldRenderCursor: Bool { renderCursor ?? !nativeCursorVisible }
 }
 
+/// The recording's own data (pointer path, clicks, shortcuts, camera):
+/// found by the ID stamped on the video, so renaming or moving the file
+/// keeps it; the path is the fallback.
 enum VideoDemoSidecarStore {
-    static func sidecarURL(for videoURL: URL, baseDirectory: URL? = nil) -> URL {
-        metadataURL(for: videoURL, baseDirectory: baseDirectory)
-    }
-
-    static func metadataURL(for videoURL: URL, baseDirectory: URL? = nil) -> URL {
-        directory(baseDirectory: baseDirectory)
-            .appendingPathComponent(fileKey(for: videoURL), isDirectory: false)
-            .appendingPathExtension("json")
-    }
-
     static func legacySidecarURL(for videoURL: URL) -> URL {
         videoURL
             .deletingPathExtension()
@@ -107,30 +100,42 @@ enum VideoDemoSidecarStore {
     }
 
     static func load(for videoURL: URL, baseDirectory: URL? = nil) -> VideoDemoRecordingMetadata? {
-        let url = metadataURL(for: videoURL, baseDirectory: baseDirectory)
-        if let metadata = load(from: url) {
-            removeLegacySidecarIfPossible(for: videoURL)
+        let folder = directory(baseDirectory: baseDirectory)
+        let canonical = VideoFileIdentity.canonicalURL(videoURL)
+        if let id = VideoFileIdentity.id(of: canonical),
+           let metadata = load(from: folder.appendingPathComponent(VideoFileIdentity.idKey(id)).appendingPathExtension("json")) {
             return metadata
         }
-
-        let legacyURL = legacySidecarURL(for: videoURL)
-        guard let legacyMetadata = load(from: legacyURL) else { return nil }
-        if save(legacyMetadata, for: videoURL, baseDirectory: baseDirectory) {
-            removeLegacySidecarIfPossible(for: videoURL)
+        // Older names (by path) and the old file next to the video: move
+        // them to the ID so a later rename keeps them.
+        let candidates = [
+            folder.appendingPathComponent(VideoFileIdentity.pathKey(canonical)).appendingPathExtension("json"),
+            folder.appendingPathComponent(VideoFileIdentity.legacyKey(videoURL)).appendingPathExtension("json"),
+            folder.appendingPathComponent(VideoFileIdentity.legacyKey(canonical)).appendingPathExtension("json"),
+            legacySidecarURL(for: videoURL),
+        ]
+        for url in candidates {
+            guard let metadata = load(from: url) else { continue }
+            if save(metadata, for: videoURL, baseDirectory: baseDirectory), VideoFileIdentity.id(of: canonical) != nil {
+                try? FileManager.default.removeItem(at: url)
+            }
+            return metadata
         }
-        return legacyMetadata
+        return nil
     }
 
     @discardableResult
     static func save(_ metadata: VideoDemoRecordingMetadata, for videoURL: URL, baseDirectory: URL? = nil) -> Bool {
-        let url = metadataURL(for: videoURL, baseDirectory: baseDirectory)
+        let folder = directory(baseDirectory: baseDirectory)
+        let canonical = VideoFileIdentity.canonicalURL(videoURL)
+        let key = VideoFileIdentity.ensureID(of: canonical).map(VideoFileIdentity.idKey) ?? VideoFileIdentity.pathKey(canonical)
+        let url = folder.appendingPathComponent(key).appendingPathExtension("json")
         do {
-            try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+            try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
             let encoder = JSONEncoder()
             encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
             let data = try encoder.encode(metadata)
             try data.write(to: url, options: .atomic)
-            removeLegacySidecarIfPossible(for: videoURL)
             return true
         } catch {
             print("[Shotnix] Video metadata save failed: \(error)")
@@ -149,25 +154,11 @@ enum VideoDemoSidecarStore {
         }
     }
 
-    private static func removeLegacySidecarIfPossible(for videoURL: URL) {
-        let legacyURL = legacySidecarURL(for: videoURL)
-        guard FileManager.default.fileExists(atPath: legacyURL.path) else { return }
-        try? FileManager.default.removeItem(at: legacyURL)
-    }
-
     private static func directory(baseDirectory: URL?) -> URL {
         let root = baseDirectory ?? VideoStorageLocation.root
         return root
             .appendingPathComponent("Shotnix", isDirectory: true)
             .appendingPathComponent("VideoMetadata", isDirectory: true)
-    }
-
-    private static func fileKey(for videoURL: URL) -> String {
-        Data(videoURL.standardizedFileURL.path.utf8)
-            .base64EncodedString()
-            .replacingOccurrences(of: "/", with: "_")
-            .replacingOccurrences(of: "+", with: "-")
-            .replacingOccurrences(of: "=", with: "")
     }
 }
 

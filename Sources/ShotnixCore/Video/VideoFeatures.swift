@@ -344,12 +344,17 @@ enum VideoKeystrokeFormatter {
 
     static func keys(keyCode: UInt16, characters: String?, modifiers: NSEvent.ModifierFlags) -> [String]? {
         let flags = modifiers.intersection([.control, .option, .shift, .command])
-        let hasCommandish = !flags.intersection([.control, .option, .command]).isEmpty
         let special = specialKeys[keyCode]
         let isFunctionKey = special?.hasPrefix("F") == true && special != nil
         let isEscape = keyCode == 53
+        // ⌥ alone types characters on many layouts (@ on German, ł and ó
+        // on Polish): with a character key it's typing, not a shortcut.
+        // Only ⌘ or ⌃ make a character key a shortcut; ⌥ counts with keys
+        // that type nothing (arrows, Delete, Return, Tab).
+        let hasShortcutModifier = !flags.intersection([.control, .command]).isEmpty
+        let optionWithNonCharacter = flags.contains(.option) && special != nil && keyCode != 49
         // Plain typing (letters, Return, arrows, Delete…) is never recorded.
-        guard hasCommandish || isFunctionKey || isEscape else { return nil }
+        guard hasShortcutModifier || optionWithNonCharacter || isFunctionKey || isEscape else { return nil }
 
         var labels: [String] = []
         if flags.contains(.control) { labels.append("⌃") }

@@ -331,9 +331,12 @@ final class VideoEditorModel: ObservableObject {
 
             var loaded = project
             var isFresh = false
-            if let draft = VideoDemoDraftStore.load(for: project.sourceURL),
-               draft.sourcePath == project.sourceURL.standardizedFileURL.path {
+            // The store only hands back this file's own draft (moved or
+            // renamed files included; copies and replaced files excluded).
+            if let draft = VideoDemoDraftStore.load(for: project.sourceURL) {
                 loaded = draft.project
+                // The file may have moved since: this is where it is now.
+                loaded.sourcePath = project.sourcePath
                 // Drafts leave the (read-only) pointer path in the sidecar.
                 if loaded.cursorSamples.isEmpty, let recording {
                     loaded.cursorSamples = recording.cursorSamples

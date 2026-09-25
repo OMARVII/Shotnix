@@ -48,6 +48,14 @@ final class VideoFeatureRenderTests: XCTestCase {
         XCTAssertNil(VideoKeystrokeFormatter.keys(keyCode: 36, characters: "\r", modifiers: []))
         XCTAssertNil(VideoKeystrokeFormatter.keys(keyCode: 123, characters: nil, modifiers: []))
         XCTAssertNil(VideoKeystrokeFormatter.keys(keyCode: 51, characters: nil, modifiers: [.shift]))
+        // ⌥ with a character key types text on many layouts (German @ is
+        // ⌥L, Polish ł is ⌥L): never recorded.
+        XCTAssertNil(VideoKeystrokeFormatter.keys(keyCode: 37, characters: "l", modifiers: [.option]))
+        XCTAssertNil(VideoKeystrokeFormatter.keys(keyCode: 23, characters: "5", modifiers: [.option, .shift]))
+        XCTAssertNil(VideoKeystrokeFormatter.keys(keyCode: 49, characters: " ", modifiers: [.option]))
+        // ⌥ with keys that type nothing is a shortcut (word jumps, delete word).
+        XCTAssertEqual(VideoKeystrokeFormatter.keys(keyCode: 123, characters: nil, modifiers: [.option]), ["⌥", "←"])
+        XCTAssertEqual(VideoKeystrokeFormatter.keys(keyCode: 51, characters: nil, modifiers: [.option]), ["⌥", "⌫"])
     }
 
     func testRepeatedShortcutsStackAndNewOnesReplace() {
