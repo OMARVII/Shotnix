@@ -100,7 +100,7 @@ enum NativeShortcutManager {
 
     @MainActor
     private static func showConflictAlert(onDisabled: (() -> Void)?) {
-        NSApp.setActivationPolicy(.accessory)
+        NSApp.ensureForegroundCapable()
         NSApp.activate(ignoringOtherApps: true)
 
         let alert = NSAlert()

@@ -142,7 +142,7 @@ enum ImageExporter {
     @MainActor
     static func saveWithPanel(image: NSImage, suggestedName: String, presentingWindow: NSWindow? = nil, completion: ((SavePanelResult) -> Void)? = nil) {
         NSApp.unhide(nil)
-        NSApp.setActivationPolicy(.accessory)
+        NSApp.ensureForegroundCapable()
         NSApp.activate(ignoringOtherApps: true)
         presentingWindow?.deminiaturize(nil)
         presentingWindow?.makeKeyAndOrderFront(nil)

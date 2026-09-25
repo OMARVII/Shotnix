@@ -71,7 +71,7 @@ final class ShotnixModernMenuPresenter {
         )
 
         detachedPanel = panel
-        NSApp.setActivationPolicy(.accessory)
+        NSApp.ensureForegroundCapable()
         NSApp.activate(ignoringOtherApps: true)
         panel.makeKeyAndOrderFront(nil)
         animateEntrance(on: controller.view)

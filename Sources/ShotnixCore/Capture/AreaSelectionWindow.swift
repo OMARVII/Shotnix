@@ -27,7 +27,7 @@ final class AreaSelectionWindow: NSObject {
     private var keyMonitor: Any?
 
     func prepareAndShow(engine: CaptureEngine) async {
-        NSApp.setActivationPolicy(.accessory)
+        NSApp.ensureForegroundCapable()
         NSApp.activate(ignoringOtherApps: true)
 
         // Show the overlays IMMEDIATELY — the crosshair must never wait on a

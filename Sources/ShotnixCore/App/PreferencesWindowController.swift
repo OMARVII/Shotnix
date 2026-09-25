@@ -68,7 +68,7 @@ final class PreferencesWindowController: NSWindowController, NSWindowDelegate {
     }
     
     func show(tab: PreferencesTab = .general) {
-        NSApp.setActivationPolicy(.accessory)
+        NSApp.ensureForegroundCapable()
         NSApp.activate(ignoringOtherApps: true)
 
         selection.selectedTab = tab

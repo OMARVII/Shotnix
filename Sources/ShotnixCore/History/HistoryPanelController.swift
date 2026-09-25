@@ -29,7 +29,7 @@ final class HistoryPanelController: NSObject {
 
     func show(historyManager: HistoryManager) {
         self.historyManager = historyManager
-        NSApp.setActivationPolicy(.accessory)
+        NSApp.ensureForegroundCapable()
         NSApp.activate(ignoringOtherApps: true)
         if let existing = panel {
             existing.makeKeyAndOrderFront(nil)

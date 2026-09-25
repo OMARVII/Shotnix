@@ -150,7 +150,7 @@ final class QRCodeResultWindow: NSWindow, NSWindowDelegate {
     }
 
     private func showWindow() {
-        NSApp.setActivationPolicy(.accessory)
+        NSApp.ensureForegroundCapable()
         NSApp.activate(ignoringOtherApps: true)
         makeKeyAndOrderFront(nil)
     }

@@ -55,7 +55,7 @@ final class WelcomeWindowController: NSObject, NSWindowDelegate {
         buildContent(in: background, width: width, height: height)
         refresh()
 
-        NSApp.setActivationPolicy(.accessory)
+        NSApp.ensureForegroundCapable()
         NSApp.activate(ignoringOtherApps: true)
         win.makeKeyAndOrderFront(nil)
         window = win

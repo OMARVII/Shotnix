@@ -135,16 +135,21 @@ final class VideoDemoEditorWindowController: NSWindowController, NSWindowDelegat
         guard let window else { return }
         NSApp.unhide(nil)
         ShotnixEditorActivation.sync()
-        NSRunningApplication.current.activate(options: [.activateAllWindows])
-        NSApp.activate(ignoringOtherApps: true)
+        ShotnixEditorActivation.activateApp()
         showWindow(nil)
         layoutWindowButtons()
         window.deminiaturize(nil)
         window.level = .floating
         window.makeKeyAndOrderFront(nil)
         window.orderFrontRegardless()
+        // The editor is open now, so the stop-to-editor foreground hold
+        // can end (the editor keeps the app regular on its own).
+        ShotnixEditorActivation.releaseForeground()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { [weak window] in
             guard let window, window.isVisible else { return }
+            // A policy switch right before can make the first activation
+            // request miss; ask once more before leaving the floating level.
+            if !NSApp.isActive { ShotnixEditorActivation.activateApp() }
             window.level = .normal
             window.makeKeyAndOrderFront(nil)
         }

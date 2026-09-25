@@ -195,6 +195,12 @@ final class RecordingEngine: NSObject {
 
     func stopRecording() {
         guard isRecording, !isFinishing else { return }
+        // The user just acted — the one moment macOS lets Shotnix take
+        // focus. Keep it until the editor opens, or the editor would open
+        // behind the app that was being recorded.
+        if Settings.openVideoEditorAfterRecording {
+            ShotnixEditorActivation.holdForeground()
+        }
         beginFinishing()
 
         let streamToStop = stream
@@ -562,6 +568,7 @@ final class RecordingEngine: NSObject {
                             }
                             self.recordingFinishedHandler?(url)
                         } else {
+                            ShotnixEditorActivation.releaseForeground()
                             if let camera { try? FileManager.default.removeItem(at: camera.url) }
                             if let error {
                                 ToastWindow.show(message: "Recording stopped unexpectedly.")
