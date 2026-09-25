@@ -39,7 +39,7 @@ Visit **[shotnix.com](https://shotnix.com/)** for the latest download and projec
 - **Scrolling** — capture content beyond the visible area
 - **Timed** — a cancellable 3/5/10-second countdown before the shot
 - **Screen recording** — record an area, window, or display to MP4 with system audio, microphone audio, cursor control, quality, and FPS options
-- **Video demo editor** — open any recording in a built-in editor with a clip timeline, per-clip speed, auto zoom, cursor effects, text callouts, backgrounds, and MP4 export
+- **Video editor** — turn any recording into a polished demo: zooms that follow your cursor, the real macOS cursor redrawn smoothly, backgrounds, annotations, your camera as its own layer (with layouts), captions and edit-by-text made on your Mac, cleaner sound, vertical videos, crop, and export to MP4 or GIF
 - **OCR** — extract and copy text from any part of the screen
 - **QR and barcode scanning** — decode QR, Code 128, EAN, UPC, Aztec, Data Matrix, PDF417 and more from a selected screen area
 
@@ -132,7 +132,7 @@ Sources/
     ├── Hotkeys/       Customizable global shortcuts
     ├── OCR/           Text recognition via Vision framework
     ├── Overlay/       Quick access thumbnail, pinned windows, toasts
-    ├── Video/         Recording demo editor: timeline, speed, zoom, cursor effects, MP4 export
+    ├── Video/         Video editor: timeline, zooms, cursor, camera, captions, sound, export
     └── Utilities/     Image export, permissions, desktop icon toggle
 ```
 
