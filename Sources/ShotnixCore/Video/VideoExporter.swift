@@ -378,7 +378,11 @@ enum VideoDemoExporter {
 
         private let renderer = VideoFrameRenderer()
         private let context = VideoRenderContext.makeContext()
-        private let colorSpace = CGColorSpace(name: CGColorSpace.itur_709) ?? CGColorSpaceCreateDeviceRGB()
+        /// Frames are rendered in sRGB — exactly what the preview shows —
+        /// and tagged so; the encoder converts them to HD video colors.
+        /// (Rendering straight into Rec.709 used the camera curve, which
+        /// players don't undo: mid-tones came out ~7% lighter.)
+        private let colorSpace = CGColorSpace(name: CGColorSpace.sRGB) ?? CGColorSpaceCreateDeviceRGB()
         private let videoQueue = DispatchQueue(label: "com.shotnix.export.video", qos: .userInitiated)
         private let audioQueue = DispatchQueue(label: "com.shotnix.export.audio", qos: .userInitiated)
         private var lastFrame: CIImage?
@@ -596,9 +600,9 @@ enum VideoDemoExporter {
             var buffer: CVPixelBuffer?
             CVPixelBufferPoolCreatePixelBuffer(nil, pool, &buffer)
             guard let buffer else { return false }
+            CVBufferSetAttachment(buffer, kCVImageBufferCGColorSpaceKey, colorSpace, .shouldPropagate)
             CVBufferSetAttachment(buffer, kCVImageBufferColorPrimariesKey, kCVImageBufferColorPrimaries_ITU_R_709_2, .shouldPropagate)
-            CVBufferSetAttachment(buffer, kCVImageBufferTransferFunctionKey, kCVImageBufferTransferFunction_ITU_R_709_2, .shouldPropagate)
-            CVBufferSetAttachment(buffer, kCVImageBufferYCbCrMatrixKey, kCVImageBufferYCbCrMatrix_ITU_R_709_2, .shouldPropagate)
+            CVBufferSetAttachment(buffer, kCVImageBufferTransferFunctionKey, kCVImageBufferTransferFunction_sRGB, .shouldPropagate)
             context.render(image, to: buffer, bounds: CGRect(origin: .zero, size: outputSize), colorSpace: colorSpace)
             return adaptor.append(buffer, withPresentationTime: time)
         }
