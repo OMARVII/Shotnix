@@ -113,22 +113,6 @@ struct VideoTimelineToolbar: View {
             toolButton("plus.magnifyingglass", "Zoom", "Add a zoom at the playhead (Z)") {
                 model.addZoom(at: clock.time)
             }
-            Menu {
-                ForEach(VideoDemoOverlayEffectKind.allCases) { kind in
-                    Button {
-                        model.addOverlay(kind)
-                    } label: {
-                        Label(kind.title, systemImage: kind.icon)
-                    }
-                }
-            } label: {
-                Label("Annotate", systemImage: "text.bubble")
-                    .font(.system(size: 12, weight: .semibold))
-            }
-            .menuStyle(.borderlessButton)
-            .fixedSize()
-            .help("Add text, a highlight, an arrow, or a blur (T, H, A, B)")
-
             toolbarDivider
 
             toolButton("sparkles", "Auto Zoom", "Plan zooms from your clicks — keeps zooms you placed by hand") { model.autoZoom() }

@@ -13,12 +13,20 @@ struct VideoEditorRootView: View {
                 HStack(spacing: 0) {
                     ZStack(alignment: .top) {
                         VideoEditorTheme.stage
-                        VideoStageView(model: model)
-                            .padding(.horizontal, 28)
-                            .padding(.vertical, 22)
+                        VStack(spacing: 0) {
+                            // The picture tools, centered above the preview.
+                            if !model.isCropping {
+                                VideoToolDock(model: model)
+                                    .padding(.top, 12)
+                            }
+                            VideoStageView(model: model)
+                                .padding(.horizontal, 28)
+                                .padding(.top, model.isCropping ? 22 : 12)
+                                .padding(.bottom, 22)
+                        }
                         if let notice = model.notice {
                             VideoNoticePill(notice: notice)
-                                .padding(.top, 12)
+                                .padding(.top, model.isCropping ? 12 : 80)
                                 .transition(.move(edge: .top).combined(with: .opacity))
                         }
                         VStack {
@@ -651,6 +659,100 @@ struct VideoShortcutsSheet: View {
 }
 
 /// One-time orientation for the first editor session.
+/// Annotation and zoom tools where people look for them — centered above
+/// the preview, like the screenshot editor's dock. One click adds the
+/// effect at the playhead, selected, with handles on the video.
+struct VideoToolDock: View {
+    @ObservedObject var model: VideoEditorModel
+
+    private static let keys: [VideoDemoOverlayEffectKind: String] = [.text: "T", .arrow: "A", .highlight: "H", .blur: "B"]
+
+    private var selectedKind: VideoDemoOverlayEffectKind? {
+        guard case .overlay = model.selection else { return nil }
+        return model.selectedOverlay?.kind
+    }
+
+    var body: some View {
+        HStack(spacing: 6) {
+            group {
+                ForEach(VideoDemoOverlayEffectKind.allCases) { kind in
+                    VideoDockButton(
+                        title: kind.title,
+                        symbol: kind.icon,
+                        tint: VideoEditorTheme.overlayTint(kind),
+                        active: selectedKind == kind,
+                        help: "Add \(kind.title.lowercased()) at the playhead (\(Self.keys[kind] ?? ""))"
+                    ) {
+                        model.addOverlay(kind)
+                    }
+                }
+            }
+            group {
+                VideoDockButton(
+                    title: "Zoom",
+                    symbol: "plus.magnifyingglass",
+                    tint: VideoEditorTheme.zoom,
+                    active: model.selectedZoomID != nil,
+                    help: "Add a zoom at the playhead (Z)"
+                ) {
+                    model.addZoom(at: model.clock.time)
+                    model.inspectorTab = .zoom
+                }
+            }
+        }
+        .padding(5)
+        .background(
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(Color(red: 0.1, green: 0.1, blue: 0.115).opacity(0.94))
+        )
+        .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(Color.white.opacity(0.1), lineWidth: 1))
+        .shadow(color: .black.opacity(0.45), radius: 14, y: 6)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Tools")
+    }
+
+    private func group<Content: View>(@ViewBuilder _ content: () -> Content) -> some View {
+        HStack(spacing: 2) { content() }
+            .padding(3)
+            .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(Color.white.opacity(0.05)))
+    }
+}
+
+struct VideoDockButton: View {
+    let title: String
+    let symbol: String
+    let tint: Color
+    let active: Bool
+    let help: String
+    let action: () -> Void
+
+    @State private var hovered = false
+
+    var body: some View {
+        Button(action: action) {
+            VStack(spacing: 3) {
+                Image(systemName: symbol)
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(active || hovered ? tint : VideoEditorTheme.textPrimary)
+                    .frame(height: 17)
+                Text(title)
+                    .font(.system(size: 10, weight: .semibold))
+                    .foregroundStyle(active ? VideoEditorTheme.textPrimary : VideoEditorTheme.textSecondary)
+            }
+            .frame(width: 62, height: 42)
+            .background(
+                RoundedRectangle(cornerRadius: 9, style: .continuous)
+                    .fill(active ? tint.opacity(0.22) : (hovered ? Color.white.opacity(0.08) : Color.clear))
+            )
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .onHover { hovered = $0 }
+        .help(help)
+        .accessibilityLabel(title)
+    }
+}
+
 struct VideoTipsBar: View {
     @AppStorage("videoEditorTipsDismissed") private var dismissed = false
 
