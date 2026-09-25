@@ -383,9 +383,9 @@ struct VideoStageInteractionLayer: View {
     }
 
     private func isVisibleNow(_ effect: VideoDemoOverlayEffect) -> Bool {
-        guard let start = model.timelineTime(forSource: effect.time) else { return false }
-        let end = model.timelineTime(forSource: effect.time + effect.duration) ?? (start + effect.duration)
-        return clock.time >= start - 0.05 && clock.time <= end + 0.05
+        // The span the renderer draws, after cuts.
+        guard let span = model.plan.overlays.first(where: { $0.effect.id == effect.id }) else { return false }
+        return clock.time >= span.start - 0.05 && clock.time <= span.end + 0.05
     }
 
     // MARK: Geometry

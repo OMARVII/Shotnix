@@ -210,12 +210,14 @@ enum VideoDemoExporter {
 
         var audioOutput: AVAssetReaderAudioMixOutput?
         if !edit.audioTracks.isEmpty {
+            // Float, so a mix that adds up past full scale (voice over the
+            // computer's sound) isn't clipped before the loudness gain.
             let output = AVAssetReaderAudioMixOutput(audioTracks: edit.audioTracks, audioSettings: [
                 AVFormatIDKey: kAudioFormatLinearPCM,
                 AVSampleRateKey: 48_000,
                 AVNumberOfChannelsKey: 2,
-                AVLinearPCMBitDepthKey: 16,
-                AVLinearPCMIsFloatKey: false,
+                AVLinearPCMBitDepthKey: 32,
+                AVLinearPCMIsFloatKey: true,
                 AVLinearPCMIsBigEndianKey: false,
                 AVLinearPCMIsNonInterleaved: false,
             ])
@@ -644,7 +646,10 @@ enum VideoDemoExporter {
             throw VideoDemoExportError.exportFailed(reader.error?.localizedDescription ?? "Could not read frames for the GIF.")
         }
 
-        let estimated = max(Int(duration * fps), 1)
+        // The reader delivers a frame for every started 1/fps (a partial last
+        // one included). A GIF refuses to finish with more frames than it
+        // declared, so declare the upper bound (fewer is fine).
+        let estimated = max(Int((duration * fps).rounded(.up)) + 1, 1)
         guard let destination = CGImageDestinationCreateWithURL(url as CFURL, UTType.gif.identifier as CFString, estimated, nil) else {
             throw VideoDemoExportError.exportFailed("Could not create the GIF file.")
         }
@@ -668,7 +673,7 @@ enum VideoDemoExporter {
                 reader.cancelReading()
                 throw VideoDemoExportError.cancelled
             }
-            guard let pixelBuffer = CMSampleBufferGetImageBuffer(sample) else { continue }
+            guard written < estimated, let pixelBuffer = CMSampleBufferGetImageBuffer(sample) else { continue }
             let time = CMSampleBufferGetPresentationTimeStamp(sample).seconds
             var options = VideoFrameRenderer.Options(frameRate: fps)
             if edit.cameraTrack != nil {

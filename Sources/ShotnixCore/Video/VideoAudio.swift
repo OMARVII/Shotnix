@@ -385,10 +385,13 @@ final class VideoLoudnessMeter {
 /// Applies one gain to 16-bit interleaved PCM sample buffers (after the
 /// meter chose it); peaks were accounted for, so this never clips.
 enum VideoAudioGain {
+    /// Scales 16-bit or float PCM. Float is also limited to full scale, so
+    /// the encoder never sees (and clips) peaks past it.
     static func apply(_ gain: Double, to sample: CMSampleBuffer) -> CMSampleBuffer? {
-        guard abs(gain - 1) > 0.001,
-              let block = CMSampleBufferGetDataBuffer(sample),
+        guard let block = CMSampleBufferGetDataBuffer(sample),
               let format = CMSampleBufferGetFormatDescription(sample) else { return sample }
+        let isFloat = CMAudioFormatDescriptionGetStreamBasicDescription(format).map { $0.pointee.mFormatFlags & kAudioFormatFlagIsFloat != 0 } ?? false
+        guard isFloat || abs(gain - 1) > 0.001 else { return sample }
         let length = CMBlockBufferGetDataLength(block)
         var data = Data(count: length)
         let copied = data.withUnsafeMutableBytes { raw -> Bool in
@@ -397,10 +400,18 @@ enum VideoAudioGain {
         }
         guard copied else { return sample }
         data.withUnsafeMutableBytes { raw in
-            let samples = raw.bindMemory(to: Int16.self)
-            for index in samples.indices {
-                let scaled = Double(samples[index]) * gain
-                samples[index] = Int16(max(min(scaled.rounded(), Double(Int16.max)), Double(Int16.min)))
+            if isFloat {
+                let samples = raw.bindMemory(to: Float.self)
+                let scale = Float(gain)
+                for index in samples.indices {
+                    samples[index] = max(min(samples[index] * scale, 1), -1)
+                }
+            } else {
+                let samples = raw.bindMemory(to: Int16.self)
+                for index in samples.indices {
+                    let scaled = Double(samples[index]) * gain
+                    samples[index] = Int16(max(min(scaled.rounded(), Double(Int16.max)), Double(Int16.min)))
+                }
             }
         }
         var newBlock: CMBlockBuffer?

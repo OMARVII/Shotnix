@@ -191,6 +191,91 @@ final class VideoAudioTests: XCTestCase {
         XCTAssertTrue(tracks.isEmpty)
     }
 
+    /// A short recording with two sound tracks (voice + computer), each a
+    /// loud in-phase sine: together they add up past full scale.
+    private func writeTwoTrackRecording(to url: URL, amplitude: Double, seconds: Double) async throws {
+        let video = directory.appendingPathComponent("picture.mp4")
+        try await VideoTestSupport.writeFakeRecording(to: video, size: CGSize(width: 320, height: 200), seconds: seconds, fps: 30)
+        let composition = AVMutableComposition()
+        let asset = AVURLAsset(url: video)
+        let videoTracks = try await asset.loadTracks(withMediaType: .video)
+        let source = try XCTUnwrap(videoTracks.first)
+        let track = try XCTUnwrap(composition.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid))
+        try track.insertTimeRange(CMTimeRange(start: .zero, duration: CMTime(seconds: seconds, preferredTimescale: 600)), of: source, at: .zero)
+        for _ in 0..<2 {
+            let tone = directory.appendingPathComponent("tone-\(UUID().uuidString).caf")
+            let format = try XCTUnwrap(AVAudioFormat(standardFormatWithSampleRate: 48_000, channels: 2))
+            let file = try AVAudioFile(forWriting: tone, settings: format.settings)
+            let frames = AVAudioFrameCount(seconds * 48_000)
+            let buffer = try XCTUnwrap(AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frames))
+            buffer.frameLength = frames
+            for frame in 0..<Int(frames) {
+                let value = Float(sin(2 * .pi * 440 * Double(frame) / 48_000) * amplitude)
+                buffer.floatChannelData![0][frame] = value
+                buffer.floatChannelData![1][frame] = value
+            }
+            try file.write(from: buffer)
+            let toneAsset = AVURLAsset(url: tone)
+            let audioTracks = try await toneAsset.loadTracks(withMediaType: .audio)
+            let audio = try XCTUnwrap(audioTracks.first)
+            let lane = try XCTUnwrap(composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid))
+            try lane.insertTimeRange(CMTimeRange(start: .zero, duration: CMTime(seconds: seconds, preferredTimescale: 600)), of: audio, at: .zero)
+        }
+        let session = try XCTUnwrap(AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality))
+        session.outputURL = url
+        session.outputFileType = .mov
+        await session.export()
+        XCTAssertEqual(session.status, .completed, session.error?.localizedDescription ?? "")
+    }
+
+    func testLoudVoiceOverComputerSoundDoesntClip() async throws {
+        let url = directory.appendingPathComponent("rec.mov")
+        try await writeTwoTrackRecording(to: url, amplitude: 0.8, seconds: 2)
+        let metadata = VideoDemoRecordingMetadata(videoURLPath: url.path, createdAt: Date(), duration: 2, sourceWidth: 320, sourceHeight: 200, fps: 30, nativeCursorVisible: true, cursorSamples: [], clickEvents: [], audioTracks: [.microphone, .system])
+        var project = VideoDemoProject.make(sourceURL: url, duration: 2, sourceSize: CGSize(width: 320, height: 200))
+        project.apply(metadata: metadata)
+        XCTAssertTrue(project.audio.normalizeLoudness)
+        var settings = VideoExportSettings()
+        settings.resolution = .p720
+        settings.fps = 30
+        settings.endCard = false
+        let output = directory.appendingPathComponent("mixed.mp4")
+        try await VideoDemoExporter.export(project: project, recording: metadata, destinationURL: output, settings: settings)
+
+        // A clean sine peaks at √2 × its RMS; a clipped (flat-topped) one far less.
+        let asset = AVURLAsset(url: output)
+        let tracks = try await asset.loadTracks(withMediaType: .audio)
+        let reader = try AVAssetReader(asset: asset)
+        let readout = AVAssetReaderAudioMixOutput(audioTracks: tracks, audioSettings: [
+            AVFormatIDKey: kAudioFormatLinearPCM, AVSampleRateKey: 48_000, AVNumberOfChannelsKey: 2,
+            AVLinearPCMBitDepthKey: 32, AVLinearPCMIsFloatKey: true, AVLinearPCMIsBigEndianKey: false, AVLinearPCMIsNonInterleaved: false,
+        ])
+        reader.add(readout)
+        reader.startReading()
+        var peak: Float = 0
+        var sumSquares = 0.0
+        var count = 0
+        while let sample = readout.copyNextSampleBuffer(), let block = CMSampleBufferGetDataBuffer(sample) {
+            var length = 0
+            var pointer: UnsafeMutablePointer<Int8>?
+            CMBlockBufferGetDataPointer(block, atOffset: 0, lengthAtOffsetOut: nil, totalLengthOut: &length, dataPointerOut: &pointer)
+            guard let pointer else { continue }
+            pointer.withMemoryRebound(to: Float.self, capacity: length / 4) { floats in
+                // Skip the encoder's ramp at the very start.
+                for index in 0..<(length / 4) where count > 9600 || index > 0 {
+                    peak = max(peak, abs(floats[index]))
+                    sumSquares += Double(floats[index] * floats[index])
+                }
+                count += length / 4
+            }
+        }
+        let rms = (sumSquares / Double(max(count, 1))).squareRoot()
+        let crest = Double(peak) / max(rms, 1e-9)
+        print("MIX: peak \(peak), rms \(rms), crest \(crest)")
+        XCTAssertLessThanOrEqual(peak, 1.0)
+        XCTAssertGreaterThan(crest, 1.3, "the loud mix is lowered, not clipped")
+    }
+
     func testVoiceEnhancementRemovesNoise() async throws {
         try XCTSkipUnless(VideoVoiceEnhancer.isAvailable, "Voice isolation not available on this Mac")
         // Speech after a second of silence, with steady hiss throughout.

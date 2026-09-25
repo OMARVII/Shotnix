@@ -113,6 +113,19 @@ final class VideoExportTests: XCTestCase {
         XCTAssertEqual(properties?[kCGImagePropertyPixelWidth] as? Int, 480)
     }
 
+    func testGIFExportAtAnyLength() async throws {
+        // 1.25 s × 15 fps = 18.75 frames: the reader delivers 19.
+        let (_, project, metadata) = try await source(seconds: 1.25)
+        let output = directory.appendingPathComponent("odd.gif")
+        var settings = VideoExportSettings()
+        settings.format = .gif
+        settings.gifSize = .small
+        settings.gifFPS = 15
+        try await VideoDemoExporter.export(project: project, recording: metadata, destinationURL: output, settings: settings)
+        let source = try XCTUnwrap(CGImageSourceCreateWithURL(output as CFURL, nil))
+        XCTAssertGreaterThanOrEqual(CGImageSourceGetCount(source), 18)
+    }
+
     func testExportRespectsCutsAndSpeed() async throws {
         var (_, project, metadata) = try await source(seconds: 3)
         project.timelineClips = [

@@ -139,6 +139,11 @@ struct VideoExportSheet: View {
         }
     }
 
+    private func gifWorkingBytes(size: CGSize, duration: Double) -> Int64 {
+        let frames = (duration * Double(settings.gifFPS)).rounded(.up)
+        return Int64(frames * Double(size.width * size.height) * 4)
+    }
+
     private func row<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
         HStack(alignment: .top, spacing: 12) {
             Text(title)
@@ -173,6 +178,13 @@ struct VideoExportSheet: View {
             }
             if upscaled {
                 Label("Larger than the recording — text may look softer than at a lower resolution.", systemImage: "exclamationmark.triangle")
+                    .font(.system(size: 10.5))
+                    .foregroundStyle(Color.yellow.opacity(0.85))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            if settings.format == .gif, gifWorkingBytes(size: size, duration: duration) > 1_500_000_000 {
+                // A GIF keeps every frame in memory until it's written.
+                Label("A long GIF — it needs about \(VideoEditorModel.formatBytes(gifWorkingBytes(size: size, duration: duration))) of memory to make. A smaller size, fewer fps, or MP4 is lighter.", systemImage: "exclamationmark.triangle")
                     .font(.system(size: 10.5))
                     .foregroundStyle(Color.yellow.opacity(0.85))
                     .fixedSize(horizontal: false, vertical: true)

@@ -628,11 +628,13 @@ struct VideoTimelineSurface: View {
     // MARK: Overlays
 
     private var overlayLanes: some View {
-        ZStack(alignment: .topLeading) {
+        // Where each annotation is on screen after cuts — the same span the
+        // renderer draws (its first moment may have been cut away).
+        let spans = Dictionary(model.plan.overlays.map { ($0.effect.id, ($0.start, $0.end)) }, uniquingKeysWith: { first, _ in first })
+        return ZStack(alignment: .topLeading) {
             ForEach(model.project.overlayEffects) { effect in
-                if let start = model.timelineTime(forSource: effect.time) {
-                    let end = model.timelineTime(forSource: effect.time + effect.duration) ?? min(start + effect.duration, duration)
-                    overlayPill(effect, start: start, end: max(end, start + 0.1))
+                if let span = spans[effect.id] {
+                    overlayPill(effect, start: span.0, end: max(span.1, span.0 + 0.1))
                 }
             }
         }
