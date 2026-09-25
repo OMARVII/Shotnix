@@ -1844,6 +1844,9 @@ private final class RecordingControlsWindow: NSWindow {
     private var didClose = false
     /// Record was pressed: the camera stays on for the recording.
     private var keepsCameraAfterClose = false
+    /// Waits for Accessibility access after the ⌘ button asked for it.
+    private var accessibilityPoll: Timer?
+    private var accessibilityPollTicks = 0
 
     private let systemAudioButton = RecordingToggleButton(symbol: "speaker.wave.2.fill", title: "System audio")
     private let microphoneButton = RecordingToggleButton(symbol: "mic.fill", title: "Microphone", activeTint: .systemGreen)
@@ -1921,6 +1924,8 @@ private final class RecordingControlsWindow: NSWindow {
 
         scheduleDeferredMicrophoneMonitor()
         if Settings.recordingCamera { startCameraPreview() }
+        // Asked for shortcuts earlier but access hasn't arrived yet.
+        if Settings.recordingKeystrokes, !VideoKeystrokeFormatter.isAllowed { waitForAccessibility() }
     }
 
     private func startCameraPreview() {
@@ -2291,6 +2296,7 @@ private final class RecordingControlsWindow: NSWindow {
             self.keyMonitor = nil
         }
         orderOut(nil)
+        stopWaitingForAccessibility()
         if !keepsCameraAfterClose { CameraCapture.shared.stop() }
         Self.openWindows.removeAll { $0 === self }
         closeHandler()
@@ -2322,17 +2328,48 @@ private final class RecordingControlsWindow: NSWindow {
             }
         case keysButton:
             if sender.isOn, !VideoKeystrokeFormatter.isAllowed {
-                // macOS asks once; the toggle turns on for real after access is granted.
+                // macOS asks once; the button switches on by itself the
+                // moment access is granted.
                 VideoKeystrokeFormatter.requestAccess()
                 sender.isOn = false
                 Settings.recordingKeystrokes = true
-                ToastWindow.show(message: "Allow Shotnix in Accessibility, then turn on shortcuts again.", duration: 3.2)
+                waitForAccessibility()
+                ToastWindow.show(message: "Allow Shotnix in Accessibility — shortcuts turn on by themselves.", duration: 3.2)
             } else {
                 Settings.recordingKeystrokes = sender.isOn
+                if !sender.isOn { stopWaitingForAccessibility() }
             }
         default:
             break
         }
+    }
+
+    private func waitForAccessibility() {
+        stopWaitingForAccessibility()
+        accessibilityPollTicks = 0
+        let timer = Timer(timeInterval: 1, repeats: true) { [weak self] _ in
+            MainActor.assumeIsolated { self?.checkAccessibility() }
+        }
+        RunLoop.main.add(timer, forMode: .common)
+        accessibilityPoll = timer
+    }
+
+    private func checkAccessibility() {
+        accessibilityPollTicks += 1
+        guard !didClose, accessibilityPollTicks <= 600 else {
+            stopWaitingForAccessibility()
+            return
+        }
+        guard VideoKeystrokeFormatter.isAllowed else { return }
+        stopWaitingForAccessibility()
+        guard Settings.recordingKeystrokes else { return }
+        keysButton.isOn = true
+        ToastWindow.show(message: "Keyboard shortcuts are on")
+    }
+
+    private func stopWaitingForAccessibility() {
+        accessibilityPoll?.invalidate()
+        accessibilityPoll = nil
     }
 
     @objc private func qualityChanged() {
