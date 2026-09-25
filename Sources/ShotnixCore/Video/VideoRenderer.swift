@@ -326,7 +326,18 @@ final class VideoRenderPlan: @unchecked Sendable {
         captions = project.captions.sorted { $0.start < $1.start }.compactMap { line in
             let ranges = VideoDemoProject.timelineRanges(sourceStart: line.start, sourceEnd: max(line.end, line.start + 0.1), segments: segments)
             guard let first = ranges.first, let last = ranges.last else { return nil }
-            return Caption(id: line.id, start: first.lowerBound, end: last.upperBound, text: line.text, words: line.words)
+            // Words cut from the video (an "um", a retake) leave the caption too.
+            var text = line.text
+            var words = line.words
+            if !words.isEmpty {
+                let kept = words.filter { VideoDemoProject.timelineTimeIfIncluded(sourceTime: ($0.start + $0.end) / 2, segments: segments) != nil }
+                guard !kept.isEmpty else { return nil }
+                if kept.count != words.count {
+                    words = kept
+                    text = kept.map(\.text).joined(separator: " ")
+                }
+            }
+            return Caption(id: line.id, start: first.lowerBound, end: last.upperBound, text: text, words: words)
         }
     }
 

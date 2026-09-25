@@ -47,6 +47,11 @@ struct VideoInspectorView: View {
         VStack(spacing: 0) {
             if model.selection != .none {
                 VideoSelectionInspector(model: model)
+            } else if model.inspectorTab == .captions {
+                tabBar
+                Rectangle().fill(VideoEditorTheme.hairline).frame(height: 1)
+                // The transcript scrolls itself, so this tab fills the height.
+                VideoScriptInspector(model: model)
             } else {
                 tabBar
                 Rectangle().fill(VideoEditorTheme.hairline).frame(height: 1)

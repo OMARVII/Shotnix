@@ -209,6 +209,117 @@ extension VideoEditorModel {
     }
 }
 
+// MARK: - Edit by text
+
+extension VideoEditorModel {
+    func isIncluded(sourceTime: Double) -> Bool {
+        timelineTime(forSource: sourceTime) != nil
+    }
+
+    func isIncluded(_ word: VideoTranscriptWord) -> Bool {
+        isIncluded(sourceTime: (word.start + word.end) / 2)
+    }
+
+    /// Source spans for runs of consecutive word indices.
+    private func ranges(forWords indices: IndexSet) -> [ClosedRange<Double>] {
+        let words = transcriptWords
+        var ranges: [ClosedRange<Double>] = []
+        var run: [Int] = []
+        func flush() {
+            guard let first = run.first, let last = run.last else { return }
+            let next = last + 1 < words.count ? words[last + 1] : nil
+            if let range = VideoTranscript.cutRange(for: words[first...last], next: next) { ranges.append(range) }
+            run = []
+        }
+        for index in indices where words.indices.contains(index) {
+            if let last = run.last, index != last + 1 { flush() }
+            run.append(index)
+        }
+        flush()
+        return ranges
+    }
+
+    /// Cuts words out of the video (select them in the transcript, ⌫).
+    func cutWords(_ indices: IndexSet) {
+        let words = transcriptWords
+        let kept = IndexSet(indices.filter { words.indices.contains($0) && isIncluded(words[$0]) })
+        let ranges = ranges(forWords: kept)
+        guard !ranges.isEmpty else { return }
+        var ok = true
+        mutate { ok = $0.removeSourceRanges(ranges, totalDuration: sourceDuration) }
+        guard ok else {
+            showNotice("A video needs at least one clip", symbol: "exclamationmark.triangle")
+            return
+        }
+        showNotice("Cut \(kept.count) word\(kept.count == 1 ? "" : "s") — ⌘Z to undo", symbol: "scissors")
+    }
+
+    /// Puts cut words back.
+    func restoreWords(_ indices: IndexSet) {
+        let ranges = ranges(forWords: indices)
+        guard !ranges.isEmpty else { return }
+        mutate { project in
+            for range in ranges { project.restoreSourceRange(range, totalDuration: sourceDuration) }
+        }
+        showNotice("Restored \(indices.count) word\(indices.count == 1 ? "" : "s")", symbol: "arrow.uturn.backward")
+    }
+
+    /// Shortens one silence to a short breath.
+    func shortenPause(before index: Int) {
+        let words = transcriptWords
+        guard index > 0, words.indices.contains(index) else { return }
+        let start = words[index - 1].end + 0.2
+        let end = words[index].start - 0.2
+        guard end - start > 0.05 else { return }
+        mutate { $0.removeSourceRanges([start...end], totalDuration: sourceDuration) }
+        showNotice("Pause shortened", symbol: "scissors")
+    }
+
+    var fillerRanges: [ClosedRange<Double>] {
+        VideoTranscript.fillerRanges(words: transcriptWords) { isIncluded(sourceTime: $0) }
+    }
+
+    var fillerCount: Int {
+        transcriptWords.filter { $0.isFiller && isIncluded($0) }.count
+    }
+
+    var pauseRanges: [ClosedRange<Double>] {
+        VideoTranscript.pauseRanges(words: transcriptWords, busy: activityTimes) { isIncluded(sourceTime: $0) }
+    }
+
+    func removeFillers() {
+        let ranges = fillerRanges
+        guard !ranges.isEmpty else {
+            showNotice("No ums or uhs left", symbol: "checkmark.circle")
+            return
+        }
+        let count = fillerCount
+        let before = timelineDuration
+        mutate { $0.removeSourceRanges(ranges, totalDuration: sourceDuration) }
+        showNotice("Removed \(count) filler word\(count == 1 ? "" : "s") — \(Self.format(max(before - timelineDuration, 0))) shorter", symbol: "wand.and.stars")
+    }
+
+    func shortenPauses() {
+        let ranges = pauseRanges
+        guard !ranges.isEmpty else {
+            showNotice("No long pauses to shorten", symbol: "checkmark.circle")
+            return
+        }
+        let before = timelineDuration
+        mutate { $0.removeSourceRanges(ranges, totalDuration: sourceDuration) }
+        showNotice("Shortened \(ranges.count) pause\(ranges.count == 1 ? "" : "s") — \(Self.format(max(before - timelineDuration, 0))) shorter", symbol: "wand.and.stars")
+    }
+
+    /// Plays from a word (or the next moment still in the video).
+    func seek(toWord word: VideoTranscriptWord) {
+        if let time = timelineTime(forSource: word.start + 0.01) {
+            seek(to: time)
+        } else if let next = segments.first(where: { $0.clip.sourceStart >= word.start }) {
+            seek(to: next.timelineStart)
+        }
+    }
+}
+
 // MARK: - Sound
 
 extension VideoEditorModel {

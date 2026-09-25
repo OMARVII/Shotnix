@@ -81,7 +81,7 @@ final class VideoEditorModel: ObservableObject {
             case .cursor: return "Cursor"
             case .zoom: return "Zoom"
             case .camera: return "Camera"
-            case .captions: return "Captions"
+            case .captions: return "Script"
             case .audio: return "Audio"
             }
         }
@@ -91,7 +91,7 @@ final class VideoEditorModel: ObservableObject {
             case .cursor: return "Cursor, clicks, and keyboard shortcuts"
             case .zoom: return "Zoom moves"
             case .camera: return "Camera bubble"
-            case .captions: return "Captions from your narration"
+            case .captions: return "Edit the video by editing its words, and add captions"
             case .audio: return "Sound"
             }
         }
@@ -101,7 +101,7 @@ final class VideoEditorModel: ObservableObject {
             case .cursor: return "cursorarrow.motionlines"
             case .zoom: return "plus.magnifyingglass"
             case .camera: return "person.crop.circle"
-            case .captions: return "captions.bubble"
+            case .captions: return "text.quote"
             case .audio: return "speaker.wave.2.fill"
             }
         }
@@ -195,6 +195,25 @@ final class VideoEditorModel: ObservableObject {
     private var noticeWork: DispatchWorkItem?
     private var cursorTrackCache: (key: CursorTrackKey, track: VideoCursorTrack?)?
     private var cameraTrackCache: (key: CameraTrackKey, track: VideoCameraTrack)?
+    private var transcriptCache: (captions: [VideoCaptionLine], words: [VideoTranscriptWord])?
+    private var activityCache: (key: [Int], times: [Double])?
+
+    /// When something happens on screen (pointer moves, clicks, shortcuts).
+    var activityTimes: [Double] {
+        let key = [project.cursorSamples.count, project.clickEvents.count, project.keystrokes.count, Int((project.cursorSamples.last?.time ?? 0) * 100)]
+        if let cache = activityCache, cache.key == key { return cache.times }
+        let times = VideoTranscript.activityTimes(cursor: project.cursorSamples, clicks: project.clickEvents, keystrokes: project.keystrokes)
+        activityCache = (key, times)
+        return times
+    }
+
+    /// Every spoken word (from the captions), in time order.
+    var transcriptWords: [VideoTranscriptWord] {
+        if let cache = transcriptCache, cache.captions == project.captions { return cache.words }
+        let words = VideoTranscript.words(from: project.captions)
+        transcriptCache = (project.captions, words)
+        return words
+    }
     private var shuttleRate: Float = 1
     private var exportCancelled = false
     private var didLoad = false

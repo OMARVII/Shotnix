@@ -7,6 +7,91 @@ extension VideoEditorTheme {
     static let camera = Color(red: 0.3, green: 0.62, blue: 1.0)
 }
 
+// MARK: - Script
+
+/// Your words: edit the video by editing them, and turn them into captions.
+struct VideoScriptInspector: View {
+    @ObservedObject var model: VideoEditorModel
+    @AppStorage("videoScriptMode") private var mode = "transcript"
+
+    var body: some View {
+        if model.project.captions.isEmpty || model.captionJob != nil {
+            ScrollView {
+                VideoCaptionsInspector(model: model)
+                    .padding(16)
+            }
+        } else {
+            VStack(alignment: .leading, spacing: 0) {
+                VideoSegmented(options: [("transcript", "Edit by text"), ("captions", "Captions")], selection: $mode)
+                    .padding(.horizontal, 16)
+                    .padding(.top, 14)
+                if mode == "transcript" {
+                    VideoTranscriptPanel(model: model, timeline: model.timelineState)
+                } else {
+                    ScrollView {
+                        VideoCaptionsInspector(model: model)
+                            .padding(16)
+                    }
+                }
+            }
+        }
+    }
+}
+
+/// Cleanup buttons over the editable transcript.
+struct VideoTranscriptPanel: View {
+    let model: VideoEditorModel
+    /// Counts refresh only when the timeline changes, not on every edit.
+    @ObservedObject var timeline: VideoTimelineState
+
+    var body: some View {
+        let fillers = model.fillerCount
+        let pauses = model.pauseRanges
+        let pauseSeconds = pauses.reduce(0) { $0 + ($1.upperBound - $1.lowerBound) }
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 8) {
+                cleanup(
+                    title: fillers > 0 ? "Remove \(fillers) um\(fillers == 1 ? "" : "s")" : "No ums",
+                    symbol: "wand.and.stars",
+                    help: "Cut filler words like um and uh",
+                    enabled: fillers > 0,
+                    action: model.removeFillers
+                )
+                cleanup(
+                    title: pauses.isEmpty ? "No long pauses" : "Shorten \(pauses.count) pause\(pauses.count == 1 ? "" : "s")",
+                    symbol: "forward.end",
+                    help: pauses.isEmpty
+                        ? "Silences over a second where nothing happens on screen get shortened"
+                        : "Saves \(VideoEditorModel.format(pauseSeconds)) — only silences where nothing happens on screen",
+                    enabled: !pauses.isEmpty,
+                    action: model.shortenPauses
+                )
+            }
+            Text("Select words and press ⌫ to cut them from the video — ⌫ again on crossed-out words puts them back. Click a word to jump there; ⌘F finds.")
+                .font(.system(size: 10.5))
+                .foregroundStyle(VideoEditorTheme.textTertiary)
+                .fixedSize(horizontal: false, vertical: true)
+            VideoTranscriptEditor(model: model, timeline: timeline, clock: model.clock)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .padding(8)
+                .background(RoundedRectangle(cornerRadius: 10, style: .continuous).fill(Color.black.opacity(0.22)))
+                .overlay(RoundedRectangle(cornerRadius: 10, style: .continuous).strokeBorder(VideoEditorTheme.cardStroke, lineWidth: 1))
+        }
+        .padding(16)
+    }
+
+    private func cleanup(title: String, symbol: String, help: String, enabled: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Label(title, systemImage: symbol)
+                .lineLimit(1)
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(VideoSecondaryButtonStyle())
+        .disabled(!enabled)
+        .help(help)
+    }
+}
+
 // MARK: - Captions
 
 struct VideoCaptionsInspector: View {
@@ -90,11 +175,11 @@ struct VideoCaptionsInspector: View {
     @ViewBuilder
     private var generateCard: some View {
         VideoCard {
-            Label("Captions from your voice", systemImage: "captions.bubble.fill")
+            Label("Your words, as text", systemImage: "text.quote")
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(VideoEditorTheme.textPrimary)
             Text(model.hasAudio
-                 ? "Shotnix listens to the recording right on this Mac — nothing is uploaded — and times every word."
+                 ? "Shotnix listens to the recording right on this Mac — nothing is uploaded. Then cut the video by deleting words, remove ums and long pauses in one click, and add captions."
                  : "This recording has no sound. Turn on the microphone before recording to narrate it.")
                 .font(.system(size: 11))
                 .foregroundStyle(VideoEditorTheme.textSecondary)
@@ -162,7 +247,7 @@ struct VideoCaptionsInspector: View {
                 Button {
                     model.generateCaptions()
                 } label: {
-                    Label("Generate Captions", systemImage: "waveform.badge.magnifyingglass")
+                    Label("Transcribe", systemImage: "waveform.badge.magnifyingglass")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(VideoPrimaryButtonStyle())
