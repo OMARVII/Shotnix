@@ -39,6 +39,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         return true
     }
 
+    /// Videos dropped on the app (Finder "Open With", `open -a Shotnix`)
+    /// open straight in the video editor.
+    func application(_ application: NSApplication, open urls: [URL]) {
+        let videos = urls.filter { ["mp4", "mov", "m4v"].contains($0.pathExtension.lowercased()) }
+        for url in videos {
+            Settings.lastRecordingPath = url.path
+            VideoDemoEditorWindowController.open(videoURL: url)
+        }
+    }
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         Settings.migrateOnboardingFlagIfNeeded()
         updateController = AppUpdateController()

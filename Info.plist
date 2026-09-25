@@ -24,6 +24,23 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>58</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Video</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.mpeg-4</string>
+				<string>com.apple.quicktime-movie</string>
+				<string>com.apple.m4v-video</string>
+			</array>
+		</dict>
+	</array>
 	<key>LSMinimumSystemVersion</key>
 	<string>13.0</string>
 	<key>LSUIElement</key>
@@ -32,6 +49,10 @@
 	<true/>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2026 Shotnix Contributors. MIT License.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Shotnix records your camera alongside the screen when you turn the camera on for a recording.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Shotnix transcribes your recordings on this Mac to create captions.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Shotnix needs microphone access when you enable microphone audio for screen recordings.</string>
 	<key>NSPrincipalClass</key>

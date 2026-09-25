@@ -690,7 +690,7 @@ struct ScreenshotsSettingsView: View {
                 }
             }
 
-            PreferenceFootnote(text: "Window captures are isolated — nothing overlapping shows through. With this on they get CleanShot-style padding and a soft drop shadow.")
+            PreferenceFootnote(text: "Window captures are isolated — nothing overlapping shows through. With this on they get transparent padding and a soft drop shadow.")
 
             PreferenceSection("Timed Capture") {
                 PreferenceRow("Countdown") {
@@ -793,11 +793,16 @@ struct RecordingSettingsView: View {
     @AppStorage("recordingFPS") var fps = 30
     @AppStorage("recordingQuality") var quality = "high"
     @AppStorage("recordingShowsCursor") var showsCursor = true
+    @AppStorage("recordingEditableCursor") var editableCursor = true
     @AppStorage("recordingSystemAudio") var systemAudio = false
     @AppStorage("recordingMicrophone") var microphone = false
     @AppStorage("recordingMicrophoneDeviceID") var microphoneDeviceID = ""
     @AppStorage("openVideoEditorAfterRecording") var openVideoEditorAfterRecording = true
     @AppStorage("autoZoomNewRecordings") var autoZoomNewRecordings = true
+    @AppStorage("recordingKeystrokes") var keystrokes = false
+    @AppStorage("recordingCamera") var camera = false
+    @AppStorage("recordingCameraDeviceID") var cameraDeviceID = ""
+    @State private var keystrokeAccess = VideoKeystrokeFormatter.isAllowed
 
     private var microphones: [MicrophoneOption] { MicrophoneDeviceProvider.options }
 
@@ -837,6 +842,15 @@ struct RecordingSettingsView: View {
 
                 PreferenceDivider()
 
+                PreferenceRow("Editable cursor") {
+                    Toggle("", isOn: $editableCursor)
+                        .labelsHidden()
+                        .toggleStyle(.switch)
+                        .disabled(!showsCursor)
+                }
+
+                PreferenceDivider()
+
                 PreferenceRow("Open editor after recording") {
                     Toggle("", isOn: $openVideoEditorAfterRecording)
                         .labelsHidden()
@@ -850,9 +864,38 @@ struct RecordingSettingsView: View {
                         .labelsHidden()
                         .toggleStyle(.switch)
                 }
+
+                PreferenceDivider()
+
+                PreferenceRow("Show keyboard shortcuts") {
+                    HStack(spacing: 8) {
+                        if keystrokes && !keystrokeAccess {
+                            Button("Allow Access…") {
+                                VideoKeystrokeFormatter.requestAccess()
+                                NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")!)
+                            }
+                            .controlSize(.small)
+                        }
+                        Toggle("", isOn: Binding(
+                            get: { keystrokes },
+                            set: { on in
+                                keystrokes = on
+                                if on && !VideoKeystrokeFormatter.isAllowed {
+                                    VideoKeystrokeFormatter.requestAccess()
+                                }
+                                keystrokeAccess = VideoKeystrokeFormatter.isAllowed
+                            }
+                        ))
+                        .labelsHidden()
+                        .toggleStyle(.switch)
+                    }
+                }
+            }
+            .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+                keystrokeAccess = VideoKeystrokeFormatter.isAllowed
             }
 
-            PreferenceFootnote(text: "Auto-zoom makes a fresh recording open already produced: the camera zooms to follow your clicks, ready to export. Tweak or clear it in the editor's Zoom panel. High quality is the default; Max keeps more detail for demos, but creates larger files.")
+            PreferenceFootnote(text: "Editable cursor records the pointer separately so the editor can smooth it, resize it, and keep it crisp when zoomed — the video editor adds it back on export (the raw recording file has no pointer). Auto-zoom makes a fresh recording open already produced: the camera zooms to follow your clicks. Keyboard shortcuts records only ⌘, ⌃ and ⌥ combos (plus Esc and F-keys) so the editor can show them as keycaps — plain typing is never recorded; macOS asks for Accessibility access. High quality is the default; Max keeps more detail but creates larger files.")
 
             PreferenceSection("Audio") {
                 PreferenceRow("Record system audio") {
@@ -883,6 +926,28 @@ struct RecordingSettingsView: View {
             }
 
             PreferenceFootnote(text: "Microphone recording requires macOS microphone permission. System audio excludes Shotnix sounds to avoid feedback.")
+
+            PreferenceSection("Camera") {
+                PreferenceRow("Record camera") {
+                    Toggle("", isOn: $camera)
+                        .labelsHidden()
+                        .toggleStyle(.switch)
+                }
+
+                PreferenceDivider()
+
+                PreferenceRow("Camera") {
+                    PreferenceMenuSelector(
+                        selection: $cameraDeviceID,
+                        options: [PreferenceOption(value: "", title: "System Default")]
+                            + CameraCapture.devices.map { PreferenceOption(value: $0.uniqueID, title: $0.localizedName) },
+                        width: 190,
+                        isEnabled: camera
+                    )
+                }
+            }
+
+            PreferenceFootnote(text: "Your camera is recorded as its own layer: a live bubble shows while you record (it never appears in the screen capture), and the editor lets you move, resize, and restyle it — or hide it — afterwards.")
         }
     }
 }

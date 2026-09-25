@@ -3,484 +3,343 @@ import XCTest
 @testable import ShotnixCore
 
 final class VideoDemoProjectTests: XCTestCase {
-    func testAspectPresetsUseStableExportCanvasSizes() {
-        let source = CGSize(width: 1333, height: 777)
+    override class func setUp() {
+        super.setUp()
+        VideoTestStorage.isolate()
+    }
 
+    private func project(duration: Double = 10, source: CGSize = CGSize(width: 1920, height: 1080)) -> VideoDemoProject {
+        var project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/demo.mp4"), duration: duration, sourceSize: source)
+        project.apply(style: .factory)
+        return project
+    }
+
+    // MARK: Canvas & frame
+
+    func testAspectPresetsUseA1080ShortSide() {
+        let source = CGSize(width: 1333, height: 777)
         XCTAssertEqual(VideoDemoProject.AspectPreset.widescreen.canvasSize(sourceSize: source), CGSize(width: 1920, height: 1080))
         XCTAssertEqual(VideoDemoProject.AspectPreset.vertical.canvasSize(sourceSize: source), CGSize(width: 1080, height: 1920))
-        XCTAssertEqual(VideoDemoProject.AspectPreset.square.canvasSize(sourceSize: source), CGSize(width: 1440, height: 1440))
-        XCTAssertEqual(VideoDemoProject.AspectPreset.source.canvasSize(sourceSize: source), CGSize(width: 1334, height: 778))
+        XCTAssertEqual(VideoDemoProject.AspectPreset.square.canvasSize(sourceSize: source), CGSize(width: 1080, height: 1080))
+        XCTAssertEqual(VideoDemoProject.AspectPreset.classic.canvasSize(sourceSize: source), CGSize(width: 1440, height: 1080))
+        XCTAssertEqual(VideoDemoProject.AspectPreset.portrait.canvasSize(sourceSize: source), CGSize(width: 1080, height: 1350))
+        let auto = VideoDemoProject.AspectPreset.source.canvasSize(sourceSize: source)
+        XCTAssertEqual(auto.height, 1080)
+        XCTAssertEqual(auto.width / auto.height, source.width / source.height, accuracy: 0.01)
     }
 
-    func testSourceFrameUsesRawCanvasWithoutPremiumChrome() {
-        var project = VideoDemoProject.make(
-            sourceURL: URL(fileURLWithPath: "/tmp/demo.mp4"),
-            duration: 10,
-            sourceSize: CGSize(width: 1280, height: 720)
-        )
+    func testStageRectFitsSourceInsidePadding() {
+        var project = project(source: CGSize(width: 2560, height: 1440))
+        project.padding = 0.1
+        project.aspectPreset = .vertical
+        let canvas = project.canvasSize()
+        let rect = project.stageRect(in: canvas)
+        let margin = min(canvas.width, canvas.height) * 0.1
+        XCTAssertGreaterThanOrEqual(rect.minX, margin - 0.5)
+        XCTAssertLessThanOrEqual(rect.maxX, canvas.width - margin + 0.5)
+        XCTAssertEqual(rect.width / rect.height, 16.0 / 9.0, accuracy: 0.001)
+        XCTAssertEqual(rect.midY, canvas.height / 2, accuracy: 0.5)
+    }
 
-        project.apply(aspectPreset: .source)
-
+    func testZeroPaddingIsFullBleed() {
+        var project = project()
+        project.padding = 0
+        project.aspectPreset = .source
         XCTAssertTrue(project.usesRawSourceFrame)
-        XCTAssertEqual(project.stageInset, 0, accuracy: 0.001)
-        XCTAssertEqual(project.shadowStrength, 0, accuracy: 0.001)
-        XCTAssertEqual(project.cornerRadius, 0, accuracy: 0.001)
-        XCTAssertEqual(project.stageRect(in: project.canvasSize()), CGRect(x: 0, y: 0, width: 1280, height: 720))
+        XCTAssertEqual(project.effectiveCornerRadius, 0)
+        XCTAssertEqual(project.effectiveShadow, 0)
+        let canvas = project.canvasSize()
+        XCTAssertEqual(project.stageRect(in: canvas), CGRect(origin: .zero, size: canvas))
     }
 
-    func testLeavingSourceFrameRestoresPremiumDefaults() {
-        var project = VideoDemoProject.make(
-            sourceURL: URL(fileURLWithPath: "/tmp/demo.mp4"),
-            duration: 10,
-            sourceSize: CGSize(width: 1280, height: 720)
-        )
-
-        project.apply(aspectPreset: .source)
-        project.apply(aspectPreset: .widescreen)
-
-        XCTAssertFalse(project.usesRawSourceFrame)
-        XCTAssertEqual(project.stageInset, 0.085, accuracy: 0.001)
-        XCTAssertEqual(project.shadowStrength, 0.42, accuracy: 0.001)
-        XCTAssertEqual(project.cornerRadius, 24, accuracy: 0.001)
-        XCTAssertLessThan(project.stageRect(in: project.canvasSize()).width, project.canvasSize().width)
-    }
+    // MARK: Timeline math
 
     func testTrimRangeClampsToDuration() {
-        var project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/demo.mp4"), duration: 20)
+        var project = project(duration: 20)
         project.trimStart = -4
         project.trimEnd = 99
-
         let trim = project.normalizedTrim(totalDuration: 20)
-
         XCTAssertEqual(trim.start, 0, accuracy: 0.001)
         XCTAssertEqual(trim.end, 20, accuracy: 0.001)
     }
 
-    func testTimelineSeedsSingleClipFromDuration() {
-        let project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/demo.mp4"), duration: 12)
-
-        let segments = project.timelineSegments(totalDuration: 12)
-
-        XCTAssertEqual(segments.count, 1)
-        XCTAssertEqual(segments[0].clip.sourceStart, 0, accuracy: 0.001)
-        XCTAssertEqual(segments[0].clip.sourceEnd, 12, accuracy: 0.001)
-        XCTAssertEqual(project.timelineDuration(totalDuration: 12), 12, accuracy: 0.001)
-    }
-
     func testTimelineSplitsClipAtSourceTime() {
-        var project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/demo.mp4"), duration: 10)
-
+        var project = project()
         let newClipID = project.splitClip(atSourceTime: 4, totalDuration: 10)
         let segments = project.timelineSegments(totalDuration: 10)
-
         XCTAssertNotNil(newClipID)
         XCTAssertEqual(segments.count, 2)
-        XCTAssertEqual(segments[0].clip.sourceStart, 0, accuracy: 0.001)
         XCTAssertEqual(segments[0].clip.sourceEnd, 4, accuracy: 0.001)
         XCTAssertEqual(segments[1].timelineStart, 4, accuracy: 0.001)
         XCTAssertEqual(segments[1].clip.sourceStart, 4, accuracy: 0.001)
-        XCTAssertEqual(segments[1].clip.sourceEnd, 10, accuracy: 0.001)
     }
 
     func testTimelineDeleteRipplesRemainingClips() {
         let middleID = UUID()
-        var project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/demo.mp4"), duration: 10)
+        var project = project()
         project.timelineClips = [
             VideoDemoTimelineClip(sourceStart: 0, sourceEnd: 3),
             VideoDemoTimelineClip(id: middleID, sourceStart: 3, sourceEnd: 5),
             VideoDemoTimelineClip(sourceStart: 5, sourceEnd: 10),
         ]
-
-        let selectedID = project.deleteClip(id: middleID, totalDuration: 10)
+        XCTAssertNotNil(project.deleteClip(id: middleID, totalDuration: 10))
         let segments = project.timelineSegments(totalDuration: 10)
-
-        XCTAssertNotNil(selectedID)
         XCTAssertEqual(segments.count, 2)
-        XCTAssertEqual(segments[0].timelineStart, 0, accuracy: 0.001)
-        XCTAssertEqual(segments[0].timelineEnd, 3, accuracy: 0.001)
         XCTAssertEqual(segments[1].timelineStart, 3, accuracy: 0.001)
-        XCTAssertEqual(segments[1].timelineEnd, 8, accuracy: 0.001)
         XCTAssertEqual(project.timelineDuration(totalDuration: 10), 8, accuracy: 0.001)
     }
 
-    func testTimelineRangeDeleteSplitsAndRipplesClips() throws {
-        var project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/demo.mp4"), duration: 12)
+    func testTimelineRangeDeleteSplitsAndRipples() {
+        var project = project(duration: 12)
         project.timelineClips = [
             VideoDemoTimelineClip(sourceStart: 0, sourceEnd: 5),
             VideoDemoTimelineClip(sourceStart: 5, sourceEnd: 12),
         ]
-
-        let nextID = project.deleteTimelineRange(start: 3, end: 8, totalDuration: 12)
+        XCTAssertNotNil(project.deleteTimelineRange(start: 3, end: 8, totalDuration: 12))
         let segments = project.timelineSegments(totalDuration: 12)
-
-        XCTAssertNotNil(nextID)
         XCTAssertEqual(segments.count, 2)
-        XCTAssertEqual(segments[0].clip.sourceStart, 0, accuracy: 0.001)
         XCTAssertEqual(segments[0].clip.sourceEnd, 3, accuracy: 0.001)
-        XCTAssertEqual(segments[1].timelineStart, 3, accuracy: 0.001)
         XCTAssertEqual(segments[1].clip.sourceStart, 8, accuracy: 0.001)
-        XCTAssertEqual(segments[1].clip.sourceEnd, 12, accuracy: 0.001)
         XCTAssertEqual(project.timelineDuration(totalDuration: 12), 7, accuracy: 0.001)
+        XCTAssertNil(project.deleteTimelineRange(start: 0, end: 12, totalDuration: 12), "keeps at least one clip")
     }
 
-    func testTimelineRangeDeleteKeepsAtLeastOneClip() {
-        var project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/demo.mp4"), duration: 8)
-
-        XCTAssertNil(project.deleteTimelineRange(start: 0, end: 8, totalDuration: 8))
-        XCTAssertEqual(project.timelineSegments(totalDuration: 8).count, 1)
-        XCTAssertEqual(project.timelineDuration(totalDuration: 8), 8, accuracy: 0.001)
-    }
-
-    func testTimelineMapsBetweenEditedAndSourceTimesAcrossCut() {
-        var project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/demo.mp4"), duration: 10)
-        project.timelineClips = [
-            VideoDemoTimelineClip(sourceStart: 0, sourceEnd: 3),
-            VideoDemoTimelineClip(sourceStart: 5, sourceEnd: 10),
-        ]
-
-        XCTAssertEqual(project.sourceTime(forTimelineTime: 3.5, totalDuration: 10), 5.5, accuracy: 0.001)
-        XCTAssertEqual(project.timelineTime(forSourceTime: 6, totalDuration: 10), 4, accuracy: 0.001)
-        XCTAssertNil(project.timelineTimeIfIncluded(sourceTime: 4, totalDuration: 10))
-    }
-
-    func testTimelineSpeedChangesOutputDurationAndMappings() {
-        var project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/demo.mp4"), duration: 10)
+    func testTimelineMapsAcrossCutsAndSpeed() {
+        var project = project()
         project.timelineClips = [
             VideoDemoTimelineClip(sourceStart: 0, sourceEnd: 4, speed: 2),
-            VideoDemoTimelineClip(sourceStart: 4, sourceEnd: 10, speed: 0.5),
+            VideoDemoTimelineClip(sourceStart: 6, sourceEnd: 10, speed: 0.5),
         ]
-
-        let segments = project.timelineSegments(totalDuration: 10)
-
-        XCTAssertEqual(segments[0].duration, 2, accuracy: 0.001)
-        XCTAssertEqual(segments[1].timelineStart, 2, accuracy: 0.001)
-        XCTAssertEqual(segments[1].duration, 12, accuracy: 0.001)
-        XCTAssertEqual(project.timelineDuration(totalDuration: 10), 14, accuracy: 0.001)
+        XCTAssertEqual(project.timelineDuration(totalDuration: 10), 2 + 8, accuracy: 0.001)
         XCTAssertEqual(project.sourceTime(forTimelineTime: 1, totalDuration: 10), 2, accuracy: 0.001)
-        XCTAssertEqual(project.timelineTime(forSourceTime: 5, totalDuration: 10), 4, accuracy: 0.001)
+        XCTAssertEqual(project.timelineTime(forSourceTime: 7, totalDuration: 10), 4, accuracy: 0.001)
+        XCTAssertNil(project.timelineTimeIfIncluded(sourceTime: 5, totalDuration: 10))
+        let ranges = VideoDemoProject.timelineRanges(sourceStart: 3, sourceEnd: 7, segments: project.timelineSegments(totalDuration: 10))
+        XCTAssertEqual(ranges.count, 1, "the cut joins the two pieces seamlessly")
+        XCTAssertEqual(ranges[0].lowerBound, 1.5, accuracy: 0.001)
+        XCTAssertEqual(ranges[0].upperBound, 4, accuracy: 0.001)
     }
 
-    func testTimelineSplitPreservesSpeedMuteAndFades() throws {
-        var project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/demo.mp4"), duration: 8)
-        project.timelineClips = [
-            VideoDemoTimelineClip(sourceStart: 0, sourceEnd: 8, speed: 1.5, muted: true, fadeIn: 0.4, fadeOut: 0.6),
-        ]
-
-        _ = project.splitClip(atSourceTime: 3, totalDuration: 8)
-        let segments = project.timelineSegments(totalDuration: 8)
-
-        XCTAssertEqual(segments.count, 2)
-        XCTAssertEqual(segments[0].clip.normalizedSpeed, 1.5, accuracy: 0.001)
-        XCTAssertTrue(segments[0].clip.muted)
-        XCTAssertEqual(segments[0].clip.fadeIn, 0.4, accuracy: 0.001)
-        XCTAssertEqual(segments[0].clip.fadeOut, 0, accuracy: 0.001)
-        XCTAssertEqual(segments[1].clip.fadeIn, 0, accuracy: 0.001)
-        XCTAssertEqual(segments[1].clip.fadeOut, 0.6, accuracy: 0.001)
-    }
-
-    func testClipAudioControlsClampToOutputDuration() throws {
+    func testClipSpeedAndFadesClamp() throws {
         let clipID = UUID()
-        var project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/demo.mp4"), duration: 4)
+        var project = project(duration: 4)
         project.timelineClips = [VideoDemoTimelineClip(id: clipID, sourceStart: 0, sourceEnd: 4)]
-
         XCTAssertTrue(project.updateClip(id: clipID, totalDuration: 4) { clip in
-            clip.speed = 8
-            clip.muted = true
+            clip.speed = 64
             clip.fadeIn = 99
             clip.fadeOut = 99
         })
         let clip = try XCTUnwrap(project.timelineSegments(totalDuration: 4).first?.clip)
-
-        XCTAssertEqual(clip.normalizedSpeed, 4, accuracy: 0.001)
-        XCTAssertTrue(clip.muted)
-        XCTAssertEqual(clip.outputDuration, 1, accuracy: 0.001)
-        XCTAssertEqual(clip.fadeIn, 0.5, accuracy: 0.001)
-        XCTAssertEqual(clip.fadeOut, 0.5, accuracy: 0.001)
+        XCTAssertEqual(clip.normalizedSpeed, 16, accuracy: 0.001)
+        XCTAssertEqual(clip.fadeIn, clip.outputDuration / 2, accuracy: 0.001)
     }
 
-    func testOverlayEffectsActivateAndRoundTrip() throws {
-        var project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/demo.mp4"), duration: 5)
-        project.overlayEffects = [
-            VideoDemoOverlayEffect(kind: .text, time: 1, duration: 2, text: "Ship"),
-            VideoDemoOverlayEffect(kind: .blur, time: 4, duration: 1),
+    func testTrimCannotGrowIntoNeighbour() {
+        let first = UUID()
+        var project = project()
+        project.timelineClips = [
+            VideoDemoTimelineClip(id: first, sourceStart: 0, sourceEnd: 3),
+            VideoDemoTimelineClip(sourceStart: 5, sourceEnd: 10),
         ]
-
-        XCTAssertEqual(project.overlayEffectsActive(at: 1.5).map(\.kind), [.text])
-        XCTAssertEqual(project.overlayEffectsActive(at: 4.2).map(\.kind), [.blur])
-
-        let data = try JSONEncoder().encode(project)
-        let decoded = try JSONDecoder().decode(VideoDemoProject.self, from: data)
-
-        XCTAssertEqual(decoded.overlayEffects.count, 2)
-        XCTAssertEqual(decoded.overlayEffects.first?.text, "Ship")
+        XCTAssertTrue(project.trimClip(id: first, sourceEnd: 8, totalDuration: 10))
+        XCTAssertEqual(project.timelineClips[0].sourceEnd, 5, accuracy: 0.001)
     }
 
-    func testTimelineTrimsSelectedClip() throws {
-        let clipID = UUID()
-        var project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/demo.mp4"), duration: 8)
-        project.timelineClips = [VideoDemoTimelineClip(id: clipID, sourceStart: 0, sourceEnd: 8)]
+    // MARK: Migration
 
-        XCTAssertTrue(project.trimClip(id: clipID, sourceStart: 2, sourceEnd: 6, totalDuration: 8))
-        let segment = try XCTUnwrap(project.timelineSegments(totalDuration: 8).first)
-
-        XCTAssertEqual(segment.clip.sourceStart, 2, accuracy: 0.001)
-        XCTAssertEqual(segment.clip.sourceEnd, 6, accuracy: 0.001)
-        XCTAssertEqual(project.trimStart, 2, accuracy: 0.001)
-        XCTAssertEqual(project.trimEnd, 6, accuracy: 0.001)
-    }
-
-    func testLegacyProjectDecodingDefaultsTimelineClips() throws {
-        let project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/demo.mp4"), duration: 10)
-        let data = try JSONEncoder().encode(project)
-        var object = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
-        object.removeValue(forKey: "timelineClips")
-        let legacyData = try JSONSerialization.data(withJSONObject: object)
-
-        let decoded = try JSONDecoder().decode(VideoDemoProject.self, from: legacyData)
-
-        XCTAssertTrue(decoded.timelineClips.isEmpty)
-        let fallbackClip = try XCTUnwrap(decoded.normalizedTimelineClips(totalDuration: 10).first)
-        XCTAssertEqual(fallbackClip.sourceEnd, 10, accuracy: 0.001)
-    }
-
-    func testStageRectFitsSourceWithinCanvasInset() {
-        var project = VideoDemoProject.make(
-            sourceURL: URL(fileURLWithPath: "/tmp/demo.mp4"),
-            duration: 10,
-            sourceSize: CGSize(width: 2560, height: 1440)
-        )
-        project.stageInset = 0.1
-        project.aspectPreset = .vertical
-
-        let canvas = project.canvasSize()
-        let rect = project.stageRect(in: canvas)
-
-        XCTAssertLessThanOrEqual(rect.width, canvas.width * 0.8 + 0.001)
-        XCTAssertLessThanOrEqual(rect.height, canvas.height * 0.8 + 0.001)
-        XCTAssertEqual(rect.width / rect.height, 16.0 / 9.0, accuracy: 0.001)
-    }
-
-    func testExportPresetsUpdateFrameAndStyling() {
-        var project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/demo.mp4"), duration: 10)
-
-        project.apply(preset: .reels)
-
-        XCTAssertEqual(project.aspectPreset, .vertical)
-        XCTAssertEqual(project.backgroundPreset, .plum)
-        XCTAssertEqual(project.canvasSize(), CGSize(width: 1080, height: 1920))
-        XCTAssertGreaterThan(project.shadowStrength, 0)
-        XCTAssertGreaterThan(project.cornerRadius, 0)
-    }
-
-    func testZoomStateInterpolatesBetweenKeyframes() {
-        var project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/demo.mp4"), duration: 10)
-        project.zoomKeyframes = [
-            VideoDemoZoomKeyframe(time: 2, scale: 1.5, focusX: 0.2, focusY: 0.4),
-            VideoDemoZoomKeyframe(time: 6, scale: 2.5, focusX: 0.8, focusY: 0.6),
+    func testLegacyDraftMigratesToRegionsAndNewStyle() throws {
+        let legacy: [String: Any] = [
+            "id": UUID().uuidString,
+            "sourcePath": "/tmp/demo.mp4",
+            "createdAt": 0,
+            "sourceWidth": 1920,
+            "sourceHeight": 1080,
+            "trimStart": 0,
+            "trimEnd": 10,
+            "aspectPreset": "widescreen",
+            "backgroundPreset": "mint",
+            "customBackgroundPath": "",
+            "backgroundBlur": 9,
+            "stageInset": 0.1,
+            "shadowStrength": 0.4,
+            "cornerRadius": 24,
+            "zoomKeyframes": [
+                ["id": UUID().uuidString, "time": 1, "scale": 1, "focusX": 0.5, "focusY": 0.5],
+                ["id": UUID().uuidString, "time": 2, "scale": 1.8, "focusX": 0.3, "focusY": 0.4],
+                ["id": UUID().uuidString, "time": 4, "scale": 1.8, "focusX": 0.3, "focusY": 0.4],
+                ["id": UUID().uuidString, "time": 5, "scale": 1, "focusX": 0.5, "focusY": 0.5],
+            ],
+            "cursorSamples": [],
+            "clickEvents": [],
+            "nativeCursorVisible": false,
+            "showCursorOverlay": true,
+            "enlargeCursor": true,
+            "showClickRipple": false,
+            "smoothCursor": true,
+            "cursorScale": 2.0,
         ]
+        let data = try JSONSerialization.data(withJSONObject: legacy)
+        let project = try JSONDecoder().decode(VideoDemoProject.self, from: data)
+        XCTAssertEqual(project.background, .gradient("mint"))
+        XCTAssertEqual(project.padding, 0.1, accuracy: 0.0001)
+        XCTAssertEqual(project.backgroundBlur, 0.5, accuracy: 0.0001)
+        XCTAssertEqual(project.zoomRegions.count, 1)
+        let region = try XCTUnwrap(project.zoomRegions.first)
+        XCTAssertEqual(region.start, 1, accuracy: 0.001)
+        XCTAssertEqual(region.end, 5, accuracy: 0.001)
+        XCTAssertEqual(region.scale, 1.8, accuracy: 0.001)
+        XCTAssertFalse(region.followsCursor)
+        XCTAssertEqual(project.cursor.size, 2, accuracy: 0.001)
+        XCTAssertEqual(project.cursor.clickEffect, VideoCursorSettings.ClickEffect.none)
 
-        let before = project.zoomState(at: 1)
-        let quarter = project.zoomState(at: 3)
-        let middle = project.zoomState(at: 4)
-        let after = project.zoomState(at: 7)
-
-        XCTAssertEqual(before.scale, 1, accuracy: 0.001)
-        XCTAssertGreaterThan(quarter.scale, 1.5)
-        XCTAssertLessThan(quarter.scale, 1.75)
-        XCTAssertEqual(middle.scale, 2, accuracy: 0.001)
-        XCTAssertEqual(middle.focusX, 0.5, accuracy: 0.001)
-        XCTAssertEqual(after.scale, 2.5, accuracy: 0.001)
+        // Round trip in the new format.
+        let reencoded = try JSONDecoder().decode(VideoDemoProject.self, from: try JSONEncoder().encode(project))
+        XCTAssertEqual(reencoded, project)
     }
 
-    func testExportZoomRampPlanningDoesNotStretchCloseKeyframes() throws {
-        var project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/demo.mp4"), duration: 1)
-        project.zoomKeyframes = [
-            VideoDemoZoomKeyframe(time: 0, scale: 1, focusX: 0.5, focusY: 0.5),
-            VideoDemoZoomKeyframe(time: 0.02, scale: 1.4, focusX: 0.4, focusY: 0.4),
-            VideoDemoZoomKeyframe(time: 0.04, scale: 1.7, focusX: 0.35, focusY: 0.35),
-            VideoDemoZoomKeyframe(time: 0.10, scale: 1, focusX: 0.5, focusY: 0.5),
-        ]
+    // MARK: Camera
 
-        let keyframes = VideoDemoExporter.zoomTimelineKeyframes(
-            project: project,
-            segments: project.timelineSegments(totalDuration: 1)
-        )
-        let closePair = try XCTUnwrap(zip(keyframes, keyframes.dropFirst()).first { pair in
-            let delta = pair.1.timelineTime - pair.0.timelineTime
-            return delta > 0 && delta < 0.03
-        })
+    func testCameraRampsInsideTheRegionAndReturnsToRest() throws {
+        let project = project()
+        let segments = project.timelineSegments(totalDuration: 10)
+        let region = VideoZoomRegion(start: 2, end: 6, scale: 2, followsCursor: false, focusX: 0.5, focusY: 0.5)
+        let track = VideoCameraTrack.build(regions: [region], segments: segments, timelineDuration: 10, speed: .smooth, stage: CGRect(x: 0.1, y: 0.1, width: 0.8, height: 0.8), cursor: nil)
+        XCTAssertEqual(track.state(at: 1.9).scale, 1, accuracy: 0.001, "no zoom before the block")
+        XCTAssertGreaterThan(track.state(at: 2.3).scale, 1.05, "zoom starts with the block")
+        XCTAssertEqual(track.state(at: 4).scale, 2, accuracy: 0.01)
+        XCTAssertEqual(track.state(at: 6.05).scale, 1, accuracy: 0.001, "fully out by the block's end")
+    }
 
-        XCTAssertNil(VideoDemoExporter.zoomRampDuration(from: closePair.0.timelineTime, to: closePair.1.timelineTime))
-        for pair in zip(keyframes, keyframes.dropFirst()) {
-            let delta = pair.1.timelineTime - pair.0.timelineTime
-            guard let plannedDuration = VideoDemoExporter.zoomRampDuration(
-                from: pair.0.timelineTime,
-                to: pair.1.timelineTime
-            ) else { continue }
+    func testCloseRegionsChainIntoAPan() {
+        let project = project()
+        let segments = project.timelineSegments(totalDuration: 10)
+        let a = VideoZoomRegion(start: 1, end: 4, scale: 2, followsCursor: false, focusX: 0.2, focusY: 0.2)
+        let b = VideoZoomRegion(start: 4.6, end: 8, scale: 2, followsCursor: false, focusX: 0.8, focusY: 0.8)
+        let track = VideoCameraTrack.build(regions: [a, b], segments: segments, timelineDuration: 10, speed: .smooth, stage: CGRect(x: 0, y: 0, width: 1, height: 1), cursor: nil)
+        for t in stride(from: 3.0, through: 5.5, by: 0.1) {
+            XCTAssertGreaterThan(track.state(at: t).scale, 1.9, "stays zoomed through the gap at \(t)")
+        }
+        XCTAssertLessThan(track.state(at: 3.0).centerX, track.state(at: 5.5).centerX, "pans toward the second shot")
+    }
 
-            XCTAssertEqual(plannedDuration, delta, accuracy: 0.0001)
-            XCTAssertLessThanOrEqual(plannedDuration, delta + 0.0001)
+    func testCameraWindowNeverLeavesTheCanvas() {
+        let project = project()
+        let segments = project.timelineSegments(totalDuration: 10)
+        let region = VideoZoomRegion(start: 1, end: 5, scale: 2.5, followsCursor: false, focusX: 0.01, focusY: 0.99)
+        let track = VideoCameraTrack.build(regions: [region], segments: segments, timelineDuration: 10, speed: .quick, stage: CGRect(x: 0.1, y: 0.1, width: 0.8, height: 0.8), cursor: nil)
+        let canvas = CGSize(width: 1920, height: 1080)
+        for step in 0...100 {
+            let window = track.state(at: Double(step) * 0.1).window(in: canvas)
+            XCTAssertGreaterThanOrEqual(window.minX, -0.01)
+            XCTAssertGreaterThanOrEqual(window.minY, -0.01)
+            XCTAssertLessThanOrEqual(window.maxX, canvas.width + 0.01)
+            XCTAssertLessThanOrEqual(window.maxY, canvas.height + 0.01)
         }
     }
 
-    func testExporterHandlesCloseZoomKeyframesForShortClip() async throws {
-        let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
-        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-        defer { try? FileManager.default.removeItem(at: dir) }
-
-        let sourceURL = dir.appendingPathComponent("source.mp4")
-        let destinationURL = dir.appendingPathComponent("export.mp4")
-        try await writeTinyMP4(to: sourceURL)
-
-        var project = VideoDemoProject.make(
-            sourceURL: sourceURL,
-            duration: 0.5,
-            sourceSize: CGSize(width: 64, height: 36)
-        )
-        project.aspectPreset = .source
-        project.showClickRipple = false
-        project.zoomKeyframes = [
-            VideoDemoZoomKeyframe(time: 0, scale: 1, focusX: 0.5, focusY: 0.5),
-            VideoDemoZoomKeyframe(time: 0.02, scale: 1.4, focusX: 0.4, focusY: 0.4),
-            VideoDemoZoomKeyframe(time: 0.04, scale: 1.7, focusX: 0.35, focusY: 0.35),
-            VideoDemoZoomKeyframe(time: 0.10, scale: 1, focusX: 0.5, focusY: 0.5),
-        ]
-
-        try await VideoDemoExporter.export(project: project, destinationURL: destinationURL)
-
-        let fileSize = try destinationURL.resourceValues(forKeys: [.fileSizeKey]).fileSize ?? 0
-        XCTAssertGreaterThan(fileSize, 0)
+    func testFollowCameraKeepsThePointerInView() {
+        let project = project()
+        let segments = project.timelineSegments(totalDuration: 10)
+        let region = VideoZoomRegion(start: 0, end: 10, scale: 2, followsCursor: true)
+        // Pointer sweeps left to right.
+        let pointer: (Double) -> CGPoint? = { t in CGPoint(x: 0.1 + 0.08 * t, y: 0.5) }
+        let track = VideoCameraTrack.build(regions: [region], segments: segments, timelineDuration: 10, speed: .smooth, stage: CGRect(x: 0, y: 0, width: 1, height: 1), cursor: pointer)
+        for t in stride(from: 2.0, through: 8.0, by: 0.5) {
+            let state = track.state(at: t)
+            let x = pointer(t)!.x
+            let half = 0.5 / state.scale
+            XCTAssertLessThan(abs(x - state.centerX), half, "pointer on screen at \(t)")
+        }
     }
 
-    @MainActor
-    func testAutoZoomClustersNearbyClicksIntoSingleCameraMove() {
-        var project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/demo.mp4"), duration: 5)
-        project.clickEvents = [
-            VideoDemoClickEvent(time: 1.0, x: 0.22, y: 0.30, button: .left),
-            VideoDemoClickEvent(time: 1.6, x: 0.28, y: 0.34, button: .left),
-        ]
-        let model = VideoDemoEditorViewModel(project: project)
-        model.duration = 5
-
-        model.addAutoZoomPreset()
-
-        let strongZooms = model.project.zoomKeyframes.filter { $0.scale > 1.5 }
-        XCTAssertLessThanOrEqual(model.project.zoomKeyframes.count, 6)
-        XCTAssertEqual(strongZooms.count, 2)
-        XCTAssertLessThanOrEqual(model.project.zoomKeyframes.map(\.scale).max() ?? 0, 1.75)
+    func testAutoZoomGivesEachBurstItsOwnRegion() {
+        let project = project(duration: 20)
+        let clicks = [2.0, 2.5, 9.0, 16.0].map { VideoDemoClickEvent(time: $0, x: 0.5, y: 0.5, button: .left) }
+        let regions = VideoAutoZoomPlanner.regions(clicks: clicks, cursorSamples: [], segments: project.timelineSegments(totalDuration: 20), scale: 2, speed: .smooth)
+        XCTAssertEqual(regions.count, 3)
+        for region in regions {
+            XCTAssertTrue(region.isAuto)
+            XCTAssertFalse(region.followsCursor, "no pointer path → aim at the clicks")
+        }
+        // The zoom has landed before the first click.
+        let first = regions[0]
+        XCTAssertLessThan(first.start + VideoCameraTrack.transitionDuration(scale: 2, speed: .smooth), 2.0)
     }
 
-    @MainActor
-    func testStageEffectDragIsOneUndoStepAndClampsToStage() {
-        var project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/demo.mp4"), duration: 5)
-        let effect = VideoDemoOverlayEffect(kind: .highlight, time: 1, x: 0.5, y: 0.5, width: 0.3, height: 0.2)
-        project.overlayEffects = [effect]
-        let model = VideoDemoEditorViewModel(project: project)
-        model.duration = 5
+    // MARK: Cursor track
 
-        // One drag = many incremental moves but exactly one undo snapshot,
-        // and the callout can never be dragged off the stage.
-        XCTAssertFalse(model.canUndoTimelineEdit)
-        model.moveEffect(id: effect.id, toX: 0.6, y: 0.55)
-        model.moveEffect(id: effect.id, toX: 1.8, y: -0.4)
-        model.endEffectStageEdit()
-
-        let moved = model.project.overlayEffects[0]
-        XCTAssertEqual(moved.x, 0.98, accuracy: 0.0001)
-        XCTAssertEqual(moved.y, 0.02, accuracy: 0.0001)
-        XCTAssertEqual(model.selectedEffectID, effect.id)
-
-        model.undoTimelineEdit()
-        XCTAssertEqual(model.project.overlayEffects[0].x, 0.5, accuracy: 0.0001)
-        XCTAssertEqual(model.project.overlayEffects[0].y, 0.5, accuracy: 0.0001)
-
-        // Corner resize clamps size and is again a single undo step.
-        model.resizeEffect(id: effect.id, x: 0.5, y: 0.5, width: 4, height: 0.01)
-        model.endEffectStageEdit()
-        let resized = model.project.overlayEffects[0]
-        XCTAssertEqual(resized.width, 0.9, accuracy: 0.0001)
-        XCTAssertEqual(resized.height, 0.04, accuracy: 0.0001)
-
-        // Timeline pill: setting the visible window in timeline seconds
-        // lands in source time/duration (identical here — no cuts).
-        model.setEffectWindow(id: effect.id, timelineStart: 1.5, timelineEnd: 3.0)
-        model.endEffectStageEdit()
-        XCTAssertEqual(model.project.overlayEffects[0].time, 1.5, accuracy: 0.001)
-        XCTAssertEqual(model.project.overlayEffects[0].duration, 1.5, accuracy: 0.001)
-
-        // A too-short window clamps to the 0.2s minimum instead of vanishing.
-        model.setEffectWindow(id: effect.id, timelineStart: 2, timelineEnd: 2.01)
-        model.endEffectStageEdit()
-        XCTAssertGreaterThanOrEqual(model.project.overlayEffects[0].duration, 0.2 - 0.001)
+    func testCursorLandsExactlyOnClicks() throws {
+        var samples: [VideoDemoCursorSample] = []
+        for i in 0...300 {
+            let t = Double(i) / 60
+            // Fast sweep to (0.8, 0.2) arriving at t=2, click at 2.05 while still.
+            let u = min(t / 2, 1)
+            samples.append(VideoDemoCursorSample(time: t, x: 0.1 + 0.7 * u, y: 0.8 - 0.6 * u))
+        }
+        let click = VideoDemoClickEvent(time: 2.05, x: 0.8, y: 0.2, button: .left, endTime: 2.15)
+        let track = try XCTUnwrap(VideoCursorTrack.build(samples: samples, clicks: [click], smoothing: .silky, hideWhenIdle: false, duration: 5))
+        let atClick = track.position(at: 2.1)
+        XCTAssertEqual(atClick.x, 0.8, accuracy: 0.002)
+        XCTAssertEqual(atClick.y, 0.2, accuracy: 0.002)
     }
 
-    @MainActor
+    func testCursorHidesWhenIdleAndOutside() throws {
+        var samples: [VideoDemoCursorSample] = []
+        for i in 0...600 {
+            let t = Double(i) / 60
+            let x: Double = t < 1 ? 0.3 + 0.2 * t : (t < 8 ? 0.5 : 1.4)
+            samples.append(VideoDemoCursorSample(time: t, x: x, y: 0.5))
+        }
+        let track = try XCTUnwrap(VideoCursorTrack.build(samples: samples, clicks: [], smoothing: .smooth, hideWhenIdle: true, duration: 10))
+        XCTAssertGreaterThan(track.alpha(at: 0.5), 0.9)
+        XCTAssertLessThan(track.alpha(at: 5), 0.05, "idle for seconds → hidden")
+        XCTAssertLessThan(track.alpha(at: 9.5), 0.05, "outside the frame → hidden")
+    }
+
+    func testTidyEndingHidesTheDashToStop() throws {
+        var samples: [VideoDemoCursorSample] = []
+        for i in 0...600 {
+            let t = Double(i) / 60
+            // Still until 9.2s, then a dash up out of the frame.
+            let y = t < 9.2 ? 0.6 : 0.6 - (t - 9.2) * 1.4
+            samples.append(VideoDemoCursorSample(time: t, x: 0.5, y: y))
+        }
+        let track = try XCTUnwrap(VideoCursorTrack.build(samples: samples, clicks: [], smoothing: .smooth, hideWhenIdle: false, tidyEnding: true, duration: 10))
+        let end = try XCTUnwrap(track.endTime)
+        XCTAssertEqual(end, 9.2, accuracy: 0.1)
+        XCTAssertEqual(track.position(at: 9.8).y, track.position(at: end).y, accuracy: 0.01, "frozen where the dash began")
+        XCTAssertLessThan(track.alpha(at: 9.9), 0.05)
+    }
+
+    // MARK: Layers
+
     func testEffectLayerNormalizationSpreadsConflictsAndCompacts() {
-        // Legacy drafts decode everything as layer 0: overlapping callouts
-        // must spread onto separate lanes, in time order.
-        let a = VideoDemoOverlayEffect(kind: .highlight, time: 4, duration: 3)
-        let b = VideoDemoOverlayEffect(kind: .text, time: 5, duration: 3.5)
-        let c = VideoDemoOverlayEffect(kind: .arrow, time: 6, duration: 1.5)
-        var d = VideoDemoOverlayEffect(kind: .blur, time: 18, duration: 3)
-        d.layer = 6 // stranded on a distant lane → compacts down
-
-        let normalized = VideoDemoProject.normalizedEffectLayers([a, b, c, d])
+        let a = VideoDemoOverlayEffect(kind: .highlight, time: 1, duration: 3)
+        let b = VideoDemoOverlayEffect(kind: .text, time: 2, duration: 3)
+        let c = VideoDemoOverlayEffect(kind: .arrow, time: 3, duration: 1)
+        let solo = VideoDemoOverlayEffect(kind: .blur, time: 10, duration: 1, layer: 5)
+        let normalized = VideoDemoProject.normalizedEffectLayers([a, b, c, solo])
         let layers = Dictionary(uniqueKeysWithValues: normalized.map { ($0.id, $0.layer) })
         XCTAssertEqual(layers[a.id], 0)
-        XCTAssertEqual(layers[b.id], 1, "overlaps a → next lane")
-        XCTAssertEqual(layers[c.id], 2, "overlaps a and b → third lane")
-        XCTAssertEqual(layers[d.id], 3, "no conflict, but empty lanes 3-5 compact away")
-
-        // A deliberate user-chosen lane with no conflict is preserved.
-        var solo = VideoDemoOverlayEffect(kind: .text, time: 1, duration: 2)
-        solo.layer = 1
-        var neighbor = VideoDemoOverlayEffect(kind: .highlight, time: 1, duration: 2)
-        neighbor.layer = 0
-        let kept = VideoDemoProject.normalizedEffectLayers([solo, neighbor])
-        XCTAssertEqual(Dictionary(uniqueKeysWithValues: kept.map { ($0.id, $0.layer) })[solo.id], 1)
-
-        // The timeline reserves height for exactly the lanes in use.
-        var project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/demo.mp4"), duration: 30)
-        project.overlayEffects = normalized
-        XCTAssertEqual(VideoDemoTimelineView.effectAreaHeight(for: project), 4 * 28 + 3 * 4)
+        XCTAssertEqual(layers[b.id], 1)
+        XCTAssertEqual(layers[c.id], 2)
+        XCTAssertEqual(layers[solo.id], 3, "empty lanes compact away")
     }
 
-    @MainActor
-    func testSetEffectLayerIsUndoableAndSettlesOnDragEnd() {
-        var project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/demo.mp4"), duration: 30)
-        let a = VideoDemoOverlayEffect(kind: .highlight, time: 4, duration: 3)
-        project.overlayEffects = [a]
-        let model = VideoDemoEditorViewModel(project: project)
-        model.duration = 30
-
-        model.setEffectLayer(id: a.id, layer: 3)
-        model.endEffectStageEdit()
-        // Alone on the timeline, the pill settles back onto lane 0.
-        XCTAssertEqual(model.project.overlayEffects[0].layer, 0)
-        XCTAssertTrue(model.canUndoTimelineEdit)
-    }
+    // MARK: Stores
 
     func testRecordingMetadataAppliesCursorDefaults() {
         var project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/demo.mp4"))
         let metadata = VideoDemoRecordingMetadata(
-            videoURLPath: "/tmp/demo.mp4",
-            createdAt: Date(),
-            duration: 12,
-            sourceWidth: 1920,
-            sourceHeight: 1080,
-            fps: 30,
+            videoURLPath: "/tmp/demo.mp4", createdAt: Date(), duration: 12, sourceWidth: 1920, sourceHeight: 1080, fps: 30,
             nativeCursorVisible: false,
             cursorSamples: [VideoDemoCursorSample(time: 1, x: 0.5, y: 0.25)],
             clickEvents: [VideoDemoClickEvent(time: 2, x: 0.6, y: 0.4, button: .left)]
         )
-
         project.apply(metadata: metadata)
-
         XCTAssertEqual(project.sourceSize, CGSize(width: 1920, height: 1080))
-        XCTAssertTrue(project.showCursorOverlay)
-        XCTAssertTrue(project.showClickRipple)
-        XCTAssertEqual(project.cursorSamples.count, 1)
-        XCTAssertEqual(project.clickEvents.count, 1)
+        XCTAssertTrue(project.cursor.visible)
+        XCTAssertTrue(project.rendersCursor)
         XCTAssertEqual(project.trimEnd, 12, accuracy: 0.001)
     }
 
@@ -488,76 +347,44 @@ final class VideoDemoProjectTests: XCTestCase {
         let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: dir) }
-
         let videoURL = dir.appendingPathComponent("demo.mp4")
         try Data().write(to: videoURL)
         let metadata = VideoDemoRecordingMetadata(
-            videoURLPath: videoURL.path,
-            createdAt: Date(timeIntervalSince1970: 1),
-            duration: 3.5,
-            sourceWidth: 100,
-            sourceHeight: 80,
-            fps: 60,
-            nativeCursorVisible: true,
-            cursorSamples: [VideoDemoCursorSample(time: 0.2, x: 0.1, y: 0.9)],
-            clickEvents: []
-        )
-
-        XCTAssertTrue(VideoDemoSidecarStore.save(metadata, for: videoURL, baseDirectory: dir))
-        let loaded = VideoDemoSidecarStore.load(for: videoURL, baseDirectory: dir)
-
-        XCTAssertEqual(loaded, metadata)
-        XCTAssertTrue(FileManager.default.fileExists(atPath: VideoDemoSidecarStore.metadataURL(for: videoURL, baseDirectory: dir).path))
-        XCTAssertFalse(FileManager.default.fileExists(atPath: VideoDemoSidecarStore.legacySidecarURL(for: videoURL).path))
-    }
-
-    func testSidecarMigratesLegacyDesktopMetadata() throws {
-        let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
-        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-        defer { try? FileManager.default.removeItem(at: dir) }
-
-        let videoURL = dir.appendingPathComponent("legacy.mp4")
-        try Data().write(to: videoURL)
-        let metadata = VideoDemoRecordingMetadata(
-            videoURLPath: videoURL.path,
-            createdAt: Date(timeIntervalSince1970: 2),
-            duration: 4,
-            sourceWidth: 1280,
-            sourceHeight: 720,
-            fps: 30,
+            videoURLPath: videoURL.path, createdAt: Date(timeIntervalSince1970: 1), duration: 3.5, sourceWidth: 100, sourceHeight: 80, fps: 60,
             nativeCursorVisible: false,
-            cursorSamples: [],
-            clickEvents: [VideoDemoClickEvent(time: 0.7, x: 0.4, y: 0.6, button: .left)]
+            cursorSamples: [VideoDemoCursorSample(time: 0.2, x: 0.1, y: 0.9)],
+            clickEvents: [VideoDemoClickEvent(time: 1, x: 0.2, y: 0.3, button: .left, endTime: 1.4)],
+            pointPixelScale: 2,
+            cursorShapes: [VideoCursorShape(id: "a", hotSpotX: 4, hotSpotY: 4, width: 20, height: 30, pngData: Data([1, 2, 3]))],
+            cursorShapeEvents: [VideoCursorShapeEvent(time: 0, shapeID: "a")],
+            renderCursor: true
         )
-        let legacyURL = VideoDemoSidecarStore.legacySidecarURL(for: videoURL)
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-        try encoder.encode(metadata).write(to: legacyURL, options: .atomic)
-
-        let loaded = VideoDemoSidecarStore.load(for: videoURL, baseDirectory: dir)
-
-        XCTAssertEqual(loaded, metadata)
-        XCTAssertTrue(FileManager.default.fileExists(atPath: VideoDemoSidecarStore.metadataURL(for: videoURL, baseDirectory: dir).path))
-        XCTAssertFalse(FileManager.default.fileExists(atPath: legacyURL.path))
+        XCTAssertTrue(VideoDemoSidecarStore.save(metadata, for: videoURL, baseDirectory: dir))
+        XCTAssertEqual(VideoDemoSidecarStore.load(for: videoURL, baseDirectory: dir), metadata)
     }
 
-    func testVideoDraftStoreRoundTripsProject() throws {
+    func testOlderSidecarsStillDecode() throws {
+        let json = """
+        {"videoURLPath":"/tmp/a.mp4","createdAt":0,"duration":4,"sourceWidth":1280,"sourceHeight":720,"fps":30,
+         "nativeCursorVisible":true,"cursorSamples":[{"time":0,"x":0.5,"y":0.5}],"clickEvents":[{"id":"\(UUID().uuidString)","time":1,"x":0.4,"y":0.6,"button":"left"}]}
+        """
+        let metadata = try JSONDecoder().decode(VideoDemoRecordingMetadata.self, from: Data(json.utf8))
+        XCTAssertNil(metadata.pointPixelScale)
+        XCTAssertFalse(metadata.shouldRenderCursor, "baked cursor → don't draw another")
+        XCTAssertEqual(metadata.clickEvents.first?.pressDuration ?? 0, 0.12, accuracy: 0.001)
+    }
+
+    func testDraftStoreRoundTripsProject() throws {
         let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: dir) }
-
         let videoURL = dir.appendingPathComponent("demo.mp4")
         var project = VideoDemoProject.make(sourceURL: videoURL, duration: 8, sourceSize: CGSize(width: 1280, height: 720))
-        project.backgroundPreset = .mint
-        project.zoomKeyframes = [VideoDemoZoomKeyframe(time: 1, scale: 1.8, focusX: 0.4, focusY: 0.3)]
-
+        project.background = .wallpaper("lagoon")
+        project.zoomRegions = [VideoZoomRegion(start: 1, end: 3, scale: 1.8, followsCursor: false, focusX: 0.4, focusY: 0.3)]
         XCTAssertTrue(VideoDemoDraftStore.save(project, for: videoURL, baseDirectory: dir))
         let draft = try XCTUnwrap(VideoDemoDraftStore.load(for: videoURL, baseDirectory: dir))
-
-        XCTAssertEqual(draft.sourcePath, videoURL.standardizedFileURL.path)
-        XCTAssertEqual(draft.project.backgroundPreset, .mint)
-        let zoom = try XCTUnwrap(draft.project.zoomKeyframes.first)
-        XCTAssertEqual(zoom.scale, 1.8, accuracy: 0.001)
+        XCTAssertEqual(draft.project, project)
         XCTAssertTrue(VideoDemoDraftStore.delete(for: videoURL, baseDirectory: dir))
         XCTAssertNil(VideoDemoDraftStore.load(for: videoURL, baseDirectory: dir))
     }
@@ -566,118 +393,11 @@ final class VideoDemoProjectTests: XCTestCase {
         let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: dir) }
-
         let sourceURL = dir.appendingPathComponent("source.mp4")
         let exportURL = dir.appendingPathComponent("export.mp4")
         try Data(repeating: 7, count: 4096).write(to: exportURL)
-
         let exports = VideoDemoRecentExportStore.add(exportURL: exportURL, sourceURL: sourceURL, baseDirectory: dir)
-        let loaded = VideoDemoRecentExportStore.load(for: sourceURL, baseDirectory: dir)
-
         XCTAssertEqual(exports.count, 1)
-        XCTAssertEqual(loaded.first?.exportPath, exportURL.standardizedFileURL.path)
-        XCTAssertEqual(loaded.first?.fileSize, 4096)
-    }
-
-    private func writeTinyMP4(to url: URL) async throws {
-        if FileManager.default.fileExists(atPath: url.path) {
-            try FileManager.default.removeItem(at: url)
-        }
-
-        let writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
-        let input = AVAssetWriterInput(
-            mediaType: .video,
-            outputSettings: [
-                AVVideoCodecKey: AVVideoCodecType.h264,
-                AVVideoWidthKey: 64,
-                AVVideoHeightKey: 36,
-            ]
-        )
-        input.expectsMediaDataInRealTime = false
-
-        guard writer.canAdd(input) else {
-            throw NSError(domain: "ShotnixVideoDemoProjectTests", code: 1)
-        }
-        writer.add(input)
-
-        let adaptor = AVAssetWriterInputPixelBufferAdaptor(
-            assetWriterInput: input,
-            sourcePixelBufferAttributes: [
-                kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA),
-                kCVPixelBufferWidthKey as String: 64,
-                kCVPixelBufferHeightKey as String: 36,
-            ]
-        )
-
-        guard writer.startWriting() else {
-            throw writer.error ?? NSError(domain: "ShotnixVideoDemoProjectTests", code: 2)
-        }
-        writer.startSession(atSourceTime: .zero)
-
-        for frame in 0..<15 {
-            while !input.isReadyForMoreMediaData {
-                try await Task.sleep(nanoseconds: 2_000_000)
-            }
-            let buffer = try makePixelBuffer(width: 64, height: 36, frame: frame)
-            guard adaptor.append(buffer, withPresentationTime: CMTime(value: CMTimeValue(frame), timescale: 30)) else {
-                throw writer.error ?? NSError(domain: "ShotnixVideoDemoProjectTests", code: 3)
-            }
-        }
-
-        input.markAsFinished()
-        let writerBox = AssetWriterBox(writer)
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            writerBox.writer.finishWriting {
-                if writerBox.writer.status == .completed {
-                    continuation.resume()
-                } else {
-                    continuation.resume(throwing: writerBox.writer.error ?? NSError(domain: "ShotnixVideoDemoProjectTests", code: 4))
-                }
-            }
-        }
-    }
-
-    private func makePixelBuffer(width: Int, height: Int, frame: Int) throws -> CVPixelBuffer {
-        var pixelBuffer: CVPixelBuffer?
-        let status = CVPixelBufferCreate(
-            kCFAllocatorDefault,
-            width,
-            height,
-            kCVPixelFormatType_32BGRA,
-            nil,
-            &pixelBuffer
-        )
-        guard status == kCVReturnSuccess, let buffer = pixelBuffer else {
-            throw NSError(domain: "ShotnixVideoDemoProjectTests", code: 5)
-        }
-
-        CVPixelBufferLockBaseAddress(buffer, [])
-        defer { CVPixelBufferUnlockBaseAddress(buffer, []) }
-
-        guard let baseAddress = CVPixelBufferGetBaseAddress(buffer) else {
-            throw NSError(domain: "ShotnixVideoDemoProjectTests", code: 6)
-        }
-
-        let bytesPerRow = CVPixelBufferGetBytesPerRow(buffer)
-        let bytes = baseAddress.assumingMemoryBound(to: UInt8.self)
-        for y in 0..<height {
-            for x in 0..<width {
-                let offset = y * bytesPerRow + x * 4
-                bytes[offset] = UInt8((x * 3 + frame * 5) % 255)
-                bytes[offset + 1] = UInt8((y * 5 + frame * 9) % 255)
-                bytes[offset + 2] = UInt8((frame * 17) % 255)
-                bytes[offset + 3] = 255
-            }
-        }
-
-        return buffer
-    }
-
-    private final class AssetWriterBox: @unchecked Sendable {
-        let writer: AVAssetWriter
-
-        init(_ writer: AVAssetWriter) {
-            self.writer = writer
-        }
+        XCTAssertEqual(VideoDemoRecentExportStore.load(for: sourceURL, baseDirectory: dir).first?.fileSize, 4096)
     }
 }

@@ -1,5 +1,16 @@
 import Foundation
 
+/// Where video drafts, recording metadata, and the export index live.
+/// Tests point it at a temporary folder so they never touch real data.
+enum VideoStorageLocation {
+    nonisolated(unsafe) static var overrideRoot: URL?
+
+    static var root: URL {
+        overrideRoot ?? FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
+            ?? FileManager.default.temporaryDirectory
+    }
+}
+
 struct VideoDemoDraftRecord: Codable, Equatable {
     var sourcePath: String
     var savedAt: Date
@@ -59,8 +70,7 @@ enum VideoDemoDraftStore {
     }
 
     private static func directory(baseDirectory: URL?) -> URL {
-        let root = baseDirectory ?? FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
-            .first ?? FileManager.default.temporaryDirectory
+        let root = baseDirectory ?? VideoStorageLocation.root
         return root
             .appendingPathComponent("Shotnix", isDirectory: true)
             .appendingPathComponent("VideoDrafts", isDirectory: true)
@@ -149,8 +159,7 @@ enum VideoDemoRecentExportStore {
     }
 
     private static func indexURL(baseDirectory: URL?) -> URL {
-        let root = baseDirectory ?? FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
-            .first ?? FileManager.default.temporaryDirectory
+        let root = baseDirectory ?? VideoStorageLocation.root
         return root
             .appendingPathComponent("Shotnix", isDirectory: true)
             .appendingPathComponent("VideoExports", isDirectory: true)

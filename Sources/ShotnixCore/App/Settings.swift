@@ -230,6 +230,41 @@ enum Settings {
         set { defaults.set(newValue, forKey: "recordingShowsCursor") }
     }
 
+    /// Record the pointer as data instead of pixels so the video editor can
+    /// redraw it smoothed, resized, and crisp at any zoom. On by default;
+    /// off bakes the system cursor into the raw file like a plain recorder.
+    static var recordingEditableCursor: Bool {
+        get {
+            if defaults.object(forKey: "recordingEditableCursor") == nil { return true }
+            return defaults.bool(forKey: "recordingEditableCursor")
+        }
+        set { defaults.set(newValue, forKey: "recordingEditableCursor") }
+    }
+
+    /// Record keyboard shortcuts (⌘/⌃/⌥ combos, never plain typing) so the
+    /// editor can show them. Needs the Accessibility permission.
+    static var recordingKeystrokes: Bool {
+        get { defaults.bool(forKey: "recordingKeystrokes") }
+        set { defaults.set(newValue, forKey: "recordingKeystrokes") }
+    }
+
+    /// Language for generated captions (BCP-47; empty = the Mac's language).
+    static var videoCaptionLanguage: String {
+        get { defaults.string(forKey: "videoCaptionLanguage") ?? "" }
+        set { defaults.set(newValue, forKey: "videoCaptionLanguage") }
+    }
+
+    /// Record the camera alongside the screen.
+    static var recordingCamera: Bool {
+        get { defaults.bool(forKey: "recordingCamera") }
+        set { defaults.set(newValue, forKey: "recordingCamera") }
+    }
+
+    static var recordingCameraDeviceID: String {
+        get { defaults.string(forKey: "recordingCameraDeviceID") ?? "" }
+        set { defaults.set(newValue, forKey: "recordingCameraDeviceID") }
+    }
+
     static var recordingSystemAudio: Bool {
         get { defaults.bool(forKey: "recordingSystemAudio") }
         set { defaults.set(newValue, forKey: "recordingSystemAudio") }
@@ -349,12 +384,13 @@ enum Settings {
         set { defaults.set(newValue == "gif" ? "gif" : "mp4", forKey: "videoExportFormat") }
     }
 
+    /// 24, 30, or 60 — defaults to 60 for silky screen motion.
     static var videoExportFPS: Int {
         get {
             let v = defaults.integer(forKey: "videoExportFPS")
-            return v == 60 ? 60 : 30
+            return [24, 30, 60].contains(v) ? v : 60
         }
-        set { defaults.set(newValue == 60 ? 60 : 30, forKey: "videoExportFPS") }
+        set { defaults.set([24, 30, 60].contains(newValue) ? newValue : 60, forKey: "videoExportFPS") }
     }
 
     static var videoExportHalfResolution: Bool {
