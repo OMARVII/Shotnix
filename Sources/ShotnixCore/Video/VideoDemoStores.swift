@@ -111,8 +111,8 @@ enum VideoDemoDraftStore {
                 continue
             }
             // A copy of the file (the original is still there): start fresh.
-            if record.sourcePath != canonical.path, record.sourcePath != videoURL.standardizedFileURL.path,
-               FileManager.default.fileExists(atPath: record.sourcePath) {
+            let owner = URL(fileURLWithPath: record.sourcePath).resolvingSymlinksInPath().path
+            if owner != canonical.path, FileManager.default.fileExists(atPath: owner) {
                 continue
             }
             return record
@@ -129,9 +129,11 @@ enum VideoDemoDraftStore {
         // instead of overwriting the original's.
         let idURL = folder.appendingPathComponent(key).appendingPathExtension("json")
         if key.hasPrefix("id-"), let data = try? Data(contentsOf: idURL),
-           let owner = try? JSONDecoder().decode(VideoDemoDraftRecord.self, from: data),
-           owner.sourcePath != canonical.path, FileManager.default.fileExists(atPath: owner.sourcePath) {
-            key = VideoFileIdentity.pathKey(canonical)
+           let record = try? JSONDecoder().decode(VideoDemoDraftRecord.self, from: data) {
+            let owner = URL(fileURLWithPath: record.sourcePath).resolvingSymlinksInPath().path
+            if owner != canonical.path, FileManager.default.fileExists(atPath: owner) {
+                key = VideoFileIdentity.pathKey(canonical)
+            }
         }
         let url = folder.appendingPathComponent(key).appendingPathExtension("json")
         do {
