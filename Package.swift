@@ -10,7 +10,7 @@ let package = Package(
         // bundles on machines other than the build machine (issue #25) — the
         // vendored copy locates its resource bundle in Contents/Resources.
         .package(path: "Vendor/KeyboardShortcuts"),
-        .package(url: "https://github.com/sparkle-project/Sparkle", from: "2.9.2"),
+        .package(url: "https://github.com/sparkle-project/Sparkle", from: "2.10.0"),
     ],
     targets: [
         .target(
