@@ -297,7 +297,7 @@ private final class SelectionOverlayView: NSView {
             border.lineWidth = 1.5
             border.stroke()
 
-            // Subtle rule-of-thirds grid for premium framing (like CleanShot X)
+            // Subtle rule-of-thirds grid for premium framing
             if currentRect.width > 50 && currentRect.height > 50 {
                 NSColor.white.withAlphaComponent(0.25).setStroke()
                 let grid = NSBezierPath()
@@ -321,7 +321,7 @@ private final class SelectionOverlayView: NSView {
             // main-thread screen capture per frame, which trails behind the
             // cursor and paints dark-circle artifacts along the drag path.
             // Dimension label + corner handles are the more useful feedback
-            // while the rect is being sized, matching CleanShot X.
+            // while the rect is being sized.
         } else if mode == .area {
             // Area mode, pre-drag: near-invisible tint so macOS hit-tests this
             // region and delivers mouseDown. Fully clear windows pass clicks through.
