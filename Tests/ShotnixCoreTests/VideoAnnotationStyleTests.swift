@@ -112,6 +112,50 @@ final class VideoAnnotationStyleTests: XCTestCase {
         print("SNAPSHOT: \(url.path)")
     }
 
+    func testNewAnnotationsLandWhereTheyCanBeSeen() async throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent("shotnix-place-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let url = directory.appendingPathComponent("rec.mp4")
+        try await VideoTestSupport.writeFakeRecording(to: url, size: CGSize(width: 1280, height: 800), seconds: 6, fps: 30)
+        VideoDemoDraftStore.delete(for: url)
+        let model = VideoEditorModel(videoURL: url)
+        await model.load()
+        // A 2.5× zoom aimed at the top-left corner.
+        model.mutate { project in
+            project.zoomRegions = [VideoZoomRegion(start: 0, end: 6, scale: 2.5, followsCursor: false, focusX: 0.2, focusY: 0.2)]
+        }
+        model.seek(to: 3)
+        let visible = model.visibleRegion(at: 3)
+        XCTAssertLessThan(visible.width, 0.6, "only part of the frame shows")
+        for kind in [VideoDemoOverlayEffectKind.text, .arrow, .highlight, .blur] {
+            model.addOverlay(kind)
+            let effect = try XCTUnwrap(model.selectedOverlay)
+            let box = CGRect(x: effect.x - effect.width / 2, y: effect.y - effect.height / 2, width: effect.width, height: effect.height)
+            XCTAssertTrue(visible.insetBy(dx: -0.001, dy: -0.001).contains(box), "\(kind) lands on screen: \(box) in \(visible)")
+        }
+        // Without a zoom, the defaults are unchanged.
+        model.mutate { $0.zoomRegions = [] }
+        XCTAssertEqual(model.visibleRegion(at: 3), CGRect(x: 0, y: 0, width: 1, height: 1))
+        model.addOverlay(.text)
+        XCTAssertEqual(model.selectedOverlay?.y ?? 0, 0.86, accuracy: 0.001)
+        XCTAssertEqual(model.selectedOverlay?.width ?? 0, 0.5, accuracy: 0.001)
+        VideoDemoDraftStore.delete(for: url)
+    }
+
+    func testTheEditedAnnotationShowsAtItsFirstFrame() {
+        let white = CIImage(color: .white).cropped(to: CGRect(x: 0, y: 0, width: 1920, height: 1080))
+        let effect = VideoDemoOverlayEffect(kind: .highlight, time: 2, duration: 3, x: 0.5, y: 0.5, width: 0.4, height: 0.4, color: VideoRGBA(hex: 0xFF453A))
+        let plan = VideoDemoExporter.makePlan(project: project([effect]), sourceDuration: 5, recording: nil)
+        let edge = CGRect(x: 574, y: 530, width: 12, height: 20)
+        var options = VideoFrameRenderer.Options()
+        let faded = minimum(VideoFrameRenderer().render(source: white, timelineTime: 2, plan: plan, outputSize: CGSize(width: 1920, height: 1080), options: options), in: edge)
+        XCTAssertGreaterThan(faded.g, 0.9, "exports still fade in")
+        options.solidOverlay = effect.id
+        let solid = minimum(VideoFrameRenderer().render(source: white, timelineTime: 2, plan: plan, outputSize: CGSize(width: 1920, height: 1080), options: options), in: edge)
+        XCTAssertLessThan(solid.g, 0.5, "the one being edited shows right away")
+    }
+
     func testPickedColorBecomesTheDefault() async throws {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent("shotnix-style-\(UUID().uuidString)", isDirectory: true)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)

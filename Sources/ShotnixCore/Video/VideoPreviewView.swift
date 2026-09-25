@@ -98,6 +98,7 @@ final class VideoPreviewRenderer: NSObject, MTKViewDelegate {
 
     private func compose(model: VideoEditorModel, size: CGSize) -> CIImage {
         var options = VideoFrameRenderer.Options(frameRate: 60)
+        options.solidOverlay = Self.editedOverlay(model)
         options.webcamFrame = model.plan.webcam == nil ? nil : lastCameraFrame?.image
         options.webcamMask = model.plan.webcam == nil ? nil : lastCameraFrame?.mask
         var source = lastBuffer.map { CIImage(cvPixelBuffer: $0) }
@@ -114,6 +115,12 @@ final class VideoPreviewRenderer: NSObject, MTKViewDelegate {
             options.cameraOverride = .rest
         }
         return renderer.render(source: source, timelineTime: time, plan: model.plan, outputSize: size, options: options)
+    }
+
+    /// The annotation being edited while paused — shown fully, fades aside.
+    private static func editedOverlay(_ model: VideoEditorModel) -> UUID? {
+        guard !model.isPlaying, case .overlay(let id) = model.selection else { return nil }
+        return id
     }
 
     /// Source frames for clip-edge drags (possibly outside the current
@@ -142,6 +149,29 @@ final class VideoPreviewRenderer: NSObject, MTKViewDelegate {
                 }
             }
         }
+    }
+
+    /// The frame at a timeline moment, decoded directly rather than from
+    /// playback — offscreen windows (editor snapshots) never show Metal.
+    func still(size: CGSize, at time: Double) -> NSImage? {
+        guard let model, size.width > 2, size.height > 2 else { return nil }
+        let generator = AVAssetImageGenerator(asset: AVURLAsset(url: model.project.sourceURL))
+        generator.appliesPreferredTrackTransform = true
+        generator.requestedTimeToleranceBefore = .zero
+        generator.requestedTimeToleranceAfter = .zero
+        let sourceTime = model.sourceTime(forTimeline: time)
+        let frame = try? generator.copyCGImage(at: CMTime(seconds: sourceTime, preferredTimescale: 600), actualTime: nil)
+        var options = VideoFrameRenderer.Options(frameRate: 60)
+        options.rawSource = model.isCropping
+        options.solidOverlay = Self.editedOverlay(model)
+        if model.plan.webcam != nil, let camera = model.playback.cameraPicture(at: time) {
+            options.webcamFrame = camera.image
+            options.webcamMask = camera.mask
+        }
+        let pixels = CGSize(width: size.width * 2, height: size.height * 2)
+        let image = renderer.render(source: frame.map { CIImage(cgImage: $0) }, timelineTime: time, plan: model.plan, outputSize: pixels, options: options)
+        guard let cgImage = context.createCGImage(image, from: CGRect(origin: .zero, size: pixels), format: .RGBA8, colorSpace: CGColorSpace(name: CGColorSpace.sRGB)) else { return nil }
+        return NSImage(cgImage: cgImage, size: size)
     }
 
     /// The frame under the playhead, rendered at `size`.
@@ -187,13 +217,21 @@ struct VideoPreviewSurface: NSViewRepresentable {
 
 struct VideoStageView: View {
     @ObservedObject var model: VideoEditorModel
+    /// Snapshot tests: draw the preview as a still image.
+    nonisolated(unsafe) static var drawsStills = false
 
     var body: some View {
         GeometryReader { proxy in
             let canvas = model.isCropping ? model.project.sourceSize : model.project.canvasSize()
             let fitted = Self.fit(canvas, in: proxy.size)
             ZStack {
-                VideoPreviewSurface(renderer: model.previewRenderer)
+                Group {
+                    if Self.drawsStills, let still = model.previewRenderer.still(size: fitted, at: model.clock.time) {
+                        Image(nsImage: still).resizable()
+                    } else {
+                        VideoPreviewSurface(renderer: model.previewRenderer)
+                    }
+                }
                     .frame(width: fitted.width, height: fitted.height)
                     .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
                     .shadow(color: .black.opacity(0.45), radius: 18, x: 0, y: 10)

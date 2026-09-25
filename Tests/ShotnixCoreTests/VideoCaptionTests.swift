@@ -32,6 +32,21 @@ final class VideoCaptionTests: XCTestCase {
         XCTAssertEqual(split.reduce(0) { $0 + $1.words.count }, 16)
     }
 
+    func testNoOneWordStragglers() {
+        // Eight words: the seven-word limit would leave "it." alone.
+        let input = words([
+            ("Then", 0.0, 0.2), ("pick", 0.25, 0.4), ("a", 0.45, 0.5), ("theme", 0.55, 0.8),
+            ("and", 0.9, 1.0), ("uh", 1.1, 1.2), ("save", 1.4, 1.6), ("it.", 1.65, 1.8),
+        ])
+        XCTAssertEqual(VideoCaptionBuilder.lines(from: input).map(\.text), ["Then pick a theme", "and uh save it."])
+        // A real pause still gets its own line, however short.
+        let paused = words([
+            ("Open", 0.0, 0.2), ("the", 0.25, 0.4), ("settings", 0.45, 0.8), ("panel", 0.85, 1.0),
+            ("now.", 2.5, 2.8),
+        ])
+        XCTAssertEqual(VideoCaptionBuilder.lines(from: paused).map(\.text), ["Open the settings panel", "now."])
+    }
+
     func testPiecesBecomeWords() {
         let result = VideoCaptionBuilder.words(fromPieces: [
             ("Hello", 0, 0.4), (",", 0.4, 0.4), (" world", 0.5, 0.9), ("two words", 1.0, 2.0),

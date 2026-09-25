@@ -434,6 +434,9 @@ final class VideoFrameRenderer {
         var webcamMask: CIImage?
         /// Render only the scene (reframing draws output layers itself).
         var sceneOnly = false
+        /// The annotation being edited: drawn fully visible even inside its
+        /// fade (a new one starts at the playhead, where it would be clear).
+        var solidOverlay: UUID?
     }
 
     private struct BackgroundKey: Equatable {
@@ -571,7 +574,7 @@ final class VideoFrameRenderer {
 
         // 4. Overlays (text, arrows, highlights, blur).
         for overlay in plan.overlays where timelineTime >= overlay.start && timelineTime <= overlay.end {
-            scene = composite(overlay: overlay, over: scene, plan: plan, geometry: geometry, time: timelineTime)
+            scene = composite(overlay: overlay, over: scene, plan: plan, geometry: geometry, time: timelineTime, solid: overlay.effect.id == options.solidOverlay)
         }
 
         // 5. Camera motion blur.
@@ -754,7 +757,7 @@ final class VideoFrameRenderer {
 
     // MARK: Overlays
 
-    private func composite(overlay: VideoRenderPlan.Overlay, over scene: CIImage, plan: VideoRenderPlan, geometry: Geometry, time: Double) -> CIImage {
+    private func composite(overlay: VideoRenderPlan.Overlay, over scene: CIImage, plan: VideoRenderPlan, geometry: Geometry, time: Double, solid: Bool = false) -> CIImage {
         let effect = overlay.effect
         let stage = plan.stageRect
         let width = stage.width * CGFloat(min(max(effect.width, 0.02), 1))
@@ -766,7 +769,7 @@ final class VideoFrameRenderer {
         // Fade in and out (blur stays fully opaque while visible).
         let fade = min(0.18, (overlay.end - overlay.start) / 3)
         var opacity = 1.0
-        if effect.kind != .blur, fade > 0 {
+        if effect.kind != .blur, fade > 0, !solid {
             opacity = min((time - overlay.start) / fade, (overlay.end - time) / fade, 1)
         }
         opacity = min(max(opacity, 0), 1)

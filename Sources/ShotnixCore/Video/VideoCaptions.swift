@@ -41,6 +41,21 @@ enum VideoCaptionBuilder {
         }
         if !current.isEmpty { groups.append(current) }
 
+        // No stragglers: when a sentence's last word or two would flash up
+        // alone, the two lines share the sentence evenly instead.
+        for index in groups.indices.dropFirst() {
+            let previous = groups[index - 1]
+            let current = groups[index]
+            guard current.count <= 2, previous.count >= 4,
+                  let tail = previous.last, let head = current.first,
+                  !(tail.text.last.map { ".?!".contains($0) } ?? false),
+                  head.start - tail.end <= rules.pauseBreak else { continue }
+            let joined = previous + current
+            let split = joined.count / 2
+            groups[index - 1] = Array(joined[..<split])
+            groups[index] = Array(joined[split...])
+        }
+
         var lines: [VideoCaptionLine] = []
         for (index, group) in groups.enumerated() {
             guard let first = group.first, let last = group.last else { continue }

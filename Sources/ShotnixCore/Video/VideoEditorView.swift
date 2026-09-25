@@ -3,8 +3,26 @@ import SwiftUI
 
 struct VideoEditorRootView: View {
     @ObservedObject var model: VideoEditorModel
+    @AppStorage("videoEditorTipsDismissed") private var tipsDismissed = false
 
     var body: some View {
+        GeometryReader { proxy in
+            editor(height: proxy.size.height)
+        }
+        .background(VideoEditorTheme.window)
+        .background(VideoKeyboardBridge(model: model).frame(width: 0, height: 0))
+        .ignoresSafeArea()
+        .environment(\.colorScheme, .dark)
+        .task { await model.load() }
+    }
+
+    /// The crop bar and the tips sit under the picture, never over it.
+    private var stageBottomInset: CGFloat {
+        if model.isCropping { return 66 }
+        return tipsDismissed ? 22 : 58
+    }
+
+    private func editor(height: CGFloat) -> some View {
         ZStack {
             VStack(spacing: 0) {
                 VideoEditorToolbar(model: model)
@@ -22,7 +40,7 @@ struct VideoEditorRootView: View {
                             VideoStageView(model: model)
                                 .padding(.horizontal, 28)
                                 .padding(.top, model.isCropping ? 22 : 12)
-                                .padding(.bottom, 22)
+                                .padding(.bottom, stageBottomInset)
                         }
                         if let notice = model.notice {
                             VideoNoticePill(notice: notice)
@@ -46,7 +64,7 @@ struct VideoEditorRootView: View {
                 }
                 Rectangle().fill(VideoEditorTheme.hairline).frame(height: 1)
                 VideoTimelineView(model: model).equatable()
-                    .frame(height: timelineHeight)
+                    .frame(height: timelineHeight(windowHeight: height))
             }
 
             if model.isExportPresented {
@@ -65,16 +83,14 @@ struct VideoEditorRootView: View {
                 loadingOverlay
             }
         }
-        .background(VideoEditorTheme.window)
-        .background(VideoKeyboardBridge(model: model).frame(width: 0, height: 0))
-        .ignoresSafeArea()
-        .environment(\.colorScheme, .dark)
-        .task { await model.load() }
     }
 
-    private var timelineHeight: CGFloat {
+    /// Tall enough for every lane, but the picture keeps at least half the
+    /// space under the toolbar (the lanes scroll when they don't fit).
+    private func timelineHeight(windowHeight: CGFloat) -> CGFloat {
         let content = VideoTimelineMetrics.contentHeight(model.project)
-        return min(max(44 + 1 + content + 10, 190), 380)
+        let limit = max((windowHeight - 53) * 0.5, 190)
+        return min(max(44 + 1 + content + 10, 190), limit)
     }
 
     private var loadingOverlay: some View {
@@ -650,6 +666,7 @@ struct VideoShortcutsSheet: View {
                     }
                 }
             }
+            .frame(width: 2 * 280 + 28)
             .padding(24)
             .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Color(white: 0.11)))
             .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(Color.white.opacity(0.12), lineWidth: 1))

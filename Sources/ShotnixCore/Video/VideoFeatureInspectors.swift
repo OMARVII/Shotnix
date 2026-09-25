@@ -183,10 +183,10 @@ struct VideoTranscriptPanel: View {
                     action: model.removeFillers
                 )
                 cleanup(
-                    title: pauses.isEmpty ? "No long pauses" : "Shorten \(pauses.count) pause\(pauses.count == 1 ? "" : "s")",
+                    title: pauses.isEmpty ? "No pauses to shorten" : "Shorten \(pauses.count) pause\(pauses.count == 1 ? "" : "s")",
                     symbol: "forward.end",
                     help: pauses.isEmpty
-                        ? "Silences over a second where nothing happens on screen get shortened"
+                        ? "Silences over a second get shortened — except while you click or move the pointer, so the demo itself is never cut"
                         : "Saves \(VideoEditorModel.format(pauseSeconds)) — only silences where nothing happens on screen",
                     enabled: !pauses.isEmpty,
                     action: model.shortenPauses

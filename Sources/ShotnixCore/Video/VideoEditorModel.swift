@@ -338,6 +338,11 @@ final class VideoEditorModel: ObservableObject {
             }
             loaded.sourceWidth = Double(source.size.width)
             loaded.sourceHeight = Double(source.size.height)
+            if !restoredDraft, loaded.sourceHeight > loaded.sourceWidth * 1.1,
+               loaded.aspectPreset == .widescreen || loaded.aspectPreset == .classic {
+                // A tall recording in a wide frame would be a sliver.
+                loaded.aspectPreset = .source
+            }
             if loaded.trimEnd <= 0 || loaded.trimEnd > source.duration {
                 loaded.trimEnd = source.duration
             }
@@ -1021,12 +1026,28 @@ final class VideoEditorModel: ObservableObject {
             color: VideoOverlayStyleMemory.color(for: kind),
             thickness: VideoOverlayStyleMemory.thickness(for: kind)
         )
+        // Land where it can be seen: zooms and vertical reframing show only
+        // part of the frame, so place (and if needed shrink) it inside that.
+        let visible = visibleRegion(at: time)
+        effect.width = min(effect.width, Double(visible.width) * 0.9)
+        effect.height = min(effect.height, Double(visible.height) * 0.9)
+        var center = CGPoint(x: visible.midX, y: kind == .text ? visible.minY + visible.height * 0.86 : visible.midY)
         if kind != .text, let raw = plan.cursorTrack?.visiblePosition(at: sourceStart) {
             // Annotations live in the (cropped) frame's coordinates.
             let pointer = project.crop.normalized.map(raw)
-            effect.x = min(max(Double(pointer.x), 0.15), 0.85)
-            effect.y = min(max(Double(pointer.y) + (kind == .arrow ? 0.1 : 0), 0.15), 0.85)
+            if visible.insetBy(dx: visible.width * 0.05, dy: visible.height * 0.05).contains(pointer) {
+                center = pointer
+                if kind == .arrow {
+                    // The head (top right) lands just beside the pointer.
+                    center.x -= CGFloat(effect.width / 2) - visible.width * 0.02
+                    center.y += CGFloat(effect.height / 2) + visible.height * 0.03
+                }
+            }
         }
+        let halfWidth = CGFloat(effect.width / 2)
+        let halfHeight = CGFloat(effect.height / 2)
+        effect.x = Double(min(max(center.x, visible.minX + halfWidth), visible.maxX - halfWidth))
+        effect.y = Double(min(max(center.y, visible.minY + halfHeight), visible.maxY - halfHeight))
         // New annotations stack ON TOP of anything they overlap: a higher
         // lane on the timeline, drawn in front in the video.
         let overlapping = project.overlayEffects.filter {
@@ -1038,6 +1059,30 @@ final class VideoEditorModel: ObservableObject {
             project.overlayEffects = VideoDemoProject.normalizedEffectLayers(project.overlayEffects)
         }
         selection = .overlay(effect.id)
+    }
+
+    /// The part of the frame on screen at a timeline moment, in annotation
+    /// coordinates (0…1 across the cropped recording): zooms and vertical
+    /// reframing show only some of it.
+    func visibleRegion(at time: Double) -> CGRect {
+        let whole = CGRect(x: 0, y: 0, width: 1, height: 1)
+        let canvas = plan.canvasSize
+        let stage = (project.reframeActive ? project.reframeScene() : project).stageRect(in: canvas)
+        guard canvas.width > 0, canvas.height > 0, stage.width > 0, stage.height > 0 else { return whole }
+        var window = cameraState(at: time).window(in: canvas)
+        if let reframe = plan.reframe {
+            // The output is a window across the (camera's) scene.
+            let fraction = reframe.windowFraction
+            let origin = min(max(reframe.center(at: time) - fraction / 2, 0), 1 - fraction)
+            window = CGRect(x: window.minX + window.width * origin, y: window.minY, width: window.width * fraction, height: window.height)
+        }
+        let region = CGRect(
+            x: (window.minX - stage.minX) / stage.width,
+            y: (window.minY - stage.minY) / stage.height,
+            width: window.width / stage.width,
+            height: window.height / stage.height
+        ).intersection(whole)
+        return region.width > 0.05 && region.height > 0.05 ? region : whole
     }
 
     func updateOverlay(_ id: UUID, coalesce: String? = nil, _ change: (inout VideoDemoOverlayEffect) -> Void) {

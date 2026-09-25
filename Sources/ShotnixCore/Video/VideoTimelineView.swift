@@ -224,6 +224,9 @@ struct VideoTimelineSurface: View {
 
     var body: some View {
         let height = max(M.contentHeight(model.project), viewport.height)
+        // Lanes that don't fit scroll vertically (the recording is at the
+        // bottom and must stay reachable).
+        ScrollView(.vertical, showsIndicators: height > viewport.height + 0.5) {
         ScrollView(.horizontal, showsIndicators: model.timelineZoom > 1.01) {
             ZStack(alignment: .topLeading) {
                 // Scrub anywhere that isn't an object.
@@ -316,6 +319,8 @@ struct VideoTimelineSurface: View {
                     }
                     .onEnded { _ in pinchBase = nil }
             )
+        }
+        .frame(height: height)
         }
         .onAppear(perform: installScrollZoom)
         .onDisappear {
@@ -979,10 +984,15 @@ struct VideoTimelineRuler: View {
                 let height: CGFloat = isMajor ? 8 : 4
                 context.fill(Path(CGRect(x: x, y: size.height - height, width: 1, height: height)), with: .color(Color.white.opacity(isMajor ? 0.35 : 0.14)))
                 if isMajor {
-                    let label = Text(Self.label(t, step: major))
+                    let label = context.resolve(Text(Self.label(t, step: major))
                         .font(.system(size: 9.5, weight: .semibold, design: .monospaced))
-                        .foregroundColor(Color.white.opacity(0.45))
-                    context.draw(label, at: CGPoint(x: x + 3, y: size.height - 16), anchor: .leading)
+                        .foregroundColor(Color.white.opacity(0.45)))
+                    // The first label clears the playhead's knob; the last
+                    // one is skipped rather than cut off.
+                    let labelX = t == 0 ? x + 9 : x + 3
+                    if labelX + label.measure(in: size).width <= size.width {
+                        context.draw(label, at: CGPoint(x: labelX, y: size.height - 16), anchor: .leading)
+                    }
                 }
                 t += minor
             }
