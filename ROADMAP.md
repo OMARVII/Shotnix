@@ -89,7 +89,7 @@ Everything here is shippable in one or two sessions. Do the reliability fixes fi
   `ImageExporter.swift:45-53` · `Settings.swift:253-257`
 
 - [x] **Pin screenshots at their original capture location** — S / MED
-  CleanShot's signature "freeze part of the screen" behavior. `HistoryItem.captureRect` is already persisted and available at both pin call sites — add an optional rect param with center fallback.
+  The "freeze part of the screen" behavior. `HistoryItem.captureRect` is already persisted and available at both pin call sites — add an optional rect param with center fallback.
   `PinnedWindow.swift:10-14, 67` · `QuickAccessOverlay.swift:589-598` · `HistoryPanelController.swift:538-541`
 
 - [x] **Overlay quick actions: "Copy Text" (OCR) + post-save "Reveal in Finder"** — S / MED
@@ -176,7 +176,7 @@ Everything here is shippable in one or two sessions. Do the reliability fixes fi
   Displays now matched by display ID via `ScreenCoordinates` (Utilities/ScreenCoordinates.swift); `fallbackCapture` converts AppKit→CG. Same fix applied to `RecordingEngine` display/window source resolution.
 
 - [ ] **Desktop-icon hiding without restarting Finder** — M / HIGH
-  Currently terminates and relaunches Finder *twice per capture* (closing the user's Finder windows, ~2s), and returns before icons actually disappear, so the shot can fire too early. Replace with per-screen wallpaper-colored overlay windows (CleanShot's approach).
+  Currently terminates and relaunches Finder *twice per capture* (closing the user's Finder windows, ~2s), and returns before icons actually disappear, so the shot can fire too early. Replace with per-screen wallpaper-colored overlay windows.
   `DesktopIconsManager.swift:43-65, 6` · `CaptureEngine.swift:48-56`
 
 - [ ] **Move image encoding/IO off the main actor** — M / MED
@@ -253,4 +253,4 @@ Ordered by expected payoff; pick based on where you want Shotnix positioned.
 | v0.18 | "It never loses your work" | Phase 1 (all small — 1A reliability first, then 1B features) |
 | v0.19 | "It feels professional" | Phase 2 (focus-stealing, true window capture, pause/resume, undo, WYSIWYG) |
 | v0.20 | "The features are real" | Phase 3 (scrolling stitcher, export sheet with GIF, adjustable selection) |
-| v0.21+ | "The bets" | Phase 4, one per release — cloud share first if positioning against CleanShot, webcam first if positioning against Loom/Screen Studio |
+| v0.21+ | "The bets" | Phase 4, one per release — cloud share, then webcam |

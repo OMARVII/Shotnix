@@ -257,7 +257,7 @@ private final class QuickAccessWindow: NSPanel {
         // that can interfere with hit-testing on the controls overlay above.
         let thumbFrame = NSRect(x: 0, y: progressH, width: thumbW, height: thumbH)
 
-        // ── Full-bleed capture, CleanShot-style: fixed card size, and the
+        // ── Full-bleed capture: fixed card size, and the
         // screenshot scaled to FILL the entire card — center-cropped when the
         // aspect differs, zoomed up when the capture is smaller than the
         // card. Bold and instantly readable; the card's own rounded corners
@@ -388,7 +388,7 @@ private final class QuickAccessWindow: NSPanel {
         guard hovered != isHovered else { return }
         isHovered = hovered
 
-        // Pause/resume auto-dismiss timer on hover (like CleanShot X)
+        // Pause/resume auto-dismiss timer on hover
         if hovered {
             dismissTimer?.invalidate()
             timeoutProgressLayer?.removeAnimation(forKey: "timeoutProgress")
@@ -770,7 +770,7 @@ private final class QuickAccessWindow: NSPanel {
     }
 }
 
-// MARK: – Draggable thumbnail (drag-and-drop to Finder/apps like CleanShot X)
+// MARK: – Draggable thumbnail (drag-and-drop to Finder and other apps)
 
 @MainActor
 private final class DraggableImageView: NSImageView, NSDraggingSource {

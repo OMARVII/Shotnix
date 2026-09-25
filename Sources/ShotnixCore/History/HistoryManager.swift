@@ -410,7 +410,7 @@ final class HistoryManager: ObservableObject {
 
     nonisolated static func applyScreenshotMetadata(to path: String, rect: CGRect?) {
         let url = URL(fileURLWithPath: path) as NSURL
-        // Mark as screenshot for Spotlight/Finder (same as macOS native + CleanShot X)
+        // Mark as screenshot for Spotlight/Finder (as macOS marks its own screenshots)
         let isScreenCapture = true as NSNumber
         let plist = try? PropertyListSerialization.data(fromPropertyList: isScreenCapture, format: .binary, options: 0)
         if let plist {
