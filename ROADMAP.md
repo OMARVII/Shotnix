@@ -134,7 +134,7 @@ Everything here is shippable in one or two sessions. Do the reliability fixes fi
   Committed text can never be edited (no double-click path); entry is a fixed 200×30 single-line field hardcoded to bold 18pt. Add double-click re-edit, font size/style controls, multi-line.
   `AnnotationCanvas.swift:730-758, 359-389` · `AnnotationObject.swift:516`
 
-- [ ] **Extend video-editor undo to all mutations** — M / HIGH
+- [x] **Extend video-editor undo to all mutations** — M / HIGH ✅ 2026-09-25 *(editor revamp: every edit goes through one `mutate(coalesce:)`; drags and slider scrubs are one step each)*
   Fades, zoom-keyframe sliders, effect bindings, moveZoom drags, aspect/background presets all mutate with no snapshot — ⌘Z then reverts the last *timeline* edit instead. Route everything through one `mutate(undoable:)` helper with drag coalescing (the `beginTimelineTrim`/`finishTimelineTrim` pattern already exists).
   `VideoDemoEditor.swift:2275-2287, 2441-2474, 2505-2525, 3710-3721, 2601-2603`
 
@@ -153,7 +153,7 @@ Everything here is shippable in one or two sessions. Do the reliability fixes fi
   `flatten()` uses `cacheDisplay` — a Retina capture edited on a 1x monitor exports at half resolution; nil-window fallback hardcodes scale 2. Render into an offscreen `NSBitmapImageRep` sized to source pixels.
   `AnnotationCanvas.swift:912-934, 92-96, 888-908`
 
-- [ ] **WYSIWYG: make video export match preview** — M / HIGH
+- [x] **WYSIWYG: make video export match preview** — M / HIGH ✅ 2026-09-25 *(one Core Image renderer draws the live preview and every exported frame)*
   Preview shows gradient background + blur slider; export paints flat color, never applies blur. Preview text is 16pt; export uses `max(width*0.026, 26)`. Fix export (CAGradientLayer + CIGaussianBlur) and match preview text sizing to the export formula.
   `VideoDemoEditor.swift:4153-4174` vs `:1306-1321` · `:4238` vs `:1431-1432`
 
@@ -195,7 +195,7 @@ Everything here is shippable in one or two sessions. Do the reliability fixes fi
   Fix: row-signature/cross-correlation search for where the previous frame's bottom rows reappear; frame-count cap + ~~downsampled-hash dedup~~ ✅ (2026-09-12: 32×32 luminance-grid dedup with MAD threshold replaced the full-buffer memcmp); Escape/hotkey stop; `visibleFrame`-clamp the HUD.
   `ScrollingCaptureController.swift:156-204, 163-173, 64-79, 44-62, 256-259`
 
-- [ ] **Export sheet: GIF + fps + resolution + HEVC** — L / HIGH ← *loudest competitive gap (3 analyzers)*
+- [x] **Export sheet: GIF + fps + resolution + HEVC** — L / HIGH ← *loudest competitive gap (3 analyzers)* ✅ 2026-09-25 *(720p–4K, 24/30/60 fps, quality presets, H.264/HEVC hardware encode, GIF sizes/fps, size estimate, cancel, copy-to-clipboard)*
   Recorder hardcodes H.264/MP4; editor exports fixed 30fps `AVAssetExportPresetHighestQuality` MP4, silently downsampling 60fps recordings (the sidecar's fps field is never read); zero GIF code exists. v1: format (MP4/GIF), fps (source/30/60), resolution scale; GIF via AVAssetReader → CGImageDestination; HEVC toggle rides along (~40% smaller, hardware-encoded).
   `RecordingEngine.swift:199, 606-621, 746-756` · `VideoDemoEditor.swift:1018, 1051-1056, 2727-2730` · `VideoDemoRecordingMetadata.swift:68`
 
@@ -213,9 +213,9 @@ Ordered by expected payoff; pick based on where you want Shotnix positioned.
   No share flow exists anywhere (no NSSharingService, no destinations tab). Account-free version — user-configured S3/R2/Imgur/custom endpoint, link auto-copied — fits the "No subscription. No account." positioning. Even a minimal `NSSharingServicePicker` on the last capture is a big step.
   `README.md:28` · `PreferencesWindowController.swift:7-33` · `AppDelegate.swift:230-271`
 
-- [ ] **Webcam overlay for recordings** — L / HIGH
-  Table stakes for the tutorial audience the demo editor targets (Loom/CleanShot/Screen Studio all have it). An `AVCaptureSession` already runs mic-only; add a floating circular preview window excluded from capture via the HUD's existing exclusion pattern, recorded as a separate track, composited in the editor via the sidecar architecture.
-  `RecordingEngine.swift:540-560, 73` · `VideoDemoRecordingMetadata.swift`
+- [x] **Webcam overlay for recordings** — L / HIGH *(done 2026-09-25)*
+  Camera recorded as its own movie (aligned by first-frame host time), a live bubble excluded from capture, a second composition track that follows every edit, a pass-through compositor feeding preview and export the matching camera frame, and a Camera inspector (shape, size, 8 anchors + drag-to-snap, mirror, shrink while zoomed).
+  `CameraCapture.swift` · `VideoCameraComposition.swift` · `VideoRenderer.swift`
 
 - [ ] **Layout-aware OCR: copy-as-table, link detection, language settings** — L / HIGH
   `recognizeText` joins `topCandidates(1)` with newlines and discards every bounding box — multi-column text interleaves, tables lose alignment. Keeping observations + boxes unlocks column detection, copy-as-table, tappable links (Shottr's headline feature). Language/accuracy settings ride along.
@@ -229,9 +229,15 @@ Ordered by expected payoff; pick based on where you want Shotnix positioned.
   Spotlight is closest to free — `drawCropOverlay` already implements the outside-dimming rendering. Freehand highlighter = `FreehandAnnotation`'s point array + the highlighter's 0.4-alpha butt-cap stroke.
   `AnnotationObject.swift:5-7, 396-440` · `AnnotationCanvas.swift:338-355`
 
-- [ ] **Real video blur (replaces the Phase-1 "Redact" rename)** — L / MED
+- [x] **Real video blur (replaces the Phase-1 "Redact" rename)** — L / MED ✅ 2026-09-25 *(video side; annotation-editor blur intensity controls still open)*
   Region blur/pixelation over video needs a custom `AVVideoCompositing` pass (CIGaussianBlur/CIPixellate per frame). Also add intensity controls to the annotation editor's blur/pixelate (hardcoded radius 12 / scale 10 — weak blur can leak text).
   `VideoDemoEditor.swift:1468-1476, 4257-4265` · `AnnotationObject.swift:450, 482`
+
+- [x] **Video editor — camera, captions, keyboard shortcuts, crop** *(done 2026-09-25)*
+  On-device captions (SpeechTranscriber on macOS 26, SFSpeechRecognizer before) with word timing and loudness-refined onsets; keycap overlay (shortcuts only, Accessibility); crop with aspect locks. Timeline, crop, and preview drags now use a stable origin in global coordinates (SwiftUI refreshes gesture closures mid-drag and local coordinates lag a moving view) — covered by real mouse-driven tests.
+
+- [ ] **Video editor — next**
+  Camera layouts (side-by-side, camera-only scenes, per-segment layout changes), caption styles and translation, optional click sounds, and multi-recording projects.
 
 - [ ] **Localization + accessibility pass** — L / LOW (urgency) — but cost grows with every custom-HUD surface shipped; budget it before 1.0.
 
