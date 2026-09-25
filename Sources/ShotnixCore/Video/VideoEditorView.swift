@@ -552,6 +552,7 @@ struct VideoCommandPalette: View {
             Command(id: "auto", title: "Auto Zoom from Clicks", symbol: "sparkles", shortcut: "") { model.autoZoom() },
             Command(id: "remove-zooms", title: "Remove All Zooms", symbol: "trash", shortcut: "") { model.removeAllZooms() },
             Command(id: "idle", title: "Speed Up Idle Moments", symbol: "hare", shortcut: "") { model.speedUpIdle() },
+            Command(id: "crop", title: "Crop the Recording…", symbol: "crop", shortcut: "") { model.beginCrop() },
             Command(id: "text", title: "Add Text", symbol: "textformat", shortcut: "T") { model.addOverlay(.text) },
             Command(id: "highlight", title: "Add Highlight", symbol: "rectangle.dashed", shortcut: "H") { model.addOverlay(.highlight) },
             Command(id: "arrow", title: "Add Arrow", symbol: "arrow.up.right", shortcut: "A") { model.addOverlay(.arrow) },
@@ -569,11 +570,56 @@ struct VideoCommandPalette: View {
             Command(id: "end", title: "Go to End", symbol: "forward.end.fill", shortcut: "⌘→") { model.seek(to: model.timelineDuration) },
             Command(id: "reveal", title: "Show Recording in Finder", symbol: "folder", shortcut: "") { model.revealSource() },
             Command(id: "shortcuts", title: "Keyboard Shortcuts", symbol: "keyboard", shortcut: "?") { model.isShortcutsPresented = true },
-        ] + VideoDemoProject.AspectPreset.allCases.map { preset in
+        ] + scriptCommands + cameraCommands + soundCommands + VideoDemoProject.AspectPreset.allCases.map { preset in
             Command(id: "aspect-\(preset.rawValue)", title: "Aspect Ratio \(preset.title) — \(preset.detail)", symbol: preset.symbol, shortcut: "") {
                 model.setAspect(preset)
             }
         }
+    }
+}
+
+extension VideoCommandPalette {
+    /// Words, captions, and edit-by-text.
+    fileprivate var scriptCommands: [Command] {
+        guard model.hasAudio else { return [] }
+        if model.project.captions.isEmpty {
+            return [Command(id: "transcribe", title: "Transcribe Narration (Captions, Edit by Text)", symbol: "waveform", shortcut: "") {
+                model.inspectorTab = .captions
+                model.generateCaptions()
+            }]
+        }
+        return [
+            Command(id: "fillers", title: "Remove Ums", symbol: "wand.and.stars", shortcut: "") { model.removeFillers() },
+            Command(id: "pauses", title: "Shorten Pauses", symbol: "forward.end", shortcut: "") { model.shortenPauses() },
+            Command(id: "caption-line", title: "Add Caption Line at Playhead", symbol: "captions.bubble", shortcut: "") { model.addCaptionAtPlayhead() },
+            Command(id: "srt", title: "Save Subtitles (.srt)…", symbol: "doc.text", shortcut: "") { model.exportSRT() },
+        ]
+    }
+
+    fileprivate var cameraCommands: [Command] {
+        guard model.hasWebcamFootage else { return [] }
+        return [
+            Command(id: "camera-full", title: "Full Camera at Playhead", symbol: "person.crop.rectangle", shortcut: "") { model.addCameraLayout(.fullscreen) },
+            Command(id: "camera-side", title: "Camera Side by Side at Playhead", symbol: "rectangle.split.2x1", shortcut: "") { model.addCameraLayout(.sideBySide) },
+            Command(id: "camera-intro", title: "Full-Camera Intro and Outro", symbol: "person.crop.rectangle.stack", shortcut: "") { model.addCameraIntroOutro() },
+        ]
+    }
+
+    fileprivate var soundCommands: [Command] {
+        var commands: [Command] = []
+        if model.hasAudio {
+            let on = model.project.audio.enhanceVoice
+            commands.append(Command(id: "enhance", title: on ? "Stop Enhancing Voice" : "Enhance Voice", symbol: "waveform.badge.plus", shortcut: "") {
+                model.setStyle { $0.audio.enhanceVoice = !on }
+            })
+        }
+        if model.project.canReframe {
+            let on = model.project.reframe
+            commands.append(Command(id: "reframe", title: on ? "Letterbox Instead of Following the Cursor" : "Fill the Frame, Follow the Cursor", symbol: "rectangle.portrait.arrowtriangle.2.outward", shortcut: "") {
+                model.setStyle { $0.reframe = !on }
+            })
+        }
+        return commands
     }
 }
 
