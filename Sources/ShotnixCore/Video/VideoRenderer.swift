@@ -356,6 +356,24 @@ final class VideoRenderPlan: @unchecked Sendable {
         self.keystrokes = keystrokes
 
         captionStyle = project.captionStyle
+        // Included source spans, sorted, for a binary-search "was this word
+        // cut?" (hundreds of lines × words on long takes).
+        let included = segments.map { $0.clip.sourceStart...$0.clip.sourceEnd }.sorted { $0.lowerBound < $1.lowerBound }
+        func isIncluded(_ time: Double) -> Bool {
+            var low = 0
+            var high = included.count - 1
+            while low <= high {
+                let mid = (low + high) / 2
+                if time < included[mid].lowerBound - 0.0001 {
+                    high = mid - 1
+                } else if time > included[mid].upperBound + 0.0001 {
+                    low = mid + 1
+                } else {
+                    return true
+                }
+            }
+            return false
+        }
         captions = project.captions.sorted { $0.start < $1.start }.compactMap { line in
             let ranges = VideoDemoProject.timelineRanges(sourceStart: line.start, sourceEnd: max(line.end, line.start + 0.1), segments: segments)
             guard let first = ranges.first, let last = ranges.last else { return nil }
@@ -363,7 +381,7 @@ final class VideoRenderPlan: @unchecked Sendable {
             var text = line.text
             var words = line.words
             if !words.isEmpty {
-                let kept = words.filter { VideoDemoProject.timelineTimeIfIncluded(sourceTime: ($0.start + $0.end) / 2, segments: segments) != nil }
+                let kept = words.filter { isIncluded(($0.start + $0.end) / 2) }
                 guard !kept.isEmpty else { return nil }
                 if kept.count != words.count {
                     words = kept
