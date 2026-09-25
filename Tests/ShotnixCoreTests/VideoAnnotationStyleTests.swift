@@ -172,6 +172,31 @@ final class VideoAnnotationStyleTests: XCTestCase {
         XCTAssertEqual(brightest(at: 1.09), 0.735, accuracy: 0.05)
     }
 
+    func testDuplicatingAnAnnotationStacksACopyOnTop() async throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent("shotnix-dup-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let url = directory.appendingPathComponent("rec.mp4")
+        try await VideoTestSupport.writeFakeRecording(to: url, size: CGSize(width: 640, height: 400), seconds: 4, fps: 30)
+        VideoDemoDraftStore.delete(for: url)
+        let model = VideoEditorModel(videoURL: url)
+        await model.load()
+        model.seek(to: 1)
+        model.addOverlay(.arrow)
+        let original = try XCTUnwrap(model.selectedOverlay)
+        model.setOverlayColor(original.id, VideoRGBA(hex: 0xFF453A))
+        model.duplicateOverlay(original.id)
+        XCTAssertEqual(model.project.overlayEffects.count, 2)
+        let copy = try XCTUnwrap(model.selectedOverlay)
+        XCTAssertNotEqual(copy.id, original.id)
+        XCTAssertEqual(copy.color, VideoRGBA(hex: 0xFF453A), "same look")
+        XCTAssertGreaterThan(copy.layer, model.project.overlayEffects.first { $0.id == original.id }?.layer ?? 0, "on top")
+        XCTAssertNotEqual(copy.x, original.x, "nudged so both show")
+        model.undo()
+        XCTAssertEqual(model.project.overlayEffects.count, 1)
+        VideoDemoDraftStore.delete(for: url)
+    }
+
     func testPickedColorBecomesTheDefault() async throws {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent("shotnix-style-\(UUID().uuidString)", isDirectory: true)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
