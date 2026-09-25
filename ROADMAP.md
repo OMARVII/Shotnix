@@ -236,8 +236,11 @@ Ordered by expected payoff; pick based on where you want Shotnix positioned.
 - [x] **Video editor — camera, captions, keyboard shortcuts, crop** *(done 2026-09-25)*
   On-device captions (SpeechTranscriber on macOS 26, SFSpeechRecognizer before) with word timing and loudness-refined onsets; keycap overlay (shortcuts only, Accessibility); crop with aspect locks. Timeline, crop, and preview drags now use a stable origin in global coordinates (SwiftUI refreshes gesture closures mid-drag and local coordinates lag a moving view) — covered by real mouse-driven tests.
 
+- [x] **Video editor — edit by text, sound, camera looks and layouts, vertical reframe** *(done 2026-09-25)*
+  Transcript editing (cut/restore words, remove fillers, shorten idle-only pauses); per-kind audio levels (recordings now note mic vs system tracks), voice enhancement (AUSoundIsolation + rumble filter + compression, latency-compensated), BS.1770 loudness normalization on export; person-segmentation backdrops (blur/remove/cutout) and camera layout regions (full camera, side by side, hidden); pointer-following reframe for narrow outputs. Sparkle 2.10 fixes updates on macOS 26 (".app" bundle ID cache folder). Long-take performance pass: timeline redraws only on timeline changes, canvas lanes, forward-pass camera path.
+
 - [ ] **Video editor — next**
-  Camera layouts (side-by-side, camera-only scenes, per-segment layout changes), caption styles and translation, optional click sounds, and multi-recording projects.
+  Caption styles and translation, optional click sounds, multi-recording projects, and transitions between clips.
 
 - [ ] **Localization + accessibility pass** — L / LOW (urgency) — but cost grows with every custom-HUD surface shipped; budget it before 1.0.
 
