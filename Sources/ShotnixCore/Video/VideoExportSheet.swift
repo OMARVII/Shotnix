@@ -39,11 +39,7 @@ struct VideoExportSheet: View {
     }
 
     private func close() {
-        withAnimation(.easeOut(duration: 0.15)) {
-            model.isExportPresented = false
-        }
-        if case .running = model.exportPhase { return }
-        model.exportPhase = .idle
+        model.closeExportSheet()
     }
 
     private var header: some View {
@@ -202,6 +198,12 @@ struct VideoExportSheet: View {
                 .font(.system(size: 12, weight: .medium))
                 .foregroundStyle(VideoEditorTheme.textSecondary)
                 .lineLimit(1)
+            if let voice = model.voiceJob, progress < 0.001 {
+                // Enhance voice finishes first.
+                Label("Cleaning up your voice first… \(Int((voice * 100).rounded()))%", systemImage: "waveform")
+                    .font(.system(size: 11.5, weight: .medium))
+                    .foregroundStyle(VideoEditorTheme.textSecondary)
+            }
             ProgressView(value: progress)
                 .progressViewStyle(.linear)
                 .tint(Color.accentColor)

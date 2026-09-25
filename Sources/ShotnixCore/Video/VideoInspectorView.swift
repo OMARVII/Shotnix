@@ -1050,7 +1050,7 @@ struct VideoSelectionInspector: View {
                     .background(RoundedRectangle(cornerRadius: 7, style: .continuous).fill(Color.black.opacity(0.3)))
                     .overlay(RoundedRectangle(cornerRadius: 7, style: .continuous).strokeBorder(VideoEditorTheme.cardStroke, lineWidth: 1))
                     .focused($textFocused)
-                    .onAppear { textFocused = overlay.text == "Add a caption" }
+                    .onChange(of: model.textEditRequest) { _ in textFocused = true }
             }
         }
         if overlay.kind.hasColor {

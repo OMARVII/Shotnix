@@ -112,6 +112,23 @@ final class VideoDemoEditorWindowController: NSWindowController, NSWindowDelegat
     func windowDidExitFullScreen(_ notification: Notification) { layoutWindowButtons() }
     func windowDidBecomeMain(_ notification: Notification) { layoutWindowButtons() }
 
+    /// Closing mid-export (or mid-transcription) asks first.
+    func windowShouldClose(_ sender: NSWindow) -> Bool {
+        guard let job = model.runningJobDescription else { return true }
+        let alert = NSAlert()
+        alert.messageText = "Shotnix is still \(job)"
+        alert.informativeText = "Closing the editor stops it."
+        alert.addButton(withTitle: "Keep Editing")
+        alert.addButton(withTitle: "Stop and Close")
+        alert.alertStyle = .warning
+        alert.beginSheetModal(for: sender) { [weak self, weak sender] response in
+            guard response == .alertSecondButtonReturn, let self, let sender else { return }
+            self.model.stop()
+            sender.close()
+        }
+        return false
+    }
+
     func windowWillClose(_ notification: Notification) {
         model.stop()
         Self.openControllers.removeAll { $0 === self }

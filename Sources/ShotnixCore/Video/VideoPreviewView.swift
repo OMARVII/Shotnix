@@ -543,6 +543,10 @@ struct VideoStageInteractionLayer: View {
                 .frame(width: rect.width, height: rect.height)
                 .offset(x: rect.minX, y: rect.minY)
                 .onHover { inside in (inside ? NSCursor.openHand : NSCursor.arrow).set() }
+                .simultaneousGesture(TapGesture(count: 2).onEnded {
+                    // Double-click a text annotation to type in it.
+                    if effect.kind == .text { model.textEditRequest += 1 }
+                })
                 .gesture(
                     DragGesture(minimumDistance: 1, coordinateSpace: .global)
                         .onChanged { value in

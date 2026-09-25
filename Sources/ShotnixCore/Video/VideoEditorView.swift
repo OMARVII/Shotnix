@@ -294,6 +294,7 @@ struct VideoKeyboardBridge: NSViewRepresentable {
     final class Coordinator {
         private let model: VideoEditorModel
         private var monitor: Any?
+        private var clickMonitor: Any?
         private weak var view: NSView?
 
         init(model: VideoEditorModel) {
@@ -303,6 +304,23 @@ struct VideoKeyboardBridge: NSViewRepresentable {
         func install(on view: NSView) {
             self.view = view
             guard monitor == nil else { return }
+            // Clicking anywhere outside the text being edited ends the
+            // editing, so the editor's keys work again.
+            clickMonitor = NSEvent.addLocalMonitorForEvents(matching: .leftMouseDown) { [weak self] incoming in
+                nonisolated(unsafe) let event = incoming
+                MainActor.assumeIsolated {
+                    guard let window = self?.view?.window, event.window === window,
+                          let responder = window.firstResponder as? NSView,
+                          responder is NSText || responder is NSTextField else { return }
+                    // A field's editor stands in for the field itself.
+                    let editing: NSView = (responder as? NSText).flatMap { $0.isFieldEditor ? ($0.delegate as? NSView) : nil } ?? responder
+                    let frame = window.contentView?.superview ?? window.contentView
+                    let hit = frame?.hitTest(frame?.convert(event.locationInWindow, from: nil) ?? .zero)
+                    if let hit, hit === editing || hit.isDescendant(of: editing) { return }
+                    window.makeFirstResponder(nil)
+                }
+                return incoming
+            }
             monitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] incoming in
                 nonisolated(unsafe) let event = incoming
                 let consumed: Bool = MainActor.assumeIsolated {
@@ -311,9 +329,11 @@ struct VideoKeyboardBridge: NSViewRepresentable {
                           window.isKeyWindow,
                           event.window === window else { return false }
                     if let responder = window.firstResponder, responder is NSText || responder is NSTextField {
-                        // Esc leaves a text field; everything else types.
+                        // Esc leaves a text field (and closes the command
+                        // palette it belongs to); everything else types.
                         if event.keyCode == 53 {
                             window.makeFirstResponder(nil)
+                            if self.model.isCommandPalettePresented { self.model.isCommandPalettePresented = false }
                             return true
                         }
                         return false
@@ -326,6 +346,7 @@ struct VideoKeyboardBridge: NSViewRepresentable {
 
         deinit {
             if let monitor { NSEvent.removeMonitor(monitor) }
+            if let clickMonitor { NSEvent.removeMonitor(clickMonitor) }
         }
     }
 }
@@ -337,13 +358,16 @@ extension VideoEditorModel {
         let key = event.charactersIgnoringModifiers?.lowercased() ?? ""
         let code = event.keyCode
 
-        // Modal surfaces first.
+        // Modal surfaces first. Undo never reaches the edit behind them.
+        let isUndoKey = key == "z" && (modifiers == [.command] || modifiers == [.command, .shift])
         if isExportPresented {
             if code == 53, !isExporting {
-                withAnimation(.easeOut(duration: 0.15)) { isExportPresented = false }
+                closeExportSheet()
                 return true
             }
-            return modifiers.isEmpty
+            // Return presses the sheet's default button.
+            if code == 36 || code == 76 { return false }
+            return modifiers.isEmpty || isUndoKey
         }
         if isCommandPalettePresented || isShortcutsPresented {
             if code == 53 {
@@ -351,12 +375,13 @@ extension VideoEditorModel {
                 isShortcutsPresented = false
                 return true
             }
-            return false
+            return isUndoKey
         }
 
         if isCropping {
             switch code {
-            case 53, 36, 76: endCrop(); return true
+            case 53: cancelCrop(); return true
+            case 36, 76: endCrop(); return true
             default:
                 if modifiers == [.command], key == "z" { undo(); return true }
                 if modifiers == [.command, .shift], key == "z" { redo(); return true }

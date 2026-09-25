@@ -1,4 +1,5 @@
 import AVFoundation
+import Speech
 import XCTest
 @testable import ShotnixCore
 
@@ -98,9 +99,11 @@ final class VideoCaptionTests: XCTestCase {
         say.waitUntilExit()
 
         let stages = StageLog()
-        let words = try await VideoCaptionTranscriber.transcribe(url: audio, languageIdentifier: "en-US") { stage in
+        let result = try await VideoCaptionTranscriber.transcribe(url: audio, languageIdentifier: "en-US") { stage in
             stages.append(stage)
         }
+        let words = result.words
+        XCTAssertEqual(result.language, "en-US")
         let text = words.map(\.text).joined(separator: " ").lowercased()
         print("TRANSCRIPT: \(text)")
         print("WORDS: \(words.map { String(format: "%@ %.2f-%.2f", $0.text, $0.start, $0.end) })")
@@ -115,6 +118,98 @@ final class VideoCaptionTests: XCTestCase {
 }
 
 extension VideoCaptionTests {
+    func testLanguageFallsBackWithinTheSameLanguage() {
+        let supported = ["en-US", "en-GB", "de-DE", "de-AT", "fr-FR", "pt-BR", "pt-PT"].map(Locale.init(identifier:))
+        func closest(_ identifier: String) -> String? {
+            VideoCaptionTranscriber.closest(to: Locale(identifier: identifier), in: supported)?.identifier(.bcp47)
+        }
+        XCTAssertEqual(closest("en-DE"), "en-US", "English on a German Mac")
+        XCTAssertEqual(closest("en-GB"), "en-GB")
+        XCTAssertEqual(closest("de-CH"), "de-DE")
+        XCTAssertEqual(closest("pt-AO"), "pt-BR")
+        XCTAssertNil(closest("ja-JP"))
+    }
+
+    func testFillersDependOnTheLanguage() {
+        let line = VideoCaptionLine(start: 0, end: 3, text: "", words: ["Clique", "em", "um", "botão", "uh"].enumerated().map { VideoCaptionWord(text: $0.element, start: Double($0.offset) * 0.5, end: Double($0.offset) * 0.5 + 0.4) })
+        let portuguese = VideoTranscript.words(from: [line], language: "pt-BR")
+        XCTAssertEqual(portuguese.filter(\.isFiller).map(\.text), ["uh"], "\"um\" is a word in Portuguese")
+        let english = VideoTranscript.words(from: [line], language: "en-US")
+        XCTAssertEqual(english.filter(\.isFiller).map(\.text), ["um", "uh"])
+        let german = VideoCaptionLine(start: 0, end: 2, text: "", words: [VideoCaptionWord(text: "er", start: 0, end: 0.3), VideoCaptionWord(text: "ähm", start: 0.5, end: 0.8)])
+        XCTAssertEqual(VideoTranscript.words(from: [german], language: "de-DE").filter(\.isFiller).map(\.text), ["ähm"])
+    }
+
+    func testRecognizedStretchesJoinUp() {
+        typealias Pieces = LegacyRecognition.Pieces
+        let first: Pieces = [("Open", 0, 0.3), ("settings.", 0.35, 0.9)]
+        let second: Pieces = [("Then", 3.4, 3.6), ("save.", 3.7, 4.0)]
+        // One result per utterance: they add up.
+        XCTAssertEqual(LegacyRecognition.merge(LegacyRecognition.merge([], first), second).map(\.text), ["Open", "settings.", "Then", "save."])
+        // A result with everything so far replaces what was collected.
+        let everything: Pieces = first + second
+        XCTAssertEqual(LegacyRecognition.merge(first, everything).map(\.text), ["Open", "settings.", "Then", "save."])
+        // A stale partial repeat changes nothing.
+        XCTAssertEqual(LegacyRecognition.merge(everything, first).count, 4)
+    }
+
+    func testChineseAndJapaneseCaptionsHaveNoSpaces() {
+        let words = [("今日", 0.0), ("は", 0.3), ("天気", 0.5), ("が", 0.8), ("いい", 1.0), ("OK", 1.3)].map { VideoCaptionWord(text: $0.0, start: $0.1, end: $0.1 + 0.2) }
+        XCTAssertEqual(VideoCaptionBuilder.lines(from: words).map(\.text), ["今日は天気がいい OK"])
+        XCTAssertEqual(VideoCaptionBuilder.joined(["Hello", "there."]), "Hello there.")
+    }
+
+    func testSubtitlesLeaveOutCutWords() {
+        let line = VideoCaptionLine(start: 0.95, end: 3, text: "Um, so open the settings", words: [
+            VideoCaptionWord(text: "Um,", start: 1.0, end: 1.3),
+            VideoCaptionWord(text: "so", start: 1.45, end: 1.6),
+            VideoCaptionWord(text: "open", start: 1.7, end: 2.0),
+            VideoCaptionWord(text: "the", start: 2.05, end: 2.2),
+            VideoCaptionWord(text: "settings", start: 2.25, end: 2.8),
+        ])
+        var project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/cut.mp4"), duration: 5, sourceSize: CGSize(width: 1280, height: 800))
+        project.captions = [line]
+        // "Um," is cut from the video.
+        project.removeSourceRanges([0.98...1.4], totalDuration: 5)
+        let srt = VideoCaptionBuilder.srt(lines: project.captions, segments: project.timelineSegments(totalDuration: 5))
+        XCTAssertTrue(srt.contains("so open the settings"))
+        XCTAssertFalse(srt.contains("Um"), srt)
+    }
+
+    /// The macOS 13–25 recognizer, on-device only, keeps every sentence
+    /// of a narration with long pauses. Opt-in (SHOTNIX_SPEECH_TEST=1).
+    func testLegacyRecognizerKeepsEverySentence() async throws {
+        guard ProcessInfo.processInfo.environment["SHOTNIX_SPEECH_TEST"] == "1" else {
+            throw XCTSkip("Set SHOTNIX_SPEECH_TEST=1 to run the on-device speech test")
+        }
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent("shotnix-legacy-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let audio = directory.appendingPathComponent("speech.aiff")
+        let say = Process()
+        say.executableURL = URL(fileURLWithPath: "/usr/bin/say")
+        say.arguments = ["-v", "Samantha", "-o", audio.path, "Open the settings panel. [[slnc 2500]] Then turn on dark mode. [[slnc 2500]] Finally save your changes."]
+        try say.run()
+        say.waitUntilExit()
+        // The older recognizer needs the Speech Recognition permission (and
+        // a usage description the test runner doesn't have).
+        guard SFSpeechRecognizer.authorizationStatus() == .authorized else {
+            throw XCTSkip("Speech Recognition isn't allowed for the test runner")
+        }
+        VideoCaptionTranscriber.usesLegacyRecognizer = true
+        defer { VideoCaptionTranscriber.usesLegacyRecognizer = false }
+        do {
+            let result = try await VideoCaptionTranscriber.transcribe(url: audio, languageIdentifier: "en-US") { _ in }
+            let text = result.words.map(\.text).joined(separator: " ").lowercased()
+            print("LEGACY TRANSCRIPT: \(text)")
+            XCTAssertTrue(text.contains("settings"), text)
+            XCTAssertTrue(text.contains("dark mode"), text)
+            XCTAssertTrue(text.contains("save"), text)
+        } catch VideoCaptionTranscriber.Failure.needsOnDeviceModel(let name) {
+            throw XCTSkip("No on-device model for \(name) on this Mac")
+        }
+    }
+
     /// The editor flow: Generate Captions on a narrated recording.
     @MainActor
     func testEditorGeneratesCaptionsFromNarration() async throws {

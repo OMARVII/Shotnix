@@ -637,6 +637,9 @@ struct VideoDemoProject: Codable, Equatable, Identifiable {
     /// pointer instead of letterboxing the recording.
     var reframe = false
     var captions: [VideoCaptionLine]
+    /// The language the captions were transcribed in (BCP-47), for
+    /// language-aware cleanup like "Remove ums".
+    var transcriptLanguage: String?
     var captionStyle: VideoCaptionStyle
     var keystrokes: [VideoKeystrokeEvent]
     var keystrokeStyle: VideoKeystrokeStyle
@@ -1163,7 +1166,7 @@ extension VideoDemoProject {
         case aspectPreset, background, backgroundBlur, padding, cornerRadius, shadow, outline
         case zoomRegions, zoomSpeed, defaultZoomScale, motionBlur
         case overlayEffects, cursorSamples, clickEvents, nativeCursorVisible, cursor, audio
-        case webcam, cameraLayouts, reframe, captions, captionStyle, keystrokes, keystrokeStyle, crop
+        case webcam, cameraLayouts, reframe, captions, transcriptLanguage, captionStyle, keystrokes, keystrokeStyle, crop
         // Legacy (v1) keys
         case backgroundPreset, customBackgroundPath, stageInset, shadowStrength, zoomKeyframes
         case showCursorOverlay, enlargeCursor, showClickRipple, smoothCursor, cursorScale, clickSpotlight, cursorMotionBlur
@@ -1190,6 +1193,7 @@ extension VideoDemoProject {
         cameraLayouts = (try? container.decode([VideoCameraLayoutRegion].self, forKey: .cameraLayouts)) ?? []
         reframe = try container.decodeIfPresent(Bool.self, forKey: .reframe) ?? false
         captions = (try? container.decode([VideoCaptionLine].self, forKey: .captions)) ?? []
+        transcriptLanguage = try? container.decodeIfPresent(String.self, forKey: .transcriptLanguage)
         captionStyle = (try? container.decode(VideoCaptionStyle.self, forKey: .captionStyle)) ?? VideoCaptionStyle()
         keystrokes = (try? container.decode([VideoKeystrokeEvent].self, forKey: .keystrokes)) ?? []
         keystrokeStyle = (try? container.decode(VideoKeystrokeStyle.self, forKey: .keystrokeStyle)) ?? VideoKeystrokeStyle()
@@ -1279,6 +1283,7 @@ extension VideoDemoProject {
         try container.encode(cameraLayouts, forKey: .cameraLayouts)
         try container.encode(reframe, forKey: .reframe)
         try container.encode(captions, forKey: .captions)
+        try container.encodeIfPresent(transcriptLanguage, forKey: .transcriptLanguage)
         try container.encode(captionStyle, forKey: .captionStyle)
         try container.encode(keystrokes, forKey: .keystrokes)
         try container.encode(keystrokeStyle, forKey: .keystrokeStyle)

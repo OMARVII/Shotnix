@@ -356,6 +356,13 @@ final class VideoRenderPlan: @unchecked Sendable {
         self.keystrokes = keystrokes
 
         captionStyle = project.captionStyle
+        captions = Self.visibleCaptions(project.captions, segments: segments)
+    }
+
+    /// Caption lines as they appear in the edited video: timeline times,
+    /// and words cut from the video (an "um", a retake) left out — the
+    /// preview, the export, and the subtitles file all use this.
+    static func visibleCaptions(_ lines: [VideoCaptionLine], segments: [VideoDemoTimelineSegment]) -> [Caption] {
         // Included source spans, sorted, for a binary-search "was this word
         // cut?" (hundreds of lines × words on long takes).
         let included = segments.map { $0.clip.sourceStart...$0.clip.sourceEnd }.sorted { $0.lowerBound < $1.lowerBound }
@@ -374,10 +381,9 @@ final class VideoRenderPlan: @unchecked Sendable {
             }
             return false
         }
-        captions = project.captions.sorted { $0.start < $1.start }.compactMap { line in
+        return lines.sorted { $0.start < $1.start }.compactMap { line in
             let ranges = VideoDemoProject.timelineRanges(sourceStart: line.start, sourceEnd: max(line.end, line.start + 0.1), segments: segments)
             guard let first = ranges.first, let last = ranges.last else { return nil }
-            // Words cut from the video (an "um", a retake) leave the caption too.
             var text = line.text
             var words = line.words
             if !words.isEmpty {
@@ -385,7 +391,7 @@ final class VideoRenderPlan: @unchecked Sendable {
                 guard !kept.isEmpty else { return nil }
                 if kept.count != words.count {
                     words = kept
-                    text = kept.map(\.text).joined(separator: " ")
+                    text = VideoCaptionBuilder.joined(kept.map(\.text))
                 }
             }
             return Caption(id: line.id, start: first.lowerBound, end: last.upperBound, text: text, words: words)
@@ -1195,7 +1201,9 @@ final class VideoFrameRenderer {
             let text = NSMutableAttributedString()
             if highlight {
                 for (index, word) in caption.words.enumerated() {
-                    if index > 0 { text.append(NSAttributedString(string: " ", attributes: [.font: font])) }
+                    if index > 0, VideoCaptionBuilder.needsSpace(between: caption.words[index - 1].text, and: word.text) {
+                        text.append(NSAttributedString(string: " ", attributes: [.font: font]))
+                    }
                     let color = index <= spoken ? NSColor.white : NSColor.white.withAlphaComponent(0.5)
                     text.append(NSAttributedString(string: word.text, attributes: [.font: font, .foregroundColor: color]))
                 }

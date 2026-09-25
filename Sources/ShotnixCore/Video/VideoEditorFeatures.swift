@@ -5,6 +5,8 @@ import UniformTypeIdentifiers
 struct VideoCaptionJob: Equatable {
     var stage: VideoCaptionTranscriber.Stage
     var error: String?
+    /// The fix is a switch in System Settings.
+    var needsPrivacySettings = false
 
     var title: String {
         if error != nil { return "Couldn't make captions" }
@@ -61,45 +63,78 @@ extension VideoEditorModel {
         }
         let url = project.sourceURL
         let language = captionLanguage.isEmpty ? nil : captionLanguage
+        // Each run has its own token: a cancelled run that finishes late
+        // never touches the one that replaced it.
+        let token = UUID()
+        captionToken = token
         captionJob = VideoCaptionJob(stage: .preparing)
         let report: @Sendable (VideoCaptionTranscriber.Stage) -> Void = { [weak self] stage in
-            guard let self else { return }
             Task { @MainActor in
-                guard self.captionJob?.error == nil, self.captionTask != nil else { return }
+                guard let self, self.captionToken == token, self.captionJob?.error == nil else { return }
                 self.captionJob?.stage = stage
             }
         }
         captionTask = Task { [weak self] in
             do {
-                let words = try await VideoCaptionTranscriber.transcribe(url: url, languageIdentifier: language, progress: report)
-                guard let self else { return }
+                let result = try await VideoCaptionTranscriber.transcribe(url: url, languageIdentifier: language, progress: report)
+                guard let self, self.captionToken == token else { return }
                 self.captionTask = nil
+                self.captionToken = nil
                 guard !Task.isCancelled else {
                     self.captionJob = nil
                     return
                 }
-                let lines = VideoCaptionBuilder.lines(from: words)
+                let lines = VideoCaptionBuilder.lines(from: result.words)
+                let firstTranscript = !self.project.captions.contains { !$0.words.isEmpty }
                 self.mutate { project in
                     project.captions = lines
-                    project.captionStyle.visible = true
+                    project.transcriptLanguage = result.language
+                    // A first transcript shows up as captions; a new one
+                    // keeps whatever you chose.
+                    if firstTranscript { project.captionStyle.visible = true }
                 }
                 self.captionJob = nil
+                self.validateSelection()
                 self.showNotice("Captions ready — \(lines.count) line\(lines.count == 1 ? "" : "s")", symbol: "captions.bubble.fill")
             } catch {
-                guard let self else { return }
+                guard let self, self.captionToken == token else { return }
                 self.captionTask = nil
+                self.captionToken = nil
                 if Task.isCancelled || error is CancellationError {
                     self.captionJob = nil
                 } else {
-                    self.captionJob = VideoCaptionJob(stage: .preparing, error: error.localizedDescription)
+                    let failure = error as? VideoCaptionTranscriber.Failure
+                    self.captionJob = VideoCaptionJob(stage: .preparing, error: error.localizedDescription, needsPrivacySettings: failure?.needsPrivacySettings ?? false)
                 }
             }
         }
     }
 
+    /// Real transcribed words (typed caption lines don't count).
+    var hasTranscript: Bool {
+        project.captions.contains { !$0.words.isEmpty }
+    }
+
+    /// A new transcript replaces every line — ask first when there are any.
+    func transcribeAgain() {
+        guard !project.captions.isEmpty else {
+            generateCaptions()
+            return
+        }
+        let alert = NSAlert()
+        alert.messageText = "Transcribe again?"
+        alert.informativeText = "This replaces all \(project.captions.count) caption line\(project.captions.count == 1 ? "" : "s"), including any you edited or typed, with a new transcript in \(captionLanguageTitle)."
+        alert.addButton(withTitle: "Transcribe Again")
+        alert.addButton(withTitle: "Cancel")
+        guard alert.runModal() == .alertFirstButtonReturn else { return }
+        captionJob = nil
+        generateCaptions()
+    }
+
     func cancelCaptions() {
         captionTask?.cancel()
         captionTask = nil
+        captionToken = nil
         captionJob = nil
     }
 
@@ -147,11 +182,14 @@ extension VideoEditorModel {
     func setCaptionWindow(_ id: UUID, timelineStart: Double, timelineEnd: Double, moveWords: Bool) {
         let start = sourceTime(forTimeline: timelineStart)
         let end = max(sourceTime(forTimeline: timelineEnd), start + 0.2)
+        // Where the line starts on screen now, in the recording: if its first
+        // words were cut, that's after the cut, not the line's own start.
+        let shownStart = plan.captions.first { $0.id == id }.map { sourceTime(forTimeline: $0.start) }
         mutate(coalesce: "caption-window-\(id)") { project in
             guard let index = project.captions.firstIndex(where: { $0.id == id }) else { return }
             var line = project.captions[index]
             if moveWords {
-                let delta = start - line.start
+                let delta = start - (shownStart ?? line.start)
                 line.words = line.words.map { VideoCaptionWord(text: $0.text, start: $0.start + delta, end: $0.end + delta) }
             }
             line.start = start
@@ -169,7 +207,7 @@ extension VideoEditorModel {
 
     /// Adds an empty line at the playhead, ready to type.
     func addCaptionAtPlayhead() {
-        let start = sourceTime(forTimeline: clock.time)
+        let start = placementSourceTime(forTimeline: clock.time)
         let nextStart = project.captions.map(\.start).filter { $0 > start + 0.05 }.min() ?? sourceDuration
         let line = VideoCaptionLine(start: start, end: max(min(start + 2.5, nextStart), start + 0.5), text: "New caption")
         mutate { project in
@@ -181,9 +219,12 @@ extension VideoEditorModel {
     }
 
     func clearCaptions() {
-        mutate { $0.captions = [] }
+        mutate {
+            $0.captions = []
+            $0.transcriptLanguage = nil
+        }
         if case .caption = selection { selection = .none }
-        showNotice("Captions cleared", symbol: "trash")
+        showNotice("Transcript and captions removed — ⌘Z to undo", symbol: "trash")
     }
 
     func selectCaption(_ id: UUID) {
@@ -265,12 +306,18 @@ extension VideoEditorModel {
     }
 
     /// Shortens one silence to a short breath.
+    /// ⌫ on a pause shortens it; ⌫ on a shortened one puts it back.
     func shortenPause(before index: Int) {
         let words = transcriptWords
         guard index > 0, words.indices.contains(index) else { return }
         let start = words[index - 1].end + 0.2
         let end = words[index].start - 0.2
         guard end - start > 0.05 else { return }
+        if !isIncluded(sourceTime: (start + end) / 2) {
+            mutate { $0.restoreSourceRange(start...end, totalDuration: sourceDuration) }
+            showNotice("Pause restored", symbol: "arrow.uturn.backward")
+            return
+        }
         mutate { $0.removeSourceRanges([start...end], totalDuration: sourceDuration) }
         showNotice("Pause shortened", symbol: "scissors")
     }
@@ -425,10 +472,14 @@ extension VideoEditorModel {
     /// Adds a layout at the playhead, fitted into the free space there.
     func addCameraLayout(_ layout: VideoCameraLayoutRegion.Layout, duration: Double = 3) {
         guard hasWebcamFootage else { return }
-        var start = sourceTime(forTimeline: clock.time)
+        var start = placementSourceTime(forTimeline: clock.time)
         let others = project.cameraLayouts.sorted { $0.start < $1.start }
-        if let inside = others.first(where: { start >= $0.start && start < $0.end }) { start = inside.end }
-        let next = others.first(where: { $0.start > start })?.start ?? sourceDuration
+        // Step past every layout the playhead sits in — they can run end
+        // to end, so one step may land inside the next.
+        while let inside = others.first(where: { start >= $0.start - 0.001 && start < $0.end - 0.001 }) {
+            start = inside.end
+        }
+        let next = others.first(where: { $0.start >= start - 0.001 })?.start ?? sourceDuration
         let end = min(start + duration, next)
         guard end - start >= VideoCameraLayoutRegion.minimumDuration else {
             showNotice("No room here — move the playhead", symbol: "exclamationmark.triangle")
@@ -444,8 +495,14 @@ extension VideoEditorModel {
     }
 
     /// Full-screen camera for the first and last seconds.
-    func addCameraIntroOutro(length: Double = 3) {
-        guard hasWebcamFootage, sourceDuration > length * 2 + 1 else { return }
+    func addCameraIntroOutro(length preferred: Double = 3) {
+        guard hasWebcamFootage else { return }
+        // Short takes get a shorter intro and outro, with some screen between.
+        let length = min(preferred, (timelineDuration - 1) / 2)
+        guard length >= VideoCameraLayoutRegion.minimumDuration else {
+            showNotice("Too short for an intro and outro", symbol: "exclamationmark.triangle")
+            return
+        }
         let firstStart = segments.first?.clip.sourceStart ?? 0
         let lastEnd = segments.last?.clip.sourceEnd ?? sourceDuration
         mutate { project in

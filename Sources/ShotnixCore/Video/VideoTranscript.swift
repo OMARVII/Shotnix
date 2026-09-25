@@ -8,36 +8,42 @@ struct VideoTranscriptWord: Equatable {
     /// Where it came from (caption line + word index).
     let lineID: UUID
     let index: Int
-
-    /// "um", "uh", "erm"… (punctuation ignored).
-    var isFiller: Bool {
-        let bare = text.lowercased().trimmingCharacters(in: .punctuationCharacters.union(.whitespaces))
-        return VideoTranscript.fillers.contains(bare)
-    }
+    /// "um", "uh", "erm"… in the transcript's language.
+    var isFiller = false
 }
 
 enum VideoTranscript {
-    static let fillers: Set<String> = [
-        "um", "umm", "ummm", "uh", "uhh", "uhm", "uhmm", "erm", "er", "err", "ah", "ahh", "hmm", "hm", "mm", "mhm", "mmm",
-        "äh", "ähm", "öh", "öhm", "euh", "eh", "ehm",
-    ]
+    /// Hesitation sounds for a language (BCP-47; nil = English). Only
+    /// sounds that are never real words there: "um" is "a" in Portuguese,
+    /// "er" is "he"/"is" in German, Dutch, and the Nordic languages.
+    static func fillers(for language: String?) -> Set<String> {
+        var set: Set<String> = ["uh", "uhh", "uhm", "uhmm", "umm", "ummm", "erm", "ehm", "hmm", "hm", "mm", "mhm", "mmm"]
+        let code = language.flatMap { Locale(identifier: $0).language.languageCode?.identifier } ?? "en"
+        switch code {
+        case "en": set.formUnion(["um", "er", "err", "ah", "ahh", "eh"])
+        case "de": set.formUnion(["äh", "ähm", "öh", "öhm"])
+        case "fr": set.formUnion(["euh", "heu"])
+        case "es", "it": set.formUnion(["eh"])
+        case "pt": set.formUnion(["hã", "ahn", "hum"])
+        case "nl": set.formUnion(["eh", "uh"])
+        default: break
+        }
+        return set
+    }
+
+    static func isFiller(_ text: String, fillers: Set<String>) -> Bool {
+        fillers.contains(text.lowercased().trimmingCharacters(in: .punctuationCharacters.union(.whitespaces)))
+    }
 
     /// Every word of the captions, in time order.
-    static func words(from captions: [VideoCaptionLine]) -> [VideoTranscriptWord] {
+    static func words(from captions: [VideoCaptionLine], language: String? = nil) -> [VideoTranscriptWord] {
+        let fillers = fillers(for: language)
         var words: [VideoTranscriptWord] = []
-        for line in captions {
-            if line.words.isEmpty {
-                // Hand-typed line: spread its words across it.
-                let parts = line.text.split(whereSeparator: { $0.isWhitespace }).map(String.init)
-                guard !parts.isEmpty else { continue }
-                let span = max(line.end - line.start, 0.1) / Double(parts.count)
-                for (index, part) in parts.enumerated() {
-                    words.append(VideoTranscriptWord(text: part, start: line.start + span * Double(index), end: line.start + span * Double(index + 1), lineID: line.id, index: index))
-                }
-            } else {
-                for (index, word) in line.words.enumerated() {
-                    words.append(VideoTranscriptWord(text: word.text, start: word.start, end: word.end, lineID: line.id, index: index))
-                }
+        // Only spoken words: a typed caption line has no timing in the voice,
+        // so it's never offered for cutting.
+        for line in captions where !line.words.isEmpty {
+            for (index, word) in line.words.enumerated() {
+                words.append(VideoTranscriptWord(text: word.text, start: word.start, end: word.end, lineID: line.id, index: index, isFiller: isFiller(word.text, fillers: fillers)))
             }
         }
         return words.sorted { $0.start < $1.start }

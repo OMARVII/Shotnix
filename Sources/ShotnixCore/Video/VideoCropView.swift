@@ -30,11 +30,24 @@ extension VideoEditorModel {
     func beginCrop() {
         pause()
         selection = .none
+        cropBeforeEditing = project.crop
         isCropping = true
         previewRenderer.invalidate()
     }
 
+    /// Esc: back to the crop you had before.
+    func cancelCrop() {
+        if let before = cropBeforeEditing, before != project.crop {
+            setStyle { $0.crop = before }
+        }
+        cropBeforeEditing = nil
+        isCropping = false
+        endGesture()
+        previewRenderer.invalidate()
+    }
+
     func endCrop() {
+        cropBeforeEditing = nil
         isCropping = false
         endGesture()
         previewRenderer.invalidate()

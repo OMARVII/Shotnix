@@ -64,26 +64,59 @@ enum VideoCaptionBuilder {
             lines.append(VideoCaptionLine(
                 start: max(first.start - Self.lead, 0),
                 end: max(end, first.start + 0.3),
-                text: group.map(\.text).joined(separator: " "),
+                text: joined(group.map(\.text)),
                 words: group
             ))
         }
         return lines
     }
 
-    /// SubRip text for the edited timeline (cuts removed, speed applied).
+    /// SubRip text for the edited timeline: cuts removed (words cut from
+    /// the video too), speed applied — exactly what the video shows.
     static func srt(lines: [VideoCaptionLine], segments: [VideoDemoTimelineSegment]) -> String {
         var output = ""
         var index = 1
-        for line in lines.sorted(by: { $0.start < $1.start }) {
-            let ranges = VideoDemoProject.timelineRanges(sourceStart: line.start, sourceEnd: max(line.end, line.start + 0.1), segments: segments)
-            guard let first = ranges.first, let last = ranges.last else { continue }
-            let text = line.text.trimmingCharacters(in: .whitespacesAndNewlines)
+        for caption in VideoRenderPlan.visibleCaptions(lines, segments: segments) {
+            let text = caption.text.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !text.isEmpty else { continue }
-            output += "\(index)\n\(timestamp(first.lowerBound)) --> \(timestamp(last.upperBound))\n\(text)\n\n"
+            output += "\(index)\n\(timestamp(caption.start)) --> \(timestamp(caption.end))\n\(text)\n\n"
             index += 1
         }
         return output
+    }
+
+    /// Words back into a line: spaces between words, but none between
+    /// Chinese, Japanese, or Thai characters (those scripts don't use them).
+    static func joined(_ words: [String]) -> String {
+        var text = ""
+        for word in words where !word.isEmpty {
+            if let last = text.last, let first = word.first, !(isUnspaced(last) && isUnspaced(first)) {
+                text += " "
+            }
+            text += word
+        }
+        return text
+    }
+
+    /// Whether a space goes before `next` after `previous` word.
+    static func needsSpace(between previous: String, and next: String) -> Bool {
+        guard let last = previous.last, let first = next.first else { return false }
+        return !(isUnspaced(last) && isUnspaced(first))
+    }
+
+    static func isUnspaced(_ character: Character) -> Bool {
+        character.unicodeScalars.contains { scalar in
+            switch scalar.value {
+            case 0x0E00...0x0E7F, // Thai
+                 0x3000...0x30FF, // CJK punctuation, kana
+                 0x31F0...0x31FF, 0x3400...0x4DBF, 0x4E00...0x9FFF, 0xF900...0xFAFF,
+                 0xFF00...0xFFEF, // full-width forms
+                 0x20000...0x2FA1F:
+                return true
+            default:
+                return false
+            }
+        }
     }
 
     static func timestamp(_ seconds: Double) -> String {
@@ -134,6 +167,7 @@ enum VideoCaptionTranscriber {
     enum Failure: LocalizedError {
         case noAudio
         case unsupportedLanguage(String)
+        case needsOnDeviceModel(String)
         case notAllowed
         case unavailable
         case nothingHeard
@@ -141,12 +175,25 @@ enum VideoCaptionTranscriber {
         var errorDescription: String? {
             switch self {
             case .noAudio: return "This recording has no sound to transcribe."
-            case .unsupportedLanguage(let name): return "\(name) isn't supported for captions on this Mac."
-            case .notAllowed: return "Speech recognition is turned off for Shotnix in System Settings → Privacy & Security."
+            case .unsupportedLanguage(let name): return "\(name) isn't supported for captions on this Mac. Pick another language."
+            case .needsOnDeviceModel(let name):
+                return "\(name) can't be transcribed on this Mac without sending your voice to a server. To add it, turn on Dictation for \(name) in System Settings → Keyboard, or pick another language."
+            case .notAllowed: return "Speech recognition is turned off for Shotnix in System Settings → Privacy & Security → Speech Recognition."
             case .unavailable: return "Speech recognition isn't available on this Mac right now."
             case .nothingHeard: return "No speech was found in this recording."
             }
         }
+
+        var needsPrivacySettings: Bool {
+            if case .notAllowed = self { return true }
+            return false
+        }
+    }
+
+    struct Result {
+        let words: [VideoCaptionWord]
+        /// The language actually used (BCP-47).
+        let language: String
     }
 
     struct Language: Identifiable, Hashable {
@@ -164,7 +211,11 @@ enum VideoCaptionTranscriber {
             identifiers = await SpeechTranscriber.supportedLocales.map { $0.identifier(.bcp47) }
         }
         if identifiers.isEmpty {
-            identifiers = SFSpeechRecognizer.supportedLocales().map { $0.identifier(.bcp47) }
+            // Only languages this Mac recognizes on-device: nothing is sent
+            // to a server.
+            identifiers = SFSpeechRecognizer.supportedLocales()
+                .filter { SFSpeechRecognizer(locale: $0)?.supportsOnDeviceRecognition == true }
+                .map { $0.identifier(.bcp47) }
         }
         let preferred = Locale.current.identifier(.bcp47)
         let unique = Array(Set(identifiers))
@@ -177,23 +228,60 @@ enum VideoCaptionTranscriber {
             }
     }
 
+    /// Tests: take the macOS 13–25 path on a newer Mac.
+    nonisolated(unsafe) static var usesLegacyRecognizer = false
+
     /// Words with times in SOURCE seconds.
     static func transcribe(
         url: URL,
         languageIdentifier: String?,
         progress: @escaping @Sendable (Stage) -> Void
-    ) async throws -> [VideoCaptionWord] {
+    ) async throws -> Result {
         progress(.preparing)
         let asset = AVURLAsset(url: url)
         let audioTracks = try await asset.loadTracks(withMediaType: .audio)
         guard !audioTracks.isEmpty else { throw Failure.noAudio }
         let duration = try await asset.load(.duration).seconds
-        let locale = Locale(identifier: languageIdentifier ?? Locale.current.identifier(.bcp47))
+        let requested = Locale(identifier: languageIdentifier ?? Locale.current.identifier(.bcp47))
 
-        if #available(macOS 26.0, *), SpeechTranscriber.isAvailable {
-            return try await transcribeModern(asset: asset, tracks: audioTracks, duration: duration, locale: locale, progress: progress)
+        if #available(macOS 26.0, *), SpeechTranscriber.isAvailable, !usesLegacyRecognizer {
+            // The Mac's own language may pair a language with a region the
+            // model doesn't list (English in Germany): same language wins.
+            let supported = await SpeechTranscriber.supportedLocales
+            var locale = await SpeechTranscriber.supportedLocale(equivalentTo: requested)
+            if locale == nil, languageIdentifier == nil { locale = closest(to: requested, in: supported) }
+            guard let locale else { throw Failure.unsupportedLanguage(name(of: requested)) }
+            let words = try await transcribeModern(asset: asset, tracks: audioTracks, duration: duration, locale: locale, progress: progress)
+            return Result(words: words, language: locale.identifier(.bcp47))
         }
-        return try await transcribeLegacy(asset: asset, tracks: audioTracks, duration: duration, locale: locale, progress: progress)
+        var locale = requested
+        if SFSpeechRecognizer(locale: requested) == nil, languageIdentifier == nil,
+           let fallback = closest(to: requested, in: Array(SFSpeechRecognizer.supportedLocales())) {
+            locale = fallback
+        }
+        let words = try await transcribeLegacy(asset: asset, tracks: audioTracks, duration: duration, locale: locale, progress: progress)
+        return Result(words: words, language: locale.identifier(.bcp47))
+    }
+
+    static func name(of locale: Locale) -> String {
+        Locale.current.localizedString(forIdentifier: locale.identifier) ?? locale.identifier
+    }
+
+    /// A supported locale in the same language: the same region if there
+    /// is one, else the language's main region (en-US, de-DE…), else any.
+    static func closest(to requested: Locale, in supported: [Locale]) -> Locale? {
+        guard let language = requested.language.languageCode?.identifier else { return nil }
+        let sameLanguage = supported
+            .filter { $0.language.languageCode?.identifier == language }
+            .sorted { $0.identifier < $1.identifier }
+        if let region = requested.region?.identifier, let match = sameLanguage.first(where: { $0.region?.identifier == region }) {
+            return match
+        }
+        let mainRegions = ["en": "US", "de": "DE", "fr": "FR", "es": "ES", "it": "IT", "pt": "BR", "nl": "NL", "ja": "JP", "zh": "CN", "ko": "KR", "ar": "SA", "ru": "RU", "sv": "SE", "da": "DK", "nb": "NO", "fi": "FI", "pl": "PL", "tr": "TR"]
+        if let main = mainRegions[language], let match = sameLanguage.first(where: { $0.region?.identifier == main }) {
+            return match
+        }
+        return sameLanguage.first
     }
 
     // MARK: macOS 26
@@ -203,12 +291,9 @@ enum VideoCaptionTranscriber {
         asset: AVAsset,
         tracks: [AVAssetTrack],
         duration: Double,
-        locale requested: Locale,
+        locale: Locale,
         progress: @escaping @Sendable (Stage) -> Void
     ) async throws -> [VideoCaptionWord] {
-        guard let locale = await SpeechTranscriber.supportedLocale(equivalentTo: requested) else {
-            throw Failure.unsupportedLanguage(Locale.current.localizedString(forIdentifier: requested.identifier) ?? requested.identifier)
-        }
         let transcriber = SpeechTranscriber(
             locale: locale,
             transcriptionOptions: [],
@@ -298,8 +383,9 @@ enum VideoCaptionTranscriber {
         }
         guard status == .authorized else { throw Failure.notAllowed }
         guard let recognizer = SFSpeechRecognizer(locale: locale) else {
-            throw Failure.unsupportedLanguage(Locale.current.localizedString(forIdentifier: locale.identifier) ?? locale.identifier)
+            throw Failure.unsupportedLanguage(name(of: locale))
         }
+        guard recognizer.supportsOnDeviceRecognition else { throw Failure.needsOnDeviceModel(name(of: locale)) }
         guard recognizer.isAvailable else { throw Failure.unavailable }
 
         // Mix every sound track into one file the recognizer can read.
@@ -318,27 +404,98 @@ enum VideoCaptionTranscriber {
         progress(.transcribing(0))
         let request = SFSpeechURLRecognitionRequest(url: temporary)
         request.shouldReportPartialResults = false
-        request.requiresOnDeviceRecognition = recognizer.supportsOnDeviceRecognition
+        // On this Mac only — the voice is never sent to a server.
+        request.requiresOnDeviceRecognition = true
         request.addsPunctuation = true
-        let segments: [(text: String, start: Double, end: Double)] = try await withCheckedThrowingContinuation { continuation in
-            var finished = false
-            recognizer.recognitionTask(with: request) { result, error in
-                guard !finished else { return }
-                if let result, result.isFinal {
-                    finished = true
-                    continuation.resume(returning: result.bestTranscription.segments.map {
-                        ($0.substring, $0.timestamp, $0.timestamp + $0.duration)
-                    })
-                } else if let error {
-                    finished = true
-                    continuation.resume(throwing: error)
-                }
+        let recognition = LegacyRecognition()
+        let segments = try await withTaskCancellationHandler {
+            try await withCheckedThrowingContinuation { continuation in
+                recognition.start(recognizer: recognizer, request: request, continuation: continuation)
             }
+        } onCancel: {
+            recognition.cancel()
         }
+        try Task.checkCancellation()
         let words = envelope.refineOnsets(VideoCaptionBuilder.words(fromPieces: segments))
         guard !words.isEmpty else { throw Failure.nothingHeard }
         progress(.transcribing(1))
         return words
+    }
+}
+
+/// Collects every finished stretch of a file recognition (on-device
+/// recognition can finish one per utterance) until the whole task is done;
+/// cancellable.
+final class LegacyRecognition: NSObject, SFSpeechRecognitionTaskDelegate, @unchecked Sendable {
+    typealias Pieces = [(text: String, start: Double, end: Double)]
+    private let lock = NSLock()
+    private var pieces: Pieces = []
+    private var continuation: CheckedContinuation<Pieces, Error>?
+    private var task: SFSpeechRecognitionTask?
+    private var cancelled = false
+
+    func start(recognizer: SFSpeechRecognizer, request: SFSpeechRecognitionRequest, continuation: CheckedContinuation<Pieces, Error>) {
+        lock.lock()
+        guard !cancelled else {
+            lock.unlock()
+            continuation.resume(throwing: CancellationError())
+            return
+        }
+        self.continuation = continuation
+        lock.unlock()
+        let task = recognizer.recognitionTask(with: request, delegate: self)
+        lock.lock()
+        self.task = task
+        lock.unlock()
+    }
+
+    func cancel() {
+        lock.lock()
+        cancelled = true
+        let task = self.task
+        lock.unlock()
+        task?.cancel()
+        finish(.failure(CancellationError()))
+    }
+
+    func speechRecognitionTask(_ task: SFSpeechRecognitionTask, didFinishRecognition result: SFSpeechRecognitionResult) {
+        let new: Pieces = result.bestTranscription.segments.map { ($0.substring, $0.timestamp, $0.timestamp + $0.duration) }
+        lock.lock()
+        defer { lock.unlock() }
+        pieces = Self.merge(pieces, new)
+    }
+
+    /// A finished utterance continues the transcript; a result that covers
+    /// everything so far replaces it.
+    static func merge(_ pieces: Pieces, _ new: Pieces) -> Pieces {
+        guard let first = new.first, let last = new.last else { return pieces }
+        guard let known = pieces.last else { return new }
+        if first.start < known.end - 0.05 {
+            return last.end >= known.end ? new : pieces
+        }
+        return pieces + new
+    }
+
+    func speechRecognitionTask(_ task: SFSpeechRecognitionTask, didFinishSuccessfully successfully: Bool) {
+        lock.lock()
+        let collected = pieces
+        lock.unlock()
+        if successfully || !collected.isEmpty {
+            finish(.success(collected))
+        } else if let error = task.error as NSError?, error.code == 1110 {
+            // "No speech detected".
+            finish(.failure(VideoCaptionTranscriber.Failure.nothingHeard))
+        } else {
+            finish(.failure(task.error ?? VideoCaptionTranscriber.Failure.unavailable))
+        }
+    }
+
+    private func finish(_ result: Swift.Result<Pieces, Error>) {
+        lock.lock()
+        let continuation = self.continuation
+        self.continuation = nil
+        lock.unlock()
+        continuation?.resume(with: result)
     }
 }
 

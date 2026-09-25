@@ -138,7 +138,7 @@ final class VideoAnnotationStyleTests: XCTestCase {
         model.mutate { $0.zoomRegions = [] }
         XCTAssertEqual(model.visibleRegion(at: 3), CGRect(x: 0, y: 0, width: 1, height: 1))
         model.addOverlay(.text)
-        XCTAssertEqual(model.selectedOverlay?.y ?? 0, 0.86, accuracy: 0.001)
+        XCTAssertEqual(model.selectedOverlay?.y ?? 0, 0.14, accuracy: 0.001, "text goes near the top, clear of captions and keycaps")
         XCTAssertEqual(model.selectedOverlay?.width ?? 0, 0.5, accuracy: 0.001)
         VideoDemoDraftStore.delete(for: url)
     }

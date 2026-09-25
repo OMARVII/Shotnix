@@ -169,6 +169,10 @@ final class VideoEditorModel: ObservableObject {
     }
     /// Crop mode: the preview shows the whole recording with a crop frame.
     @Published var isCropping = false
+    var cropBeforeEditing: VideoCropRect?
+    /// Bumped to put the cursor in the selected text annotation's field
+    /// (double-click the text on the preview).
+    @Published var textEditRequest = 0
     @Published var cropAspect: VideoCropAspect = .free
     /// Caption generation in progress or failed (nil when idle).
     @Published var captionJob: VideoCaptionJob?
@@ -177,6 +181,7 @@ final class VideoEditorModel: ObservableObject {
     }
     @Published var captionLanguages: [VideoCaptionTranscriber.Language] = []
     var captionTask: Task<Void, Never>?
+    var captionToken: UUID?
 
     let clock = VideoDemoPlaybackClock()
     let timelineState = VideoTimelineState()
@@ -197,7 +202,7 @@ final class VideoEditorModel: ObservableObject {
     private var cursorTrackCache: (key: CursorTrackKey, track: VideoCursorTrack?)?
     private var cameraTrackCache: (key: CameraTrackKey, track: VideoCameraTrack)?
     private var reframeCache: (key: CameraTrackKey, fraction: CGFloat, reframe: VideoReframe)?
-    private var transcriptCache: (captions: [VideoCaptionLine], words: [VideoTranscriptWord])?
+    private var transcriptCache: (captions: [VideoCaptionLine], language: String?, words: [VideoTranscriptWord])?
     private var activityCache: (key: [Int], times: [Double])?
 
     /// When something happens on screen (pointer moves, clicks, shortcuts).
@@ -211,9 +216,9 @@ final class VideoEditorModel: ObservableObject {
 
     /// Every spoken word (from the captions), in time order.
     var transcriptWords: [VideoTranscriptWord] {
-        if let cache = transcriptCache, cache.captions == project.captions { return cache.words }
-        let words = VideoTranscript.words(from: project.captions)
-        transcriptCache = (project.captions, words)
+        if let cache = transcriptCache, cache.captions == project.captions, cache.language == project.transcriptLanguage { return cache.words }
+        let words = VideoTranscript.words(from: project.captions, language: project.transcriptLanguage)
+        transcriptCache = (project.captions, project.transcriptLanguage, words)
         return words
     }
     private var shuttleRate: Float = 1
@@ -385,6 +390,7 @@ final class VideoEditorModel: ObservableObject {
     // MARK: Project changes
 
     private func projectDidChange(from old: VideoDemoProject) {
+        let oldSegments = segments
         segments = project.timelineSegments(totalDuration: sourceDuration)
         refreshTimeline()
         if isReady, old.audio.enhanceVoice != project.audio.enhanceVoice {
@@ -396,8 +402,12 @@ final class VideoEditorModel: ObservableObject {
             }
         }
         rebuildPlan()
+        validateSelection(keepingRange: true)
         if isReady {
-            let keepSource = sourceTime(forTimeline: clock.time)
+            // Stay on the same moment of the recording — read through the
+            // cut list it was on (a speed change or cut before the playhead
+            // moves that moment along the timeline).
+            let keepSource = VideoDemoProject.sourceTime(forTimelineTime: clock.time, segments: oldSegments.isEmpty ? segments : oldSegments)
             playback.apply(segments: segments, audio: project.audio, keepSourceTime: keepSource)
             scheduleAutosave()
         }
@@ -542,7 +552,7 @@ final class VideoEditorModel: ObservableObject {
         showNotice("Redo", symbol: "arrow.uturn.forward")
     }
 
-    private func validateSelection() {
+    func validateSelection(keepingRange: Bool = false) {
         switch selection {
         case .zoom(let id) where !project.zoomRegions.contains(where: { $0.id == id }),
              .overlay(let id) where !project.overlayEffects.contains(where: { $0.id == id }),
@@ -552,7 +562,7 @@ final class VideoEditorModel: ObservableObject {
              .cameraLayout(let id) where !project.cameraLayouts.contains(where: { $0.id == id }),
              .clip(let id) where !project.timelineClips.contains(where: { $0.id == id }):
             selection = .none
-        case .range:
+        case .range where !keepingRange:
             selection = .none
         default:
             break
@@ -565,6 +575,16 @@ final class VideoEditorModel: ObservableObject {
 
     func sourceTime(forTimeline time: Double) -> Double {
         VideoDemoProject.sourceTime(forTimelineTime: time, segments: segments)
+    }
+
+    /// The moment of the recording something new at the playhead starts
+    /// from. On a cut that's the frame after it — the one on screen — not
+    /// the last frame of the material before it.
+    func placementSourceTime(forTimeline time: Double) -> Double {
+        if let next = segments.first(where: { abs($0.timelineStart - time) < 0.001 }) {
+            return next.clip.sourceStart
+        }
+        return sourceTime(forTimeline: time)
     }
 
     func timelineTime(forSource time: Double) -> Double? {
@@ -735,7 +755,16 @@ final class VideoEditorModel: ObservableObject {
 
     func trimSelectedClipToPlayhead(leading: Bool) {
         let time = clock.time
-        guard let segment = segment(atTimeline: time) else { return }
+        // The selected clip, when the playhead is in it; else the clip the
+        // playhead is in — on a cut, the one after it for "starts here" and
+        // the one before it for "ends here".
+        let selected = selectedClipID.flatMap { id in
+            segments.first { $0.id == id && time >= $0.timelineStart - 0.001 && time <= $0.timelineEnd + 0.001 }
+        }
+        let underPlayhead = leading
+            ? segments.first { time >= $0.timelineStart - 0.001 && time < $0.timelineEnd - 0.001 }
+            : segments.first { time > $0.timelineStart + 0.001 && time <= $0.timelineEnd + 0.001 }
+        guard let segment = selected ?? underPlayhead else { return }
         let sourceTime = segment.sourceTime(forTimelineTime: time)
         mutate { project in
             if leading {
@@ -1015,17 +1044,17 @@ final class VideoEditorModel: ObservableObject {
 
     func addOverlay(_ kind: VideoDemoOverlayEffectKind) {
         let time = clock.time
-        let sourceStart = sourceTime(forTimeline: time)
+        let sourceStart = placementSourceTime(forTimeline: time)
         let sourceEnd = sourceTime(forTimeline: min(time + (kind == .blur ? 4 : 3), timelineDuration))
         var effect = VideoDemoOverlayEffect(
             kind: kind,
             time: sourceStart,
             duration: max(sourceEnd - sourceStart, 0.5),
             x: 0.5,
-            y: kind == .text ? 0.86 : 0.5,
+            y: kind == .text ? 0.14 : 0.5,
             width: kind == .text ? 0.5 : (kind == .arrow ? 0.18 : 0.3),
             height: kind == .text ? 0.09 : (kind == .arrow ? 0.18 : 0.2),
-            text: kind == .text ? "Add a caption" : kind.title,
+            text: kind == .text ? "Your text" : kind.title,
             color: VideoOverlayStyleMemory.color(for: kind),
             thickness: VideoOverlayStyleMemory.thickness(for: kind)
         )
@@ -1034,7 +1063,9 @@ final class VideoEditorModel: ObservableObject {
         let visible = visibleRegion(at: time)
         effect.width = min(effect.width, Double(visible.width) * 0.9)
         effect.height = min(effect.height, Double(visible.height) * 0.9)
-        var center = CGPoint(x: visible.midX, y: kind == .text ? visible.minY + visible.height * 0.86 : visible.midY)
+        // Text goes near the top: captions, keycaps, and the camera bubble
+        // live at the bottom.
+        var center = CGPoint(x: visible.midX, y: kind == .text ? visible.minY + visible.height * 0.14 : visible.midY)
         if kind != .text, let raw = plan.cursorTrack?.visiblePosition(at: sourceStart) {
             // Annotations live in the (cropped) frame's coordinates.
             let pointer = project.crop.normalized.map(raw)
@@ -1327,8 +1358,21 @@ final class VideoEditorModel: ObservableObject {
         VideoDemoDraftStore.save(draft, for: draft.sourceURL)
     }
 
+    /// Something that shouldn't be dropped silently by closing the window.
+    var runningJobDescription: String? {
+        if isExporting { return "exporting" }
+        if captionTask != nil { return "transcribing" }
+        if voiceJob != nil { return "cleaning up the voice" }
+        return nil
+    }
+
+    /// The window closed: nothing keeps working (or writing to the
+    /// clipboard) unseen.
     func stop() {
         playback.pause()
+        if isExporting { cancelExport() }
+        cancelCaptions()
+        voiceTask?.cancel()
         saveDraftNow()
     }
 
@@ -1373,8 +1417,11 @@ final class VideoEditorModel: ObservableObject {
         let voice = project.audio.enhanceVoice ? startVoiceEnhancementIfNeeded() : nil
         Task {
             do {
-                // The enhanced voice has to exist before it can be exported.
-                if let voice { _ = await voice.value }
+                // The enhanced voice has to exist before it can be exported
+                // (the sheet shows that progress; Cancel stops it).
+                var voiceFailed = false
+                if let voice { voiceFailed = !(await voice.value) }
+                if exportCancelled { throw VideoDemoExportError.cancelled }
                 _ = try await VideoDemoExporter.export(
                     project: project,
                     recording: recording,
@@ -1391,6 +1438,9 @@ final class VideoEditorModel: ObservableObject {
                     VideoDemoRecentExportStore.add(exportURL: destination, sourceURL: project.sourceURL)
                 }
                 exportPhase = .finished(url: destination, bytes: bytes, copied: toClipboard)
+                if voiceFailed {
+                    showNotice("Exported without Enhance voice — it couldn't finish", symbol: "exclamationmark.triangle.fill")
+                }
             } catch {
                 if exportCancelled {
                     exportPhase = .idle
@@ -1412,6 +1462,18 @@ final class VideoEditorModel: ObservableObject {
 
     func cancelExport() {
         exportCancelled = true
+        // Waiting on the voice cleanup: stop that too.
+        voiceTask?.cancel()
+    }
+
+    /// Closes the export sheet; a finished or failed export is cleared so
+    /// the next ⌘E starts on the options.
+    func closeExportSheet() {
+        withAnimation(.easeOut(duration: 0.15)) {
+            isExportPresented = false
+        }
+        if case .running = exportPhase { return }
+        exportPhase = .idle
     }
 
     func revealExport(_ url: URL) {

@@ -180,7 +180,13 @@ final class VideoPlaybackController: NSObject {
         }
         player.replaceCurrentItem(with: item)
 
-        let target = keepSourceTime.flatMap { VideoDemoProject.timelineTimeIfIncluded(sourceTime: $0, segments: segments) } ?? 0
+        // The same moment of the recording — or, if it was cut, where the
+        // cut is now.
+        let target = keepSourceTime.map { source in
+            VideoDemoProject.timelineTimeIfIncluded(sourceTime: source, segments: segments)
+                ?? segments.first(where: { $0.clip.sourceStart >= source })?.timelineStart
+                ?? segments.last?.timelineEnd ?? 0
+        } ?? 0
         seek(to: target, fast: false)
         if wasPlaying { player.play() }
     }

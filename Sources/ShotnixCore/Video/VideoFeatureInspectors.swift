@@ -140,7 +140,10 @@ struct VideoScriptInspector: View {
     @AppStorage("videoScriptMode") private var mode = "transcript"
 
     var body: some View {
-        if model.project.captions.isEmpty || model.captionJob != nil {
+        // Edit by text needs real words (a typed line isn't a transcript),
+        // and steps aside while a new transcript is being made.
+        let running = model.captionJob != nil && model.captionJob?.error == nil
+        if !model.hasTranscript || running {
             ScrollView {
                 VideoCaptionsInspector(model: model)
                     .padding(16)
@@ -150,6 +153,27 @@ struct VideoScriptInspector: View {
                 VideoSegmented(options: [("transcript", "Edit by text"), ("captions", "Captions")], selection: $mode)
                     .padding(.horizontal, 16)
                     .padding(.top, 14)
+                if let error = model.captionJob?.error {
+                    // Transcribing again failed: the transcript you had stays.
+                    HStack(alignment: .top, spacing: 8) {
+                        Label(error, systemImage: "exclamationmark.triangle.fill")
+                            .font(.system(size: 11, weight: .medium))
+                            .foregroundStyle(Color.orange)
+                            .fixedSize(horizontal: false, vertical: true)
+                        Spacer(minLength: 0)
+                        Button {
+                            model.captionJob = nil
+                        } label: {
+                            Image(systemName: "xmark").font(.system(size: 10, weight: .bold)).frame(width: 18, height: 18)
+                        }
+                        .buttonStyle(.plain)
+                        .foregroundStyle(VideoEditorTheme.textSecondary)
+                        .help("Dismiss")
+                        .accessibilityLabel("Dismiss")
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 10)
+                }
                 if mode == "transcript" {
                     VideoTranscriptPanel(model: model, timeline: model.timelineState)
                 } else {
@@ -230,7 +254,7 @@ struct VideoCaptionsInspector: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 22) {
-            if model.project.captions.isEmpty || model.captionJob != nil {
+            if !model.hasTranscript || model.captionJob != nil {
                 generateCard
             }
             if !model.project.captions.isEmpty {
@@ -270,9 +294,10 @@ struct VideoCaptionsInspector: View {
                     .buttonStyle(VideoSecondaryButtonStyle())
                     .help("Subtitles file for YouTube and other players — follows your cuts")
                     Menu {
-                        Button("Transcribe Again") { model.generateCaptions() }
+                        Button(model.hasTranscript ? "Transcribe Again…" : "Transcribe…") { model.transcribeAgain() }
+                        Menu("Language") { languageItems }
                         Divider()
-                        Button("Remove All Captions", role: .destructive) { model.clearCaptions() }
+                        Button("Remove Transcript & Captions", role: .destructive) { model.clearCaptions() }
                     } label: {
                         Image(systemName: "ellipsis")
                             .frame(width: 30, height: 26)
@@ -310,58 +335,51 @@ struct VideoCaptionsInspector: View {
                 .foregroundStyle(VideoEditorTheme.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
 
-            if let job = model.captionJob {
-                if let error = job.error {
+            if let job = model.captionJob, job.error == nil {
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack {
+                        Text(job.title)
+                            .font(.system(size: 11.5, weight: .semibold))
+                            .foregroundStyle(VideoEditorTheme.textPrimary)
+                        Spacer()
+                        if let fraction = job.fraction {
+                            Text("\(Int((fraction * 100).rounded()))%")
+                                .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                                .foregroundStyle(VideoEditorTheme.textSecondary)
+                        }
+                    }
+                    if let fraction = job.fraction {
+                        ProgressView(value: fraction).progressViewStyle(.linear).tint(VideoEditorTheme.caption)
+                    } else {
+                        ProgressView().progressViewStyle(.linear).tint(VideoEditorTheme.caption)
+                    }
+                    Button("Cancel") { model.cancelCaptions() }
+                        .buttonStyle(VideoSecondaryButtonStyle())
+                }
+            } else {
+                // Idle, or the last try failed: the language, a retry, and a
+                // way out are always there.
+                if let job = model.captionJob, let error = job.error {
                     Label(error, systemImage: "exclamationmark.triangle.fill")
                         .font(.system(size: 11, weight: .medium))
                         .foregroundStyle(Color.orange)
                         .fixedSize(horizontal: false, vertical: true)
-                    Button {
-                        model.captionJob = nil
-                        model.generateCaptions()
-                    } label: {
-                        Text("Try Again").frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(VideoPrimaryButtonStyle())
-                    .disabled(!model.hasAudio)
-                } else {
-                    VStack(alignment: .leading, spacing: 6) {
-                        HStack {
-                            Text(job.title)
-                                .font(.system(size: 11.5, weight: .semibold))
-                                .foregroundStyle(VideoEditorTheme.textPrimary)
-                            Spacer()
-                            if let fraction = job.fraction {
-                                Text("\(Int((fraction * 100).rounded()))%")
-                                    .font(.system(size: 11, weight: .semibold, design: .monospaced))
-                                    .foregroundStyle(VideoEditorTheme.textSecondary)
+                    if job.needsPrivacySettings {
+                        Button("Open Privacy Settings") {
+                            if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_SpeechRecognition") {
+                                NSWorkspace.shared.open(url)
                             }
                         }
-                        if let fraction = job.fraction {
-                            ProgressView(value: fraction).progressViewStyle(.linear).tint(VideoEditorTheme.caption)
-                        } else {
-                            ProgressView().progressViewStyle(.linear).tint(VideoEditorTheme.caption)
-                        }
-                        Button("Cancel") { model.cancelCaptions() }
-                            .buttonStyle(VideoSecondaryButtonStyle())
+                        .buttonStyle(VideoSecondaryButtonStyle())
                     }
                 }
-            } else {
                 HStack(spacing: 8) {
                     Text("Language")
                         .font(.system(size: 11.5, weight: .medium))
                         .foregroundStyle(VideoEditorTheme.textSecondary)
                     Spacer()
                     Menu {
-                        Button("\(VideoEditorModel.systemLanguageTitle) (This Mac)") {
-                            model.captionLanguage = ""
-                        }
-                        if !model.captionLanguages.isEmpty {
-                            Divider()
-                            ForEach(model.captionLanguages) { language in
-                                Button(language.title) { model.captionLanguage = language.identifier }
-                            }
-                        }
+                        languageItems
                     } label: {
                         Text(model.captionLanguageTitle)
                             .font(.system(size: 11.5, weight: .medium))
@@ -370,22 +388,45 @@ struct VideoCaptionsInspector: View {
                     .fixedSize()
                 }
                 Button {
+                    model.captionJob = nil
                     model.generateCaptions()
                 } label: {
-                    Label("Transcribe", systemImage: "waveform.badge.magnifyingglass")
+                    Label(model.captionJob?.error != nil ? "Try Again" : "Transcribe", systemImage: "waveform.badge.magnifyingglass")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(VideoPrimaryButtonStyle())
                 .disabled(!model.hasAudio)
-                Button {
-                    model.addCaptionAtPlayhead()
-                } label: {
-                    Text("Or type one at the playhead")
-                        .font(.system(size: 11, weight: .medium))
-                        .foregroundStyle(VideoEditorTheme.textSecondary)
-                        .frame(maxWidth: .infinity)
+                if model.captionJob?.error != nil {
+                    Button {
+                        model.captionJob = nil
+                    } label: {
+                        Text("Dismiss").frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(VideoSecondaryButtonStyle())
+                } else if model.project.captions.isEmpty {
+                    Button {
+                        model.addCaptionAtPlayhead()
+                    } label: {
+                        Text("Or type one at the playhead")
+                            .font(.system(size: 11, weight: .medium))
+                            .foregroundStyle(VideoEditorTheme.textSecondary)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var languageItems: some View {
+        Button("\(VideoEditorModel.systemLanguageTitle) (This Mac)") {
+            model.captionLanguage = ""
+        }
+        if !model.captionLanguages.isEmpty {
+            Divider()
+            ForEach(model.captionLanguages) { language in
+                Button(language.title) { model.captionLanguage = language.identifier }
             }
         }
     }

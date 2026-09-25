@@ -91,8 +91,10 @@ struct VideoTranscriptEditor: NSViewRepresentable {
                             .strikethroughStyle: pauseIncluded ? 0 : NSUnderlineStyle.single.rawValue,
                         ]))
                         text.append(NSAttributedString(string: sentenceEnd || gap > 2 ? "\n" : " "))
-                    } else {
-                        text.append(NSAttributedString(string: sentenceEnd && gap > 0.6 ? "\n" : " "))
+                    } else if sentenceEnd && gap > 0.6 {
+                        text.append(NSAttributedString(string: "\n"))
+                    } else if VideoCaptionBuilder.needsSpace(between: previous.text, and: word.text) {
+                        text.append(NSAttributedString(string: " "))
                     }
                 }
                 let included = model.isIncluded(word)
@@ -199,27 +201,57 @@ final class TranscriptTextView: NSTextView {
         let modifiers = event.modifierFlags.intersection([.command, .shift, .option, .control])
         let key = event.charactersIgnoringModifiers?.lowercased() ?? ""
         switch (event.keyCode, modifiers) {
-        case (51, []), (117, []):
+        case (51, []) where selectedRange().length > 0, (117, []) where selectedRange().length > 0:
+            // Words (or a pause) are selected: ⌫ cuts them from the video.
             coordinator?.deleteSelection()
-        case (49, []):
-            MainActor.assumeIsolated { coordinator?.model.togglePlay() }
+        case (123, _), (124, _), (125, _), (126, _):
+            // Arrows move through the text (⇧ extends the selection).
+            super.keyDown(with: event)
         default:
             if modifiers == [.command], key == "z" {
                 coordinator?.model.undo()
             } else if modifiers == [.command, .shift], key == "z" {
                 coordinator?.model.redo()
+            } else if let model = coordinator?.model, MainActor.assumeIsolated({ model.handleKey(event) }) {
+                // Space, S, Z, T… and ⌫ with nothing selected work as they
+                // do anywhere else in the editor.
             } else {
                 super.keyDown(with: event)
             }
         }
     }
 
+    /// ⌘F / ⌘G search the transcript (the app menu has no Find item).
+    override func performKeyEquivalent(with event: NSEvent) -> Bool {
+        let modifiers = event.modifierFlags.intersection([.command, .shift, .option, .control])
+        guard window?.firstResponder === self else { return super.performKeyEquivalent(with: event) }
+        let action: NSTextFinder.Action?
+        switch (modifiers, event.charactersIgnoringModifiers?.lowercased() ?? "") {
+        case ([.command], "f"): action = .showFindInterface
+        case ([.command], "g"): action = .nextMatch
+        case ([.command, .shift], "g"): action = .previousMatch
+        default: action = nil
+        }
+        guard let action else { return super.performKeyEquivalent(with: event) }
+        let sender = NSMenuItem()
+        sender.tag = action.rawValue
+        performTextFinderAction(sender)
+        return true
+    }
+
     override func mouseDown(with event: NSEvent) {
         super.mouseDown(with: event)
-        // A plain click (no selection) jumps to that word.
-        guard selectedRange().length == 0 else { return }
+        // A plain click (no selection) jumps to the word under the pointer —
+        // only when it's really on a word, not beside or after it.
+        guard selectedRange().length == 0,
+              let layoutManager, let textContainer else { return }
         let point = convert(event.locationInWindow, from: nil)
-        coordinator?.click(at: characterIndexForInsertion(at: point))
+        let inContainer = CGPoint(x: point.x - textContainerOrigin.x, y: point.y - textContainerOrigin.y)
+        var fraction: CGFloat = 0
+        let glyph = layoutManager.glyphIndex(for: inContainer, in: textContainer, fractionOfDistanceThroughGlyph: &fraction)
+        let glyphRect = layoutManager.boundingRect(forGlyphRange: NSRange(location: glyph, length: 1), in: textContainer)
+        guard glyphRect.insetBy(dx: -1, dy: -2).contains(inContainer) else { return }
+        coordinator?.click(at: layoutManager.characterIndexForGlyph(at: glyph))
     }
 
     override func menu(for event: NSEvent) -> NSMenu? {
