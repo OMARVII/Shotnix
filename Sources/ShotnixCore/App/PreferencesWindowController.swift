@@ -997,12 +997,16 @@ struct AboutSettingsView: View {
                 ScrollView {
                     Text("""
                     Version 0.23.0
-                    • Timeline dragging is silky: everything tracks your cursor 1:1 and snapping applies once on release — no more jumpy staircase drags — and nothing flickers next to the cursor mid-drag
-                    • Trim clips by just grabbing an edge: every clip shows grips at both ends, the pointer becomes a resize cursor, and the first drag trims (handles finally receive the drag instead of the seek gesture eating it)
-                    • Aim the camera by dragging: select a zoom move and drag its focus ring right on the video; the cluttered zoom sliders are gone, leaving one Scale control
-                    • Auto Zoom is one click away: a permanent ✨ button in the transport bar, plus a clickable chip in the empty Camera lane; zoom blocks now show a magnifier icon
-                    • The timed-capture countdown is redesigned: a centered number in a dark circle, a smoothly depleting ring, a soft tick pop, and a readable cancel hint below
-                    • Fixed: pressing Delete with a zoom move selected removed the clip instead; switching tools while a text box was open spawned a stray annotation
+                    • The video editor is rebuilt: a big preview, a tabbed inspector, and a full-width timeline — and one renderer for preview and export, so what you see is exactly what you export
+                    • Zooms are blocks on the Zoom track: drag to move, drag an edge to resize; the camera follows your cursor or aims by hand, and Auto Zoom lands before each click
+                    • The real macOS cursor, redrawn smooth at any size with click effects — plus backgrounds, padding, rounded corners, and shadows
+                    • Annotations (text, arrows, highlights, blur) live in a dock above the preview, in any color and line weight
+                    • Your camera as its own layer: bubble shapes, background blur or removal, a cutout look, and full-camera or side-by-side layouts
+                    • Captions and edit-by-text, made on your Mac: cut the video by deleting words, remove ums and long pauses in one click, save subtitles
+                    • Cleaner sound: separate voice and computer levels, Enhance voice, and even loudness on export
+                    • Vertical videos that follow your cursor, crop, and export to MP4 or GIF — or straight to the clipboard
+                    • The timed-capture countdown is redesigned
+                    • Fixed: installing updates on macOS 26, recordings losing their data when renamed or moved, recording colors, and exports that looked lighter than the preview
 
                     Version 0.22.0
                     • Post-capture thumbnails now stack: take several screenshots in a row and they pile into a tidy column, each new capture landing on top. Dismiss any card and the ones above drop down smoothly. Five per screen; the oldest bows out beyond that

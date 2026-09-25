@@ -2,7 +2,7 @@
 
 ## [0.23.0-beta] - 2026-09-26
 
-> **Updating from an earlier version on macOS 26?** If installing stops with "An error occurred while running the updater", download Shotnix from shotnix.com and replace the app in Applications — your recordings and settings stay. Updates install normally from this version on.
+**Updating from an earlier version on macOS 26?** If installing stops with "An error occurred while running the updater", download Shotnix from shotnix.com and replace the app in Applications — your recordings and settings stay. Updates install normally from this version on.
 
 ### Changed
 - **The video editor, rebuilt from the ground up.** A new layout: a big preview, a tabbed inspector (Style · Cursor · Zoom · Camera · Script · Audio) whose panel turns into a dedicated editor when you select something, and a full-width timeline. The toolbar lives in the title bar with crop, aspect ratio, undo/redo, commands, and Export.
