@@ -587,9 +587,11 @@ extension VideoEditorModel {
     /// it unreadable); the aspect menu turns that off.
     func setAspect(_ preset: VideoDemoProject.AspectPreset) {
         let wasNarrow = project.canReframe
+        // Following the cursor needs its recorded path.
+        let canFollow = !project.cursorSamples.isEmpty
         setStyle { project in
             project.apply(aspectPreset: preset)
-            if project.canReframe, !wasNarrow { project.reframe = true }
+            if project.canReframe, !wasNarrow, canFollow { project.reframe = true }
         }
         if project.reframeActive, !wasNarrow {
             showNotice("Filling the frame — the view follows your cursor", symbol: "arrow.left.and.right.square")

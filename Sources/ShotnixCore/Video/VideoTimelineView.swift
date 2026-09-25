@@ -130,29 +130,33 @@ struct VideoTimelineToolbar: View {
                 }
                 .buttonStyle(VideoToolButtonStyle())
                 .help("Delete selection (⌫)")
+                .accessibilityLabel("Delete selection")
             }
 
             HStack(spacing: 6) {
                 Button {
                     model.timelineZoom = max(model.timelineZoom / 1.4, 1)
                 } label: {
-                    Image(systemName: "minus.magnifyingglass")
+                    Image(systemName: "arrow.right.and.line.vertical.and.arrow.left")
                 }
                 .buttonStyle(.plain)
                 .foregroundStyle(VideoEditorTheme.textSecondary)
+                .accessibilityLabel("Show more of the timeline")
                 Slider(value: Binding(get: { log(model.timelineZoom) / log(40) }, set: { model.timelineZoom = pow(40, $0) }), in: 0...1)
                     .frame(width: 90)
                     .controlSize(.small)
+                    .accessibilityLabel("Timeline scale")
                 Button {
                     model.timelineZoom = min(model.timelineZoom * 1.4, 40)
                 } label: {
-                    Image(systemName: "plus.magnifyingglass")
+                    Image(systemName: "arrow.left.and.line.vertical.and.arrow.right")
                 }
                 .buttonStyle(.plain)
                 .foregroundStyle(VideoEditorTheme.textSecondary)
+                .accessibilityLabel("Show the timeline in more detail")
             }
             .font(.system(size: 12, weight: .semibold))
-            .help("Timeline zoom (pinch, or ⌘-scroll)")
+            .help("Timeline scale (pinch, or ⌘-scroll)")
         }
         .padding(.horizontal, 14)
     }
@@ -435,7 +439,7 @@ struct VideoTimelineSurface: View {
                         .font(.system(size: 11, weight: .bold))
                         .monospacedDigit()
                     if width > 150 {
-                        Text(region.followsCursor ? "· follows cursor" : "· aimed")
+                        Text(region.followsCursor ? "· follows cursor" : "· aim by hand")
                             .font(.system(size: 10.5, weight: .semibold))
                             .foregroundStyle(.white.opacity(0.72))
                     }

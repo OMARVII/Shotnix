@@ -12,11 +12,15 @@ enum VideoEditorTheme {
     static let hairline = Color.white.opacity(0.07)
     static let textPrimary = Color.white.opacity(0.93)
     static let textSecondary = Color.white.opacity(0.58)
-    static let textTertiary = Color.white.opacity(0.36)
+    /// Helper text: still readable on the panel (about 5:1).
+    static let textTertiary = Color.white.opacity(0.5)
     static let zoom = Color(red: 0.43, green: 0.39, blue: 1.0)
     static let clip = Color(red: 0.94, green: 0.58, blue: 0.2)
     static let playhead = Color(red: 1.0, green: 0.31, blue: 0.43)
     static let accent = Color.accentColor
+    /// Primary buttons: a fixed blue, so white text stays readable whatever
+    /// accent color the Mac uses (yellow, orange, green…).
+    static let primary = Color(red: 0.04, green: 0.42, blue: 1.0)
 
     static func overlayTint(_ kind: VideoDemoOverlayEffectKind) -> Color {
         switch kind {
@@ -89,14 +93,14 @@ struct VideoPrimaryButtonStyle: ButtonStyle {
                 .frame(height: 30)
                 .background(
                     RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .fill(isEnabled ? Color.accentColor : Color.white.opacity(0.08))
+                        .fill(isEnabled ? VideoEditorTheme.primary : Color.white.opacity(0.08))
                         .brightness(configuration.isPressed ? -0.08 : 0)
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 8, style: .continuous)
                         .strokeBorder(Color.white.opacity(isEnabled ? 0.18 : 0.06), lineWidth: 1)
                 )
-                .shadow(color: Color.accentColor.opacity(isEnabled ? 0.35 : 0), radius: 8, y: 2)
+                .shadow(color: VideoEditorTheme.primary.opacity(isEnabled ? 0.35 : 0), radius: 8, y: 2)
                 .scaleEffect(configuration.isPressed ? 0.98 : 1)
         }
     }
@@ -199,6 +203,7 @@ struct VideoSliderRow: View {
                     }
                     .buttonStyle(.plain)
                     .help("Reset")
+                    .accessibilityLabel("Reset \(title)")
                 }
                 Text(format(value))
                     .font(.system(size: 11, weight: .semibold, design: .monospaced))
@@ -209,6 +214,8 @@ struct VideoSliderRow: View {
                 if !editing { onEditingEnded() }
             })
             .controlSize(.small)
+            .accessibilityLabel(title)
+            .accessibilityValue(format(value))
             if let detail {
                 Text(detail)
                     .font(.system(size: 10.5))
@@ -238,7 +245,7 @@ struct VideoToggleRow: View {
                 }
             }
             Spacer(minLength: 8)
-            Toggle("", isOn: $isOn)
+            Toggle(title, isOn: $isOn)
                 .toggleStyle(.switch)
                 .controlSize(.mini)
                 .labelsHidden()

@@ -164,6 +164,9 @@ final class VideoTimelineInteractionTests: XCTestCase {
     }
 
     func testLanesThatDontFitScrollVertically() async throws {
+        // Scroll views only move while a display is awake (locked, asleep
+        // Macs skip this).
+        try XCTSkipIf(CGDisplayIsAsleep(CGMainDisplayID()) != 0, "The display is asleep")
         let model = try await makeModel()
         // Eight overlapping annotations stack into eight lanes: taller than
         // the timeline, so the clip track must be reached by scrolling.
@@ -181,9 +184,14 @@ final class VideoTimelineInteractionTests: XCTestCase {
         let visible = vertical.contentView.bounds
         let bottomShown = document.isFlipped ? visible.maxY : document.frame.height - visible.minY
         XCTAssertEqual(bottomShown, document.frame.height, accuracy: 2, "opens scrolled to the clips")
+        // Either way (the Mac's scroll direction setting flips it).
         let before = visible.origin.y
         scroll(dy: 60, at: CGPoint(x: 500, y: 200))
         await settle(0.4)
+        if abs(vertical.contentView.bounds.origin.y - before) < 1 {
+            scroll(dy: -60, at: CGPoint(x: 500, y: 200))
+            await settle(0.4)
+        }
         XCTAssertGreaterThan(abs(vertical.contentView.bounds.origin.y - before), 20, "vertical scrolling over the lanes moves them")
 
         // Zoomed in, sideways scrolling still pans the timeline.
@@ -193,6 +201,10 @@ final class VideoTimelineInteractionTests: XCTestCase {
         let left = horizontal.contentView.bounds.origin.x
         scroll(dx: -120, at: CGPoint(x: 500, y: 200))
         await settle(0.4)
+        if abs(horizontal.contentView.bounds.origin.x - left) < 1 {
+            scroll(dx: 120, at: CGPoint(x: 500, y: 200))
+            await settle(0.4)
+        }
         XCTAssertGreaterThan(abs(horizontal.contentView.bounds.origin.x - left), 40, "sideways scrolling pans")
     }
 }

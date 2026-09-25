@@ -138,6 +138,9 @@ final class VideoReframeTests: XCTestCase {
         defer { try? FileManager.default.removeItem(at: directory) }
         let url = directory.appendingPathComponent("rec.mp4")
         try await VideoTestSupport.writeFakeRecording(to: url, size: CGSize(width: 1280, height: 720), seconds: 3, fps: 30)
+        // A Shotnix recording: the pointer's path is known.
+        let (samples, clicks) = VideoTestSupport.scriptedPointer(duration: 3)
+        XCTAssertTrue(VideoDemoSidecarStore.save(VideoDemoRecordingMetadata(videoURLPath: url.path, createdAt: Date(), duration: 3, sourceWidth: 1280, sourceHeight: 720, fps: 30, nativeCursorVisible: false, cursorSamples: samples, clickEvents: clicks), for: url))
         VideoDemoDraftStore.delete(for: url)
         let model = VideoEditorModel(videoURL: url)
         await model.load()
@@ -150,5 +153,15 @@ final class VideoReframeTests: XCTestCase {
         model.setAspect(.square)
         XCTAssertFalse(model.project.reframe)
         VideoDemoDraftStore.delete(for: url)
+
+        // A video without the pointer's path can't follow it: letterboxed.
+        let plain = directory.appendingPathComponent("plain.mp4")
+        try await VideoTestSupport.writeFakeRecording(to: plain, size: CGSize(width: 1280, height: 720), seconds: 3, fps: 30)
+        VideoDemoDraftStore.delete(for: plain)
+        let other = VideoEditorModel(videoURL: plain)
+        await other.load()
+        other.setAspect(.vertical)
+        XCTAssertFalse(other.project.reframeActive)
+        VideoDemoDraftStore.delete(for: plain)
     }
 }

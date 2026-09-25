@@ -198,7 +198,8 @@ struct VideoTranscriptPanel: View {
         let pauses = model.pauseRanges
         let pauseSeconds = pauses.reduce(0) { $0 + ($1.upperBound - $1.lowerBound) }
         VStack(alignment: .leading, spacing: 10) {
-            HStack(spacing: 8) {
+            // One per row: their counts ("Shorten 12 pauses") need the width.
+            VStack(spacing: 6) {
                 cleanup(
                     title: fillers > 0 ? "Remove \(fillers) um\(fillers == 1 ? "" : "s")" : "No ums",
                     symbol: "wand.and.stars",
@@ -209,7 +210,9 @@ struct VideoTranscriptPanel: View {
                 cleanup(
                     title: pauses.isEmpty ? "No pauses to shorten" : "Shorten \(pauses.count) pause\(pauses.count == 1 ? "" : "s")",
                     symbol: "forward.end",
-                    help: pauses.isEmpty
+                    help: model.project.cursorSamples.isEmpty
+                        ? "Shortens every silence over a second (this video has no Shotnix pointer data to spot what happens on screen)"
+                        : pauses.isEmpty
                         ? "Silences over a second get shortened — except while you click or move the pointer, so the demo itself is never cut"
                         : "Saves \(VideoEditorModel.format(pauseSeconds)) — only silences where nothing happens on screen",
                     enabled: !pauses.isEmpty,
@@ -306,6 +309,7 @@ struct VideoCaptionsInspector: View {
                     .menuIndicator(.hidden)
                     .fixedSize()
                     .help("More")
+                    .accessibilityLabel("More caption options")
                 }
             }
         }
@@ -484,6 +488,7 @@ private struct VideoCaptionRow: View {
                 }
                 .buttonStyle(.plain)
                 .help("Remove this caption")
+                .accessibilityLabel("Remove caption")
             }
         }
         .padding(.horizontal, 8)
@@ -507,7 +512,7 @@ struct VideoKeyboardSection: View {
     }
 
     var body: some View {
-        VideoInspectorSection("Keyboard shortcuts") {
+        VideoInspectorSection("Keys on screen") {
             if model.project.keystrokes.isEmpty {
                 Text("None in this recording. Turn on “Show keyboard shortcuts” in Settings → Recording and every ⌘ shortcut you press appears as keycaps. Plain typing is never recorded.")
                     .font(.system(size: 10.5))
@@ -621,7 +626,7 @@ struct VideoCameraInspector: View {
                             } label: {
                                 VStack(spacing: 4) {
                                     Image(systemName: layout.symbol).font(.system(size: 14, weight: .semibold))
-                                    Text(layout.title).font(.system(size: 10, weight: .semibold)).lineLimit(1)
+                                    Text(layout.shortTitle).font(.system(size: 10, weight: .semibold)).lineLimit(1)
                                 }
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 50)
@@ -673,7 +678,8 @@ struct VideoAnchorPicker: View {
                 }
                 .buttonStyle(.plain)
                 .position(point)
-                .help(anchor.rawValue)
+                .help(anchor.title)
+                .accessibilityLabel(anchor.title)
             }
         }
         .frame(width: size.width, height: size.height)

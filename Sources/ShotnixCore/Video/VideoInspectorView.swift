@@ -87,7 +87,7 @@ struct VideoInspectorView: View {
                         Text(tab.title)
                             .font(.system(size: 10, weight: .semibold))
                     }
-                    .foregroundStyle(selected ? VideoEditorTheme.textPrimary : VideoEditorTheme.textTertiary)
+                    .foregroundStyle(selected ? VideoEditorTheme.textPrimary : VideoEditorTheme.textSecondary)
                     .frame(maxWidth: .infinity)
                     .frame(height: 48)
                     .background(
@@ -128,7 +128,8 @@ struct VideoBackgroundInspector: View {
                         .foregroundStyle(VideoEditorTheme.textSecondary)
                 }
                 .buttonStyle(.plain)
-                .help("Surprise me")
+                .help("Shuffle the background")
+                .accessibilityLabel("Shuffle the background")
             }) {
                 VideoSegmented(options: [(.wallpaper, "Wallpaper"), (.gradient, "Gradient"), (.color, "Color"), (.image, "Image")], selection: $kind)
                 swatchGrid
@@ -214,6 +215,8 @@ struct VideoBackgroundInspector: View {
             }
         }
         .onAppear { kind = Self.kind(of: project.background) }
+        // The dice, undo, or a reset can change it from outside.
+        .onChange(of: project.background) { background in kind = Self.kind(of: background) }
     }
 
     private var showsBlur: Bool {
@@ -367,7 +370,7 @@ struct VideoCursorInspector: View {
                         .font(.system(size: 12, weight: .semibold))
                         .foregroundStyle(VideoEditorTheme.textPrimary)
                     Text(model.project.nativeCursorVisible
-                         ? "It was recorded into the pixels, so it can't be resized or smoothed. New recordings capture an editable cursor by default (Preferences → Recording)."
+                         ? "It was recorded into the pixels, so it can't be resized or smoothed. New recordings capture an editable cursor by default (Settings → Recording)."
                          : "Recordings made with Shotnix capture the pointer so it can be smoothed, resized, and hidden.")
                         .font(.system(size: 11))
                         .foregroundStyle(VideoEditorTheme.textSecondary)
@@ -411,6 +414,7 @@ struct VideoCursorInspector: View {
                         detail: model.artwork.hasCapturedShapes ? "Never switch to the text beam or the hand" : "This recording only has the arrow",
                         isOn: binding(\.alwaysArrow)
                     )
+                    .disabled(!model.artwork.hasCapturedShapes)
                 }
             }
 
@@ -474,7 +478,7 @@ struct VideoZoomInspector: View {
                 .disabled(model.project.zoomRegions.isEmpty)
             }
 
-            VideoInspectorSection("Camera") {
+            VideoInspectorSection("Motion") {
                 VideoSegmented(options: VideoZoomSpeed.allCases.map { ($0, $0.title) }, selection: Binding(
                     get: { model.project.zoomSpeed },
                     set: { value in model.setStyle { $0.zoomSpeed = value } }
@@ -506,7 +510,7 @@ struct VideoZoomInspector: View {
                                         Text(VideoEditorModel.formatScale(region.scale))
                                             .font(.system(size: 12, weight: .semibold))
                                             .monospacedDigit()
-                                        Text(region.followsCursor ? "Follow" : "Manual")
+                                        Text(region.followsCursor ? "Follows cursor" : "Aim by hand")
                                             .font(.system(size: 11))
                                             .foregroundStyle(VideoEditorTheme.textSecondary)
                                         Spacer()
@@ -912,7 +916,7 @@ struct VideoSelectionInspector: View {
             .buttonStyle(VideoSecondaryButtonStyle())
         }
 
-        VideoInspectorSection("Camera") {
+        VideoInspectorSection("Framing") {
             VideoSegmented(options: [(true, "Follow cursor"), (false, "Aim by hand")], selection: Binding(
                 get: { zoom.followsCursor },
                 set: { value in
@@ -1042,7 +1046,7 @@ struct VideoSelectionInspector: View {
     private func overlayEditor(_ overlay: VideoDemoOverlayEffect) -> some View {
         if overlay.kind == .text {
             VideoInspectorSection("Text") {
-                TextField("Caption", text: Binding(get: { overlay.text }, set: { value in model.updateOverlay(overlay.id, coalesce: "text-\(overlay.id)") { $0.text = value } }), axis: .vertical)
+                TextField("Text", text: Binding(get: { overlay.text }, set: { value in model.updateOverlay(overlay.id, coalesce: "text-\(overlay.id)") { $0.text = value } }), axis: .vertical)
                     .textFieldStyle(.plain)
                     .font(.system(size: 13, weight: .medium))
                     .lineLimit(1...4)

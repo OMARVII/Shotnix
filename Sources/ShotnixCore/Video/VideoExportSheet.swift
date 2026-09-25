@@ -54,6 +54,7 @@ struct VideoExportSheet: View {
                 }
                 .buttonStyle(VideoToolButtonStyle())
                 .help("Close (Esc)")
+                .accessibilityLabel("Close")
             }
         }
         .padding(.horizontal, 20)

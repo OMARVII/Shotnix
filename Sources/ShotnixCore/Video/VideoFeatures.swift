@@ -12,6 +12,19 @@ struct VideoWebcamSettings: Codable, Equatable {
 
         var id: String { rawValue }
 
+        var title: String {
+            switch self {
+            case .topLeft: return "Top left"
+            case .top: return "Top"
+            case .topRight: return "Top right"
+            case .left: return "Left"
+            case .right: return "Right"
+            case .bottomLeft: return "Bottom left"
+            case .bottom: return "Bottom"
+            case .bottomRight: return "Bottom right"
+            }
+        }
+
         /// Position on the frame, 0...1 with y down.
         var unit: CGPoint {
             switch self {
@@ -127,6 +140,14 @@ struct VideoCameraLayoutRegion: Codable, Equatable, Identifiable {
             case .fullscreen: return "Full camera"
             case .sideBySide: return "Side by side"
             case .hidden: return "Camera hidden"
+            }
+        }
+        /// For narrow buttons.
+        var shortTitle: String {
+            switch self {
+            case .fullscreen: return "Full camera"
+            case .sideBySide: return "Side by side"
+            case .hidden: return "Hidden"
             }
         }
         var symbol: String {

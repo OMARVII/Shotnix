@@ -237,7 +237,7 @@ struct VideoEditorToolbar: View {
                 get: { model.project.reframe },
                 set: { on in model.setStyle { $0.reframe = on } }
             ))
-            .disabled(!model.project.canReframe)
+            .disabled(!model.project.canReframe || model.project.cursorSamples.isEmpty)
         } label: {
             HStack(spacing: 6) {
                 Image(systemName: model.project.aspectPreset.symbol)
@@ -407,7 +407,13 @@ extension VideoEditorModel {
         case ([.command], "b"): splitAtPlayhead(); return true
         case ([.command], "c"): copyCurrentFrame(); return true
         case ([.command], "d"):
-            if let id = selectedZoomID { duplicateZoom(id) }
+            if let id = selectedZoomID {
+                duplicateZoom(id)
+            } else if case .overlay(let id) = selection {
+                duplicateOverlay(id)
+            } else if selection != .none {
+                showNotice("Zooms and annotations can be duplicated", symbol: "plus.square.on.square")
+            }
             return true
         case ([.command], "="), ([.command], "+"): timelineZoom = min(timelineZoom * 1.4, 40); return true
         case ([.command], "-"): timelineZoom = max(timelineZoom / 1.4, 1); return true
@@ -455,6 +461,10 @@ extension VideoEditorModel {
         case "k": pause()
         case "l": shuttleForward()
         case "m":
+            guard hasAudio else {
+                showNotice("This recording has no sound", symbol: "speaker.slash")
+                return true
+            }
             if let id = selectedClipID, let clip = project.timelineClips.first(where: { $0.id == id }) {
                 setClipMuted(id, !clip.muted)
             } else {
@@ -600,6 +610,7 @@ struct VideoCommandPalette: View {
             Command(id: "start", title: "Go to Start", symbol: "backward.end.fill", shortcut: "⌘←") { model.seek(to: 0) },
             Command(id: "end", title: "Go to End", symbol: "forward.end.fill", shortcut: "⌘→") { model.seek(to: model.timelineDuration) },
             Command(id: "reveal", title: "Show Recording in Finder", symbol: "folder", shortcut: "") { model.revealSource() },
+            Command(id: "start-over", title: "Start Over from the Original Recording…", symbol: "arrow.counterclockwise.circle", shortcut: "") { model.startOver() },
             Command(id: "shortcuts", title: "Keyboard Shortcuts", symbol: "keyboard", shortcut: "?") { model.isShortcutsPresented = true },
         ] + scriptCommands + cameraCommands + soundCommands + VideoDemoProject.AspectPreset.allCases.map { preset in
             Command(id: "aspect-\(preset.rawValue)", title: "Aspect Ratio \(preset.title) — \(preset.detail)", symbol: preset.symbol, shortcut: "") {
@@ -644,7 +655,7 @@ extension VideoCommandPalette {
                 model.setStyle { $0.audio.enhanceVoice = !on }
             })
         }
-        if model.project.canReframe {
+        if model.project.canReframe, !model.project.cursorSamples.isEmpty {
             let on = model.project.reframe
             commands.append(Command(id: "reframe", title: on ? "Letterbox Instead of Following the Cursor" : "Fill the Frame, Follow the Cursor", symbol: "rectangle.portrait.arrowtriangle.2.outward", shortcut: "") {
                 model.setStyle { $0.reframe = !on }
@@ -695,8 +706,8 @@ struct VideoShortcutsSheet: View {
 
     private let groups: [(String, [(String, String)])] = [
         ("Playback", [("Space", "Play / pause"), ("J  K  L", "Back · pause · faster"), ("← →", "Previous / next frame"), ("⇧← ⇧→", "Jump one second"), ("⌘← ⌘→", "Start / end")]),
-        ("Editing", [("S", "Split at playhead"), ("⇧-drag", "Select a range to cut"), ("I  O", "Clip starts / ends here"), ("⌫", "Delete selection"), ("M", "Mute clip"), ("⌘Z  ⇧⌘Z", "Undo / redo")]),
-        ("Camera & callouts", [("Z", "Add zoom at playhead"), ("1 – 5", "Zoom level (zoom selected)"), ("⌘D", "Duplicate zoom"), ("T  H  A  B", "Text · highlight · arrow · blur")]),
+        ("Editing", [("S", "Split at playhead"), ("⇧-drag", "Select a range to cut"), ("I  O", "Clip starts / ends here"), ("⌫", "Delete selection"), ("M", "Mute clip (or the whole video)"), ("⌘Z  ⇧⌘Z", "Undo / redo")]),
+        ("Zooms & annotations", [("Z", "Add zoom at playhead"), ("1 – 5", "Zoom level (zoom selected)"), ("⌘D", "Duplicate zoom or annotation"), ("T  H  A  B", "Text · highlight · arrow · blur")]),
         ("General", [("⌘E", "Export"), ("⌘K", "All commands"), ("⌘C", "Copy current frame"), ("⌘ scroll", "Zoom the timeline"), ("Esc", "Deselect / close")]),
     ]
 
@@ -715,6 +726,8 @@ struct VideoShortcutsSheet: View {
                         Image(systemName: "xmark").frame(width: 26, height: 26)
                     }
                     .buttonStyle(VideoToolButtonStyle())
+                    .help("Close (Esc)")
+                    .accessibilityLabel("Close")
                 }
                 HStack(alignment: .top, spacing: 28) {
                     ForEach(0..<2, id: \.self) { column in
@@ -856,7 +869,7 @@ struct VideoTipsBar: View {
                 Image(systemName: "lightbulb.fill")
                     .foregroundStyle(Color.yellow)
                 tip("Space", "play")
-                tip("Hover the purple track", "add a zoom")
+                tip("Hover the Zoom track", "add a zoom")
                 tip("Click a zoom", "aim or resize it")
                 tip("⌘E", "export")
                 Button {

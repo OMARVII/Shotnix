@@ -274,7 +274,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         let appMenuItem = NSMenuItem()
         let appMenu = NSMenu(title: "Shotnix")
-        let preferencesItem = NSMenuItem(title: "Preferences...", action: #selector(openPreferences), keyEquivalent: ",")
+        let preferencesItem = NSMenuItem(title: "Settings…", action: #selector(openPreferences), keyEquivalent: ",")
         preferencesItem.target = self
         appMenu.addItem(preferencesItem)
         appMenu.addItem(NSMenuItem.separator())

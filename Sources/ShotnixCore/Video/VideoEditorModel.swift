@@ -972,6 +972,55 @@ final class VideoEditorModel: ObservableObject {
         showNotice("Zoom removed — ⌘Z to undo", symbol: "trash")
     }
 
+    /// Back to the recording as it was made: every edit goes (one undo
+    /// brings them all back).
+    func startOver() {
+        let alert = NSAlert()
+        alert.messageText = "Start over from the original recording?"
+        alert.informativeText = "Every cut, zoom, annotation, caption, and style change on this video is removed. You can undo this."
+        alert.addButton(withTitle: "Start Over")
+        alert.addButton(withTitle: "Cancel")
+        guard alert.runModal() == .alertFirstButtonReturn else { return }
+        var fresh = VideoDemoProject.make(sourceURL: project.sourceURL, duration: sourceDuration, sourceSize: project.sourceSize)
+        if let recording { fresh.apply(metadata: recording) }
+        fresh.sourceWidth = project.sourceWidth
+        fresh.sourceHeight = project.sourceHeight
+        fresh.ensureTimeline(totalDuration: sourceDuration)
+        if fresh.sourceHeight > fresh.sourceWidth * 1.1, fresh.aspectPreset == .widescreen || fresh.aspectPreset == .classic {
+            fresh.aspectPreset = .source
+        }
+        if recording != nil, Settings.autoZoomNewRecordings, !fresh.clickEvents.isEmpty {
+            fresh.zoomRegions = VideoAutoZoomPlanner.regions(
+                clicks: fresh.clicksInsideCrop,
+                cursorSamples: fresh.cursorSamples,
+                segments: fresh.timelineSegments(totalDuration: sourceDuration),
+                scale: fresh.defaultZoomScale,
+                speed: fresh.zoomSpeed
+            )
+        }
+        selection = .none
+        mutate { $0 = fresh }
+        endGesture()
+        showNotice("Back to the original recording — ⌘Z to undo", symbol: "arrow.counterclockwise")
+    }
+
+    /// A copy of an annotation, nudged so both are visible, on top.
+    func duplicateOverlay(_ id: UUID) {
+        guard let original = project.overlayEffects.first(where: { $0.id == id }) else { return }
+        var copy = original
+        copy.id = UUID()
+        copy.x = min(original.x + 0.03, 0.98)
+        copy.y = min(original.y + 0.03, 0.98)
+        let overlapping = project.overlayEffects.filter { $0.time < copy.time + copy.duration && $0.time + $0.duration > copy.time }
+        copy.layer = (overlapping.map(\.layer).max() ?? -1) + 1
+        mutate { project in
+            project.overlayEffects.append(copy)
+            project.overlayEffects = VideoDemoProject.normalizedEffectLayers(project.overlayEffects)
+        }
+        selection = .overlay(copy.id)
+        showNotice("Duplicated", symbol: "plus.square.on.square")
+    }
+
     func duplicateZoom(_ id: UUID) {
         guard let region = project.zoomRegions.first(where: { $0.id == id }),
               let range = zoomTimelineRange(region) else { return }
@@ -1305,6 +1354,12 @@ final class VideoEditorModel: ObservableObject {
     }
 
     func speedUpIdle(speed: Double = 8) {
+        // Without the pointer's path there's no telling a quiet screen from
+        // a busy one — it would speed up everything.
+        guard !project.cursorSamples.isEmpty else {
+            showNotice("Speed Up Idle works on Shotnix recordings — it watches the pointer", symbol: "hare")
+            return
+        }
         let ranges = idleRanges()
         guard !ranges.isEmpty else {
             showNotice("No idle moments found — nice and tight", symbol: "hare")
