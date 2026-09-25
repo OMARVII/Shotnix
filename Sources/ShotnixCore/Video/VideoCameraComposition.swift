@@ -161,7 +161,7 @@ enum VideoCameraComposition {
     static func addCameraTrack(
         _ camera: VideoCameraSource,
         to composition: AVMutableComposition,
-        placements: [(start: CMTime, duration: CMTime, segment: VideoDemoTimelineSegment)]
+        placements: [VideoCompositionBuilder.Placement]
     ) -> AVMutableCompositionTrack? {
         guard let track = composition.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid) else { return nil }
         let available = CMTimeRange(start: .zero, duration: VideoCompositionBuilder.time(camera.duration))

@@ -114,6 +114,12 @@ final class VideoEditorModel: ObservableObject {
     @Published private(set) var hasAudio = false
     /// The recording came with camera footage that's still on disk.
     @Published private(set) var hasWebcamFootage = false
+    /// What each of the recording's audio tracks carries.
+    @Published private(set) var audioKinds: [VideoAudioKind] = []
+    /// Voice enhancement progress, 0…1 (nil when idle).
+    @Published var voiceJob: Double?
+    @Published var voiceError: String?
+    var voiceTask: Task<Bool, Never>?
     @Published private(set) var isReady = false
     @Published var loadError: String?
     @Published var selection: Selection = .none {
@@ -220,6 +226,8 @@ final class VideoEditorModel: ObservableObject {
             sourceDuration = source.duration
             sourceFrameRate = source.frameRate
             hasAudio = !source.audio.isEmpty
+            audioKinds = VideoAudioKind.resolve(recorded: recording?.audioTracks, channelCounts: source.audioChannelCounts)
+            playback.setAudioSources(VideoAudioSource.sources(from: source, kinds: audioKinds))
 
             var loaded = project
             var isFresh = false
@@ -263,6 +271,9 @@ final class VideoEditorModel: ObservableObject {
             }
             Task { await loadThumbnails() }
             Task { await loadWaveform() }
+            if project.audio.enhanceVoice {
+                enhanceVoiceChanged()
+            }
         } catch {
             loadError = error.localizedDescription
         }
@@ -272,6 +283,9 @@ final class VideoEditorModel: ObservableObject {
 
     private func projectDidChange(from old: VideoDemoProject) {
         segments = project.timelineSegments(totalDuration: sourceDuration)
+        if isReady, old.audio.enhanceVoice != project.audio.enhanceVoice {
+            enhanceVoiceChanged()
+        }
         rebuildPlan()
         if isReady {
             let keepSource = sourceTime(forTimeline: clock.time)
@@ -1160,8 +1174,11 @@ final class VideoEditorModel: ObservableObject {
         let project = self.project
         let recording = self.recording
         let bridge = VideoExportBridge(model: self)
+        let voice = project.audio.enhanceVoice ? startVoiceEnhancementIfNeeded() : nil
         Task {
             do {
+                // The enhanced voice has to exist before it can be exported.
+                if let voice { _ = await voice.value }
                 _ = try await VideoDemoExporter.export(
                     project: project,
                     recording: recording,

@@ -369,8 +369,46 @@ struct VideoAudioSettings: Codable, Equatable {
 
     var volume: Double = 1
     var muted: Bool = false
+    /// Your microphone, when the recording has it on its own track.
+    var voiceVolume: Double = 1
+    /// Sound from the Mac, when the recording has it on its own track.
+    var systemVolume: Double = 1
+    /// Voice isolation + rumble filter + gentle compression on the mic.
+    var enhanceVoice = false
+    /// Exports at a steady −16 LUFS (peaks kept under −1 dBFS).
+    var normalizeLoudness = true
+
+    init() {}
 
     var effectiveVolume: Float { muted ? 0 : Float(min(max(volume, Self.volumeRange.lowerBound), Self.volumeRange.upperBound)) }
+
+    func effectiveVolume(for kind: VideoAudioKind) -> Float {
+        let level: Double
+        switch kind {
+        case .microphone: level = voiceVolume
+        case .system: level = systemVolume
+        case .mixed: level = 1
+        }
+        return effectiveVolume * Float(min(max(level, Self.volumeRange.lowerBound), Self.volumeRange.upperBound))
+    }
+
+    /// Nothing audible would come out.
+    func isSilent(kinds: [VideoAudioKind]) -> Bool {
+        kinds.isEmpty || kinds.allSatisfy { effectiveVolume(for: $0) < 0.0005 }
+    }
+
+    private enum CodingKeys: String, CodingKey { case volume, muted, voiceVolume, systemVolume, enhanceVoice, normalizeLoudness }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        let d = VideoAudioSettings()
+        volume = try c.decodeIfPresent(Double.self, forKey: .volume) ?? d.volume
+        muted = try c.decodeIfPresent(Bool.self, forKey: .muted) ?? d.muted
+        voiceVolume = try c.decodeIfPresent(Double.self, forKey: .voiceVolume) ?? d.voiceVolume
+        systemVolume = try c.decodeIfPresent(Double.self, forKey: .systemVolume) ?? d.systemVolume
+        enhanceVoice = try c.decodeIfPresent(Bool.self, forKey: .enhanceVoice) ?? d.enhanceVoice
+        normalizeLoudness = try c.decodeIfPresent(Bool.self, forKey: .normalizeLoudness) ?? d.normalizeLoudness
+    }
 }
 
 // MARK: - Project

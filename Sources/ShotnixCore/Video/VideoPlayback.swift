@@ -16,9 +16,17 @@ final class VideoDemoPlaybackClock: ObservableObject {
 /// scrubbing stays fluid on long recordings.
 @MainActor
 final class VideoPlaybackController: NSObject {
-    struct EditSignature: Equatable {
-        let clips: [VideoDemoTimelineClip]
-        let audio: VideoAudioSettings
+    /// What the player item is built from. Sound settings (volume, mutes,
+    /// fades) are NOT part of it — those only swap the audio mix.
+    struct EditStructure: Equatable {
+        struct Timing: Equatable {
+            let start: Double
+            let end: Double
+            let speed: Double
+        }
+        let timings: [Timing]
+        let audioSources: [String]
+        let hasCamera: Bool
     }
 
     let player = AVPlayer()
@@ -27,7 +35,23 @@ final class VideoPlaybackController: NSObject {
     private(set) var camera: VideoCameraSource?
     let cameraStore = VideoCameraFrameStore()
     private(set) var edit: VideoEditComposition?
-    private var signature: EditSignature?
+    private var structure: EditStructure?
+    /// The sound sources (kinds, enhanced voice) the edit is built from.
+    private(set) var audioSources: [VideoAudioSource]?
+    /// Counts full player rebuilds (tests check that volume changes don't).
+    private(set) var itemRebuilds = 0
+    /// Sound inputs of the current mix, so unrelated edits leave it alone.
+    private var mixKey: MixKey?
+
+    private struct MixKey: Equatable {
+        struct ClipSound: Equatable {
+            let muted: Bool
+            let fadeIn: Double
+            let fadeOut: Double
+        }
+        let audio: VideoAudioSettings
+        let clips: [ClipSound]
+    }
     private var output: AVPlayerItemVideoOutput?
     private var timeObserver: Any?
     private var endObserver: NSObjectProtocol?
@@ -78,7 +102,13 @@ final class VideoPlaybackController: NSObject {
     /// Adds the camera footage; the next `apply` builds it into the edit.
     func setCamera(_ camera: VideoCameraSource?) {
         self.camera = camera
-        signature = nil
+        structure = nil
+    }
+
+    /// Replaces the sound sources; the next `apply` rebuilds the edit.
+    func setAudioSources(_ sources: [VideoAudioSource]) {
+        audioSources = sources
+        structure = nil
     }
 
     /// The camera frame composed for timeline `time`.
@@ -86,23 +116,33 @@ final class VideoPlaybackController: NSObject {
         camera == nil ? nil : cameraStore.frame(at: time)
     }
 
-    /// Rebuilds the player item when the cut list or audio changed; keeps
-    /// the playhead on the same moment of the recording.
+    /// Rebuilds the player item when the cut list or sound sources changed
+    /// (keeping the playhead on the same moment of the recording); volume,
+    /// mute, and fade changes just swap the mix on the playing item.
     func apply(segments: [VideoDemoTimelineSegment], audio: VideoAudioSettings, keepSourceTime: Double?) {
         guard let source else { return }
-        let next = EditSignature(clips: segments.map(\.clip), audio: audio)
-        guard next != signature else { return }
-        let onlyAudioChanged = signature?.clips == next.clips && edit != nil
-        signature = next
-
-        guard let built = try? VideoCompositionBuilder.build(source: source, segments: segments, audio: audio, camera: camera) else { return }
-        edit = built
-        timelineDuration = built.duration.seconds
-
-        if onlyAudioChanged, let item = player.currentItem, item.asset === built.composition {
-            item.audioMix = built.audioMix
+        let next = EditStructure(
+            timings: segments.filter { $0.clip.sourceDuration > 0.001 }.map {
+                EditStructure.Timing(start: $0.clip.sourceStart, end: $0.clip.sourceEnd, speed: $0.clip.normalizedSpeed)
+            },
+            audioSources: audioSources?.map(\.identity) ?? [],
+            hasCamera: camera != nil
+        )
+        let nextMix = MixKey(audio: audio, clips: segments.map { MixKey.ClipSound(muted: $0.clip.muted, fadeIn: $0.clip.fadeIn, fadeOut: $0.clip.fadeOut) })
+        if next == structure, let edit, let item = player.currentItem {
+            if nextMix != mixKey {
+                mixKey = nextMix
+                item.audioMix = VideoCompositionBuilder.audioMix(for: edit, segments: segments, audio: audio)
+            }
             return
         }
+        structure = next
+        mixKey = nextMix
+
+        guard let built = try? VideoCompositionBuilder.build(source: source, segments: segments, audio: audio, camera: camera, audioSources: audioSources) else { return }
+        edit = built
+        timelineDuration = built.duration.seconds
+        itemRebuilds += 1
 
         let wasPlaying = isPlaying
         let item = AVPlayerItem(asset: built.composition)

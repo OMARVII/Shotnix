@@ -583,6 +583,11 @@ final class RecordingEngine: NSObject {
         let anchor = firstFrameWallClockTime > 0 ? firstFrameWallClockTime : recordingStartedAt
         let elapsed = anchor > 0 ? CACurrentMediaTime() - anchor : 0
         pendingRecordingMetadata = metadataRecorder?.finish(duration: elapsed)
+        // Writer inputs are added microphone first, then system audio.
+        var audioKinds: [VideoAudioKind] = []
+        if microphoneInput != nil { audioKinds.append(.microphone) }
+        if systemAudioInput != nil { audioKinds.append(.system) }
+        pendingRecordingMetadata?.audioTracks = audioKinds.isEmpty ? nil : audioKinds
         metadataRecorder = nil
         if recordsCamera {
             cameraFinishTask = Task { await CameraCapture.shared.finishRecording() }

@@ -42,7 +42,17 @@ enum VideoDemoExporter {
         if let webcam = recording?.webcam, project.webcam.visible {
             camera = await VideoCameraSource.load(webcam)
         }
-        let edit = try VideoCompositionBuilder.build(source: source, segments: segments, audio: project.audio, camera: camera)
+        let kinds = VideoAudioKind.resolve(recorded: recording?.audioTracks, channelCounts: source.audioChannelCounts)
+        let audioSources = await VideoAudioSource.resolved(from: source, kinds: kinds, enhanceVoice: project.audio.enhanceVoice)
+        let edit = try VideoCompositionBuilder.build(
+            source: source,
+            segments: segments,
+            audio: project.audio,
+            camera: camera,
+            audioSources: audioSources,
+            // A fully muted export has no sound track at all.
+            includeAudio: !project.audio.isSilent(kinds: kinds)
+        )
         let plan = makePlan(project: project, sourceDuration: source.duration, recording: recording, hasWebcam: edit.cameraTrack != nil)
         let canvas = plan.canvasSize
         let outputSize = settings.outputSize(canvas: canvas)
@@ -198,6 +208,12 @@ enum VideoDemoExporter {
             }
         }
 
+        // Even loudness: measure the final mix once, then apply one gain.
+        var audioGain = 1.0
+        if audioOutput != nil, project.audio.normalizeLoudness {
+            audioGain = try await measureLoudnessGain(edit: edit, cancel: cancel)
+        }
+
         let writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
         writer.shouldOptimizeForNetworkUse = true
         var compression: [String: Any] = [
@@ -263,6 +279,7 @@ enum VideoDemoExporter {
             adaptor: adaptor,
             audioOutput: audioOutput,
             audioInput: audioInput,
+            audioGain: audioGain,
             plan: plan,
             cameraStore: edit.cameraTrack == nil ? nil : cameraStore,
             outputSize: outputSize,
@@ -280,6 +297,45 @@ enum VideoDemoExporter {
         let background: VideoBackground
     }
 
+    /// Reads the edit's final mix once to find the gain that lands it at
+    /// −16 LUFS without letting peaks pass −1 dBFS.
+    private static func measureLoudnessGain(edit: VideoEditComposition, cancel: CancellationFlag) async throws -> Double {
+        guard !edit.audioTracks.isEmpty else { return 1 }
+        let reader = try AVAssetReader(asset: edit.composition)
+        let output = AVAssetReaderAudioMixOutput(audioTracks: edit.audioTracks, audioSettings: [
+            AVFormatIDKey: kAudioFormatLinearPCM,
+            AVSampleRateKey: 48_000,
+            AVNumberOfChannelsKey: 2,
+            AVLinearPCMBitDepthKey: 32,
+            AVLinearPCMIsFloatKey: true,
+            AVLinearPCMIsBigEndianKey: false,
+            AVLinearPCMIsNonInterleaved: false,
+        ])
+        output.audioMix = edit.audioMix
+        output.audioTimePitchAlgorithm = .spectral
+        output.alwaysCopiesSampleData = false
+        guard reader.canAdd(output) else { return 1 }
+        reader.add(output)
+        guard reader.startReading() else { return 1 }
+        let meter = VideoLoudnessMeter(channels: 2, sampleRate: 48_000)
+        while let sample = output.copyNextSampleBuffer() {
+            if cancel.isSet {
+                reader.cancelReading()
+                throw VideoDemoExportError.cancelled
+            }
+            guard let block = CMSampleBufferGetDataBuffer(sample) else { continue }
+            var length = 0
+            var pointer: UnsafeMutablePointer<Int8>?
+            guard CMBlockBufferGetDataPointer(block, atOffset: 0, lengthAtOffsetOut: nil, totalLengthOut: &length, dataPointerOut: &pointer) == noErr,
+                  let pointer else { continue }
+            let count = length / MemoryLayout<Float>.size
+            pointer.withMemoryRebound(to: Float.self, capacity: count) { floats in
+                meter.add(interleaved: UnsafeBufferPointer(start: floats, count: count))
+            }
+        }
+        return meter.gain()
+    }
+
     /// Owns the reader→render→writer loop. Video and audio are pumped on
     /// their own queues, the way AVAssetWriter wants to be fed.
     private final class MovieJob: @unchecked Sendable {
@@ -290,6 +346,7 @@ enum VideoDemoExporter {
         let adaptor: AVAssetWriterInputPixelBufferAdaptor
         let audioOutput: AVAssetReaderAudioMixOutput?
         let audioInput: AVAssetWriterInput?
+        let audioGain: Double
         let plan: VideoRenderPlan
         let cameraStore: VideoCameraFrameStore?
         let outputSize: CGSize
@@ -320,6 +377,7 @@ enum VideoDemoExporter {
             adaptor: AVAssetWriterInputPixelBufferAdaptor,
             audioOutput: AVAssetReaderAudioMixOutput?,
             audioInput: AVAssetWriterInput?,
+            audioGain: Double,
             plan: VideoRenderPlan,
             cameraStore: VideoCameraFrameStore?,
             outputSize: CGSize,
@@ -336,6 +394,7 @@ enum VideoDemoExporter {
             self.adaptor = adaptor
             self.audioOutput = audioOutput
             self.audioInput = audioInput
+            self.audioGain = audioGain
             self.plan = plan
             self.cameraStore = cameraStore
             self.outputSize = outputSize
@@ -384,12 +443,13 @@ enum VideoDemoExporter {
                             group.leave()
                             return
                         }
-                        guard let sample = audioOutput.copyNextSampleBuffer() else {
+                        guard let raw = audioOutput.copyNextSampleBuffer() else {
                             finished = true
                             audioInput.markAsFinished()
                             group.leave()
                             return
                         }
+                        let sample = VideoAudioGain.apply(self.audioGain, to: raw) ?? raw
                         if !audioInput.append(sample) {
                             finished = true
                             audioInput.markAsFinished()

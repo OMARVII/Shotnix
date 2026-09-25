@@ -209,6 +209,81 @@ extension VideoEditorModel {
     }
 }
 
+// MARK: - Sound
+
+extension VideoEditorModel {
+    var voiceTrackIndex: Int? { VideoAudioKind.voiceTrackIndex(in: audioKinds) }
+    var hasSeparateVoiceAndSystem: Bool { audioKinds.contains(.microphone) && audioKinds.contains(.system) }
+    var canEnhanceVoice: Bool { voiceTrackIndex != nil && VideoVoiceEnhancer.isAvailable }
+
+    private var enhancedVoiceURL: URL? {
+        voiceTrackIndex.map { VideoVoiceEnhancer.cacheURL(for: project.sourceURL, trackIndex: $0) }
+    }
+
+    var enhancedVoiceReady: Bool {
+        enhancedVoiceURL.map { FileManager.default.fileExists(atPath: $0.path) } ?? false
+    }
+
+    /// The toggle (or an undo) changed: process if needed, then swap sources.
+    func enhanceVoiceChanged() {
+        if project.audio.enhanceVoice { startVoiceEnhancementIfNeeded() }
+        Task { await refreshAudioSources() }
+    }
+
+    /// Runs voice enhancement once per recording (the result is cached).
+    @discardableResult
+    func startVoiceEnhancementIfNeeded() -> Task<Bool, Never>? {
+        if let voiceTask { return voiceTask }
+        guard project.audio.enhanceVoice,
+              let index = voiceTrackIndex,
+              let destination = enhancedVoiceURL,
+              !FileManager.default.fileExists(atPath: destination.path),
+              let source = playback.source,
+              source.audio.indices.contains(index) else { return nil }
+        let asset = source.asset
+        let track = source.audio[index]
+        voiceJob = 0
+        voiceError = nil
+        let report: @Sendable (Double) -> Void = { [weak self] value in
+            guard let self else { return }
+            Task { @MainActor in
+                if self.voiceTask != nil { self.voiceJob = value }
+            }
+        }
+        let task = Task { [weak self] () -> Bool in
+            do {
+                try await VideoVoiceEnhancer.enhance(asset: asset, track: track, to: destination, progress: report)
+                guard let self else { return false }
+                self.voiceTask = nil
+                self.voiceJob = nil
+                await self.refreshAudioSources()
+                if self.project.audio.enhanceVoice {
+                    self.showNotice("Voice enhanced — background noise removed", symbol: "waveform")
+                }
+                return true
+            } catch {
+                guard let self else { return false }
+                self.voiceTask = nil
+                self.voiceJob = nil
+                if !(error is CancellationError) {
+                    self.voiceError = error.localizedDescription
+                }
+                return false
+            }
+        }
+        voiceTask = task
+        return task
+    }
+
+    /// Rebuilds the sound sources (e.g. the enhanced voice became ready).
+    func refreshAudioSources() async {
+        guard let source = playback.source else { return }
+        let sources = await VideoAudioSource.resolved(from: source, kinds: audioKinds, enhanceVoice: project.audio.enhanceVoice)
+        playback.setAudioSources(sources)
+        playback.apply(segments: segments, audio: project.audio, keepSourceTime: sourceTime(forTimeline: clock.time))
+    }
+}
+
 // MARK: - Camera
 
 extension VideoEditorModel {

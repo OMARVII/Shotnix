@@ -534,6 +534,24 @@ struct VideoZoomInspector: View {
 struct VideoAudioInspector: View {
     @ObservedObject var model: VideoEditorModel
 
+    private var audio: VideoAudioSettings { model.project.audio }
+
+    private func binding<T>(_ keyPath: WritableKeyPath<VideoAudioSettings, T>, coalesce: String? = nil) -> Binding<T> {
+        Binding(get: { model.project.audio[keyPath: keyPath] }, set: { value in model.setStyle(coalesce: coalesce) { $0.audio[keyPath: keyPath] = value } })
+    }
+
+    private func level(_ title: String, _ keyPath: WritableKeyPath<VideoAudioSettings, Double>, detail: String? = nil) -> some View {
+        VideoSliderRow(
+            title: title,
+            value: binding(keyPath, coalesce: "volume-\(title)"),
+            range: VideoAudioSettings.volumeRange,
+            defaultValue: 1,
+            format: { "\(Int(($0 * 100).rounded()))%" },
+            detail: detail,
+            onEditingEnded: { model.endGesture() }
+        )
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 22) {
             if !model.hasAudio {
@@ -548,17 +566,55 @@ struct VideoAudioInspector: View {
                 }
             } else {
                 VideoInspectorSection("Sound") {
-                    VideoToggleRow(title: "Mute video", isOn: Binding(get: { model.project.audio.muted }, set: { value in model.setStyle { $0.audio.muted = value } }))
-                    VideoSliderRow(
-                        title: "Volume",
-                        value: Binding(get: { model.project.audio.volume }, set: { value in model.setStyle(coalesce: "volume") { $0.audio.volume = value } }),
-                        range: VideoAudioSettings.volumeRange,
-                        defaultValue: 1,
-                        format: { "\(Int(($0 * 100).rounded()))%" },
-                        onEditingEnded: { model.endGesture() }
-                    )
-                    .disabled(model.project.audio.muted)
+                    VideoToggleRow(title: "Mute video", isOn: binding(\.muted))
+                    Group {
+                        if model.hasSeparateVoiceAndSystem {
+                            level("Voice", \.voiceVolume, detail: "Your microphone")
+                            level("Computer sound", \.systemVolume, detail: "What was playing on your Mac")
+                        } else {
+                            level("Volume", \.volume)
+                        }
+                    }
+                    .disabled(audio.muted)
                 }
+
+                if model.canEnhanceVoice {
+                    VideoInspectorSection("Voice") {
+                        VideoToggleRow(
+                            title: "Enhance voice",
+                            detail: "Removes background noise and hum, and evens out your level — processed on this Mac",
+                            isOn: binding(\.enhanceVoice)
+                        )
+                        if let progress = model.voiceJob {
+                            VStack(alignment: .leading, spacing: 5) {
+                                HStack {
+                                    Text("Cleaning up your voice…")
+                                        .font(.system(size: 11, weight: .medium))
+                                        .foregroundStyle(VideoEditorTheme.textSecondary)
+                                    Spacer()
+                                    Text("\(Int((progress * 100).rounded()))%")
+                                        .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                                        .foregroundStyle(VideoEditorTheme.textSecondary)
+                                }
+                                ProgressView(value: progress).progressViewStyle(.linear)
+                            }
+                        } else if let error = model.voiceError, audio.enhanceVoice {
+                            Label(error, systemImage: "exclamationmark.triangle.fill")
+                                .font(.system(size: 11, weight: .medium))
+                                .foregroundStyle(Color.orange)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                }
+
+                VideoInspectorSection("Export") {
+                    VideoToggleRow(
+                        title: "Even out loudness",
+                        detail: "Exports at the level video sites expect (−16 LUFS) without clipping",
+                        isOn: binding(\.normalizeLoudness)
+                    )
+                }
+
                 Text("Select a clip on the timeline to mute it or fade it in and out.")
                     .font(.system(size: 10.5))
                     .foregroundStyle(VideoEditorTheme.textTertiary)

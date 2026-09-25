@@ -96,7 +96,12 @@ final class VideoEditorModelTests: XCTestCase {
         model.setClipMuted(id, true)
         XCTAssertEqual(model.playback.edit?.audioTracks.count, 1)
         model.setStyle { $0.audio.muted = true }
-        XCTAssertNil(model.playback.edit?.audioMix, "muting the video drops its audio")
+        // Muting silences the mix on the playing item (no rebuild, no flicker).
+        let mix = try XCTUnwrap(model.playback.player.currentItem?.audioMix)
+        var start: Float = -1, end: Float = -1
+        var range = CMTimeRange()
+        _ = mix.inputParameters.first?.getVolumeRamp(for: CMTime(seconds: 0.5, preferredTimescale: 600), startVolume: &start, endVolume: &end, timeRange: &range)
+        XCTAssertEqual(start, 0, accuracy: 0.0001, "muting the video silences its audio")
         await spin(0.8)
         XCTAssertNotNil(model.waveform)
     }

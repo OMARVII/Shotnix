@@ -83,6 +83,8 @@ struct VideoDemoRecordingMetadata: Codable, Equatable {
     var webcam: VideoWebcamRecording? = nil
     /// Keyboard shortcuts pressed during the recording (never plain typing).
     var keystrokes: [VideoKeystrokeEvent]? = nil
+    /// What each audio track carries, in file order.
+    var audioTracks: [VideoAudioKind]? = nil
 
     var shouldRenderCursor: Bool { renderCursor ?? !nativeCursorVisible }
 }
