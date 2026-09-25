@@ -179,6 +179,7 @@ enum VideoDemoExporter {
         let fps = Double(settings.fps)
         let reader = try AVAssetReader(asset: edit.composition)
         let cameraStore = VideoCameraFrameStore(capacity: 48)
+        cameraStore.setFindsPerson(plan.webcam?.needsPersonMask ?? false)
         let videoOutput = videoOutput(for: edit, frameRate: fps, store: cameraStore, settings: [
             kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA,
             kCVPixelBufferIOSurfacePropertiesKey as String: [:] as [String: Any],
@@ -496,7 +497,7 @@ enum VideoDemoExporter {
         private var outputIndex = 0
         private var currentSample: CMSampleBuffer?
         private var pendingSample: CMSampleBuffer?
-        private var lastCameraFrame: CIImage?
+        private var lastCameraFrame: VideoCameraFrame?
         private var sourceFinished = false
 
         /// Returns false when the timeline is exhausted.
@@ -524,10 +525,11 @@ enum VideoDemoExporter {
             let source = currentSample.flatMap { CMSampleBufferGetImageBuffer($0) }.map { CIImage(cvPixelBuffer: $0) }
             var options = VideoFrameRenderer.Options(frameRate: fps)
             if let cameraStore, let sample = currentSample {
-                if let frame = cameraStore.frame(at: CMSampleBufferGetPresentationTimeStamp(sample).seconds, tolerance: 0.02) {
+                if let frame = cameraStore.camera(at: CMSampleBufferGetPresentationTimeStamp(sample).seconds, tolerance: 0.02) {
                     lastCameraFrame = frame
                 }
-                options.webcamFrame = lastCameraFrame
+                options.webcamFrame = lastCameraFrame?.image
+                options.webcamMask = lastCameraFrame?.mask
             }
             let image = renderer.render(
                 source: source,
@@ -606,12 +608,13 @@ enum VideoDemoExporter {
     ) async throws {
         let reader = try AVAssetReader(asset: edit.composition)
         let cameraStore = VideoCameraFrameStore(capacity: 48)
+        cameraStore.setFindsPerson(plan.webcam?.needsPersonMask ?? false)
         let output = videoOutput(for: edit, frameRate: fps, store: cameraStore, settings: [
             kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA,
             kCVPixelBufferIOSurfacePropertiesKey as String: [:] as [String: Any],
         ])
         output.alwaysCopiesSampleData = false
-        var lastCameraFrame: CIImage?
+        var lastCameraFrame: VideoCameraFrame?
         guard reader.canAdd(output) else { throw VideoDemoExportError.exportFailed("Could not read frames for the GIF.") }
         reader.add(output)
         guard reader.startReading() else {
@@ -646,8 +649,9 @@ enum VideoDemoExporter {
             let time = CMSampleBufferGetPresentationTimeStamp(sample).seconds
             var options = VideoFrameRenderer.Options(frameRate: fps)
             if edit.cameraTrack != nil {
-                if let frame = cameraStore.frame(at: time, tolerance: 0.02) { lastCameraFrame = frame }
-                options.webcamFrame = lastCameraFrame
+                if let frame = cameraStore.camera(at: time, tolerance: 0.02) { lastCameraFrame = frame }
+                options.webcamFrame = lastCameraFrame?.image
+                options.webcamMask = lastCameraFrame?.mask
             }
             let image = renderer.render(
                 source: CIImage(cvPixelBuffer: pixelBuffer),

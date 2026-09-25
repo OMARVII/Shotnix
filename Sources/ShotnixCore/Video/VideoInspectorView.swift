@@ -690,6 +690,7 @@ struct VideoSelectionInspector: View {
         case .click: return "Click"
         case .caption: return "Caption"
         case .keystroke: return "Shortcut"
+        case .cameraLayout: return "Camera layout"
         case .range(let range): return "Selected \(VideoEditorModel.format(range.duration))"
         case .none: return ""
         }
@@ -703,6 +704,7 @@ struct VideoSelectionInspector: View {
         case .click: return "cursorarrow.click.2"
         case .caption: return "captions.bubble"
         case .keystroke: return "keyboard"
+        case .cameraLayout: return "person.crop.rectangle"
         case .range: return "selection.pin.in.out"
         case .none: return ""
         }
@@ -716,6 +718,7 @@ struct VideoSelectionInspector: View {
         case .range: return Color.red
         case .caption: return VideoEditorTheme.caption
         case .keystroke: return VideoEditorTheme.keys
+        case .cameraLayout: return VideoEditorTheme.camera
         default: return VideoEditorTheme.textSecondary
         }
     }
@@ -757,6 +760,37 @@ struct VideoSelectionInspector: View {
                         .foregroundStyle(VideoEditorTheme.textSecondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
+            }
+        case .cameraLayout(let id):
+            if let region = model.project.cameraLayouts.first(where: { $0.id == id }) {
+                VideoInspectorSection("Layout") {
+                    ForEach(VideoCameraLayoutRegion.Layout.allCases) { layout in
+                        Button {
+                            model.setCameraLayout(id, to: layout)
+                        } label: {
+                            HStack(spacing: 10) {
+                                Image(systemName: layout.symbol)
+                                    .frame(width: 20)
+                                Text(layout.title)
+                                Spacer()
+                                if region.layout == layout {
+                                    Image(systemName: "checkmark").foregroundStyle(VideoEditorTheme.camera)
+                                }
+                            }
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundStyle(VideoEditorTheme.textPrimary)
+                            .padding(.horizontal, 10)
+                            .frame(height: 30)
+                            .background(RoundedRectangle(cornerRadius: 7, style: .continuous).fill(region.layout == layout ? VideoEditorTheme.camera.opacity(0.18) : Color.white.opacity(0.04)))
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                Text("Drag the block on the Camera lane to move it, or its edges to change how long it lasts. Each change eases in and out.")
+                    .font(.system(size: 10.5))
+                    .foregroundStyle(VideoEditorTheme.textTertiary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         case .range(let range):
             VStack(alignment: .leading, spacing: 12) {

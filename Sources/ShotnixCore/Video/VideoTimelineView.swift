@@ -12,14 +12,16 @@ enum VideoTimelineMetrics {
     static let overlayLaneGap: CGFloat = 4
     static let captionLaneHeight: CGFloat = 22
     static let keysLaneHeight: CGFloat = 18
+    static let cameraLaneHeight: CGFloat = 22
     static let gap: CGFloat = 7
 
-    /// Captions and shortcuts sit on top of everything in the picture, so
-    /// their lanes come first (0 when the project has neither).
+    /// Captions, shortcuts, and camera layouts sit in front of everything
+    /// else in the picture, so their lanes come first (0 when none).
     static func textLanesHeight(_ project: VideoDemoProject) -> CGFloat {
         var height: CGFloat = 0
         if !project.captions.isEmpty { height += captionLaneHeight + overlayLaneGap }
         if !project.keystrokes.isEmpty { height += keysLaneHeight + overlayLaneGap }
+        if !project.cameraLayouts.isEmpty { height += cameraLaneHeight + overlayLaneGap }
         return height > 0 ? height - overlayLaneGap + gap : 0
     }
 
@@ -224,6 +226,7 @@ struct VideoTimelineSurface: View {
     private var textTop: CGFloat { M.rulerHeight + M.gap }
     private var captionTop: CGFloat { textTop }
     private var keysTop: CGFloat { textTop + (model.project.captions.isEmpty ? 0 : M.captionLaneHeight + M.overlayLaneGap) }
+    private var cameraLaneTop: CGFloat { keysTop + (model.project.keystrokes.isEmpty ? 0 : M.keysLaneHeight + M.overlayLaneGap) }
     private var overlayTop: CGFloat { textTop + M.textLanesHeight(model.project) }
     private var zoomTop: CGFloat { overlayTop + M.overlayAreaHeight(model.project) }
     private var clickTop: CGFloat { zoomTop + M.zoomTrackHeight + M.gap }
@@ -287,6 +290,18 @@ struct VideoTimelineSurface: View {
                     )
                     .equatable()
                     .offset(y: keysTop)
+                }
+
+                if !model.project.cameraLayouts.isEmpty {
+                    VideoCameraLayoutLane(
+                        items: model.cameraLayoutSpans.map { VideoCameraLayoutLane.Item(id: $0.region.id, start: $0.start, end: $0.end, layout: $0.region.layout) },
+                        selectedID: model.selectedCameraLayoutID,
+                        geometry: geometry,
+                        model: model,
+                        hover: hover
+                    )
+                    .equatable()
+                    .offset(y: cameraLaneTop)
                 }
 
                 VideoTimelineHoverLayer(

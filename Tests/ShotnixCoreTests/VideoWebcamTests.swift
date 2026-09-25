@@ -166,6 +166,39 @@ final class VideoWebcamTests: XCTestCase {
         XCTAssertEqual(dominant(average(frame, in: frame.extent.insetBy(dx: 20, dy: 20))), 3)
     }
 
+    func testCameraLayoutEditing() async throws {
+        let (url, _) = try await makeRecording()
+        VideoDemoDraftStore.delete(for: url)
+        let model = VideoEditorModel(videoURL: url)
+        await model.load()
+        XCTAssertTrue(model.hasWebcamFootage)
+        model.seek(to: 1)
+        model.addCameraLayout(.fullscreen)
+        XCTAssertEqual(model.project.cameraLayouts.count, 1)
+        let first = try XCTUnwrap(model.project.cameraLayouts.first)
+        XCTAssertEqual(first.start, 1, accuracy: 0.05)
+        XCTAssertEqual(first.end, 4, accuracy: 0.05)
+        // Adding inside an existing one starts after it and fits the gap.
+        model.seek(to: 2)
+        model.addCameraLayout(.sideBySide)
+        let second = try XCTUnwrap(model.project.cameraLayouts.last)
+        XCTAssertEqual(second.start, 4, accuracy: 0.05)
+        XCTAssertEqual(second.end, 6, accuracy: 0.05, "fitted up to the end of the video")
+        // Moving the second one left slides against the first instead of overlapping.
+        model.setCameraLayoutWindow(second.id, timelineStart: 2.5, timelineEnd: 4.5, moving: true)
+        let moved = try XCTUnwrap(model.project.cameraLayouts.first { $0.id == second.id })
+        XCTAssertEqual(moved.start, 4, accuracy: 0.05)
+        model.setCameraLayout(second.id, to: .hidden)
+        XCTAssertEqual(model.project.cameraLayouts.first { $0.id == second.id }?.layout, .hidden)
+        XCTAssertEqual(model.plan.cameraLayout(at: 2.5)?.layout, .fullscreen)
+        model.deleteSelection()
+        XCTAssertEqual(model.project.cameraLayouts.count, 1)
+        // Intro and outro.
+        model.addCameraIntroOutro(length: 1.5)
+        XCTAssertEqual(model.project.cameraLayouts.map(\.layout), [.fullscreen, .fullscreen])
+        XCTAssertEqual(model.project.cameraLayouts.last?.end ?? 0, 6, accuracy: 0.05)
+    }
+
     func testBubbleGeometry() {
         var settings = VideoWebcamSettings()
         settings.size = 0.25

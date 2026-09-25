@@ -405,6 +405,106 @@ extension VideoEditorModel {
     }
 }
 
+// MARK: - Camera layouts
+
+extension VideoEditorModel {
+    var selectedCameraLayoutID: UUID? {
+        if case .cameraLayout(let id) = selection { return id }
+        return nil
+    }
+
+    /// Timeline stretches of the camera layouts (for the lane).
+    var cameraLayoutSpans: [(region: VideoCameraLayoutRegion, start: Double, end: Double)] {
+        project.cameraLayouts.compactMap { region in
+            let ranges = VideoDemoProject.timelineRanges(sourceStart: region.start, sourceEnd: region.end, segments: segments)
+            guard let first = ranges.first, let last = ranges.last else { return nil }
+            return (region, first.lowerBound, last.upperBound)
+        }
+    }
+
+    /// Adds a layout at the playhead, fitted into the free space there.
+    func addCameraLayout(_ layout: VideoCameraLayoutRegion.Layout, duration: Double = 3) {
+        guard hasWebcamFootage else { return }
+        var start = sourceTime(forTimeline: clock.time)
+        let others = project.cameraLayouts.sorted { $0.start < $1.start }
+        if let inside = others.first(where: { start >= $0.start && start < $0.end }) { start = inside.end }
+        let next = others.first(where: { $0.start > start })?.start ?? sourceDuration
+        let end = min(start + duration, next)
+        guard end - start >= VideoCameraLayoutRegion.minimumDuration else {
+            showNotice("No room here — move the playhead", symbol: "exclamationmark.triangle")
+            return
+        }
+        let region = VideoCameraLayoutRegion(start: start, end: end, layout: layout)
+        mutate { project in
+            project.cameraLayouts.append(region)
+            project.cameraLayouts.sort { $0.start < $1.start }
+            project.webcam.visible = true
+        }
+        selection = .cameraLayout(region.id)
+    }
+
+    /// Full-screen camera for the first and last seconds.
+    func addCameraIntroOutro(length: Double = 3) {
+        guard hasWebcamFootage, sourceDuration > length * 2 + 1 else { return }
+        let firstStart = segments.first?.clip.sourceStart ?? 0
+        let lastEnd = segments.last?.clip.sourceEnd ?? sourceDuration
+        mutate { project in
+            project.cameraLayouts.removeAll { $0.start < firstStart + length || $0.end > lastEnd - length }
+            project.cameraLayouts.append(VideoCameraLayoutRegion(start: firstStart, end: firstStart + length, layout: .fullscreen))
+            project.cameraLayouts.append(VideoCameraLayoutRegion(start: lastEnd - length, end: lastEnd, layout: .fullscreen))
+            project.cameraLayouts.sort { $0.start < $1.start }
+            project.webcam.visible = true
+        }
+        showNotice("Full-screen camera for your intro and outro", symbol: "person.crop.rectangle")
+    }
+
+    /// Moves/resizes a layout from timeline times; it slides against its
+    /// neighbours instead of overlapping them.
+    func setCameraLayoutWindow(_ id: UUID, timelineStart: Double, timelineEnd: Double, moving: Bool) {
+        guard let current = project.cameraLayouts.first(where: { $0.id == id }) else { return }
+        var start = sourceTime(forTimeline: timelineStart)
+        var end = sourceTime(forTimeline: timelineEnd)
+        let others = project.cameraLayouts.filter { $0.id != id }
+        let previousEnd = others.filter { $0.end <= current.start + 0.001 }.map(\.end).max() ?? 0
+        let nextStart = others.filter { $0.start >= current.end - 0.001 }.map(\.start).min() ?? sourceDuration
+        let length = end - start
+        if moving {
+            if start < previousEnd { start = previousEnd; end = start + length }
+            if end > nextStart { end = nextStart; start = max(end - length, previousEnd) }
+        } else {
+            start = max(start, previousEnd)
+            end = min(end, nextStart)
+        }
+        guard end - start >= VideoCameraLayoutRegion.minimumDuration * 0.5 else { return }
+        mutate(coalesce: "camera-layout-\(id)") { project in
+            guard let index = project.cameraLayouts.firstIndex(where: { $0.id == id }) else { return }
+            project.cameraLayouts[index].start = start
+            project.cameraLayouts[index].end = end
+            project.cameraLayouts.sort { $0.start < $1.start }
+        }
+    }
+
+    func setCameraLayout(_ id: UUID, to layout: VideoCameraLayoutRegion.Layout) {
+        mutate { project in
+            guard let index = project.cameraLayouts.firstIndex(where: { $0.id == id }) else { return }
+            project.cameraLayouts[index].layout = layout
+        }
+    }
+
+    func deleteCameraLayout(_ id: UUID) {
+        mutate { $0.cameraLayouts.removeAll { $0.id == id } }
+        if selection == .cameraLayout(id) { selection = .none }
+        showNotice("Camera layout removed", symbol: "trash")
+    }
+
+    func selectCameraLayout(_ id: UUID) {
+        selection = .cameraLayout(id)
+        if let span = cameraLayoutSpans.first(where: { $0.region.id == id }) {
+            seek(to: min(span.start + min(1, (span.end - span.start) / 2), span.end))
+        }
+    }
+}
+
 // MARK: - Keyboard shortcuts
 
 extension VideoEditorModel {

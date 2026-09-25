@@ -116,6 +116,17 @@ final class VideoPlaybackController: NSObject {
         camera == nil ? nil : cameraStore.frame(at: time)
     }
 
+    /// The camera frame and person mask composed for timeline `time`.
+    func cameraPicture(at time: Double) -> VideoCameraFrame? {
+        camera == nil ? nil : cameraStore.camera(at: time)
+    }
+
+    /// Re-composes the frame under the playhead (e.g. once person masks
+    /// are wanted, so the paused preview updates).
+    func refreshCurrentFrame() {
+        seek(to: currentTime, fast: false)
+    }
+
     /// Rebuilds the player item when the cut list or sound sources changed
     /// (keeping the playhead on the same moment of the recording); volume,
     /// mute, and fade changes just swap the mix on the playing item.

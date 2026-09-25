@@ -543,6 +543,8 @@ struct VideoDemoProject: Codable, Equatable, Identifiable {
 
     // Webcam, captions, keyboard shortcuts, crop
     var webcam: VideoWebcamSettings
+    /// Where the camera switches to full screen, side by side, or hides.
+    var cameraLayouts: [VideoCameraLayoutRegion] = []
     var captions: [VideoCaptionLine]
     var captionStyle: VideoCaptionStyle
     var keystrokes: [VideoKeystrokeEvent]
@@ -1050,7 +1052,7 @@ extension VideoDemoProject {
         case aspectPreset, background, backgroundBlur, padding, cornerRadius, shadow, outline
         case zoomRegions, zoomSpeed, defaultZoomScale, motionBlur
         case overlayEffects, cursorSamples, clickEvents, nativeCursorVisible, cursor, audio
-        case webcam, captions, captionStyle, keystrokes, keystrokeStyle, crop
+        case webcam, cameraLayouts, captions, captionStyle, keystrokes, keystrokeStyle, crop
         // Legacy (v1) keys
         case backgroundPreset, customBackgroundPath, stageInset, shadowStrength, zoomKeyframes
         case showCursorOverlay, enlargeCursor, showClickRipple, smoothCursor, cursorScale, clickSpotlight, cursorMotionBlur
@@ -1074,6 +1076,7 @@ extension VideoDemoProject {
         nativeCursorVisible = try container.decodeIfPresent(Bool.self, forKey: .nativeCursorVisible) ?? true
         version = Self.currentVersion
         webcam = (try? container.decode(VideoWebcamSettings.self, forKey: .webcam)) ?? VideoWebcamSettings()
+        cameraLayouts = (try? container.decode([VideoCameraLayoutRegion].self, forKey: .cameraLayouts)) ?? []
         captions = (try? container.decode([VideoCaptionLine].self, forKey: .captions)) ?? []
         captionStyle = (try? container.decode(VideoCaptionStyle.self, forKey: .captionStyle)) ?? VideoCaptionStyle()
         keystrokes = (try? container.decode([VideoKeystrokeEvent].self, forKey: .keystrokes)) ?? []
@@ -1161,6 +1164,7 @@ extension VideoDemoProject {
         try container.encode(cursor, forKey: .cursor)
         try container.encode(audio, forKey: .audio)
         try container.encode(webcam, forKey: .webcam)
+        try container.encode(cameraLayouts, forKey: .cameraLayouts)
         try container.encode(captions, forKey: .captions)
         try container.encode(captionStyle, forKey: .captionStyle)
         try container.encode(keystrokes, forKey: .keystrokes)

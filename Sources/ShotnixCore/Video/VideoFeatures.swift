@@ -38,6 +38,8 @@ struct VideoWebcamSettings: Codable, Equatable {
         case circle
         case square
         case rectangle
+        /// Just you — no frame, the background removed.
+        case cutout
 
         var id: String { rawValue }
         var title: String {
@@ -45,11 +47,35 @@ struct VideoWebcamSettings: Codable, Equatable {
             case .circle: return "Circle"
             case .square: return "Rounded"
             case .rectangle: return "Wide"
+            case .cutout: return "Cutout"
             }
         }
 
         /// Width / height.
-        var aspect: CGFloat { self == .rectangle ? 4 / 3 : 1 }
+        var aspect: CGFloat {
+            switch self {
+            case .rectangle: return 4 / 3
+            case .cutout: return 3 / 4
+            default: return 1
+            }
+        }
+    }
+
+    /// What's behind you in the camera picture.
+    enum Backdrop: String, Codable, CaseIterable, Identifiable {
+        case original
+        case blur
+        /// Replaced with the video's own background.
+        case remove
+
+        var id: String { rawValue }
+        var title: String {
+            switch self {
+            case .original: return "Original"
+            case .blur: return "Blur"
+            case .remove: return "Remove"
+            }
+        }
     }
 
     static let sizeRange: ClosedRange<Double> = 0.12...0.5
@@ -63,10 +89,14 @@ struct VideoWebcamSettings: Codable, Equatable {
     var mirror = true
     /// The bubble gets out of the way while the screen is zoomed in.
     var shrinkWhenZoomed = true
+    var backdrop: Backdrop = .original
+
+    /// Person segmentation is needed for this look.
+    var needsPersonMask: Bool { shape == .cutout || backdrop != .original }
 
     init() {}
 
-    private enum CodingKeys: String, CodingKey { case visible, size, anchor, shape, mirror, shrinkWhenZoomed }
+    private enum CodingKeys: String, CodingKey { case visible, size, anchor, shape, mirror, shrinkWhenZoomed, backdrop }
 
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -77,7 +107,51 @@ struct VideoWebcamSettings: Codable, Equatable {
         shape = (try? c.decode(Shape.self, forKey: .shape)) ?? d.shape
         mirror = try c.decodeIfPresent(Bool.self, forKey: .mirror) ?? d.mirror
         shrinkWhenZoomed = try c.decodeIfPresent(Bool.self, forKey: .shrinkWhenZoomed) ?? d.shrinkWhenZoomed
+        backdrop = (try? c.decode(Backdrop.self, forKey: .backdrop)) ?? d.backdrop
     }
+}
+
+/// A stretch of the timeline where the camera takes a different layout.
+struct VideoCameraLayoutRegion: Codable, Equatable, Identifiable {
+    enum Layout: String, Codable, CaseIterable, Identifiable {
+        /// The camera fills the frame (intros, outros, talking points).
+        case fullscreen
+        /// Screen on the left, camera on the right.
+        case sideBySide
+        /// No camera.
+        case hidden
+
+        var id: String { rawValue }
+        var title: String {
+            switch self {
+            case .fullscreen: return "Full camera"
+            case .sideBySide: return "Side by side"
+            case .hidden: return "Camera hidden"
+            }
+        }
+        var symbol: String {
+            switch self {
+            case .fullscreen: return "person.crop.rectangle.fill"
+            case .sideBySide: return "rectangle.split.2x1.fill"
+            case .hidden: return "eye.slash.fill"
+            }
+        }
+    }
+
+    var id: UUID
+    /// Source seconds.
+    var start: Double
+    var end: Double
+    var layout: Layout
+
+    init(id: UUID = UUID(), start: Double, end: Double, layout: Layout) {
+        self.id = id
+        self.start = start
+        self.end = end
+        self.layout = layout
+    }
+
+    static let minimumDuration = 0.8
 }
 
 /// The camera footage recorded alongside a screen recording.

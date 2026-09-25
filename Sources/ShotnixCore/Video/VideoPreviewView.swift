@@ -18,7 +18,7 @@ final class VideoPreviewRenderer: NSObject, MTKViewDelegate {
     private var lastBufferTime: Double = 0
     /// The camera frame composed with `lastBuffer` (kept so a missed lookup
     /// never blinks the bubble).
-    private var lastCameraFrame: CIImage?
+    private var lastCameraFrame: VideoCameraFrame?
     private var playingTime: Double?
     private var dirty = true
     private var peekImage: CIImage?
@@ -61,7 +61,7 @@ final class VideoPreviewRenderer: NSObject, MTKViewDelegate {
         if let frame = model.playback.frame(forHostTime: hostTime) {
             lastBuffer = frame.buffer
             lastBufferTime = frame.time
-            if let camera = model.playback.cameraFrame(at: frame.time) {
+            if let camera = model.playback.cameraPicture(at: frame.time) {
                 lastCameraFrame = camera
             }
             dirty = true
@@ -98,7 +98,8 @@ final class VideoPreviewRenderer: NSObject, MTKViewDelegate {
 
     private func compose(model: VideoEditorModel, size: CGSize) -> CIImage {
         var options = VideoFrameRenderer.Options(frameRate: 60)
-        options.webcamFrame = model.plan.webcam == nil ? nil : lastCameraFrame
+        options.webcamFrame = model.plan.webcam == nil ? nil : lastCameraFrame?.image
+        options.webcamMask = model.plan.webcam == nil ? nil : lastCameraFrame?.mask
         var source = lastBuffer.map { CIImage(cvPixelBuffer: $0) }
         var time = playingTime ?? lastBufferTime
         if model.isCropping {
@@ -147,7 +148,8 @@ final class VideoPreviewRenderer: NSObject, MTKViewDelegate {
     func snapshot(size: CGSize) -> NSImage? {
         guard let model else { return nil }
         var options = VideoFrameRenderer.Options(frameRate: 60)
-        options.webcamFrame = lastCameraFrame
+        options.webcamFrame = lastCameraFrame?.image
+        options.webcamMask = lastCameraFrame?.mask
         let image = renderer.render(source: lastBuffer.map { CIImage(cvPixelBuffer: $0) }, timelineTime: lastBufferTime, plan: model.plan, outputSize: size, options: options)
         guard let cgImage = context.createCGImage(image, from: CGRect(origin: .zero, size: size), format: .RGBA8, colorSpace: CGColorSpace(name: CGColorSpace.sRGB)) else { return nil }
         return NSImage(cgImage: cgImage, size: size)

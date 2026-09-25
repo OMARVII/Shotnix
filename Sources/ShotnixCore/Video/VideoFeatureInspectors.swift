@@ -403,6 +403,20 @@ struct VideoCameraInspector: View {
                 VideoInspectorSection("Camera") {
                     VideoToggleRow(title: "Show camera", isOn: binding(\.visible))
                     VideoSegmented(options: VideoWebcamSettings.Shape.allCases.map { ($0, $0.title) }, selection: binding(\.shape))
+                    HStack(spacing: 10) {
+                        Text("Behind you")
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundStyle(VideoEditorTheme.textPrimary)
+                            .fixedSize()
+                        VideoSegmented(options: VideoWebcamSettings.Backdrop.allCases.map { ($0, $0.title) }, selection: binding(\.backdrop))
+                    }
+                    .disabled(model.project.webcam.shape == .cutout)
+                    if model.project.webcam.shape == .cutout || model.project.webcam.backdrop == .remove {
+                        Text("Your video's background shows behind you — found on this Mac, frame by frame.")
+                            .font(.system(size: 10.5))
+                            .foregroundStyle(VideoEditorTheme.textTertiary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                     VideoSliderRow(
                         title: "Size",
                         value: binding(\.size, coalesce: "webcam-size"),
@@ -428,6 +442,36 @@ struct VideoCameraInspector: View {
                     VideoToggleRow(title: "Shrink while zoomed", detail: "Gets out of the way during zoom moves", isOn: binding(\.shrinkWhenZoomed))
                 }
                 .disabled(!model.project.webcam.visible)
+
+                VideoInspectorSection("Layouts") {
+                    Text("Switch the camera to full screen for talking points, or put it side by side with the screen — at the playhead. Each shows on the Camera lane.")
+                        .font(.system(size: 10.5))
+                        .foregroundStyle(VideoEditorTheme.textTertiary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    HStack(spacing: 8) {
+                        ForEach(VideoCameraLayoutRegion.Layout.allCases) { layout in
+                            Button {
+                                model.addCameraLayout(layout)
+                            } label: {
+                                VStack(spacing: 4) {
+                                    Image(systemName: layout.symbol).font(.system(size: 14, weight: .semibold))
+                                    Text(layout.title).font(.system(size: 10, weight: .semibold)).lineLimit(1)
+                                }
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 50)
+                            }
+                            .buttonStyle(VideoSecondaryButtonStyle())
+                            .help("Add “\(layout.title)” at the playhead")
+                        }
+                    }
+                    Button {
+                        model.addCameraIntroOutro()
+                    } label: {
+                        Label("Full camera for intro & outro", systemImage: "person.crop.rectangle.badge.plus")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(VideoSecondaryButtonStyle())
+                }
             }
         }
     }

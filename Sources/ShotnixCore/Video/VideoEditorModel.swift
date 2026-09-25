@@ -63,6 +63,7 @@ final class VideoEditorModel: ObservableObject {
         case click(UUID)
         case caption(UUID)
         case keystroke(UUID)
+        case cameraLayout(UUID)
         case range(VideoDemoTimelineRange)
     }
 
@@ -237,6 +238,7 @@ final class VideoEditorModel: ObservableObject {
         let captions: [VideoCaptionLine]
         let keystrokes: [VideoKeystrokeEvent]
         let keystrokesVisible: Bool
+        let cameraLayouts: [VideoCameraLayoutRegion]
         let selection: Selection
         let zoom: Double
         let lock: Double?
@@ -255,6 +257,7 @@ final class VideoEditorModel: ObservableObject {
             captions: project.captions,
             keystrokes: project.keystrokes,
             keystrokesVisible: project.keystrokeStyle.visible,
+            cameraLayouts: hasWebcamFootage ? project.cameraLayouts : [],
             selection: selection,
             zoom: timelineZoom,
             lock: layoutDurationLock,
@@ -350,6 +353,9 @@ final class VideoEditorModel: ObservableObject {
                 )
             }
             project = loaded
+            if hasWebcamFootage {
+                playback.cameraStore.setFindsPerson(project.webcam.needsPersonMask)
+            }
             isReady = true
             playback.apply(segments: segments, audio: project.audio, keepSourceTime: nil)
             playback.seek(to: 0, fast: false)
@@ -376,6 +382,11 @@ final class VideoEditorModel: ObservableObject {
         refreshTimeline()
         if isReady, old.audio.enhanceVoice != project.audio.enhanceVoice {
             enhanceVoiceChanged()
+        }
+        if isReady, hasWebcamFootage, old.webcam.needsPersonMask != project.webcam.needsPersonMask {
+            if playback.cameraStore.setFindsPerson(project.webcam.needsPersonMask) {
+                playback.refreshCurrentFrame()
+            }
         }
         rebuildPlan()
         if isReady {
@@ -503,6 +514,7 @@ final class VideoEditorModel: ObservableObject {
              .click(let id) where !project.clickEvents.contains(where: { $0.id == id }),
              .caption(let id) where !project.captions.contains(where: { $0.id == id }),
              .keystroke(let id) where !project.keystrokes.contains(where: { $0.id == id }),
+             .cameraLayout(let id) where !project.cameraLayouts.contains(where: { $0.id == id }),
              .clip(let id) where !project.timelineClips.contains(where: { $0.id == id }):
             selection = .none
         case .range:
@@ -1088,6 +1100,8 @@ final class VideoEditorModel: ObservableObject {
             deleteCaption(id)
         case .keystroke(let id):
             deleteKeystroke(id)
+        case .cameraLayout(let id):
+            deleteCameraLayout(id)
         case .clip(let id):
             deleteClip(id)
         case .range(let range):

@@ -254,6 +254,24 @@ final class VideoRenderPlan: @unchecked Sendable {
     /// Camera bubble settings — nil when the recording has no camera.
     let webcam: VideoWebcamSettings?
 
+    struct CameraLayoutSpan {
+        let start: Double
+        let end: Double
+        let layout: VideoCameraLayoutRegion.Layout
+    }
+
+    /// Timeline stretches where the camera changes layout.
+    let cameraLayouts: [CameraLayoutSpan]
+
+    /// The layout at `time` and how far into it we are (0 → 1 → 0 across
+    /// the stretch, easing over half a second at each end).
+    func cameraLayout(at time: Double) -> (layout: VideoCameraLayoutRegion.Layout, progress: Double)? {
+        guard let span = cameraLayouts.first(where: { time >= $0.start && time <= $0.end }) else { return nil }
+        let ramp = min(0.5, (span.end - span.start) / 3)
+        let progress = ramp > 0 ? min((time - span.start) / ramp, (span.end - time) / ramp, 1) : 1
+        return (span.layout, min(max(progress, 0), 1))
+    }
+
     init(
         project: VideoDemoProject,
         sourceDuration: Double,
@@ -265,6 +283,12 @@ final class VideoRenderPlan: @unchecked Sendable {
     ) {
         webcam = hasWebcam ? project.webcam : nil
         canvasSize = project.canvasSize()
+        let layoutSegments = project.timelineSegments(totalDuration: sourceDuration)
+        cameraLayouts = hasWebcam ? project.cameraLayouts.sorted { $0.start < $1.start }.compactMap { region in
+            let ranges = VideoDemoProject.timelineRanges(sourceStart: region.start, sourceEnd: region.end, segments: layoutSegments)
+            guard let first = ranges.first, let last = ranges.last else { return nil }
+            return CameraLayoutSpan(start: first.lowerBound, end: last.upperBound, layout: region.layout)
+        } : []
         stageRect = project.stageRect(in: canvasSize)
         crop = project.crop.normalized
         sourceSize = project.croppedSourceSize.width > 0 ? project.croppedSourceSize : CGSize(width: 1920, height: 1080)
@@ -379,6 +403,8 @@ final class VideoFrameRenderer {
         var rawSource = false
         /// The camera frame for this moment (nil: no bubble).
         var webcamFrame: CIImage?
+        /// Where the person is in `webcamFrame` (blur/remove/cutout looks).
+        var webcamMask: CIImage?
     }
 
     private struct BackgroundKey: Equatable {
@@ -522,11 +548,35 @@ final class VideoFrameRenderer {
         // output, not the zoomed video, so they stay put and readable.
         var reserved = (bottom: CGFloat(0), top: CGFloat(0))
         if let webcam = plan.webcam, webcam.visible, let frame = options.webcamFrame {
-            let rect = Self.webcamRect(webcam, outputSize: outputSize, cameraScale: camera.scale)
-            scene = drawWebcam(frame, in: rect, settings: webcam, outputSize: outputSize, over: scene)
-            // Captions centered at the same edge stack above/below the bubble.
-            if webcam.anchor == .bottom { reserved.bottom = rect.maxY }
-            if webcam.anchor == .top { reserved.top = outputSize.height - rect.minY }
+            let bubble = Self.webcamRect(webcam, outputSize: outputSize, cameraScale: camera.scale)
+            let bubbleRadius = Self.webcamCornerRadius(webcam, rect: bubble)
+            let shortSide = min(outputSize.width, outputSize.height)
+            let camera = CameraPicture(frame: frame, mask: options.webcamMask, settings: webcam)
+            switch plan.cameraLayout(at: timelineTime) {
+            case let (layout, progress)? where layout == .fullscreen:
+                // The bubble grows to fill the frame.
+                let e = CGFloat(VideoCameraEasing.spring(progress))
+                let rect = Self.lerp(bubble, outputRect, e)
+                let look = CameraLook(radius: bubbleRadius + (0 - bubbleRadius) * e, rim: Double(1 - e), shadow: Double(1 - e), opacity: 1, cutout: webcam.shape == .cutout && e < 0.5)
+                scene = drawCamera(camera, in: rect, look: look, plan: plan, outputSize: outputSize, k: k, over: scene)
+            case let (layout, progress)? where layout == .sideBySide:
+                scene = drawSideBySide(scene: scene, camera: camera, bubble: bubble, bubbleRadius: bubbleRadius, progress: progress, stage: stageOut, plan: plan, outputSize: outputSize, k: k)
+            case let (layout, progress)? where layout == .hidden:
+                // Fades and settles away; fully hidden in the middle.
+                if progress < 0.999 {
+                    let shrink = 1 - 0.12 * CGFloat(progress)
+                    let rect = CGRect(x: bubble.midX - bubble.width * shrink / 2, y: bubble.midY - bubble.height * shrink / 2, width: bubble.width * shrink, height: bubble.height * shrink)
+                    let look = CameraLook(radius: bubbleRadius * shrink, rim: 1, shadow: 1, opacity: 1 - progress, cutout: webcam.shape == .cutout)
+                    scene = drawCamera(camera, in: rect, look: look, plan: plan, outputSize: outputSize, k: k, over: scene)
+                }
+            default:
+                let look = CameraLook(radius: bubbleRadius, rim: 1, shadow: 1, opacity: 1, cutout: webcam.shape == .cutout)
+                scene = drawCamera(camera, in: bubble, look: look, plan: plan, outputSize: outputSize, k: k, over: scene)
+                // Captions centered at the same edge stack above/below the bubble.
+                if webcam.anchor == .bottom { reserved.bottom = bubble.maxY }
+                if webcam.anchor == .top { reserved.top = outputSize.height - bubble.minY }
+            }
+            _ = shortSide
         }
         scene = drawTextLayers(on: scene, plan: plan, outputSize: outputSize, timelineTime: timelineTime, sourceTime: sourceTime, reserved: reserved)
 
@@ -860,44 +910,175 @@ final class VideoFrameRenderer {
         case .circle: return min(rect.width, rect.height) / 2
         case .square: return rect.height * 0.22
         case .rectangle: return rect.height * 0.12
+        case .cutout: return 0
         }
     }
 
-    private func drawWebcam(_ frame: CIImage, in rect: CGRect, settings: VideoWebcamSettings, outputSize: CGSize, over scene: CIImage) -> CIImage {
-        guard rect.width > 2, rect.height > 2 else { return scene }
-        let shortSide = min(outputSize.width, outputSize.height)
-        let radius = Self.webcamCornerRadius(settings, rect: rect)
+    static func lerp(_ a: CGRect, _ b: CGRect, _ t: CGFloat) -> CGRect {
+        CGRect(
+            x: a.minX + (b.minX - a.minX) * t,
+            y: a.minY + (b.minY - a.minY) * t,
+            width: a.width + (b.width - a.width) * t,
+            height: a.height + (b.height - a.height) * t
+        )
+    }
 
-        // Aspect-fill the camera into the bubble, mirrored like a selfie.
+    struct CameraPicture {
+        let frame: CIImage
+        let mask: CIImage?
+        let settings: VideoWebcamSettings
+    }
+
+    struct CameraLook {
+        var radius: CGFloat
+        /// 0…1 strength of the thin light rim.
+        var rim: Double
+        /// 0…1 strength of the soft drop shadow.
+        var shadow: Double
+        var opacity: Double
+        /// Just the person — no card (needs a person mask).
+        var cutout: Bool
+    }
+
+    /// Aspect-fills the camera (and its mask) into `rect`, mirrored like a
+    /// selfie when set, with the chosen backdrop.
+    private func placedCamera(_ camera: CameraPicture, in rect: CGRect, plan: VideoRenderPlan, k: CGFloat) -> (picture: CIImage, person: CIImage?) {
+        let frame = camera.frame
         let extent = frame.extent
-        var image = frame.transformed(by: CGAffineTransform(translationX: -extent.minX, y: -extent.minY))
-        if settings.mirror {
-            image = image.transformed(by: CGAffineTransform(scaleX: -1, y: 1).translatedBy(x: -extent.width, y: 0))
+        var transform = CGAffineTransform(translationX: -extent.minX, y: -extent.minY)
+        if camera.settings.mirror {
+            transform = transform.concatenating(CGAffineTransform(scaleX: -1, y: 1).translatedBy(x: -extent.width, y: 0))
         }
         let scale = max(rect.width / max(extent.width, 1), rect.height / max(extent.height, 1))
-        image = image
-            .transformed(by: CGAffineTransform(scaleX: scale, y: scale))
-            .transformed(by: CGAffineTransform(
-                translationX: rect.midX - extent.width * scale / 2,
-                y: rect.midY - extent.height * scale / 2
-            ))
-        if scale < 0.8 {
-            image = image.samplingLinear()
-        }
-        let mask = roundedRect(rect, radius: radius, color: CIColor.white)
-        let bubble = image.cropped(to: rect).applyingFilter("CISourceInCompositing", parameters: [kCIInputBackgroundImageKey: mask])
+        transform = transform
+            .concatenating(CGAffineTransform(scaleX: scale, y: scale))
+            .concatenating(CGAffineTransform(translationX: rect.midX - extent.width * scale / 2, y: rect.midY - extent.height * scale / 2))
+        var picture = frame.transformed(by: transform)
+        if scale < 0.8 { picture = picture.samplingLinear() }
+        picture = picture.cropped(to: rect)
 
-        // Soft shadow, then the picture, then a thin light rim.
-        let shadowOffset = shortSide * 0.008
-        let shadow = roundedRect(rect.offsetBy(dx: 0, dy: -shadowOffset), radius: radius, color: CIColor(red: 0, green: 0, blue: 0, alpha: 0.4))
-            .applyingGaussianBlur(sigma: Double(shortSide * 0.014))
-        var output = shadow.composited(over: scene)
-        output = bubble.composited(over: output)
-        let rim = max(1.5, shortSide * 0.0028)
-        let outer = roundedRect(rect, radius: radius, color: CIColor(red: 1, green: 1, blue: 1, alpha: 0.85))
-        let inner = roundedRect(rect.insetBy(dx: rim, dy: rim), radius: max(radius - rim, 0), color: CIColor.white)
-        let ring = outer.applyingFilter("CISourceOutCompositing", parameters: [kCIInputBackgroundImageKey: inner])
-        return ring.composited(over: output)
+        guard camera.settings.needsPersonMask, let mask = camera.mask, mask.extent.width > 0, mask.extent.height > 0 else {
+            return (picture, nil)
+        }
+        // The mask covers the whole frame at its own resolution.
+        let toFrame = CGAffineTransform(translationX: -mask.extent.minX, y: -mask.extent.minY)
+            .concatenating(CGAffineTransform(scaleX: extent.width / mask.extent.width, y: extent.height / mask.extent.height))
+            .concatenating(CGAffineTransform(translationX: extent.minX, y: extent.minY))
+        let feather = Double(max(rect.height * 0.004, 0.8))
+        let person = mask.transformed(by: toFrame).transformed(by: transform)
+            .clampedToExtent()
+            .applyingGaussianBlur(sigma: feather)
+            .cropped(to: rect)
+
+        let backdrop: CIImage
+        switch camera.settings.backdrop {
+        case .blur:
+            backdrop = picture.clampedToExtent().applyingGaussianBlur(sigma: Double(rect.height * 0.035)).cropped(to: rect)
+        case .remove, .original:
+            // The video's own background shows behind you.
+            backdrop = backgroundImage(plan: plan, k: k).clampedToExtent().cropped(to: rect)
+        }
+        if camera.settings.backdrop != .original || camera.settings.shape == .cutout {
+            picture = picture.applyingFilter("CIBlendWithMask", parameters: [
+                kCIInputBackgroundImageKey: backdrop,
+                kCIInputMaskImageKey: person,
+            ])
+        }
+        return (picture, person)
+    }
+
+    private func drawCamera(_ camera: CameraPicture, in rect: CGRect, look: CameraLook, plan: VideoRenderPlan, outputSize: CGSize, k: CGFloat, over scene: CIImage) -> CIImage {
+        guard rect.width > 2, rect.height > 2, look.opacity > 0.001 else { return scene }
+        let shortSide = min(outputSize.width, outputSize.height)
+        let placed = placedCamera(camera, in: rect, plan: plan, k: k)
+
+        if look.cutout, let person = placed.person {
+            // Just you: the picture where the mask is, a soft shadow below.
+            let alpha = person.applyingFilter("CIMaskToAlpha")
+            let cut = placed.picture.applyingFilter("CISourceInCompositing", parameters: [kCIInputBackgroundImageKey: alpha])
+            let shadow = alpha
+                .applyingFilter("CIColorMatrix", parameters: [
+                    "inputRVector": CIVector(x: 0, y: 0, z: 0, w: 0),
+                    "inputGVector": CIVector(x: 0, y: 0, z: 0, w: 0),
+                    "inputBVector": CIVector(x: 0, y: 0, z: 0, w: 0),
+                    "inputAVector": CIVector(x: 0, y: 0, z: 0, w: CGFloat(0.45 * look.shadow)),
+                ])
+                .transformed(by: CGAffineTransform(translationX: 0, y: -shortSide * 0.006))
+                .clampedToExtent()
+                .applyingGaussianBlur(sigma: Double(shortSide * 0.01))
+                .cropped(to: rect.insetBy(dx: -shortSide * 0.05, dy: -shortSide * 0.05))
+            return faded(cut.composited(over: shadow), look.opacity).composited(over: scene)
+        }
+
+        let radius = max(look.radius, 0)
+        let mask = roundedRect(rect, radius: radius, color: CIColor.white)
+        let card = placed.picture.applyingFilter("CISourceInCompositing", parameters: [kCIInputBackgroundImageKey: mask])
+        var layer = card
+        if look.shadow > 0.01 {
+            let shadowOffset = shortSide * 0.008
+            let shadow = roundedRect(rect.offsetBy(dx: 0, dy: -shadowOffset), radius: radius, color: CIColor(red: 0, green: 0, blue: 0, alpha: CGFloat(0.4 * look.shadow)))
+                .applyingGaussianBlur(sigma: Double(shortSide * 0.014))
+            layer = card.composited(over: shadow)
+        }
+        if look.rim > 0.01 {
+            let rim = max(1.5, shortSide * 0.0028)
+            let outer = roundedRect(rect, radius: radius, color: CIColor(red: 1, green: 1, blue: 1, alpha: CGFloat(0.85 * look.rim)))
+            let inner = roundedRect(rect.insetBy(dx: rim, dy: rim), radius: max(radius - rim, 0), color: CIColor.white)
+            let ring = outer.applyingFilter("CISourceOutCompositing", parameters: [kCIInputBackgroundImageKey: inner])
+            layer = ring.composited(over: layer)
+        }
+        return faded(layer, look.opacity).composited(over: scene)
+    }
+
+    /// Screen on one side, camera on the other (stacked on tall outputs);
+    /// `progress` animates from the normal layout into it and back.
+    private func drawSideBySide(scene: CIImage, camera: CameraPicture, bubble: CGRect, bubbleRadius: CGFloat, progress: Double, stage: CGRect, plan: VideoRenderPlan, outputSize: CGSize, k: CGFloat) -> CIImage {
+        let e = CGFloat(VideoCameraEasing.spring(progress))
+        let outputRect = CGRect(origin: .zero, size: outputSize)
+        let shortSide = min(outputSize.width, outputSize.height)
+        let margin = shortSide * 0.05
+        let gap = shortSide * 0.035
+        let cameraPanel: CGRect
+        let screenPanel: CGRect
+        if outputSize.width >= outputSize.height {
+            let cameraWidth = (outputSize.width - margin * 2 - gap) * 0.36
+            cameraPanel = CGRect(x: outputSize.width - margin - cameraWidth, y: margin, width: cameraWidth, height: outputSize.height - margin * 2)
+            screenPanel = CGRect(x: margin, y: margin, width: outputSize.width - margin * 2 - gap - cameraWidth, height: outputSize.height - margin * 2)
+        } else {
+            let cameraHeight = (outputSize.height - margin * 2 - gap) * 0.4
+            cameraPanel = CGRect(x: margin, y: margin, width: outputSize.width - margin * 2, height: cameraHeight)
+            screenPanel = CGRect(x: margin, y: margin + cameraHeight + gap, width: outputSize.width - margin * 2, height: outputSize.height - margin * 2 - gap - cameraHeight)
+        }
+        // The visible part of the recording, fitted into its panel.
+        var visible = stage.intersection(outputRect)
+        if visible.isNull || visible.width < 4 || visible.height < 4 { visible = outputRect }
+        let fit = min(screenPanel.width / visible.width, screenPanel.height / visible.height)
+        let fitted = CGRect(
+            x: screenPanel.midX - visible.width * fit / 2,
+            y: screenPanel.midY - visible.height * fit / 2,
+            width: visible.width * fit,
+            height: visible.height * fit
+        )
+        let source = Self.lerp(outputRect, visible, e)
+        let destination = Self.lerp(outputRect, fitted, e)
+        let screen = scene.cropped(to: source).transformed(by: CGAffineTransform(translationX: -source.minX, y: -source.minY)
+            .concatenating(CGAffineTransform(scaleX: destination.width / max(source.width, 1), y: destination.height / max(source.height, 1)))
+            .concatenating(CGAffineTransform(translationX: destination.minX, y: destination.minY)))
+        let radius = shortSide * 0.018 * e
+        let screenMask = roundedRect(destination, radius: radius, color: CIColor.white)
+        let screenCard = screen.cropped(to: destination).applyingFilter("CISourceInCompositing", parameters: [kCIInputBackgroundImageKey: screenMask])
+        var output = backgroundImage(plan: plan, k: k).cropped(to: outputRect)
+        if e > 0.01 {
+            let shadow = roundedRect(destination.offsetBy(dx: 0, dy: -shortSide * 0.008), radius: radius, color: CIColor(red: 0, green: 0, blue: 0, alpha: 0.35 * e))
+                .applyingGaussianBlur(sigma: Double(shortSide * 0.014))
+            output = shadow.composited(over: output)
+        }
+        output = screenCard.composited(over: output)
+
+        let cameraRect = Self.lerp(bubble, cameraPanel, e)
+        let cameraRadius = bubbleRadius + (shortSide * 0.018 - bubbleRadius) * e
+        let look = CameraLook(radius: cameraRadius, rim: Double(1 - e), shadow: 1, opacity: 1, cutout: false)
+        return drawCamera(camera, in: cameraRect, look: look, plan: plan, outputSize: outputSize, k: k, over: output)
     }
 
     static func fade(time: Double, start: Double, end: Double, fadeIn: Double, fadeOut: Double) -> Double {

@@ -418,3 +418,138 @@ struct VideoClickLane: View, Equatable {
         .help("Clicks — drag one to retime it, ⌫ removes the selected one")
     }
 }
+
+// MARK: - Camera layouts lane
+
+/// Where the camera goes full screen, side by side, or hides: drag to
+/// move, drag an edge to retime, click to choose the layout.
+struct VideoCameraLayoutLane: View, Equatable {
+    struct Item: Equatable {
+        let id: UUID
+        let start: Double
+        let end: Double
+        let layout: VideoCameraLayoutRegion.Layout
+    }
+
+    let items: [Item]
+    let selectedID: UUID?
+    let geometry: VideoTimelineGeometry
+    let model: VideoEditorModel
+    let hover: VideoTimelineHover
+
+    nonisolated static func == (a: Self, b: Self) -> Bool {
+        a.items == b.items && a.selectedID == b.selectedID && a.geometry == b.geometry
+    }
+
+    private enum Mode { case move, leading, trailing }
+
+    private struct Drag {
+        let id: UUID
+        let mode: Mode
+        let originStart: Double
+        let originEnd: Double
+        var moved = false
+    }
+
+    @State private var drag: Drag?
+    private typealias M = VideoTimelineMetrics
+    private static let edge: CGFloat = 7
+
+    private func rect(_ item: Item) -> CGRect {
+        CGRect(x: geometry.x(item.start) + 1, y: 0, width: max(CGFloat(item.end - item.start) * geometry.pointsPerSecond - 2, 10), height: M.cameraLaneHeight)
+    }
+
+    private func hit(_ point: CGPoint) -> (Item, Mode)? {
+        for item in items.reversed() {
+            let frame = rect(item)
+            guard frame.insetBy(dx: -2, dy: 0).contains(point) else { continue }
+            if frame.width > Self.edge * 3 {
+                if point.x < frame.minX + Self.edge { return (item, .leading) }
+                if point.x > frame.maxX - Self.edge { return (item, .trailing) }
+            }
+            return (item, .move)
+        }
+        return nil
+    }
+
+    var body: some View {
+        Canvas { context, size in
+            for item in items {
+                let frame = rect(item)
+                guard frame.maxX >= 0, frame.minX <= size.width else { continue }
+                let selected = item.id == selectedID
+                let path = Path(roundedRect: frame, cornerRadius: 6, style: .continuous)
+                context.fill(path, with: .color(VideoEditorTheme.camera.opacity(selected ? 0.9 : 0.45)))
+                context.stroke(path, with: .color(.white.opacity(selected ? 0.95 : 0.14)), lineWidth: selected ? 1.5 : 1)
+                if frame.width > 30 {
+                    var inner = context
+                    inner.clip(to: Path(frame.insetBy(dx: 5, dy: 0)))
+                    inner.draw(
+                        Text("\(Image(systemName: item.layout.symbol)) \(frame.width > 90 ? item.layout.title : "")")
+                            .font(.system(size: 10, weight: .semibold))
+                            .foregroundColor(.white),
+                        at: CGPoint(x: frame.minX + 7, y: frame.midY),
+                        anchor: .leading
+                    )
+                }
+            }
+        }
+        .frame(width: geometry.width, height: M.cameraLaneHeight)
+        .contentShape(Rectangle())
+        .onContinuousHover { phase in
+            guard case .active(let point) = phase, let (_, mode) = hit(point) else {
+                NSCursor.arrow.set()
+                return
+            }
+            (mode == .move ? NSCursor.openHand : NSCursor.resizeLeftRight).set()
+        }
+        .gesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { value in
+                    if drag == nil {
+                        guard let (item, mode) = hit(value.startLocation) else {
+                            model.seek(to: geometry.time(value.location.x), fast: true)
+                            return
+                        }
+                        drag = Drag(id: item.id, mode: mode, originStart: item.start, originEnd: item.end)
+                        hover.setDragging(true)
+                        model.selection = .cameraLayout(item.id)
+                    }
+                    guard var current = drag else { return }
+                    if abs(value.translation.width) > 2 { current.moved = true }
+                    drag = current
+                    guard current.moved else { return }
+                    let delta = Double(value.translation.width / geometry.pointsPerSecond)
+                    var start = current.originStart
+                    var end = current.originEnd
+                    switch current.mode {
+                    case .move:
+                        let length = end - start
+                        start = min(max(current.originStart + delta, 0), geometry.duration - length)
+                        end = start + length
+                    case .leading:
+                        start = min(max(current.originStart + delta, 0), current.originEnd - VideoCameraLayoutRegion.minimumDuration)
+                    case .trailing:
+                        end = min(max(current.originEnd + delta, current.originStart + VideoCameraLayoutRegion.minimumDuration), geometry.duration)
+                    }
+                    model.setCameraLayoutWindow(current.id, timelineStart: start, timelineEnd: end, moving: current.mode == .move)
+                }
+                .onEnded { value in
+                    defer {
+                        drag = nil
+                        hover.setDragging(false)
+                    }
+                    guard let current = drag else {
+                        model.seek(to: geometry.time(value.location.x), fast: false)
+                        return
+                    }
+                    model.endGesture()
+                    if !current.moved {
+                        model.selectCameraLayout(current.id)
+                        model.inspectorTab = .camera
+                    }
+                }
+        )
+        .help("Camera layouts — drag to move, drag an edge to retime, click to change")
+    }
+}

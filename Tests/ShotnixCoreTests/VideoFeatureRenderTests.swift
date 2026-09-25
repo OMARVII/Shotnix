@@ -167,6 +167,125 @@ final class VideoFeatureRenderTests: XCTestCase {
         }
     }
 
+    // MARK: Camera looks and layouts
+
+    private func solid(_ r: CGFloat, _ g: CGFloat, _ b: CGFloat, _ size: CGSize) -> CIImage {
+        CIImage(color: CIColor(red: r, green: g, blue: b)).cropped(to: CGRect(origin: .zero, size: size))
+    }
+
+    /// A 16:9 camera frame that is green, and a mask with a "person" in the middle.
+    private func greenCamera() -> (frame: CIImage, mask: CIImage) {
+        let frame = solid(0, 1, 0, CGSize(width: 1280, height: 720))
+        let mask = CIImage(color: CIColor.black).cropped(to: CGRect(x: 0, y: 0, width: 512, height: 288))
+        let person = CIImage(color: CIColor.white).cropped(to: CGRect(x: 176, y: 44, width: 160, height: 200))
+        return (frame, person.composited(over: mask))
+    }
+
+    private func cameraProject() -> VideoDemoProject {
+        var project = self.project()
+        project.cursor.visible = false
+        project.background = .color(VideoRGBA(1, 0, 1))
+        project.webcam.anchor = .bottomRight
+        project.webcam.shape = .square
+        project.webcam.size = 0.4
+        project.webcam.mirror = false
+        project.webcam.shrinkWhenZoomed = false
+        return project
+    }
+
+    func testCameraLayoutsFullscreenSideBySideAndHidden() throws {
+        var project = cameraProject()
+        project.cameraLayouts = [
+            VideoCameraLayoutRegion(start: 1, end: 3, layout: .fullscreen),
+            VideoCameraLayoutRegion(start: 4, end: 6, layout: .sideBySide),
+            VideoCameraLayoutRegion(start: 7, end: 9, layout: .hidden),
+        ]
+        let plan = VideoDemoExporter.makePlan(project: project, sourceDuration: 10, recording: nil, hasWebcam: true)
+        let renderer = VideoFrameRenderer()
+        let screen = solid(0.95, 0.95, 0.95, CGSize(width: 2880, height: 1800))
+        var options = VideoFrameRenderer.Options()
+        options.webcamFrame = greenCamera().frame
+        let size = CGSize(width: 1920, height: 1080)
+        let dir = try snapshotDirectory()
+
+        // Full camera: green everywhere, even the top-left corner.
+        let full = renderer.render(source: screen, timelineTime: 2, plan: plan, outputSize: size, options: options)
+        XCTAssertGreaterThan(averageColor(full, in: CGRect(x: 40, y: 1000, width: 40, height: 40)).g, 0.9)
+        try VideoTestSupport.writePNG(full, size: size, to: dir.appendingPathComponent("layout-full.png"))
+        // Halfway into it: the bubble is growing, the screen still shows at the top-left.
+        let growing = renderer.render(source: screen, timelineTime: 1.15, plan: plan, outputSize: size, options: options)
+        XCTAssertLessThan(averageColor(growing, in: CGRect(x: 40, y: 1000, width: 40, height: 40)).g, 0.9)
+        try VideoTestSupport.writePNG(growing, size: size, to: dir.appendingPathComponent("layout-growing.png"))
+
+        // Side by side: camera panel on the right, the screen on the left.
+        let side = renderer.render(source: screen, timelineTime: 5, plan: plan, outputSize: size, options: options)
+        let right = averageColor(side, in: CGRect(x: 1600, y: 500, width: 80, height: 80))
+        XCTAssertGreaterThan(right.g, 0.9)
+        XCTAssertLessThan(right.r, 0.2)
+        let left = averageColor(side, in: CGRect(x: 500, y: 500, width: 80, height: 80))
+        XCTAssertGreaterThan(left.r, 0.85, "the screen (light gray) on the left")
+        XCTAssertGreaterThan(left.b, 0.85)
+        try VideoTestSupport.writePNG(side, size: size, to: dir.appendingPathComponent("layout-side.png"))
+        print("SNAPSHOT: \(dir.appendingPathComponent("layout-side.png").path)")
+
+        // Hidden: no green where the bubble would be.
+        let bubble = VideoFrameRenderer.webcamRect(project.webcam, outputSize: size)
+        let hidden = renderer.render(source: screen, timelineTime: 8, plan: plan, outputSize: size, options: options)
+        XCTAssertLessThan(averageColor(hidden, in: CGRect(x: bubble.midX - 20, y: bubble.midY - 20, width: 40, height: 40)).g - averageColor(hidden, in: CGRect(x: bubble.midX - 20, y: bubble.midY - 20, width: 40, height: 40)).r, 0.2)
+        // Outside the layouts: the normal bubble.
+        let normal = renderer.render(source: screen, timelineTime: 0.5, plan: plan, outputSize: size, options: options)
+        XCTAssertGreaterThan(averageColor(normal, in: CGRect(x: bubble.midX - 20, y: bubble.midY - 20, width: 40, height: 40)).g, 0.9)
+    }
+
+    func testCameraBackdropRemoveAndCutout() throws {
+        var project = cameraProject()
+        project.webcam.backdrop = .remove
+        let plan = VideoDemoExporter.makePlan(project: project, sourceDuration: 10, recording: nil, hasWebcam: true)
+        let renderer = VideoFrameRenderer()
+        let screen = solid(0.95, 0.95, 0.95, CGSize(width: 2880, height: 1800))
+        let camera = greenCamera()
+        var options = VideoFrameRenderer.Options()
+        options.webcamFrame = camera.frame
+        options.webcamMask = camera.mask
+        let size = CGSize(width: 1920, height: 1080)
+        let bubble = VideoFrameRenderer.webcamRect(project.webcam, outputSize: size)
+        let image = renderer.render(source: screen, timelineTime: 2, plan: plan, outputSize: size, options: options)
+        let center = averageColor(image, in: CGRect(x: bubble.midX - 10, y: bubble.midY - 10, width: 20, height: 20))
+        XCTAssertGreaterThan(center.g, 0.85, "the person stays")
+        let edge = averageColor(image, in: CGRect(x: bubble.minX + 8, y: bubble.midY - 10, width: 20, height: 20))
+        XCTAssertGreaterThan(edge.r, 0.85, "the video's magenta background replaces the room")
+        XCTAssertGreaterThan(edge.b, 0.85)
+        let dir = try snapshotDirectory()
+        try VideoTestSupport.writePNG(image, size: size, to: dir.appendingPathComponent("camera-remove.png"))
+
+        // Cutout: just the person over the screen.
+        var cutout = project
+        cutout.webcam.shape = .cutout
+        let cutPlan = VideoDemoExporter.makePlan(project: cutout, sourceDuration: 10, recording: nil, hasWebcam: true)
+        let cutRect = VideoFrameRenderer.webcamRect(cutout.webcam, outputSize: size)
+        let cut = renderer.render(source: screen, timelineTime: 2, plan: cutPlan, outputSize: size, options: options)
+        XCTAssertGreaterThan(averageColor(cut, in: CGRect(x: cutRect.midX - 10, y: cutRect.midY - 10, width: 20, height: 20)).g, 0.85)
+        let outside = averageColor(cut, in: CGRect(x: cutRect.minX + 4, y: cutRect.maxY - 30, width: 16, height: 16))
+        XCTAssertLessThan(abs(outside.r - outside.g), 0.15, "the screen shows around the person, no card")
+        try VideoTestSupport.writePNG(cut, size: size, to: dir.appendingPathComponent("camera-cutout.png"))
+        print("SNAPSHOT: \(dir.appendingPathComponent("camera-cutout.png").path)")
+    }
+
+    func testPersonSegmentationProducesMasks() {
+        let store = VideoCameraFrameStore(capacity: 4)
+        XCTAssertTrue(store.setFindsPerson(true))
+        XCTAssertFalse(store.setFindsPerson(true), "no change")
+        var buffer: CVPixelBuffer?
+        CVPixelBufferCreate(nil, 640, 360, kCVPixelFormatType_32BGRA, [kCVPixelBufferIOSurfacePropertiesKey: [:]] as CFDictionary, &buffer)
+        store.put(buffer, at: 1)
+        let frame = store.camera(at: 1)
+        XCTAssertNotNil(frame?.mask, "Vision ran on the compositor thread and left a mask")
+        XCTAssertGreaterThan(frame?.mask?.extent.width ?? 0, 16)
+        store.setFindsPerson(false)
+        store.put(buffer, at: 2)
+        XCTAssertNil(store.camera(at: 2)?.mask)
+    }
+
     // MARK: Crop
 
     func testCropMapsPointsAndCanvas() {

@@ -1,6 +1,14 @@
 import AVFoundation
 import CoreImage
 import CoreVideo
+import Vision
+
+/// A camera frame and, when a look needs it, where the person is.
+struct VideoCameraFrame {
+    let image: CIImage
+    /// Person mask (white = you), at its own resolution.
+    let mask: CIImage?
+}
 
 /// The camera movie recorded alongside the screen.
 struct VideoCameraSource {
@@ -26,7 +34,12 @@ struct VideoCameraSource {
 /// never held.
 final class VideoCameraFrameStore: @unchecked Sendable {
     private let lock = NSLock()
-    private var frames: [(time: Double, image: CIImage)] = []
+    private var frames: [(time: Double, image: CIImage, mask: CIImage?)] = []
+    /// Find the person in every stored frame (background blur/removal,
+    /// cutout). Runs on the compositor's thread, never the main one.
+    private var findsPerson = false
+    private let segmentation = VNGeneratePersonSegmentationRequest()
+    private let sequence = VNSequenceRequestHandler()
     private let capacity: Int
     private var pool: CVPixelBufferPool?
     private var poolSize: CGSize = .zero
@@ -34,14 +47,35 @@ final class VideoCameraFrameStore: @unchecked Sendable {
 
     init(capacity: Int = 24) {
         self.capacity = capacity
+        segmentation.qualityLevel = .balanced
+        segmentation.outputPixelFormat = kCVPixelFormatType_OneComponent8
+    }
+
+    /// Turns person masks on or off; returns true when it changed (the
+    /// caller re-requests the current frame).
+    @discardableResult
+    func setFindsPerson(_ on: Bool) -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        guard findsPerson != on else { return false }
+        findsPerson = on
+        frames.removeAll()
+        return true
     }
 
     private let copyLock = NSLock()
 
     func put(_ buffer: CVPixelBuffer?, at time: Double) {
         guard let buffer else { return }
+        lock.lock()
+        let wantsMask = findsPerson
+        lock.unlock()
         copyLock.lock()
         let copy = copyFrame(buffer)
+        var mask: CIImage?
+        if wantsMask, let copied = copy?.pixelBuffer {
+            mask = personMask(copied)
+        }
         copyLock.unlock()
         guard let copy else { return }
         lock.lock()
@@ -49,17 +83,53 @@ final class VideoCameraFrameStore: @unchecked Sendable {
         // A seek backwards starts a new run.
         if let last = frames.last, time < last.time - 1 { frames.removeAll() }
         frames.removeAll { abs($0.time - time) < 0.0001 }
-        frames.append((time, copy))
+        frames.append((time, copy, mask))
         if frames.count > capacity { frames.removeFirst(frames.count - capacity) }
     }
 
     /// The frame composed nearest to `time` (within `tolerance`).
     func frame(at time: Double, tolerance: Double = 0.08) -> CIImage? {
+        camera(at: time, tolerance: tolerance)?.image
+    }
+
+    /// The frame (and person mask) composed nearest to `time`.
+    func camera(at time: Double, tolerance: Double = 0.08) -> VideoCameraFrame? {
         lock.lock()
         defer { lock.unlock() }
         guard let best = frames.min(by: { abs($0.time - time) < abs($1.time - time) }),
               abs(best.time - time) <= tolerance else { return nil }
-        return best.image
+        return VideoCameraFrame(image: best.image, mask: best.mask)
+    }
+
+    /// Where the person is (called under `copyLock`; the request is reused
+    /// frame to frame, which keeps the edge steady).
+    private func personMask(_ buffer: CVPixelBuffer) -> CIImage? {
+        do {
+            try sequence.perform([segmentation], on: buffer)
+        } catch {
+            return nil
+        }
+        guard let result = segmentation.results?.first else { return nil }
+        // Copy out of Vision's buffer pool so it can't be reused under us.
+        let source = result.pixelBuffer
+        let width = CVPixelBufferGetWidth(source)
+        let height = CVPixelBufferGetHeight(source)
+        var copy: CVPixelBuffer?
+        CVPixelBufferCreate(nil, width, height, kCVPixelFormatType_OneComponent8, [kCVPixelBufferIOSurfacePropertiesKey: [:]] as CFDictionary, &copy)
+        guard let copy else { return nil }
+        CVPixelBufferLockBaseAddress(source, .readOnly)
+        CVPixelBufferLockBaseAddress(copy, [])
+        let rows = height
+        let sourceRow = CVPixelBufferGetBytesPerRow(source)
+        let copyRow = CVPixelBufferGetBytesPerRow(copy)
+        if let from = CVPixelBufferGetBaseAddress(source), let to = CVPixelBufferGetBaseAddress(copy) {
+            for row in 0..<rows {
+                memcpy(to + row * copyRow, from + row * sourceRow, min(sourceRow, copyRow))
+            }
+        }
+        CVPixelBufferUnlockBaseAddress(copy, [])
+        CVPixelBufferUnlockBaseAddress(source, .readOnly)
+        return CIImage(cvPixelBuffer: copy)
     }
 
     func removeAll() {
