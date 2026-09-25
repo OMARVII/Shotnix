@@ -176,8 +176,13 @@ final class VideoTimelineInteractionTests: XCTestCase {
         await mount(model)
         let views = scrollViews(in: try XCTUnwrap(window?.contentView))
         let vertical = try XCTUnwrap(views.first { ($0.documentView?.frame.height ?? 0) > $0.contentSize.height + 20 }, "an outer vertical scroller")
-        let before = vertical.contentView.bounds.origin.y
-        scroll(dy: -60, at: CGPoint(x: 500, y: 200))
+        // It opens at the bottom, with the recording's own track in view.
+        let document = try XCTUnwrap(vertical.documentView)
+        let visible = vertical.contentView.bounds
+        let bottomShown = document.isFlipped ? visible.maxY : document.frame.height - visible.minY
+        XCTAssertEqual(bottomShown, document.frame.height, accuracy: 2, "opens scrolled to the clips")
+        let before = visible.origin.y
+        scroll(dy: 60, at: CGPoint(x: 500, y: 200))
         await settle(0.4)
         XCTAssertGreaterThan(abs(vertical.contentView.bounds.origin.y - before), 20, "vertical scrolling over the lanes moves them")
 

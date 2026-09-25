@@ -358,6 +358,12 @@ extension VideoEditorModel {
         let key = event.charactersIgnoringModifiers?.lowercased() ?? ""
         let code = event.keyCode
 
+        // Holding a key down doesn't repeat edits (a held ⌫ would delete
+        // clip after clip, a held T stack up texts). Arrows and undo repeat.
+        if event.isARepeat, modifiers.isEmpty || modifiers == [.shift], !(123...126).contains(code) {
+            return true
+        }
+
         // Modal surfaces first. Undo never reaches the edit behind them.
         let isUndoKey = key == "z" && (modifiers == [.command] || modifiers == [.command, .shift])
         if isExportPresented {

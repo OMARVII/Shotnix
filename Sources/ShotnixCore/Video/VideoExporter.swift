@@ -363,6 +363,7 @@ enum VideoDemoExporter {
     private final class MovieJob: @unchecked Sendable {
         let reader: AVAssetReader
         let writer: AVAssetWriter
+        private var writerFailed = false
         let videoOutput: AVAssetReaderVideoCompositionOutput
         let videoInput: AVAssetWriterInput
         let adaptor: AVAssetWriterInputPixelBufferAdaptor
@@ -448,7 +449,7 @@ enum VideoDemoExporter {
                                 return
                             }
                         }
-                    } else if let card = endCard, appendEndCardFrame(card) {
+                    } else if let card = endCard, !writerFailed, appendEndCardFrame(card) {
                         continue
                     } else {
                         finishVideo(group)
@@ -566,6 +567,11 @@ enum VideoDemoExporter {
             if append(image, at: time) {
                 lastFrame = image
                 lastTime = time
+            } else if writer.status == .failed {
+                // Disk full, encoder error: stop now instead of rendering
+                // the rest for nothing.
+                writerFailed = true
+                return false
             }
             outputIndex += 1
             report(seconds / max(duration + (endCard == nil ? 0 : VideoDemoExporter.endCardDuration), 0.001))

@@ -303,7 +303,9 @@ struct VideoStageInteractionLayer: View {
                 overlayFrame(overlay)
             }
 
-            if let webcam = model.plan.webcam, webcam.visible, !model.isAimingZoom {
+            // The bubble handle only where the bubble is (not during a full
+            // camera, side by side, or hidden stretch).
+            if let webcam = model.plan.webcam, webcam.visible, !model.isAimingZoom, model.plan.cameraLayout(at: clock.time) == nil {
                 webcamHandle(webcam)
             }
         }

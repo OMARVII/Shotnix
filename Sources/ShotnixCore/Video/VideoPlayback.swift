@@ -161,6 +161,10 @@ final class VideoPlaybackController: NSObject {
         if let videoComposition = VideoCameraComposition.videoComposition(for: built, frameRate: max(source.frameRate, 30), store: cameraStore) {
             cameraStore.removeAll()
             item.videoComposition = videoComposition
+        } else if !source.orientation.isIdentity {
+            // A rotated video (a portrait phone clip): hand the preview the
+            // same upright frames the export gets.
+            item.videoComposition = VideoCompositionBuilder.readerVideoComposition(for: built, frameRate: max(source.frameRate, 30))
         }
         item.audioTimePitchAlgorithm = .spectral
         let output = AVPlayerItemVideoOutput(pixelBufferAttributes: [
@@ -216,6 +220,9 @@ final class VideoPlaybackController: NSObject {
         guard player.currentItem != nil else { return }
         player.rate = rate
     }
+
+    /// A seek is still on its way (another may be queued behind it).
+    var isSeeking: Bool { seekInFlight || pendingSeek != nil }
 
     /// `fast` = scrubbing: land near the target quickly; exact on release.
     func seek(to time: Double, fast: Bool) {

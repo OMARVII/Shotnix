@@ -224,9 +224,12 @@ struct VideoTimelineSurface: View {
 
     var body: some View {
         let height = max(M.contentHeight(model.project), viewport.height)
-        // Lanes that don't fit scroll vertically (the recording is at the
-        // bottom and must stay reachable).
-        ScrollView(.vertical, showsIndicators: height > viewport.height + 0.5) {
+        let overflows = height > viewport.height + 0.5
+        // Lanes that don't fit scroll vertically. It opens (and starts
+        // overflowing) at the bottom, where the recording itself is.
+        ScrollViewReader { reader in
+        ScrollView(.vertical, showsIndicators: overflows) {
+        VStack(spacing: 0) {
         ScrollView(.horizontal, showsIndicators: model.timelineZoom > 1.01) {
             ZStack(alignment: .topLeading) {
                 // Scrub anywhere that isn't an object.
@@ -321,6 +324,13 @@ struct VideoTimelineSurface: View {
             )
         }
         .frame(height: height)
+        Color.clear.frame(height: 0).id(Self.bottomAnchor)
+        }
+        }
+        .onAppear { reader.scrollTo(Self.bottomAnchor, anchor: .bottom) }
+        .onChange(of: overflows) { now in
+            if now { reader.scrollTo(Self.bottomAnchor, anchor: .bottom) }
+        }
         }
         .onAppear(perform: installScrollZoom)
         .onDisappear {
@@ -330,11 +340,15 @@ struct VideoTimelineSurface: View {
     }
 
     /// ⌘-scroll zooms the timeline.
+    private static let bottomAnchor = "timeline-bottom"
+
     private func installScrollZoom() {
         guard scrollMonitor == nil else { return }
         scrollMonitor = NSEvent.addLocalMonitorForEvents(matching: .scrollWheel) { [model] event in
+            // Only in this editor's own window (two editors can be open).
             guard event.modifierFlags.contains(.command),
-                  event.window?.delegate is VideoDemoEditorWindowController else { return event }
+                  let controller = event.window?.delegate as? VideoDemoEditorWindowController,
+                  MainActor.assumeIsolated({ controller.model === model }) else { return event }
             let delta = event.scrollingDeltaY != 0 ? event.scrollingDeltaY : event.scrollingDeltaX
             let factor = pow(1.01, Double(delta) * (event.hasPreciseScrollingDeltas ? 1 : 6))
             MainActor.assumeIsolated {
@@ -363,6 +377,9 @@ struct VideoTimelineSurface: View {
             .onEnded { value in
                 if rangeStart == nil {
                     model.seek(to: time(value.location.x), fast: false)
+                } else if case .range(let range) = model.selection, range.duration < 0.1 {
+                    // A ⇧-click, not a drag: nothing to cut.
+                    model.selection = .none
                 }
                 rangeStart = nil
             }
@@ -852,6 +869,8 @@ struct VideoTimelineClipView: View, Equatable {
                     if abs(value.translation.width) < 3 {
                         model.selectClip(segment.id)
                     }
+                } else if case .range(let range) = model.selection, range.duration < 0.1 {
+                    model.selection = .none
                 }
                 rangeAnchor = nil
             }

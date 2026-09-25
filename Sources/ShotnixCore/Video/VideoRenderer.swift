@@ -68,7 +68,7 @@ final class VideoCursorArtwork: @unchecked Sendable {
 
     func shape(at sourceTime: Double, alwaysArrow: Bool) -> Shape {
         guard !alwaysArrow, !eventTimes.isEmpty else {
-            return alwaysArrow ? (firstShape ?? arrow) : arrow
+            return alwaysArrow ? (capturedArrow ?? arrow) : arrow
         }
         var low = 0
         var high = eventTimes.count - 1
@@ -85,10 +85,18 @@ final class VideoCursorArtwork: @unchecked Sendable {
         return shapes[events[found].shapeID] ?? arrow
     }
 
-    /// The first captured pointer is almost always the plain arrow — the
-    /// best "always arrow" stand-in because it matches the Mac's own style.
-    private var firstShape: Shape? {
-        events.first.flatMap { shapes[$0.shapeID] }
+    /// The recording's own plain arrow (it matches the Mac's style) — found
+    /// by its shape: tip at the top left, taller than wide. Not simply the
+    /// first pointer: a recording started over text begins with the I-beam.
+    private var capturedArrow: Shape? {
+        let uses = Dictionary(grouping: events, by: \.shapeID).mapValues(\.count)
+        return shapes.values
+            .filter { shape in
+                let x = shape.hotSpot.x / max(shape.size.width, 1)
+                let y = shape.hotSpot.y / max(shape.size.height, 1)
+                return x < 0.35 && y < 0.3 && shape.size.height > shape.size.width * 1.2
+            }
+            .max { (uses[$0.id] ?? 0) < (uses[$1.id] ?? 0) }
     }
 
     private static func mipChain(_ image: CIImage) -> [CIImage] {
@@ -623,8 +631,10 @@ final class VideoFrameRenderer {
     ) -> CIImage {
         var scene = input
         let outputRect = CGRect(origin: .zero, size: outputSize)
-        /// Where the camera bubble sits — text steps around it.
+        /// Where the camera bubble sits — text steps around it (fully, or
+        /// easing away while a layout takes the camera elsewhere).
         var avoid: CGRect?
+        var avoidWeight: CGFloat = 1
         if let webcam = plan.webcam, webcam.visible, let frame = options.webcamFrame {
             let bubble = Self.webcamRect(webcam, outputSize: outputSize, cameraScale: cameraScale)
             let bubbleRadius = Self.webcamCornerRadius(webcam, rect: bubble)
@@ -636,8 +646,12 @@ final class VideoFrameRenderer {
                 let rect = Self.lerp(bubble, outputRect, e)
                 let look = CameraLook(radius: bubbleRadius + (0 - bubbleRadius) * e, rim: Double(1 - e), shadow: Double(1 - e), opacity: 1, cutout: webcam.shape == .cutout && e < 0.5)
                 scene = drawCamera(camera, in: rect, look: look, plan: plan, outputSize: outputSize, k: k, over: scene)
+                avoid = bubble
+                avoidWeight = 1 - e
             case let (layout, progress)? where layout == .sideBySide:
                 scene = drawSideBySide(scene: scene, camera: camera, bubble: bubble, bubbleRadius: bubbleRadius, progress: progress, stage: stageOut, plan: plan, outputSize: outputSize, k: k)
+                avoid = bubble
+                avoidWeight = 1 - CGFloat(VideoCameraEasing.spring(progress))
             case let (layout, progress)? where layout == .hidden:
                 // Fades and settles away; fully hidden in the middle.
                 if progress < 0.999 {
@@ -646,13 +660,15 @@ final class VideoFrameRenderer {
                     let look = CameraLook(radius: bubbleRadius * shrink, rim: 1, shadow: 1, opacity: 1 - progress, cutout: webcam.shape == .cutout)
                     scene = drawCamera(camera, in: rect, look: look, plan: plan, outputSize: outputSize, k: k, over: scene)
                 }
+                avoid = bubble
+                avoidWeight = CGFloat(1 - progress)
             default:
                 let look = CameraLook(radius: bubbleRadius, rim: 1, shadow: 1, opacity: 1, cutout: webcam.shape == .cutout)
                 scene = drawCamera(camera, in: bubble, look: look, plan: plan, outputSize: outputSize, k: k, over: scene)
                 avoid = bubble
             }
         }
-        scene = drawTextLayers(on: scene, plan: plan, outputSize: outputSize, timelineTime: timelineTime, sourceTime: sourceTime, avoid: avoid)
+        scene = drawTextLayers(on: scene, plan: plan, outputSize: outputSize, timelineTime: timelineTime, sourceTime: sourceTime, avoid: avoid, avoidWeight: avoidWeight)
         return scene
     }
 
@@ -876,15 +892,17 @@ final class VideoFrameRenderer {
             let paragraph = NSMutableParagraphStyle()
             paragraph.alignment = .center
             paragraph.lineBreakMode = .byTruncatingTail
-            // No tag: white text with a soft shadow. A light tag gets dark text.
+            // No tag: white text with a soft shadow. A light, mostly solid
+            // tag gets dark text; a see-through one keeps white text (with
+            // the shadow once it's faint), whatever its hue.
             let plain = background.a < 0.05
-            let ink: NSColor = !plain && background.luminance > 0.62 ? NSColor(white: 0.08, alpha: 1) : .white
+            let ink: NSColor = background.a >= 0.6 && background.luminance > 0.62 ? NSColor(white: 0.08, alpha: 1) : .white
             var attributes: [NSAttributedString.Key: Any] = [
                 .font: font,
                 .foregroundColor: ink,
                 .paragraphStyle: paragraph,
             ]
-            if plain {
+            if background.a < 0.5 {
                 let shadow = NSShadow()
                 shadow.shadowColor = NSColor.black.withAlphaComponent(0.75)
                 shadow.shadowBlurRadius = fontSize * 0.22
@@ -922,7 +940,7 @@ final class VideoFrameRenderer {
 
     // MARK: Captions and shortcuts
 
-    private func drawTextLayers(on scene: CIImage, plan: VideoRenderPlan, outputSize: CGSize, timelineTime: Double, sourceTime: Double, avoid: CGRect?) -> CIImage {
+    private func drawTextLayers(on scene: CIImage, plan: VideoRenderPlan, outputSize: CGSize, timelineTime: Double, sourceTime: Double, avoid: CGRect?, avoidWeight: CGFloat = 1) -> CIImage {
         var output = scene
         let shortSide = min(outputSize.width, outputSize.height)
         let margin = (shortSide * 0.055).rounded()
@@ -938,14 +956,14 @@ final class VideoFrameRenderer {
             if position == .bottom {
                 y = usedBottom
                 // Step above the camera bubble rather than run under it.
-                if let avoid, CGRect(x: x, y: y, width: size.width, height: size.height).intersects(avoid.insetBy(dx: -spacing, dy: -spacing)) {
-                    y = avoid.maxY + spacing
+                if let avoid, avoidWeight > 0.001, CGRect(x: x, y: y, width: size.width, height: size.height).intersects(avoid.insetBy(dx: -spacing, dy: -spacing)) {
+                    y += (avoid.maxY + spacing - y) * avoidWeight
                 }
                 usedBottom = y + size.height + spacing
             } else {
                 y = outputSize.height - usedTop - size.height
-                if let avoid, CGRect(x: x, y: y, width: size.width, height: size.height).intersects(avoid.insetBy(dx: -spacing, dy: -spacing)) {
-                    y = avoid.minY - spacing - size.height
+                if let avoid, avoidWeight > 0.001, CGRect(x: x, y: y, width: size.width, height: size.height).intersects(avoid.insetBy(dx: -spacing, dy: -spacing)) {
+                    y += (avoid.minY - spacing - size.height - y) * avoidWeight
                 }
                 usedTop = outputSize.height - y + spacing
             }

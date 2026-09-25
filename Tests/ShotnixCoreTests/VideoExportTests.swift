@@ -126,6 +126,46 @@ final class VideoExportTests: XCTestCase {
         XCTAssertGreaterThanOrEqual(CGImageSourceGetCount(source), 18)
     }
 
+    /// A portrait phone clip is stored landscape with a rotation: the
+    /// preview shows it upright, like the export does.
+    @MainActor
+    func testRotatedVideoPreviewsUpright() async throws {
+        let stored = directory.appendingPathComponent("stored.mp4")
+        try await VideoTestSupport.writeFakeRecording(to: stored, size: CGSize(width: 320, height: 240), seconds: 1.5, fps: 30)
+        // Re-wrap the track with a 90° rotation.
+        let asset = AVURLAsset(url: stored)
+        let composition = AVMutableComposition()
+        let tracks = try await asset.loadTracks(withMediaType: .video)
+        let sourceTrack = try XCTUnwrap(tracks.first)
+        let track = try XCTUnwrap(composition.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid))
+        try track.insertTimeRange(CMTimeRange(start: .zero, duration: CMTime(seconds: 1.5, preferredTimescale: 600)), of: sourceTrack, at: .zero)
+        track.preferredTransform = CGAffineTransform(a: 0, b: 1, c: -1, d: 0, tx: 240, ty: 0)
+        let rotated = directory.appendingPathComponent("portrait.mov")
+        let session = try XCTUnwrap(AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetPassthrough))
+        session.outputURL = rotated
+        session.outputFileType = .mov
+        await session.export()
+        XCTAssertEqual(session.status, .completed, session.error?.localizedDescription ?? "")
+
+        VideoDemoDraftStore.delete(for: rotated)
+        let model = VideoEditorModel(videoURL: rotated)
+        await model.load()
+        XCTAssertTrue(model.isReady)
+        XCTAssertLessThan(model.project.sourceWidth, model.project.sourceHeight, "known to be portrait")
+        model.seek(to: 0.5)
+        var size: CGSize?
+        for _ in 0..<40 {
+            try await Task.sleep(nanoseconds: 50_000_000)
+            if let frame = model.playback.frame(forHostTime: CACurrentMediaTime()) {
+                size = CGSize(width: CVPixelBufferGetWidth(frame.buffer), height: CVPixelBufferGetHeight(frame.buffer))
+                break
+            }
+        }
+        let frame = try XCTUnwrap(size, "a preview frame arrives")
+        XCTAssertLessThan(frame.width, frame.height, "upright, not sideways")
+        VideoDemoDraftStore.delete(for: rotated)
+    }
+
     func testExportRespectsCutsAndSpeed() async throws {
         var (_, project, metadata) = try await source(seconds: 3)
         project.timelineClips = [

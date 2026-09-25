@@ -301,6 +301,9 @@ final class VideoEditorModel: ObservableObject {
 
         playback.onTick = { [weak self] time in
             guard let self else { return }
+            // While paused and scrubbing, the player reports each finished
+            // seek — an older spot than the playhead already shows.
+            guard self.isPlaying || !self.playback.isSeeking else { return }
             if self.clock.time != time { self.clock.time = time }
             if self.isPlaying { self.previewRenderer.invalidate() }
         }
