@@ -37,6 +37,16 @@ struct VideoDemoTimelineRange: Equatable, Identifiable {
     var duration: Double { max(end - start, 0) }
 }
 
+/// Changes only when something DRAWN on the timeline changes (clips,
+/// zooms, annotations, clicks, captions, shortcuts, selection, zoom level)
+/// — style edits like padding or backgrounds never re-render its lanes.
+@MainActor
+final class VideoTimelineState: ObservableObject {
+    @Published private(set) var revision = 0
+
+    func bump() { revision &+= 1 }
+}
+
 struct VideoEditorNotice: Equatable, Identifiable {
     let id = UUID()
     let message: String
@@ -126,18 +136,25 @@ final class VideoEditorModel: ObservableObject {
         didSet {
             guard selection != oldValue else { return }
             previewRenderer.invalidate()
+            refreshTimeline()
         }
     }
     @Published var inspectorTab: InspectorTab = .background
     @Published private(set) var isPlaying = false
-    @Published var timelineZoom: Double = 1
+    @Published var timelineZoom: Double = 1 {
+        didSet { refreshTimeline() }
+    }
     @Published var isCommandPalettePresented = false
     @Published var isExportPresented = false
     @Published var isShortcutsPresented = false
     @Published var exportSettings = VideoExportSettings.fromSettings
     @Published var exportPhase: ExportPhase = .idle
-    @Published private(set) var thumbnails: [VideoTimelineThumbnail] = []
-    @Published private(set) var waveform: VideoWaveform?
+    @Published private(set) var thumbnails: [VideoTimelineThumbnail] = [] {
+        didSet { refreshTimeline() }
+    }
+    @Published private(set) var waveform: VideoWaveform? {
+        didSet { refreshTimeline() }
+    }
     @Published var notice: VideoEditorNotice?
     @Published private(set) var canUndo = false
     @Published private(set) var canRedo = false
@@ -146,7 +163,9 @@ final class VideoEditorModel: ObservableObject {
     @Published private(set) var trimPeekSourceTime: Double?
     /// While trimming, the timeline keeps its scale so the edge stays under
     /// the pointer instead of the whole strip re-fitting mid-drag.
-    @Published private(set) var layoutDurationLock: Double?
+    @Published private(set) var layoutDurationLock: Double? {
+        didSet { refreshTimeline() }
+    }
     /// Crop mode: the preview shows the whole recording with a crop frame.
     @Published var isCropping = false
     @Published var cropAspect: VideoCropAspect = .free
@@ -159,6 +178,8 @@ final class VideoEditorModel: ObservableObject {
     var captionTask: Task<Void, Never>?
 
     let clock = VideoDemoPlaybackClock()
+    let timelineState = VideoTimelineState()
+    private var timelineSignature: TimelineSignature?
     let playback = VideoPlaybackController()
     lazy var previewRenderer = VideoPreviewRenderer(model: self)
     let recording: VideoDemoRecordingMetadata?
@@ -173,9 +194,59 @@ final class VideoEditorModel: ObservableObject {
     private var autosaveWork: DispatchWorkItem?
     private var noticeWork: DispatchWorkItem?
     private var cursorTrackCache: (key: CursorTrackKey, track: VideoCursorTrack?)?
+    private var cameraTrackCache: (key: CameraTrackKey, track: VideoCameraTrack)?
     private var shuttleRate: Float = 1
     private var exportCancelled = false
     private var didLoad = false
+
+    /// Everything the camera path depends on — captions, shortcuts,
+    /// annotations, and most style changes leave it alone.
+    private struct CameraTrackKey: Equatable {
+        let regions: [VideoZoomRegion]
+        let timings: [VideoPlaybackController.EditStructure.Timing]
+        let speed: VideoZoomSpeed
+        let stage: CGRect
+        let crop: VideoCropRect
+        let cursorTrack: ObjectIdentifier?
+    }
+
+    private struct TimelineSignature: Equatable {
+        let segments: [VideoDemoTimelineSegment]
+        let zooms: [VideoZoomRegion]
+        let overlays: [VideoDemoOverlayEffect]
+        let clicks: [VideoDemoClickEvent]
+        let captions: [VideoCaptionLine]
+        let keystrokes: [VideoKeystrokeEvent]
+        let keystrokesVisible: Bool
+        let selection: Selection
+        let zoom: Double
+        let lock: Double?
+        let thumbnails: Int
+        let waveform: Int
+        let sourceSize: CGSize
+    }
+
+    /// Bumps the timeline's revision when anything it draws changed.
+    func refreshTimeline() {
+        let signature = TimelineSignature(
+            segments: segments,
+            zooms: project.zoomRegions,
+            overlays: project.overlayEffects,
+            clicks: project.clickEvents,
+            captions: project.captions,
+            keystrokes: project.keystrokes,
+            keystrokesVisible: project.keystrokeStyle.visible,
+            selection: selection,
+            zoom: timelineZoom,
+            lock: layoutDurationLock,
+            thumbnails: thumbnails.count,
+            waveform: waveform?.peaks.count ?? -1,
+            sourceSize: project.sourceSize
+        )
+        guard signature != timelineSignature else { return }
+        timelineSignature = signature
+        timelineState.bump()
+    }
 
     private struct CursorTrackKey: Equatable {
         let sampleCount: Int
@@ -283,6 +354,7 @@ final class VideoEditorModel: ObservableObject {
 
     private func projectDidChange(from old: VideoDemoProject) {
         segments = project.timelineSegments(totalDuration: sourceDuration)
+        refreshTimeline()
         if isReady, old.audio.enhanceVoice != project.audio.enhanceVoice {
             enhanceVoiceChanged()
         }
@@ -323,15 +395,29 @@ final class VideoEditorModel: ObservableObject {
         let canvas = project.canvasSize()
         let stage = project.stageRect(in: canvas)
         let normalizedStage = CGRect(x: stage.minX / canvas.width, y: stage.minY / canvas.height, width: stage.width / canvas.width, height: stage.height / canvas.height)
-        let camera = VideoCameraTrack.build(
+        let cameraKey = CameraTrackKey(
             regions: project.zoomRegions,
-            segments: segments,
-            timelineDuration: segments.last?.timelineEnd ?? 0,
+            timings: segments.map { .init(start: $0.clip.sourceStart, end: $0.clip.sourceEnd, speed: $0.clip.normalizedSpeed) },
             speed: project.zoomSpeed,
             stage: normalizedStage,
             crop: project.crop.normalized,
-            cursor: cursorTrack.map { track in { track.visiblePosition(at: $0) } }
+            cursorTrack: cursorTrack.map(ObjectIdentifier.init)
         )
+        let camera: VideoCameraTrack
+        if let cache = cameraTrackCache, cache.key == cameraKey {
+            camera = cache.track
+        } else {
+            camera = VideoCameraTrack.build(
+                regions: project.zoomRegions,
+                segments: segments,
+                timelineDuration: segments.last?.timelineEnd ?? 0,
+                speed: project.zoomSpeed,
+                stage: normalizedStage,
+                crop: project.crop.normalized,
+                cursor: cursorTrack.map { track in { track.visiblePosition(at: $0) } }
+            )
+            cameraTrackCache = (cameraKey, camera)
+        }
         plan = VideoRenderPlan(
             project: project,
             sourceDuration: sourceDuration,

@@ -37,7 +37,7 @@ struct VideoEditorRootView: View {
                         .frame(width: 318)
                 }
                 Rectangle().fill(VideoEditorTheme.hairline).frame(height: 1)
-                VideoTimelineView(model: model)
+                VideoTimelineView(model: model).equatable()
                     .frame(height: timelineHeight)
             }
 

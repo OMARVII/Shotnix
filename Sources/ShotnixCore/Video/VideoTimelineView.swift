@@ -47,8 +47,20 @@ enum VideoTimelineMetrics {
     }
 }
 
-struct VideoTimelineView: View {
-    @ObservedObject var model: VideoEditorModel
+/// Redraws only when something on the timeline changes (see
+/// `VideoTimelineState`); the toolbar follows the model on its own.
+struct VideoTimelineView: View, Equatable {
+    let model: VideoEditorModel
+    @ObservedObject var timeline: VideoTimelineState
+
+    init(model: VideoEditorModel) {
+        self.model = model
+        timeline = model.timelineState
+    }
+
+    nonisolated static func == (a: Self, b: Self) -> Bool {
+        a.model === b.model
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -56,7 +68,7 @@ struct VideoTimelineView: View {
                 .frame(height: 44)
             Rectangle().fill(VideoEditorTheme.hairline).frame(height: 1)
             GeometryReader { proxy in
-                VideoTimelineSurface(model: model, viewport: proxy.size)
+                VideoTimelineSurface(model: model, timeline: timeline, viewport: proxy.size)
             }
         }
         .background(VideoEditorTheme.panel)
@@ -180,15 +192,14 @@ struct VideoTimelineToolbar: View {
 // MARK: - Surface
 
 struct VideoTimelineSurface: View {
-    @ObservedObject var model: VideoEditorModel
+    let model: VideoEditorModel
+    @ObservedObject var timeline: VideoTimelineState
     let viewport: CGSize
 
-    @State private var hoverTime: Double?
-    @State private var hoverZoomTrack = false
+    /// Held, not observed: hovering redraws only the hover layer.
+    @State private var hover = VideoTimelineHover()
     @State private var zoomDrag: (id: UUID, start: Double, end: Double)?
     @State private var overlayDrag: (id: UUID, start: Double, end: Double, layer: Int)?
-    @State private var clickDrag: (id: UUID, time: Double)?
-    @State private var captionDrag: (id: UUID, start: Double, end: Double)?
     /// Where the dragged object was when the drag began. SwiftUI hands each
     /// update the freshly rendered closure, so computing from the object's
     /// CURRENT position would compound the movement — always start here.
@@ -202,6 +213,10 @@ struct VideoTimelineSurface: View {
     private var duration: Double { max(model.timelineDuration, model.layoutDurationLock ?? 0, 0.1) }
     private var contentWidth: CGFloat { max(viewport.width - M.inset * 2, 100) * CGFloat(model.timelineZoom) }
     private var pointsPerSecond: CGFloat { contentWidth / CGFloat(duration) }
+
+    private var geometry: VideoTimelineGeometry {
+        VideoTimelineGeometry(pointsPerSecond: pointsPerSecond, duration: duration, width: contentWidth + M.inset * 2)
+    }
 
     private func x(_ time: Double) -> CGFloat { M.inset + CGFloat(time) * pointsPerSecond }
     private func time(_ x: CGFloat) -> Double { min(max(Double((x - M.inset) / pointsPerSecond), 0), duration) }
@@ -234,26 +249,64 @@ struct VideoTimelineSurface: View {
                     .allowsHitTesting(false)
 
                 zoomTrack
-                if !model.project.clickEvents.isEmpty { clickLane }
+                if !model.project.clickEvents.isEmpty {
+                    VideoClickLane(
+                        items: model.project.clickEvents.compactMap { click in
+                            model.timelineTime(forSource: click.time).map { VideoClickLane.Item(id: click.id, time: $0) }
+                        },
+                        selectedID: { if case .click(let id) = model.selection { return id } else { return nil } }(),
+                        geometry: geometry,
+                        model: model,
+                        hover: hover
+                    )
+                    .equatable()
+                    .offset(y: clickTop)
+                }
                 clipTrack
                 if !model.project.overlayEffects.isEmpty { overlayLanes }
-                if !model.project.captions.isEmpty { captionLane }
-                if !model.project.keystrokes.isEmpty { keysLane }
-
-                if let hoverTime, zoomDrag == nil, overlayDrag == nil, clickDrag == nil, captionDrag == nil {
-                    ghostPlayhead(hoverTime, height: height)
+                if !model.project.captions.isEmpty {
+                    VideoCaptionLane(
+                        items: model.plan.captions.map { VideoCaptionLane.Item(id: $0.id, start: $0.start, end: $0.end, text: $0.text) },
+                        selectedID: model.selectedCaptionID,
+                        geometry: geometry,
+                        model: model,
+                        hover: hover
+                    )
+                    .equatable()
+                    .offset(y: captionTop)
                 }
+                if !model.project.keystrokes.isEmpty {
+                    VideoKeysLane(
+                        items: model.project.keystrokes.compactMap { event in
+                            model.timelineTime(forSource: event.time).map { VideoKeysLane.Item(id: event.id, time: $0, label: event.keys.joined()) }
+                        },
+                        selectedID: { if case .keystroke(let id) = model.selection { return id } else { return nil } }(),
+                        hidden: !model.project.keystrokeStyle.visible,
+                        geometry: geometry,
+                        model: model
+                    )
+                    .equatable()
+                    .offset(y: keysTop)
+                }
+
+                VideoTimelineHoverLayer(
+                    hover: hover,
+                    model: model,
+                    geometry: geometry,
+                    height: height,
+                    zoomTop: zoomTop,
+                    showsZoomHint: model.project.zoomRegions.isEmpty,
+                    viewportWidth: viewport.width
+                )
                 VideoTimelinePlayhead(clock: model.clock, x: { x($0) }, height: height)
             }
             .frame(width: contentWidth + M.inset * 2, height: height, alignment: .topLeading)
             .onContinuousHover { phase in
                 switch phase {
                 case .active(let location):
-                    hoverTime = time(location.x)
-                    hoverZoomTrack = location.y >= zoomTop && location.y <= zoomTop + M.zoomTrackHeight
+                    hover.update(time: time(location.x), overZoomTrack: location.y >= zoomTop && location.y <= zoomTop + M.zoomTrackHeight)
                 case .ended:
-                    hoverTime = nil
-                    hoverZoomTrack = false
+                    hover.update(time: nil, overZoomTrack: false)
                 }
             }
             .gesture(
@@ -316,24 +369,6 @@ struct VideoTimelineSurface: View {
         return false
     }
 
-    private func ghostPlayhead(_ time: Double, height: CGFloat) -> some View {
-        let position = x(time)
-        return ZStack(alignment: .topLeading) {
-            Rectangle()
-                .fill(Color.white.opacity(0.28))
-                .frame(width: 1, height: height - M.rulerHeight)
-                .offset(x: position, y: M.rulerHeight)
-            Text(VideoEditorModel.timecode(time))
-                .font(.system(size: 9.5, weight: .bold, design: .monospaced))
-                .foregroundStyle(.white.opacity(0.85))
-                .padding(.horizontal, 5)
-                .frame(height: 16)
-                .background(RoundedRectangle(cornerRadius: 4).fill(Color.black.opacity(0.7)))
-                .offset(x: position + 4, y: 3)
-        }
-        .allowsHitTesting(false)
-    }
-
     // MARK: Zoom track
 
     private var zoomTrack: some View {
@@ -352,22 +387,6 @@ struct VideoTimelineSurface: View {
                     }
                 }
 
-            if model.project.zoomRegions.isEmpty, !hoverZoomTrack {
-                HStack(spacing: 6) {
-                    Image(systemName: "plus.magnifyingglass")
-                    Text("Click to add a zoom — or press Z at the playhead")
-                }
-                .font(.system(size: 11, weight: .medium))
-                .foregroundStyle(VideoEditorTheme.textTertiary)
-                .frame(width: min(contentWidth, viewport.width - M.inset * 2), height: M.zoomTrackHeight)
-                .offset(x: M.inset)
-                .allowsHitTesting(false)
-            }
-
-            if hoverZoomTrack, let hoverTime, zoomDrag == nil {
-                zoomGhost(at: hoverTime)
-            }
-
             ForEach(model.project.zoomRegions) { region in
                 if let range = model.zoomTimelineRange(region) {
                     zoomBlock(region, range: range)
@@ -375,30 +394,6 @@ struct VideoTimelineSurface: View {
             }
         }
         .offset(y: zoomTop)
-    }
-
-    private func zoomGhost(at time: Double) -> some View {
-        let gap = model.zoomGap(around: time)
-        let length = min(3, gap.upperBound - gap.lowerBound)
-        let start = max(min(time - 0.2, gap.upperBound - length), gap.lowerBound)
-        return Group {
-            if length >= VideoZoomRegion.minimumDuration {
-                HStack(spacing: 4) {
-                    Image(systemName: "plus")
-                    Text("Zoom")
-                }
-                .font(.system(size: 11, weight: .bold))
-                .foregroundStyle(Color.white.opacity(0.8))
-                .frame(width: max(CGFloat(length) * pointsPerSecond, 30), height: M.zoomTrackHeight - 4)
-                .background(
-                    RoundedRectangle(cornerRadius: 7, style: .continuous)
-                        .strokeBorder(VideoEditorTheme.zoom.opacity(0.9), style: StrokeStyle(lineWidth: 1.5, dash: [5, 4]))
-                        .background(RoundedRectangle(cornerRadius: 7, style: .continuous).fill(VideoEditorTheme.zoom.opacity(0.14)))
-                )
-                .offset(x: x(start), y: 2)
-                .allowsHitTesting(false)
-            }
-        }
     }
 
     private func zoomBlock(_ region: VideoZoomRegion, range: ClosedRange<Double>) -> some View {
@@ -471,6 +466,7 @@ struct VideoTimelineSurface: View {
                 if dragOrigin?.id != region.id {
                     dragOrigin = TimelineDragOrigin(id: region.id, start: range.lowerBound, end: range.upperBound)
                     zoomDrag = (region.id, range.lowerBound, range.upperBound)
+                    hover.setDragging(true)
                     model.selection = .zoom(region.id)
                     if !region.followsCursor { model.pause() }
                 }
@@ -500,6 +496,7 @@ struct VideoTimelineSurface: View {
                 }
                 zoomDrag = nil
                 dragOrigin = nil
+                hover.setDragging(false)
                 model.endGesture()
                 if abs(value.translation.width) <= 2 {
                     model.selection = .zoom(region.id)
@@ -520,6 +517,7 @@ struct VideoTimelineSurface: View {
                 if dragOrigin?.id != region.id {
                     dragOrigin = TimelineDragOrigin(id: region.id, start: range.lowerBound, end: range.upperBound)
                     zoomDrag = (region.id, range.lowerBound, range.upperBound)
+                    hover.setDragging(true)
                     model.selection = .zoom(region.id)
                 }
                 guard let origin = dragOrigin else { return }
@@ -543,6 +541,7 @@ struct VideoTimelineSurface: View {
                 }
                 zoomDrag = nil
                 dragOrigin = nil
+                hover.setDragging(false)
                 model.endGesture()
             }
     }
@@ -572,47 +571,6 @@ struct VideoTimelineSurface: View {
         Button("Delete Zoom", role: .destructive) { model.deleteZoom(region.id) }
     }
 
-    // MARK: Clicks
-
-    private var clickLane: some View {
-        ZStack(alignment: .topLeading) {
-            ForEach(model.project.clickEvents) { click in
-                if let clickTime = clickDrag?.id == click.id ? clickDrag?.time : model.timelineTime(forSource: click.time) {
-                    let selected = model.selection == .click(click.id)
-                    Circle()
-                        .fill(selected ? Color.white : Color.white.opacity(0.55))
-                        .overlay(Circle().stroke(selected ? VideoEditorTheme.zoom : Color.black.opacity(0.4), lineWidth: selected ? 2 : 1))
-                        .frame(width: 8, height: 8)
-                        .contentShape(Rectangle().inset(by: -5))
-                        .help("Click — drag to retime, ⌫ removes it")
-                        .gesture(
-                            DragGesture(minimumDistance: 0, coordinateSpace: .global)
-                                .onChanged { value in
-                                    if clickDrag?.id != click.id {
-                                        clickDrag = (click.id, clickTime)
-                                        model.selection = .click(click.id)
-                                    }
-                                    guard abs(value.translation.width) > 2 else { return }
-                                    let moved = min(max(clickTime + Double(value.translation.width / pointsPerSecond), 0), duration)
-                                    clickDrag = (click.id, moved)
-                                }
-                                .onEnded { value in
-                                    if let drag = clickDrag, abs(value.translation.width) > 2 {
-                                        model.moveClick(click.id, toTimeline: drag.time)
-                                        model.endGesture()
-                                    } else {
-                                        model.seek(to: clickTime)
-                                    }
-                                    clickDrag = nil
-                                }
-                        )
-                        .offset(x: x(clickTime) - 4, y: (M.clickLaneHeight - 8) / 2)
-                }
-            }
-        }
-        .offset(y: clickTop)
-    }
-
     // MARK: Clip track
 
     private var clipTrack: some View {
@@ -623,8 +581,12 @@ struct VideoTimelineSurface: View {
                     segment: segment,
                     index: index,
                     pointsPerSecond: pointsPerSecond,
-                    selected: model.selectedClipID == segment.id
+                    selected: model.selectedClipID == segment.id,
+                    thumbnails: model.thumbnails,
+                    waveform: model.waveform,
+                    sourceAspect: model.project.sourceHeight > 0 ? model.project.sourceWidth / model.project.sourceHeight : 16 / 9
                 )
+                .equatable()
                 .offset(x: x(segment.timelineStart) + 1)
             }
 
@@ -657,134 +619,6 @@ struct VideoTimelineSurface: View {
             }
         }
         .offset(y: clipTop)
-    }
-
-    // MARK: Captions & shortcuts
-
-    private var captionLane: some View {
-        ZStack(alignment: .topLeading) {
-            ForEach(model.plan.captions, id: \.id) { caption in
-                captionChip(caption)
-            }
-        }
-        .offset(y: captionTop)
-    }
-
-    private func captionChip(_ caption: VideoRenderPlan.Caption) -> some View {
-        let selected = model.selection == .caption(caption.id)
-        let shown = captionDrag?.id == caption.id ? (captionDrag!.start, captionDrag!.end) : (caption.start, caption.end)
-        let width = max(CGFloat(shown.1 - shown.0) * pointsPerSecond - 2, 8)
-        let tint = VideoEditorTheme.caption
-        return ZStack(alignment: .leading) {
-            RoundedRectangle(cornerRadius: 6, style: .continuous)
-                .fill(tint.opacity(selected ? 0.85 : 0.34))
-            RoundedRectangle(cornerRadius: 6, style: .continuous)
-                .strokeBorder(Color.white.opacity(selected ? 0.95 : 0.12), lineWidth: selected ? 1.5 : 1)
-            if width > 26 {
-                Text(caption.text)
-                    .font(.system(size: 10, weight: .medium))
-                    .foregroundStyle(.white.opacity(selected ? 1 : 0.88))
-                    .lineLimit(1)
-                    .padding(.horizontal, 6)
-            }
-            HStack(spacing: 0) {
-                edgeHandle.gesture(captionEdgeGesture(caption, leading: true))
-                Spacer(minLength: 0)
-                edgeHandle.gesture(captionEdgeGesture(caption, leading: false))
-            }
-        }
-        .frame(width: width, height: M.captionLaneHeight)
-        .contentShape(Rectangle())
-        .help(caption.text)
-        .gesture(captionMoveGesture(caption))
-        .contextMenu {
-            Button("Delete Caption", role: .destructive) { model.deleteCaption(caption.id) }
-        }
-        .offset(x: x(shown.0) + 1)
-    }
-
-    private func captionMoveGesture(_ caption: VideoRenderPlan.Caption) -> some Gesture {
-        DragGesture(minimumDistance: 0, coordinateSpace: .global)
-            .onChanged { value in
-                if dragOrigin?.id != caption.id {
-                    dragOrigin = TimelineDragOrigin(id: caption.id, start: caption.start, end: caption.end)
-                    captionDrag = (caption.id, caption.start, caption.end)
-                    model.selection = .caption(caption.id)
-                }
-                guard let origin = dragOrigin, abs(value.translation.width) > 2 else { return }
-                let length = origin.end - origin.start
-                let newStart = min(max(origin.start + Double(value.translation.width / pointsPerSecond), 0), duration - length)
-                captionDrag = (caption.id, newStart, newStart + length)
-                model.setCaptionWindow(caption.id, timelineStart: newStart, timelineEnd: newStart + length, moveWords: true)
-            }
-            .onEnded { value in
-                captionDrag = nil
-                dragOrigin = nil
-                model.endGesture()
-                if abs(value.translation.width) <= 2 {
-                    model.selectCaption(caption.id)
-                }
-            }
-    }
-
-    private func captionEdgeGesture(_ caption: VideoRenderPlan.Caption, leading: Bool) -> some Gesture {
-        DragGesture(minimumDistance: 0, coordinateSpace: .global)
-            .onChanged { value in
-                if dragOrigin?.id != caption.id {
-                    dragOrigin = TimelineDragOrigin(id: caption.id, start: caption.start, end: caption.end)
-                    captionDrag = (caption.id, caption.start, caption.end)
-                    model.selection = .caption(caption.id)
-                }
-                guard let origin = dragOrigin else { return }
-                let delta = Double(value.translation.width / pointsPerSecond)
-                let newStart = leading ? min(max(origin.start + delta, 0), origin.end - 0.2) : origin.start
-                let newEnd = leading ? origin.end : min(max(origin.end + delta, origin.start + 0.2), duration)
-                captionDrag = (caption.id, newStart, newEnd)
-                model.setCaptionWindow(caption.id, timelineStart: newStart, timelineEnd: newEnd, moveWords: false)
-            }
-            .onEnded { _ in
-                captionDrag = nil
-                dragOrigin = nil
-                model.endGesture()
-            }
-    }
-
-    private var keysLane: some View {
-        ZStack(alignment: .topLeading) {
-            ForEach(model.project.keystrokes) { event in
-                if let time = model.timelineTime(forSource: event.time) {
-                    keyChip(event, time: time)
-                }
-            }
-        }
-        .offset(y: keysTop)
-    }
-
-    private func keyChip(_ event: VideoKeystrokeEvent, time: Double) -> some View {
-        let selected = model.selection == .keystroke(event.id)
-        let hidden = !model.project.keystrokeStyle.visible
-        return Text(event.keys.joined())
-            .font(.system(size: 9.5, weight: .semibold))
-            .foregroundStyle(.white.opacity(hidden ? 0.45 : 0.95))
-            .lineLimit(1)
-            .fixedSize()
-            .padding(.horizontal, 5)
-            .frame(height: M.keysLaneHeight)
-            .background(
-                RoundedRectangle(cornerRadius: 5, style: .continuous)
-                    .fill(VideoEditorTheme.keys.opacity(selected ? 0.9 : (hidden ? 0.16 : 0.4)))
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 5, style: .continuous)
-                    .strokeBorder(Color.white.opacity(selected ? 0.95 : 0.14), lineWidth: selected ? 1.5 : 1)
-            )
-            .contentShape(Rectangle())
-            .help("\(event.keys.joined(separator: " ")) — click to select, ⌫ hides it")
-            .onTapGesture { model.selectKeystroke(event.id) }
-            .contextMenu {
-                Button("Hide This Shortcut", role: .destructive) { model.deleteKeystroke(event.id) }
-            }
-            .offset(x: x(time))
     }
 
     // MARK: Overlays
@@ -844,6 +678,7 @@ struct VideoTimelineSurface: View {
                 if dragOrigin?.id != effect.id {
                     dragOrigin = TimelineDragOrigin(id: effect.id, start: start, end: end, layer: effect.layer)
                     overlayDrag = (effect.id, start, end, effect.layer)
+                    hover.setDragging(true)
                     model.selection = .overlay(effect.id)
                 }
                 guard let origin = dragOrigin, abs(value.translation.width) > 2 || abs(value.translation.height) > 4 else { return }
@@ -860,6 +695,7 @@ struct VideoTimelineSurface: View {
                 let origin = dragOrigin ?? TimelineDragOrigin(id: effect.id, start: start, end: end, layer: effect.layer)
                 overlayDrag = nil
                 dragOrigin = nil
+                hover.setDragging(false)
                 model.finishOverlayDrag()
                 if abs(value.translation.width) <= 2, abs(value.translation.height) <= 4 {
                     model.selection = .overlay(effect.id)
@@ -874,6 +710,7 @@ struct VideoTimelineSurface: View {
                 if dragOrigin?.id != effect.id {
                     dragOrigin = TimelineDragOrigin(id: effect.id, start: start, end: end, layer: effect.layer)
                     overlayDrag = (effect.id, start, end, effect.layer)
+                    hover.setDragging(true)
                     model.selection = .overlay(effect.id)
                 }
                 guard let origin = dragOrigin else { return }
@@ -886,6 +723,7 @@ struct VideoTimelineSurface: View {
             .onEnded { _ in
                 overlayDrag = nil
                 dragOrigin = nil
+                hover.setDragging(false)
                 model.finishOverlayDrag()
             }
     }
@@ -900,12 +738,20 @@ struct TimelineDragOrigin: Equatable {
 
 // MARK: - Clip
 
-struct VideoTimelineClipView: View {
-    @ObservedObject var model: VideoEditorModel
+struct VideoTimelineClipView: View, Equatable {
+    let model: VideoEditorModel
     let segment: VideoDemoTimelineSegment
     let index: Int
     let pointsPerSecond: CGFloat
     let selected: Bool
+    let thumbnails: [VideoTimelineThumbnail]
+    let waveform: VideoWaveform?
+    let sourceAspect: Double
+
+    nonisolated static func == (a: Self, b: Self) -> Bool {
+        a.segment == b.segment && a.index == b.index && a.pointsPerSecond == b.pointsPerSecond && a.selected == b.selected
+            && a.thumbnails.map(\.id) == b.thumbnails.map(\.id) && a.waveform?.peaks.count == b.waveform?.peaks.count && a.sourceAspect == b.sourceAspect
+    }
 
     @State private var hovered = false
     @State private var trimOrigin: (leading: Bool, source: Double)?
@@ -915,7 +761,7 @@ struct VideoTimelineClipView: View {
     var body: some View {
         let width = max(CGFloat(segment.duration) * pointsPerSecond - 2, 8)
         ZStack(alignment: .topLeading) {
-            VideoClipFilmstrip(model: model, segment: segment, width: width, height: M.clipTrackHeight)
+            VideoClipFilmstrip(segment: segment, width: width, height: M.clipTrackHeight, thumbnails: thumbnails, waveform: waveform, sourceAspect: sourceAspect)
                 .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
 
             // Amber identity bar along the bottom, like a film edge.
@@ -1066,16 +912,17 @@ struct VideoTimelineClipView: View {
 
 /// Thumbnails for the clip's source range, plus its waveform.
 struct VideoClipFilmstrip: View {
-    @ObservedObject var model: VideoEditorModel
     let segment: VideoDemoTimelineSegment
     let width: CGFloat
     let height: CGFloat
+    let thumbnails: [VideoTimelineThumbnail]
+    let waveform: VideoWaveform?
+    let sourceAspect: Double
 
     var body: some View {
         Canvas { context, size in
             context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(Color(white: 0.16)))
-            let thumbnails = model.thumbnails
-            let aspect = model.project.sourceHeight > 0 ? model.project.sourceWidth / model.project.sourceHeight : 16 / 9
+            let aspect = sourceAspect
             let tileWidth = max(size.height * CGFloat(aspect), 20)
             if !thumbnails.isEmpty {
                 var x: CGFloat = 0
@@ -1089,7 +936,7 @@ struct VideoClipFilmstrip: View {
                     x += tileWidth
                 }
             }
-            if let waveform = model.waveform {
+            if let waveform {
                 let barWidth: CGFloat = 2
                 let spacing: CGFloat = 1
                 let baseline = size.height - 3

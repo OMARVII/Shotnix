@@ -205,9 +205,25 @@ final class VideoCameraTrack: @unchecked Sendable {
             }
         }
 
+        // Timeline → source with a moving segment index: samples only move
+        // forward, so this stays O(1) per sample on long timelines.
+        var segmentIndex = 0
+        func sourceTime(forTimeline time: Double) -> Double {
+            guard !segments.isEmpty else { return time }
+            if segmentIndex >= segments.count || time < segments[segmentIndex].timelineStart - 0.0001 {
+                segmentIndex = 0
+            }
+            while segmentIndex + 1 < segments.count, time > segments[segmentIndex].timelineEnd + 0.0001 {
+                segmentIndex += 1
+            }
+            let segment = segments[segmentIndex]
+            let local = min(max(time - segment.timelineStart, 0), segment.duration)
+            return segment.clip.sourceStart + local * segment.clip.normalizedSpeed
+        }
+
         func canvasCursor(atTimeline time: Double) -> CGPoint? {
             guard let cursor else { return nil }
-            let sourceTime = VideoDemoProject.sourceTime(forTimelineTime: time, segments: segments)
+            let sourceTime = sourceTime(forTimeline: time)
             guard let raw = cursor(sourceTime) else { return nil }
             let point = crop.map(raw)
             return CGPoint(x: stage.minX + stage.width * point.x, y: stage.minY + stage.height * point.y)
@@ -219,6 +235,19 @@ final class VideoCameraTrack: @unchecked Sendable {
 
         let dt = 1 / sampleRate
         var groupIndex = 0
+        /// The last piece of the current group that has started (only moves
+        /// forward — no rescanning a long chain for every sample).
+        var activeIndex = 0
+
+        /// The pan window between two chained pieces.
+        func panWindow(_ piece: Piece, _ next: Piece) -> (start: Double, end: Double) {
+            // The pan window always covers the whole gap and eats at most
+            // 45% of either neighbouring shot.
+            let gap = max(next.start - piece.end, 0)
+            let desired = min(max(gap + 0.5, 0.8), max(gap, 1.2))
+            let reach = max(min((desired - gap) / 2, (piece.end - piece.start) * 0.45, (next.end - next.start) * 0.45), 0)
+            return (piece.end - reach, next.start + reach)
+        }
 
         // Follow state (reset per group).
         var leash: CGPoint?
@@ -230,6 +259,7 @@ final class VideoCameraTrack: @unchecked Sendable {
             let t = min(Double(index) * dt, timelineDuration)
             while groupIndex < groups.count && t > (groups[groupIndex].last?.end ?? 0) {
                 groupIndex += 1
+                activeIndex = 0
                 leash = nil
                 springPosition = nil
                 springVelocity = .zero
@@ -250,31 +280,27 @@ final class VideoCameraTrack: @unchecked Sendable {
             let rampIn = min(transitionDuration(scale: first.scale, speed: speed), (first.end - first.start) * 0.5)
             let rampOut = min(transitionDuration(scale: last.scale, speed: speed), (last.end - last.start) * 0.5)
 
-            // Which piece (or chain gap) are we in?
-            var held = first.scale
+            // Which piece (or chain gap) are we in? Pan windows never
+            // overlap, so only the ones touching the active piece matter.
+            while activeIndex + 1 < group.count, group[activeIndex + 1].start <= t {
+                activeIndex += 1
+            }
+            let activePiece = group[activeIndex]
+            var held = activePiece.scale
             var aimTarget: CGPoint
-            var activePiece = first
             var chainBlend: (from: Piece, to: Piece, progress: Double)?
-            for pieceIndex in group.indices {
-                let piece = group[pieceIndex]
-                if t < piece.start { break }
-                activePiece = piece
-                held = piece.scale
-                if pieceIndex + 1 < group.count {
-                    let next = group[pieceIndex + 1]
-                    // The pan window always covers the whole gap and eats
-                    // at most 45% of either neighbouring shot.
-                    let gap = max(next.start - piece.end, 0)
-                    let desired = min(max(gap + 0.5, 0.8), max(gap, 1.2))
-                    let reach = max(min((desired - gap) / 2, (piece.end - piece.start) * 0.45, (next.end - next.start) * 0.45), 0)
-                    let windowStart = piece.end - reach
-                    let windowEnd = next.start + reach
-                    let window = windowEnd - windowStart
-                    if t >= windowStart && t <= windowEnd {
-                        chainBlend = (piece, next, VideoCameraEasing.glide((t - windowStart) / max(window, 0.0001)))
-                    } else if t > windowEnd {
-                        continue
-                    }
+            if activeIndex + 1 < group.count {
+                let next = group[activeIndex + 1]
+                let window = panWindow(activePiece, next)
+                if t >= window.start && t <= window.end {
+                    chainBlend = (activePiece, next, VideoCameraEasing.glide((t - window.start) / max(window.end - window.start, 0.0001)))
+                }
+            }
+            if chainBlend == nil, activeIndex > 0 {
+                let previous = group[activeIndex - 1]
+                let window = panWindow(previous, activePiece)
+                if t >= window.start && t <= window.end {
+                    chainBlend = (previous, activePiece, VideoCameraEasing.glide((t - window.start) / max(window.end - window.start, 0.0001)))
                 }
             }
 
