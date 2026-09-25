@@ -24,30 +24,37 @@ enum VideoFileIdentity {
         url.standardizedFileURL.resolvingSymlinksInPath()
     }
 
-    /// The recording ID stamped on the file, if any.
+    /// The recording ID for this file: the one stamped on it — or, if the
+    /// stamp was stripped (some tools drop extended attributes), the ID last
+    /// seen at this path for a file of this size, stamped back on.
     static func id(of url: URL) -> String? {
-        canonicalURL(url).withUnsafeFileSystemRepresentation { path -> String? in
-            guard let path else { return nil }
-            let size = getxattr(path, attribute, nil, 0, 0, XATTR_NOFOLLOW)
-            guard size > 0, size < 128 else { return nil }
-            var buffer = [UInt8](repeating: 0, count: size)
-            guard getxattr(path, attribute, &buffer, size, 0, XATTR_NOFOLLOW) == size else { return nil }
-            let value = String(decoding: buffer, as: UTF8.self)
-            return UUID(uuidString: value) != nil ? value : nil
-        }
+        let canonical = canonicalURL(url)
+        if let stamped = readStamp(canonical) { return stamped }
+        guard let pointer = readPointer(for: canonical),
+              let size = fingerprint(canonical)?.size, pointer.size == size else { return nil }
+        _ = writeStamp(pointer.id, on: canonical)
+        return pointer.id
     }
 
     /// The file's recording ID, stamping a new one if it has none. Nil when
-    /// the file can't take one (read-only volume).
+    /// the file can't keep one (a read-only volume): the path is used then.
     @discardableResult
     static func ensureID(of url: URL) -> String? {
-        if let existing = id(of: url) { return existing }
-        let value = UUID().uuidString
-        let stamped = canonicalURL(url).withUnsafeFileSystemRepresentation { path -> Bool in
-            guard let path else { return false }
-            return value.withCString { setxattr(path, attribute, $0, strlen($0), 0, XATTR_NOFOLLOW) == 0 }
+        let canonical = canonicalURL(url)
+        if let existing = id(of: canonical) {
+            writePointer(existing, for: canonical)
+            return existing
         }
-        return stamped ? value : nil
+        return restamp(canonical)
+    }
+
+    /// A new ID (a copy carried its original's).
+    static func restamp(_ url: URL) -> String? {
+        let canonical = canonicalURL(url)
+        let value = UUID().uuidString
+        guard writeStamp(value, on: canonical) else { return nil }
+        writePointer(value, for: canonical)
+        return value
     }
 
     static func idKey(_ id: String) -> String { "id-\(id)" }
@@ -74,67 +81,140 @@ enum VideoFileIdentity {
               let size = values.fileSize, let modified = values.contentModificationDate else { return nil }
         return (Int64(size), modified)
     }
+
+    // MARK: The stamp
+
+    private static func readStamp(_ canonical: URL) -> String? {
+        canonical.withUnsafeFileSystemRepresentation { path -> String? in
+            guard let path else { return nil }
+            let size = getxattr(path, attribute, nil, 0, 0, XATTR_NOFOLLOW)
+            guard size > 0, size < 128 else { return nil }
+            var buffer = [UInt8](repeating: 0, count: size)
+            guard getxattr(path, attribute, &buffer, size, 0, XATTR_NOFOLLOW) == size else { return nil }
+            let value = String(decoding: buffer, as: UTF8.self)
+            return UUID(uuidString: value) != nil ? value : nil
+        }
+    }
+
+    /// Writes the stamp and reads it back (some file systems accept the
+    /// write but don't keep it).
+    private static func writeStamp(_ value: String, on canonical: URL) -> Bool {
+        let written = canonical.withUnsafeFileSystemRepresentation { path -> Bool in
+            guard let path else { return false }
+            return value.withCString { setxattr(path, attribute, $0, strlen($0), 0, XATTR_NOFOLLOW) == 0 }
+        }
+        return written && readStamp(canonical) == value
+    }
+
+    // MARK: Pointers (path → ID), for when a stamp goes missing
+
+    private struct Pointer: Codable, Equatable {
+        let id: String
+        let size: Int64?
+    }
+
+    private static func pointerURL(for canonical: URL) -> URL {
+        VideoStorageLocation.root
+            .appendingPathComponent("Shotnix", isDirectory: true)
+            .appendingPathComponent("VideoIDs", isDirectory: true)
+            .appendingPathComponent(pathKey(canonical))
+            .appendingPathExtension("json")
+    }
+
+    private static func readPointer(for canonical: URL) -> Pointer? {
+        guard let data = try? Data(contentsOf: pointerURL(for: canonical)) else { return nil }
+        return try? JSONDecoder().decode(Pointer.self, from: data)
+    }
+
+    private static func writePointer(_ id: String, for canonical: URL) {
+        let pointer = Pointer(id: id, size: fingerprint(canonical)?.size)
+        guard readPointer(for: canonical) != pointer, let data = try? JSONEncoder().encode(pointer) else { return }
+        let url = pointerURL(for: canonical)
+        try? FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try? data.write(to: url, options: .atomic)
+    }
 }
 
 struct VideoDemoDraftRecord: Codable, Equatable {
     var sourcePath: String
     var savedAt: Date
     var project: VideoDemoProject
-    /// The video the draft was made for (size and date), so a new file with
-    /// the same name doesn't inherit someone else's edits.
+    /// The video the draft was made for, so a different file saved under
+    /// the same name doesn't inherit its edits.
     var sourceSize: Int64? = nil
     var sourceModified: Date? = nil
 }
 
 enum VideoDemoDraftStore {
+    /// Just who a draft belongs to (without decoding the whole project).
+    private struct Owner: Decodable {
+        let sourcePath: String
+        var resolved: String { URL(fileURLWithPath: sourcePath).resolvingSymlinksInPath().path }
+    }
+
+    private static func owner(of url: URL) -> Owner? {
+        guard let data = try? Data(contentsOf: url) else { return nil }
+        return try? JSONDecoder().decode(Owner.self, from: data)
+    }
+
     static func load(for videoURL: URL, baseDirectory: URL? = nil) -> VideoDemoDraftRecord? {
         let folder = directory(baseDirectory: baseDirectory)
         let canonical = VideoFileIdentity.canonicalURL(videoURL)
-        let fingerprint = VideoFileIdentity.fingerprint(canonical)
-        var keys: [String] = []
-        if let id = VideoFileIdentity.id(of: canonical) { keys.append(VideoFileIdentity.idKey(id)) }
-        keys += [VideoFileIdentity.pathKey(canonical), VideoFileIdentity.legacyKey(videoURL)]
-        for key in keys {
-            let url = folder.appendingPathComponent(key).appendingPathExtension("json")
-            guard FileManager.default.fileExists(atPath: url.path) else { continue }
+        let size = VideoFileIdentity.fingerprint(canonical)?.size
+        func url(_ key: String) -> URL { folder.appendingPathComponent(key).appendingPathExtension("json") }
+        let idURL = VideoFileIdentity.id(of: canonical).map { url(VideoFileIdentity.idKey($0)) }
+
+        /// A readable draft made for a file of this size (else set aside —
+        /// never silently dropped or overwritten).
+        func record(at url: URL) -> VideoDemoDraftRecord? {
+            guard FileManager.default.fileExists(atPath: url.path) else { return nil }
             guard let data = try? Data(contentsOf: url),
                   let record = try? JSONDecoder().decode(VideoDemoDraftRecord.self, from: data) else {
-                // Unreadable (a newer version wrote it?): set it aside
-                // rather than overwrite it.
-                let aside = url.deletingPathExtension().appendingPathExtension("unreadable-\(Int(Date().timeIntervalSince1970)).json")
-                try? FileManager.default.moveItem(at: url, to: aside)
-                continue
+                setAside(url, reason: "unreadable")
+                return nil
             }
-            // A different video under the same name: not its draft.
-            if let size = record.sourceSize, let modified = record.sourceModified, let fingerprint,
-               size != fingerprint.size || abs(modified.timeIntervalSince(fingerprint.modified)) > 1 {
-                continue
-            }
-            // A copy of the file (the original is still there): start fresh.
-            let owner = URL(fileURLWithPath: record.sourcePath).resolvingSymlinksInPath().path
-            if owner != canonical.path, FileManager.default.fileExists(atPath: owner) {
-                continue
+            if let recorded = record.sourceSize, let size, recorded != size {
+                setAside(url, reason: "other-file")
+                return nil
             }
             return record
         }
-        return nil
+
+        // 1. This file's own draft, by ID or by path.
+        if let idURL, FileManager.default.fileExists(atPath: idURL.path) {
+            if let owner = owner(of: idURL) {
+                if owner.resolved == canonical.path, let record = record(at: idURL) { return record }
+            } else {
+                // Unreadable (a newer version wrote it?): kept, not overwritten.
+                setAside(idURL, reason: "unreadable")
+            }
+        }
+        if let record = record(at: url(VideoFileIdentity.pathKey(canonical))) {
+            return record
+        }
+        // 2. Its ID's draft from where it used to be (moved or renamed) —
+        // not while that file is still there (this one is a copy).
+        if let idURL, let owner = owner(of: idURL), !FileManager.default.fileExists(atPath: owner.resolved), let record = record(at: idURL) {
+            return record
+        }
+        // 3. Earlier versions' names.
+        return record(at: url(VideoFileIdentity.legacyKey(videoURL)))
     }
 
     @discardableResult
     static func save(_ project: VideoDemoProject, for videoURL: URL, baseDirectory: URL? = nil) -> Bool {
         let folder = directory(baseDirectory: baseDirectory)
         let canonical = VideoFileIdentity.canonicalURL(videoURL)
-        var key = VideoFileIdentity.ensureID(of: canonical).map(VideoFileIdentity.idKey) ?? VideoFileIdentity.pathKey(canonical)
-        // A copy carries the original's ID: it keeps its own draft by path
-        // instead of overwriting the original's.
-        let idURL = folder.appendingPathComponent(key).appendingPathExtension("json")
-        if key.hasPrefix("id-"), let data = try? Data(contentsOf: idURL),
-           let record = try? JSONDecoder().decode(VideoDemoDraftRecord.self, from: data) {
-            let owner = URL(fileURLWithPath: record.sourcePath).resolvingSymlinksInPath().path
-            if owner != canonical.path, FileManager.default.fileExists(atPath: owner) {
-                key = VideoFileIdentity.pathKey(canonical)
-            }
+        var id = VideoFileIdentity.ensureID(of: canonical)
+        // A copy carries its original's ID: give it its own (bringing the
+        // recording's data along) rather than share or take over a draft.
+        if let current = id,
+           let owner = owner(of: folder.appendingPathComponent(VideoFileIdentity.idKey(current)).appendingPathExtension("json")),
+           owner.resolved != canonical.path, FileManager.default.fileExists(atPath: owner.resolved) {
+            id = VideoFileIdentity.restamp(canonical)
+            if let fresh = id { VideoDemoSidecarStore.copyData(fromID: current, toID: fresh) }
         }
+        let key = id.map(VideoFileIdentity.idKey) ?? VideoFileIdentity.pathKey(canonical)
         let url = folder.appendingPathComponent(key).appendingPathExtension("json")
         do {
             try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
@@ -149,9 +229,11 @@ enum VideoDemoDraftStore {
                 sourceModified: fingerprint?.modified
             )
             try encoder.encode(record).write(to: url, options: .atomic)
-            // Drafts under older names are superseded.
+            // This file's drafts under older names are superseded.
             for old in [VideoFileIdentity.pathKey(canonical), VideoFileIdentity.legacyKey(videoURL)] where old != key {
-                try? FileManager.default.removeItem(at: folder.appendingPathComponent(old).appendingPathExtension("json"))
+                let oldURL = folder.appendingPathComponent(old).appendingPathExtension("json")
+                if let owner = owner(of: oldURL), owner.resolved != canonical.path { continue }
+                try? FileManager.default.removeItem(at: oldURL)
             }
             return true
         } catch {
@@ -176,6 +258,11 @@ enum VideoDemoDraftStore {
             }
         }
         return ok
+    }
+
+    private static func setAside(_ url: URL, reason: String) {
+        let aside = url.deletingPathExtension().appendingPathExtension("\(reason)-\(Int(Date().timeIntervalSince1970)).json")
+        try? FileManager.default.moveItem(at: url, to: aside)
     }
 
     private static func directory(baseDirectory: URL?) -> URL {

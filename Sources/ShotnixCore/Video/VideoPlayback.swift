@@ -130,8 +130,11 @@ final class VideoPlaybackController: NSObject {
     /// Rebuilds the player item when the cut list or sound sources changed
     /// (keeping the playhead on the same moment of the recording); volume,
     /// mute, and fade changes just swap the mix on the playing item.
-    func apply(segments: [VideoDemoTimelineSegment], audio: VideoAudioSettings, keepSourceTime: Double?) {
-        guard let source else { return }
+    /// Returns the timeline time it moved the player to (nil: the edit
+    /// didn't need a new player item, so nothing moved).
+    @discardableResult
+    func apply(segments: [VideoDemoTimelineSegment], audio: VideoAudioSettings, keepSourceTime: Double?) -> Double? {
+        guard let source else { return nil }
         let next = EditStructure(
             timings: segments.filter { $0.clip.sourceDuration > 0.001 }.map {
                 EditStructure.Timing(start: $0.clip.sourceStart, end: $0.clip.sourceEnd, speed: $0.clip.normalizedSpeed)
@@ -145,12 +148,12 @@ final class VideoPlaybackController: NSObject {
                 mixKey = nextMix
                 item.audioMix = VideoCompositionBuilder.audioMix(for: edit, segments: segments, audio: audio)
             }
-            return
+            return nil
         }
         structure = next
         mixKey = nextMix
 
-        guard let built = try? VideoCompositionBuilder.build(source: source, segments: segments, audio: audio, camera: camera, audioSources: audioSources) else { return }
+        guard let built = try? VideoCompositionBuilder.build(source: source, segments: segments, audio: audio, camera: camera, audioSources: audioSources) else { return nil }
         edit = built
         timelineDuration = built.duration.seconds
         itemRebuilds += 1
@@ -193,6 +196,7 @@ final class VideoPlaybackController: NSObject {
         } ?? 0
         seek(to: target, fast: false)
         if wasPlaying { player.play() }
+        return target
     }
 
     var currentTime: Double {

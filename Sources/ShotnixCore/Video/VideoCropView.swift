@@ -31,6 +31,8 @@ extension VideoEditorModel {
         pause()
         selection = .none
         cropBeforeEditing = project.crop
+        projectBeforeCrop = project
+        undoDepthBeforeCrop = undoDepth
         isCropping = true
         previewRenderer.invalidate()
     }
@@ -38,19 +40,28 @@ extension VideoEditorModel {
     /// Esc: back to the crop you had before.
     func cancelCrop() {
         if let before = cropBeforeEditing, before != project.crop {
-            setStyle { $0.crop = before }
+            var withOldCrop = project
+            withOldCrop.crop = before
+            if let snapshot = projectBeforeCrop, withOldCrop == snapshot {
+                // Only the crop changed: as if it never did.
+                discardEdits(restoring: snapshot, undoDepth: undoDepthBeforeCrop)
+            } else {
+                setStyle { $0.crop = before }
+            }
         }
         cropBeforeEditing = nil
+        projectBeforeCrop = nil
         isCropping = false
         endGesture()
-        previewRenderer.invalidate()
+        refreshPlan()
     }
 
     func endCrop() {
         cropBeforeEditing = nil
+        projectBeforeCrop = nil
         isCropping = false
         endGesture()
-        previewRenderer.invalidate()
+        refreshPlan()
         if !project.crop.isFull {
             showNotice("Cropped — cursor, zooms, and clicks follow", symbol: "crop")
         }

@@ -139,6 +139,25 @@ final class VideoEditorModelTests: XCTestCase {
         XCTAssertEqual(model.timelineDuration, 2.5, accuracy: 0.05)
     }
 
+    /// Paused, an edit before the playhead moves that moment along the
+    /// timeline: the playhead goes with it (what S, T, or Z act on).
+    func testPlayheadStaysOnTheSameFrameAfterAnEditBeforeIt() async throws {
+        let model = try await makeModel(seconds: 6)
+        model.seek(to: 2)
+        model.splitAtPlayhead()
+        guard case .clip(let second) = model.selection, let first = model.segments.first?.id else { return XCTFail("split") }
+        XCTAssertNotEqual(first, second)
+        model.seek(to: 4)
+        await spin(0.3)
+        model.setClipSpeed(first, 2)
+        model.endGesture()
+        // Recording 4 s: the first 2 s now play in 1 s → timeline 3 s.
+        XCTAssertEqual(model.clock.time, 3, accuracy: 0.05)
+        XCTAssertEqual(model.sourceTime(forTimeline: model.clock.time), 4, accuracy: 0.05)
+        model.undo()
+        XCTAssertEqual(model.clock.time, 4, accuracy: 0.05, "and back on undo")
+    }
+
     func testCutGapRestoreBringsMaterialBack() async throws {
         let model = try await makeModel()
         model.deleteRange(VideoDemoTimelineRange(start: 1, end: 2))

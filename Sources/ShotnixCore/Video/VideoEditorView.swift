@@ -237,7 +237,7 @@ struct VideoEditorToolbar: View {
                 get: { model.project.reframe },
                 set: { on in model.setStyle { $0.reframe = on } }
             ))
-            .disabled(!model.project.canReframe || model.project.cursorSamples.isEmpty)
+            .disabled(!model.project.canReframe || (model.project.cursorSamples.isEmpty && !model.project.reframe))
         } label: {
             HStack(spacing: 6) {
                 Image(systemName: model.project.aspectPreset.symbol)
@@ -309,14 +309,19 @@ struct VideoKeyboardBridge: NSViewRepresentable {
             clickMonitor = NSEvent.addLocalMonitorForEvents(matching: .leftMouseDown) { [weak self] incoming in
                 nonisolated(unsafe) let event = incoming
                 MainActor.assumeIsolated {
-                    guard let window = self?.view?.window, event.window === window,
+                    guard let self, let window = self.view?.window, event.window === window,
                           let responder = window.firstResponder as? NSView,
-                          responder is NSText || responder is NSTextField else { return }
+                          responder is NSText || responder is NSTextField,
+                          // The command palette keeps its search field.
+                          !self.model.isCommandPalettePresented else { return }
                     // A field's editor stands in for the field itself.
                     let editing: NSView = (responder as? NSText).flatMap { $0.isFieldEditor ? ($0.delegate as? NSView) : nil } ?? responder
                     let frame = window.contentView?.superview ?? window.contentView
                     let hit = frame?.hitTest(frame?.convert(event.locationInWindow, from: nil) ?? .zero)
                     if let hit, hit === editing || hit.isDescendant(of: editing) { return }
+                    // Clicks in the box around the field (its padding) count too.
+                    let box = editing.convert(editing.bounds, to: nil).insetBy(dx: -12, dy: -12)
+                    if box.contains(event.locationInWindow) { return }
                     window.makeFirstResponder(nil)
                 }
                 return incoming
@@ -359,8 +364,10 @@ extension VideoEditorModel {
         let code = event.keyCode
 
         // Holding a key down doesn't repeat edits (a held ⌫ would delete
-        // clip after clip, a held T stack up texts). Arrows and undo repeat.
-        if event.isARepeat, modifiers.isEmpty || modifiers == [.shift], !(123...126).contains(code) {
+        // clip after clip, a held T stack up texts). Arrows, J/L, and the
+        // timeline scale keys still repeat.
+        if event.isARepeat, modifiers.isEmpty || modifiers == [.shift],
+           [51, 117].contains(code) || ["t", "h", "a", "b", "z", "s", "c", "i", "o", "m", " ", "1", "2", "3", "4", "5", "?"].contains(key) {
             return true
         }
 
@@ -649,13 +656,13 @@ extension VideoCommandPalette {
 
     fileprivate var soundCommands: [Command] {
         var commands: [Command] = []
-        if model.hasAudio {
+        if model.canEnhanceVoice || model.project.audio.enhanceVoice {
             let on = model.project.audio.enhanceVoice
             commands.append(Command(id: "enhance", title: on ? "Stop Enhancing Voice" : "Enhance Voice", symbol: "waveform.badge.plus", shortcut: "") {
                 model.setStyle { $0.audio.enhanceVoice = !on }
             })
         }
-        if model.project.canReframe, !model.project.cursorSamples.isEmpty {
+        if model.project.canReframe, !model.project.cursorSamples.isEmpty || model.project.reframe {
             let on = model.project.reframe
             commands.append(Command(id: "reframe", title: on ? "Letterbox Instead of Following the Cursor" : "Fill the Frame, Follow the Cursor", symbol: "rectangle.portrait.arrowtriangle.2.outward", shortcut: "") {
                 model.setStyle { $0.reframe = !on }

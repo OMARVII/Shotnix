@@ -117,6 +117,7 @@ extension VideoEditorModel {
 
     /// A new transcript replaces every line — ask first when there are any.
     func transcribeAgain() {
+        guard captionTask == nil else { return }
         guard !project.captions.isEmpty else {
             generateCaptions()
             return
@@ -152,7 +153,9 @@ extension VideoEditorModel {
     /// timings; otherwise spread the new words across the line.
     static func retimedWords(for text: String, previous: [VideoCaptionWord], start: Double, end: Double) -> [VideoCaptionWord] {
         let parts = text.split(whereSeparator: { $0.isWhitespace }).map(String.init)
-        guard !parts.isEmpty else { return [] }
+        // A typed line has no voice under it: it stays without word timings
+        // (it never becomes transcript you could cut the video with).
+        guard !parts.isEmpty, !previous.isEmpty else { return [] }
         if parts.count == previous.count {
             return zip(parts, previous).map { VideoCaptionWord(text: $0, start: $1.start, end: $1.end) }
         }
@@ -184,7 +187,7 @@ extension VideoEditorModel {
         let end = max(sourceTime(forTimeline: timelineEnd), start + 0.2)
         // Where the line starts on screen now, in the recording: if its first
         // words were cut, that's after the cut, not the line's own start.
-        let shownStart = plan.captions.first { $0.id == id }.map { sourceTime(forTimeline: $0.start) }
+        let shownStart = plan.captions.first { $0.id == id }.map { placementSourceTime(forTimeline: $0.start) }
         mutate(coalesce: "caption-window-\(id)") { project in
             guard let index = project.captions.firstIndex(where: { $0.id == id }) else { return }
             var line = project.captions[index]
@@ -438,7 +441,9 @@ extension VideoEditorModel {
         guard let source = playback.source else { return }
         let sources = await VideoAudioSource.resolved(from: source, kinds: audioKinds, enhanceVoice: project.audio.enhanceVoice)
         playback.setAudioSources(sources)
-        playback.apply(segments: segments, audio: project.audio, keepSourceTime: sourceTime(forTimeline: clock.time))
+        if let moved = playback.apply(segments: segments, audio: project.audio, keepSourceTime: sourceTime(forTimeline: clock.time)), !isPlaying {
+            clock.time = moved
+        }
     }
 }
 
@@ -498,7 +503,9 @@ extension VideoEditorModel {
     func addCameraIntroOutro(length preferred: Double = 3) {
         guard hasWebcamFootage else { return }
         // Short takes get a shorter intro and outro, with some screen between.
-        let length = min(preferred, (timelineDuration - 1) / 2)
+        let firstSource = segments.first?.clip.sourceStart ?? 0
+        let lastSource = segments.last?.clip.sourceEnd ?? sourceDuration
+        let length = min(preferred, (timelineDuration - 1) / 2, (lastSource - firstSource - 1) / 2)
         guard length >= VideoCameraLayoutRegion.minimumDuration else {
             showNotice("Too short for an intro and outro", symbol: "exclamationmark.triangle")
             return

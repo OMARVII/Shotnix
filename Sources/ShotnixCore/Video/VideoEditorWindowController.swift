@@ -28,8 +28,15 @@ final class VideoDemoEditorWindowController: NSWindowController, NSWindowDelegat
     static func deleteActiveSelection() { frontController()?.model.deleteSelection() }
     static func trimActiveInToPlayhead() { frontController()?.model.trimSelectedClipToPlayhead(leading: true) }
     static func trimActiveOutToPlayhead() { frontController()?.model.trimSelectedClipToPlayhead(leading: false) }
-    static func undoActiveTimelineEdit() { frontController()?.model.undo() }
-    static func redoActiveTimelineEdit() { frontController()?.model.redo() }
+    static func undoActiveTimelineEdit() {
+        guard let model = frontController()?.model, !model.hasOverlayOpen else { return }
+        model.undo()
+    }
+
+    static func redoActiveTimelineEdit() {
+        guard let model = frontController()?.model, !model.hasOverlayOpen else { return }
+        model.redo()
+    }
 
     static func muteActiveClip() {
         guard let model = frontController()?.model, let id = model.selectedClipID,

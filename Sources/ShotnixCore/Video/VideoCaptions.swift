@@ -433,6 +433,9 @@ final class LegacyRecognition: NSObject, SFSpeechRecognitionTaskDelegate, @unche
     private var continuation: CheckedContinuation<Pieces, Error>?
     private var task: SFSpeechRecognitionTask?
     private var cancelled = false
+    /// The recognition task doesn't retain its delegate: stay alive until
+    /// it's over.
+    private var keepAlive: LegacyRecognition?
 
     func start(recognizer: SFSpeechRecognizer, request: SFSpeechRecognitionRequest, continuation: CheckedContinuation<Pieces, Error>) {
         lock.lock()
@@ -442,11 +445,15 @@ final class LegacyRecognition: NSObject, SFSpeechRecognitionTaskDelegate, @unche
             return
         }
         self.continuation = continuation
+        keepAlive = self
         lock.unlock()
         let task = recognizer.recognitionTask(with: request, delegate: self)
         lock.lock()
         self.task = task
+        // Cancelled while the task was being created.
+        let cancelNow = cancelled
         lock.unlock()
+        if cancelNow { task.cancel() }
     }
 
     func cancel() {
@@ -465,27 +472,37 @@ final class LegacyRecognition: NSObject, SFSpeechRecognitionTaskDelegate, @unche
         pieces = Self.merge(pieces, new)
     }
 
-    /// A finished utterance continues the transcript; a result that covers
-    /// everything so far replaces it.
+    /// A finished stretch continues the transcript. One that starts where
+    /// the collected text starts covers everything so far and replaces it;
+    /// one that overlaps the end replaces just that overlap.
     static func merge(_ pieces: Pieces, _ new: Pieces) -> Pieces {
         guard let first = new.first, let last = new.last else { return pieces }
-        guard let known = pieces.last else { return new }
-        if first.start < known.end - 0.05 {
-            return last.end >= known.end ? new : pieces
+        guard let known = pieces.first, let latest = pieces.last else { return new }
+        if first.start <= known.start + 0.05 {
+            return last.end >= latest.end ? new : pieces
         }
-        return pieces + new
+        if first.start >= latest.end - 0.05 {
+            return pieces + new
+        }
+        return pieces.filter { $0.end <= first.start + 0.05 } + new
+    }
+
+    func speechRecognitionTaskWasCancelled(_ task: SFSpeechRecognitionTask) {
+        finish(.failure(CancellationError()))
     }
 
     func speechRecognitionTask(_ task: SFSpeechRecognitionTask, didFinishSuccessfully successfully: Bool) {
         lock.lock()
         let collected = pieces
         lock.unlock()
-        if successfully || !collected.isEmpty {
+        let error = task.error as NSError?
+        if successfully {
             finish(.success(collected))
-        } else if let error = task.error as NSError?, error.code == 1110 {
-            // "No speech detected".
-            finish(.failure(VideoCaptionTranscriber.Failure.nothingHeard))
+        } else if error?.code == 1110 {
+            // "No speech detected" after the last words: what was heard stands.
+            finish(collected.isEmpty ? .failure(VideoCaptionTranscriber.Failure.nothingHeard) : .success(collected))
         } else {
+            // Failing partway would leave a truncated transcript: an error.
             finish(.failure(task.error ?? VideoCaptionTranscriber.Failure.unavailable))
         }
     }
@@ -494,6 +511,7 @@ final class LegacyRecognition: NSObject, SFSpeechRecognitionTaskDelegate, @unche
         lock.lock()
         let continuation = self.continuation
         self.continuation = nil
+        keepAlive = nil
         lock.unlock()
         continuation?.resume(with: result)
     }

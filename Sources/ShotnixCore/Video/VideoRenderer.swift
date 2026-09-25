@@ -32,6 +32,10 @@ final class VideoCursorArtwork: @unchecked Sendable {
     let events: [VideoCursorShapeEvent]
     let arrow: Shape
     private let eventTimes: [Double]
+    /// The recording's own plain arrow (it matches the Mac's style) — found
+    /// by its shape: tip at the top left, taller than wide. Not simply the
+    /// first pointer: a recording started over text begins with the I-beam.
+    private let capturedArrow: Shape?
 
     init(metadata: VideoDemoRecordingMetadata?) {
         var shapes: [String: Shape] = [:]
@@ -60,6 +64,14 @@ final class VideoCursorArtwork: @unchecked Sendable {
         events = stable
         eventTimes = stable.map(\.time)
         arrow = Self.vectorArrow
+        let uses = Dictionary(grouping: stable, by: \.shapeID).mapValues(\.count)
+        capturedArrow = shapes.values
+            .filter { shape in
+                let x = shape.hotSpot.x / max(shape.size.width, 1)
+                let y = shape.hotSpot.y / max(shape.size.height, 1)
+                return x < 0.35 && y < 0.3 && shape.size.height > shape.size.width * 1.2
+            }
+            .max { (uses[$0.id] ?? 0) < (uses[$1.id] ?? 0) }
     }
 
     static let empty = VideoCursorArtwork(metadata: nil)
@@ -83,20 +95,6 @@ final class VideoCursorArtwork: @unchecked Sendable {
             }
         }
         return shapes[events[found].shapeID] ?? arrow
-    }
-
-    /// The recording's own plain arrow (it matches the Mac's style) — found
-    /// by its shape: tip at the top left, taller than wide. Not simply the
-    /// first pointer: a recording started over text begins with the I-beam.
-    private var capturedArrow: Shape? {
-        let uses = Dictionary(grouping: events, by: \.shapeID).mapValues(\.count)
-        return shapes.values
-            .filter { shape in
-                let x = shape.hotSpot.x / max(shape.size.width, 1)
-                let y = shape.hotSpot.y / max(shape.size.height, 1)
-                return x < 0.35 && y < 0.3 && shape.size.height > shape.size.width * 1.2
-            }
-            .max { (uses[$0.id] ?? 0) < (uses[$1.id] ?? 0) }
     }
 
     private static func mipChain(_ image: CIImage) -> [CIImage] {

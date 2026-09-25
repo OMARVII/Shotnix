@@ -151,6 +151,29 @@ extension VideoCaptionTests {
         XCTAssertEqual(LegacyRecognition.merge(first, everything).map(\.text), ["Open", "settings.", "Then", "save."])
         // A stale partial repeat changes nothing.
         XCTAssertEqual(LegacyRecognition.merge(everything, first).count, 4)
+        // One that re-covers the end replaces just the overlap.
+        let revised: Pieces = [("save,", 3.7, 4.1), ("then", 5, 5.2), ("close.", 5.3, 5.8)]
+        XCTAssertEqual(LegacyRecognition.merge(everything, revised).map(\.text), ["Open", "settings.", "Then", "save,", "then", "close."])
+    }
+
+    @MainActor
+    func testTypedCaptionLinesStayTyped() async throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent("shotnix-typed-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let url = directory.appendingPathComponent("rec.mp4")
+        try await VideoTestSupport.writeFakeRecording(to: url, size: CGSize(width: 640, height: 400), seconds: 4, fps: 30, audioSeconds: 4)
+        VideoDemoDraftStore.delete(for: url)
+        let model = VideoEditorModel(videoURL: url)
+        await model.load()
+        model.seek(to: 1)
+        model.addCaptionAtPlayhead()
+        let id = try XCTUnwrap(model.selectedCaptionID)
+        model.updateCaption(id, text: "Welcome to the demo")
+        XCTAssertTrue(model.project.captions.first?.words.isEmpty ?? false, "no made-up word timings")
+        XCTAssertFalse(model.hasTranscript, "a typed line isn't a transcript")
+        XCTAssertTrue(model.transcriptWords.isEmpty, "nothing to cut the video with")
+        VideoDemoDraftStore.delete(for: url)
     }
 
     func testChineseAndJapaneseCaptionsHaveNoSpaces() {

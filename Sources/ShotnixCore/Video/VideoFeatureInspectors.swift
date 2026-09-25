@@ -298,7 +298,9 @@ struct VideoCaptionsInspector: View {
                     .help("Subtitles file for YouTube and other players — follows your cuts")
                     Menu {
                         Button(model.hasTranscript ? "Transcribe Again…" : "Transcribe…") { model.transcribeAgain() }
+                            .disabled(model.captionTask != nil)
                         Menu("Language") { languageItems }
+                            .disabled(model.captionTask != nil)
                         Divider()
                         Button("Remove Transcript & Captions", role: .destructive) { model.clearCaptions() }
                     } label: {
@@ -393,7 +395,8 @@ struct VideoCaptionsInspector: View {
                 }
                 Button {
                     model.captionJob = nil
-                    model.generateCaptions()
+                    // Typed lines get replaced: that asks first.
+                    model.transcribeAgain()
                 } label: {
                     Label(model.captionJob?.error != nil ? "Try Again" : "Transcribe", systemImage: "waveform.badge.magnifyingglass")
                         .frame(maxWidth: .infinity)

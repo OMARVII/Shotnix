@@ -76,6 +76,32 @@ final class VideoStoreTests: XCTestCase {
         XCTAssertEqual(VideoDemoDraftStore.load(for: original)?.project.padding ?? 0, 0.2, accuracy: 0.0001, "the original's draft is untouched")
     }
 
+    func testACopyKeepsItsOwnEditsWhenTheOriginalGoes() throws {
+        let original = try makeVideo("Clip.mp4")
+        XCTAssertTrue(VideoDemoSidecarStore.save(metadata(for: original), for: original))
+        XCTAssertTrue(VideoDemoDraftStore.save(project(for: original, padding: 0.2), for: original))
+        let copy = directory.appendingPathComponent("Clip copy.mp4")
+        try FileManager.default.copyItem(at: original, to: copy)
+        XCTAssertTrue(VideoDemoDraftStore.save(project(for: copy, padding: 0.05), for: copy))
+        XCTAssertNotEqual(VideoFileIdentity.id(of: copy), VideoFileIdentity.id(of: original), "the copy has its own ID now")
+        XCTAssertNotNil(VideoDemoSidecarStore.load(for: copy), "and still its recording's data")
+        // The original goes away (deleted, renamed, or on an ejected drive).
+        let renamed = directory.appendingPathComponent("Renamed original.mp4")
+        try FileManager.default.moveItem(at: original, to: renamed)
+        XCTAssertEqual(VideoDemoDraftStore.load(for: copy)?.project.padding ?? 0, 0.05, accuracy: 0.0001, "the copy keeps its own edits")
+        XCTAssertEqual(VideoDemoDraftStore.load(for: renamed)?.project.padding ?? 0, 0.2, accuracy: 0.0001, "the original keeps its own")
+    }
+
+    func testAStrippedStampIsRestored() throws {
+        let url = try makeVideo("Stamped.mp4")
+        XCTAssertTrue(VideoDemoSidecarStore.save(metadata(for: url), for: url))
+        let id = try XCTUnwrap(VideoFileIdentity.id(of: url))
+        // A tool that drops extended attributes.
+        _ = url.withUnsafeFileSystemRepresentation { removexattr($0!, VideoFileIdentity.attribute, 0) }
+        XCTAssertNotNil(VideoDemoSidecarStore.load(for: url), "found through the path")
+        XCTAssertEqual(VideoFileIdentity.id(of: url), id, "and stamped again")
+    }
+
     func testANewFileWithTheSameNameDoesntInheritEdits() throws {
         let url = try makeVideo("Demo.mp4", bytes: 1024)
         XCTAssertTrue(VideoDemoDraftStore.save(project(for: url, padding: 0.2), for: url))

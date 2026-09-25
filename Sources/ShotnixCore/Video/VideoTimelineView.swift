@@ -333,7 +333,8 @@ struct VideoTimelineSurface: View {
         }
         .onAppear { reader.scrollTo(Self.bottomAnchor, anchor: .bottom) }
         .onChange(of: overflows) { now in
-            if now { reader.scrollTo(Self.bottomAnchor, anchor: .bottom) }
+            // Not mid-drag: the dragged bar would leave the view.
+            if now, !hover.dragging { reader.scrollTo(Self.bottomAnchor, anchor: .bottom) }
         }
         }
         .onAppear(perform: installScrollZoom)

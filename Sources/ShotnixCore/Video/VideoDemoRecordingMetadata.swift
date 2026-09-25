@@ -108,20 +108,34 @@ enum VideoDemoSidecarStore {
         }
         // Older names (by path) and the old file next to the video: move
         // them to the ID so a later rename keeps them.
+        let pathURL = folder.appendingPathComponent(VideoFileIdentity.pathKey(canonical)).appendingPathExtension("json")
         let candidates = [
-            folder.appendingPathComponent(VideoFileIdentity.pathKey(canonical)).appendingPathExtension("json"),
+            pathURL,
             folder.appendingPathComponent(VideoFileIdentity.legacyKey(videoURL)).appendingPathExtension("json"),
             folder.appendingPathComponent(VideoFileIdentity.legacyKey(canonical)).appendingPathExtension("json"),
             legacySidecarURL(for: videoURL),
         ]
         for url in candidates {
             guard let metadata = load(from: url) else { continue }
-            if save(metadata, for: videoURL, baseDirectory: baseDirectory), VideoFileIdentity.id(of: canonical) != nil {
-                try? FileManager.default.removeItem(at: url)
+            if VideoFileIdentity.ensureID(of: canonical) != nil || url != pathURL,
+               save(metadata, for: videoURL, baseDirectory: baseDirectory) {
+                // Written under its new name: the old one goes (a file that
+                // can't take an ID keeps its path name, untouched).
+                let newURL = VideoFileIdentity.id(of: canonical).map { folder.appendingPathComponent(VideoFileIdentity.idKey($0)).appendingPathExtension("json") } ?? pathURL
+                if newURL != url { try? FileManager.default.removeItem(at: url) }
             }
             return metadata
         }
         return nil
+    }
+
+    /// A copy got its own ID: it keeps the recording's data.
+    static func copyData(fromID old: String, toID new: String, baseDirectory: URL? = nil) {
+        let folder = directory(baseDirectory: baseDirectory)
+        let source = folder.appendingPathComponent(VideoFileIdentity.idKey(old)).appendingPathExtension("json")
+        let destination = folder.appendingPathComponent(VideoFileIdentity.idKey(new)).appendingPathExtension("json")
+        guard FileManager.default.fileExists(atPath: source.path), !FileManager.default.fileExists(atPath: destination.path) else { return }
+        try? FileManager.default.copyItem(at: source, to: destination)
     }
 
     @discardableResult

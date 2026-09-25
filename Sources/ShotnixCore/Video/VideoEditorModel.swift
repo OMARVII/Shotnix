@@ -170,6 +170,8 @@ final class VideoEditorModel: ObservableObject {
     /// Crop mode: the preview shows the whole recording with a crop frame.
     @Published var isCropping = false
     var cropBeforeEditing: VideoCropRect?
+    var projectBeforeCrop: VideoDemoProject?
+    var undoDepthBeforeCrop = 0
     /// Bumped to put the cursor in the selected text annotation's field
     /// (double-click the text on the preview).
     @Published var textEditRequest = 0
@@ -216,9 +218,12 @@ final class VideoEditorModel: ObservableObject {
 
     /// Every spoken word (from the captions), in time order.
     var transcriptWords: [VideoTranscriptWord] {
-        if let cache = transcriptCache, cache.captions == project.captions, cache.language == project.transcriptLanguage { return cache.words }
-        let words = VideoTranscript.words(from: project.captions, language: project.transcriptLanguage)
-        transcriptCache = (project.captions, project.transcriptLanguage, words)
+        // Transcripts from before the language was saved: the language
+        // chosen for captions, else the Mac's own.
+        let language = project.transcriptLanguage ?? (captionLanguage.isEmpty ? Locale.current.identifier(.bcp47) : captionLanguage)
+        if let cache = transcriptCache, cache.captions == project.captions, cache.language == language { return cache.words }
+        let words = VideoTranscript.words(from: project.captions, language: language)
+        transcriptCache = (project.captions, language, words)
         return words
     }
     private var shuttleRate: Float = 1
@@ -407,18 +412,43 @@ final class VideoEditorModel: ObservableObject {
                 playback.refreshCurrentFrame()
             }
         }
-        rebuildPlan()
+        // Cropping previews the raw recording: the plan (pointer path,
+        // camera) is rebuilt once the crop is done, not on every drag.
+        if !isCropping { rebuildPlan() }
         validateSelection(keepingRange: true)
         if isReady {
             // Stay on the same moment of the recording — read through the
             // cut list it was on (a speed change or cut before the playhead
             // moves that moment along the timeline).
             let keepSource = VideoDemoProject.sourceTime(forTimelineTime: clock.time, segments: oldSegments.isEmpty ? segments : oldSegments)
-            playback.apply(segments: segments, audio: project.audio, keepSourceTime: keepSource)
+            // The playhead follows that moment to its new place on the
+            // timeline (paused, the player won't report the move).
+            if let moved = playback.apply(segments: segments, audio: project.audio, keepSourceTime: keepSource), !isPlaying {
+                clock.time = moved
+            }
             scheduleAutosave()
         }
         previewRenderer.invalidate()
     }
+
+    /// After cropping: bring the plan up to date in one go.
+    func refreshPlan() {
+        rebuildPlan()
+        previewRenderer.invalidate()
+    }
+
+    /// Steps back to an earlier project as if the edits since `depth` undo
+    /// steps never happened (a cancelled crop): no extra undo step.
+    func discardEdits(restoring snapshot: VideoDemoProject, undoDepth depth: Int) {
+        undoStack = Array(undoStack.prefix(depth))
+        redoStack.removeAll()
+        lastCoalesceKey = nil
+        project = snapshot
+        canUndo = !undoStack.isEmpty
+        canRedo = false
+    }
+
+    var undoDepth: Int { undoStack.count }
 
     private func rebuildPlan() {
         let key = CursorTrackKey(
@@ -1419,6 +1449,10 @@ final class VideoEditorModel: ObservableObject {
         VideoDemoDraftStore.save(draft, for: draft.sourceURL)
     }
 
+    /// Export, the command palette, or the shortcut sheet is up: edits
+    /// behind it (undo) stay put.
+    var hasOverlayOpen: Bool { isExportPresented || isCommandPalettePresented || isShortcutsPresented }
+
     /// Something that shouldn't be dropped silently by closing the window.
     var runningJobDescription: String? {
         if isExporting { return "exporting" }
@@ -1481,7 +1515,15 @@ final class VideoEditorModel: ObservableObject {
                 // The enhanced voice has to exist before it can be exported
                 // (the sheet shows that progress; Cancel stops it).
                 var voiceFailed = false
-                if let voice { voiceFailed = !(await voice.value) }
+                if let voice {
+                    // Cancel stops the waiting, not the cleanup (it keeps
+                    // going for the preview and the next export).
+                    while self.voiceTask != nil, !self.exportCancelled {
+                        try? await Task.sleep(nanoseconds: 100_000_000)
+                    }
+                    if exportCancelled { throw VideoDemoExportError.cancelled }
+                    voiceFailed = !(await voice.value)
+                }
                 if exportCancelled { throw VideoDemoExportError.cancelled }
                 _ = try await VideoDemoExporter.export(
                     project: project,
@@ -1523,8 +1565,6 @@ final class VideoEditorModel: ObservableObject {
 
     func cancelExport() {
         exportCancelled = true
-        // Waiting on the voice cleanup: stop that too.
-        voiceTask?.cancel()
     }
 
     /// Closes the export sheet; a finished or failed export is cleared so
