@@ -495,7 +495,11 @@ final class AnnotationCanvas: NSView {
 
     override func mouseDown(with event: NSEvent) {
         let point = documentPoint(for: event)
-        let wasEditingText = activeTextEditor != nil
+        // A click on the canvas takes focus from the editor (committing it)
+        // before this mouseDown arrives; either way, the click was spent
+        // finishing the text.
+        let wasEditingText = activeTextEditor != nil || editorJustLostFocus
+        editorJustLostFocus = false
         commitTextField()
         setHoveredObject(nil)
 
@@ -590,8 +594,12 @@ final class AnnotationCanvas: NSView {
             cropMouseUp()
             return
         }
+        let startedDrawing = dragStart != nil
         dragStart = nil
-        guard let obj = currentObject else { return }
+        guard let obj = currentObject else {
+            if startedDrawing { discardLastUndo() } // the press made nothing to draw
+            return
+        }
         currentObject = nil
 
         if let callout = obj as? CalloutAnnotation {
@@ -1177,6 +1185,10 @@ final class AnnotationCanvas: NSView {
 
     /// The in-place text editor while text is being typed.
     var textEditor: NSTextView? { activeTextEditor }
+
+    /// Set for the rest of the event when the editor commits because focus
+    /// moved away (see mouseDown).
+    private var editorJustLostFocus = false
 
     private func beginTextEntry(at point: CGPoint) {
         pushUndo()
@@ -1858,6 +1870,8 @@ extension AnnotationCanvas: NSTextViewDelegate {
 
     func textDidEndEditing(_ notification: Notification) {
         guard notification.object as AnyObject? === activeTextEditor else { return }
+        editorJustLostFocus = true
+        DispatchQueue.main.async { [weak self] in self?.editorJustLostFocus = false }
         commitTextField()
     }
 

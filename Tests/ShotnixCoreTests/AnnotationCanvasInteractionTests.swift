@@ -248,7 +248,34 @@ final class AnnotationCanvasInteractionTests: XCTestCase {
         XCTAssertEqual(canvas.objects.compactMap { ($0 as? TextAnnotation)?.text }, ["First"])
     }
 
+    func testClickingAwayThroughRealWindowDispatchOnlyCommits() {
+        // NSWindow moves focus to the canvas before delivering mouseDown, so
+        // the editor commits first; the click must not also start new text.
+        window.setFrameOrigin(NSPoint(x: -4000, y: -4000))
+        window.orderFront(nil)
+        canvas.activeTool = .text
+        dispatch(.leftMouseDown, at: CGPoint(x: 100, y: 100))
+        dispatch(.leftMouseUp, at: CGPoint(x: 100, y: 100))
+        XCTAssertTrue(window.firstResponder === canvas.textEditor)
+        canvas.textEditor?.insertText("Hello", replacementRange: NSRange(location: NSNotFound, length: 0))
+
+        dispatch(.leftMouseDown, at: CGPoint(x: 250, y: 200))
+        dispatch(.leftMouseUp, at: CGPoint(x: 250, y: 200))
+
+        XCTAssertNil(canvas.textEditor, "the click away finishes the text without opening another editor")
+        XCTAssertEqual(canvas.objects.compactMap { ($0 as? TextAnnotation)?.text }, ["Hello"])
+
+        // The next click places new text as usual.
+        dispatch(.leftMouseDown, at: CGPoint(x: 250, y: 200))
+        dispatch(.leftMouseUp, at: CGPoint(x: 250, y: 200))
+        XCTAssertNotNil(canvas.textEditor)
+    }
+
     // MARK: - Event synthesis
+
+    private func dispatch(_ type: NSEvent.EventType, at viewPoint: CGPoint) {
+        window.sendEvent(event(type, at: viewPoint))
+    }
 
     private func drag(from start: CGPoint, to end: CGPoint) {
         canvas.mouseDown(with: event(.leftMouseDown, at: start))
