@@ -119,6 +119,64 @@ final class VideoProjectSourcesTests: XCTestCase {
         XCTAssertGreaterThan(darkest(second), 0.6, "and not over the plain video")
     }
 
+    /// A phone clip stored sideways (with a rotation) added after a screen
+    /// recording: upright and fitted, with the recording's camera on or off.
+    func testARotatedAddedVideoStaysUprightWithOrWithoutTheCamera() async throws {
+        let red = NSColor(srgbRed: 0.9, green: 0.1, blue: 0.1, alpha: 1)
+        let blue = NSColor(srgbRed: 0.1, green: 0.2, blue: 0.9, alpha: 1)
+        let magenta = NSColor(srgbRed: 0.9, green: 0.1, blue: 0.8, alpha: 1)
+        let screen = directory.appendingPathComponent("screen.mp4")
+        try await VideoInspection.writeColorVideo(to: screen, size: CGSize(width: 1280, height: 800), colors: [(yellow, 1.5)])
+        let camera = directory.appendingPathComponent("camera.mp4")
+        try await VideoInspection.writeColorVideo(to: camera, size: CGSize(width: 640, height: 480), colors: [(magenta, 1.5)])
+        // Stored 320×240 (red | blue), shown portrait 240×320: red on top.
+        let phone = directory.appendingPathComponent("phone.mp4")
+        try await VideoInspection.writeSplitVideo(to: phone, size: CGSize(width: 320, height: 240), left: red, right: blue, seconds: 1.5, transform: CGAffineTransform(a: 0, b: 1, c: -1, d: 0, tx: 240, ty: 0))
+        let phoneTracks = try await VideoSourceTracks.load(url: phone)
+        XCTAssertEqual(phoneTracks.size, CGSize(width: 240, height: 320), "portrait once turned")
+
+        let webcam = VideoWebcamRecording(path: camera.path, offset: 0, width: 640, height: 480)
+        let metadata = VideoDemoRecordingMetadata(videoURLPath: screen.path, createdAt: Date(), duration: 1.5, sourceWidth: 1280, sourceHeight: 800, fps: 30, nativeCursorVisible: true, cursorSamples: [], clickEvents: [], webcam: webcam)
+        var project = VideoInspection.project(for: screen, seconds: 1.5, size: CGSize(width: 1280, height: 800))
+        project.ensurePrimarySource(duration: 1.5, kinds: [], webcam: webcam, pointPixelScale: nil)
+        project.appendSource(VideoProjectSource(path: phone.path, name: "phone.mp4", duration: 1.5, width: 240, height: 320), metadata: nil)
+        // With the camera, the song and the end card too (the camera's
+        // compositor has to cover the music past the picture).
+        let song = directory.appendingPathComponent("song.m4a")
+        try VideoInspection.writeTone(to: song, frequency: 330, seconds: 8, amplitude: 0.3)
+        let stored = try VideoAssetStore.importFile(song)
+
+        for cameraOn in [true, false] {
+            project.webcam.visible = cameraOn
+            var settings = VideoInspection.mp4Settings()
+            if cameraOn {
+                project.music = VideoMusicTrack(path: stored.path, name: "song.m4a", duration: 8)
+                settings.endCard = true
+            }
+            let output = directory.appendingPathComponent("rotated-\(cameraOn).mp4")
+            try await VideoDemoExporter.export(project: project, recording: metadata, destinationURL: output, settings: settings)
+            let length = try await AVURLAsset(url: output).load(.duration).seconds
+            XCTAssertEqual(length, cameraOn ? 5 : 3, accuracy: 0.15)
+
+            let added = try VideoInspection.frame(of: output, at: 2.2)
+            let top = VideoInspection.color(of: added, x: 0.5, y: 0.2)
+            let bottom = VideoInspection.color(of: added, x: 0.5, y: 0.8)
+            let bar = VideoInspection.color(of: added, x: 0.08, y: 0.5)
+            XCTAssertTrue(VideoInspection.isClose(top, (0.9, 0.1, 0.1), tolerance: 0.15), "upright, red on top (camera \(cameraOn ? "on" : "off")): \(top)")
+            XCTAssertTrue(VideoInspection.isClose(bottom, (0.1, 0.2, 0.9), tolerance: 0.15), "blue below (camera \(cameraOn ? "on" : "off")): \(bottom)")
+            XCTAssertLessThan(bar.r + bar.g + bar.b, 0.15, "fitted between black bars, not stretched: \(bar)")
+
+            // The camera bubble (bottom right) shows over the screen recording.
+            let first = try VideoInspection.frame(of: output, at: 0.7)
+            let bubble = VideoInspection.color(of: first, x: 0.893, y: 0.83)
+            if cameraOn {
+                XCTAssertTrue(VideoInspection.isClose(bubble, (0.9, 0.1, 0.8), tolerance: 0.2), "the camera shows: \(bubble)")
+            } else {
+                XCTAssertTrue(VideoInspection.isClose(bubble, (1, 0.85, 0), tolerance: 0.15), "no camera: \(bubble)")
+            }
+        }
+    }
+
     func testReorderingMovesClipsAndTimedThings() async throws {
         var (project, _, _, metadata) = try await twoRecordings()
         project.zoomRegions = [VideoZoomRegion(start: 0.5, end: 1.5, scale: 2)]

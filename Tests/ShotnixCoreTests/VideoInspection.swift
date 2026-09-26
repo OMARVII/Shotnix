@@ -219,6 +219,48 @@ enum VideoInspection {
         if writer.status != .completed { throw writer.error ?? NSError(domain: "test", code: 2) }
     }
 
+    /// A video whose stored frames are split down the middle — `left` |
+    /// `right` — with `transform` saying how players turn it (a phone clip
+    /// stored sideways).
+    static func writeSplitVideo(to url: URL, size: CGSize, left: NSColor, right: NSColor, seconds: Double, fps: Int = 30, transform: CGAffineTransform = .identity) async throws {
+        try? FileManager.default.removeItem(at: url)
+        let writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
+        let input = AVAssetWriterInput(mediaType: .video, outputSettings: [
+            AVVideoCodecKey: AVVideoCodecType.h264,
+            AVVideoWidthKey: Int(size.width),
+            AVVideoHeightKey: Int(size.height),
+        ])
+        input.expectsMediaDataInRealTime = false
+        input.transform = transform
+        let adaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: input, sourcePixelBufferAttributes: [
+            kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA,
+            kCVPixelBufferWidthKey as String: Int(size.width),
+            kCVPixelBufferHeightKey as String: Int(size.height),
+        ])
+        writer.add(input)
+        guard writer.startWriting() else { throw writer.error ?? NSError(domain: "test", code: 1) }
+        writer.startSession(atSourceTime: .zero)
+        let space = CGColorSpace(name: CGColorSpace.sRGB)!
+        for frame in 0..<Int((seconds * Double(fps)).rounded()) {
+            while !input.isReadyForMoreMediaData { try await Task.sleep(nanoseconds: 2_000_000) }
+            var buffer: CVPixelBuffer?
+            CVPixelBufferPoolCreatePixelBuffer(nil, adaptor.pixelBufferPool!, &buffer)
+            let pixels = buffer!
+            CVBufferSetAttachment(pixels, kCVImageBufferCGColorSpaceKey, space, .shouldPropagate)
+            CVPixelBufferLockBaseAddress(pixels, [])
+            let context = CGContext(data: CVPixelBufferGetBaseAddress(pixels), width: Int(size.width), height: Int(size.height), bitsPerComponent: 8, bytesPerRow: CVPixelBufferGetBytesPerRow(pixels), space: space, bitmapInfo: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue)!
+            context.setFillColor(left.usingColorSpace(.sRGB)!.cgColor)
+            context.fill(CGRect(x: 0, y: 0, width: size.width / 2, height: size.height))
+            context.setFillColor(right.usingColorSpace(.sRGB)!.cgColor)
+            context.fill(CGRect(x: size.width / 2, y: 0, width: size.width / 2, height: size.height))
+            CVPixelBufferUnlockBaseAddress(pixels, [])
+            adaptor.append(pixels, withPresentationTime: CMTime(value: CMTimeValue(frame), timescale: CMTimeScale(fps)))
+        }
+        input.markAsFinished()
+        await writer.finishWriting()
+        if writer.status != .completed { throw writer.error ?? NSError(domain: "test", code: 2) }
+    }
+
     private static func appendTone(to input: AVAssetWriterInput, seconds: Double, frequency: Double) async throws {
         let rate = 48_000.0
         var description = AudioStreamBasicDescription(

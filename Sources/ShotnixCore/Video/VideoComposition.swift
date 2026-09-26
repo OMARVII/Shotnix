@@ -337,11 +337,12 @@ enum VideoCompositionBuilder {
             }
         }
 
-        // The pass-through compositor ignores track transforms, so only
-        // upright recordings (every screen recording) get the camera.
+        // The pass-through compositor ignores track transforms: one rotated
+        // recording goes without the camera, while with several each
+        // stretch is turned upright by the compositor itself.
         let cameraTrack: AVMutableCompositionTrack?
         if let layout {
-            cameraTrack = source.orientation.isIdentity ? VideoCameraComposition.addCameraTrack(layout: layout, to: composition, placements: placements) : nil
+            cameraTrack = VideoCameraComposition.addCameraTrack(layout: layout, to: composition, placements: placements)
         } else {
             cameraTrack = camera.flatMap { camera in
                 source.orientation.isIdentity ? VideoCameraComposition.addCameraTrack(camera, to: composition, placements: placements) : nil
