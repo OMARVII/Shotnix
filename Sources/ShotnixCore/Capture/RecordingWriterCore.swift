@@ -269,7 +269,6 @@ final class RecordingWriterCore: @unchecked Sendable {
 
     var screenActivity: [Double] { activity.samples }
     var droppedFrameCount: Int { frameDrops.dropped }
-    var appendedFrameCount: Int { frameDrops.appended }
     /// Seconds of audio written per track, for tests and diagnostics.
     func writtenAudio(for target: RecordingAudioTarget) -> Double { audioWritten[target] ?? 0 }
 

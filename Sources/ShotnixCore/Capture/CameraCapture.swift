@@ -40,10 +40,6 @@ final class CameraCapture {
     var interruptionHandler: ((Interruption) -> Void)?
 
     var isActive: Bool { session != nil }
-    var bubbleWindowNumber: CGWindowID? {
-        guard let bubble, bubble.windowNumber > 0 else { return nil }
-        return CGWindowID(bubble.windowNumber)
-    }
 
     static func requestAccess() async -> Bool {
         switch AVCaptureDevice.authorizationStatus(for: .video) {
