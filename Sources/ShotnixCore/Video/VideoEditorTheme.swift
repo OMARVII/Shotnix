@@ -28,6 +28,8 @@ enum VideoEditorTheme {
         case .highlight: return Color(red: 0.92, green: 0.7, blue: 0.1)
         case .arrow: return Color(red: 0.95, green: 0.55, blue: 0.15)
         case .blur: return Color(white: 0.42)
+        case .spotlight: return Color(red: 0.3, green: 0.66, blue: 0.82)
+        case .image: return Color(red: 0.2, green: 0.66, blue: 0.9)
         }
     }
 }
@@ -278,8 +280,11 @@ struct VideoSegmented<Value: Hashable>: View {
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                // VoiceOver says which option is on.
+                .accessibilityAddTraits(selected ? .isSelected : [])
             }
         }
+        .accessibilityElement(children: .contain)
         .padding(2)
         .background(
             RoundedRectangle(cornerRadius: 8, style: .continuous)

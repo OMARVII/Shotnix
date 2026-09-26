@@ -78,6 +78,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // Before the welcome window marks this install as launched.
         Settings.migrateCaptureSettingsIfNeeded()
         Settings.migrateRecordingFPSIfNeeded()
+        // Leftover data of deleted recordings, swept in the background.
+        VideoDataCleanup.sweepAfterLaunch()
         updateController = AppUpdateController()
         captureEngine = CaptureEngine()
         captureEngine.recordingStateChangedHandler = { [weak self] in
@@ -342,6 +344,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         appMenuItem.submenu = appMenu
         mainMenu.addItem(appMenuItem)
 
+        // File menu: Close Window (⌘W) first, then the video editor's own
+        // section (Export, Save Subtitles, Recent Exports).
+        let fileMenuItem = NSMenuItem()
+        let fileMenu = NSMenu(title: "File")
+        fileMenu.addItem(menuItem("Close Window", action: #selector(closeKeyWindow(_:)), key: "w", modifiers: [.command]))
+        VideoEditorFileMenu.shared.addItems(to: fileMenu)
+        fileMenuItem.submenu = fileMenu
+        mainMenu.addItem(fileMenuItem)
+
         // Standard Edit menu — LSUIElement apps get no default menus, so without
         // it ⌘X/C/V/A/Z have no responder route (breaking paste into text
         // annotation fields and save-panel filename fields). The items target
@@ -380,7 +391,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // Minimal Window menu with the standard window-management commands.
         let windowMenuItem = NSMenuItem()
         let windowMenu = NSMenu(title: "Window")
-        windowMenu.addItem(menuItem("Close Window", action: #selector(closeKeyWindow(_:)), key: "w", modifiers: [.command]))
         windowMenu.addItem(responderMenuItem("Minimize", action: #selector(NSWindow.performMiniaturize(_:)), key: "m"))
         windowMenu.addItem(responderMenuItem("Zoom", action: #selector(NSWindow.performZoom(_:)), key: ""))
         windowMenu.addItem(NSMenuItem.separator())

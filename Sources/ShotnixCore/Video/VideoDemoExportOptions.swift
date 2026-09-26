@@ -78,7 +78,7 @@ struct VideoExportSettings: Equatable {
         var detail: String {
             switch self {
             case .h264: return "Plays everywhere"
-            case .hevc: return "About 35% smaller, modern players"
+            case .hevc: return "About 35% smaller — plays on Apple devices and most phones; some browsers and Windows PCs can't play it without an extra codec"
             }
         }
     }
@@ -106,9 +106,46 @@ struct VideoExportSettings: Equatable {
     var endCard: Bool = true
     var gifSize: GIFSize = .medium
     var gifFPS: Int = 15
+    /// Draw the captions into the picture (independent of the preview).
+    var burnCaptions: Bool = true
+    /// A subtitles file saved next to the video (nil: none).
+    var subtitles: VideoSubtitleFormat?
 
     static let frameRates = [24, 30, 60]
     static let gifFrameRates = [10, 15, 20, 24]
+
+    /// Frames a GIF keeps in memory until it's written: past this, making
+    /// it could run the Mac out of memory.
+    static var gifMemoryLimit: Int64 {
+        min(Int64(ProcessInfo.processInfo.physicalMemory / 4), 4_000_000_000)
+    }
+
+    /// The memory a GIF needs while it's being made.
+    func gifWorkingBytes(duration: Double, canvas: CGSize) -> Int64 {
+        var gif = self
+        gif.format = .gif
+        let size = gif.outputSize(canvas: canvas)
+        let frames = (max(duration, 0) * Double(gifFPS)).rounded(.up)
+        return Int64(frames * Double(size.width * size.height) * 4)
+    }
+
+    /// The largest size and frame rate (in that order of preference) whose
+    /// GIF fits in memory and stays under `bytes` on disk.
+    func lighterGIF(duration: Double, canvas: CGSize, targetBytes: Int64 = 25_000_000) -> VideoExportSettings? {
+        for size in GIFSize.allCases.reversed() {
+            for fps in Self.gifFrameRates.reversed() {
+                var candidate = self
+                candidate.format = .gif
+                candidate.gifSize = size
+                candidate.gifFPS = fps
+                if candidate.gifWorkingBytes(duration: duration, canvas: canvas) <= Self.gifMemoryLimit / 2,
+                   candidate.estimatedBytes(duration: duration, canvas: canvas, hasAudio: false) <= targetBytes {
+                    return candidate
+                }
+            }
+        }
+        return nil
+    }
 
     var fileExtension: String { format == .gif ? "gif" : "mp4" }
     var effectiveFrameRate: Int { format == .gif ? gifFPS : fps }
@@ -173,6 +210,8 @@ struct VideoExportSettings: Equatable {
         if let raw = defaults.object(forKey: "videoExportGIFFPS") as? Int, gifFrameRates.contains(raw) {
             settings.gifFPS = raw
         }
+        settings.burnCaptions = Settings.videoExportBurnCaptions
+        settings.subtitles = VideoSubtitleFormat(rawValue: Settings.videoExportSubtitles)
         return settings
     }
 
@@ -186,5 +225,7 @@ struct VideoExportSettings: Equatable {
         defaults.set(codec.rawValue, forKey: "videoExportCodec")
         defaults.set(gifSize.rawValue, forKey: "videoExportGIFSize")
         defaults.set(gifFPS, forKey: "videoExportGIFFPS")
+        Settings.videoExportBurnCaptions = burnCaptions
+        Settings.videoExportSubtitles = subtitles?.rawValue ?? ""
     }
 }

@@ -52,10 +52,15 @@ struct VideoReframe {
         let half = Double(windowFraction) / 2
         func clamp(_ x: Double) -> Double { min(max(x, half), 1 - half) }
 
+        // Times only move forward here (now, and a quarter second ahead):
+        // each keeps its place in the clip list instead of searching it.
+        var nowCursor = SegmentCursor(segments: segments)
+        var aheadCursor = SegmentCursor(segments: segments)
+
         /// Where the pointer appears in the rendered scene (0…1), if shown.
-        func pointerX(atTimeline time: Double) -> Double? {
+        func pointerX(atTimeline time: Double, cursor: inout SegmentCursor) -> Double? {
             guard let cursorTrack else { return nil }
-            let source = VideoDemoProject.sourceTime(forTimelineTime: time, segments: segments)
+            let source = cursor.sourceTime(forTimelineTime: time)
             guard let raw = cursorTrack.visiblePosition(at: source) else { return nil }
             let inCrop = crop.map(raw)
             let canvasX = Double(stage.minX + stage.width * inCrop.x) / Double(max(canvas.width, 1))
@@ -64,7 +69,8 @@ struct VideoReframe {
         }
 
         var centers = [Double](repeating: 0.5, count: count)
-        let start = pointerX(atTimeline: 0.3) ?? 0.5
+        var startCursor = SegmentCursor(segments: segments)
+        let start = pointerX(atTimeline: 0.3, cursor: &startCursor) ?? 0.5
         var position = clamp(start)
         var velocity = 0.0
         var leash = position
@@ -75,7 +81,7 @@ struct VideoReframe {
             let t = Double(index) * dt
             // Look a little ahead so the frame is already moving when the
             // pointer gets there.
-            if let ahead = pointerX(atTimeline: min(t + 0.25, duration)) {
+            if let ahead = pointerX(atTimeline: min(t + 0.25, duration), cursor: &aheadCursor) {
                 if ahead > leash + dead { leash = ahead - dead }
                 if ahead < leash - dead { leash = ahead + dead }
             }
@@ -84,7 +90,7 @@ struct VideoReframe {
             velocity += acceleration * dt
             position += velocity * dt
             // Hard rule: the pointer never leaves the frame.
-            if let now = pointerX(atTimeline: t) {
+            if let now = pointerX(atTimeline: t, cursor: &nowCursor) {
                 let margin = Double(windowFraction) * 0.08
                 if now > position + half - margin { position = now - half + margin; velocity = 0 }
                 if now < position - half + margin { position = now + half - margin; velocity = 0 }
@@ -93,5 +99,26 @@ struct VideoReframe {
             centers[index] = position
         }
         return VideoReframe(windowFraction: windowFraction, centers: centers, duration: duration)
+    }
+}
+
+/// Timeline → recording time for times that only move forward: the same
+/// answer as `VideoDemoProject.sourceTime(forTimelineTime:segments:)`, in
+/// constant time per step.
+struct SegmentCursor {
+    let segments: [VideoDemoTimelineSegment]
+    private var index = 0
+
+    init(segments: [VideoDemoTimelineSegment]) {
+        self.segments = segments
+    }
+
+    mutating func sourceTime(forTimelineTime time: Double) -> Double {
+        guard let last = segments.last else { return 0 }
+        let safe = min(max(time, 0), max(last.timelineEnd, 0))
+        while index < segments.count - 1, safe > segments[index].timelineEnd {
+            index += 1
+        }
+        return segments[index].sourceTime(forTimelineTime: safe)
     }
 }

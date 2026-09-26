@@ -1,6 +1,6 @@
 import AppKit
 
-/// Borderless Shotnix windows that Window → Close Window (⌘W) can close.
+/// Borderless Shotnix windows that File → Close Window (⌘W) can close.
 /// They close themselves so their own cleanup runs.
 @MainActor
 protocol ShotnixCommandClosable: AnyObject {

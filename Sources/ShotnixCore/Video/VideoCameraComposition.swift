@@ -180,13 +180,23 @@ final class VideoCameraInstruction: NSObject, AVVideoCompositionInstructionProto
     let screenTrackID: CMPersistentTrackID
     let cameraTrackID: CMPersistentTrackID
     let store: VideoCameraFrameStore
+    /// With several recordings: how each stretch of the screen track is
+    /// turned upright and fitted into the edit's frame (starts in seconds).
+    let pieceTransforms: [(start: Double, transform: CGAffineTransform)]
 
-    init(timeRange: CMTimeRange, screenTrackID: CMPersistentTrackID, cameraTrackID: CMPersistentTrackID, store: VideoCameraFrameStore) {
+    init(timeRange: CMTimeRange, screenTrackID: CMPersistentTrackID, cameraTrackID: CMPersistentTrackID, store: VideoCameraFrameStore, pieceTransforms: [(start: Double, transform: CGAffineTransform)] = []) {
         self.timeRange = timeRange
         self.screenTrackID = screenTrackID
         self.cameraTrackID = cameraTrackID
         self.store = store
+        self.pieceTransforms = pieceTransforms
         requiredSourceTrackIDs = [NSNumber(value: screenTrackID), NSNumber(value: cameraTrackID)]
+    }
+
+    /// The transform for the stretch playing at `time` (nil: one recording).
+    func transform(at time: Double) -> CGAffineTransform? {
+        guard let first = pieceTransforms.first else { return nil }
+        return pieceTransforms.last { $0.start <= time + 0.0005 }?.transform ?? first.transform
     }
 }
 
@@ -206,6 +216,42 @@ final class VideoCameraCompositor: NSObject, AVVideoCompositing {
 
     func renderContextChanged(_ newRenderContext: AVVideoCompositionRenderContext) {}
 
+    private let fitContext = CIContext(options: [.cacheIntermediates: false, .name: "shotnix.camera-fit"])
+
+    /// A frame of another size (an added recording) letterboxed into the
+    /// edit's frame.
+    private func fitted(_ frame: CVPixelBuffer, into context: AVVideoCompositionRenderContext) -> CVPixelBuffer? {
+        let size = context.size
+        guard CVPixelBufferGetWidth(frame) != Int(size.width) || CVPixelBufferGetHeight(frame) != Int(size.height),
+              let output = context.newPixelBuffer() else { return nil }
+        let image = CIImage(cvPixelBuffer: frame)
+        let extent = image.extent
+        let scale = min(size.width / max(extent.width, 1), size.height / max(extent.height, 1))
+        let placed = image
+            .transformed(by: CGAffineTransform(scaleX: scale, y: scale))
+            .transformed(by: CGAffineTransform(translationX: (size.width - extent.width * scale) / 2, y: (size.height - extent.height * scale) / 2))
+        let black = CIImage(color: .black).cropped(to: CGRect(origin: .zero, size: size))
+        fitContext.render(placed.composited(over: black), to: output)
+        return output
+    }
+
+    /// A frame of an added recording turned upright and fitted, the way the
+    /// reader's own composition does it without a camera (nil: already so).
+    private func placed(_ frame: CVPixelBuffer, transform: CGAffineTransform, into context: AVVideoCompositionRenderContext) -> CVPixelBuffer? {
+        let size = context.size
+        let height = CGFloat(CVPixelBufferGetHeight(frame))
+        guard !transform.isIdentity || CVPixelBufferGetWidth(frame) != Int(size.width) || Int(height) != Int(size.height),
+              let output = context.newPixelBuffer() else { return nil }
+        // The transform works top-down (like AVFoundation); Core Image
+        // works bottom-up, so flip in and back out.
+        let flipIn = CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: 0, ty: height)
+        let flipOut = CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: 0, ty: size.height)
+        let image = CIImage(cvPixelBuffer: frame).transformed(by: flipIn.concatenating(transform).concatenating(flipOut))
+        let black = CIImage(color: .black).cropped(to: CGRect(origin: .zero, size: size))
+        fitContext.render(image.composited(over: black).cropped(to: black.extent), to: output)
+        return output
+    }
+
     func startRequest(_ request: AVAsynchronousVideoCompositionRequest) {
         guard let instruction = request.videoCompositionInstruction as? VideoCameraInstruction else {
             request.finish(with: NSError(domain: "Shotnix", code: 1))
@@ -214,7 +260,8 @@ final class VideoCameraCompositor: NSObject, AVVideoCompositing {
         let time = request.compositionTime.seconds
         instruction.store.put(request.sourceFrame(byTrackID: instruction.cameraTrackID), at: time)
         if let screen = request.sourceFrame(byTrackID: instruction.screenTrackID) {
-            request.finish(withComposedVideoFrame: screen)
+            let composed = instruction.transform(at: time).map { placed(screen, transform: $0, into: request.renderContext) } ?? fitted(screen, into: request.renderContext)
+            request.finish(withComposedVideoFrame: composed ?? screen)
         } else if let blank = request.renderContext.newPixelBuffer() {
             request.finish(withComposedVideoFrame: blank)
         } else {
@@ -269,10 +316,11 @@ enum VideoCameraComposition {
         videoComposition.renderSize = CGSize(width: max(edit.sourceSize.width, 2), height: max(edit.sourceSize.height, 2))
         videoComposition.frameDuration = CMTime(value: 1, timescale: CMTimeScale(max(Int(frameRate.rounded()), 1)))
         videoComposition.instructions = [VideoCameraInstruction(
-            timeRange: CMTimeRange(start: .zero, duration: edit.duration),
+            timeRange: CMTimeRange(start: .zero, duration: edit.coveredDuration),
             screenTrackID: edit.videoTrack.trackID,
             cameraTrackID: cameraTrack.trackID,
-            store: store
+            store: store,
+            pieceTransforms: edit.pieceTransforms.map { ($0.start.seconds, $0.transform) }
         )]
         return videoComposition
     }

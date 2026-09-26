@@ -234,15 +234,43 @@ enum VideoCaptionTranscriber {
     /// Tests: take the macOS 13–25 path on a newer Mac.
     nonisolated(unsafe) static var usesLegacyRecognizer = false
 
+    /// What to listen to for "your words".
+    struct Source: Equatable {
+        let url: URL
+        /// One audio track of `url` (nil: every track mixed).
+        let trackIndex: Int?
+        /// Added to every word's time (a cleaned-up voice file starts at
+        /// the voice track's first sample, not at the recording's start).
+        var offset: Double = 0
+    }
+
+    /// The voice on its own — music or a video playing on the Mac never
+    /// become your words — using its cleaned-up version when that's ready.
+    /// Every track is mixed only when nothing says which one is the voice.
+    static func source(recording: URL, kinds: [VideoAudioKind], enhancedVoice: URL?, voiceStart: Double) -> Source {
+        guard let voice = VideoAudioKind.voiceTrackIndex(in: kinds) else {
+            return Source(url: recording, trackIndex: nil)
+        }
+        if let enhancedVoice {
+            return Source(url: enhancedVoice, trackIndex: 0, offset: voiceStart)
+        }
+        return Source(url: recording, trackIndex: kinds.count > 1 ? voice : nil)
+    }
+
     /// Words with times in SOURCE seconds.
     static func transcribe(
         url: URL,
+        trackIndex: Int? = nil,
+        timeOffset: Double = 0,
         languageIdentifier: String?,
         progress: @escaping @Sendable (Stage) -> Void
     ) async throws -> Result {
         progress(.preparing)
         let asset = AVURLAsset(url: url)
-        let audioTracks = try await asset.loadTracks(withMediaType: .audio)
+        var audioTracks = try await asset.loadTracks(withMediaType: .audio)
+        if let trackIndex, audioTracks.indices.contains(trackIndex) {
+            audioTracks = [audioTracks[trackIndex]]
+        }
         guard !audioTracks.isEmpty else { throw Failure.noAudio }
         let duration = try await asset.load(.duration).seconds
         let requested = Locale(identifier: languageIdentifier ?? Locale.current.identifier(.bcp47))
@@ -255,7 +283,7 @@ enum VideoCaptionTranscriber {
             if locale == nil, languageIdentifier == nil { locale = closest(to: requested, in: supported) }
             guard let locale else { throw Failure.unsupportedLanguage(name(of: requested)) }
             let words = try await transcribeModern(asset: asset, tracks: audioTracks, duration: duration, locale: locale, progress: progress)
-            return Result(words: words, language: locale.identifier(.bcp47))
+            return Result(words: shifted(words, by: timeOffset), language: locale.identifier(.bcp47))
         }
         var locale = requested
         if SFSpeechRecognizer(locale: requested) == nil, languageIdentifier == nil,
@@ -263,7 +291,12 @@ enum VideoCaptionTranscriber {
             locale = fallback
         }
         let words = try await transcribeLegacy(asset: asset, tracks: audioTracks, duration: duration, locale: locale, progress: progress)
-        return Result(words: words, language: locale.identifier(.bcp47))
+        return Result(words: shifted(words, by: timeOffset), language: locale.identifier(.bcp47))
+    }
+
+    private static func shifted(_ words: [VideoCaptionWord], by offset: Double) -> [VideoCaptionWord] {
+        guard offset != 0 else { return words }
+        return words.map { VideoCaptionWord(text: $0.text, start: $0.start + offset, end: $0.end + offset) }
     }
 
     static func name(of locale: Locale) -> String {
@@ -411,6 +444,13 @@ enum VideoCaptionTranscriber {
         request.requiresOnDeviceRecognition = true
         request.addsPunctuation = true
         let recognition = LegacyRecognition()
+        // How much audio the recognizer has worked through (it never says
+        // what fraction it's at).
+        if duration > 0 {
+            recognition.onProgress = { seconds in
+                progress(.transcribing(min(max(seconds / duration, 0), 0.99)))
+            }
+        }
         let segments = try await withTaskCancellationHandler {
             try await withCheckedThrowingContinuation { continuation in
                 recognition.start(recognizer: recognizer, request: request, continuation: continuation)
@@ -439,6 +479,9 @@ final class LegacyRecognition: NSObject, SFSpeechRecognitionTaskDelegate, @unche
     /// The recognition task doesn't retain its delegate: stay alive until
     /// it's over.
     private var keepAlive: LegacyRecognition?
+    /// Seconds of audio recognized so far (only ever grows).
+    var onProgress: (@Sendable (Double) -> Void)?
+    private var reached = 0.0
 
     func start(recognizer: SFSpeechRecognizer, request: SFSpeechRecognitionRequest, continuation: CheckedContinuation<Pieces, Error>) {
         lock.lock()
@@ -471,8 +514,25 @@ final class LegacyRecognition: NSObject, SFSpeechRecognitionTaskDelegate, @unche
     func speechRecognitionTask(_ task: SFSpeechRecognitionTask, didFinishRecognition result: SFSpeechRecognitionResult) {
         let new: Pieces = result.bestTranscription.segments.map { ($0.substring, $0.timestamp, $0.timestamp + $0.duration) }
         lock.lock()
-        defer { lock.unlock() }
         pieces = Self.merge(pieces, new)
+        lock.unlock()
+        if let end = new.last?.end { report(end) }
+    }
+
+    func speechRecognitionTask(_ task: SFSpeechRecognitionTask, didProcessAudioDuration duration: TimeInterval) {
+        report(duration)
+    }
+
+    func report(_ seconds: Double) {
+        lock.lock()
+        guard seconds > reached else {
+            lock.unlock()
+            return
+        }
+        reached = seconds
+        let onProgress = self.onProgress
+        lock.unlock()
+        onProgress?(seconds)
     }
 
     /// A finished stretch continues the transcript. One that starts where

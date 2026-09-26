@@ -248,10 +248,14 @@ struct VideoCaptionStyle: Codable, Equatable {
     var position: VideoTextPosition = .bottom
     /// Brightens each word as it's spoken.
     var highlightWords = true
+    /// The look (see VideoCaptionStyles.swift).
+    var preset: VideoCaptionPreset = .classic
+    /// The spoken word's color (nil: the look's own).
+    var highlightColor: VideoRGBA?
 
     init() {}
 
-    private enum CodingKeys: String, CodingKey { case visible, size, position, highlightWords }
+    private enum CodingKeys: String, CodingKey { case visible, size, position, highlightWords, preset, highlightColor }
 
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -260,6 +264,8 @@ struct VideoCaptionStyle: Codable, Equatable {
         size = (try? c.decode(VideoTextSize.self, forKey: .size)) ?? d.size
         position = (try? c.decode(VideoTextPosition.self, forKey: .position)) ?? d.position
         highlightWords = try c.decodeIfPresent(Bool.self, forKey: .highlightWords) ?? d.highlightWords
+        preset = (try? c.decode(VideoCaptionPreset.self, forKey: .preset)) ?? d.preset
+        highlightColor = try? c.decodeIfPresent(VideoRGBA.self, forKey: .highlightColor)
     }
 }
 
