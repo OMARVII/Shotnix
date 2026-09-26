@@ -391,7 +391,8 @@ final class VideoEditorModel: ObservableObject {
     }
 
     init(videoURL: URL) {
-        let recording = VideoDemoSidecarStore.load(for: videoURL)
+        // Opened from where it is now: its data points here (VideoDataCleanup).
+        let recording = VideoDemoSidecarStore.load(for: videoURL).map { VideoDemoSidecarStore.recordLocation(of: $0, for: videoURL) }
         self.recording = recording
         sourceBookmark = try? videoURL.bookmarkData(options: [.minimalBookmark], includingResourceValuesForKeys: nil, relativeTo: nil)
         artwork = VideoCursorArtwork(metadata: recording)
@@ -736,6 +737,23 @@ final class VideoEditorModel: ObservableObject {
     private static var keptHistoryOrder: [String] = []
 
     private var historyKey: String { VideoFileIdentity.canonicalURL(project.sourceURL).path }
+
+    /// Pictures and songs this editor's project, undo, and redo use.
+    func assetPathsInHistory() -> Set<String> {
+        var paths = project.assetPaths
+        for step in undoStack + redoStack { paths.formUnion(step.project.assetPaths) }
+        return paths
+    }
+
+    /// Pictures and songs closed editors' kept undo history uses.
+    static func keptHistoryAssetPaths() -> Set<String> {
+        var paths = Set<String>()
+        for kept in keptHistory.values {
+            paths.formUnion(kept.project.assetPaths)
+            for step in kept.undo + kept.redo { paths.formUnion(step.project.assetPaths) }
+        }
+        return paths
+    }
 
     private func keepHistoryForSession() {
         guard isReady, !undoStack.isEmpty || !redoStack.isEmpty else { return }

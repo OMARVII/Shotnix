@@ -9,6 +9,16 @@ final class VideoDemoEditorWindowController: NSWindowController, NSWindowDelegat
 
     static var hasOpenEditors: Bool { !openControllers.isEmpty }
 
+    /// Pictures and songs that open editors (their undo and redo too),
+    /// closed editors' kept history, and queued exports still use — Clean Up
+    /// leaves them alone.
+    static func assetPathsInUse() -> Set<String> {
+        var paths = VideoEditorModel.keptHistoryAssetPaths()
+        for controller in openControllers { paths.formUnion(controller.model.assetPathsInHistory()) }
+        for job in VideoExportQueue.shared.jobs where !job.isDone { paths.formUnion(job.project.assetPaths) }
+        return paths
+    }
+
     static func open(videoURL: URL) {
         let sourceURL = canonicalVideoURL(videoURL)
         if let existing = openControllers.first(where: { $0.sourceURL == sourceURL }) {

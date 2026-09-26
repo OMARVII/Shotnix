@@ -759,7 +759,7 @@ extension VideoEditorModel {
             showNotice("That video is empty", symbol: "exclamationmark.triangle.fill")
             return false
         }
-        let metadata = VideoDemoSidecarStore.load(for: canonical)
+        let metadata = VideoDemoSidecarStore.load(for: canonical).map { VideoDemoSidecarStore.recordLocation(of: $0, for: canonical) }
         let kinds = VideoAudioKind.resolve(recorded: metadata?.audioTracks, channelCounts: tracks.audioChannelCounts)
         let hasPointer = metadata.map { $0.shouldRenderCursor && !$0.cursorSamples.isEmpty && !$0.nativeCursorVisible } ?? false
         let webcam = metadata?.webcam.flatMap { FileManager.default.fileExists(atPath: $0.path) ? $0 : nil }

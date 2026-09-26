@@ -257,8 +257,22 @@ extension VideoEditorModel {
         if project.hasAppendedSources {
             let audio = playback.audioSources ?? VideoAudioSource.sources(from: primary, kinds: audioKinds)
             media.layout = await VideoSourceLayout.load(project: project, primary: primary, primaryAudio: audio, primaryCamera: playback.camera, enhanceVoice: project.audio.enhanceVoice)
-            for source in project.sources where !source.isPrimary && media.appendedMetadata[source.id] == nil {
-                media.appendedMetadata[source.id] = VideoSourceLocator.resolve(source).flatMap { VideoDemoSidecarStore.load(for: $0) }
+            // Their own data (pointer paths: big), read off the main thread;
+            // a recording found somewhere new has its data point there.
+            let unread = project.sources.filter { !$0.isPrimary && media.appendedMetadata[$0.id] == nil }
+            let read = await Task.detached(priority: .userInitiated) { () -> [(id: UUID, metadata: VideoDemoRecordingMetadata?, movedTo: String?)] in
+                unread.map { source in
+                    guard let url = VideoSourceLocator.resolve(source) else { return (source.id, nil, nil) }
+                    let metadata = VideoDemoSidecarStore.load(for: url).map { VideoDemoSidecarStore.recordLocation(of: $0, for: url) }
+                    return (source.id, metadata, url.standardizedFileURL.path != source.path ? url.standardizedFileURL.path : nil)
+                }
+            }.value
+            for entry in read {
+                media.appendedMetadata[entry.id] = entry.metadata
+                // Moved: the project remembers where it is now (not an edit).
+                if let path = entry.movedTo, let index = project.sources.firstIndex(where: { $0.id == entry.id }) {
+                    project.sources[index].path = path
+                }
             }
         } else {
             media.layout = nil

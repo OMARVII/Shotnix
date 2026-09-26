@@ -99,6 +99,15 @@ extension VideoDemoOverlayEffect {
 
 // MARK: - Stored copies
 
+extension VideoDemoProject {
+    /// Pictures and songs this project uses (Shotnix's own copies).
+    var assetPaths: Set<String> {
+        var paths = Set(overlayEffects.compactMap { $0.image?.path })
+        if let music { paths.insert(music.path) }
+        return paths
+    }
+}
+
 /// Pictures and music added to a video are copied here, so the draft keeps
 /// working when the originals move.
 enum VideoAssetStore {

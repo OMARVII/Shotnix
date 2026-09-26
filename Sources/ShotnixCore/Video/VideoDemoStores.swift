@@ -74,6 +74,23 @@ enum VideoFileIdentity {
             .replacingOccurrences(of: "=", with: "")
     }
 
+    /// The ID stamped on the file, read only (nothing is written — for
+    /// looking through other files).
+    static func stampedID(of url: URL) -> String? {
+        readStamp(canonicalURL(url))
+    }
+
+    /// The size of the file last stamped at this path (it may be gone).
+    static func lastKnownSize(at url: URL) -> Int64? {
+        readPointer(for: canonicalURL(url))?.size
+    }
+
+    /// The ID an ID note (a VideoIDs file) records.
+    static func pointerID(in noteURL: URL) -> String? {
+        guard let data = try? Data(contentsOf: noteURL) else { return nil }
+        return (try? JSONDecoder().decode(Pointer.self, from: data))?.id
+    }
+
     /// Size and modification date: a different file saved under the same
     /// name has other ones.
     static func fingerprint(_ url: URL) -> (size: Int64, modified: Date)? {
@@ -143,6 +160,9 @@ struct VideoDemoDraftRecord: Codable, Equatable {
     /// the same name doesn't inherit its edits.
     var sourceSize: Int64? = nil
     var sourceModified: Date? = nil
+    /// Finds the video again after a rename or a move on the same drive
+    /// (the leftover-data cleanup looks it up).
+    var sourceBookmark: Data? = nil
 }
 
 enum VideoDemoDraftStore {
@@ -226,7 +246,8 @@ enum VideoDemoDraftStore {
                 savedAt: Date(),
                 project: project,
                 sourceSize: fingerprint?.size,
-                sourceModified: fingerprint?.modified
+                sourceModified: fingerprint?.modified,
+                sourceBookmark: try? canonical.bookmarkData(options: [], includingResourceValuesForKeys: nil, relativeTo: nil)
             )
             try encoder.encode(record).write(to: url, options: .atomic)
             // This file's drafts under older names are superseded.
