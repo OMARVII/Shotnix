@@ -241,7 +241,7 @@ extension VideoEditorModel {
         guard let primary = playback.source else { return }
         if project.hasAppendedSources {
             let audio = playback.audioSources ?? VideoAudioSource.sources(from: primary, kinds: audioKinds)
-            media.layout = await VideoSourceLayout.load(project: project, primary: primary, primaryAudio: audio, primaryCamera: playback.camera)
+            media.layout = await VideoSourceLayout.load(project: project, primary: primary, primaryAudio: audio, primaryCamera: playback.camera, enhanceVoice: project.audio.enhanceVoice)
             for source in project.sources where !source.isPrimary && media.appendedMetadata[source.id] == nil {
                 media.appendedMetadata[source.id] = VideoSourceLocator.resolve(source).flatMap { VideoDemoSidecarStore.load(for: $0) }
             }
@@ -258,6 +258,14 @@ extension VideoEditorModel {
         refreshPlayback()
         if project.music?.ducking == true { await loadSpeech(); refreshPlayback() }
         if project.hasAppendedSources { await loadSourceMedia() }
+    }
+
+    /// The added recordings' sound again (Enhance voice turned on or off,
+    /// or a cleaned-up voice became ready) — without redoing thumbnails.
+    func reloadSourceAudio() async {
+        guard project.hasAppendedSources, let primary = playback.source else { return }
+        let audio = playback.audioSources ?? VideoAudioSource.sources(from: primary, kinds: audioKinds)
+        media.layout = await VideoSourceLayout.load(project: project, primary: primary, primaryAudio: audio, primaryCamera: playback.camera, enhanceVoice: project.audio.enhanceVoice)
     }
 
     /// Filmstrip thumbnails and the waveform across every recording.

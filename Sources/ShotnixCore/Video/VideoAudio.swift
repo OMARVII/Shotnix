@@ -42,6 +42,9 @@ struct VideoAudioSource {
     var offset: Double = 0
     /// Stable identity for "did the sources change?".
     let identity: String
+    /// A cleaned-up voice's own file, kept open: a track can't be read once
+    /// its asset is gone.
+    var file: AVAsset? = nil
 
     /// The recording's tracks, with the voice replaced by its enhanced
     /// version when that's wanted and already processed.
@@ -56,7 +59,7 @@ struct VideoAudioSource {
         guard let track = try? await asset.loadTracks(withMediaType: .audio).first,
               let range = try? await track.load(.timeRange) else { return sources }
         let offset = source.audioRanges.indices.contains(index) ? source.audioRanges[index].start.seconds : 0
-        sources[index] = VideoAudioSource(track: track, available: range, kind: sources[index].kind, offset: offset, identity: url.path)
+        sources[index] = VideoAudioSource(track: track, available: range, kind: sources[index].kind, offset: offset, identity: url.path, file: asset)
         return sources
     }
 

@@ -119,6 +119,69 @@ final class VideoProjectSourcesTests: XCTestCase {
         XCTAssertGreaterThan(darkest(second), 0.6, "and not over the plain video")
     }
 
+    /// Enhance voice cleans up every recording's microphone, not only the
+    /// first one's — in the export and in the editor.
+    func testEnhanceVoiceCoversEveryRecording() async throws {
+        let a = directory.appendingPathComponent("talk-a.mp4")
+        let b = directory.appendingPathComponent("talk-b.mp4")
+        try await VideoInspection.writeColorVideo(to: a, size: CGSize(width: 640, height: 400), colors: [(yellow, 2)], toneSeconds: 2, toneFrequency: 440)
+        try await VideoInspection.writeColorVideo(to: b, size: CGSize(width: 640, height: 400), colors: [(green, 2)], toneSeconds: 2, toneFrequency: 660)
+        var project = VideoInspection.project(for: a, seconds: 2, size: CGSize(width: 640, height: 400))
+        project.ensurePrimarySource(duration: 2, kinds: [.mixed], webcam: nil, pointPixelScale: nil)
+        project.appendSource(VideoProjectSource(path: b.path, name: "talk-b.mp4", duration: 2, width: 640, height: 400, audioKinds: [.mixed]), metadata: nil)
+        let targets = project.voiceTargets(primaryKinds: [.mixed])
+        XCTAssertEqual(targets.map(\.url.lastPathComponent), ["talk-a.mp4", "talk-b.mp4"], "both voices get cleaned up")
+        XCTAssertFalse(targets.contains(where: \.isReady))
+
+        // Stand-ins for the cleaned-up voices (the real cleanup needs
+        // Apple's voice isolation): a pitch of their own for each.
+        for (target, frequency) in zip(targets, [880.0, 990.0]) {
+            try FileManager.default.createDirectory(at: target.destination.deletingLastPathComponent(), withIntermediateDirectories: true)
+            try VideoInspection.writeTone(to: target.destination, frequency: frequency, seconds: 2, amplitude: 0.4)
+        }
+        XCTAssertTrue(project.voiceTargets(primaryKinds: [.mixed]).allSatisfy(\.isReady))
+        project.audio.enhanceVoice = true
+        let output = directory.appendingPathComponent("enhanced.mp4")
+        try await VideoDemoExporter.export(project: project, destinationURL: output, settings: VideoInspection.mp4Settings())
+        let samples = try VideoInspection.audio(of: output)
+        func level(_ frequency: Double, _ from: Double, _ to: Double) -> Double {
+            VideoInspection.toneLevel(samples, frequency: frequency, from: from, to: to)
+        }
+        XCTAssertGreaterThan(level(880, 0.4, 1.6), 0.1, "the first recording plays its cleaned-up voice")
+        XCTAssertLessThan(level(440, 0.4, 1.6), 0.03, "not its raw sound")
+        XCTAssertGreaterThan(level(990, 2.4, 3.6), 0.1, "so does the added one: \(level(990, 2.4, 3.6))")
+        XCTAssertLessThan(level(660, 2.4, 3.6), 0.03, "not its raw sound: \(level(660, 2.4, 3.6))")
+    }
+
+    @MainActor
+    func testTheEditorOffersAndUsesEnhanceVoiceForAnAddedRecording() async throws {
+        // The first recording is silent; only the added one talks.
+        let a = directory.appendingPathComponent("silent-a.mp4")
+        let b = directory.appendingPathComponent("talk-b.mp4")
+        try await VideoInspection.writeColorVideo(to: a, size: CGSize(width: 640, height: 400), colors: [(yellow, 2)])
+        try await VideoInspection.writeColorVideo(to: b, size: CGSize(width: 640, height: 400), colors: [(green, 1.5)], toneSeconds: 1.5, toneFrequency: 660)
+        VideoDemoDraftStore.delete(for: a)
+        let model = VideoEditorModel(videoURL: a)
+        await model.load()
+        XCTAssertFalse(model.project.appendedSourceHasVoice)
+        let added = await model.appendVideo(b)
+        XCTAssertTrue(added)
+        XCTAssertTrue(model.project.appendedSourceHasVoice)
+        XCTAssertEqual(model.canEnhanceVoice, VideoVoiceEnhancer.isAvailable, "Enhance voice is offered for the added recording's voice")
+
+        // Once its cleaned-up voice exists, the preview plays it.
+        let target = try XCTUnwrap(model.project.voiceTargets(primaryKinds: model.audioKinds).first)
+        XCTAssertEqual(target.url.lastPathComponent, "talk-b.mp4")
+        try FileManager.default.createDirectory(at: target.destination.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try VideoInspection.writeTone(to: target.destination, frequency: 990, seconds: 1.5, amplitude: 0.4)
+        model.setStyle { $0.audio.enhanceVoice = true }
+        await model.refreshAudioSources()
+        let entry = try XCTUnwrap(model.media.layout?.entries.first { !$0.source.isPrimary })
+        XCTAssertEqual(entry.audio.first?.identity, target.destination.path, "the added recording's cleaned-up voice is in the edit")
+        model.stop()
+        VideoDemoDraftStore.delete(for: a)
+    }
+
     /// Recordings made on different screens: each pointer is drawn at its
     /// own Retina scale, and a recording of another shape keeps its pointer
     /// on its own picture.

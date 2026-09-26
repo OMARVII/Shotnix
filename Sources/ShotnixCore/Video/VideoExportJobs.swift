@@ -374,27 +374,25 @@ final class VideoExportQueue: ObservableObject {
         }
     }
 
-    /// The cleaned-up voice has to exist before it can go into the export.
-    /// Returns true when it was wanted but couldn't be made.
+    /// The cleaned-up voices (every recording's) have to exist before they
+    /// can go into the export. Returns true when one was wanted but
+    /// couldn't be made.
     private func enhanceVoiceIfNeeded(_ job: Job) async -> Bool {
         guard job.project.audio.enhanceVoice else { return false }
-        let url = job.project.sourceURL
-        let asset = AVURLAsset(url: url)
-        guard let tracks = try? await asset.loadTracks(withMediaType: .audio), !tracks.isEmpty else { return false }
+        let asset = AVURLAsset(url: job.project.sourceURL)
         var counts: [Int] = []
-        for track in tracks {
+        for track in (try? await asset.loadTracks(withMediaType: .audio)) ?? [] {
             let formats = (try? await track.load(.formatDescriptions)) ?? []
             counts.append(Int(formats.first.flatMap { CMAudioFormatDescriptionGetStreamBasicDescription($0)?.pointee.mChannelsPerFrame } ?? 2))
         }
-        let kinds = VideoAudioKind.resolve(recorded: job.recording?.audioTracks, channelCounts: counts)
-        guard let index = VideoAudioKind.voiceTrackIndex(in: kinds), tracks.indices.contains(index) else { return false }
-        let destination = VideoVoiceEnhancer.cacheURL(for: url, trackIndex: index)
-        guard !FileManager.default.fileExists(atPath: destination.path) else { return false }
+        let kinds = counts.isEmpty ? [] : VideoAudioKind.resolve(recorded: job.recording?.audioTracks, channelCounts: counts)
+        let pending = job.project.voiceTargets(primaryKinds: kinds).filter { !$0.isReady }
+        guard !pending.isEmpty else { return false }
         guard VideoVoiceEnhancer.isAvailable else { return true }
         job.state = .enhancingVoice(0)
         let bridge = JobBridge(job: job)
         do {
-            try await VideoVoiceEnhancer.enhance(asset: asset, track: tracks[index], to: destination) { value in
+            try await VideoVoiceEnhancer.enhance(pending) { value in
                 Task { await bridge.voice(value) }
             }
             return false

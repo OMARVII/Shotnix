@@ -376,14 +376,12 @@ extension VideoEditorModel {
 extension VideoEditorModel {
     var voiceTrackIndex: Int? { VideoAudioKind.voiceTrackIndex(in: audioKinds) }
     var hasSeparateVoiceAndSystem: Bool { audioKinds.contains(.microphone) && audioKinds.contains(.system) }
-    var canEnhanceVoice: Bool { voiceTrackIndex != nil && VideoVoiceEnhancer.isAvailable }
-
-    private var enhancedVoiceURL: URL? {
-        voiceTrackIndex.map { VideoVoiceEnhancer.cacheURL(for: project.sourceURL, trackIndex: $0) }
-    }
+    /// Any recording in the video has a voice to clean up.
+    var canEnhanceVoice: Bool { (voiceTrackIndex != nil || project.appendedSourceHasVoice) && VideoVoiceEnhancer.isAvailable }
 
     var enhancedVoiceReady: Bool {
-        enhancedVoiceURL.map { FileManager.default.fileExists(atPath: $0.path) } ?? false
+        let targets = project.voiceTargets(primaryKinds: audioKinds)
+        return !targets.isEmpty && targets.allSatisfy { $0.isReady }
     }
 
     /// The toggle (or an undo) changed: process if needed, then swap sources.
@@ -396,14 +394,9 @@ extension VideoEditorModel {
     @discardableResult
     func startVoiceEnhancementIfNeeded() -> Task<Bool, Never>? {
         if let voiceTask { return voiceTask }
-        guard project.audio.enhanceVoice,
-              let index = voiceTrackIndex,
-              let destination = enhancedVoiceURL,
-              !FileManager.default.fileExists(atPath: destination.path),
-              let source = playback.source,
-              source.audio.indices.contains(index) else { return nil }
-        let asset = source.asset
-        let track = source.audio[index]
+        // Every recording's voice (added recordings too), one after another.
+        let pending = project.voiceTargets(primaryKinds: audioKinds).filter { !$0.isReady }
+        guard project.audio.enhanceVoice, !pending.isEmpty else { return nil }
         voiceJob = 0
         voiceError = nil
         let report: @Sendable (Double) -> Void = { [weak self] value in
@@ -414,7 +407,7 @@ extension VideoEditorModel {
         }
         let task = Task { [weak self] () -> Bool in
             do {
-                try await VideoVoiceEnhancer.enhance(asset: asset, track: track, to: destination, progress: report)
+                try await VideoVoiceEnhancer.enhance(pending, progress: report)
                 guard let self else { return false }
                 self.voiceTask = nil
                 self.voiceJob = nil
@@ -442,6 +435,7 @@ extension VideoEditorModel {
         guard let source = playback.source else { return }
         let sources = await VideoAudioSource.resolved(from: source, kinds: audioKinds, enhanceVoice: project.audio.enhanceVoice)
         playback.setAudioSources(sources)
+        await reloadSourceAudio()
         if let moved = playback.apply(segments: segments, audio: project.audio, keepSourceTime: sourceTime(forTimeline: clock.time), extras: editExtras), !isPlaying {
             clock.time = moved
         }

@@ -83,7 +83,7 @@ enum VideoDemoExporter {
                 }
                 if let metadata = VideoDemoSidecarStore.load(for: url) { appendedMetadata[added.id] = metadata }
             }
-            extras.layout = await VideoSourceLayout.load(project: project, primary: source, primaryAudio: audioSources, primaryCamera: camera, includeCameras: project.webcam.visible)
+            extras.layout = await VideoSourceLayout.load(project: project, primary: source, primaryAudio: audioSources, primaryCamera: camera, includeCameras: project.webcam.visible, enhanceVoice: project.audio.enhanceVoice)
         }
         let allKinds = kinds + project.sources.filter { !$0.isPrimary }.flatMap(\.audioKinds)
         if let music = project.music, let file = await VideoAudioFile.load(music.url) {
