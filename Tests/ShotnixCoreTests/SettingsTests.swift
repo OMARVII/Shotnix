@@ -30,7 +30,7 @@ final class SettingsTests: XCTestCase {
         XCTAssertFalse(Settings.afterCaptureSaveAutomatically)
         XCTAssertEqual(Settings.screenshotFormat, "png")
         XCTAssertEqual(Settings.jpegQuality, 0.95, accuracy: 0.001)
-        XCTAssertEqual(Settings.recordingFPS, 30)
+        XCTAssertEqual(Settings.recordingFPS, 60)
         XCTAssertEqual(Settings.recordingQuality, "high")
         XCTAssertTrue(Settings.recordingShowsCursor)
         XCTAssertTrue(Settings.openVideoEditorAfterRecording)
@@ -40,13 +40,14 @@ final class SettingsTests: XCTestCase {
         Settings.recordingFPS = 99
         Settings.recordingQuality = "cinematic"
 
-        XCTAssertEqual(Settings.recordingFPS, 30)
+        XCTAssertEqual(Settings.recordingFPS, 60)
         XCTAssertEqual(Settings.recordingQuality, "high")
 
-        Settings.recordingFPS = 60
+        // Someone who picks 30 keeps it.
+        Settings.recordingFPS = 30
         Settings.recordingQuality = "max"
 
-        XCTAssertEqual(Settings.recordingFPS, 60)
+        XCTAssertEqual(Settings.recordingFPS, 30)
         XCTAssertEqual(Settings.recordingQuality, "max")
     }
 

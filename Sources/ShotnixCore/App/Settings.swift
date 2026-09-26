@@ -203,12 +203,14 @@ enum Settings {
 
     // MARK: – Recording
 
+    /// 60 unless someone picked 30: the editor exports at 60 fps, and a 30 fps
+    /// recording would leave scrolling and animations at half that.
     static var recordingFPS: Int {
         get {
             let value = defaults.integer(forKey: "recordingFPS")
-            return value == 60 ? 60 : 30
+            return value == 30 ? 30 : 60
         }
-        set { defaults.set(newValue == 60 ? 60 : 30, forKey: "recordingFPS") }
+        set { defaults.set(newValue == 30 ? 30 : 60, forKey: "recordingFPS") }
     }
 
     static var recordingQuality: String {

@@ -790,7 +790,7 @@ private enum MicrophoneDeviceProvider {
 }
 
 struct RecordingSettingsView: View {
-    @AppStorage("recordingFPS") var fps = 30
+    @AppStorage("recordingFPS") var fps = 60
     @AppStorage("recordingQuality") var quality = "high"
     @AppStorage("recordingShowsCursor") var showsCursor = true
     @AppStorage("recordingEditableCursor") var editableCursor = true
