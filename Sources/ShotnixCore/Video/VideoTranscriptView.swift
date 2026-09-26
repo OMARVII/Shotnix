@@ -222,6 +222,30 @@ struct VideoTranscriptEditor: NSViewRepresentable {
             }
         }
 
+        /// ⌫ (or ⌦) with only a cursor in the text: the word (or pause)
+        /// just before (after) it is cut — or put back if it already was.
+        func deleteWord(before: Bool) {
+            guard let textView, let storage = textView.textStorage, storage.length > 0 else { return }
+            let caret = textView.selectedRange().location
+            var index = before ? caret - 1 : caret
+            while index >= 0, index < storage.length {
+                let attributes = storage.attributes(at: index, effectiveRange: nil)
+                if let word = attributes[.shotnixWord] as? Int, words.indices.contains(word) {
+                    if model.isIncluded(words[word]) {
+                        model.cutWords(IndexSet(integer: word))
+                    } else {
+                        model.restoreWords(IndexSet(integer: word))
+                    }
+                    return
+                }
+                if let pause = attributes[.shotnixPause] as? Int {
+                    model.shortenPause(before: pause)
+                    return
+                }
+                index += before ? -1 : 1
+            }
+        }
+
         func restoreSelection() {
             guard let textView else { return }
             let selection = indices(in: textView.selectedRange())
@@ -266,9 +290,15 @@ final class TranscriptTextView: NSTextView {
         let modifiers = event.modifierFlags.intersection([.command, .shift, .option, .control])
         let key = event.charactersIgnoringModifiers?.lowercased() ?? ""
         switch (event.keyCode, modifiers) {
-        case (51, []) where selectedRange().length > 0, (117, []) where selectedRange().length > 0:
+        case (51, []), (117, []):
             // Words (or a pause) are selected: ⌫ cuts them from the video.
-            coordinator?.deleteSelection()
+            // With just a cursor, ⌫ takes the word before it (⌦ the one
+            // after) — never a clip selected on the timeline.
+            if selectedRange().length > 0 {
+                coordinator?.deleteSelection()
+            } else {
+                coordinator?.deleteWord(before: event.keyCode == 51)
+            }
         case (123, _), (124, _), (125, _), (126, _):
             // Arrows move through the text (⇧ extends the selection).
             super.keyDown(with: event)

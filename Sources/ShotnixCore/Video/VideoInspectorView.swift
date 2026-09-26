@@ -44,33 +44,45 @@ struct VideoInspectorView: View {
     @ObservedObject var model: VideoEditorModel
 
     var body: some View {
-        VStack(spacing: 0) {
-            if model.selection != .none {
-                VideoSelectionInspector(model: model)
-            } else if model.inspectorTab == .captions {
+        GeometryReader { proxy in
+            VStack(spacing: 0) {
                 tabBar
                 Rectangle().fill(VideoEditorTheme.hairline).frame(height: 1)
-                // The transcript scrolls itself, so this tab fills the height.
-                VideoScriptInspector(model: model)
-            } else {
-                tabBar
-                Rectangle().fill(VideoEditorTheme.hairline).frame(height: 1)
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 22) {
-                        switch model.inspectorTab {
-                        case .background: VideoBackgroundInspector(model: model)
-                        case .cursor: VideoCursorInspector(model: model)
-                        case .zoom: VideoZoomInspector(model: model)
-                        case .camera: VideoCameraInspector(model: model)
-                        case .captions: VideoCaptionsInspector(model: model)
-                        case .audio: VideoAudioInspector(model: model)
-                        }
-                    }
-                    .padding(16)
+                // The selected object's settings sit above the tab, which
+                // stays where it was (its list keeps its scroll position).
+                if model.selection != .none {
+                    // The tab keeps room to work in — the transcript most.
+                    let keep: CGFloat = model.inspectorTab == .captions ? 330 : 220
+                    VideoSelectionInspector(model: model, maxHeight: max(min(proxy.size.height * 0.6, proxy.size.height - 58 - keep), 170))
+                    Rectangle().fill(VideoEditorTheme.hairline).frame(height: 1)
                 }
+                tabContent
             }
         }
         .background(VideoEditorTheme.panel)
+    }
+
+    @ViewBuilder
+    private var tabContent: some View {
+        if model.inspectorTab == .captions {
+            // The transcript scrolls itself, so this tab fills the height.
+            VideoScriptInspector(model: model)
+                .frame(maxHeight: .infinity, alignment: .top)
+        } else {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 22) {
+                    switch model.inspectorTab {
+                    case .background: VideoBackgroundInspector(model: model)
+                    case .cursor: VideoCursorInspector(model: model)
+                    case .zoom: VideoZoomInspector(model: model)
+                    case .camera: VideoCameraInspector(model: model)
+                    case .captions: VideoCaptionsInspector(model: model)
+                    case .audio: VideoAudioInspector(model: model)
+                    }
+                }
+                .padding(16)
+            }
+        }
     }
 
     private var tabBar: some View {
@@ -645,9 +657,17 @@ struct VideoAudioInspector: View {
 
 // MARK: - Selection
 
+private struct VideoSelectionHeightKey: PreferenceKey {
+    static let defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = max(value, nextValue()) }
+}
+
 struct VideoSelectionInspector: View {
     @ObservedObject var model: VideoEditorModel
+    /// The most room it takes above the tab (it scrolls past that).
+    var maxHeight: CGFloat = .infinity
     @FocusState private var textFocused: Bool
+    @State private var contentHeight: CGFloat = 0
 
     var body: some View {
         VStack(spacing: 0) {
@@ -658,25 +678,26 @@ struct VideoSelectionInspector: View {
                     content
                 }
                 .padding(16)
+                .background(GeometryReader { proxy in
+                    Color.clear.preference(key: VideoSelectionHeightKey.self, value: proxy.size.height)
+                })
             }
+            // As tall as its settings, up to the limit.
+            .frame(height: min(max(contentHeight, 40), max(maxHeight - 51, 80)))
+            .onPreferenceChange(VideoSelectionHeightKey.self) { contentHeight = $0 }
         }
+        .background(Color.white.opacity(0.02))
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Selected \(headerTitle)")
     }
 
     private var header: some View {
         HStack(spacing: 8) {
-            Button {
-                model.selection = .none
-            } label: {
-                Image(systemName: "chevron.left")
-                    .font(.system(size: 12, weight: .bold))
-                    .frame(width: 26, height: 26)
-            }
-            .buttonStyle(VideoToolButtonStyle())
-            .help("Back (Esc)")
-            .accessibilityLabel("Back")
             Image(systemName: headerSymbol)
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(headerTint)
+                .padding(.leading, 6)
+                .accessibilityHidden(true)
             Text(headerTitle)
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(VideoEditorTheme.textPrimary)
@@ -691,6 +712,16 @@ struct VideoSelectionInspector: View {
             .buttonStyle(VideoToolButtonStyle(destructive: true))
             .help("Delete (⌫)")
             .accessibilityLabel("Delete")
+            Button {
+                model.selection = .none
+            } label: {
+                Image(systemName: "xmark")
+                    .font(.system(size: 11, weight: .bold))
+                    .frame(width: 26, height: 26)
+            }
+            .buttonStyle(VideoToolButtonStyle())
+            .help("Done (Esc)")
+            .accessibilityLabel("Done")
         }
         .padding(.horizontal, 10)
         .frame(height: 50)
