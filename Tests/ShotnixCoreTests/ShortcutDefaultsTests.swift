@@ -24,8 +24,9 @@ final class ShortcutDefaultsTests: XCTestCase {
     }
 
     func testAllExpectedShortcutsAreRegistered() {
-        // 7 screenshot (incl. timed and All Displays), 3 tools, 4 recording.
-        XCTAssertEqual(ShotnixShortcut.allCases.count, 14)
+        // 7 screenshot (incl. timed and All Displays), 3 tools, 5 recording
+        // (with pause/resume).
+        XCTAssertEqual(ShotnixShortcut.allCases.count, 15)
         XCTAssertEqual(Set(ShotnixShortcut.allCases.map(\.name.rawValue)).count, ShotnixShortcut.allCases.count)
         XCTAssertEqual(ShotnixShortcut.captureAllDisplays.section, .screenshots)
     }

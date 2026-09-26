@@ -71,30 +71,30 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         Settings.migrateOnboardingFlagIfNeeded()
         // Before the welcome window marks this install as launched.
         Settings.migrateCaptureSettingsIfNeeded()
+        Settings.migrateRecordingFPSIfNeeded()
         updateController = AppUpdateController()
         captureEngine = CaptureEngine()
         captureEngine.recordingStateChangedHandler = { [weak self] in
             self?.recordingStateDidChange()
         }
-        captureEngine.recordingFinishedHandler = { url in
+        captureEngine.recordingFinishedHandler = { url, screen in
             Settings.lastRecordingPath = url.path
-            let shouldAutoOpen = Settings.openVideoEditorAfterRecording
             let openEditor = {
                 DispatchQueue.main.async {
-                    guard FileManager.default.fileExists(atPath: url.path) else { return }
+                    guard FileManager.default.fileExists(atPath: url.path) else {
+                        // No editor after all: drop the foreground Stop took for it.
+                        ShotnixEditorActivation.releaseForeground()
+                        return
+                    }
                     VideoDemoPostRecordingPanel.dismissActive()
                     VideoDemoEditorWindowController.open(videoURL: url)
                 }
             }
-            VideoDemoPostRecordingPanel.show(
-                videoURL: url,
-                autoOpen: false,
-                openHandler: openEditor
-            )
-            if shouldAutoOpen {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) {
-                    openEditor()
-                }
+            // Straight into the editor: no panel flashing on the way.
+            if Settings.openVideoEditorAfterRecording {
+                openEditor()
+            } else {
+                VideoDemoPostRecordingPanel.show(videoURL: url, on: screen, openHandler: openEditor)
             }
         }
         hotkeyManager = HotkeyManager()
@@ -102,6 +102,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         setupMainMenu()
         setupStatusItem()
         registerHotkeys()
+        recoverInterruptedRecording()
         CaptureEngine.warmCaptureSound()
         // Pre-build the command center's SwiftUI tree so the first menu open
         // is as instant as every later one.
@@ -151,12 +152,28 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     // MARK: – Recording indicator
 
+    /// A recording cut short by a crash or power loss is still on disk (it's
+    /// written in fragments): point the user at it.
+    private func recoverInterruptedRecording() {
+        Task { @MainActor in
+            guard let url = await RecordingRecovery.recoverInterruptedRecording() else { return }
+            Settings.lastRecordingPath = url.path
+            ToastWindow.show(
+                message: "Recovered your interrupted recording “\(url.lastPathComponent)”. Click to open it.",
+                duration: 7,
+                action: { VideoDemoEditorWindowController.open(videoURL: url) }
+            )
+        }
+    }
+
     /// While recording, the status item becomes a red dot + elapsed timer and
     /// a left click stops the recording (right click still opens the menu).
+    /// Paused shows a pause glyph; after Stop it reads "Saving…" until the
+    /// file is ready.
     private func recordingStateDidChange() {
-        if captureEngine.recordingElapsedSeconds != nil {
-            guard recordingIndicatorTimer == nil else { return }
+        if captureEngine.recordingElapsedSeconds != nil || captureEngine.recordingIsSaving {
             updateRecordingIndicator()
+            guard recordingIndicatorTimer == nil else { return }
             let timer = Timer(timeInterval: 0.5, repeats: true) { [weak self] _ in
                 Task { @MainActor in self?.updateRecordingIndicator() }
             }
@@ -172,18 +189,29 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func updateRecordingIndicator() {
         guard let button = statusItem.button else { return }
         guard let elapsed = captureEngine.recordingElapsedSeconds else {
-            restoreIdleStatusItem()
+            if captureEngine.recordingIsSaving {
+                statusItem.length = NSStatusItem.variableLength
+                button.image = nil
+                button.attributedTitle = NSAttributedString(string: "Saving…", attributes: [
+                    .font: NSFont.systemFont(ofSize: 12, weight: .semibold),
+                    .foregroundColor: NSColor.secondaryLabelColor,
+                ])
+                button.toolTip = "Saving the recording"
+            } else {
+                restoreIdleStatusItem()
+            }
             return
         }
         let total = Int(elapsed)
         let time = String(format: "%d:%02d", total / 60, total % 60)
+        let paused = captureEngine.recordingIsPaused
         statusItem.length = NSStatusItem.variableLength
         button.image = nil
         let title = NSMutableAttributedString(
-            string: "● ",
+            string: paused ? "❚❚ " : "● ",
             attributes: [
-                .font: NSFont.systemFont(ofSize: 10, weight: .bold),
-                .foregroundColor: NSColor.systemRed,
+                .font: NSFont.systemFont(ofSize: paused ? 9 : 10, weight: .bold),
+                .foregroundColor: paused ? NSColor.systemYellow : NSColor.systemRed,
                 .baselineOffset: 1.5,
             ]
         )
@@ -195,7 +223,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             ]
         ))
         button.attributedTitle = title
-        button.toolTip = "Recording — click to stop"
+        button.toolTip = "\(paused ? "Recording paused" : "Recording") — click to stop (\(RecordingStopHotkey.displayText))"
     }
 
     private func restoreIdleStatusItem() {
@@ -601,7 +629,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc private func toggleCommandCenter(_ sender: Any?) {
         // While recording, a left click on the red timer stops the recording
         // immediately; the menu stays reachable via right click.
-        if captureEngine.recordingActive, NSApp.currentEvent?.type == .leftMouseUp {
+        if captureEngine.recordingElapsedSeconds != nil, NSApp.currentEvent?.type == .leftMouseUp {
             stopRecording()
             return
         }
@@ -644,6 +672,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                     action(id: "record.window", title: "Record Window", symbol: "macwindow.badge.plus", shortcut: .shotnixRecordWindow, isEnabled: captureEngine?.recordingActionsEnabled ?? false) { [weak self] in self?.recordWindow() },
                     action(id: "record.fullscreen", title: "Record Fullscreen", symbol: "rectangle.fill.on.rectangle.fill", shortcut: .shotnixRecordFullscreen, isEnabled: captureEngine?.recordingActionsEnabled ?? false) { [weak self] in self?.recordFullscreen() },
                 ]
+                if captureEngine?.recordingElapsedSeconds != nil {
+                    let paused = captureEngine?.recordingIsPaused == true
+                    recordActions.append(action(
+                        id: "record.pause",
+                        title: paused ? "Resume Recording" : "Pause Recording",
+                        symbol: paused ? "play.circle" : "pause.circle",
+                        shortcut: .shotnixPauseRecording
+                    ) { [weak self] in self?.captureEngine.togglePauseRecording() })
+                }
                 // Stop/Cancel only exists while there is something to stop —
                 // a permanently visible disabled red row was pure noise.
                 if captureEngine?.recordingStopEnabled == true {

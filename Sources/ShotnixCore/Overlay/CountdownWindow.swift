@@ -222,6 +222,11 @@ final class CountdownWindow: NSWindow {
         finish(captured: false)
     }
 
+    /// Same as Esc: stops the countdown and reports it cancelled.
+    func cancel() {
+        finish(captured: false)
+    }
+
     private func finish(captured: Bool) {
         guard !didFinish else { return }
         didFinish = true

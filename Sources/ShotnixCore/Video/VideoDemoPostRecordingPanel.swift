@@ -1,32 +1,38 @@
 import AppKit
 
+/// "Recording saved" with Edit / Reveal / Copy Path, shown when the editor
+/// doesn't open by itself. A non-activating panel: it takes keys (Esc
+/// closes it) once clicked, without pulling focus from the app in front.
 @MainActor
-final class VideoDemoPostRecordingPanel: NSWindow {
+final class VideoDemoPostRecordingPanel: NSPanel {
     private static var activePanel: VideoDemoPostRecordingPanel?
-    private var autoOpenWorkItem: DispatchWorkItem?
     private var dismissTimer: Timer?
+    private var keyMonitor: Any?
     private let openHandler: () -> Void
     private let videoURL: URL
 
-    static func show(videoURL: URL, autoOpen: Bool, openHandler: @escaping () -> Void) {
+    static func show(videoURL: URL, on screen: NSScreen? = nil, openHandler: @escaping () -> Void) {
         activePanel?.close()
-        let panel = VideoDemoPostRecordingPanel(videoURL: videoURL, autoOpen: autoOpen, openHandler: openHandler)
+        let panel = VideoDemoPostRecordingPanel(videoURL: videoURL, openHandler: openHandler)
         activePanel = panel
-        panel.show()
+        panel.show(on: screen)
     }
 
     static func dismissActive() {
         activePanel?.close()
     }
 
-    private init(videoURL: URL, autoOpen: Bool, openHandler: @escaping () -> Void) {
+    /// The panel on screen, for tests.
+    static var visiblePanel: VideoDemoPostRecordingPanel? { activePanel }
+
+    private init(videoURL: URL, openHandler: @escaping () -> Void) {
         self.openHandler = openHandler
         self.videoURL = videoURL
 
         let frame = NSRect(x: 0, y: 0, width: 342, height: 112)
         super.init(
             contentRect: frame,
-            styleMask: [.borderless],
+            styleMask: [.borderless, .nonactivatingPanel],
             backing: .buffered,
             defer: false
         )
@@ -37,6 +43,8 @@ final class VideoDemoPostRecordingPanel: NSWindow {
         backgroundColor = .clear
         isOpaque = false
         hasShadow = true
+        hidesOnDeactivate = false
+        isFloatingPanel = true
 
         let root = NSVisualEffectView(frame: frame)
         root.material = .hudWindow
@@ -54,6 +62,19 @@ final class VideoDemoPostRecordingPanel: NSWindow {
         title.frame = NSRect(x: 16, y: 76, width: 190, height: 18)
         root.addSubview(title)
 
+        // With the overlay timeout set to "Never" this is the only way out.
+        let close = NSButton(frame: NSRect(x: frame.width - 34, y: frame.height - 34, width: 22, height: 22))
+        close.isBordered = false
+        close.title = ""
+        close.image = NSImage(systemSymbolName: "xmark.circle.fill", accessibilityDescription: "Close")?
+            .withSymbolConfiguration(NSImage.SymbolConfiguration(pointSize: 14, weight: .semibold))
+        close.imagePosition = .imageOnly
+        close.contentTintColor = .white.withAlphaComponent(0.5)
+        close.toolTip = "Close (Esc)"
+        close.target = self
+        close.action = #selector(closeTapped)
+        root.addSubview(close)
+
         let detail = NSTextField(labelWithString: videoURL.lastPathComponent)
         detail.font = .systemFont(ofSize: 10.5, weight: .semibold)
         detail.textColor = .white.withAlphaComponent(0.48)
@@ -61,7 +82,7 @@ final class VideoDemoPostRecordingPanel: NSWindow {
         detail.frame = NSRect(x: 16, y: 58, width: 310, height: 16)
         root.addSubview(detail)
 
-        let edit = button(title: autoOpen ? "Opening Editor" : "Edit Video", symbol: "film.stack", x: 16, width: 112)
+        let edit = button(title: "Edit Video", symbol: "film.stack", x: 16, width: 112)
         edit.target = self
         edit.action = #selector(editVideo)
         root.addSubview(edit)
@@ -80,33 +101,44 @@ final class VideoDemoPostRecordingPanel: NSWindow {
         // The panel has a fixed size, so a one-time tracking area is enough.
         let tracking = NSTrackingArea(rect: root.bounds, options: [.activeAlways, .mouseEnteredAndExited], owner: self)
         root.addTrackingArea(tracking)
-
-        if autoOpen {
-            let workItem = DispatchWorkItem { [weak self] in
-                self?.editVideo()
-            }
-            autoOpenWorkItem = workItem
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.65, execute: workItem)
-        }
     }
 
+    override var canBecomeKey: Bool { true }
+
     override func close() {
-        autoOpenWorkItem?.cancel()
-        autoOpenWorkItem = nil
         dismissTimer?.invalidate()
         dismissTimer = nil
+        if let keyMonitor {
+            NSEvent.removeMonitor(keyMonitor)
+            self.keyMonitor = nil
+        }
         super.close()
         if Self.activePanel === self {
             Self.activePanel = nil
         }
     }
 
-    private func show() {
-        if let screen = NSScreen.main {
+    // Esc once the panel has been clicked (it's key then).
+    override func cancelOperation(_ sender: Any?) {
+        close()
+    }
+
+    /// Top-right of the screen the recording was made on.
+    private func show(on screen: NSScreen?) {
+        if let screen = screen ?? NSScreen.main {
             let visible = screen.visibleFrame
             setFrameOrigin(NSPoint(x: visible.maxX - frame.width - 18, y: visible.maxY - frame.height - 18))
         }
         orderFrontRegardless()
+        // Esc while Shotnix is in front, whichever of its windows is key
+        // (unless that window handles Esc itself: editors, sheets).
+        keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
+            guard let self, event.keyCode == 53,
+                  event.modifierFlags.intersection([.command, .option, .control, .shift]).isEmpty,
+                  NSApp.keyWindow == nil || NSApp.keyWindow === self else { return event }
+            self.close()
+            return nil
+        }
         // Don't start the countdown while the cursor already sits over the panel —
         // mouseExited will arm it once the user moves away.
         if !frame.contains(NSEvent.mouseLocation) {
@@ -152,9 +184,11 @@ final class VideoDemoPostRecordingPanel: NSWindow {
     }
 
     @objc private func editVideo() {
-        autoOpenWorkItem?.cancel()
-        autoOpenWorkItem = nil
         openHandler()
+        close()
+    }
+
+    @objc private func closeTapped() {
         close()
     }
 

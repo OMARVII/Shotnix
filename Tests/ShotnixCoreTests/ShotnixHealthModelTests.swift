@@ -95,13 +95,14 @@ final class ShotnixHealthModelTests: XCTestCase {
         }
         let optionalOff = ShotnixShortcut.optionalUnassignedCount { _ in nil }
 
-        XCTAssertEqual(ShotnixShortcut.allCases.count, 14)
+        XCTAssertEqual(ShotnixShortcut.allCases.count, 15)
         XCTAssertEqual(ShotnixShortcut.requiredShortcutCount, 5)
         XCTAssertEqual(required, 2)
-        XCTAssertEqual(optionalOff, 9)
+        XCTAssertEqual(optionalOff, 10)
         XCTAssertFalse(ShotnixShortcut.captureArea.isOptional)
         XCTAssertTrue(ShotnixShortcut.recordArea.isOptional)
         XCTAssertTrue(ShotnixShortcut.stopRecording.isOptional)
+        XCTAssertTrue(ShotnixShortcut.pauseRecording.isOptional)
         XCTAssertTrue(ShotnixShortcut.captureTimed.isOptional)
         XCTAssertTrue(ShotnixShortcut.captureText.isOptional)
         XCTAssertTrue(ShotnixShortcut.captureScrolling.isOptional)

@@ -544,7 +544,7 @@ struct ShortcutsSettingsView: View {
 
             ShortcutSection(title: "Recording", shortcuts: recordingShortcuts)
 
-            PreferenceFootnote(text: "Recording shortcuts are unassigned by default — click a field to set one. Stop Recording also cancels recording setup.")
+            PreferenceFootnote(text: "Recording shortcuts are unassigned by default — click a field to set one. Stop Recording also cancels recording setup. While recording, \(RecordingStopHotkey.displayText) always stops it, from any app.")
 
             ShortcutSection(title: "Advanced Tools", shortcuts: toolShortcuts)
 
@@ -809,14 +809,31 @@ struct RecordingSettingsView: View {
     @AppStorage("recordingKeystrokes") var keystrokes = false
     @AppStorage("recordingCamera") var camera = false
     @AppStorage("recordingCameraDeviceID") var cameraDeviceID = ""
+    @AppStorage("recordingCountdownSeconds") var countdown = 0
     @State private var keystrokeAccess = VideoKeystrokeFormatter.isAllowed
 
     private var microphones: [MicrophoneOption] { MicrophoneDeviceProvider.options }
 
+    /// A full-display recording of the main screen at the chosen settings.
+    private var sizeEstimate: String {
+        let screen = NSScreen.main ?? NSScreen.screens.first
+        let scale = screen?.backingScaleFactor ?? 2
+        let size = screen?.frame.size ?? CGSize(width: 1512, height: 982)
+        let bytes = RecordingSizeEstimate.bytesPerMinute(
+            pixelWidth: Int(size.width * scale),
+            pixelHeight: Int(size.height * scale),
+            fps: fps,
+            quality: RecordingQuality(rawValue: quality) ?? .high,
+            systemAudio: systemAudio,
+            microphone: microphone
+        )
+        return "Full screen: \(RecordingSizeEstimate.label(bytesPerMinute: bytes))"
+    }
+
     var body: some View {
         PreferencesPane {
             PreferenceSection("Video") {
-                PreferenceRow("Quality") {
+                PreferenceRow("Quality", detail: sizeEstimate) {
                     PreferenceMenuSelector(
                         selection: $quality,
                         options: [
@@ -836,6 +853,17 @@ struct RecordingSettingsView: View {
                             PreferenceOption(value: 30, title: "30 fps"),
                             PreferenceOption(value: 60, title: "60 fps")
                         ]
+                    )
+                }
+
+                PreferenceDivider()
+
+                PreferenceRow("Countdown") {
+                    PreferenceMenuSelector(
+                        selection: $countdown,
+                        options: Settings.recordingCountdownChoices.map {
+                            PreferenceOption(value: $0, title: $0 == 0 ? "Off" : "\($0) seconds")
+                        }
                     )
                 }
 
@@ -902,7 +930,7 @@ struct RecordingSettingsView: View {
                 keystrokeAccess = VideoKeystrokeFormatter.isAllowed
             }
 
-            PreferenceFootnote(text: "Editable cursor records the pointer separately so the editor can smooth it, resize it, and keep it crisp when zoomed — the video editor adds it back on export (the raw recording file has no pointer). Auto-zoom makes a fresh recording open already produced: the camera zooms to follow your clicks. Keyboard shortcuts records only ⌘, ⌃ and ⌥ combos (plus Esc and F-keys) so the editor can show them as keycaps — plain typing is never recorded; macOS asks for Accessibility access. High quality is the default; Max keeps more detail but creates larger files.")
+            PreferenceFootnote(text: "Editable cursor records the pointer separately so the editor can smooth it, resize it, and keep it crisp when zoomed — the video editor adds it back on export (the raw recording file has no pointer). Auto-zoom makes a fresh recording open already produced: the camera zooms to follow your clicks. Keyboard shortcuts records only ⌘, ⌃ and ⌥ combos (plus Esc and F-keys) so the editor can show them as keycaps — plain typing is never recorded; macOS asks for Accessibility access. High quality is the default; Max keeps more detail but creates larger files. The countdown gives you a moment after pressing Record; Esc cancels it. Stop a recording with \(RecordingStopHotkey.displayText) from any app — plain Esc stays with the app you're recording.")
 
             PreferenceSection("Audio") {
                 PreferenceRow("Record system audio") {

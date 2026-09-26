@@ -22,6 +22,7 @@ enum ShotnixShortcut: CaseIterable, Identifiable {
     case recordWindow
     case recordFullscreen
     case stopRecording
+    case pauseRecording
 
     var id: String { name.rawValue }
 
@@ -41,6 +42,7 @@ enum ShotnixShortcut: CaseIterable, Identifiable {
         case .recordWindow: return "Record Window"
         case .recordFullscreen: return "Record Fullscreen"
         case .stopRecording: return "Stop Recording"
+        case .pauseRecording: return "Pause / Resume Recording"
         }
     }
 
@@ -50,7 +52,7 @@ enum ShotnixShortcut: CaseIterable, Identifiable {
             return .screenshots
         case .captureText, .captureScrolling, .openCommandCenter:
             return .tools
-        case .recordArea, .recordWindow, .recordFullscreen, .stopRecording:
+        case .recordArea, .recordWindow, .recordFullscreen, .stopRecording, .pauseRecording:
             return .recording
         }
     }
@@ -71,7 +73,14 @@ enum ShotnixShortcut: CaseIterable, Identifiable {
         case .recordWindow: return .shotnixRecordWindow
         case .recordFullscreen: return .shotnixRecordFullscreen
         case .stopRecording: return .shotnixStopRecording
+        case .pauseRecording: return .shotnixPauseRecording
         }
+    }
+
+    /// The assigned keys ("⌥⌘P"), nil while unassigned.
+    @MainActor
+    var assignedShortcutText: String? {
+        KeyboardShortcuts.getShortcut(for: name)?.description
     }
 
     static var allNames: [KeyboardShortcuts.Name] {
@@ -109,6 +118,7 @@ extension KeyboardShortcuts.Name {
     static let shotnixRecordWindow = Self("recordWindow")
     static let shotnixRecordFullscreen = Self("recordFullscreen")
     static let shotnixStopRecording = Self("stopRecording")
+    static let shotnixPauseRecording = Self("pauseRecording")
 }
 
 // MARK: – Legacy default migration
