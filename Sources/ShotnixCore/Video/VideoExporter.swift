@@ -141,7 +141,7 @@ enum VideoDemoExporter {
             }
         }
         defer { watcher.cancel() }
-        defer { try? FileManager.default.removeItem(at: temporaryURL) }
+        defer { VideoExportFiles.cleanUp(temporaryURL) }
 
         let warnings: [String]
         if settings.format == .gif {

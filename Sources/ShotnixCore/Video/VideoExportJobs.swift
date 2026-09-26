@@ -43,6 +43,18 @@ enum VideoExportFiles {
         )
     }
 
+    /// Removes the working file and the scratch files the writer keeps
+    /// beside it ("….sb-…", made while it moves the index to the front).
+    static func cleanUp(_ temporary: URL) {
+        let fileManager = FileManager.default
+        try? fileManager.removeItem(at: temporary)
+        let folder = temporary.deletingLastPathComponent()
+        let prefix = temporary.lastPathComponent + ".sb-"
+        for name in (try? fileManager.contentsOfDirectory(atPath: folder.path)) ?? [] where name.hasPrefix(prefix) {
+            try? fileManager.removeItem(at: folder.appendingPathComponent(name))
+        }
+    }
+
     /// Puts the finished file in place. An existing file is replaced in one
     /// step, and only once the new one is complete.
     static func replace(_ destination: URL, with temporary: URL) throws {
