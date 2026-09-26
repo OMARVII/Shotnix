@@ -9,7 +9,7 @@ final class VideoSwatchCache: ObservableObject {
     @Published private(set) var pictures: [String: NSImage] = [:]
     private var images: [VideoBackground: NSImage] = [:]
     private var loading: Set<String> = []
-    private(set) lazy var systemWallpapers: [URL] = VideoBackgroundCatalog.systemWallpapers()
+    lazy var systemWallpapers: [URL] = VideoBackgroundCatalog.systemWallpapers()
 
     func image(for background: VideoBackground) -> NSImage? {
         if let cached = images[background] { return cached }

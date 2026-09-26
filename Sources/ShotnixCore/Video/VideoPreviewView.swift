@@ -164,6 +164,8 @@ final class VideoPreviewRenderer: NSObject, MTKViewDelegate {
         var options = VideoFrameRenderer.Options(frameRate: 60)
         options.rawSource = model.isCropping
         options.solidOverlay = Self.editedOverlay(model)
+        // Like the live preview: aiming a zoom shows the whole frame.
+        if model.isAimingZoom && !model.isCropping { options.cameraOverride = .rest }
         if model.plan.webcam != nil, let camera = model.playback.cameraPicture(at: time) {
             options.webcamFrame = camera.image
             options.webcamMask = camera.mask
