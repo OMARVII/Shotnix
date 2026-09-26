@@ -185,15 +185,17 @@ final class RecordingEngine: NSObject {
             prepared.streamConfig.queueDepth = RecordingVideoFormat.queueDepth(width: format.width, height: format.height)
 
             let videoBitrate = configuration.quality.bitrate(width: format.width, height: format.height, fps: configuration.fps, codec: format.codec)
-            let rate = RecordingSizeEstimate.bytesPerMinute(
+            let screenRate = RecordingSizeEstimate.bytesPerMinute(
                 videoBitrate: videoBitrate,
                 systemAudio: configuration.recordsSystemAudio,
                 microphone: configuration.recordsMicrophone
-            ) / 60 + (configuration.recordsCamera ? 420_000 : 0)
+            ) / 60
+            let cameraRate: Int64 = 420_000
             // Room for this recording's own stop threshold and then some, or
-            // it would stop itself right after starting.
+            // it would stop itself right after starting. The camera counts if
+            // it's asked for: whether it starts is only known later.
             let saveFolder = URL(fileURLWithPath: Settings.autoSaveLocation, isDirectory: true)
-            let required = RecordingDiskSpace.requiredToStart(bytesPerSecond: rate)
+            let required = RecordingDiskSpace.requiredToStart(bytesPerSecond: screenRate + (configuration.recordsCamera ? cameraRate : 0))
             if let available = await Self.availableCapacity(at: saveFolder), available < required {
                 throw RecordingError.notEnoughSpace(required: required, available: available)
             }
@@ -244,7 +246,7 @@ final class RecordingEngine: NSObject {
             followedWindowHidden = prepared.hiddenWindows
             followedWindowFrame = prepared.window?.frame
             outputPixelSize = CGSize(width: format.width, height: format.height)
-            bytesPerSecond = rate
+            bytesPerSecond = screenRate + (configuration.recordsCamera ? cameraRate : 0)
             didWarnLowDiskSpace = false
             didWarnWindowClosed = false
 
