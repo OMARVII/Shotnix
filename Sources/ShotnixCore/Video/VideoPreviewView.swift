@@ -364,7 +364,7 @@ struct VideoStageInteractionLayer: View {
     /// The frontmost annotation on screen under `point` (view points).
     func annotation(at point: CGPoint) -> VideoDemoOverlayEffect? {
         // Drawn lowest lane first: the last drawn is in front.
-        for overlay in model.plan.overlays.reversed() where clock.time >= overlay.start - 0.05 && clock.time <= overlay.end + 0.05 {
+        for overlay in model.plan.overlays.reversed() where overlay.isShowing(at: clock.time, margin: 0.05) {
             let effect = overlay.effect
             if VideoAnnotationHitTest.hits(effect, rect: viewRect(effect), arrow: effect.kind == .arrow ? viewArrow(effect) : nil, point: point) {
                 return effect
@@ -518,7 +518,7 @@ struct VideoStageInteractionLayer: View {
     private func isVisibleNow(_ effect: VideoDemoOverlayEffect) -> Bool {
         // The span the renderer draws, after cuts.
         guard let span = model.plan.overlays.first(where: { $0.effect.id == effect.id }) else { return false }
-        return clock.time >= span.start - 0.05 && clock.time <= span.end + 0.05
+        return span.isShowing(at: clock.time, margin: 0.05)
     }
 
     // MARK: Geometry
