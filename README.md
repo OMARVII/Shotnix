@@ -17,7 +17,7 @@
 ---
 
 > [!NOTE]
-> **Shotnix is in beta (v0.20.3-beta).** Official downloads are signed and notarized with Apple Developer ID. The source code is available here for review and local builds.
+> **Shotnix is in beta (v0.24.0-beta).** Official downloads are signed and notarized with Apple Developer ID. The source code is available here for review and local builds.
 
 <p align="center">
   <img src="assets/screenshots/shotnix-annotation-editor-demo.png" width="720" alt="Shotnix annotation editor demo" />
@@ -35,22 +35,26 @@ Visit **[shotnix.com](https://shotnix.com/)** for the latest download and projec
 - **Area** — drag to select any region
 - **Window** — click any window to capture it in isolation, with optional drop shadow and transparent padding
 - **Fullscreen** — grab the entire screen instantly
+- **All displays** — every connected display at once, one image each
 - **Previous area** — re-capture the last selected region with one shortcut
-- **Scrolling** — capture content beyond the visible area
+- **Adjustable selection** — hold Shift as you let go (or make it the default in Settings) to fine-tune the edges with the mouse or arrow keys, then press Return
+- **Scrolling** — scroll a long page and Shotnix stitches it into one tall image; press Esc or the shortcut again to stop
 - **Timed** — a cancellable 3/5/10-second countdown before the shot
-- **Screen recording** — record an area, window, or display to MP4 with system audio, microphone audio, cursor control, quality, and FPS options
-- **Video editor** — turn any recording into a polished demo: zooms that follow your cursor, the real macOS cursor redrawn smoothly, backgrounds, annotations, your camera as its own layer (with layouts), captions and edit-by-text made on your Mac, cleaner sound, vertical videos, crop, and export to MP4 or GIF
-- **OCR** — extract and copy text from any part of the screen
+- **Screen recording** — record an area, window, or display to MP4 at 60 fps with system audio, microphone audio, and your camera. Pause and resume, discard a take, or start after a 3/5/10-second countdown. Window recordings follow the window and include its menus and sheets. Recordings survive crashes and are recovered on the next launch, a microphone that drops out is replaced without shifting the audio, and 5K and larger displays record in HEVC. Stop from anywhere with `Ctrl + Cmd + Esc`
+- **Video editor** — turn any recording into a polished demo: zooms that follow your cursor, the real macOS cursor redrawn smoothly, backgrounds, annotations (text, arrows, highlights, blur, spotlight), your camera as its own layer (with layouts), captions in four looks and edit-by-text made on your Mac (with on-device translation on macOS 15+), background music that ducks under your voice, logos and image overlays, intro and outro cards, transitions, several recordings in one video, cleaner sound, vertical videos, crop, and exports to MP4 or GIF that run in the background
+- **OCR** — extract text from any part of the screen, keeping columns and tables in reading order; links in the result are clickable, and you choose the recognition languages
 - **QR and barcode scanning** — decode QR, Code 128, EAN, UPC, Aztec, Data Matrix, PDF417 and more from a selected screen area
 
 **Annotate and edit**
-- Arrows, rectangles, ellipses, lines, freehand drawing
-- Text annotations with customizable font and color
-- Highlighter for emphasizing content
-- Presentation backdrops for polished screenshot exports, including image presets and custom images
-- Blur and pixelate for redacting sensitive info
+- Arrows, rectangles (square or rounded corners), ellipses, lines, freehand drawing
+- Text and callout bubbles: any size from 10 to 96 pt, bold or regular, several lines; double-click to edit again
+- Highlighter and freehand highlighter for emphasizing content
+- Spotlight to dim everything except what matters
+- Blur and pixelate with adjustable strength that always covers the whole box, on any display
 - Numbered markers for step-by-step guides
-- Crop to resize after capture
+- Presentation backdrops for polished screenshot exports, including image presets and custom images
+- Crop that you can undo or change later, with annotations still editable
+- Saves at the capture's full resolution, whichever display the editor is on, and asks before closing or quitting with unsaved edits
 
 **Stay in flow**
 - Quick access overlay after every capture — hover to reveal controls (copy, save, edit, pin, close)
@@ -61,19 +65,21 @@ Visit **[shotnix.com](https://shotnix.com/)** for the latest download and projec
 - Right-click context menu on overlay
 - Spring animations and micro-interactions for a premium feel
 - Pin screenshots to float on your desktop (draggable, resizable)
-- Full capture history with grid browser, search by the text inside screenshots, and a 7-day undo for deletes
+- Full capture history with a grid browser: search by the text inside screenshots (just start typing), filter by capture type, select with the keyboard, drag captures out as files, and undo deletes with ⌘Z
+- History keeps captures forever by default, or only the last 7, 30, or 90 days (or the last 100, 500, or 1,000 captures); it shows how much space it uses and can clean up on demand
+- Edits from the annotation editor appear in History, and the original capture is kept beside them
 - Global hotkeys that work from anywhere
 
 **Configurable**
 - Tabbed settings window (General, Shortcuts, Screenshots, Recording, About)
 - Customizable global hotkeys with one-click default reset
 - Sparkle-powered in-app update checks for official builds
-- Export as PNG, JPEG, or WebP, with a JPEG quality slider
-- Auto-save location picker
+- Export as PNG or JPEG, with a JPEG quality slider (WebP too, on Macs whose system can write it)
+- Auto-save location picker; captures taken in the same second get their own numbered files
 - After-capture auto-actions (auto-copy, auto-save)
 - Configurable overlay position (left or right) and timeout
 - Capture sound effects (toggleable)
-- Hide desktop icons during capture
+- Hide desktop icons during capture (without restarting Finder)
 - Launch at login
 - What's New changelog in the About tab
 
@@ -105,8 +111,8 @@ This compiles a release build, assembles the app bundle, signs the binary locall
 | `Cmd + Shift + 5` | Window capture |
 | `Cmd + Shift + 3` / `Cmd + Shift + 6` | Fullscreen capture |
 | `Cmd + Shift + 7` | Previous area capture |
-| `Cmd + Shift + O` | OCR text extraction |
-| `Cmd + Shift + S` | Scrolling capture |
+
+Scrolling capture, text capture (OCR), all displays, timed capture, and the recording actions have no shortcut by default, so Shotnix never takes over keys other apps use (`Cmd + Shift + S` is Save As almost everywhere). Assign any of them in **Settings → Shortcuts**. Installs from before 0.24 keep the `Cmd + Shift + S` and `Cmd + Shift + O` shortcuts they had.
 
 **On the quick access overlay:**
 
@@ -116,6 +122,13 @@ This compiles a release build, assembles the app bundle, signs the binary locall
 | `Cmd + S` | Save to file |
 | `Cmd + E` | Open in annotation editor |
 | `Esc` | Dismiss overlay |
+
+**While recording:**
+
+| Shortcut | Action |
+|---|---|
+| `Ctrl + Cmd + Esc` | Stop recording (from any app) |
+| `Esc` | Stop recording while Shotnix is in front |
 
 ## Architecture
 
@@ -127,7 +140,7 @@ Sources/
 └── ShotnixCore/
     ├── App/           Application lifecycle, menu bar, preferences
     ├── Capture/       Screenshot engine (ScreenCaptureKit + CGWindow fallback)
-    ├── Annotation/    Editor with 12 drawing tools and undo/redo
+    ├── Annotation/    Editor with 15 tools and undo/redo
     ├── History/       Persistent capture history (~Library/Application Support/)
     ├── Hotkeys/       Customizable global shortcuts
     ├── OCR/           Text recognition via Vision framework
@@ -163,6 +176,14 @@ The app still keeps dependencies intentionally narrow.
 - [x] Delay/timer capture (3s, 5s, 10s)
 - [x] Auto-update mechanism
 - [x] Developer signing + notarization workflow
+- [x] Stacked post-capture thumbnails
+- [x] Video editor: zooms, smooth cursor, backgrounds, camera, captions, edit by text, export to MP4/GIF
+- [x] Adjustable selection, a real scrolling-capture stitcher, and layout-aware OCR
+- [x] New annotation tools: spotlight, callout, freehand highlighter, rounded rectangles
+- [x] History retention, cleanup, and type filters
+- [x] Pause/resume, discard, and crash-safe recordings
+- [x] Video editor: music, image overlays, title cards, transitions, multi-recording projects, caption looks and translation
+- [ ] Localization
 
 ## Contributing
 

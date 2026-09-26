@@ -126,11 +126,11 @@ Everything here is shippable in one or two sessions. Do the reliability fixes fi
 - [x] **True window capture with shadow/padding/styling** — M / HIGH ✅ 2026-09-12
   Window mode now carries the clicked window's CGWindowID through the selection overlay and captures via `SCContentFilter(desktopIndependentWindow:)` — isolated window, no overlap bleed-through — composited over transparent padding with a drawn drop shadow (toggle in Preferences → Screenshots). Falls back to the region crop on macOS 13 or when the window can't be resolved. Also fixed: window-mode selection rects were view-local, not global (wrong region on secondary displays).
 
-- [ ] **Pause/resume recording (+ cancel/discard on the HUD, persist HUD position)** — M / HIGH
+- [x] **Pause/resume recording (+ cancel/discard on the HUD, persist HUD position)** — M / HIGH ✅ 2026-09-26 *(pause/resume from the HUD, menu, or a shortcut; discard with confirmation; HUD position remembered)*
   Frames are already retimed against `firstPresentationTime` — pause = drop samples while paused + subtract accumulated pause duration in `relativePresentationTime`.
   `RecordingEngine.swift:26-27, 384-387` · `RecordingHUDWindow.swift:84-89, 113-125`
 
-- [ ] **Editable text annotations + real text options** — M / HIGH
+- [x] **Editable text annotations + real text options** — M / HIGH ✅ 2026-09-26 *(10–96 pt, bold or regular, multi-line, double-click to re-edit)*
   Committed text can never be edited (no double-click path); entry is a fixed 200×30 single-line field hardcoded to bold 18pt. Add double-click re-edit, font size/style controls, multi-line.
   `AnnotationCanvas.swift:730-758, 359-389` · `AnnotationObject.swift:516`
 
@@ -141,15 +141,15 @@ Everything here is shippable in one or two sessions. Do the reliability fixes fi
 - [x] **Move sample-buffer appends off the main actor** — M / HIGH ✅ 2026-09-12
   New `RecordingWriterCore` (@unchecked Sendable, writerQueue-confined) owns all per-buffer state; appends run where SCStream/mic deliver. Main actor keeps lifecycle only, syncs via `writerQueue.sync` before markAsFinished, mirrors the first-frame anchor for HUD duration. Only the mic-level float hops to main.
 
-- [ ] **Window recordings follow window move/resize** — M / HIGH
+- [x] **Window recordings follow window move/resize** — M / HIGH ✅ 2026-09-26 *(follows moves, resizes, and display changes; includes the app's menus and sheets)*
   Source rect resolved once at start; `updateConfiguration` never called — move the window mid-demo and it slides out of frame (cursor metadata `captureRect` goes stale the same way).
   `RecordingEngine.swift:267-295, 341` · `VideoDemoRecordingMetadata.swift:236`
 
-- [ ] **Non-destructive, undoable crop** — M / HIGH
+- [x] **Non-destructive, undoable crop** — M / HIGH ✅ 2026-09-26 *(crop is a live rect applied at export; undoable)*
   `applyCrop()` flattens all annotations into the bitmap and deletes the objects with no undo snapshot; the unsaved-work warning also stops firing after. Snapshot pre-crop state, or keep crop as a live rect applied at export (like the background options).
   `AnnotationWindowController.swift:249-260, 271-280` · `AnnotationCanvas.swift:823-829`
 
-- [ ] **Decouple export resolution from display backing scale** — M / HIGH
+- [x] **Decouple export resolution from display backing scale** — M / HIGH ✅ 2026-09-26 *(offscreen render at source pixel density)*
   `flatten()` uses `cacheDisplay` — a Retina capture edited on a 1x monitor exports at half resolution; nil-window fallback hardcodes scale 2. Render into an offscreen `NSBitmapImageRep` sized to source pixels.
   `AnnotationCanvas.swift:912-934, 92-96, 888-908`
 
@@ -158,28 +158,28 @@ Everything here is shippable in one or two sessions. Do the reliability fixes fi
   `VideoDemoEditor.swift:4153-4174` vs `:1306-1321` · `:4238` vs `:1431-1432`
 
 - [x] **Timer/delayed capture (3/5/10s)** — M / MED ✅ 2026-09-12 *(screenshot side)*
-  Timed Capture: select area → cancellable countdown pill (Esc/click) → shot. Delay configurable (3/5/10s) in Preferences → Screenshots; menu action + assignable shortcut (`shotnixCaptureTimed`, ships unbound). Remaining: reuse `CountdownWindow` as a pre-recording countdown in `RecordingEngine.startRecording`.
+  Timed Capture: select area → cancellable countdown pill (Esc/click) → shot. Delay configurable (3/5/10s) in Preferences → Screenshots; menu action + assignable shortcut (`shotnixCaptureTimed`, ships unbound). Pre-recording countdown (Off/3/5/10) shipped 2026-09-26, reusing `CountdownWindow`.
 
-- [ ] **Stack simultaneous overlays** — M / HIGH
+- [x] **Stack simultaneous overlays** — M / HIGH ✅ 2026-09-26 *(shipped in 0.22)*
   `openWindows` supports multiple overlays but `positionOverlay()` puts every one at the identical corner origin — the older capture is unreachable. Offset by existing heights, re-flow on close.
   `QuickAccessOverlay.swift:20, 389-400`
 
-- [ ] **History retention policy + orphan cleanup** — M / HIGH
+- [x] **History retention policy + orphan cleanup** — M / HIGH ✅ 2026-09-26 *(Forever/7/30/90 days/last N; safe startup sweep; size readout + Clean Up)*
   Full-res PNG + thumbnail per capture, forever; `load()` drops index entries with missing PNGs but never deletes orphaned PNGs. Ship "keep N days / max N items," a startup sweep, and a "History is using X MB" readout.
   `HistoryManager.swift:36-66, 109-119`
 
-- [ ] **History panel correctness batch** — M / HIGH *(partially done 2026-09-12)*
+- [x] **History panel correctness batch** — M / HIGH *(partially done 2026-09-12)* ✅ 2026-09-26 *(selectable grid, live updates, off-main decodes, drags hand over the stored PNG)*
   (1) `isSelectable = false` blocks NSCollectionView item drags entirely — the header's "drag any card to Finder" promise is broken; (2) `items` isn't `@Published`, so an open panel never shows new captures; (3) sync `NSImage(contentsOfFile:)` during cell population; drags re-encode the PNG and strip Spotlight xattrs — copy the file instead; ~~(4) deletes call `reloadData()` (grid flash; likely the known mid-grid corruption)~~ ✅ fixed: `prepareForReuse` override resets stale hover state, layout invalidated after reload, bounds-guarded subscripts; grace-period undo shipped via the new 7-day trash + undo toast.
   `HistoryPanelController.swift` · `HistoryManager.swift`
 
 - [x] **Fix pre-existing AppKit-vs-CG coordinate mismatch in fullscreen capture of non-primary displays** — S / MED ✅ shipped in v0.18.1-beta
   Displays now matched by display ID via `ScreenCoordinates` (Utilities/ScreenCoordinates.swift); `fallbackCapture` converts AppKit→CG. Same fix applied to `RecordingEngine` display/window source resolution.
 
-- [ ] **Desktop-icon hiding without restarting Finder** — M / HIGH
+- [x] **Desktop-icon hiding without restarting Finder** — M / HIGH ✅ 2026-09-26 *(wallpaper cover windows above the icon layer)*
   Currently terminates and relaunches Finder *twice per capture* (closing the user's Finder windows, ~2s), and returns before icons actually disappear, so the shot can fire too early. Replace with per-screen wallpaper-colored overlay windows.
   `DesktopIconsManager.swift:43-65, 6` · `CaptureEngine.swift:48-56`
 
-- [ ] **Move image encoding/IO off the main actor** — M / MED
+- [x] **Move image encoding/IO off the main actor** — M / MED ✅ 2026-09-26 *(History and auto-save encode off the main thread)*
   PNG-encoding a 5K capture + atomic write happens synchronously on the main actor exactly while the overlay animates in. Detached task, completion posted back; `bestCGImage` is already cached.
   `ImageExporter.swift:34-43, 129-163` · `CaptureEngine.swift:553-563`
 
@@ -190,7 +190,7 @@ Everything here is shippable in one or two sessions. Do the reliability fixes fi
 
 ## Phase 3 — Flagship Repairs (target: v0.20) — Large effort, fixes advertised features
 
-- [ ] **Real scrolling-capture stitcher** — L / HIGH ← *the most broken advertised feature*
+- [x] **Real scrolling-capture stitcher** — L / HIGH ← *the most broken advertised feature* ✅ 2026-09-26 *(row-profile matching, sticky header/footer, caps, Esc/hotkey stop, bounce trim)*
   `FrameStitcher.stitch` only drops byte-identical frames (full-buffer memcmp vs the immediate predecessor) and stacks every frame at full height — output contains large repeated bands. Frames accumulate unbounded (~17 MB / 300ms); the only stop is a HUD button that can sit off-screen, no Escape.
   Fix: row-signature/cross-correlation search for where the previous frame's bottom rows reappear; frame-count cap + ~~downsampled-hash dedup~~ ✅ (2026-09-12: 32×32 luminance-grid dedup with MAD threshold replaced the full-buffer memcmp); Escape/hotkey stop; `visibleFrame`-clamp the HUD.
   `ScrollingCaptureController.swift:156-204, 163-173, 64-79, 44-62, 256-259`
@@ -199,7 +199,7 @@ Everything here is shippable in one or two sessions. Do the reliability fixes fi
   Recorder hardcodes H.264/MP4; editor exports fixed 30fps `AVAssetExportPresetHighestQuality` MP4, silently downsampling 60fps recordings (the sidecar's fps field is never read); zero GIF code exists. v1: format (MP4/GIF), fps (source/30/60), resolution scale; GIF via AVAssetReader → CGImageDestination; HEVC toggle rides along (~40% smaller, hardware-encoded).
   `RecordingEngine.swift:199, 606-621, 746-756` · `VideoDemoEditor.swift:1018, 1051-1056, 2727-2730` · `VideoDemoRecordingMetadata.swift:68`
 
-- [ ] **Adjustable selection stage** — L / HIGH
+- [x] **Adjustable selection stage** — L / HIGH ✅ 2026-09-26 *(⇧ at release or a setting; handles, move, arrow nudge, Return)*
   Corner handles are decorative — `mouseUp` captures instantly; a mis-dragged edge means starting over. Add a post-drag stage: edges/corners hit-test and drag, arrow-key nudge (Shift 10px), Enter/click confirms, Shift/Option/Space modifiers during drag. Dimension label + frozen-image loupe already exist.
   `AreaSelectionWindow.swift:550-561, 399-421, 524-548, 617-621, 13-21`
 
@@ -209,27 +209,25 @@ Everything here is shippable in one or two sessions. Do the reliability fixes fi
 
 Ordered by expected payoff; pick based on where you want Shotnix positioned.
 
-- [ ] **Cloud upload + instant share links** — L / HIGH ← *the single biggest feature gap*
-  No share flow exists anywhere (no NSSharingService, no destinations tab). Account-free version — user-configured S3/R2/Imgur/custom endpoint, link auto-copied — fits the "No subscription. No account." positioning. Even a minimal `NSSharingServicePicker` on the last capture is a big step.
-  `README.md:28` · `PreferencesWindowController.swift:7-33` · `AppDelegate.swift:230-271`
+**Not planned:** cloud upload and share links (decided 2026-09-26). Shotnix stays local: you export a file or copy it to the clipboard.
 
 - [x] **Webcam overlay for recordings** — L / HIGH *(done 2026-09-25)*
   Camera recorded as its own movie (aligned by first-frame host time), a live bubble excluded from capture, a second composition track that follows every edit, a pass-through compositor feeding preview and export the matching camera frame, and a Camera inspector (shape, size, 8 anchors + drag-to-snap, mirror, shrink while zoomed).
   `CameraCapture.swift` · `VideoCameraComposition.swift` · `VideoRenderer.swift`
 
-- [ ] **Layout-aware OCR: copy-as-table, link detection, language settings** — L / HIGH
+- [x] **Layout-aware OCR: copy-as-table, link detection, language settings** — L / HIGH ✅ 2026-09-26 *(reading order, copy as table, links, languages and accuracy)*
   `recognizeText` joins `topCandidates(1)` with newlines and discards every bounding box — multi-column text interleaves, tables lose alignment. Keeping observations + boxes unlocks column detection, copy-as-table, tappable links (Shottr's headline feature). Language/accuracy settings ride along.
   `OCREngine.swift:22-30` · `CaptureEngine.swift:498-503`
 
-- [ ] **History search, filtering, and capture metadata** — L / HIGH
+- [x] **History search, filtering, and capture metadata** — L / HIGH ✅ 2026-09-26 *(capture type recorded and filterable; full-text search)*
   `HistoryItem` stores only id/date/paths/rect — a 200-item history is unnavigable. Minimal: NSSearchField + a `captureType` field recorded at `add()`. Big unlock: store OCR text at capture time → full-text search of past captures.
   `HistoryItem.swift:3-12` · `HistoryPanelController.swift:70-149` · `HistoryManager.swift:36-47`
 
-- [ ] **New annotation tools: spotlight, callout bubble, freehand highlighter, rounded rect** — L / HIGH
+- [x] **New annotation tools: spotlight, callout bubble, freehand highlighter, rounded rect** — L / HIGH ✅ 2026-09-26 *(spotlight, callout, freehand highlighter, rounded rect)*
   Spotlight is closest to free — `drawCropOverlay` already implements the outside-dimming rendering. Freehand highlighter = `FreehandAnnotation`'s point array + the highlighter's 0.4-alpha butt-cap stroke.
   `AnnotationObject.swift:5-7, 396-440` · `AnnotationCanvas.swift:338-355`
 
-- [x] **Real video blur (replaces the Phase-1 "Redact" rename)** — L / MED ✅ 2026-09-25 *(video side; annotation-editor blur intensity controls still open)*
+- [x] **Real video blur (replaces the Phase-1 "Redact" rename)** — L / MED ✅ 2026-09-25 *(video side; the annotation editor's blur/pixelate strength slider shipped 2026-09-26)*
   Region blur/pixelation over video needs a custom `AVVideoCompositing` pass (CIGaussianBlur/CIPixellate per frame). Also add intensity controls to the annotation editor's blur/pixelate (hardcoded radius 12 / scale 10 — weak blur can leak text).
   `VideoDemoEditor.swift:1468-1476, 4257-4265` · `AnnotationObject.swift:450, 482`
 
@@ -239,10 +237,10 @@ Ordered by expected payoff; pick based on where you want Shotnix positioned.
 - [x] **Video editor — edit by text, sound, camera looks and layouts, vertical reframe** *(done 2026-09-25)*
   Transcript editing (cut/restore words, remove fillers, shorten idle-only pauses); per-kind audio levels (recordings now note mic vs system tracks), voice enhancement (AUSoundIsolation + rumble filter + compression, latency-compensated), BS.1770 loudness normalization on export; person-segmentation backdrops (blur/remove/cutout) and camera layout regions (full camera, side by side, hidden); pointer-following reframe for narrow outputs. Sparkle 2.10 fixes updates on macOS 26 (".app" bundle ID cache folder). Long-take performance pass: timeline redraws only on timeline changes, canvas lanes, forward-pass camera path.
 
-- [ ] **Video editor — next**
+- [x] **Video editor — next** ✅ 2026-09-26 *(caption looks, WebVTT and on-device translation, click sounds, background music, image overlays, intro/outro cards, multi-recording projects, transitions)*
   Caption styles and translation, optional click sounds, multi-recording projects, and transitions between clips.
 
-- [ ] **Localization + accessibility pass** — L / LOW (urgency) — but cost grows with every custom-HUD surface shipped; budget it before 1.0.
+- [ ] **Localization + accessibility pass** — L / LOW (urgency) *(VoiceOver pass done 2026-09-26 across the editors, History, capture tools and recording controls; localization still open)* — but cost grows with every custom-HUD surface shipped; budget it before 1.0.
 
 ---
 
@@ -253,4 +251,4 @@ Ordered by expected payoff; pick based on where you want Shotnix positioned.
 | v0.18 | "It never loses your work" | Phase 1 (all small — 1A reliability first, then 1B features) |
 | v0.19 | "It feels professional" | Phase 2 (focus-stealing, true window capture, pause/resume, undo, WYSIWYG) |
 | v0.20 | "The features are real" | Phase 3 (scrolling stitcher, export sheet with GIF, adjustable selection) |
-| v0.21+ | "The bets" | Phase 4, one per release — cloud share, then webcam |
+| v0.21+ | "The bets" | Phase 4, one per release |
