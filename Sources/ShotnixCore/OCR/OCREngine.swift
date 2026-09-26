@@ -245,8 +245,9 @@ enum OCRLayout {
     }
 
     /// A grid: most rows have two or more cells, and the cells line up into
-    /// the same columns row after row. Short cells tell a table from a page
-    /// set in two columns of prose.
+    /// the same columns row after row. What tells a table from a page set in
+    /// columns: table columns sit far apart relative to their short cells
+    /// (a text gutter is narrow next to its lines), or the cells are numbers.
     static func table(from lines: [OCRLine]) -> OCRTable? {
         let rows = rows(from: lines)
         let multiCell = rows.filter { $0.count >= 2 }
@@ -263,17 +264,29 @@ enum OCRLayout {
         }
         guard spans.count >= 2 else { return nil }
 
+        // By left edge: every grid cell starts inside its own column's span,
+        // and a line running across several columns lands in the first.
         func column(for cell: OCRLine) -> Int {
-            if let index = spans.firstIndex(where: { $0.contains(cell.box.midX) }) { return index }
-            return spans.indices.min { abs(spans[$0].lowerBound - cell.box.midX) < abs(spans[$1].lowerBound - cell.box.midX) } ?? 0
+            if let index = spans.firstIndex(where: { $0.contains(cell.box.minX) }) { return index }
+            return spans.indices.min { abs(spans[$0].lowerBound - cell.box.minX) < abs(spans[$1].lowerBound - cell.box.minX) } ?? 0
         }
         for row in multiCell {
             let columns = row.map(column(for:))
             guard Set(columns).count == columns.count else { return nil }
         }
-        let words = multiCell.flatMap { $0 }.map { $0.text.split(separator: " ").count }
-        let averageWords = Double(words.reduce(0, +)) / Double(max(words.count, 1))
-        guard spans.count >= 3 || averageWords <= 4 else { return nil }
+        let cells = multiCell.flatMap { $0 }
+        let averageWords = Double(cells.map { $0.text.split(separator: " ").count }.reduce(0, +)) / Double(max(cells.count, 1))
+        let numberLike = cells.filter { cell in
+            cell.text.allSatisfy { $0.isNumber || ".,:%$€£¥+-–/ ".contains($0) } && cell.text.contains(where: \.isNumber)
+        }.count
+        let widths = cells.map(\.box.width).sorted()
+        let medianWidth = max(widths[widths.count / 2], 1)
+        let gaps = zip(spans, spans.dropFirst()).map { $1.lowerBound - $0.upperBound }.sorted()
+        let gapRatio = gaps[gaps.count / 2] / medianWidth
+        let isTable = Double(numberLike) >= Double(cells.count) * 0.25
+            || (averageWords <= 4 && gapRatio >= 0.9)
+            || (spans.count >= 3 && averageWords <= 3 && gapRatio >= 0.5)
+        guard isTable else { return nil }
 
         let grid = rows.map { row -> [String] in
             var cells = Array(repeating: "", count: spans.count)
