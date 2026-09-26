@@ -1,5 +1,4 @@
 import AppKit
-import UniformTypeIdentifiers
 
 /// Manages the full annotation editor window.
 @MainActor
