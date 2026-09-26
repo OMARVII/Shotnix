@@ -1,9 +1,11 @@
 # Changelog
 
-## [Unreleased]
+## [0.23.1-beta] - 2026-09-26
 
 ### Changed
 - **Recordings default to 60 fps.** Scrolling, animations, and video in your recordings now stay smooth in the editor's 60 fps exports. If you picked 30 fps in Settings → Recording or the recording bar, Shotnix keeps it.
+
+### Fixed
 - **Captions keep sentences together.** When a long sentence has to split across two caption lines, its last word no longer rides along into the next sentence.
 
 ## [0.23.0-beta] - 2026-09-26

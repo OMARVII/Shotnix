@@ -953,7 +953,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.23.0"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.23.1"
     
     var body: some View {
         PreferencesPane {
@@ -996,6 +996,10 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.23.1
+                    • Recordings default to 60 fps, so scrolling, animations, and video stay smooth in 60 fps exports. If you picked 30 fps, Shotnix keeps it
+                    • Captions keep sentences together: when a long sentence splits across two lines, its last word no longer rides along into the next sentence
+
                     Version 0.23.0
                     • The video editor is rebuilt: a big preview, a tabbed inspector, and a full-width timeline — and one renderer for preview and export, so what you see is exactly what you export
                     • Zooms are blocks on the Zoom track: drag to move, drag an edge to resize; the camera follows your cursor or aims by hand, and Auto Zoom lands before each click
