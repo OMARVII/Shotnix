@@ -995,7 +995,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.23.1"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.24.0"
     
     var body: some View {
         PreferencesPane {
@@ -1038,6 +1038,18 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.24.0
+                    • Heads-up: Esc no longer stops a recording from other apps; press ⌃⌘Esc, or Esc while Shotnix is in front. New installs leave ⌘⇧S and ⌘⇧O free for other apps (yours stay if you use them). Recordings move to 60 fps once; pick 30 again in Settings if you prefer it
+                    • Screenshot editor: Spotlight, callouts, a freehand highlighter, rounded rectangles, text in any size and weight, crop you can undo, full-resolution saves on any display, and it asks before closing or quitting with unsaved edits
+                    • Blur and pixelate now fully cover what's under them, with a strength slider
+                    • Adjust a selection before the shot (hold ⇧ as you let go), Capture All Displays, and scrolling capture that stitches pages cleanly
+                    • Text recognition keeps columns and tables, finds links, and lets you choose languages
+                    • History keeps captures as long as you choose, shows its size, filters by type, and supports keyboard selection, ⌘Z undo, and type-to-search
+                    • Recording: pause and resume, discard, a countdown, crash-safe recordings, window recordings that follow the window, HEVC on 5K and larger displays, and no Shotnix toasts or HUD in your recordings
+                    • Video editor: background music, logos and image overlays, title cards, transitions, several recordings in one video, caption looks and on-device translation, and exports that run in the background
+                    • M now mutes only the preview, captions use your voice only, Shorten Pauses leaves typing alone, and clicking an annotation on the video selects it
+                    • Fixed: screenshots taken in the same second overwriting each other, microphone dropouts shifting the audio, the display sleeping mid-recording, and much more
+
                     Version 0.23.1
                     • Recordings default to 60 fps, so scrolling, animations, and video stay smooth in 60 fps exports. If you picked 30 fps, Shotnix keeps it
                     • Captions keep sentences together: when a long sentence splits across two lines, its last word no longer rides along into the next sentence

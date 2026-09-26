@@ -1,5 +1,108 @@
 # Changelog
 
+## [0.24.0-beta] - 2026-09-26
+
+**Three changes to know about:**
+- **Esc no longer stops a recording from other apps.** Closing a dialog or leaving full-screen video used to end the take. Press ⌃⌘Esc to stop from anywhere, Esc while Shotnix is in front, or use the HUD or menu-bar timer.
+- **Scrolling Capture and Capture Text have no shortcut on new installs.** ⌘⇧S and ⌘⇧O are Save As and Open in most apps, and a global shortcut takes them away everywhere. If you already use them, they stay. Assign any shortcut in Settings → Shortcuts.
+- **Recordings move to 60 fps once.** Pressing Record used to save whatever the recording bar showed, so many people stayed at 30 fps without choosing it. If you want 30 fps, pick it again in Settings → Recording; Shotnix won't change it after this.
+
+### Screenshots
+
+#### Added
+- **New tools in the screenshot editor:** Spotlight (S) dims everything except what matters, Callout (O) adds a speech bubble that points at something, the freehand highlighter (⇧H) marks up anything, and ⌥R draws rectangles with rounded corners.
+- **Text that fits:** any size from 10 to 96 pt, bold or regular, several lines (Return adds a line, ⌘Return finishes), and double-click to edit again.
+- **Adjust a selection before the shot.** Hold ⇧ as you let go (or turn off Settings → Screenshots → "Capture immediately after selecting") and the selection stays on screen: drag its edges or corners, drag inside to move it, nudge with the arrow keys (⇧ for 10 pt), then press Return or click Capture.
+- **Capture All Displays** takes every connected display at once, one image each, from the menu or a shortcut you assign.
+- **Scrolling capture stitches for real.** Scroll a long page and Shotnix lines up each frame with the last, so the result is the page itself: no repeated bands, sticky headers and footers shown once, and no blank strip from a trackpad bounce at the end. Press Esc or the shortcut again to finish from any app; very long pages stop at a safe size and say so.
+- **Text recognition keeps the layout.** Columns come out in reading order, tables can be copied as tab-separated rows (paste straight into a spreadsheet), and links and email addresses in the result can be opened or copied. Choose the languages and Accurate or Fast in Settings → Screenshots; Chinese, Japanese, Korean, Thai and Arabic mix correctly with English, slightly tilted text still reads line by line, and Hebrew and Arabic read right to left. Capture Text also saves the image to History.
+- **History that stays tidy.** Keep captures forever (the default), for 7, 30 or 90 days, or only the last 100, 500 or 1,000. Settings shows how much space History uses and has a Clean Up button. Filter by capture type, select with the keyboard or ⌘-click, press ⌫ to delete and ⌘Z to undo (even after the notice is gone), drag captures out as their original PNG under their capture-time name, and just start typing to search.
+- **Edits show up in History.** Saving or copying an edited screenshot updates its History entry; the original capture is kept beside it.
+- **Quitting asks about unsaved screenshot edits.** One editor asks Save / Cancel / Don't Save; with several, you can review them one by one or discard them all.
+
+#### Changed
+- **The screenshot editor is a normal window.** It no longer floats above every other app.
+- **Crop can be undone and changed later.** Cropping no longer flattens your annotations into the picture: they stay editable, and Return applies the crop.
+- **Saved at full resolution on any display.** A Retina capture edited on a non-Retina monitor used to save at half size.
+- **Hiding desktop icons no longer restarts Finder.** Shotnix covers the icons with your desktop picture for the moment of the capture, so Finder windows stay open and the shot never fires before the icons are gone.
+- **Pinned screenshots** take keyboard focus without bringing Shotnix forward: Esc closes one and ⌘C copies it.
+- **File ▸ Close Window (⌘W)** closes the editor, History, Settings, pins and the thumbnail.
+- **WebP** is only offered when macOS can write it (current macOS versions can't); a saved WebP setting falls back to PNG.
+- **Shortcut hints name your real shortcuts**, and shortcuts work on non-Latin keyboard layouts (Russian, Greek, Hebrew and others).
+
+#### Fixed
+- **Blur and pixelate fully cover what's under them.** Text could show through at the edges, and blur was half as strong on Retina displays. There's now a strength slider, and pixelate uses real mosaic blocks.
+- **Two screenshots taken in the same second no longer overwrite each other** when auto-saving; each gets its own numbered file, and a failed auto-save says why and how to fix it.
+- **Exports never include the dashed hover outline or selection handles** from the editor.
+- **"Copied" appears only when the copy worked.**
+- **Clicks pick the annotation you see on top.** Blur, pixelate and spotlight draw beneath other annotations, so clicking a label inside a spotlight edits the label.
+- **The editor works with VoiceOver**, and so do History and the capture tools.
+
+### Recording
+
+#### Added
+- **Pause and resume** from the HUD, the menu, or a shortcut you assign. Paused time is cut from the video, the voice and the camera.
+- **Discard a take** from the HUD, with a confirmation.
+- **Countdown:** an optional 3, 5 or 10 seconds before recording starts.
+- **Recordings survive crashes.** If Shotnix quits unexpectedly or the Mac loses power, the recording (and your camera) is recovered the next time Shotnix opens. Quitting, logging out or installing an update stops and saves first.
+- **A dashed outline** shows the area being recorded, and the recording bar and Settings show an estimated size per minute.
+- **More in the recording bar:** a "…" menu with camera choice, the editable cursor, "open editor after recording", and the countdown. The controls work with the keyboard and VoiceOver, and Return starts recording.
+
+#### Changed
+- **Shotnix's own toasts, menus, timer, HUD and camera bubble never appear in recordings.** Its editor and Settings windows still record normally.
+- **Window recordings include the app's menus, popovers and sheets**, and follow the window when you move or resize it, even onto another display.
+- **The HUD never takes focus** from the app you're recording, remembers where you put it, and keeps off the recorded area. It shows the camera and shortcut state, warns about dropped frames and low disk space, and says "Saving…" while it saves.
+- **5K, 6K and "More Space" displays record in HEVC** (H.264 can't encode frames that large), and 60 fps recordings get a bitrate to match.
+- **Sizes are shown in pixels.**
+
+#### Fixed
+- **The voice lines up with the picture from the first frame.** Sound captured just before the first frame was played at the start and pushed the rest late.
+- **A microphone that drops out or is unplugged** no longer shifts the rest of the audio; Shotnix switches to another microphone and tells you.
+- **Recording with no microphone connected works** and says so, instead of failing with a message about permissions and leaving a broken file.
+- **A full disk stops the recording cleanly** and keeps what was recorded, and slow saves are never cancelled.
+- **The display no longer sleeps mid-recording.**
+- **Starting a new recording while the last one saves** waits for the save instead of failing.
+- **The saved-recording panel** has a close button, closes with Esc, and appears on the screen you recorded.
+
+### Video editor
+
+#### Added
+- **Add a logo, watermark or screenshot over your video:** place it, resize it, set its opacity, snap it to a corner, and time it on the timeline.
+- **Background music** with volume, fades, looping, a start point, and automatic ducking under your voice (detected on your Mac). It plays across the title cards and fades out at the very end.
+- **Intro and outro title cards** on your project's background.
+- **Transitions:** Dissolve and Dip to black between clips, for every cut or one at a time, plus fades in from and out to black.
+- **Click sounds**, if you want them.
+- **Several recordings in one video:** append more recordings, then reorder or remove them. Each keeps its own cursor, clicks, keystrokes and camera.
+- **Caption looks:** Classic, Bold outline, Minimal and Highlight, with your own highlight color; choose whether captions are burned into the video, and save WebVTT (.vtt) subtitles as well as .srt.
+- **Translate captions on your Mac** (macOS 15 and later, with the language installed in System Settings). Nothing is uploaded.
+- **A Spotlight annotation** (rectangle or ellipse), arrows that point any way (drag either end, or Turn Around), and a size control for text.
+- **Select several items** with ⇧- or ⌘-click and move or delete them together; **drag clips to reorder** them; give **just part of a clip** its own speed or mute.
+- **Exports run in the background:** progress and Cancel sit in the toolbar, exports queue up, you can keep editing (Esc hides the export sheet), and quitting asks first. Export a selection or an In/Out range, then Share or Reveal in Finder straight away.
+- **A File menu** with Export Video… (⌘E), Save Subtitles and Recent Exports (also in the command palette).
+- **Settings → Recording shows how much space video data uses**, with a Clean Up button; leftovers of deleted recordings are also cleaned once a day.
+
+#### Changed
+- **M mutes only the preview.** Exports keep their sound, and the export sheet warns (with a Turn On button) if an export would be silent.
+- **The Script tab is now Captions**, and narrated recordings suggest transcribing with a banner.
+- **Selecting something keeps the inspector's tabs in place**, and the tab keeps its scroll position.
+- **The timeline zooms to frame level on any length**, keeps your spot when zooming, follows playback page by page, and groups crowded cut markers. Every bar snaps to the others.
+- **Exports and subtitles are named after the recording** ("Demo (edited).mp4"), even after renaming it.
+- **Undo says what it undoes** ("Undo Delete Zoom") and survives closing and reopening the editor until you quit.
+- **Transcription shows its progress**, and editing a caption keeps the timing of the words you didn't change.
+- **The tips bar has more pages, the shortcut list is complete, and ⌘F finds in the transcript.** ⌥← and ⌥→ step through the timeline's items.
+- **Safer exports:** a failed export never damages an existing file, free space is checked first, error messages say what to do next, GIFs too large to finish are caught before they start, and there's a note that some browsers and Windows PCs can't play HEVC.
+
+#### Fixed
+- **Captions come from your voice alone**, not from music or the computer's sound.
+- **Shorten Pauses and Speed Up Idle leave typing, scrolling and keyboard shortcuts alone.**
+- **Clicking an annotation on the video selects it** (drag to move it, double-click text to type) instead of playing or pausing.
+- **The keyboard works inside the export sheet**, and messages show on top of it.
+- **Quitting during an export, transcription or voice cleanup asks first**, and your last edits are always saved.
+- **Enhance voice reached the export again.** The cleaned-up voice could be missing from exported videos.
+- **Long recordings stay smooth:** trimming, transcript edits and 4K previews no longer stall the editor, and closed editors free their memory.
+- **Files that can't open explain why** and offer to open another, show it in Finder, or close.
+- **Every timeline item works with VoiceOver.**
+
 ## [0.23.1-beta] - 2026-09-26
 
 ### Changed
