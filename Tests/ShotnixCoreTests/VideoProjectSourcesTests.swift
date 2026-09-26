@@ -120,6 +120,49 @@ final class VideoProjectSourcesTests: XCTestCase {
     }
 
     @MainActor
+    func testStartOverKeepsTheAddedRecordings() async throws {
+        let a = directory.appendingPathComponent("start-a.mp4")
+        let b = directory.appendingPathComponent("start-b.mp4")
+        try await VideoInspection.writeColorVideo(to: a, size: CGSize(width: 640, height: 400), colors: [(yellow, 2)])
+        try await VideoInspection.writeColorVideo(to: b, size: CGSize(width: 640, height: 400), colors: [(green, 1.5)])
+        let click = VideoDemoClickEvent(time: 0.5, x: 0.25, y: 0.25, button: .left, endTime: 0.6)
+        let metadata = VideoDemoRecordingMetadata(videoURLPath: b.path, createdAt: Date(), duration: 1.5, sourceWidth: 640, sourceHeight: 400, fps: 30, nativeCursorVisible: true, cursorSamples: [], clickEvents: [click])
+        XCTAssertTrue(VideoDemoSidecarStore.save(metadata, for: b))
+        VideoDemoDraftStore.delete(for: a)
+        let model = VideoEditorModel(videoURL: a)
+        await model.load()
+        let appended = await model.appendVideo(b)
+        XCTAssertTrue(appended)
+        let addedID = try XCTUnwrap(model.project.sources.last?.id)
+
+        // Edits: an intro card, a cut, and the added recording moved first.
+        model.setIntroEnabled(true)
+        model.seek(to: 3.0)
+        model.splitAtPlayhead()
+        model.moveSource(addedID, by: -1)
+        try await Task.sleep(nanoseconds: 300_000_000)
+        let order = model.project.sources.map(\.id)
+        XCTAssertEqual(order.first, addedID)
+
+        model.resetToOriginal()
+        XCTAssertEqual(model.project.sources.map(\.id), order, "the recordings stay, in their order")
+        XCTAssertFalse(model.project.cards.intro.enabled, "the edits are gone")
+        XCTAssertEqual(model.project.timelineClips.count, 2, "one clip per recording again")
+        XCTAssertEqual(model.sourceDuration, 3.5, accuracy: 0.05)
+        XCTAssertEqual(model.timelineDuration, 3.5, accuracy: 0.05)
+        XCTAssertEqual(model.project.timelineClips.first?.sourceStart ?? 9, 0, accuracy: 0.001, "the moved recording still opens the video")
+        XCTAssertTrue(model.project.clickEvents.contains { abs($0.time - 0.5) < 0.01 }, "its click is back where it plays")
+        try await Task.sleep(nanoseconds: 300_000_000)
+        XCTAssertEqual(model.playback.timelineDuration, 3.5, accuracy: 0.1, "and both still play")
+
+        // One undo brings the edits back.
+        model.undo()
+        XCTAssertTrue(model.project.cards.intro.enabled)
+        model.stop()
+        VideoDemoDraftStore.delete(for: a)
+    }
+
+    @MainActor
     func testTheCameraTabWorksWhenOnlyAnAddedRecordingHasACamera() async throws {
         let a = directory.appendingPathComponent("plain-a.mp4")
         let b = directory.appendingPathComponent("with-camera-b.mp4")

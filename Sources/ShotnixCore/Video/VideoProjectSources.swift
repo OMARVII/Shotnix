@@ -223,6 +223,21 @@ extension VideoDemoProject {
         timelineClips.append(VideoDemoTimelineClip(sourceStart: source.offset, sourceEnd: source.end))
     }
 
+    /// Start Over: the recordings an older version of this project had,
+    /// back in their order, each with its own clicks, shortcuts, and
+    /// pointer — the edits made to them stay behind.
+    mutating func restoreSources(from old: VideoDemoProject, metadata: [UUID: VideoDemoRecordingMetadata?]) {
+        guard old.hasAppendedSources, var primary = old.sources.first(where: \.isPrimary) else { return }
+        primary.offset = 0
+        sources = [primary]
+        for added in old.sources where !added.isPrimary {
+            appendSource(added, metadata: metadata[added.id] ?? nil)
+        }
+        if let index = old.sources.firstIndex(where: \.isPrimary), index > 0 {
+            moveSource(from: 0, to: index)
+        }
+    }
+
     /// Moves a whole recording to another place in the order: its clips
     /// move on the timeline, and everything timed inside it goes along.
     mutating func moveSource(from: Int, to: Int) {
@@ -746,6 +761,15 @@ extension VideoEditorModel {
         }
         showNotice("Added \(canonical.lastPathComponent) — \(VideoEditorModel.format(tracks.duration))", symbol: "film.stack")
         return true
+    }
+
+    /// Start Over keeps the recordings added to the video, in their order.
+    func restoreAddedRecordings(into fresh: inout VideoDemoProject) {
+        var metadata = media.appendedMetadata
+        for source in project.sources where !source.isPrimary && metadata[source.id] == nil {
+            metadata[source.id] = VideoSourceLocator.resolve(source).flatMap { VideoDemoSidecarStore.load(for: $0) }
+        }
+        fresh.restoreSources(from: project, metadata: metadata)
     }
 
     /// Camera footage anywhere in the video — this recording's or an added

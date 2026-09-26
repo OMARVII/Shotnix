@@ -1019,15 +1019,25 @@ final class VideoEditorModel: ObservableObject {
     func startOver() {
         let alert = NSAlert()
         alert.messageText = "Start over from the original recording?"
-        alert.informativeText = "Every cut, zoom, annotation, caption, and style change on this video is removed. You can undo this."
+        alert.informativeText = project.hasAppendedSources
+            ? "Every cut, zoom, annotation, caption, and style change on this video is removed — the recordings you added stay. You can undo this."
+            : "Every cut, zoom, annotation, caption, and style change on this video is removed. You can undo this."
         alert.addButton(withTitle: "Start Over")
         alert.addButton(withTitle: "Cancel")
         guard alert.runModal() == .alertFirstButtonReturn else { return }
-        var fresh = VideoDemoProject.make(sourceURL: project.sourceURL, duration: sourceDuration, sourceSize: project.sourceSize)
+        resetToOriginal()
+    }
+
+    /// Start Over without asking. Edits go; added recordings stay.
+    func resetToOriginal() {
+        let primaryDuration = project.sources.first(where: \.isPrimary)?.duration ?? sourceDuration
+        var fresh = VideoDemoProject.make(sourceURL: project.sourceURL, duration: primaryDuration, sourceSize: project.sourceSize)
         if let recording { fresh.apply(metadata: recording) }
         fresh.sourceWidth = project.sourceWidth
         fresh.sourceHeight = project.sourceHeight
-        fresh.ensureTimeline(totalDuration: sourceDuration)
+        fresh.ensureTimeline(totalDuration: primaryDuration)
+        restoreAddedRecordings(into: &fresh)
+        let total = fresh.sourceAxisDuration ?? primaryDuration
         if fresh.sourceHeight > fresh.sourceWidth * 1.1, fresh.aspectPreset == .widescreen || fresh.aspectPreset == .classic {
             fresh.aspectPreset = .source
         }
@@ -1035,7 +1045,7 @@ final class VideoEditorModel: ObservableObject {
             fresh.zoomRegions = VideoAutoZoomPlanner.regions(
                 clicks: fresh.clicksInsideCrop,
                 cursorSamples: fresh.cursorSamples,
-                segments: fresh.timelineSegments(totalDuration: sourceDuration),
+                segments: fresh.timelineSegments(totalDuration: total),
                 scale: fresh.defaultZoomScale,
                 speed: fresh.zoomSpeed
             )
