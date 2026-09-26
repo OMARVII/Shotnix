@@ -124,6 +124,37 @@ final class VideoFramingTests: XCTestCase {
         XCTAssertTrue(VideoInspection.isClose(sample(clear), sample(reference), tolerance: 0.02), "and nothing at 2 s")
     }
 
+    /// A dissolve's frozen side belongs to the plan it was drawn for — a new
+    /// plan (even one that lands at the old one's address) draws its own.
+    func testDissolvesNeverShowAnOlderPlansFrozenSide() throws {
+        var project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/held-sides.mp4"), duration: 4, sourceSize: CGSize(width: 640, height: 360))
+        project.aspectPreset = .source
+        project.padding = 0.2
+        project.timelineClips = [VideoDemoTimelineClip(sourceStart: 0, sourceEnd: 2), VideoDemoTimelineClip(sourceStart: 2, sourceEnd: 4)]
+        project.transitions.betweenClips = .dissolve
+        project.background = .color(VideoRGBA(1, 0, 0))
+        let size = CGSize(width: 320, height: 180)
+        let white = CIImage(color: .white).cropped(to: CGRect(origin: .zero, size: CGSize(width: 640, height: 360)))
+        var options = VideoFrameRenderer.Options()
+        options.transitionFrame = white
+        let renderer = VideoFrameRenderer()
+        // Drawn many times over, so freed plans' memory gets handed out again.
+        for _ in 0..<20 {
+            autoreleasepool {
+                let red = VideoDemoExporter.makePlan(project: project, sourceDuration: 4, recording: nil)
+                _ = renderer.render(source: white, timelineTime: 1.9, plan: red, outputSize: size, options: options)
+            }
+        }
+        project.background = .color(VideoRGBA(0, 0, 1))
+        for _ in 0..<20 {
+            let blue = VideoDemoExporter.makePlan(project: project, sourceDuration: 4, recording: nil)
+            let frame = renderer.render(source: white, timelineTime: 1.9, plan: blue, outputSize: size, options: options)
+            let corner = VideoInspection.color(of: frame, size: size, x: 0.03, y: 0.05)
+            XCTAssertLessThan(corner.r, 0.1, "only the new background, no red from an older plan: \(corner)")
+            XCTAssertGreaterThan(corner.b, 0.6)
+        }
+    }
+
     func testCardsDecodeFromOldDraftsAndRoundTrip() throws {
         let url = URL(fileURLWithPath: "/tmp/cards.mp4")
         var project = VideoDemoProject.make(sourceURL: url, duration: 5, sourceSize: CGSize(width: 1280, height: 720))

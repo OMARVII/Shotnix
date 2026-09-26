@@ -191,6 +191,9 @@ enum VideoRenderContext {
 /// geometry, the camera path, the pointer path, and timeline-mapped
 /// clicks and overlays. Immutable — safe to hand to an export thread.
 final class VideoRenderPlan: @unchecked Sendable {
+    /// This plan and no other (a freed plan's memory address gets reused).
+    let id = UUID()
+
     struct Click {
         let start: Double
         let end: Double
@@ -864,7 +867,7 @@ final class VideoFrameRenderer {
 
     /// One side of a dissolve, frozen at the cut — rendered once per cut.
     private func heldSide(_ span: VideoTransitionSpan, incoming: Bool, source: CIImage, plan: VideoRenderPlan, outputSize: CGSize, options: Options) -> CIImage {
-        let key = "\(ObjectIdentifier(plan).hashValue)-\(span.index)-\(incoming)-\(Int(outputSize.width))x\(Int(outputSize.height))"
+        let key = "\(plan.id)-\(span.index)-\(incoming)-\(Int(outputSize.width))x\(Int(outputSize.height))"
         if let cached = heldCache[key] { return cached }
         var held = options
         held.skipFinish = true
