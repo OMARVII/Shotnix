@@ -42,6 +42,11 @@ final class ScrollingCaptureTests: XCTestCase {
         let expected = Self.stack([header, Self.crop(page, top: 0, height: offsets.last! + contentHeight), footer])
         XCTAssertEqual(result.height, expected.height)
         try Self.assertMatches(result, expected)
+
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("shotnix-capture-snapshots/scrolling-stitched-sticky.png")
+        try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try XCTUnwrap(ImageExporter.pngData(from: result)).write(to: url)
+        print("SNAPSHOT-STITCHED: \(url.path) — \(result.width)x\(result.height)")
     }
 
     func testStaticSidebarDoesNotBreakMatching() throws {
@@ -109,6 +114,36 @@ final class ScrollingCaptureTests: XCTestCase {
             XCTFail("expected the capture to resume")
         }
         XCTAssertEqual(stitcher.makeImage()?.height, 700)
+    }
+
+    /// Frames drawn by a real NSScrollView at the Mac's backing scale,
+    /// scrolled in uneven steps, stitch back into the document as AppKit
+    /// draws it.
+    func testAppKitScrollViewFramesStitchBackIntoTheDocument() throws {
+        let page = Self.makePage(width: 320, height: 1800, seed: 41)
+        let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 320, height: 360), styleMask: [.borderless], backing: .buffered, defer: false)
+        let scroll = NSScrollView(frame: NSRect(x: 0, y: 0, width: 320, height: 360))
+        scroll.hasVerticalScroller = false
+        scroll.drawsBackground = false
+        let document = PageView(frame: NSRect(x: 0, y: 0, width: 320, height: 1800), page: page)
+        scroll.documentView = document
+        window.contentView = scroll
+
+        let stitcher = FrameStitcher()
+        for offset in [0, 90, 210, 330, 505, 640, 800, 1000, 1170, 1320, 1440] {
+            scroll.contentView.scroll(to: NSPoint(x: 0, y: offset))
+            scroll.reflectScrolledClipView(scroll.contentView)
+            let rep = try XCTUnwrap(scroll.bitmapImageRepForCachingDisplay(in: scroll.bounds))
+            scroll.cacheDisplay(in: scroll.bounds, to: rep)
+            _ = stitcher.add(try XCTUnwrap(rep.cgImage))
+        }
+        let result = try XCTUnwrap(stitcher.makeImage())
+
+        let full = try XCTUnwrap(document.bitmapImageRepForCachingDisplay(in: document.bounds))
+        document.cacheDisplay(in: document.bounds, to: full)
+        let expected = try XCTUnwrap(full.cgImage)
+        XCTAssertEqual(result.height, expected.height, "the whole document, once")
+        try Self.assertMatches(result, expected)
     }
 
     // MARK: HUD
@@ -330,6 +365,31 @@ final class ScrollingCaptureTests: XCTestCase {
         }
         XCTAssertLessThan(total / Double(result.height), 2.5, "overall difference", file: file, line: line)
         XCTAssertLessThan(worstRow, 4.0, "row \(worstRowIndex) doesn't match — a band is repeated or missing", file: file, line: line)
+    }
+}
+
+/// Draws a page image top-down, pixel-exact at any backing scale.
+private final class PageView: NSView {
+    private let page: CGImage
+
+    init(frame: NSRect, page: CGImage) {
+        self.page = page
+        super.init(frame: frame)
+    }
+
+    required init?(coder: NSCoder) { fatalError() }
+
+    override var isFlipped: Bool { true }
+
+    override func draw(_ dirtyRect: NSRect) {
+        guard let context = NSGraphicsContext.current?.cgContext else { return }
+        context.interpolationQuality = .none
+        // Flipped view: undo the flip for CGImage drawing.
+        context.saveGState()
+        context.translateBy(x: 0, y: bounds.height)
+        context.scaleBy(x: 1, y: -1)
+        context.draw(page, in: CGRect(origin: .zero, size: bounds.size))
+        context.restoreGState()
     }
 }
 
