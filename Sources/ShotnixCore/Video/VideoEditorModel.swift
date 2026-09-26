@@ -289,13 +289,15 @@ final class VideoEditorModel: ObservableObject {
     private var cameraTrackCache: (key: CameraTrackKey, track: VideoCameraTrack)?
     private var reframeCache: (key: CameraTrackKey, fraction: CGFloat, reframe: VideoReframe)?
     private var transcriptCache: (captions: [VideoCaptionLine], language: String?, words: [VideoTranscriptWord])?
-    private var activityCache: (key: [Int], times: [Double])?
+    /// Dropped whenever the pointer path, clicks, shortcuts, or recordings
+    /// change (or an added recording's own data arrives).
+    var activityCache: (key: [Int], times: [Double])?
 
     /// When something happens on screen (pointer moves, clicks, shortcuts,
     /// typing and scrolling when the recording saw the screen change).
     var activityTimes: [Double] {
         let screen = screenActivityOnAxis
-        let key = [project.cursorSamples.count, project.clickEvents.count, project.keystrokes.count, Int((project.cursorSamples.last?.time ?? 0) * 100), screen?.count ?? -1, Int(project.primaryOffset * 100)]
+        let key = [project.cursorSamples.count, project.clickEvents.count, project.keystrokes.count, screen?.count ?? -1]
         if let cache = activityCache, cache.key == key { return cache.times }
         let times = VideoTranscript.activityTimes(cursor: project.cursorSamples, clicks: project.clickEvents, keystrokes: project.keystrokes, screen: screen)
         activityCache = (key, times)
@@ -526,6 +528,12 @@ final class VideoEditorModel: ObservableObject {
         let oldSegments = segments
         segments = project.timelineSegments(totalDuration: sourceDuration)
         refreshTimeline()
+        // What Shorten Pauses and Speed Up Idle read (cheap when unchanged:
+        // the arrays share storage).
+        if old.cursorSamples != project.cursorSamples || old.clickEvents != project.clickEvents
+            || old.keystrokes != project.keystrokes || old.sources != project.sources {
+            activityCache = nil
+        }
         if isReady, old.audio.enhanceVoice != project.audio.enhanceVoice {
             enhanceVoiceChanged()
         }

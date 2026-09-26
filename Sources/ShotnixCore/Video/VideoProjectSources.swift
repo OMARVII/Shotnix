@@ -783,6 +783,7 @@ extension VideoEditorModel {
             project.appendSource(source, metadata: metadata)
         }
         media.appendedMetadata[source.id] = metadata
+        activityCache = nil
         await reloadSources()
         // With Enhance voice on, the new recording's voice is cleaned up too.
         if project.audio.enhanceVoice { startVoiceEnhancementIfNeeded() }

@@ -302,6 +302,7 @@ extension VideoEditorModel {
                     return (source.id, metadata, url.standardizedFileURL.path != source.path ? url.standardizedFileURL.path : nil)
                 }
             }.value
+            if !read.isEmpty { activityCache = nil }
             for entry in read {
                 media.appendedMetadata[entry.id] = entry.metadata
                 // Moved: the project remembers where it is now (not an edit).

@@ -216,6 +216,22 @@ final class VideoFramingEditorTests: XCTestCase {
         model.stop()
     }
 
+    /// Moving a click (same number of clicks, same pointer path end) or a
+    /// recording changes what Shorten Pauses sees at once.
+    func testPauseDetectionSeesEditsThatKeepTheCounts() async throws {
+        let model = try await model(seconds: 4)
+        model.mutate {
+            $0.cursorSamples = [VideoDemoCursorSample(time: 0, x: 0.5, y: 0.5), VideoDemoCursorSample(time: 4, x: 0.5, y: 0.5)]
+            $0.clickEvents = [VideoDemoClickEvent(time: 1.0, x: 0.5, y: 0.5, button: .left, endTime: 1.05)]
+        }
+        XCTAssertTrue(model.activityTimes.contains { abs($0 - 1.0) < 0.001 })
+        let click = try XCTUnwrap(model.project.clickEvents.first)
+        model.moveClick(click.id, toTimeline: 3.0)
+        XCTAssertTrue(model.activityTimes.contains { abs($0 - 3.0) < 0.001 }, "the moved click: \(model.activityTimes)")
+        XCTAssertFalse(model.activityTimes.contains { abs($0 - 1.0) < 0.001 }, "not where it was")
+        model.stop()
+    }
+
     func testHeldFrameCacheKeepsToItsBudget() async throws {
         let url = directory.appendingPathComponent("frames.mp4")
         try await VideoTestSupport.writeFakeRecording(to: url, size: CGSize(width: 640, height: 400), seconds: 3, fps: 10)
