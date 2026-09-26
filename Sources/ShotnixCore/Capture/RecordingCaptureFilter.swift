@@ -10,8 +10,8 @@ import ScreenCaptureKit
 enum RecordingCaptureFilter {
     /// Visible titled windows that Shotnix itself owns — not a framework:
     /// Sparkle's update windows are titled too.
-    static func recordableOwnWindowIDs(in windows: [NSWindow] = NSApp.windows) -> Set<CGWindowID> {
-        Set(windows.compactMap { window -> CGWindowID? in
+    static func recordableOwnWindowIDs(in windows: [NSWindow]? = nil) -> Set<CGWindowID> {
+        Set((windows ?? NSApp.windows).compactMap { window -> CGWindowID? in
             guard window.isVisible, window.windowNumber > 0, window.styleMask.contains(.titled) else { return nil }
             let owner: AnyObject? = window.windowController ?? (window.delegate as AnyObject?)
             if let owner, !isShotnixType(owner) { return nil }
