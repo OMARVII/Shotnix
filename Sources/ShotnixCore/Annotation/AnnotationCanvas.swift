@@ -518,7 +518,7 @@ final class AnnotationCanvas: NSView {
         }
 
         if activeTool == .select {
-            handleSelectDown(point: point, hit: objects.last(where: { $0.contains(point: point) }))
+            handleSelectDown(point: point, hit: topmostObject { $0.contains(point: point) })
             updateDragCursor()
             return
         }
@@ -649,22 +649,27 @@ final class AnnotationCanvas: NSView {
     private func grabbableObject(at point: CGPoint) -> (any AnnotationObject)? {
         switch activeTool {
         case .select:
-            return objects.last(where: { $0.contains(point: point) })
+            return topmostObject { $0.contains(point: point) }
         case .crop, .freehand, .freehandHighlighter:
             return nil
         case .text:
-            let hit = objects.last(where: { $0.contains(point: point) })
-            return hit is TextAnnotation ? hit : nil
+            return objects.last { $0 is TextAnnotation && $0.contains(point: point) }
         case .callout:
-            let hit = objects.last(where: { $0.contains(point: point) })
-            return hit is CalloutAnnotation ? hit : nil
+            return objects.last { $0 is CalloutAnnotation && $0.contains(point: point) }
         case .numberedStep:
-            let hit = objects.last(where: { $0.contains(point: point) })
-            return hit is NumberedStepAnnotation ? hit : nil
+            return objects.last { $0 is NumberedStepAnnotation && $0.contains(point: point) }
         default:
             let tolerance = 6 * chromeScale
-            return objects.last(where: { $0.outlineContains(point: point, tolerance: tolerance) })
+            return topmostObject { $0.outlineContains(point: point, tolerance: tolerance) }
         }
+    }
+
+    /// The topmost object matching `predicate` in drawing order: redactions
+    /// and spotlights render beneath every other annotation, whenever they
+    /// were added.
+    private func topmostObject(where predicate: (any AnnotationObject) -> Bool) -> (any AnnotationObject)? {
+        objects.last { !AnnotationRenderer.isScreenshotEffect($0) && predicate($0) }
+            ?? objects.last { AnnotationRenderer.isScreenshotEffect($0) && predicate($0) }
     }
 
     private func updateDragCursor() {
@@ -936,11 +941,11 @@ final class AnnotationCanvas: NSView {
             f.points = [point]; f.color = activeColor; f.lineWidth = activeLineWidth; return f
         case .highlighter:
             let h = HighlighterAnnotation(start: point, end: point)
-            h.color = activeColor; return h
+            h.color = activeColor; h.lineWidth = Self.highlighterWidth(forSize: activeLineWidth); return h
         case .freehandHighlighter:
             let f = FreehandAnnotation()
             f.isHighlighter = true
-            f.points = [point]; f.color = activeColor; f.lineWidth = 16; return f
+            f.points = [point]; f.color = activeColor; f.lineWidth = Self.highlighterWidth(forSize: activeLineWidth); return f
         case .blur:
             let b = BlurAnnotation(rect: CGRect(origin: point, size: .zero))
             b.strength = activeRedactionStrength
@@ -1374,9 +1379,19 @@ final class AnnotationCanvas: NSView {
         guard !targets.isEmpty else { return }
         pushUndo(coalescing: "lineWidth")
         for obj in targets {
-            obj.lineWidth = lineWidth
+            obj.lineWidth = Self.isHighlighter(obj) ? Self.highlighterWidth(forSize: lineWidth) : lineWidth
         }
         setNeedsDisplay(bounds)
+    }
+
+    /// Highlighters share the Size slider with the pens but run much wider:
+    /// the default size (3) draws the classic 16 pt marker.
+    static func highlighterWidth(forSize size: CGFloat) -> CGFloat {
+        (size * 16 / 3).rounded()
+    }
+
+    static func isHighlighter(_ object: any AnnotationObject) -> Bool {
+        object is HighlighterAnnotation || (object as? FreehandAnnotation)?.isHighlighter == true
     }
 
     static func usesLineWidth(_ object: any AnnotationObject) -> Bool {
@@ -1498,7 +1513,11 @@ final class AnnotationCanvas: NSView {
         case let spotlight as SpotlightAnnotation:
             options.spotlightEllipse = spotlight.isEllipse
         default:
-            if Self.usesLineWidth(styled) { options.lineWidth = styled.lineWidth }
+            if Self.isHighlighter(styled) {
+                options.lineWidth = styled.lineWidth * 3 / 16
+            } else if Self.usesLineWidth(styled) {
+                options.lineWidth = styled.lineWidth
+            }
         }
         return options
     }
@@ -1572,7 +1591,17 @@ final class AnnotationCanvas: NSView {
         onDirtyStateChanged?()
     }
 
+    /// A drag is under way: undo waits for it to end, or the drag would
+    /// finish on top of the restored state and leave it looking saved. The
+    /// button check keeps a mouse-up lost to a modal from blocking undo.
+    private var isDragging: Bool {
+        (dragStart != nil || currentObject != nil || selectDragStart != nil || cropDrag != nil) && Self.mouseButtonIsDown()
+    }
+
+    static var mouseButtonIsDown: () -> Bool = { NSEvent.pressedMouseButtons != 0 }
+
     func performUndo() {
+        guard !isDragging else { return NSSound.beep() }
         commitTextField()
         guard let previous = undoSnapshots.popLast() else { return }
         redoSnapshots.append(snapshot)
@@ -1580,6 +1609,7 @@ final class AnnotationCanvas: NSView {
     }
 
     func performRedo() {
+        guard !isDragging else { return NSSound.beep() }
         commitTextField()
         guard let next = redoSnapshots.popLast() else { return }
         undoSnapshots.append(snapshot)

@@ -590,6 +590,33 @@ final class AnnotationEditingTests: XCTestCase {
         )!
     }
 
+    func testUndoWaitsForADragToFinish() {
+        let buttonDown = AnnotationCanvas.mouseButtonIsDown
+        AnnotationCanvas.mouseButtonIsDown = { true }
+        defer { AnnotationCanvas.mouseButtonIsDown = buttonDown }
+        canvas.activeTool = .rectangle
+        drag(from: CGPoint(x: 20, y: 20), to: CGPoint(x: 120, y: 90))
+        canvas.markSaved(revision: canvas.documentRevision)
+
+        canvas.mouseDown(with: mouse(.leftMouseDown, at: CGPoint(x: 150, y: 40)))
+        canvas.mouseDragged(with: mouse(.leftMouseDragged, at: CGPoint(x: 220, y: 120)))
+        canvas.performUndo() // ⌘Z mid-drag
+        canvas.mouseUp(with: mouse(.leftMouseUp, at: CGPoint(x: 220, y: 120)))
+        XCTAssertEqual(canvas.objects.count, 2, "the drag finished; nothing was undone under it")
+        XCTAssertTrue(canvas.hasUnsavedChanges, "and the new shape counts as unsaved")
+    }
+
+    func testHighlightersFollowTheSizeSlider() {
+        canvas.activeTool = .freehandHighlighter
+        canvas.setActiveLineWidth(3)
+        drag(from: CGPoint(x: 20, y: 20), to: CGPoint(x: 120, y: 90))
+        let stroke = canvas.objects.last
+        XCTAssertEqual(stroke?.lineWidth, 16, "the default size draws the classic marker")
+        canvas.setActiveLineWidth(6)
+        XCTAssertEqual(stroke?.lineWidth, 32, "a selected highlighter follows the slider")
+        XCTAssertEqual(canvas.toolOptions.lineWidth, 6, "and the slider shows its size, not its width")
+    }
+
     private func drag(from start: CGPoint, to end: CGPoint) {
         canvas.mouseDown(with: mouse(.leftMouseDown, at: start))
         canvas.mouseDragged(with: mouse(.leftMouseDragged, at: CGPoint(x: (start.x + end.x) / 2, y: (start.y + end.y) / 2)))
