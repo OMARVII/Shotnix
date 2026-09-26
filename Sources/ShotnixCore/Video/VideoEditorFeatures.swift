@@ -441,7 +441,7 @@ extension VideoEditorModel {
         guard let source = playback.source else { return }
         let sources = await VideoAudioSource.resolved(from: source, kinds: audioKinds, enhanceVoice: project.audio.enhanceVoice)
         playback.setAudioSources(sources)
-        if let moved = playback.apply(segments: segments, audio: project.audio, keepSourceTime: sourceTime(forTimeline: clock.time)), !isPlaying {
+        if let moved = playback.apply(segments: segments, audio: project.audio, keepSourceTime: sourceTime(forTimeline: clock.time), extras: editExtras), !isPlaying {
             clock.time = moved
         }
     }

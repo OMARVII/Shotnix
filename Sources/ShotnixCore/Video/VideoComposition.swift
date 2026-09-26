@@ -21,6 +21,20 @@ struct VideoEditComposition {
     let sourceSize: CGSize
     /// Transform that makes the recording upright with its origin at zero.
     let orientation: CGAffineTransform
+    /// Music under the video (its own volume; clip mutes don't touch it).
+    var musicTrack: AVMutableCompositionTrack? = nil
+    /// Where the music's loops meet (timeline seconds).
+    var musicSeams: [Double] = []
+    /// A click sound on every recorded click.
+    var clickTrack: AVMutableCompositionTrack? = nil
+    /// With several recordings: the transform that fits each stretch of
+    /// the video track into `sourceSize` (starts, in order).
+    var pieceTransforms: [(start: CMTime, transform: CGAffineTransform)] = []
+
+    /// Every sound track, for reading the final mix.
+    var mixedAudioTracks: [AVMutableCompositionTrack] {
+        audioTracks + [musicTrack, clickTrack].compactMap { $0 }
+    }
 }
 
 struct VideoSourceTracks {
@@ -71,6 +85,39 @@ struct VideoSourceTracks {
     }
 }
 
+/// Everything an edit can carry besides the recording's own cuts: the
+/// outro's held frame, other recordings, music, and click sounds.
+struct VideoEditExtras {
+    /// Seconds after the last clip (the outro card) — the last frame holds.
+    var tail: Double = 0
+    /// Other recordings on the source axis (nil: just the one).
+    var layout: VideoSourceLayout?
+    var music: VideoMusicInput?
+    var clicks: VideoClickSoundInput?
+
+    static let none = VideoEditExtras()
+
+    /// What the player item is built from.
+    struct StructureKey: Equatable {
+        let tail: Double
+        let layout: [String]
+        let music: VideoMusicInput.StructureKey?
+        let clicks: VideoClickSoundInput.StructureKey?
+    }
+
+    /// What only the mix depends on.
+    struct MixKey: Equatable {
+        let music: VideoMusicInput.MixKey?
+        let clickVolume: Double?
+    }
+
+    var structureKey: StructureKey {
+        StructureKey(tail: (tail * 1000).rounded() / 1000, layout: layout?.identity ?? [], music: music?.structureKey, clicks: clicks?.structureKey)
+    }
+
+    var mixKey: MixKey { MixKey(music: music?.mixKey, clickVolume: clicks?.volume) }
+}
+
 enum VideoCompositionBuilder {
     private static let timescale: CMTimeScale = 60_000
 
@@ -84,22 +131,70 @@ enum VideoCompositionBuilder {
         let segment: VideoDemoTimelineSegment
     }
 
+    /// One stretch of a clip inside one recording.
+    private struct Piece {
+        let tracks: VideoSourceTracks
+        let audio: [VideoAudioSource]
+        let camera: VideoCameraSource?
+        /// The recording's own seconds.
+        let localStart: Double
+        let length: Double
+        /// Seconds into the clip (source time) where it begins.
+        let offsetInClip: Double
+        let source: VideoProjectSource?
+    }
+
+    private static func pieces(of clip: VideoDemoTimelineClip, primary: VideoSourceTracks, primaryAudio: [VideoAudioSource], camera: VideoCameraSource?, layout: VideoSourceLayout?) -> [Piece] {
+        guard let layout else {
+            return [Piece(tracks: primary, audio: primaryAudio, camera: camera, localStart: clip.sourceStart, length: clip.sourceDuration, offsetInClip: 0, source: nil)]
+        }
+        return layout.pieces(from: clip.sourceStart, to: clip.sourceEnd).map { entry, piece in
+            Piece(
+                tracks: entry.tracks,
+                audio: entry.audio,
+                camera: entry.camera,
+                localStart: piece.localStart,
+                length: piece.length,
+                offsetInClip: piece.axisStart - clip.sourceStart,
+                source: entry.source
+            )
+        }
+    }
+
+    /// Fits a recording's frames into the edit's frame (letterboxed).
+    static func fitTransform(for tracks: VideoSourceTracks, into size: CGSize) -> CGAffineTransform {
+        let upright = tracks.size
+        guard upright.width > 0, upright.height > 0, size.width > 0, size.height > 0 else { return tracks.orientation }
+        let scale = min(size.width / upright.width, size.height / upright.height)
+        let x = (size.width - upright.width * scale) / 2
+        let y = (size.height - upright.height * scale) / 2
+        return tracks.orientation
+            .concatenating(CGAffineTransform(scaleX: scale, y: scale))
+            .concatenating(CGAffineTransform(translationX: x, y: y))
+    }
+
     /// `audioSources` default to the recording's own tracks (all "mixed");
     /// pass resolved kinds / enhanced replacements to control the mix.
-    /// `includeAudio: false` leaves sound out entirely (a muted export).
+    /// `includeAudio: false` leaves the recording's sound out (a muted
+    /// export); music and click sounds in `extras` still go in.
     static func build(
         source: VideoSourceTracks,
         segments: [VideoDemoTimelineSegment],
         audio: VideoAudioSettings,
         camera: VideoCameraSource? = nil,
         audioSources: [VideoAudioSource]? = nil,
-        includeAudio: Bool = true
+        includeAudio: Bool = true,
+        extras: VideoEditExtras = .none
     ) throws -> VideoEditComposition {
         let composition = AVMutableComposition()
         guard let videoTrack = composition.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid) else {
             throw VideoDemoExportError.cannotCreateCompositionTrack
         }
         videoTrack.preferredTransform = source.orientation
+        let sources = audioSources ?? VideoAudioSource.sources(from: source, kinds: Array(repeating: .mixed, count: source.audio.count))
+        let layout = extras.layout?.replacingPrimary(tracks: source, audio: sources, camera: camera)
+        let clips = segments.filter { $0.clip.sourceDuration > 0.001 }
+        var pieceTransforms: [(start: CMTime, transform: CGAffineTransform)] = []
 
         // Insert back to back from the track's actual end, so rounding can
         // never open a gap (a black frame) between clips.
@@ -107,52 +202,110 @@ enum VideoCompositionBuilder {
         // An empty track's timeRange is INVALID, so the insertion point is
         // tracked explicitly from zero.
         var cursor = CMTime.zero
-        for segment in segments where segment.clip.sourceDuration > 0.001 {
+
+        /// Holds one frame of `piece` for `seconds` (the intro and outro
+        /// cards play over it).
+        func hold(_ piece: Piece, atEnd: Bool, seconds: Double) {
+            let frame = 1 / max(piece.tracks.frameRate, 1)
+            let recordingEnd = max(piece.tracks.duration - frame, 0)
+            let at = atEnd ? max(piece.localStart + piece.length - frame, piece.localStart) : piece.localStart
+            let range = CMTimeRange(start: time(min(at, recordingEnd)), duration: time(frame))
             let start = cursor
-            let sourceRange = CMTimeRange(start: time(segment.clip.sourceStart), duration: time(segment.clip.sourceDuration))
-            try videoTrack.insertTimeRange(sourceRange, of: source.video, at: start)
-            let outputDuration = time(segment.duration)
-            if abs(segment.clip.normalizedSpeed - 1) > 0.0001 {
-                videoTrack.scaleTimeRange(CMTimeRange(start: start, duration: sourceRange.duration), toDuration: outputDuration)
+            do {
+                try videoTrack.insertTimeRange(range, of: piece.tracks.video, at: start)
+                videoTrack.scaleTimeRange(CMTimeRange(start: start, duration: range.duration), toDuration: time(seconds))
+            } catch {
+                videoTrack.insertEmptyTimeRange(CMTimeRange(start: start, duration: time(seconds)))
             }
+            if layout != nil { pieceTransforms.append((start, fitTransform(for: piece.tracks, into: source.size))) }
             let end = videoTrack.timeRange.end
-            cursor = end.isNumeric && end > start ? end : start + outputDuration
+            cursor = end.isNumeric && end > start ? end : start + time(seconds)
+        }
+
+        let leadIn = clips.first?.timelineStart ?? 0
+        if leadIn > 0.001, let first = clips.first,
+           let piece = pieces(of: first.clip, primary: source, primaryAudio: sources, camera: camera, layout: layout).first {
+            hold(piece, atEnd: false, seconds: leadIn)
+        }
+
+        for segment in clips {
+            let start = cursor
+            let speed = segment.clip.normalizedSpeed
+            for piece in pieces(of: segment.clip, primary: source, primaryAudio: sources, camera: camera, layout: layout) {
+                let pieceStart = cursor
+                let sourceRange = CMTimeRange(start: time(piece.localStart), duration: time(piece.length))
+                try videoTrack.insertTimeRange(sourceRange, of: piece.tracks.video, at: pieceStart)
+                let outputDuration = time(piece.length / speed)
+                if abs(speed - 1) > 0.0001 {
+                    videoTrack.scaleTimeRange(CMTimeRange(start: pieceStart, duration: sourceRange.duration), toDuration: outputDuration)
+                }
+                if layout != nil { pieceTransforms.append((pieceStart, fitTransform(for: piece.tracks, into: source.size))) }
+                let end = videoTrack.timeRange.end
+                cursor = end.isNumeric && end > pieceStart ? end : pieceStart + outputDuration
+            }
             placements.append(Placement(start: start, duration: cursor - start, segment: segment))
         }
         guard !placements.isEmpty else { throw VideoDemoExportError.invalidTrim }
+
+        if extras.tail > 0.001, let last = clips.last,
+           let piece = pieces(of: last.clip, primary: source, primaryAudio: sources, camera: camera, layout: layout).last {
+            hold(piece, atEnd: true, seconds: extras.tail)
+        }
 
         // Sound goes in whole — volume, mutes, and fades live in the mix, so
         // changing them never rebuilds the player.
         var audioTracks: [AVMutableCompositionTrack] = []
         var audioKinds: [VideoAudioKind] = []
-        let sources = audioSources ?? VideoAudioSource.sources(from: source, kinds: Array(repeating: .mixed, count: source.audio.count))
         if includeAudio {
-            for audioSource in sources {
+            // One lane per sound track of the primary recording; an added
+            // recording's tracks join a lane of the same kind (their pieces
+            // never overlap in time), or start one.
+            var lanes: [(kind: VideoAudioKind, sources: [String: VideoAudioSource])] = sources.map { ($0.kind, ["primary": $0]) }
+            if let layout {
+                for entry in layout.entries where !entry.source.isPrimary {
+                    var used: [VideoAudioKind: Int] = [:]
+                    for audioSource in entry.audio {
+                        let nth = used[audioSource.kind, default: 0]
+                        used[audioSource.kind] = nth + 1
+                        let matching = lanes.indices.filter { lanes[$0].kind == audioSource.kind }
+                        if matching.indices.contains(nth) {
+                            lanes[matching[nth]].sources[entry.source.id.uuidString] = audioSource
+                        } else {
+                            lanes.append((audioSource.kind, [entry.source.id.uuidString: audioSource]))
+                        }
+                    }
+                }
+            }
+            for lane in lanes {
                 guard let track = composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid) else { continue }
                 var inserted = false
                 for placement in placements {
                     let clip = placement.segment.clip
-                    // Recording time → this track's own time.
-                    let wanted = CMTimeRange(start: time(clip.sourceStart - audioSource.offset), duration: time(clip.sourceDuration))
-                    // Only the part the track actually covers — asking for
-                    // more fails the whole insert.
-                    let sourceRange = wanted.intersection(audioSource.available)
-                    guard sourceRange.duration.seconds > 0.001 else { continue }
                     let speed = clip.normalizedSpeed
-                    let insertAt = placement.start + time((sourceRange.start - wanted.start).seconds / speed)
-                    do {
-                        try track.insertTimeRange(sourceRange, of: audioSource.track, at: insertAt)
-                    } catch {
-                        continue
+                    for piece in pieces(of: clip, primary: source, primaryAudio: sources, camera: camera, layout: layout) {
+                        let key = piece.source.map { $0.isPrimary ? "primary" : $0.id.uuidString } ?? "primary"
+                        guard let audioSource = lane.sources[key] else { continue }
+                        // Recording time → this track's own time.
+                        let wanted = CMTimeRange(start: time(piece.localStart - audioSource.offset), duration: time(piece.length))
+                        // Only the part the track actually covers — asking
+                        // for more fails the whole insert.
+                        let sourceRange = wanted.intersection(audioSource.available)
+                        guard sourceRange.duration.seconds > 0.001 else { continue }
+                        let insertAt = placement.start + time((piece.offsetInClip + (sourceRange.start - wanted.start).seconds) / speed)
+                        do {
+                            try track.insertTimeRange(sourceRange, of: audioSource.track, at: insertAt)
+                        } catch {
+                            continue
+                        }
+                        if abs(speed - 1) > 0.0001 {
+                            track.scaleTimeRange(CMTimeRange(start: insertAt, duration: sourceRange.duration), toDuration: time(sourceRange.duration.seconds / speed))
+                        }
+                        inserted = true
                     }
-                    if abs(speed - 1) > 0.0001 {
-                        track.scaleTimeRange(CMTimeRange(start: insertAt, duration: sourceRange.duration), toDuration: time(sourceRange.duration.seconds / speed))
-                    }
-                    inserted = true
                 }
                 if inserted {
                     audioTracks.append(track)
-                    audioKinds.append(audioSource.kind)
+                    audioKinds.append(lane.kind)
                 } else {
                     composition.removeTrack(track)
                 }
@@ -161,9 +314,18 @@ enum VideoCompositionBuilder {
 
         // The pass-through compositor ignores track transforms, so only
         // upright recordings (every screen recording) get the camera.
-        let cameraTrack = camera.flatMap { camera in
-            source.orientation.isIdentity ? VideoCameraComposition.addCameraTrack(camera, to: composition, placements: placements) : nil
+        let cameraTrack: AVMutableCompositionTrack?
+        if let layout {
+            cameraTrack = source.orientation.isIdentity ? VideoCameraComposition.addCameraTrack(layout: layout, to: composition, placements: placements) : nil
+        } else {
+            cameraTrack = camera.flatMap { camera in
+                source.orientation.isIdentity ? VideoCameraComposition.addCameraTrack(camera, to: composition, placements: placements) : nil
+            }
         }
+
+        let total = cursor.seconds
+        let music = extras.music?.insert(into: composition, duration: total)
+        let clicks = extras.clicks?.insert(into: composition, duration: total)
 
         var edit = VideoEditComposition(
             composition: composition,
@@ -175,16 +337,21 @@ enum VideoCompositionBuilder {
             placements: placements,
             duration: cursor,
             sourceSize: source.size,
-            orientation: source.orientation
+            orientation: source.orientation,
+            musicTrack: music?.track,
+            musicSeams: music?.seams ?? [],
+            clickTrack: clicks,
+            pieceTransforms: pieceTransforms
         )
-        edit.audioMix = audioMix(for: edit, segments: segments, audio: audio)
+        edit.audioMix = audioMix(for: edit, segments: segments, audio: audio, extras: extras)
         return edit
     }
 
-    /// Volumes, per-clip mutes, and fades for the edit's sound. Built on
-    /// its own so a volume change swaps only this on the playing item.
-    static func audioMix(for edit: VideoEditComposition, segments: [VideoDemoTimelineSegment], audio: VideoAudioSettings) -> AVMutableAudioMix? {
-        guard !edit.audioTracks.isEmpty else { return nil }
+    /// Volumes, per-clip mutes, and fades for the edit's sound (and the
+    /// music's level line). Built on its own so a volume change swaps only
+    /// this on the playing item.
+    static func audioMix(for edit: VideoEditComposition, segments: [VideoDemoTimelineSegment], audio: VideoAudioSettings, extras: VideoEditExtras = .none) -> AVMutableAudioMix? {
+        guard !edit.mixedAudioTracks.isEmpty else { return nil }
         // Segments still line up with placements one to one when only
         // sound settings changed; fall back to the placed ones otherwise.
         let current = segments.filter { $0.clip.sourceDuration > 0.001 }
@@ -198,6 +365,17 @@ enum VideoCompositionBuilder {
                 let clip = aligned ? current[placementIndex].clip : placement.segment.clip
                 applyVolume(clip.muted ? 0 : volume, fades: clip, start: placement.start, duration: placement.duration, to: params)
             }
+            parameters.append(params)
+        }
+        if let track = edit.musicTrack, let music = extras.music {
+            let params = AVMutableAudioMixInputParameters(track: track)
+            let keyframes = VideoMusicMix.envelope(music: music.settings, duration: edit.duration.seconds, voice: music.voice, seams: edit.musicSeams)
+            VideoMusicMix.apply(keyframes, to: params)
+            parameters.append(params)
+        }
+        if let track = edit.clickTrack, let clicks = extras.clicks {
+            let params = AVMutableAudioMixInputParameters(track: track)
+            params.setVolume(Float(min(max(clicks.volume, 0), 1)), at: .zero)
             parameters.append(params)
         }
         let mix = AVMutableAudioMix()
@@ -226,7 +404,8 @@ enum VideoCompositionBuilder {
     }
 
     /// Video composition that hands the (cut, retimed) recording to a
-    /// reader at `frameRate`, upright and unscaled.
+    /// reader at `frameRate`, upright and unscaled — with several
+    /// recordings, each one fitted into the first one's frame.
     static func readerVideoComposition(for edit: VideoEditComposition, frameRate: Double) -> AVMutableVideoComposition {
         let videoComposition = AVMutableVideoComposition()
         videoComposition.renderSize = CGSize(width: max(edit.sourceSize.width, 2), height: max(edit.sourceSize.height, 2))
@@ -234,7 +413,13 @@ enum VideoCompositionBuilder {
         let instruction = AVMutableVideoCompositionInstruction()
         instruction.timeRange = CMTimeRange(start: .zero, duration: edit.duration)
         let layer = AVMutableVideoCompositionLayerInstruction(assetTrack: edit.videoTrack)
-        layer.setTransform(edit.orientation, at: .zero)
+        if edit.pieceTransforms.isEmpty {
+            layer.setTransform(edit.orientation, at: .zero)
+        } else {
+            for piece in edit.pieceTransforms {
+                layer.setTransform(piece.transform, at: piece.start)
+            }
+        }
         instruction.layerInstructions = [layer]
         videoComposition.instructions = [instruction]
         return videoComposition
@@ -247,10 +432,14 @@ enum VideoDemoExportError: LocalizedError {
     case cannotCreateCompositionTrack
     case cannotCreateExportSession
     case exportFailed(String)
+    /// A reader, writer, or file error (mapped to plain words for people).
+    case system(Error)
     case cancelled
 
     var errorDescription: String? {
         switch self {
+        case .system(let error):
+            return error.localizedDescription
         case .missingVideoTrack:
             return "The selected file has no video track."
         case .invalidTrim:

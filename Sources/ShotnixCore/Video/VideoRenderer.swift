@@ -274,6 +274,27 @@ final class VideoRenderPlan: @unchecked Sendable {
     /// Pan path for narrow outputs (nil when not reframing).
     let reframe: VideoReframe?
 
+    /// Intro and outro cards: the intro ends where the first clip starts,
+    /// the outro starts where the last clip ends.
+    let cards: VideoTitleCards
+    let introEnd: Double
+    let outroStart: Double
+    /// Cuts that dissolve or dip to black.
+    let transitions: [VideoTransitionSpan]
+    /// Seconds the video fades in from / out to black.
+    let fadeIn: Double
+    let fadeOut: Double
+    /// Timeline stretches with camera footage (nil: all of it).
+    let cameraCoverage: [ClosedRange<Double>]?
+    /// Width / height of the recording's own frames (before the crop).
+    let fullSourceAspect: CGFloat
+    /// Several recordings: frames of another shape are letterboxed.
+    let fitsMismatchedFrames: Bool
+
+    func hasCameraFootage(at time: Double) -> Bool {
+        cameraCoverage?.contains { time >= $0.lowerBound - 0.0005 && time <= $0.upperBound + 0.0005 } ?? true
+    }
+
     /// The layout at `time` and how far into it we are (0 → 1 → 0 across
     /// the stretch, easing over half a second at each end).
     func cameraLayout(at time: Double) -> (layout: VideoCameraLayoutRegion.Layout, progress: Double)? {
@@ -314,7 +335,26 @@ final class VideoRenderPlan: @unchecked Sendable {
         outline = project.outline && !project.usesRawSourceFrame
         fullBleed = project.usesRawSourceFrame
         segments = project.timelineSegments(totalDuration: sourceDuration)
-        timelineDuration = segments.last?.timelineEnd ?? 0
+        timelineDuration = project.outputDuration(segments: segments)
+        cards = project.cards
+        introEnd = segments.first?.timelineStart ?? 0
+        outroStart = segments.last?.timelineEnd ?? 0
+        transitions = VideoTransitionTiming.spans(settings: project.transitions, segments: segments)
+        fadeIn = min(max(project.transitions.fadeIn, 0), VideoTransitionSettings.fadeRange.upperBound)
+        fadeOut = min(max(project.transitions.fadeOut, 0), VideoTransitionSettings.fadeRange.upperBound)
+        fullSourceAspect = project.sourceWidth > 0 && project.sourceHeight > 0 ? CGFloat(project.sourceWidth / project.sourceHeight) : 16 / 9
+        fitsMismatchedFrames = project.hasAppendedSources
+        if project.hasAppendedSources {
+            // Only recordings that brought camera footage show the bubble.
+            let segments = self.segments
+            cameraCoverage = project.sources.filter { $0.isPrimary ? hasWebcam : $0.webcam != nil }.flatMap {
+                VideoDemoProject.timelineRanges(sourceStart: $0.offset, sourceEnd: $0.end, segments: segments)
+            }
+        } else if cards.intro.enabled || cards.outro.enabled {
+            cameraCoverage = [introEnd...outroStart]
+        } else {
+            cameraCoverage = nil
+        }
         self.camera = camera
         self.cursorTrack = cursorTrack
         cursorSettings = project.cursor
@@ -362,13 +402,14 @@ final class VideoRenderPlan: @unchecked Sendable {
         self.keystrokes = keystrokes
 
         captionStyle = project.captionStyle
-        captions = Self.visibleCaptions(project.captions, segments: segments)
+        captions = Self.visibleCaptions(project.captions, segments: segments, translation: project.captionTracks.activeTranslation)
     }
 
     /// Caption lines as they appear in the edited video: timeline times,
     /// and words cut from the video (an "um", a retake) left out — the
-    /// preview, the export, and the subtitles file all use this.
-    static func visibleCaptions(_ lines: [VideoCaptionLine], segments: [VideoDemoTimelineSegment]) -> [Caption] {
+    /// preview, the export, and the subtitles file all use this. With a
+    /// translation, each line shows its translated text (no word timing).
+    static func visibleCaptions(_ lines: [VideoCaptionLine], segments: [VideoDemoTimelineSegment], translation: [UUID: String]? = nil) -> [Caption] {
         // Included source spans, sorted, for a binary-search "was this word
         // cut?" (hundreds of lines × words on long takes).
         let included = segments.map { $0.clip.sourceStart...$0.clip.sourceEnd }.sorted { $0.lowerBound < $1.lowerBound }
@@ -399,6 +440,10 @@ final class VideoRenderPlan: @unchecked Sendable {
                     words = kept
                     text = VideoCaptionBuilder.joined(kept.map(\.text))
                 }
+            }
+            if let translated = translation?[line.id] {
+                text = translated
+                words = []
             }
             return Caption(id: line.id, start: first.lowerBound, end: last.upperBound, text: text, words: words)
         }
@@ -449,6 +494,11 @@ final class VideoFrameRenderer {
         /// The annotation being edited: drawn fully visible even inside its
         /// fade (a new one starts at the playhead, where it would be clear).
         var solidOverlay: UUID?
+        /// The source frame a dissolve holds on its other side (see
+        /// `VideoRenderPlan.heldFrameRequest(at:)`); nil plays a hard cut.
+        var transitionFrame: CIImage?
+        /// Skip cards, transitions, and fades (a held side of a dissolve).
+        var skipFinish = false
     }
 
     private struct BackgroundKey: Equatable {
@@ -469,6 +519,9 @@ final class VideoFrameRenderer {
     private var shadowCache: (key: ShadowKey, image: CIImage)?
     private var overlayCache: [String: CIImage] = [:]
     private var overlayCacheOrder: [String] = []
+    /// Held sides of dissolves, rendered once per cut.
+    private var heldCache: [String: CIImage] = [:]
+    private var cardBaseCache: (key: String, image: CIImage)?
     private lazy var ringImage: CIImage = Self.makeRingImage()
     private let supportsSmoothCorners: Bool
 
@@ -509,6 +562,18 @@ final class VideoFrameRenderer {
         plan: VideoRenderPlan,
         outputSize: CGSize,
         options: Options = Options()
+    ) -> CIImage {
+        let frame = renderFrame(source: source, timelineTime: timelineTime, plan: plan, outputSize: outputSize, options: options)
+        guard !options.rawSource, !options.sceneOnly, !options.skipFinish else { return frame }
+        return finish(frame, timelineTime: timelineTime, plan: plan, outputSize: outputSize, options: options)
+    }
+
+    private func renderFrame(
+        source: CIImage?,
+        timelineTime: Double,
+        plan: VideoRenderPlan,
+        outputSize: CGSize,
+        options: Options
     ) -> CIImage {
         let outputRect = CGRect(origin: .zero, size: outputSize)
         if options.rawSource {
@@ -584,8 +649,9 @@ final class VideoFrameRenderer {
             scene = ring.composited(over: scene)
         }
 
-        // 4. Overlays (text, arrows, highlights, blur).
-        for overlay in plan.overlays where timelineTime >= overlay.start && timelineTime <= overlay.end {
+        // 4. Overlays (text, arrows, highlights, blur). Images are pinned
+        // to the frame, so they come later, with the output layers.
+        for overlay in plan.overlays where overlay.effect.kind != .image && timelineTime >= overlay.start && timelineTime <= overlay.end {
             scene = composite(overlay: overlay, over: scene, plan: plan, geometry: geometry, time: timelineTime, solid: overlay.effect.id == options.solidOverlay)
         }
 
@@ -633,7 +699,7 @@ final class VideoFrameRenderer {
         /// easing away while a layout takes the camera elsewhere).
         var avoid: CGRect?
         var avoidWeight: CGFloat = 1
-        if let webcam = plan.webcam, webcam.visible, let frame = options.webcamFrame {
+        if let webcam = plan.webcam, webcam.visible, let frame = options.webcamFrame, plan.hasCameraFootage(at: timelineTime) {
             let bubble = Self.webcamRect(webcam, outputSize: outputSize, cameraScale: cameraScale)
             let bubbleRadius = Self.webcamCornerRadius(webcam, rect: bubble)
             let camera = CameraPicture(frame: frame, mask: options.webcamMask, settings: webcam)
@@ -666,8 +732,108 @@ final class VideoFrameRenderer {
                 avoid = bubble
             }
         }
+        scene = drawImages(on: scene, plan: plan, outputSize: outputSize, time: timelineTime, options: options)
         scene = drawTextLayers(on: scene, plan: plan, outputSize: outputSize, timelineTime: timelineTime, sourceTime: sourceTime, avoid: avoid, avoidWeight: avoidWeight)
         return scene
+    }
+
+    /// Image annotations, pinned to the output frame (lower lanes first).
+    private func drawImages(on input: CIImage, plan: VideoRenderPlan, outputSize: CGSize, time: Double, options: Options) -> CIImage {
+        var scene = input
+        for overlay in plan.overlays where overlay.effect.kind == .image && time >= overlay.start && time <= overlay.end {
+            guard let image = overlay.effect.image, let picture = VideoImageOverlayRenderer.picture(path: image.path) else { continue }
+            let fade = min(0.18, (overlay.end - overlay.start) / 3)
+            var opacity = 1.0
+            if fade > 0, overlay.effect.id != options.solidOverlay {
+                opacity = min(max(min((time - overlay.start) / fade, (overlay.end - time) / fade, 1), 0), 1)
+            }
+            opacity *= min(max(image.opacity, 0), 1)
+            guard opacity > 0.001 else { continue }
+            let placed = VideoImageOverlayRenderer.placed(picture, in: overlay.effect.imageRect(in: outputSize), opacity: opacity)
+            scene = placed.composited(over: scene)
+        }
+        return scene
+    }
+
+    // MARK: Finishing
+
+    /// Transitions at cuts, the intro and outro cards, and the fades at the
+    /// very start and end — over a finished frame.
+    private func finish(_ input: CIImage, timelineTime time: Double, plan: VideoRenderPlan, outputSize: CGSize, options: Options) -> CIImage {
+        let outputRect = CGRect(origin: .zero, size: outputSize)
+        var frame = input
+        if let span = plan.transition(at: time) {
+            switch span.kind {
+            case .dissolve:
+                // The side that isn't playing holds its frame at the cut.
+                if let held = options.transitionFrame {
+                    let incoming = time < span.time
+                    let still = heldSide(span, incoming: incoming, source: held, plan: plan, outputSize: outputSize, options: options)
+                    let progress = VideoCameraEasing.glide(span.progress(at: time))
+                    let from = incoming ? frame : still
+                    let to = incoming ? still : frame
+                    frame = to.applyingFilter("CIDissolveTransition", parameters: [
+                        kCIInputImageKey: from,
+                        kCIInputTargetImageKey: to,
+                        kCIInputTimeKey: progress,
+                    ]).cropped(to: outputRect)
+                }
+            case .fadeThroughBlack:
+                let black = VideoTransitionTiming.dip(span, at: time)
+                if black > 0.001 {
+                    frame = CIImage(color: CIColor(red: 0, green: 0, blue: 0, alpha: CGFloat(black))).cropped(to: outputRect).composited(over: frame)
+                }
+            case .none:
+                break
+            }
+        }
+        if let card = plan.card(at: time), card.opacity > 0.001 {
+            frame = composite(card: card.card, isIntro: card.isIntro, elapsed: card.elapsed, opacity: card.opacity, over: frame, plan: plan, outputSize: outputSize)
+        }
+        let black = VideoTransitionTiming.edgeFade(time: time, duration: plan.timelineDuration, fadeIn: plan.fadeIn, fadeOut: plan.fadeOut)
+        if black > 0.001 {
+            frame = CIImage(color: CIColor(red: 0, green: 0, blue: 0, alpha: CGFloat(black))).cropped(to: outputRect).composited(over: frame)
+        }
+        return frame.cropped(to: outputRect)
+    }
+
+    /// One side of a dissolve, frozen at the cut — rendered once per cut.
+    private func heldSide(_ span: VideoTransitionSpan, incoming: Bool, source: CIImage, plan: VideoRenderPlan, outputSize: CGSize, options: Options) -> CIImage {
+        let key = "\(ObjectIdentifier(plan).hashValue)-\(span.index)-\(incoming)-\(Int(outputSize.width))x\(Int(outputSize.height))"
+        if let cached = heldCache[key] { return cached }
+        var held = options
+        held.skipFinish = true
+        held.transitionFrame = nil
+        held.sourceTimeOverride = incoming ? span.incomingSource : span.outgoingSource
+        let image = render(source: source, timelineTime: incoming ? span.incomingTime : span.outgoingTime, plan: plan, outputSize: outputSize, options: held)
+        let rect = CGRect(origin: .zero, size: outputSize)
+        let rasterized = VideoRenderContext.shared.createCGImage(image, from: rect, format: .RGBA8, colorSpace: CGColorSpace(name: CGColorSpace.sRGB)).map { CIImage(cgImage: $0) } ?? image
+        if heldCache.count > 12 { heldCache.removeAll() }
+        heldCache[key] = rasterized
+        return rasterized
+    }
+
+    private func composite(card: VideoTitleCard, isIntro: Bool, elapsed: Double, opacity: Double, over frame: CIImage, plan: VideoRenderPlan, outputSize: CGSize) -> CIImage {
+        let rect = CGRect(origin: .zero, size: outputSize)
+        let baseKey = "\(plan.background.hashValue)-\(Int(outputSize.width))x\(Int(outputSize.height))"
+        let base: CIImage
+        if let cached = cardBaseCache, cached.key == baseKey {
+            base = cached.image
+        } else {
+            base = VideoTitleCardRenderer.base(background: plan.background, size: outputSize, context: VideoRenderContext.shared)
+            cardBaseCache = (baseKey, base)
+        }
+        var layer = base
+        let dark = VideoTitleCardRenderer.usesDarkInk(plan.background)
+        let textKey = "card-\(card.title.hashValue)-\(card.subtitle.hashValue)-\(dark)-\(Int(outputSize.width))x\(Int(outputSize.height))"
+        if let text = cached(textKey, make: { VideoTitleCardRenderer.text(title: card.title, subtitle: card.subtitle, darkInk: dark, size: outputSize) }) {
+            // The words rise into place and fade in.
+            let appear = VideoTitleCardRenderer.appear(elapsed)
+            let unit = min(outputSize.width, outputSize.height) / 1080
+            let rise = CGFloat(1 - appear) * 26 * unit
+            layer = faded(text.transformed(by: CGAffineTransform(translationX: 0, y: -rise)), min(appear * 1.4, 1)).composited(over: layer)
+        }
+        return faded(layer.cropped(to: rect), opacity).composited(over: frame)
     }
 
     // MARK: Layers
@@ -725,7 +891,19 @@ final class VideoFrameRenderer {
         return image
     }
 
-    private func placedVideo(_ fullSource: CIImage, plan: VideoRenderPlan, geometry: Geometry, stageOut: CGRect) -> CIImage {
+    private func placedVideo(_ incoming: CIImage, plan: VideoRenderPlan, geometry: Geometry, stageOut: CGRect) -> CIImage {
+        // A frame of another shape (an added recording that reached us
+        // unfitted) is letterboxed into the recording's own shape first.
+        var fullSource = incoming
+        let incomingAspect = incoming.extent.width / max(incoming.extent.height, 1)
+        if plan.fitsMismatchedFrames, incoming.extent.width > 0, abs(incomingAspect - plan.fullSourceAspect) / plan.fullSourceAspect > 0.01 {
+            let extent = incoming.extent
+            let frame = incomingAspect > plan.fullSourceAspect
+                ? CGSize(width: extent.width, height: (extent.width / plan.fullSourceAspect).rounded())
+                : CGSize(width: (extent.height * plan.fullSourceAspect).rounded(), height: extent.height)
+            let placed = incoming.transformed(by: CGAffineTransform(translationX: (frame.width - extent.width) / 2 - extent.minX, y: (frame.height - extent.height) / 2 - extent.minY))
+            fullSource = placed.composited(over: CIImage(color: .black).cropped(to: CGRect(origin: .zero, size: frame))).cropped(to: CGRect(origin: .zero, size: frame))
+        }
         // Crop first (source-normalized, y down → pixels, y up).
         var source = fullSource
         if !plan.crop.isFull {
@@ -822,6 +1000,9 @@ final class VideoFrameRenderer {
             let x = rect.midX - image.extent.width / 2
             let y = rect.midY - image.extent.height / 2
             return faded(image, opacity).transformed(by: CGAffineTransform(translationX: x.rounded(), y: y.rounded())).composited(over: scene)
+        case .image:
+            // Drawn with the output layers (pinned to the frame).
+            return scene
         }
     }
 
@@ -1207,45 +1388,17 @@ final class VideoFrameRenderer {
         let maxWidth = (outputSize.width * 0.82).rounded()
         let highlight = style.highlightWords && !caption.words.isEmpty
         let spoken = highlight ? (caption.words.lastIndex { $0.start <= sourceTime + 0.02 } ?? -1) : -1
-        let key = "caption-\(caption.id)-\(caption.text.hashValue)-\(highlight)-\(spoken)-\(Int(fontSize))-\(Int(maxWidth))"
+        let look = "\(style.preset.rawValue)-\(style.highlightColor.map { "\($0.r)-\($0.g)-\($0.b)" } ?? "")"
+        let key = "caption-\(caption.id)-\(caption.text.hashValue)-\(highlight)-\(spoken)-\(Int(fontSize))-\(Int(maxWidth))-\(look)"
         return cached(key) {
-            let font = NSFont.systemFont(ofSize: fontSize, weight: .semibold)
-            let paragraph = NSMutableParagraphStyle()
-            paragraph.alignment = .center
-            paragraph.lineBreakMode = .byWordWrapping
-            paragraph.lineSpacing = fontSize * 0.08
-            let text = NSMutableAttributedString()
-            if highlight {
-                for (index, word) in caption.words.enumerated() {
-                    if index > 0, VideoCaptionBuilder.needsSpace(between: caption.words[index - 1].text, and: word.text) {
-                        text.append(NSAttributedString(string: " ", attributes: [.font: font]))
-                    }
-                    let color = index <= spoken ? NSColor.white : NSColor.white.withAlphaComponent(0.5)
-                    text.append(NSAttributedString(string: word.text, attributes: [.font: font, .foregroundColor: color]))
-                }
-            } else {
-                text.append(NSAttributedString(string: caption.text.isEmpty ? " " : caption.text, attributes: [.font: font, .foregroundColor: NSColor.white]))
-            }
-            text.addAttribute(.paragraphStyle, value: paragraph, range: NSRange(location: 0, length: text.length))
-            let padX = (fontSize * 0.7).rounded()
-            let padY = (fontSize * 0.36).rounded()
-            let bounds = text.boundingRect(with: CGSize(width: maxWidth - padX * 2, height: .greatestFiniteMagnitude), options: [.usesLineFragmentOrigin, .usesFontLeading])
-            let width = Int(ceil(bounds.width + padX * 2))
-            let height = Int(ceil(bounds.height + padY * 2))
-            guard width > 0, height > 0,
-                  let space = CGColorSpace(name: CGColorSpace.sRGB),
-                  let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0, space: space, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return nil }
-            let radius = min(CGFloat(height) / 2, fontSize * 0.55)
-            let pill = CGPath(roundedRect: CGRect(x: 0, y: 0, width: width, height: height), cornerWidth: radius, cornerHeight: radius, transform: nil)
-            context.addPath(pill)
-            context.setFillColor(CGColor(gray: 0.03, alpha: 0.86))
-            context.fillPath()
-            let graphics = NSGraphicsContext(cgContext: context, flipped: false)
-            NSGraphicsContext.saveGraphicsState()
-            NSGraphicsContext.current = graphics
-            text.draw(with: CGRect(x: padX, y: padY, width: CGFloat(width) - padX * 2, height: bounds.height), options: [.usesLineFragmentOrigin, .usesFontLeading])
-            NSGraphicsContext.restoreGraphicsState()
-            return context.makeImage().map { CIImage(cgImage: $0) }
+            VideoCaptionDrawing.image(
+                text: caption.text,
+                words: caption.words.map(\.text),
+                spoken: highlight ? spoken : nil,
+                style: style,
+                fontSize: fontSize,
+                maxWidth: maxWidth
+            ).map { CIImage(cgImage: $0) }
         }
     }
 

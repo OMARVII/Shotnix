@@ -206,6 +206,25 @@ final class VideoCameraCompositor: NSObject, AVVideoCompositing {
 
     func renderContextChanged(_ newRenderContext: AVVideoCompositionRenderContext) {}
 
+    private let fitContext = CIContext(options: [.cacheIntermediates: false, .name: "shotnix.camera-fit"])
+
+    /// A frame of another size (an added recording) letterboxed into the
+    /// edit's frame.
+    private func fitted(_ frame: CVPixelBuffer, into context: AVVideoCompositionRenderContext) -> CVPixelBuffer? {
+        let size = context.size
+        guard CVPixelBufferGetWidth(frame) != Int(size.width) || CVPixelBufferGetHeight(frame) != Int(size.height),
+              let output = context.newPixelBuffer() else { return nil }
+        let image = CIImage(cvPixelBuffer: frame)
+        let extent = image.extent
+        let scale = min(size.width / max(extent.width, 1), size.height / max(extent.height, 1))
+        let placed = image
+            .transformed(by: CGAffineTransform(scaleX: scale, y: scale))
+            .transformed(by: CGAffineTransform(translationX: (size.width - extent.width * scale) / 2, y: (size.height - extent.height * scale) / 2))
+        let black = CIImage(color: .black).cropped(to: CGRect(origin: .zero, size: size))
+        fitContext.render(placed.composited(over: black), to: output)
+        return output
+    }
+
     func startRequest(_ request: AVAsynchronousVideoCompositionRequest) {
         guard let instruction = request.videoCompositionInstruction as? VideoCameraInstruction else {
             request.finish(with: NSError(domain: "Shotnix", code: 1))
@@ -214,7 +233,7 @@ final class VideoCameraCompositor: NSObject, AVVideoCompositing {
         let time = request.compositionTime.seconds
         instruction.store.put(request.sourceFrame(byTrackID: instruction.cameraTrackID), at: time)
         if let screen = request.sourceFrame(byTrackID: instruction.screenTrackID) {
-            request.finish(withComposedVideoFrame: screen)
+            request.finish(withComposedVideoFrame: fitted(screen, into: request.renderContext) ?? screen)
         } else if let blank = request.renderContext.newPixelBuffer() {
             request.finish(withComposedVideoFrame: blank)
         } else {

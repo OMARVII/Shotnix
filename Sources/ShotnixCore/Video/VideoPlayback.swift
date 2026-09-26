@@ -27,6 +27,9 @@ final class VideoPlaybackController: NSObject {
         let timings: [Timing]
         let audioSources: [String]
         let hasCamera: Bool
+        /// Intro/outro holds, other recordings, music, and click sounds.
+        var leadIn: Double = 0
+        var extras: VideoEditExtras.StructureKey? = nil
     }
 
     let player = AVPlayer()
@@ -51,6 +54,7 @@ final class VideoPlaybackController: NSObject {
         }
         let audio: VideoAudioSettings
         let clips: [ClipSound]
+        var extras: VideoEditExtras.MixKey? = nil
     }
     private var output: AVPlayerItemVideoOutput?
     private var timeObserver: Any?
@@ -133,27 +137,30 @@ final class VideoPlaybackController: NSObject {
     /// Returns the timeline time it moved the player to (nil: the edit
     /// didn't need a new player item, so nothing moved).
     @discardableResult
-    func apply(segments: [VideoDemoTimelineSegment], audio: VideoAudioSettings, keepSourceTime: Double?) -> Double? {
+    func apply(segments: [VideoDemoTimelineSegment], audio: VideoAudioSettings, keepSourceTime: Double?, extras: VideoEditExtras = .none) -> Double? {
         guard let source else { return nil }
-        let next = EditStructure(
+        var next = EditStructure(
             timings: segments.filter { $0.clip.sourceDuration > 0.001 }.map {
                 EditStructure.Timing(start: $0.clip.sourceStart, end: $0.clip.sourceEnd, speed: $0.clip.normalizedSpeed)
             },
             audioSources: audioSources?.map(\.identity) ?? [],
             hasCamera: camera != nil
         )
-        let nextMix = MixKey(audio: audio, clips: segments.map { MixKey.ClipSound(muted: $0.clip.muted, fadeIn: $0.clip.fadeIn, fadeOut: $0.clip.fadeOut) })
+        next.leadIn = segments.first?.timelineStart ?? 0
+        next.extras = extras.structureKey
+        var nextMix = MixKey(audio: audio, clips: segments.map { MixKey.ClipSound(muted: $0.clip.muted, fadeIn: $0.clip.fadeIn, fadeOut: $0.clip.fadeOut) })
+        nextMix.extras = extras.mixKey
         if next == structure, let edit, let item = player.currentItem {
             if nextMix != mixKey {
                 mixKey = nextMix
-                item.audioMix = VideoCompositionBuilder.audioMix(for: edit, segments: segments, audio: audio)
+                item.audioMix = VideoCompositionBuilder.audioMix(for: edit, segments: segments, audio: audio, extras: extras)
             }
             return nil
         }
         structure = next
         mixKey = nextMix
 
-        guard let built = try? VideoCompositionBuilder.build(source: source, segments: segments, audio: audio, camera: camera, audioSources: audioSources) else { return nil }
+        guard let built = try? VideoCompositionBuilder.build(source: source, segments: segments, audio: audio, camera: camera, audioSources: audioSources, extras: extras) else { return nil }
         edit = built
         timelineDuration = built.duration.seconds
         itemRebuilds += 1
@@ -164,9 +171,10 @@ final class VideoPlaybackController: NSObject {
         if let videoComposition = VideoCameraComposition.videoComposition(for: built, frameRate: max(source.frameRate, 30), store: cameraStore) {
             cameraStore.removeAll()
             item.videoComposition = videoComposition
-        } else if !source.orientation.isIdentity {
-            // A rotated video (a portrait phone clip): hand the preview the
-            // same upright frames the export gets.
+        } else if !source.orientation.isIdentity || !built.pieceTransforms.isEmpty {
+            // A rotated video (a portrait phone clip), or recordings of
+            // other shapes: hand the preview the same upright, fitted frames
+            // the export gets.
             item.videoComposition = VideoCompositionBuilder.readerVideoComposition(for: built, frameRate: max(source.frameRate, 30))
         }
         item.audioTimePitchAlgorithm = .spectral

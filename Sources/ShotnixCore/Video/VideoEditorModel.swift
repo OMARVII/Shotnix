@@ -189,6 +189,8 @@ final class VideoEditorModel: ObservableObject {
     let timelineState = VideoTimelineState()
     private var timelineSignature: TimelineSignature?
     let playback = VideoPlaybackController()
+    /// Music, click sound, added recordings… (VideoEditorMedia.swift).
+    let media = VideoEditorMedia()
     lazy var previewRenderer = VideoPreviewRenderer(model: self)
     let recording: VideoDemoRecordingMetadata?
     let artwork: VideoCursorArtwork
@@ -227,7 +229,6 @@ final class VideoEditorModel: ObservableObject {
         return words
     }
     private var shuttleRate: Float = 1
-    private var exportCancelled = false
     private var didLoad = false
 
     /// Everything the camera path depends on — captions, shortcuts,
@@ -256,6 +257,7 @@ final class VideoEditorModel: ObservableObject {
         let thumbnails: Int
         let waveform: Int
         let sourceSize: CGSize
+        let extras: VideoTimelineExtrasSignature
     }
 
     /// Bumps the timeline's revision when anything it draws changed.
@@ -274,7 +276,8 @@ final class VideoEditorModel: ObservableObject {
             lock: layoutDurationLock,
             thumbnails: thumbnails.count,
             waveform: waveform?.peaks.count ?? -1,
-            sourceSize: project.sourceSize
+            sourceSize: project.sourceSize,
+            extras: timelineExtrasSignature
         )
         guard signature != timelineSignature else { return }
         timelineSignature = signature
@@ -291,6 +294,7 @@ final class VideoEditorModel: ObservableObject {
         let tidyEnding: Bool
         let crop: VideoCropRect
         let duration: Double
+        var sources: [VideoProjectSource] = []
     }
 
     init(videoURL: URL) {
@@ -360,10 +364,13 @@ final class VideoEditorModel: ObservableObject {
                 // A tall recording in a wide frame would be a sliver.
                 loaded.aspectPreset = .source
             }
-            if loaded.trimEnd <= 0 || loaded.trimEnd > source.duration {
-                loaded.trimEnd = source.duration
+            // Added recordings extend the source axis past this one.
+            let total = loaded.sourceAxisDuration ?? source.duration
+            sourceDuration = total
+            if loaded.trimEnd <= 0 || loaded.trimEnd > total {
+                loaded.trimEnd = total
             }
-            loaded.ensureTimeline(totalDuration: source.duration)
+            loaded.ensureTimeline(totalDuration: total)
 
             // A fresh recording opens already produced.
             if isFresh, Settings.autoZoomNewRecordings, loaded.zoomRegions.isEmpty, !loaded.clickEvents.isEmpty {
@@ -380,7 +387,7 @@ final class VideoEditorModel: ObservableObject {
                 playback.cameraStore.setFindsPerson(project.webcam.needsPersonMask)
             }
             isReady = true
-            playback.apply(segments: segments, audio: project.audio, keepSourceTime: nil)
+            playback.apply(segments: segments, audio: project.audio, keepSourceTime: nil, extras: editExtras)
             playback.seek(to: 0, fast: false)
             saveDraftNow()
             if isFresh, !project.zoomRegions.isEmpty {
@@ -393,6 +400,7 @@ final class VideoEditorModel: ObservableObject {
             if project.audio.enhanceVoice {
                 enhanceVoiceChanged()
             }
+            Task { await prepareMedia() }
         } catch {
             loadError = error.localizedDescription
         }
@@ -416,6 +424,7 @@ final class VideoEditorModel: ObservableObject {
         // camera) is rebuilt once the crop is done, not on every drag.
         if !isCropping { rebuildPlan() }
         validateSelection(keepingRange: true)
+        mediaDidChange(from: old)
         if isReady {
             // Stay on the same moment of the recording — read through the
             // cut list it was on (a speed change or cut before the playhead
@@ -423,7 +432,7 @@ final class VideoEditorModel: ObservableObject {
             let keepSource = VideoDemoProject.sourceTime(forTimelineTime: clock.time, segments: oldSegments.isEmpty ? segments : oldSegments)
             // The playhead follows that moment to its new place on the
             // timeline (paused, the player won't report the move).
-            if let moved = playback.apply(segments: segments, audio: project.audio, keepSourceTime: keepSource), !isPlaying {
+            if let moved = playback.apply(segments: segments, audio: project.audio, keepSourceTime: keepSource, extras: editExtras), !isPlaying {
                 clock.time = moved
             }
             scheduleAutosave()
@@ -460,21 +469,15 @@ final class VideoEditorModel: ObservableObject {
             hideWhenIdle: project.cursor.hideWhenIdle,
             tidyEnding: project.cursor.tidyEnding,
             crop: project.crop.normalized,
-            duration: sourceDuration
+            duration: sourceDuration,
+            sources: project.sources
         )
         let cursorTrack: VideoCursorTrack?
         if let cache = cursorTrackCache, cache.key == key {
             cursorTrack = cache.track
         } else {
-            cursorTrack = VideoCursorTrack.build(
-                samples: project.cursorSamples,
-                clicks: project.clickEvents,
-                smoothing: project.cursor.smoothing,
-                hideWhenIdle: project.cursor.hideWhenIdle,
-                tidyEnding: project.cursor.tidyEnding,
-                crop: project.crop.normalized,
-                duration: sourceDuration
-            )
+            // Several recordings: each one's own pointer path, joined up.
+            cursorTrack = VideoSourcesPointer.cursorTrack(project: project, duration: sourceDuration)
             cursorTrackCache = (key, cursorTrack)
         }
         // Reframing renders the recording's own shape, then crops a moving
@@ -498,7 +501,7 @@ final class VideoEditorModel: ObservableObject {
             camera = VideoCameraTrack.build(
                 regions: project.zoomRegions,
                 segments: segments,
-                timelineDuration: segments.last?.timelineEnd ?? 0,
+                timelineDuration: project.outputDuration(segments: segments),
                 speed: project.zoomSpeed,
                 stage: normalizedStage,
                 crop: project.crop.normalized,
@@ -521,7 +524,7 @@ final class VideoEditorModel: ObservableObject {
                     canvas: canvas,
                     stage: stage,
                     crop: project.crop.normalized,
-                    duration: segments.last?.timelineEnd ?? 0
+                    duration: project.outputDuration(segments: segments)
                 )
                 reframeCache = (cameraKey, fraction, built)
                 reframe = built
@@ -530,14 +533,15 @@ final class VideoEditorModel: ObservableObject {
         plan = VideoRenderPlan(
             project: layoutProject,
             sourceDuration: sourceDuration,
-            artwork: artwork,
-            pointPixelScale: recording?.pointPixelScale,
+            artwork: planArtwork,
+            pointPixelScale: recording?.pointPixelScale ?? project.sources.compactMap(\.pointPixelScale).first,
             cursorTrack: cursorTrack,
             camera: camera,
             hasWebcam: hasWebcamFootage,
             outputCanvasSize: outputCanvas,
             reframe: reframe
         )
+        if !plan.transitions.isEmpty { prefetchHeldFrames() }
     }
 
     // MARK: Undo
@@ -607,7 +611,8 @@ final class VideoEditorModel: ObservableObject {
 
     // MARK: Time mapping
 
-    var timelineDuration: Double { segments.last?.timelineEnd ?? 0 }
+    /// The clips plus the intro and outro cards.
+    var timelineDuration: Double { project.outputDuration(segments: segments) }
 
     func sourceTime(forTimeline time: Double) -> Double {
         VideoDemoProject.sourceTime(forTimelineTime: time, segments: segments)
@@ -827,7 +832,7 @@ final class VideoEditorModel: ObservableObject {
         var gaps: [CutGap] = []
         guard let first = segments.first, let last = segments.last else { return gaps }
         if first.clip.sourceStart > 0.05 {
-            gaps.append(CutGap(timelineTime: 0, sourceStart: 0, sourceEnd: first.clip.sourceStart, afterClip: nil))
+            gaps.append(CutGap(timelineTime: first.timelineStart, sourceStart: 0, sourceEnd: first.clip.sourceStart, afterClip: nil))
         }
         for (a, b) in zip(segments, segments.dropFirst()) where b.clip.sourceStart - a.clip.sourceEnd > 0.05 {
             gaps.append(CutGap(timelineTime: a.timelineEnd, sourceStart: a.clip.sourceEnd, sourceEnd: b.clip.sourceStart, afterClip: a.id))
@@ -1128,6 +1133,8 @@ final class VideoEditorModel: ObservableObject {
     }
 
     func addOverlay(_ kind: VideoDemoOverlayEffectKind) {
+        // A picture needs a file first (VideoImageOverlays.swift).
+        guard kind != .image else { return chooseImageOverlay() }
         let time = clock.time
         let sourceStart = placementSourceTime(forTimeline: time)
         let sourceEnd = sourceTime(forTimeline: min(time + (kind == .blur ? 4 : 3), timelineDuration))
@@ -1454,29 +1461,29 @@ final class VideoEditorModel: ObservableObject {
     var hasOverlayOpen: Bool { isExportPresented || isCommandPalettePresented || isShortcutsPresented }
 
     /// Something that shouldn't be dropped silently by closing the window.
+    /// (Exports carry on in the background: they work from a snapshot.)
     var runningJobDescription: String? {
-        if isExporting { return "exporting" }
         if captionTask != nil { return "transcribing" }
         if voiceJob != nil { return "cleaning up the voice" }
         return nil
     }
 
     /// The window closed: nothing keeps working (or writing to the
-    /// clipboard) unseen.
+    /// clipboard) unseen — except exports, which finish and say so.
     func stop() {
         playback.pause()
-        if isExporting { cancelExport() }
         cancelCaptions()
         voiceTask?.cancel()
         saveDraftNow()
+        VideoExportQueue.shared.editorClosed(sourcePath: project.sourcePath)
     }
 
     // MARK: Export
 
     var exportCanvas: CGSize { project.canvasSize() }
 
-    func beginExport(toClipboard: Bool) {
-        if case .running = exportPhase { return }
+    /// Exports queue up and run in the background (VideoExportJobs.swift).
+    func beginExport(toClipboard: Bool, range: VideoExportRange = .whole) {
         let settings = exportSettings
         settings.saveAsDefaults()
         let destination: URL
@@ -1493,7 +1500,7 @@ final class VideoEditorModel: ObservableObject {
             guard panel.runModal() == .OK, let url = panel.url else { return }
             destination = url
         }
-        runExport(to: destination, settings: settings, toClipboard: toClipboard)
+        enqueueExport(to: destination, settings: settings, toClipboard: toClipboard, range: range)
     }
 
     private var exportBaseName: String {
@@ -1502,69 +1509,8 @@ final class VideoEditorModel: ObservableObject {
         return "Shotnix Video \(cleaned)"
     }
 
-    private func runExport(to destination: URL, settings: VideoExportSettings, toClipboard: Bool) {
-        playback.pause()
-        exportCancelled = false
-        exportPhase = .running(progress: 0, started: Date(), destination: destination, toClipboard: toClipboard)
-        let project = self.project
-        let recording = self.recording
-        let bridge = VideoExportBridge(model: self)
-        let voice = project.audio.enhanceVoice ? startVoiceEnhancementIfNeeded() : nil
-        Task {
-            do {
-                // The enhanced voice has to exist before it can be exported
-                // (the sheet shows that progress; Cancel stops it).
-                var voiceFailed = false
-                if let voice {
-                    // Cancel stops the waiting, not the cleanup (it keeps
-                    // going for the preview and the next export).
-                    while self.voiceTask != nil, !self.exportCancelled {
-                        try? await Task.sleep(nanoseconds: 100_000_000)
-                    }
-                    if exportCancelled { throw VideoDemoExportError.cancelled }
-                    voiceFailed = !(await voice.value)
-                }
-                if exportCancelled { throw VideoDemoExportError.cancelled }
-                _ = try await VideoDemoExporter.export(
-                    project: project,
-                    recording: recording,
-                    destinationURL: destination,
-                    settings: settings,
-                    progress: { value in await bridge.progress(value) },
-                    shouldCancel: { await bridge.isCancelled() }
-                )
-                let bytes = (try? destination.resourceValues(forKeys: [.fileSizeKey]).fileSize).map { Int64($0) } ?? 0
-                if toClipboard {
-                    NSPasteboard.general.clearContents()
-                    NSPasteboard.general.writeObjects([destination as NSURL])
-                } else {
-                    VideoDemoRecentExportStore.add(exportURL: destination, sourceURL: project.sourceURL)
-                }
-                exportPhase = .finished(url: destination, bytes: bytes, copied: toClipboard)
-                if voiceFailed {
-                    showNotice("Exported without Enhance voice — it couldn't finish", symbol: "exclamationmark.triangle.fill")
-                }
-            } catch {
-                if exportCancelled {
-                    exportPhase = .idle
-                    showNotice("Export cancelled", symbol: "xmark.circle")
-                } else {
-                    exportPhase = .failed(error.localizedDescription)
-                }
-            }
-        }
-    }
-
-    fileprivate func updateExportProgress(_ value: Double) {
-        if case .running(_, let started, let destination, let clipboard) = exportPhase {
-            exportPhase = .running(progress: value, started: started, destination: destination, toClipboard: clipboard)
-        }
-    }
-
-    fileprivate var exportIsCancelled: Bool { exportCancelled }
-
     func cancelExport() {
-        exportCancelled = true
+        cancelLatestExport()
     }
 
     /// Closes the export sheet; a finished or failed export is cleared so
@@ -1606,10 +1552,23 @@ final class VideoEditorModel: ObservableObject {
 
     // MARK: Thumbnails & waveform
 
+    /// Added or removed recordings change the source axis.
+    func applySourceDuration(_ duration: Double, hasAudio: Bool) {
+        if sourceDuration != duration { sourceDuration = duration }
+        if self.hasAudio != hasAudio { self.hasAudio = hasAudio }
+    }
+
+    /// Filmstrip and waveform across every recording.
+    func applyTimelineMedia(thumbnails: [VideoTimelineThumbnail], waveform: VideoWaveform?) {
+        self.thumbnails = thumbnails
+        if let waveform { self.waveform = waveform }
+    }
+
     private func loadThumbnails() async {
         let url = project.sourceURL
         let duration = sourceDuration
-        guard duration > 0 else { return }
+        // Several recordings load their filmstrip together (VideoEditorMedia).
+        guard duration > 0, !project.hasAppendedSources else { return }
         let count = min(max(Int(duration / 1.2), 12), 160)
         let times = (0..<count).map { duration * (Double($0) + 0.5) / Double(count) }
         let images = await Task.detached(priority: .utility) { () -> [VideoTimelineThumbnail] in
@@ -1628,6 +1587,7 @@ final class VideoEditorModel: ObservableObject {
 
     private func loadWaveform() async {
         let url = project.sourceURL
+        guard !project.hasAppendedSources else { return }
         let peaks = await Task.detached(priority: .utility) { () -> [Float]? in
             let asset = AVURLAsset(url: url)
             guard let tracks = try? await asset.loadTracks(withMediaType: .audio), !tracks.isEmpty,
@@ -1702,25 +1662,5 @@ final class VideoEditorModel: ObservableObject {
 
     static func formatBytes(_ bytes: Int64) -> String {
         ByteCountFormatter.string(fromByteCount: bytes, countStyle: .file)
-    }
-}
-
-/// Hops export progress/cancel checks onto the main actor.
-private final class VideoExportBridge: @unchecked Sendable {
-    @MainActor private weak var model: VideoEditorModel?
-
-    @MainActor
-    init(model: VideoEditorModel) {
-        self.model = model
-    }
-
-    @MainActor
-    func progress(_ value: Double) {
-        model?.updateExportProgress(value)
-    }
-
-    @MainActor
-    func isCancelled() -> Bool {
-        model?.exportIsCancelled ?? true
     }
 }

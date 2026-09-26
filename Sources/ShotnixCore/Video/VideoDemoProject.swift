@@ -100,6 +100,8 @@ enum VideoDemoOverlayEffectKind: String, Codable, CaseIterable, Identifiable {
     case highlight
     // rawValue stays "blur" so saved drafts keep decoding.
     case blur
+    /// A logo, watermark, or screenshot (see VideoImageOverlays.swift).
+    case image
 
     var id: String { rawValue }
 
@@ -109,6 +111,7 @@ enum VideoDemoOverlayEffectKind: String, Codable, CaseIterable, Identifiable {
         case .arrow: return "Arrow"
         case .highlight: return "Highlight"
         case .blur: return "Blur"
+        case .image: return "Image"
         }
     }
 
@@ -118,6 +121,7 @@ enum VideoDemoOverlayEffectKind: String, Codable, CaseIterable, Identifiable {
         case .arrow: return "arrow.up.right"
         case .highlight: return "rectangle.dashed"
         case .blur: return "eye.slash"
+        case .image: return "photo"
         }
     }
 }
@@ -142,6 +146,8 @@ struct VideoDemoOverlayEffect: Codable, Equatable, Identifiable {
     /// kind's default). A clear text tag means text only, with a shadow.
     var color: VideoRGBA?
     var thickness: VideoOverlayThickness
+    /// The picture an image annotation shows.
+    var image: VideoOverlayImage?
 
     init(
         id: UUID = UUID(),
@@ -188,6 +194,7 @@ struct VideoDemoOverlayEffect: Codable, Equatable, Identifiable {
         layer = try container.decodeIfPresent(Int.self, forKey: .layer) ?? 0
         color = try container.decodeIfPresent(VideoRGBA.self, forKey: .color)
         thickness = (try? container.decode(VideoOverlayThickness.self, forKey: .thickness)) ?? .regular
+        image = try? container.decodeIfPresent(VideoOverlayImage.self, forKey: .image)
     }
 }
 
@@ -216,12 +223,12 @@ extension VideoDemoOverlayEffectKind {
         switch self {
         case .arrow, .highlight: return VideoRGBA(hex: 0xFFD60A)
         case .text: return VideoRGBA(0.06, 0.06, 0.06, 0.84)
-        case .blur: return VideoRGBA(0.5, 0.5, 0.5)
+        case .blur, .image: return VideoRGBA(0.5, 0.5, 0.5)
         }
     }
 
-    /// Whether a color can be chosen (blur has none).
-    var hasColor: Bool { self != .blur }
+    /// Whether a color can be chosen (blur and images have none).
+    var hasColor: Bool { self != .blur && self != .image }
 
     /// Swatches offered for this kind.
     var palette: [VideoRGBA] {
@@ -234,7 +241,7 @@ extension VideoDemoOverlayEffectKind {
             return [defaultColor] + bright + [VideoRGBA(0, 0, 0, 0)]
         case .arrow, .highlight:
             return bright + [VideoRGBA(hex: 0x1C1C1E)]
-        case .blur:
+        case .blur, .image:
             return []
         }
     }
@@ -645,6 +652,16 @@ struct VideoDemoProject: Codable, Equatable, Identifiable {
     var keystrokeStyle: VideoKeystrokeStyle
     var crop: VideoCropRect
 
+    // Title cards, music, click sounds, transitions, translated captions,
+    // and appended recordings — each lives in its own file.
+    var cards = VideoTitleCards()
+    var music: VideoMusicTrack?
+    var clickSounds = VideoClickSoundSettings()
+    var transitions = VideoTransitionSettings()
+    var captionTracks = VideoCaptionTracks()
+    /// Every recording on the source axis, in order (empty: just this one).
+    var sources: [VideoProjectSource] = []
+
     var sourceURL: URL { URL(fileURLWithPath: sourcePath) }
     var sourceSize: CGSize { CGSize(width: sourceWidth, height: sourceHeight) }
     /// The recording's pixel size after cropping.
@@ -661,7 +678,7 @@ struct VideoDemoProject: Codable, Equatable, Identifiable {
 
     /// Whether a drawn pointer can appear at all (the recording captured the
     /// path, and the pixels don't already contain the system cursor).
-    var canRenderCursor: Bool { !nativeCursorVisible && !cursorSamples.isEmpty }
+    var canRenderCursor: Bool { !cursorSamples.isEmpty && (!nativeCursorVisible || appendedSourceHasPointer) }
     var rendersCursor: Bool { canRenderCursor && cursor.visible }
 
     static func make(sourceURL: URL, duration: Double = 0, sourceSize: CGSize = .zero) -> VideoDemoProject {
@@ -769,7 +786,8 @@ struct VideoDemoProject: Codable, Equatable, Identifiable {
     }
 
     func timelineSegments(totalDuration: Double) -> [VideoDemoTimelineSegment] {
-        var timelineStart = 0.0
+        // An intro card plays first; the clips follow it.
+        var timelineStart = timelineLeadIn
         return normalizedTimelineClips(totalDuration: totalDuration).map { clip in
             let segment = VideoDemoTimelineSegment(clip: clip, timelineStart: timelineStart)
             timelineStart += clip.outputDuration
@@ -778,7 +796,7 @@ struct VideoDemoProject: Codable, Equatable, Identifiable {
     }
 
     func timelineDuration(totalDuration: Double) -> Double {
-        timelineSegments(totalDuration: totalDuration).last?.timelineEnd ?? 0
+        outputDuration(segments: timelineSegments(totalDuration: totalDuration))
     }
 
     func sourceTime(forTimelineTime timelineTime: Double, totalDuration: Double) -> Double {
@@ -1167,6 +1185,7 @@ extension VideoDemoProject {
         case zoomRegions, zoomSpeed, defaultZoomScale, motionBlur
         case overlayEffects, cursorSamples, clickEvents, nativeCursorVisible, cursor, audio
         case webcam, cameraLayouts, reframe, captions, transcriptLanguage, captionStyle, keystrokes, keystrokeStyle, crop
+        case cards, music, clickSounds, transitions, captionTracks, sources, imageOverlayEffects
         // Legacy (v1) keys
         case backgroundPreset, customBackgroundPath, stageInset, shadowStrength, zoomKeyframes
         case showCursorOverlay, enlargeCursor, showClickRipple, smoothCursor, cursorScale, clickSpotlight, cursorMotionBlur
@@ -1182,8 +1201,11 @@ extension VideoDemoProject {
         trimStart = try container.decodeIfPresent(Double.self, forKey: .trimStart) ?? 0
         trimEnd = try container.decodeIfPresent(Double.self, forKey: .trimEnd) ?? 0
         timelineClips = try container.decodeIfPresent([VideoDemoTimelineClip].self, forKey: .timelineClips) ?? []
+        // Image annotations are stored apart so older versions still open
+        // the draft (they just don't see the pictures).
         overlayEffects = Self.normalizedEffectLayers(
-            try container.decodeIfPresent([VideoDemoOverlayEffect].self, forKey: .overlayEffects) ?? []
+            (try container.decodeIfPresent([VideoDemoOverlayEffect].self, forKey: .overlayEffects) ?? [])
+                + ((try? container.decodeIfPresent([VideoDemoOverlayEffect].self, forKey: .imageOverlayEffects)) ?? [])
         )
         cursorSamples = try container.decodeIfPresent([VideoDemoCursorSample].self, forKey: .cursorSamples) ?? []
         clickEvents = try container.decodeIfPresent([VideoDemoClickEvent].self, forKey: .clickEvents) ?? []
@@ -1198,6 +1220,12 @@ extension VideoDemoProject {
         keystrokes = (try? container.decode([VideoKeystrokeEvent].self, forKey: .keystrokes)) ?? []
         keystrokeStyle = (try? container.decode(VideoKeystrokeStyle.self, forKey: .keystrokeStyle)) ?? VideoKeystrokeStyle()
         crop = (try? container.decode(VideoCropRect.self, forKey: .crop))?.normalized ?? .full
+        cards = (try? container.decode(VideoTitleCards.self, forKey: .cards)) ?? VideoTitleCards()
+        music = try? container.decodeIfPresent(VideoMusicTrack.self, forKey: .music)
+        clickSounds = (try? container.decode(VideoClickSoundSettings.self, forKey: .clickSounds)) ?? VideoClickSoundSettings()
+        transitions = (try? container.decode(VideoTransitionSettings.self, forKey: .transitions)) ?? VideoTransitionSettings()
+        captionTracks = (try? container.decode(VideoCaptionTracks.self, forKey: .captionTracks)) ?? VideoCaptionTracks()
+        sources = (try? container.decode([VideoProjectSource].self, forKey: .sources)) ?? []
 
         let storedVersion = try container.decodeIfPresent(Int.self, forKey: .version) ?? 1
         if storedVersion >= 2 {
@@ -1273,7 +1301,9 @@ extension VideoDemoProject {
         try container.encode(zoomSpeed, forKey: .zoomSpeed)
         try container.encode(defaultZoomScale, forKey: .defaultZoomScale)
         try container.encode(motionBlur, forKey: .motionBlur)
-        try container.encode(overlayEffects, forKey: .overlayEffects)
+        try container.encode(overlayEffects.filter { $0.kind != .image }, forKey: .overlayEffects)
+        let images = overlayEffects.filter { $0.kind == .image }
+        if !images.isEmpty { try container.encode(images, forKey: .imageOverlayEffects) }
         try container.encode(cursorSamples, forKey: .cursorSamples)
         try container.encode(clickEvents, forKey: .clickEvents)
         try container.encode(nativeCursorVisible, forKey: .nativeCursorVisible)
@@ -1288,6 +1318,12 @@ extension VideoDemoProject {
         try container.encode(keystrokes, forKey: .keystrokes)
         try container.encode(keystrokeStyle, forKey: .keystrokeStyle)
         try container.encode(crop, forKey: .crop)
+        try container.encode(cards, forKey: .cards)
+        try container.encodeIfPresent(music, forKey: .music)
+        try container.encode(clickSounds, forKey: .clickSounds)
+        try container.encode(transitions, forKey: .transitions)
+        try container.encode(captionTracks, forKey: .captionTracks)
+        if !sources.isEmpty { try container.encode(sources, forKey: .sources) }
     }
 
     /// Converts the old keyframe camera into regions: each run of zoomed

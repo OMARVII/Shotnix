@@ -21,6 +21,14 @@ enum VideoDemoExporter {
         return VideoDemoMetadata(duration: source.duration, sourceSize: source.size, fps: source.frameRate)
     }
 
+    /// What the export is busy with, for the progress UI.
+    enum Phase: Equatable {
+        case preparing
+        /// Measuring the whole mix once to even out its loudness.
+        case balancingLoudness(Double)
+        case rendering(Double)
+    }
+
     /// Returns non-fatal warnings.
     @discardableResult
     static func export(
@@ -28,14 +36,31 @@ enum VideoDemoExporter {
         recording: VideoDemoRecordingMetadata? = nil,
         destinationURL: URL,
         settings: VideoExportSettings = VideoExportSettings(),
+        range: VideoExportRange = .whole,
         progress: @escaping @Sendable (Double) async -> Void = { _ in },
+        phase: @escaping @Sendable (Phase) async -> Void = { _ in },
         shouldCancel: @escaping @Sendable () async -> Bool = { false }
     ) async throws -> [String] {
+        await phase(.preparing)
         let source = try await VideoSourceTracks.load(url: inputProject.sourceURL)
         var project = inputProject
         project.sourceWidth = Double(source.size.width)
         project.sourceHeight = Double(source.size.height)
-        let segments = project.timelineSegments(totalDuration: source.duration)
+        let total = project.sourceAxisDuration ?? source.duration
+        // Just a part of the timeline: its own project, the song picking up
+        // where that part heard it.
+        var musicOffset = 0.0
+        if case .timeline(let span) = range {
+            let trimmed = project.trimmed(toTimeline: span, totalDuration: total)
+            project = trimmed.project
+            musicOffset = trimmed.musicOffset
+        }
+        // Captions shown in the editor but not wanted in the pixels (a
+        // subtitles file carries them instead).
+        if !settings.burnCaptions {
+            project.captionStyle.visible = false
+        }
+        let segments = project.timelineSegments(totalDuration: total)
         guard !segments.isEmpty else { throw VideoDemoExportError.invalidTrim }
 
         var camera: VideoCameraSource?
@@ -44,19 +69,67 @@ enum VideoDemoExporter {
         }
         let kinds = VideoAudioKind.resolve(recorded: recording?.audioTracks, channelCounts: source.audioChannelCounts)
         let audioSources = await VideoAudioSource.resolved(from: source, kinds: kinds, enhanceVoice: project.audio.enhanceVoice)
+
+        var extras = VideoEditExtras()
+        extras.tail = project.timelineTail
+        var appendedMetadata: [UUID: VideoDemoRecordingMetadata] = [:]
+        if project.hasAppendedSources {
+            for added in project.sources where !added.isPrimary {
+                guard let url = VideoSourceLocator.resolve(added) else {
+                    throw VideoDemoExportError.exportFailed("“\(added.name)” can't be found. Put it back where it was, or remove it from this video (Style → Recordings), then export again.")
+                }
+                if let metadata = VideoDemoSidecarStore.load(for: url) { appendedMetadata[added.id] = metadata }
+            }
+            extras.layout = await VideoSourceLayout.load(project: project, primary: source, primaryAudio: audioSources, primaryCamera: camera, includeCameras: project.webcam.visible)
+        }
+        let allKinds = kinds + project.sources.filter { !$0.isPrimary }.flatMap(\.audioKinds)
+        if let music = project.music, let track = try? await AVURLAsset(url: music.url).loadTracks(withMediaType: .audio).first {
+            var speech: [String: [ClosedRange<Double>]] = [:]
+            if music.ducking {
+                if let index = VideoAudioKind.voiceTrackIndex(in: kinds) {
+                    speech[""] = await VideoVoiceActivity.speech(url: project.sourceURL, trackIndex: index)
+                }
+                for added in project.sources where !added.isPrimary {
+                    guard let index = VideoAudioKind.voiceTrackIndex(in: added.audioKinds), let url = VideoSourceLocator.resolve(added) else { continue }
+                    speech[added.id.uuidString] = await VideoVoiceActivity.speech(url: url, trackIndex: index)
+                }
+            }
+            let voice = VideoMusicDucking.voiceOnTimeline(project: project, primaryKinds: kinds, speech: speech, segments: segments)
+            extras.music = VideoMusicInput(track: track, settings: music, voice: voice, timelineOffset: musicOffset)
+        }
+        if project.clickSounds.enabled {
+            let times = VideoClickSound.times(project: project, segments: segments)
+            if !times.isEmpty, let url = try? VideoClickSound.fileURL(),
+               let track = try? await AVURLAsset(url: url).loadTracks(withMediaType: .audio).first {
+                extras.clicks = VideoClickSoundInput(track: track, times: times, volume: project.clickSounds.volume)
+            }
+        }
+
         let edit = try VideoCompositionBuilder.build(
             source: source,
             segments: segments,
             audio: project.audio,
             camera: camera,
             audioSources: audioSources,
-            // A fully muted export has no sound track at all.
-            includeAudio: !project.audio.isSilent(kinds: kinds)
+            // A fully muted recording adds no sound of its own.
+            includeAudio: !project.audio.isSilent(kinds: allKinds),
+            extras: extras
         )
-        let plan = makePlan(project: project, sourceDuration: source.duration, recording: recording, hasWebcam: edit.cameraTrack != nil)
+        let plan = makePlan(project: project, sourceDuration: total, recording: recording, hasWebcam: edit.cameraTrack != nil, appendedMetadata: appendedMetadata)
         let canvas = plan.outputCanvasSize
         let outputSize = settings.outputSize(canvas: canvas)
         let timelineDuration = edit.duration.seconds
+        let frames = plan.transitions.contains { $0.kind == .dissolve } ? VideoSourceFrames(project: project) : nil
+
+        if settings.format == .gif {
+            let working = settings.gifWorkingBytes(duration: timelineDuration, canvas: canvas)
+            guard working <= VideoExportSettings.gifMemoryLimit else {
+                throw VideoDemoExportError.exportFailed("This GIF is too long for its size — it would need about \(ByteCountFormatter.string(fromByteCount: working, countStyle: .memory)) of memory. Pick a smaller size or fewer frames per second, export part of the video, or choose MP4.")
+            }
+        }
+        let estimate = settings.estimatedBytes(duration: timelineDuration, canvas: canvas, hasAudio: !edit.mixedAudioTracks.isEmpty)
+        let temporaryURL = VideoExportFiles.temporaryURL(beside: destinationURL, fileExtension: settings.fileExtension)
+        try VideoExportFiles.checkSpace(for: temporaryURL, needed: estimate)
 
         let cancel = CancellationFlag()
         let watcher = Task.detached(priority: .utility) {
@@ -69,17 +142,15 @@ enum VideoDemoExporter {
             }
         }
         defer { watcher.cancel() }
-
-        let temporaryURL = FileManager.default.temporaryDirectory
-            .appendingPathComponent("shotnix-export-\(UUID().uuidString)")
-            .appendingPathExtension(settings.fileExtension)
         defer { try? FileManager.default.removeItem(at: temporaryURL) }
 
         let warnings: [String]
         if settings.format == .gif {
+            await phase(.rendering(0))
             try await writeGIF(
                 edit: edit,
                 plan: plan,
+                frames: frames,
                 outputSize: outputSize,
                 fps: Double(settings.gifFPS),
                 duration: timelineDuration,
@@ -92,35 +163,27 @@ enum VideoDemoExporter {
             warnings = try await writeMovie(
                 edit: edit,
                 plan: plan,
+                frames: frames,
                 project: project,
                 settings: settings,
                 outputSize: outputSize,
                 duration: timelineDuration,
                 to: temporaryURL,
                 cancel: cancel,
-                progress: progress
+                progress: progress,
+                phase: phase
             )
         }
 
-        if FileManager.default.fileExists(atPath: destinationURL.path) {
-            try FileManager.default.removeItem(at: destinationURL)
-        }
-        try FileManager.default.moveItem(at: temporaryURL, to: destinationURL)
+        // Swapped in whole: an existing file stays until the new one is ready.
+        try VideoExportFiles.replace(destinationURL, with: temporaryURL)
         await progress(1)
         return warnings
     }
 
-    static func makePlan(project: VideoDemoProject, sourceDuration: Double, recording: VideoDemoRecordingMetadata?, hasWebcam: Bool = false) -> VideoRenderPlan {
-        let artwork = VideoCursorArtwork(metadata: recording)
-        let cursorTrack = VideoCursorTrack.build(
-            samples: project.cursorSamples,
-            clicks: project.clickEvents,
-            smoothing: project.cursor.smoothing,
-            hideWhenIdle: project.cursor.hideWhenIdle,
-            tidyEnding: project.cursor.tidyEnding,
-            crop: project.crop.normalized,
-            duration: sourceDuration
-        )
+    static func makePlan(project: VideoDemoProject, sourceDuration: Double, recording: VideoDemoRecordingMetadata?, hasWebcam: Bool = false, appendedMetadata: [UUID: VideoDemoRecordingMetadata] = [:]) -> VideoRenderPlan {
+        let artwork = VideoCursorArtwork(metadata: VideoSourcesPointer.artworkMetadata(primary: recording, project: project, appended: appendedMetadata))
+        let cursorTrack = VideoSourcesPointer.cursorTrack(project: project, duration: sourceDuration)
         let layoutProject = project.reframeActive ? project.reframeScene() : project
         let canvas = layoutProject.canvasSize()
         let stage = layoutProject.stageRect(in: canvas)
@@ -131,10 +194,11 @@ enum VideoDemoExporter {
             height: stage.height / canvas.height
         )
         let segments = project.timelineSegments(totalDuration: sourceDuration)
+        let duration = project.outputDuration(segments: segments)
         let camera = VideoCameraTrack.build(
             regions: project.zoomRegions,
             segments: segments,
-            timelineDuration: segments.last?.timelineEnd ?? 0,
+            timelineDuration: duration,
             speed: project.zoomSpeed,
             stage: normalizedStage,
             crop: project.crop.normalized,
@@ -152,14 +216,14 @@ enum VideoDemoExporter {
                 canvas: canvas,
                 stage: stage,
                 crop: project.crop.normalized,
-                duration: segments.last?.timelineEnd ?? 0
+                duration: duration
             )
         }
         return VideoRenderPlan(
             project: layoutProject,
             sourceDuration: sourceDuration,
             artwork: artwork,
-            pointPixelScale: recording?.pointPixelScale,
+            pointPixelScale: recording?.pointPixelScale ?? project.sources.compactMap(\.pointPixelScale).first,
             cursorTrack: cursorTrack,
             camera: camera,
             hasWebcam: hasWebcam,
@@ -187,13 +251,15 @@ enum VideoDemoExporter {
     private static func writeMovie(
         edit: VideoEditComposition,
         plan: VideoRenderPlan,
+        frames: VideoSourceFrames?,
         project: VideoDemoProject,
         settings: VideoExportSettings,
         outputSize: CGSize,
         duration: Double,
         to url: URL,
         cancel: CancellationFlag,
-        progress: @escaping @Sendable (Double) async -> Void
+        progress: @escaping @Sendable (Double) async -> Void,
+        phase: @escaping @Sendable (Phase) async -> Void
     ) async throws -> [String] {
         let fps = Double(settings.fps)
         let reader = try AVAssetReader(asset: edit.composition)
@@ -209,10 +275,10 @@ enum VideoDemoExporter {
         reader.add(videoOutput)
 
         var audioOutput: AVAssetReaderAudioMixOutput?
-        if !edit.audioTracks.isEmpty {
+        if !edit.mixedAudioTracks.isEmpty {
             // Float, so a mix that adds up past full scale (voice over the
             // computer's sound) isn't clipped before the loudness gain.
-            let output = AVAssetReaderAudioMixOutput(audioTracks: edit.audioTracks, audioSettings: [
+            let output = AVAssetReaderAudioMixOutput(audioTracks: edit.mixedAudioTracks, audioSettings: [
                 AVFormatIDKey: kAudioFormatLinearPCM,
                 AVSampleRateKey: 48_000,
                 AVNumberOfChannelsKey: 2,
@@ -233,8 +299,12 @@ enum VideoDemoExporter {
         // Even loudness: measure the final mix once, then apply one gain.
         var audioGain = 1.0
         if audioOutput != nil, project.audio.normalizeLoudness {
-            audioGain = try await measureLoudnessGain(edit: edit, cancel: cancel)
+            await phase(.balancingLoudness(0))
+            audioGain = try await measureLoudnessGain(edit: edit, cancel: cancel) { fraction in
+                Task { await phase(.balancingLoudness(fraction)) }
+            }
         }
+        await phase(.rendering(0))
 
         let writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
         writer.shouldOptimizeForNetworkUse = true
@@ -286,10 +356,10 @@ enum VideoDemoExporter {
         }
 
         guard reader.startReading() else {
-            throw VideoDemoExportError.exportFailed(reader.error?.localizedDescription ?? "Could not read the recording.")
+            throw reader.error.map { VideoDemoExportError.system($0) } ?? VideoDemoExportError.exportFailed("Could not read the recording.")
         }
         guard writer.startWriting() else {
-            throw VideoDemoExportError.exportFailed(writer.error?.localizedDescription ?? "Could not write the video.")
+            throw writer.error.map { VideoDemoExportError.system($0) } ?? VideoDemoExportError.exportFailed("Could not write the video.")
         }
         writer.startSession(atSourceTime: .zero)
 
@@ -303,13 +373,17 @@ enum VideoDemoExporter {
             audioInput: audioInput,
             audioGain: audioGain,
             plan: plan,
+            frames: frames,
             cameraStore: edit.cameraTrack == nil ? nil : cameraStore,
             outputSize: outputSize,
             fps: fps,
             duration: duration,
             endCard: settings.endCard ? EndCard(background: project.background) : nil,
             cancel: cancel,
-            progress: progress
+            progress: { value in
+                await progress(value)
+                await phase(.rendering(value))
+            }
         )
         try await job.run()
         return job.warnings
@@ -321,10 +395,10 @@ enum VideoDemoExporter {
 
     /// Reads the edit's final mix once to find the gain that lands it at
     /// −16 LUFS without letting peaks pass −1 dBFS.
-    private static func measureLoudnessGain(edit: VideoEditComposition, cancel: CancellationFlag) async throws -> Double {
-        guard !edit.audioTracks.isEmpty else { return 1 }
+    private static func measureLoudnessGain(edit: VideoEditComposition, cancel: CancellationFlag, progress: @escaping (Double) -> Void = { _ in }) async throws -> Double {
+        guard !edit.mixedAudioTracks.isEmpty else { return 1 }
         let reader = try AVAssetReader(asset: edit.composition)
-        let output = AVAssetReaderAudioMixOutput(audioTracks: edit.audioTracks, audioSettings: [
+        let output = AVAssetReaderAudioMixOutput(audioTracks: edit.mixedAudioTracks, audioSettings: [
             AVFormatIDKey: kAudioFormatLinearPCM,
             AVSampleRateKey: 48_000,
             AVNumberOfChannelsKey: 2,
@@ -340,10 +414,17 @@ enum VideoDemoExporter {
         reader.add(output)
         guard reader.startReading() else { return 1 }
         let meter = VideoLoudnessMeter(channels: 2, sampleRate: 48_000)
+        let total = max(edit.duration.seconds, 0.001)
+        var reported = 0.0
         while let sample = output.copyNextSampleBuffer() {
             if cancel.isSet {
                 reader.cancelReading()
                 throw VideoDemoExportError.cancelled
+            }
+            let reached = CMSampleBufferGetPresentationTimeStamp(sample).seconds / total
+            if reached - reported > 0.02 {
+                reported = reached
+                progress(min(max(reached, 0), 1))
             }
             guard let block = CMSampleBufferGetDataBuffer(sample) else { continue }
             var length = 0
@@ -371,6 +452,8 @@ enum VideoDemoExporter {
         let audioInput: AVAssetWriterInput?
         let audioGain: Double
         let plan: VideoRenderPlan
+        /// Held frames for dissolves (nil: none in this video).
+        let frames: VideoSourceFrames?
         let cameraStore: VideoCameraFrameStore?
         let outputSize: CGSize
         let fps: Double
@@ -406,6 +489,7 @@ enum VideoDemoExporter {
             audioInput: AVAssetWriterInput?,
             audioGain: Double,
             plan: VideoRenderPlan,
+            frames: VideoSourceFrames?,
             cameraStore: VideoCameraFrameStore?,
             outputSize: CGSize,
             fps: Double,
@@ -423,6 +507,7 @@ enum VideoDemoExporter {
             self.audioInput = audioInput
             self.audioGain = audioGain
             self.plan = plan
+            self.frames = frames
             self.cameraStore = cameraStore
             self.outputSize = outputSize
             self.fps = fps
@@ -500,11 +585,11 @@ enum VideoDemoExporter {
             }
             if reader.status == .failed {
                 writer.cancelWriting()
-                throw VideoDemoExportError.exportFailed(reader.error?.localizedDescription ?? "Reading the recording failed.")
+                throw reader.error.map { VideoDemoExportError.system($0) } ?? VideoDemoExportError.exportFailed("Reading the recording failed.")
             }
             await writer.finishWriting()
             if writer.status != .completed {
-                throw VideoDemoExportError.exportFailed(writer.error?.localizedDescription ?? "Writing the video failed.")
+                throw writer.error.map { VideoDemoExportError.system($0) } ?? VideoDemoExportError.exportFailed("Writing the video failed.")
             }
         }
 
@@ -556,6 +641,9 @@ enum VideoDemoExporter {
                 }
                 options.webcamFrame = lastCameraFrame?.image
                 options.webcamMask = lastCameraFrame?.mask
+            }
+            if let frames, let request = plan.heldFrameRequest(at: seconds) {
+                options.transitionFrame = frames.image(at: request.sourceTime)
             }
             let image = renderer.render(
                 source: source,
@@ -630,6 +718,7 @@ enum VideoDemoExporter {
     private static func writeGIF(
         edit: VideoEditComposition,
         plan: VideoRenderPlan,
+        frames: VideoSourceFrames?,
         outputSize: CGSize,
         fps: Double,
         duration: Double,
@@ -649,7 +738,7 @@ enum VideoDemoExporter {
         guard reader.canAdd(output) else { throw VideoDemoExportError.exportFailed("Could not read frames for the GIF.") }
         reader.add(output)
         guard reader.startReading() else {
-            throw VideoDemoExportError.exportFailed(reader.error?.localizedDescription ?? "Could not read frames for the GIF.")
+            throw reader.error.map { VideoDemoExportError.system($0) } ?? VideoDemoExportError.exportFailed("Could not read frames for the GIF.")
         }
 
         // The reader delivers a frame for every started 1/fps (a partial last
@@ -687,6 +776,9 @@ enum VideoDemoExporter {
                 options.webcamFrame = lastCameraFrame?.image
                 options.webcamMask = lastCameraFrame?.mask
             }
+            if let frames, let request = plan.heldFrameRequest(at: time) {
+                options.transitionFrame = frames.image(at: request.sourceTime)
+            }
             let image = renderer.render(
                 source: CIImage(cvPixelBuffer: pixelBuffer),
                 timelineTime: time,
@@ -702,7 +794,7 @@ enum VideoDemoExporter {
             }
         }
         if reader.status == .failed {
-            throw VideoDemoExportError.exportFailed(reader.error?.localizedDescription ?? "Could not read frames for the GIF.")
+            throw reader.error.map { VideoDemoExportError.system($0) } ?? VideoDemoExportError.exportFailed("Could not read frames for the GIF.")
         }
         guard written > 0, CGImageDestinationFinalize(destination) else {
             throw VideoDemoExportError.exportFailed("Could not write the GIF.")
