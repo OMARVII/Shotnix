@@ -512,10 +512,148 @@ extension VideoEditorModel {
     }
 }
 
-// MARK: - Pill
+// MARK: - Toolbar status
 
-/// Exports in progress (and just finished) for this editor, over the
-/// preview's corner: progress, cancel, and — when done — share and show.
+/// The export queue in the toolbar, next to Export — never over the
+/// picture: progress and cancel while one runs, share and show once it's
+/// done. Clicking it lists every export.
+struct VideoExportToolbarStatus: View {
+    @ObservedObject var model: VideoEditorModel
+    @ObservedObject private var queue = VideoExportQueue.shared
+    @State private var showsList = false
+
+    var body: some View {
+        let jobs = queue.jobs(for: model.project.sourcePath)
+        if let job = jobs.first(where: { !$0.isDone }) ?? jobs.last {
+            VideoExportStatusChip(job: job, waiting: jobs.filter { !$0.isDone && $0.id != job.id }.count, showsList: $showsList)
+                .popover(isPresented: $showsList, arrowEdge: .bottom) {
+                    VideoExportJobsPill(model: model)
+                        .padding(10)
+                        .background(Color(white: 0.12))
+                        .environment(\.colorScheme, .dark)
+                }
+        }
+    }
+}
+
+private struct VideoExportStatusChip: View {
+    @ObservedObject var job: VideoExportQueue.Job
+    /// Other exports still to finish.
+    let waiting: Int
+    @Binding var showsList: Bool
+
+    var body: some View {
+        HStack(spacing: 2) {
+            Button { showsList.toggle() } label: {
+                HStack(spacing: 7) {
+                    icon.frame(width: 15, height: 15)
+                    Text(label)
+                        .font(.system(size: 11.5, weight: .semibold))
+                        .monospacedDigit()
+                        .lineLimit(1)
+                    if waiting > 0 {
+                        Text("+\(waiting)")
+                            .font(.system(size: 10, weight: .bold))
+                            .padding(.horizontal, 5)
+                            .frame(height: 16)
+                            .background(Capsule().fill(Color.white.opacity(0.14)))
+                    }
+                }
+                .foregroundStyle(isFailed ? Color(red: 1, green: 0.62, blue: 0.55) : VideoEditorTheme.textPrimary)
+                .padding(.leading, 9)
+                .padding(.trailing, 4)
+                .frame(height: 28)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .help(job.toClipboard ? "Copy to clipboard — \(job.statusText)" : "\(job.destination.lastPathComponent) — \(job.statusText)")
+            .accessibilityLabel("Export: \(job.statusText)")
+            actions
+        }
+        .padding(.trailing, 2)
+        .background(RoundedRectangle(cornerRadius: 7, style: .continuous).fill(Color.white.opacity(0.06)))
+        .fixedSize()
+    }
+
+    private var isFailed: Bool {
+        if case .failed = job.state { return true }
+        return false
+    }
+
+    private var label: String {
+        switch job.state {
+        case .queued: return "Waiting…"
+        case .enhancingVoice: return "Cleaning up voice…"
+        case .running(.preparing): return "Preparing…"
+        case .running(.balancingLoudness): return "Balancing loudness…"
+        case .running(.rendering(let value)): return "\(job.toClipboard ? "Copying" : "Exporting") \(Int((value * 100).rounded()))%"
+        case .finished: return job.toClipboard ? "Copied" : "Exported"
+        case .failed: return "Export failed"
+        case .cancelled: return "Cancelled"
+        }
+    }
+
+    @ViewBuilder
+    private var icon: some View {
+        switch job.state {
+        case .finished:
+            Image(systemName: "checkmark.circle.fill").foregroundStyle(Color.green).font(.system(size: 14))
+        case .failed:
+            Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(Color.orange).font(.system(size: 13))
+        case .cancelled:
+            Image(systemName: "xmark.circle").foregroundStyle(Color.white.opacity(0.6)).font(.system(size: 13))
+        case .queued:
+            Image(systemName: "clock").foregroundStyle(Color.white.opacity(0.7)).font(.system(size: 12))
+        case .enhancingVoice(let value), .running(.balancingLoudness(let value)), .running(.rendering(let value)):
+            ring(value)
+        case .running(.preparing):
+            ring(0)
+        }
+    }
+
+    private func ring(_ value: Double) -> some View {
+        ZStack {
+            Circle().stroke(Color.white.opacity(0.18), lineWidth: 2.5)
+            Circle()
+                .trim(from: 0, to: min(max(value, 0.03), 1))
+                .stroke(Color.accentColor, style: StrokeStyle(lineWidth: 2.5, lineCap: .round))
+                .rotationEffect(.degrees(-90))
+        }
+        .padding(1)
+    }
+
+    @ViewBuilder
+    private var actions: some View {
+        if case .finished = job.state, !job.toClipboard {
+            VideoShareButton(url: job.destination, compact: true)
+            Button {
+                NSWorkspace.shared.activateFileViewerSelecting([job.destination])
+            } label: {
+                Image(systemName: "folder").frame(width: 24, height: 24)
+            }
+            .buttonStyle(VideoToolButtonStyle())
+            .help("Show in Finder")
+            .accessibilityLabel("Show in Finder")
+        }
+        Button {
+            if job.isDone {
+                VideoExportQueue.shared.dismiss(job)
+            } else {
+                VideoExportQueue.shared.cancel(job)
+            }
+        } label: {
+            Image(systemName: "xmark").font(.system(size: 9.5, weight: .bold)).frame(width: 22, height: 24)
+        }
+        .buttonStyle(VideoToolButtonStyle())
+        .help(job.isDone ? "Dismiss" : "Cancel this export")
+        .accessibilityLabel(job.isDone ? "Dismiss" : "Cancel export")
+    }
+}
+
+// MARK: - List
+
+/// Every export of this editor (the toolbar status's list): progress,
+/// cancel, and — when done — share and show.
 struct VideoExportJobsPill: View {
     @ObservedObject var model: VideoEditorModel
     @ObservedObject private var queue = VideoExportQueue.shared

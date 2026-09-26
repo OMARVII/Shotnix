@@ -152,12 +152,17 @@ final class VideoFeatureSnapshotTests: XCTestCase {
         model.exportSettings.endCard = false
         model.enqueueExport(to: directory.appendingPathComponent("Pill Demo.mp4"), settings: model.exportSettings, toClipboard: false)
         model.isExportPresented = false
+        // The export's status sits in the toolbar, clear of the picture —
+        // also in the smallest window.
+        let smallest = CGSize(width: 1080, height: 700)
         try await render(VideoEditorRootView(model: model), size: full, name: "92-export-pill-running")
+        try await render(VideoEditorRootView(model: model), size: smallest, name: "99-export-status-smallest-running")
         let job = try XCTUnwrap(model.exportJobs.last)
         let deadline = Date().addingTimeInterval(60)
         while !job.isDone, Date() < deadline { try await Task.sleep(nanoseconds: 100_000_000) }
         try await Task.sleep(nanoseconds: 300_000_000)
         try await render(VideoEditorRootView(model: model), size: full, name: "93-export-pill-finished")
+        try await render(VideoEditorRootView(model: model), size: smallest, name: "99-export-status-smallest-finished")
         XCTAssertEqual(model.exportPhase, .idle, "finished with the sheet closed: the pill has it")
         model.isExportPresented = true
         model.exportPhase = .finished(url: job.destination, bytes: 9_700_000, copied: false)

@@ -47,11 +47,6 @@ struct VideoEditorRootView: View {
                                 .padding(.top, model.isCropping ? 12 : 80)
                                 .transition(.move(edge: .top).combined(with: .opacity))
                         }
-                        // Background exports (VideoExportJobs.swift).
-                        VideoExportJobsPill(model: model)
-                            .padding(.trailing, 16)
-                            .padding(.bottom, 64)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
                         VStack {
                             Spacer()
                             if model.isCropping {
@@ -202,6 +197,9 @@ struct VideoEditorToolbar: View {
                 .buttonStyle(VideoToolButtonStyle())
                 .help("Keyboard shortcuts (?)")
                 .accessibilityLabel("Keyboard shortcuts")
+
+                // Background exports (VideoExportJobs.swift).
+                VideoExportToolbarStatus(model: model)
 
                 Button {
                     withAnimation(.easeOut(duration: 0.15)) { model.isExportPresented = true }
