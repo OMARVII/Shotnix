@@ -1867,6 +1867,8 @@ final class VideoEditorModel: ObservableObject {
         playback.pause()
         cancelCaptions()
         voiceTask?.cancel()
+        // Nothing left running asks about the quit (or holds an update).
+        endVoiceQuitToken()
         saveDraftNow()
         keepHistoryForSession()
         VideoExportQueue.shared.editorClosed(sourcePath: project.sourcePath)

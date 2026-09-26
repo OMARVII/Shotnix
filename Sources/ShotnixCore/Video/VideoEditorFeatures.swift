@@ -538,7 +538,17 @@ extension VideoEditorModel {
                 if self.voiceTask != nil { self.voiceJob = value }
             }
         }
+        // The cleaned-up voice is a cache (it runs again next time), so a
+        // quit stops it — unless an export is waiting for it. Registered
+        // first, and ended with the work itself, editor or not.
+        AppTermination.end(voiceQuitToken)
+        let token = AppTermination.begin("Cleaning up the voice in “\(project.sourceURL.deletingPathExtension().lastPathComponent)”", asksBeforeQuit: true) { [weak self] done in
+            guard let self, self.voiceTask != nil else { return done() }
+            if !self.isExporting { self.voiceTask?.cancel() }
+        }
+        voiceQuitToken = token
         let task = Task { [weak self] () -> Bool in
+            defer { AppTermination.end(token) }
             do {
                 try await VideoVoiceEnhancer.enhance(pending, progress: report)
                 guard let self else { return false }
@@ -562,17 +572,10 @@ extension VideoEditorModel {
             }
         }
         voiceTask = task
-        // The cleaned-up voice is a cache (it runs again next time), so a
-        // quit stops it — unless an export is waiting for it.
-        AppTermination.end(voiceQuitToken)
-        voiceQuitToken = AppTermination.begin("Cleaning up the voice in “\(project.sourceURL.deletingPathExtension().lastPathComponent)”", asksBeforeQuit: true) { [weak self] done in
-            guard let self, self.voiceTask != nil else { return done() }
-            if !self.isExporting { self.voiceTask?.cancel() }
-        }
         return task
     }
 
-    private func endVoiceQuitToken() {
+    func endVoiceQuitToken() {
         AppTermination.end(voiceQuitToken)
         voiceQuitToken = nil
     }

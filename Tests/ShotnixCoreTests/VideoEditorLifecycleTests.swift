@@ -98,6 +98,28 @@ final class VideoEditorLifecycleTests: XCTestCase {
         XCTAssertFalse(AppTermination.isBusy)
     }
 
+    func testClosingDuringVoiceCleanupEndsItsQuitRegistration() async throws {
+        try XCTSkipUnless(VideoVoiceEnhancer.isAvailable, "Voice isolation isn't available on this Mac")
+        var options = T.Options(seconds: 3)
+        options.audio = true
+        options.audioTracks = [.microphone]
+        var model: VideoEditorModel? = try await T.make(in: directory, options)
+        if let url = model?.voiceTrackIndex.map({ VideoVoiceEnhancer.cacheURL(for: model!.project.sourceURL, trackIndex: $0) }) {
+            try? FileManager.default.removeItem(at: url)
+        }
+        model?.setStyle { $0.audio.enhanceVoice = true }
+        XCTAssertTrue(AppTermination.descriptions.contains { $0.hasPrefix("Cleaning up the voice") })
+        // The window closes: the editor stops and goes away — its work is
+        // off the quit prompt right then, whenever the cleanup notices.
+        model?.stop()
+        XCTAssertFalse(AppTermination.descriptions.contains { $0.hasPrefix("Cleaning up the voice") }, "\(AppTermination.descriptions)")
+        model = nil
+        for _ in 0..<100 where AppTermination.isBusy {
+            await T.settle(0.05)
+        }
+        XCTAssertFalse(AppTermination.isBusy, "no stale work for the next quit or update to wait on: \(AppTermination.descriptions)")
+    }
+
     func testQuittingWritesTheLastEdits() async throws {
         let model = try await T.make(in: directory)
         model.setStyle { $0.padding = 0.2 }
