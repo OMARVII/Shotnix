@@ -18,6 +18,53 @@ struct HistoryTrashEntry: Codable {
     let originalIndex: Int
 }
 
+/// How long captures stay in History (Preferences → Screenshots).
+enum HistoryRetention: String, CaseIterable {
+    case forever
+    case days7 = "7d"
+    case days30 = "30d"
+    case days90 = "90d"
+    case items100 = "100"
+    case items500 = "500"
+    case items1000 = "1000"
+
+    var title: String {
+        switch self {
+        case .forever: return "Forever"
+        case .days7: return "7 days"
+        case .days30: return "30 days"
+        case .days90: return "90 days"
+        case .items100: return "Last 100 captures"
+        case .items500: return "Last 500 captures"
+        case .items1000: return "Last 1,000 captures"
+        }
+    }
+
+    var maxAge: TimeInterval? {
+        switch self {
+        case .days7: return 7 * 24 * 60 * 60
+        case .days30: return 30 * 24 * 60 * 60
+        case .days90: return 90 * 24 * 60 * 60
+        default: return nil
+        }
+    }
+
+    var maxCount: Int? {
+        switch self {
+        case .items100: return 100
+        case .items500: return 500
+        case .items1000: return 1000
+        default: return nil
+        }
+    }
+}
+
+/// NSImage is immutable once built; the box carries one across a detached
+/// task boundary without a Sendable warning.
+private struct HistoryImageBox: @unchecked Sendable {
+    let image: NSImage
+}
+
 /// Persists captures to ~/Library/Application Support/Shotnix/History/
 @MainActor
 final class HistoryManager: ObservableObject {
@@ -31,6 +78,24 @@ final class HistoryManager: ObservableObject {
 
     /// Trash entries older than this are permanently deleted on launch.
     private static let trashRetention: TimeInterval = 7 * 24 * 60 * 60
+
+    /// Disk I/O for index writes and purges — never the main thread. Serial,
+    /// so index snapshots land in the order they were taken.
+    nonisolated private static let ioQueue = DispatchQueue(label: "com.shotnix.history.io", qos: .utility)
+
+    /// Index writes are batched: a burst of captures, deletes, or OCR results
+    /// costs one write instead of one per change.
+    private static let indexWriteDelay: UInt64 = 250_000_000
+    private var indexWriteScheduled = false
+    private var trashWriteScheduled = false
+    /// How many index writes actually ran (tests assert batching).
+    private(set) var indexWriteCount = 0
+
+    /// Per-capture file work (the background PNG write, moves to and from the
+    /// trash, purges) runs in order: a delete right after a capture waits for
+    /// its write instead of racing it and stranding an untracked PNG.
+    private var fileTasks: [UUID: (generation: Int, task: Task<Void, Never>)] = [:]
+    private var fileTaskGeneration = 0
 
     init(storageDir overrideStorageDir: URL? = nil) {
         if let overrideStorageDir {
@@ -49,20 +114,30 @@ final class HistoryManager: ObservableObject {
         load()
         loadTrash()
         purgeExpiredTrash()
+        applyRetention()
         scheduleOCRIndexing()
+        Task { [weak self] in await self?.sweepOrphanedFiles() }
+        // Batched writes still pending at quit land before the process exits.
+        NotificationCenter.default.addObserver(
+            forName: NSApplication.willTerminateNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated { self?.flushPendingWrites() }
+        }
     }
 
     // MARK: – Add
     //
     // Two-phase insert: the HistoryItem is returned synchronously so the UI
     // (overlay, auto-copy, auto-save) unblocks immediately. PNG encoding,
-    // thumbnail generation, xattr metadata and JSON index write all happen on
-    // a detached background Task. We prime HistoryImageCache with the
-    // in-memory NSImage so any call to `item.fullImage` / `item.thumbnail`
-    // before the disk write finishes serves from memory.
+    // thumbnail generation, xattr metadata and JSON index write all happen
+    // off the main thread. We prime HistoryImageCache with the in-memory
+    // NSImage so any call to `item.fullImage` / `item.thumbnail` before the
+    // disk write finishes serves from memory.
 
     @discardableResult
-    func add(image: NSImage, rect: CGRect?) -> HistoryItem {
+    func add(image: NSImage, rect: CGRect?, type: CaptureType? = nil, ocrText: String? = nil) -> HistoryItem {
         let id = UUID()
         let imagePath = storageDir.appendingPathComponent("\(id.uuidString).png").path
         let thumbPath = storageDir.appendingPathComponent("\(id.uuidString)_thumb.png").path
@@ -72,7 +147,9 @@ final class HistoryManager: ObservableObject {
             createdAt: Date(),
             imagePath: imagePath,
             thumbnailPath: thumbPath,
-            captureRect: rect.map(CodableRect.init)
+            captureRect: rect.map(CodableRect.init),
+            ocrText: ocrText,
+            captureTypeRaw: type?.rawValue
         )
         items.insert(item, at: 0)
 
@@ -82,15 +159,21 @@ final class HistoryManager: ObservableObject {
         // until the real thumbnail is generated. Cheap perceptual win.
         HistoryImageCache.primeThumbnail(image, for: thumbPath)
 
-        Task.detached(priority: .userInitiated) { [weak self] in
-            Self.encodeAndPersist(
-                image: image,
-                imagePath: imagePath,
-                thumbPath: thumbPath,
-                rect: rect,
-                manager: self
-            )
+        let box = HistoryImageBox(image: image)
+        let write = Task.detached(priority: .userInitiated) {
+            Self.encodeAndPersist(image: box.image, imagePath: imagePath, thumbPath: thumbPath, rect: rect, type: type)
         }
+        enqueueFileOperation(for: id) { [weak self] in
+            let thumbnail = await write.value
+            // Deleted while encoding: don't resurrect its cache entry.
+            guard let self, self.items.contains(where: { $0.id == id }) else { return }
+            if let thumbnail {
+                HistoryImageCache.primeThumbnail(thumbnail.image, for: thumbPath)
+            }
+            self.scheduleIndexWrite()
+        }
+        scheduleIndexWrite()
+        applyRetention()
         // Index the new capture for text search in the background.
         scheduleOCRIndexing()
         notifyChanged()
@@ -104,12 +187,6 @@ final class HistoryManager: ObservableObject {
         NotificationCenter.default.post(name: .shotnixHistoryDidChange, object: self)
     }
 
-    /// Called from the detached encode task once the index needs to be written.
-    /// Runs on the main actor because it reads `items`, which is actor-isolated.
-    func persistCurrentIndex() {
-        Self.persist(items: items, to: indexURL)
-    }
-
     // MARK: – Thumbnail access (UI convenience)
 
     /// Pure in-memory lookup — never hits disk. The history grid decodes
@@ -118,18 +195,36 @@ final class HistoryManager: ObservableObject {
         HistoryImageCache.thumbnailIfCached(for: item.thumbnailPath)
     }
 
+    /// The capture's PNG once it has landed on disk — drags hand this file
+    /// over directly instead of re-encoding it.
+    func storedImageURL(for item: HistoryItem) -> URL? {
+        guard fileTasks[item.id] == nil, FileManager.default.fileExists(atPath: item.imagePath) else { return nil }
+        return URL(fileURLWithPath: item.imagePath)
+    }
+
     // MARK: – Delete (moves to trash, undoable)
 
     /// Moves the item's files into History/Trash/ and records a tombstone so
     /// the delete can be undone. Files are permanently removed only when the
     /// tombstone expires (see `purgeExpiredTrash`).
     func delete(_ item: HistoryItem) {
-        guard let index = items.firstIndex(where: { $0.id == item.id }) else { return }
-        let removed = items.remove(at: index)
-        HistoryImageCache.evict(fullPath: removed.imagePath, thumbnailPath: removed.thumbnailPath)
-        moveToTrash(HistoryTrashEntry(item: removed, deletedAt: Date(), originalIndex: index))
-        persistCurrentIndex()
-        persistTrashIndex()
+        delete([item])
+    }
+
+    func delete(_ itemsToDelete: [HistoryItem]) {
+        let ids = Set(itemsToDelete.map(\.id))
+        let now = Date()
+        var removedAny = false
+        // Highest index first so earlier indices stay valid while removing.
+        for index in items.indices.reversed() where ids.contains(items[index].id) {
+            let removed = items.remove(at: index)
+            HistoryImageCache.evict(fullPath: removed.imagePath, thumbnailPath: removed.thumbnailPath)
+            moveToTrash(HistoryTrashEntry(item: removed, deletedAt: now, originalIndex: index))
+            removedAny = true
+        }
+        guard removedAny else { return }
+        scheduleIndexWrite()
+        scheduleTrashWrite()
         notifyChanged()
     }
 
@@ -142,8 +237,8 @@ final class HistoryManager: ObservableObject {
         for (index, item) in removed.enumerated() {
             moveToTrash(HistoryTrashEntry(item: item, deletedAt: now, originalIndex: index))
         }
-        persistCurrentIndex()
-        persistTrashIndex()
+        scheduleIndexWrite()
+        scheduleTrashWrite()
         notifyChanged()
     }
 
@@ -153,24 +248,64 @@ final class HistoryManager: ObservableObject {
     func restoreFromTrash(id: UUID) -> HistoryItem? {
         guard let entryIndex = trashEntries.firstIndex(where: { $0.item.id == id }) else { return nil }
         let entry = trashEntries.remove(at: entryIndex)
-        restoreFileFromTrash(toPath: entry.item.imagePath)
-        restoreFileFromTrash(toPath: entry.item.thumbnailPath)
+        performFileOperation(for: id) { [weak self] in
+            self?.restoreFileFromTrash(toPath: entry.item.imagePath)
+            self?.restoreFileFromTrash(toPath: entry.item.thumbnailPath)
+        }
         let insertAt = min(max(entry.originalIndex, 0), items.count)
         items.insert(entry.item, at: insertAt)
-        persistCurrentIndex()
-        persistTrashIndex()
+        scheduleIndexWrite()
+        scheduleTrashWrite()
         // The restored item may predate OCR indexing.
         scheduleOCRIndexing()
         notifyChanged()
         return entry.item
     }
 
+    // MARK: – File operation ordering
+
+    private func enqueueFileOperation(for id: UUID, _ operation: @escaping @MainActor () async -> Void) {
+        let previous = fileTasks[id]?.task
+        fileTaskGeneration += 1
+        let generation = fileTaskGeneration
+        let task = Task { @MainActor [weak self] in
+            await previous?.value
+            await operation()
+            if self?.fileTasks[id]?.generation == generation {
+                self?.fileTasks[id] = nil
+            }
+        }
+        fileTasks[id] = (generation, task)
+    }
+
+    /// Runs `operation` right away, or after the item's pending file work.
+    private func performFileOperation(for id: UUID, _ operation: @escaping @MainActor () -> Void) {
+        if fileTasks[id] != nil {
+            enqueueFileOperation(for: id) { operation() }
+        } else {
+            operation()
+        }
+    }
+
+    /// Resolves once every queued file operation and disk write has finished.
+    func waitForPendingFileOperations() async {
+        while !fileTasks.isEmpty {
+            for task in fileTasks.values.map(\.task) {
+                await task.value
+            }
+            await Task.yield()
+        }
+        await Self.onIOQueue {}
+    }
+
     // MARK: – Trash internals
 
     private func moveToTrash(_ entry: HistoryTrashEntry) {
-        moveFileToTrash(atPath: entry.item.imagePath)
-        moveFileToTrash(atPath: entry.item.thumbnailPath)
         trashEntries.append(entry)
+        let paths = [entry.item.imagePath, entry.item.thumbnailPath]
+        performFileOperation(for: entry.item.id) { [weak self] in
+            paths.forEach { self?.moveFileToTrash(atPath: $0) }
+        }
     }
 
     private func moveFileToTrash(atPath path: String) {
@@ -200,16 +335,27 @@ final class HistoryManager: ObservableObject {
     /// Permanently deletes trash entries older than `trashRetention`.
     private func purgeExpiredTrash() {
         let cutoff = Date().addingTimeInterval(-Self.trashRetention)
-        let expired = trashEntries.filter { $0.deletedAt < cutoff }
+        purgeTrash(trashEntries.filter { $0.deletedAt < cutoff })
+    }
+
+    private func purgeTrash(_ expired: [HistoryTrashEntry]) {
         guard !expired.isEmpty else { return }
-        trashEntries.removeAll { $0.deletedAt < cutoff }
-        persistTrashIndex()
-        let trashDir = self.trashDir
-        let fileURLs = expired
-            .flatMap { [$0.item.imagePath, $0.item.thumbnailPath] }
-            .map { trashDir.appendingPathComponent(URL(fileURLWithPath: $0).lastPathComponent) }
-        Task.detached(priority: .utility) {
-            fileURLs.forEach { try? FileManager.default.removeItem(at: $0) }
+        let ids = Set(expired.map(\.item.id))
+        trashEntries.removeAll { ids.contains($0.item.id) }
+        scheduleTrashWrite()
+        for entry in expired {
+            let urls = [entry.item.imagePath, entry.item.thumbnailPath]
+                .map { trashDir.appendingPathComponent(URL(fileURLWithPath: $0).lastPathComponent) }
+            removeFilesPermanently(urls, for: entry.item.id)
+        }
+    }
+
+    /// Deletes files off the main thread, after any pending work on the item.
+    private func removeFilesPermanently(_ urls: [URL], for id: UUID) {
+        performFileOperation(for: id) {
+            Self.ioQueue.async {
+                urls.forEach { try? FileManager.default.removeItem(at: $0) }
+            }
         }
     }
 
@@ -224,10 +370,6 @@ final class HistoryManager: ObservableObject {
         }
     }
 
-    private func persistTrashIndex() {
-        Self.persistTrash(entries: trashEntries, to: trashIndexURL)
-    }
-
     nonisolated private static func persistTrash(entries: [HistoryTrashEntry], to url: URL) {
         do {
             let data = try JSONEncoder().encode(entries)
@@ -237,18 +379,136 @@ final class HistoryManager: ObservableObject {
         }
     }
 
+    // MARK: – Retention
+
+    /// Captures the policy would drop right now — Settings asks before a
+    /// newly picked limit deletes anything.
+    func itemsExceedingRetention(_ policy: HistoryRetention, now: Date = Date()) -> [HistoryItem] {
+        var expired: [HistoryItem] = []
+        var kept = items.sorted { $0.createdAt > $1.createdAt }
+        if let maxAge = policy.maxAge {
+            let cutoff = now.addingTimeInterval(-maxAge)
+            expired += kept.filter { $0.createdAt < cutoff }
+            kept.removeAll { $0.createdAt < cutoff }
+        }
+        if let maxCount = policy.maxCount, kept.count > maxCount {
+            expired += kept[maxCount...]
+        }
+        return expired
+    }
+
+    /// Permanently removes captures beyond the retention policy. Forever (the
+    /// default) never removes anything.
+    @discardableResult
+    func applyRetention(_ policy: HistoryRetention = Settings.historyRetention, now: Date = Date()) -> Int {
+        let expired = itemsExceedingRetention(policy, now: now)
+        guard !expired.isEmpty else { return 0 }
+        let ids = Set(expired.map(\.id))
+        items.removeAll { ids.contains($0.id) }
+        for item in expired {
+            HistoryImageCache.evict(fullPath: item.imagePath, thumbnailPath: item.thumbnailPath)
+            removeFilesPermanently([URL(fileURLWithPath: item.imagePath), URL(fileURLWithPath: item.thumbnailPath)], for: item.id)
+        }
+        scheduleIndexWrite()
+        notifyChanged()
+        return expired.count
+    }
+
+    // MARK: – Disk upkeep
+
+    /// Deletes capture files no history or trash entry points at — PNGs left
+    /// by a crash or by the old delete/write race. Only names Shotnix writes
+    /// (<UUID>.png, <UUID>_thumb.png) are ever touched.
+    @discardableResult
+    func sweepOrphanedFiles() async -> Int {
+        let storageDir = self.storageDir
+        let trashDir = self.trashDir
+        let listed = await Self.onIOQueue {
+            (storage: Self.captureFiles(in: storageDir), trash: Self.captureFiles(in: trashDir))
+        }
+        // Decided on the main actor AFTER listing: a capture added before the
+        // listing is already in `items`, so its fresh files never look orphaned.
+        let liveNames = Set(items.flatMap { [$0.imagePath, $0.thumbnailPath] }.map { URL(fileURLWithPath: $0).lastPathComponent })
+        let trashNames = Set(trashEntries.flatMap { [$0.item.imagePath, $0.item.thumbnailPath] }.map { URL(fileURLWithPath: $0).lastPathComponent })
+        let busyIDs = Set(fileTasks.keys)
+        func isBusy(_ url: URL) -> Bool {
+            Self.captureID(fromFileName: url.lastPathComponent).map(busyIDs.contains) ?? false
+        }
+        let orphans = listed.storage.filter { !liveNames.contains($0.lastPathComponent) && !isBusy($0) }
+            + listed.trash.filter { !trashNames.contains($0.lastPathComponent) && !isBusy($0) }
+        guard !orphans.isEmpty else { return 0 }
+        await Self.onIOQueue {
+            orphans.forEach { try? FileManager.default.removeItem(at: $0) }
+        }
+        return orphans.count
+    }
+
+    /// Bytes History takes on disk, trash included.
+    func diskUsage() async -> Int64 {
+        let storageDir = self.storageDir
+        return await Self.onIOQueue { Self.directorySize(storageDir) }
+    }
+
+    /// Settings → Clean Up: empties the History trash, removes orphaned files,
+    /// and applies the retention setting now. Returns the bytes freed.
+    @discardableResult
+    func cleanUp() async -> Int64 {
+        let before = await diskUsage()
+        await waitForPendingFileOperations()
+        purgeTrash(trashEntries)
+        applyRetention()
+        await sweepOrphanedFiles()
+        await waitForPendingFileOperations()
+        flushPendingWrites()
+        let after = await diskUsage()
+        return max(0, before - after)
+    }
+
+    nonisolated private static func captureFiles(in directory: URL) -> [URL] {
+        let urls = (try? FileManager.default.contentsOfDirectory(
+            at: directory,
+            includingPropertiesForKeys: [.isRegularFileKey],
+            options: [.skipsHiddenFiles]
+        )) ?? []
+        return urls.filter { captureID(fromFileName: $0.lastPathComponent) != nil }
+    }
+
+    /// The capture UUID in "<UUID>.png" / "<UUID>_thumb.png", else nil.
+    nonisolated static func captureID(fromFileName name: String) -> UUID? {
+        guard name.hasSuffix(".png") else { return nil }
+        var stem = String(name.dropLast(4))
+        if stem.hasSuffix("_thumb") { stem = String(stem.dropLast(6)) }
+        guard let id = UUID(uuidString: stem), id.uuidString == stem else { return nil }
+        return id
+    }
+
+    nonisolated private static func directorySize(_ directory: URL) -> Int64 {
+        let keys: [URLResourceKey] = [.isRegularFileKey, .totalFileAllocatedSizeKey, .fileSizeKey]
+        guard let enumerator = FileManager.default.enumerator(at: directory, includingPropertiesForKeys: keys) else { return 0 }
+        var total: Int64 = 0
+        for case let url as URL in enumerator {
+            guard let values = try? url.resourceValues(forKeys: Set(keys)), values.isRegularFile == true else { continue }
+            total += Int64(values.totalFileAllocatedSize ?? values.fileSize ?? 0)
+        }
+        return total
+    }
+
+    nonisolated private static func onIOQueue<T>(_ work: @escaping () -> T) async -> T {
+        await withCheckedContinuation { continuation in
+            ioQueue.async { continuation.resume(returning: work()) }
+        }
+    }
+
     // MARK: – OCR indexing
     //
     // A single low-priority serial loop OCRs every item whose `ocrText` is
     // still nil (oldest index files predate the field; new captures start
     // nil). Image decode + Vision recognition run off the main actor; only
-    // the result write-back touches manager state. Results are persisted
-    // every few items so progress survives a quit mid-index. Failures store
+    // the result write-back touches manager state. Results ride the batched
+    // index writes, so progress survives a quit mid-index. Failures store
     // "" so an unreadable capture is never re-queued forever.
 
     private var ocrIndexingActive = false
-    private var ocrProcessedSinceSave = 0
-    private static let ocrSaveInterval = 4
 
     private func scheduleOCRIndexing() {
         guard !ocrIndexingActive else { return }
@@ -259,7 +519,7 @@ final class HistoryManager: ObservableObject {
                 let text = await Self.recognizeText(atImagePath: job.imagePath)
                 self?.storeOCRText(text, forItemID: job.id)
             }
-            self?.finishOCRIndexing()
+            self?.ocrIndexingActive = false
         }
     }
 
@@ -272,19 +532,7 @@ final class HistoryManager: ObservableObject {
         // The item may have been deleted while OCR was running — drop the result.
         guard let index = items.firstIndex(where: { $0.id == id }) else { return }
         items[index].ocrText = text
-        ocrProcessedSinceSave += 1
-        if ocrProcessedSinceSave >= Self.ocrSaveInterval {
-            ocrProcessedSinceSave = 0
-            persistCurrentIndex()
-        }
-    }
-
-    private func finishOCRIndexing() {
-        if ocrProcessedSinceSave > 0 {
-            ocrProcessedSinceSave = 0
-            persistCurrentIndex()
-        }
-        ocrIndexingActive = false
+        scheduleIndexWrite()
     }
 
     /// Loads the image and runs Vision OCR, entirely off the main actor.
@@ -315,6 +563,51 @@ final class HistoryManager: ObservableObject {
         }
     }
 
+    private func scheduleIndexWrite() {
+        guard !indexWriteScheduled else { return }
+        indexWriteScheduled = true
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(nanoseconds: Self.indexWriteDelay)
+            self?.writeIndexIfScheduled()
+        }
+    }
+
+    private func scheduleTrashWrite() {
+        guard !trashWriteScheduled else { return }
+        trashWriteScheduled = true
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(nanoseconds: Self.indexWriteDelay)
+            self?.writeTrashIfScheduled()
+        }
+    }
+
+    /// Snapshots on the main actor (a cheap copy-on-write array copy), then
+    /// encodes and writes on the I/O queue.
+    private func writeIndexIfScheduled() {
+        guard indexWriteScheduled else { return }
+        indexWriteScheduled = false
+        indexWriteCount += 1
+        let snapshot = items
+        let url = indexURL
+        Self.ioQueue.async { Self.persist(items: snapshot, to: url) }
+    }
+
+    private func writeTrashIfScheduled() {
+        guard trashWriteScheduled else { return }
+        trashWriteScheduled = false
+        let snapshot = trashEntries
+        let url = trashIndexURL
+        Self.ioQueue.async { Self.persistTrash(entries: snapshot, to: url) }
+    }
+
+    /// Writes batched index changes now and waits for queued writes — at quit,
+    /// and wherever a caller needs the files current.
+    func flushPendingWrites() {
+        writeIndexIfScheduled()
+        writeTrashIfScheduled()
+        Self.ioQueue.sync {}
+    }
+
     @discardableResult
     nonisolated private static func persist(items: [HistoryItem], to indexURL: URL) -> Bool {
         do {
@@ -329,55 +622,45 @@ final class HistoryManager: ObservableObject {
 
     // MARK: – Encode + persist (off-main)
     //
-    // Runs on a detached background Task. Does the expensive PNG encode, the
-    // thumbnail downsample + encode, xattr metadata, and JSON index write —
-    // none of which need the main actor. Once the files are on disk, we
-    // reach back to the main actor to prime the thumbnail cache with the
-    // downsampled version so the history grid picks it up.
+    // Runs on a detached background Task: the expensive PNG encode, the
+    // thumbnail downsample + encode, and xattr metadata. Returns the
+    // downsampled thumbnail so the main actor can prime the grid's cache.
 
     nonisolated private static func encodeAndPersist(
         image: NSImage,
         imagePath: String,
         thumbPath: String,
         rect: CGRect?,
-        manager: HistoryManager?
-    ) {
+        type: CaptureType?
+    ) -> HistoryImageBox? {
         guard let fullCG = image.bestCGImage else {
             print("[Shotnix] History persist failed: image has no CGImage backing")
-            return
+            return nil
         }
 
         guard let pngFull = ImageExporter.pngData(from: fullCG) else {
             print("[Shotnix] History persist failed: unable to encode full image")
-            return
+            return nil
         }
 
         do {
             try pngFull.write(to: URL(fileURLWithPath: imagePath), options: .atomic)
-            applyScreenshotMetadata(to: imagePath, rect: rect)
+            applyScreenshotMetadata(to: imagePath, rect: rect, type: type)
         } catch {
             print("[Shotnix] History persist failed at \(imagePath): \(error)")
-            return
+            return nil
         }
 
         // Thumbnail via CoreGraphics (thread-safe, ~2–3× faster than lockFocus).
-        var thumbImage: NSImage?
-        if let thumbCG = downsample(cg: fullCG, maxDimension: 240),
-           let pngThumb = ImageExporter.pngData(from: thumbCG) {
-            do {
-                try pngThumb.write(to: URL(fileURLWithPath: thumbPath), options: .atomic)
-                let logicalSize = NSSize(width: thumbCG.width, height: thumbCG.height)
-                thumbImage = CaptureEngine.nsImage(from: thumbCG, logicalSize: logicalSize)
-            } catch {
-                print("[Shotnix] History thumbnail persist failed at \(thumbPath): \(error)")
-            }
-        }
-
-        Task { @MainActor in
-            if let thumbImage {
-                HistoryImageCache.primeThumbnail(thumbImage, for: thumbPath)
-            }
-            manager?.persistCurrentIndex()
+        guard let thumbCG = downsample(cg: fullCG, maxDimension: 240),
+              let pngThumb = ImageExporter.pngData(from: thumbCG) else { return nil }
+        do {
+            try pngThumb.write(to: URL(fileURLWithPath: thumbPath), options: .atomic)
+            let logicalSize = NSSize(width: thumbCG.width, height: thumbCG.height)
+            return HistoryImageBox(image: CaptureEngine.nsImage(from: thumbCG, logicalSize: logicalSize))
+        } catch {
+            print("[Shotnix] History thumbnail persist failed at \(thumbPath): \(error)")
+            return nil
         }
     }
 
@@ -408,7 +691,7 @@ final class HistoryManager: ObservableObject {
 
     // MARK: – Screenshot metadata
 
-    nonisolated static func applyScreenshotMetadata(to path: String, rect: CGRect?) {
+    nonisolated static func applyScreenshotMetadata(to path: String, rect: CGRect?, type: CaptureType? = nil) {
         let url = URL(fileURLWithPath: path) as NSURL
         // Mark as screenshot for Spotlight/Finder (as macOS marks its own screenshots)
         let isScreenCapture = true as NSNumber
@@ -420,8 +703,14 @@ final class HistoryManager: ObservableObject {
             }
         }
 
-        // Screenshot type
-        let typeData = try? PropertyListSerialization.data(fromPropertyList: "selection" as NSString, format: .binary, options: 0)
+        // Screenshot type, in the vocabulary macOS uses for its own captures.
+        let screenCaptureType: String
+        switch type {
+        case .window: screenCaptureType = "window"
+        case .fullscreen: screenCaptureType = "display"
+        default: screenCaptureType = "selection"
+        }
+        let typeData = try? PropertyListSerialization.data(fromPropertyList: screenCaptureType as NSString, format: .binary, options: 0)
         if let typeData {
             _ = (url as URL).withUnsafeFileSystemRepresentation { cPath -> Int32 in
                 guard let cPath else { return -1 }

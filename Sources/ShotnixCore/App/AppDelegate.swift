@@ -56,6 +56,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         Settings.migrateOnboardingFlagIfNeeded()
+        // Before the welcome window marks this install as launched.
+        Settings.migrateCaptureSettingsIfNeeded()
         updateController = AppUpdateController()
         captureEngine = CaptureEngine()
         captureEngine.recordingStateChangedHandler = { [weak self] in
@@ -245,8 +247,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
               Settings.showMenuBarIcon,
               !statusItemIsEffectivelyVisible else { return }
         didWarnHiddenIcon = true
+        let stillWorks = ShotnixShortcut.captureArea.displayShortcut.map { "\($0) still captures" } ?? "your shortcuts still work"
         ToastWindow.show(
-            message: "Menu bar is full, so macOS hid the Shotnix icon — ⌘⇧4 still captures. Click here for the menu.",
+            message: "Menu bar is full, so macOS hid the Shotnix icon — \(stillWorks). Click here for the menu.",
             duration: 7.0,
             action: { [weak self] in self?.openCommandCenterFromAnywhere() }
         )
@@ -325,6 +328,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // Minimal Window menu with the standard window-management commands.
         let windowMenuItem = NSMenuItem()
         let windowMenu = NSMenu(title: "Window")
+        windowMenu.addItem(menuItem("Close Window", action: #selector(closeKeyWindow(_:)), key: "w", modifiers: [.command]))
         windowMenu.addItem(responderMenuItem("Minimize", action: #selector(NSWindow.performMiniaturize(_:)), key: "m"))
         windowMenu.addItem(responderMenuItem("Zoom", action: #selector(NSWindow.performZoom(_:)), key: ""))
         windowMenu.addItem(NSMenuItem.separator())
@@ -417,7 +421,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func recordWindow()        { Task { await captureEngine.startWindowRecording() } }
     @objc func recordFullscreen()    { Task { await captureEngine.startFullscreenRecording() } }
     @objc func stopRecording()       { captureEngine.stopRecording() }
-    @objc func captureText()         { Task { await captureEngine.startOCRCapture() } }
+    @objc func captureText()         { Task { await captureEngine.startOCRCapture(historyManager: historyManager) } }
     @objc func scanQRCode()          { Task { await captureEngine.startQRCodeCapture() } }
     @objc func showEditor()          { AnnotationWindowController.bringOpenEditorsToFront() }
     @objc func showVideoEditor() {
@@ -467,6 +471,33 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func timelineMuteClip(_ sender: Any?) { VideoDemoEditorWindowController.muteActiveClip() }
     @objc func timelineUndo(_ sender: Any?) { VideoDemoEditorWindowController.undoActiveTimelineEdit() }
     @objc func timelineRedo(_ sender: Any?) { VideoDemoEditorWindowController.redoActiveTimelineEdit() }
+
+    /// ⌘W: closes whichever Shotnix window is key — editors, history, pins,
+    /// Settings, the post-capture thumbnail.
+    @objc func closeKeyWindow(_ sender: Any?) {
+        guard let window = NSApp.keyWindow else { return }
+        switch Self.closeAction(for: window) {
+        case .custom(let closable): closable.closeFromCommand()
+        case .performClose: window.performClose(sender)
+        case .none: NSSound.beep()
+        }
+    }
+
+    enum CloseAction {
+        case custom(ShotnixCommandClosable)
+        case performClose
+        case none
+    }
+
+    /// Borderless panels (pins, the thumbnail) close themselves so their
+    /// cleanup runs; titled windows go through performClose (unsaved-change
+    /// prompts included). Capture overlays refuse: ⌘W mid-selection must not
+    /// tear the selection down from under the capture.
+    static func closeAction(for window: NSWindow) -> CloseAction {
+        if let closable = window as? ShotnixCommandClosable { return .custom(closable) }
+        if window.styleMask.contains(.closable) { return .performClose }
+        return .none
+    }
 
     // MARK: – Edit menu routing
     //
@@ -571,14 +602,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func commandCenterSections() -> [ShotnixMenuSection] {
-        // "Capture All Displays" stays reachable through Capture Fullscreen's
-        // engine API but earns no menu row — fullscreen already captures the
-        // display you're on, and the extra row just taxed every menu open.
+        // Capture Fullscreen shoots the display you're on; "Capture All
+        // Displays" gets its own row only when there's more than one.
         var captureActions = [
             action(id: "capture.area", title: "Capture Area", symbol: "rectangle.dashed", shortcut: .shotnixCaptureArea, role: .primary) { [weak self] in self?.captureArea() },
             action(id: "capture.window", title: "Capture Window", symbol: "macwindow", shortcut: .shotnixCaptureWindow) { [weak self] in self?.captureWindow() },
             action(id: "capture.fullscreen", title: "Capture Fullscreen", symbol: "rectangle.on.rectangle", shortcut: .shotnixCaptureFullscreenNative) { [weak self] in self?.captureFullscreen() },
         ]
+        if NSScreen.screens.count > 1 {
+            captureActions.append(action(id: "capture.all-displays", title: "Capture All Displays", symbol: "rectangle.3.group", shortcut: .shotnixCaptureAllDisplays) { [weak self] in self?.captureAllDisplays() })
+        }
         captureActions.append(contentsOf: [
             action(id: "capture.previous", title: "Capture Previous Area", symbol: "arrow.counterclockwise.circle", shortcut: .shotnixCapturePreviousArea) { [weak self] in self?.capturePrevious() },
                 action(id: "capture.timed", title: "Timed Capture (\(Settings.timedCaptureDelaySeconds)s)", symbol: "timer", shortcut: .shotnixCaptureTimed) { [weak self] in self?.captureTimed() },

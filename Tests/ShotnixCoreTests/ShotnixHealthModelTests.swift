@@ -85,6 +85,8 @@ final class ShotnixHealthModelTests: XCTestCase {
     func testShortcutHealthCountsOnlyRequiredShortcuts() {
         let configuredNames: Set<String> = [
             KeyboardShortcuts.Name.shotnixCaptureArea.rawValue,
+            KeyboardShortcuts.Name.shotnixCaptureWindow.rawValue,
+            // Optional since 0.24 — assigned or not, it never affects health.
             KeyboardShortcuts.Name.shotnixCaptureText.rawValue
         ]
 
@@ -93,13 +95,16 @@ final class ShotnixHealthModelTests: XCTestCase {
         }
         let optionalOff = ShotnixShortcut.optionalUnassignedCount { _ in nil }
 
-        XCTAssertEqual(ShotnixShortcut.allCases.count, 13)
-        XCTAssertEqual(ShotnixShortcut.requiredShortcutCount, 7)
+        XCTAssertEqual(ShotnixShortcut.allCases.count, 14)
+        XCTAssertEqual(ShotnixShortcut.requiredShortcutCount, 5)
         XCTAssertEqual(required, 2)
-        XCTAssertEqual(optionalOff, 6)
+        XCTAssertEqual(optionalOff, 9)
         XCTAssertFalse(ShotnixShortcut.captureArea.isOptional)
         XCTAssertTrue(ShotnixShortcut.recordArea.isOptional)
         XCTAssertTrue(ShotnixShortcut.stopRecording.isOptional)
         XCTAssertTrue(ShotnixShortcut.captureTimed.isOptional)
+        XCTAssertTrue(ShotnixShortcut.captureText.isOptional)
+        XCTAssertTrue(ShotnixShortcut.captureScrolling.isOptional)
+        XCTAssertTrue(ShotnixShortcut.captureAllDisplays.isOptional)
     }
 }

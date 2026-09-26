@@ -1,9 +1,18 @@
 import AppKit
 
-/// A floating screenshot window that stays on top of everything.
-/// Can be resized, dragged, and dismissed on hover.
+/// Borderless Shotnix windows that Window → Close Window (⌘W) can close.
+/// They close themselves so their own cleanup runs.
 @MainActor
-final class PinnedWindow: NSWindow {
+protocol ShotnixCommandClosable: AnyObject {
+    func closeFromCommand()
+}
+
+/// A floating screenshot window that stays on top of everything.
+/// Can be resized, dragged, and dismissed on hover. A click gives it
+/// keyboard focus — Esc closes it, ⌘C copies it — without pulling the user
+/// out of the app they're working in (it's a non-activating panel).
+@MainActor
+final class PinnedWindow: NSPanel, ShotnixCommandClosable {
 
     private static var pinned: [PinnedWindow] = []
 
@@ -36,7 +45,7 @@ final class PinnedWindow: NSWindow {
 
         super.init(
             contentRect: NSRect(origin: .zero, size: size),
-            styleMask: [.borderless, .resizable],
+            styleMask: [.borderless, .resizable, .nonactivatingPanel],
             backing: .buffered,
             defer: false
         )
@@ -46,7 +55,10 @@ final class PinnedWindow: NSWindow {
         isMovableByWindowBackground = true
         collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         hasShadow = true
-        
+        hidesOnDeactivate = false
+        becomesKeyOnlyIfNeeded = false
+        isReleasedWhenClosed = false
+
         // Force proportional resize so the layer border always perfectly fits the image!
         self.aspectRatio = size
 
@@ -59,6 +71,8 @@ final class PinnedWindow: NSWindow {
         imageView.layer?.borderWidth = 0.5
         imageView.layer?.borderColor = ShotnixColors.pinnedBorder.cgColor
         imageView.autoresizingMask = [.width, .height]
+        imageView.setAccessibilityLabel("Pinned screenshot")
+        imageView.setAccessibilityHelp("Drag to move. Press Command-C to copy, Escape to close.")
 
         draggableImage.onHoverStateChanged = { [weak self] hovered in
             self?.isHovered = hovered
@@ -71,6 +85,45 @@ final class PinnedWindow: NSWindow {
 
         contentView = imageView
         center()
+    }
+
+    override var canBecomeKey: Bool { true }
+    override var canBecomeMain: Bool { false }
+
+    /// Clicking a pin takes keyboard focus for Esc and ⌘C. The panel is
+    /// non-activating, so the user's app stays frontmost.
+    override func sendEvent(_ event: NSEvent) {
+        if event.type == .leftMouseDown || event.type == .rightMouseDown, !isKeyWindow {
+            NSApp.ensureForegroundCapable()
+            makeKey()
+        }
+        super.sendEvent(event)
+    }
+
+    override func keyDown(with event: NSEvent) {
+        if event.keyCode == 53 {
+            closeTapped()
+            return
+        }
+        let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
+        if flags == .command, ShortcutKeyMatching.latinLetter(for: event) == "c" {
+            copyPinnedImage()
+            return
+        }
+        super.keyDown(with: event)
+    }
+
+    override func cancelOperation(_ sender: Any?) {
+        closeTapped()
+    }
+
+    /// Edit → Copy (⌘C) routes here through the responder chain.
+    @objc func copy(_ sender: Any?) {
+        copyPinnedImage()
+    }
+
+    func closeFromCommand() {
+        closeTapped()
     }
 
     /// Places the window exactly over the original capture rect, on the screen
@@ -172,12 +225,12 @@ final class PinnedWindow: NSWindow {
         ShotnixContextMenu.show(
             sections: [
                 ShotnixMenuSection(id: "pin.capture", title: "Pinned Screenshot", actions: [
-                    ShotnixMenuAction(id: "pin.copy", title: "Copy", symbolName: "doc.on.doc", role: .primary) { [weak self] in self?.copyPinnedImage() },
+                    ShotnixMenuAction(id: "pin.copy", title: "Copy", symbolName: "doc.on.doc", shortcut: "⌘C", role: .primary) { [weak self] in self?.copyPinnedImage() },
                     ShotnixMenuAction(id: "pin.save", title: "Save As", symbolName: "square.and.arrow.down") { [weak self] in self?.savePinnedImage() },
                     ShotnixMenuAction(id: "pin.edit", title: "Edit", symbolName: "pencil") { [weak self] in self?.editPinnedImage() },
                 ]),
                 ShotnixMenuSection(id: "pin.manage", title: "Manage", actions: [
-                    ShotnixMenuAction(id: "pin.close", title: "Close Pin", symbolName: "xmark") { [weak self] in self?.closeTapped() },
+                    ShotnixMenuAction(id: "pin.close", title: "Close Pin", symbolName: "xmark", shortcut: "Esc") { [weak self] in self?.closeTapped() },
                     ShotnixMenuAction(id: "pin.close-all", title: "Close All Pins", symbolName: "rectangle.stack.badge.minus", role: .destructive) { [weak self] in self?.closeAllPins() },
                 ])
             ],
@@ -188,8 +241,10 @@ final class PinnedWindow: NSWindow {
 
     @objc private func copyPinnedImage() {
         guard let image = imageView.image else { return }
-        ImageExporter.copyToClipboard(image: image)
-        ToastWindow.show(message: "✓ Copied to clipboard", on: screen)
+        // Encode off the main thread; confirm only once the clipboard has it.
+        ImageExporter.copyToClipboardAsync(image: image) { [weak self] copied in
+            ToastWindow.show(message: copied ? "✓ Copied to clipboard" : "Could not copy the screenshot", on: self?.screen)
+        }
     }
 
     @objc private func savePinnedImage() {
@@ -218,7 +273,7 @@ private final class DraggablePinnedImageView: NSImageView {
     private var trackingArea: NSTrackingArea?
 
     override var mouseDownCanMoveWindow: Bool { true }
-    
+
     override func updateTrackingAreas() {
         super.updateTrackingAreas()
         if let old = trackingArea { removeTrackingArea(old) }
