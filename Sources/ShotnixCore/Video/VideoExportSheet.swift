@@ -175,10 +175,19 @@ struct VideoExportSheet: View {
             if !model.project.captions.isEmpty {
                 row("Captions") {
                     VStack(alignment: .leading, spacing: 6) {
-                        Toggle("Burn captions into the video", isOn: $model.exportSettings.burnCaptions)
-                            .toggleStyle(.checkbox)
-                            .font(.system(size: 12, weight: .medium))
-                            .foregroundStyle(VideoEditorTheme.textPrimary)
+                        // Captions hidden in the editor are never burned in.
+                        let shown = model.project.captionStyle.visible
+                        Toggle("Burn captions into the video", isOn: Binding(
+                            get: { shown && model.exportSettings.burnCaptions },
+                            set: { model.exportSettings.burnCaptions = $0 }
+                        ))
+                        .toggleStyle(.checkbox)
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundStyle(VideoEditorTheme.textPrimary)
+                        .disabled(!shown)
+                        if !shown {
+                            note("Captions are hidden in the editor (Script → Captions → Show captions).")
+                        }
                         HStack(spacing: 8) {
                             Text("Subtitles file")
                                 .font(.system(size: 11.5, weight: .medium))
@@ -186,7 +195,7 @@ struct VideoExportSheet: View {
                             VideoSegmented(options: [(VideoSubtitleFormat?.none, "None"), (.srt, ".srt"), (.vtt, ".vtt")], selection: $model.exportSettings.subtitles)
                                 .frame(width: 180)
                         }
-                        note(model.exportSettings.burnCaptions
+                        note(shown && model.exportSettings.burnCaptions
                              ? "Captions are drawn into the picture\(settings.subtitles == nil ? "." : ", and a subtitles file is saved next to the video.")"
                              : settings.subtitles == nil ? "No captions in the picture — add a subtitles file to upload them separately." : "A clean picture plus a subtitles file to upload.")
                     }

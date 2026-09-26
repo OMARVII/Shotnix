@@ -133,6 +133,10 @@ final class VideoFeatureSnapshotTests: XCTestCase {
         model.selection = .range(VideoDemoTimelineRange(start: 1, end: 3.5))
         model.isExportPresented = true
         try await render(VideoEditorRootView(model: model), size: full, name: "90-export-options")
+        // Captions hidden in the editor: the burn-in switch stands down.
+        model.setStyle { $0.captionStyle.visible = false }
+        try await render(VideoExportSheet(model: model), size: CGSize(width: 900, height: 900), name: "97-export-captions-hidden")
+        model.setStyle { $0.captionStyle.visible = true }
         model.selection = .none
         model.exportSettings.format = .gif
         model.exportSettings.gifSize = .large
