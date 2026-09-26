@@ -46,6 +46,13 @@ final class VideoCaptionTests: XCTestCase {
             ("now.", 2.5, 2.8),
         ])
         XCTAssertEqual(VideoCaptionBuilder.lines(from: paused).map(\.text), ["Open the settings panel", "now."])
+        // Nor does a sentence's tail ride along into the next sentence.
+        let flowing = words([
+            ("Thursday", 0.0, 0.3), ("was", 0.32, 0.45), ("easily", 0.5, 0.8), ("our", 0.85, 1.0),
+            ("best", 1.02, 1.25), ("day", 1.27, 1.45), ("this", 1.47, 1.6), ("week.", 1.62, 1.85),
+            ("Export", 2.1, 2.4), ("the", 2.42, 2.5), ("report.", 2.52, 2.9),
+        ])
+        XCTAssertEqual(VideoCaptionBuilder.lines(from: flowing).map(\.text), ["Thursday was easily our", "best day this week.", "Export the report."])
     }
 
     func testPiecesBecomeWords() {

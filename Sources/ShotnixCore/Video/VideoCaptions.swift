@@ -27,11 +27,14 @@ enum VideoCaptionBuilder {
             if let last = current.last, let first = current.first {
                 let characters = current.reduce(0) { $0 + $1.text.count + 1 } + word.text.count
                 let endsSentence = last.text.last.map { ".?!".contains($0) } ?? false
+                // The tail of a sentence the previous line had to split
+                // never rides along into the next sentence.
+                let isSentenceTail = groups.last?.last.map { !($0.text.last.map { ".?!".contains($0) } ?? false) } ?? false
                 let breakHere = word.start - last.end > rules.pauseBreak
                     || current.count >= rules.maxWords
                     || characters > rules.maxCharacters
                     || word.end - first.start > rules.maxDuration
-                    || (endsSentence && current.count >= 3)
+                    || (endsSentence && (current.count >= 3 || isSentenceTail))
                 if breakHere {
                     groups.append(current)
                     current = []
