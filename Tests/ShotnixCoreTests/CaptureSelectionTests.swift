@@ -187,6 +187,39 @@ final class CaptureSelectionTests: XCTestCase {
         XCTAssertEqual(view.currentRect, rect)
     }
 
+    func testShiftLeftOverFromTheShortcutIsForgottenAtTheFirstClick() {
+        // Overlays on other displays never hear ⇧ come up after ⌘⇧4.
+        view.shiftHeldSinceStart = true
+        drag(from: CGPoint(x: 100, y: 100), to: CGPoint(x: 300, y: 250), releaseFlags: [.shift])
+        XCTAssertEqual(view.stage, .adjusting, "⇧ at release still asks to adjust")
+        XCTAssertTrue(captured.isEmpty)
+    }
+
+    func testAPlainClickIsReportedAsAClickAndDoesntStartASelection() {
+        var clicks = 0
+        var began = 0
+        view.clickHandler = { clicks += 1 }
+        view.selectionBeganHandler = { began += 1 }
+        click(at: CGPoint(x: 200, y: 200))
+        XCTAssertEqual(clicks, 1)
+        XCTAssertEqual(began, 0, "other displays keep their selections for a click")
+        XCTAssertEqual(cancelled, 0, "the owner decides whether a click cancels")
+
+        drag(from: CGPoint(x: 100, y: 100), to: CGPoint(x: 300, y: 250))
+        XCTAssertEqual(began, 1)
+    }
+
+    func testGrabbingAHandleOffCenterMovesTheEdgeByTheDragOnly() {
+        view.captureImmediately = false
+        drag(from: CGPoint(x: 100, y: 100), to: CGPoint(x: 300, y: 250))
+        XCTAssertEqual(view.stage, .adjusting)
+        // Grab the bottom-right corner 4 pt inside it, drag 1 pt outward.
+        view.mouseDown(with: mouseEvent(.leftMouseDown, at: CGPoint(x: 296, y: 104)))
+        view.mouseDragged(with: mouseEvent(.leftMouseDragged, at: CGPoint(x: 297, y: 103)))
+        view.mouseUp(with: mouseEvent(.leftMouseUp, at: CGPoint(x: 297, y: 103)))
+        XCTAssertEqual(view.currentRect, NSRect(x: 100, y: 99, width: 201, height: 151))
+    }
+
     private func drag(from start: CGPoint, to end: CGPoint, releaseFlags: NSEvent.ModifierFlags = []) {
         view.mouseDown(with: mouseEvent(.leftMouseDown, at: start))
         let mid = CGPoint(x: (start.x + end.x) / 2, y: (start.y + end.y) / 2)

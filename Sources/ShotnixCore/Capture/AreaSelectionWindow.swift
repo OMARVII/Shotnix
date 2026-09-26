@@ -41,6 +41,16 @@ final class AreaSelectionWindow: NSObject {
                 self?.finish(rect: rect, screen: screen)
             }
             overlay.cancelHandler = { [weak self] in self?.cancel() }
+            // A plain click cancels, unless a selection is being adjusted on
+            // another display: that one stays, like a click beside it would.
+            overlay.clickHandler = { [weak self, weak overlay] in
+                guard let self else { return }
+                guard let adjusting = self.overlays.first(where: { $0 !== overlay && $0.hasAdjustableSelection }) else {
+                    return self.cancel()
+                }
+                adjusting.makeKeyAndOrderFront(nil)
+                adjusting.makeFirstResponder(adjusting.contentView)
+            }
             // One selection at a time: starting one on this display drops an
             // adjustable selection left on another.
             overlay.selectionBeganHandler = { [weak self, weak overlay] in
@@ -71,7 +81,9 @@ final class AreaSelectionWindow: NSObject {
         }
 
         keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            if event.keyCode == 53 { self?.cancel(); return nil }
+            // A monitor that outlives its selection must never eat Esc.
+            guard let self else { return event }
+            if event.keyCode == 53 { self.cancel(); return nil }
             return event
         }
 
@@ -133,7 +145,10 @@ private final class SelectionOverlayWindow: NSWindow {
 
     var selectionHandler: ((CGRect, CGWindowID?) -> Void)?
     var cancelHandler: (() -> Void)?
+    var clickHandler: (() -> Void)?
     var selectionBeganHandler: (() -> Void)?
+
+    var hasAdjustableSelection: Bool { overlayView.stage == .adjusting }
 
     private let overlayView: SelectionOverlayView
     private let targetScreen: NSScreen
@@ -159,6 +174,7 @@ private final class SelectionOverlayWindow: NSWindow {
         overlayView.frame = NSRect(origin: .zero, size: screen.frame.size)
         overlayView.selectionHandler = { [weak self] rect, windowID in self?.selectionHandler?(rect, windowID) }
         overlayView.cancelHandler   = { [weak self] in self?.cancelHandler?() }
+        overlayView.clickHandler    = { [weak self] in self?.clickHandler?() }
         overlayView.selectionBeganHandler = { [weak self] in self?.selectionBeganHandler?() }
     }
     override var canBecomeKey: Bool { true }
@@ -209,7 +225,11 @@ final class SelectionOverlayView: NSView {
 
     var selectionHandler: ((CGRect, CGWindowID?) -> Void)?
     var cancelHandler:    (() -> Void)?
+    /// A plain click (no drag) with no selection here to keep.
+    var clickHandler:     (() -> Void)?
+    /// A new selection is being drawn — once it's more than a click.
     var selectionBeganHandler: (() -> Void)?
+    private var announcedSelection = false
 
     /// Capture on release, or keep the selection adjustable (see type docs).
     var captureImmediately = Settings.captureImmediatelyAfterSelecting
@@ -814,6 +834,11 @@ final class SelectionOverlayView: NSView {
     // MARK: – Mouse Events
 
     override func mouseDown(with event: NSEvent) {
+        // Only the key overlay hears ⇧ come up; on another display the first
+        // click is where we learn the shortcut's ⇧ was let go.
+        if !event.modifierFlags.contains(.shift) {
+            shiftHeldSinceStart = false
+        }
         // Safety net: if window isn't key (activation race on first capture),
         // force it now so the subsequent drag events are delivered here.
         if let win = window, !win.isKeyWindow {
@@ -857,8 +882,8 @@ final class SelectionOverlayView: NSView {
         lastDragPoint = point
         stage = .drawing
         currentRect = .zero
+        announcedSelection = false
         mousePosition = nil  // Hide crosshair once drag starts
-        selectionBeganHandler?()
         window?.invalidateCursorRects(for: self)
         setNeedsDisplay(bounds)
     }
@@ -896,8 +921,17 @@ final class SelectionOverlayView: NSView {
                 )
             }
             lastDragPoint = current
+            // Other displays drop their selections only for a real drag, not a click.
+            if !announcedSelection, currentRect.width > 4, currentRect.height > 4 {
+                announcedSelection = true
+                selectionBeganHandler?()
+            }
         case .resizing(let handle):
-            currentRect = resized(dragStartRect, handle: handle, to: current)
+            // The edge moves with the pointer from where it was grabbed, so
+            // grabbing a handle off-center doesn't make the edge jump.
+            let grabbed = handleCenter(handle, in: dragStartRect)
+            let target = NSPoint(x: grabbed.x + current.x - dragStartPoint.x, y: grabbed.y + current.y - dragStartPoint.y)
+            currentRect = resized(dragStartRect, handle: handle, to: target)
             mousePosition = current
         case .moving:
             currentRect = keptInBounds(dragStartRect.offsetBy(dx: current.x - dragStartPoint.x, dy: current.y - dragStartPoint.y))
@@ -924,7 +958,7 @@ final class SelectionOverlayView: NSView {
                 enterAdjustStage()
             } else {
                 // Tiny click / accidental tap — cancel cleanly; never leave overlay stuck
-                cancelHandler?()
+                clickHandler?()
             }
             replacedSelection = nil
         case .resizing, .moving:

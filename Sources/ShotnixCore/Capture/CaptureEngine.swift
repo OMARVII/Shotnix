@@ -71,6 +71,22 @@ final class CaptureEngine {
         return await DesktopIconsCover.show()
     }
 
+    /// True from the shortcut until its selection overlay exists. Covering
+    /// the desktop icons first takes a moment, and a second press in that
+    /// moment must not start a second selection.
+    private var preparingSelection = false
+
+    private var selectionInProgress: Bool {
+        areaSelectionWindow != nil || preparingSelection
+    }
+
+    /// Hides desktop icons ahead of a selection, holding off other selections meanwhile.
+    private func hideDesktopIconsBeforeSelecting() async -> DesktopIconsCover? {
+        preparingSelection = true
+        defer { preparingSelection = false }
+        return await hideDesktopIconsForCaptureIfNeeded()
+    }
+
     private func restoreDesktopIconsIfNeeded(_ cover: DesktopIconsCover?) {
         cover?.remove()
     }
@@ -135,8 +151,8 @@ final class CaptureEngine {
         guard PermissionsManager.hasScreenRecordingPermission else {
             PermissionsManager.showPermissionDeniedAlert(); return
         }
-        guard areaSelectionWindow == nil else { return } // already selecting
-        let hiddenByCapture = await hideDesktopIconsForCaptureIfNeeded()
+        guard !selectionInProgress else { return } // already selecting
+        let hiddenByCapture = await hideDesktopIconsBeforeSelecting()
         areaSelectionWindow = AreaSelectionWindow(mode: .area) { [weak self] rect, screen in
             guard let self else { return }
             self.areaSelectionWindow = nil
@@ -162,7 +178,7 @@ final class CaptureEngine {
         guard PermissionsManager.hasScreenRecordingPermission else {
             PermissionsManager.showPermissionDeniedAlert(); return
         }
-        guard areaSelectionWindow == nil, countdownWindow == nil else { return }
+        guard !selectionInProgress, countdownWindow == nil else { return }
         areaSelectionWindow = AreaSelectionWindow(mode: .area) { [weak self] rect, screen in
             guard let self else { return }
             self.areaSelectionWindow = nil
@@ -190,8 +206,8 @@ final class CaptureEngine {
         guard PermissionsManager.hasScreenRecordingPermission else {
             PermissionsManager.showPermissionDeniedAlert(); return
         }
-        guard areaSelectionWindow == nil else { return }
-        let hiddenByCapture = await hideDesktopIconsForCaptureIfNeeded()
+        guard !selectionInProgress else { return }
+        let hiddenByCapture = await hideDesktopIconsBeforeSelecting()
         areaSelectionWindow = AreaSelectionWindow(mode: .window) { [weak self] rect, screen in
             guard let self else { return }
             // Read before releasing the selection window — the clicked
@@ -423,7 +439,7 @@ final class CaptureEngine {
             ToastWindow.show(message: "Recording already in progress")
             return false
         }
-        guard !recordingSetupActive, areaSelectionWindow == nil else {
+        guard !recordingSetupActive, !selectionInProgress else {
             ToastWindow.show(message: "Finish or cancel the current recording setup")
             return false
         }
@@ -663,8 +679,8 @@ final class CaptureEngine {
             scrollingCapture.finishFromShortcut()
             return
         }
-        guard areaSelectionWindow == nil else { return }
-        let hiddenByCapture = await hideDesktopIconsForCaptureIfNeeded()
+        guard !selectionInProgress else { return }
+        let hiddenByCapture = await hideDesktopIconsBeforeSelecting()
         let controller = ScrollingCaptureController(frameProvider: { [weak self] rect, screen in
             await self?.captureRectToImage(rect, on: screen)
         }) { [weak self] outcome in
@@ -693,8 +709,8 @@ final class CaptureEngine {
         guard PermissionsManager.hasScreenRecordingPermission else {
             PermissionsManager.showPermissionDeniedAlert(); return
         }
-        guard areaSelectionWindow == nil else { return }
-        let hiddenByCapture = await hideDesktopIconsForCaptureIfNeeded()
+        guard !selectionInProgress else { return }
+        let hiddenByCapture = await hideDesktopIconsBeforeSelecting()
         areaSelectionWindow = AreaSelectionWindow(mode: .area) { [weak self] rect, screen in
             guard let self else { return }
             self.areaSelectionWindow = nil
@@ -741,8 +757,8 @@ final class CaptureEngine {
         guard PermissionsManager.hasScreenRecordingPermission else {
             PermissionsManager.showPermissionDeniedAlert(); return
         }
-        guard areaSelectionWindow == nil else { return }
-        let hiddenByCapture = await hideDesktopIconsForCaptureIfNeeded()
+        guard !selectionInProgress else { return }
+        let hiddenByCapture = await hideDesktopIconsBeforeSelecting()
         areaSelectionWindow = AreaSelectionWindow(mode: .area) { [weak self] rect, screen in
             guard let self else { return }
             self.areaSelectionWindow = nil
