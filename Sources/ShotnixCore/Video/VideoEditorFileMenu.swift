@@ -28,8 +28,10 @@ final class VideoEditorFileMenu: NSObject, NSMenuDelegate, NSMenuItemValidation 
 
         // ⌘E belongs to the item only while an editor is in front: other
         // windows (the capture overlay) use ⌘E for themselves.
-        keyWindowObserver = NotificationCenter.default.addObserver(forName: NSWindow.didBecomeKeyNotification, object: nil, queue: .main) { _ in
-            MainActor.assumeIsolated { VideoEditorFileMenu.shared.updateKeyEquivalent() }
+        if keyWindowObserver == nil {
+            keyWindowObserver = NotificationCenter.default.addObserver(forName: NSWindow.didBecomeKeyNotification, object: nil, queue: .main) { _ in
+                MainActor.assumeIsolated { VideoEditorFileMenu.shared.updateKeyEquivalent() }
+            }
         }
         updateKeyEquivalent()
     }

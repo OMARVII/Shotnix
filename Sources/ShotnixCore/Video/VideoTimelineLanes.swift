@@ -274,7 +274,7 @@ struct VideoCaptionLane: View, Equatable {
                         .frame(width: frame.width, height: frame.height)
                         .offset(x: frame.minX)
                         .accessibilityElement()
-                        .accessibilityLabel(model.accessibilityDescription(of: .caption(item.id)))
+                        .accessibilityLabel("Caption “\(item.text)”" + VideoEditorModel.spokenSpan(item.start, item.end))
                         .accessibilityAddTraits(selectedIDs.contains(item.id) ? [.isButton, .isSelected] : .isButton)
                         .accessibilityAction { model.selectCaption(item.id) }
                         .accessibilityAction(named: "Delete") { model.deleteCaption(item.id) }
@@ -454,7 +454,7 @@ struct VideoKeysLane: View, Equatable {
                         .frame(width: frame.width, height: frame.height)
                         .offset(x: frame.minX)
                         .accessibilityElement()
-                        .accessibilityLabel(model.accessibilityDescription(of: .keystroke(item.id)))
+                        .accessibilityLabel("Shortcut \(item.label)" + VideoEditorModel.spokenSpan(item.time, item.time))
                         .accessibilityAddTraits(selectedIDs.contains(item.id) ? [.isButton, .isSelected] : .isButton)
                         .accessibilityAction { model.selectKeystroke(item.id) }
                         .accessibilityAction(named: "Hide") { model.deleteKeystroke(item.id) }
@@ -573,7 +573,7 @@ struct VideoClickLane: View, Equatable {
                         .frame(width: 14, height: M.clickLaneHeight)
                         .offset(x: geometry.x(item.time) - 7)
                         .accessibilityElement()
-                        .accessibilityLabel(model.accessibilityDescription(of: .click(item.id)))
+                        .accessibilityLabel("Click" + VideoEditorModel.spokenSpan(item.time, item.time))
                         .accessibilityAddTraits(selectedIDs.contains(item.id) ? [.isButton, .isSelected] : .isButton)
                         .accessibilityAction {
                             model.selection = .click(item.id)
@@ -728,7 +728,7 @@ struct VideoCameraLayoutLane: View, Equatable {
                         .frame(width: frame.width, height: frame.height)
                         .offset(x: frame.minX)
                         .accessibilityElement()
-                        .accessibilityLabel(model.accessibilityDescription(of: .cameraLayout(item.id)))
+                        .accessibilityLabel("Camera layout: \(item.layout.title)" + VideoEditorModel.spokenSpan(item.start, item.end))
                         .accessibilityAddTraits(selectedIDs.contains(item.id) ? [.isButton, .isSelected] : .isButton)
                         .accessibilityAction {
                             model.selectCameraLayout(item.id)

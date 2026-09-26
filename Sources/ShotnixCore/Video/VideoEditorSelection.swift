@@ -153,13 +153,23 @@ extension VideoEditorModel {
         }
     }
 
+    /// ", 0:03.0 to 0:04.5" (or ", at 0:03.0") for spoken descriptions.
+    static func spokenSpan(_ start: Double, _ end: Double) -> String {
+        end - start > 0.05 ? ", \(timecode(start)) to \(timecode(end))" : ", at \(timecode(start))"
+    }
+
+    /// "Clip 2, 4.0s long, 2× speed, muted, 0:02.0 to 0:06.0".
+    static func spokenClip(index: Int, segment: VideoDemoTimelineSegment) -> String {
+        var parts = ["Clip \(index + 1)", "\(format(segment.duration)) long"]
+        if abs(segment.clip.normalizedSpeed - 1) > 0.01 { parts.append("\(formatScale(segment.clip.normalizedSpeed)) speed") }
+        if segment.clip.muted { parts.append("muted") }
+        return parts.joined(separator: ", ") + spokenSpan(segment.timelineStart, segment.timelineEnd)
+    }
+
     /// Spoken (and shown to VoiceOver) for an item: what it is and where.
     func accessibilityDescription(of item: Selection) -> String {
         func at(_ span: (start: Double, end: Double)?) -> String {
-            guard let span else { return "" }
-            return span.end - span.start > 0.05
-                ? ", \(Self.timecode(span.start)) to \(Self.timecode(span.end))"
-                : ", at \(Self.timecode(span.start))"
+            span.map { Self.spokenSpan($0.start, $0.end) } ?? ""
         }
         let span = timelineSpan(of: item)
         switch item {
@@ -179,11 +189,7 @@ extension VideoEditorModel {
             return "Click\(at(span))"
         case .clip(let id):
             guard let index = segments.firstIndex(where: { $0.id == id }) else { return "Clip" }
-            let clip = segments[index].clip
-            var parts = ["Clip \(index + 1)", "\(Self.format(segments[index].duration)) long"]
-            if abs(clip.normalizedSpeed - 1) > 0.01 { parts.append("\(Self.formatScale(clip.normalizedSpeed)) speed") }
-            if clip.muted { parts.append("muted") }
-            return parts.joined(separator: ", ") + at(span)
+            return Self.spokenClip(index: index, segment: segments[index])
         case .range(let range):
             return "Selected part\(at((range.normalized.start, range.normalized.end)))"
         case .none:

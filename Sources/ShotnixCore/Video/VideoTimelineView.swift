@@ -997,7 +997,7 @@ struct VideoTimelineClipView: View, Equatable {
         .gesture(scrubGesture)
         .contextMenu { clipMenu }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(model.accessibilityDescription(of: .clip(segment.id)))
+        .accessibilityLabel(VideoEditorModel.spokenClip(index: index, segment: segment))
         .accessibilityAddTraits(selected ? [.isButton, .isSelected] : .isButton)
         .accessibilityAction { model.selectClip(segment.id) }
         .accessibilityAction(named: "Split at Playhead") { model.splitAtPlayhead() }
