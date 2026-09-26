@@ -9,6 +9,8 @@ final class VideoTimelineHover: ObservableObject {
     @Published private(set) var overZoomTrack = false
     /// Hover guides hide while anything is being dragged.
     @Published private(set) var dragging = false
+    /// Where a dragged edge snapped (a guide line shows it).
+    @Published private(set) var snapTime: Double?
 
     func update(time: Double?, overZoomTrack: Bool) {
         if self.time != time { self.time = time }
@@ -17,6 +19,59 @@ final class VideoTimelineHover: ObservableObject {
 
     func setDragging(_ dragging: Bool) {
         if self.dragging != dragging { self.dragging = dragging }
+        if !dragging { setSnap(nil) }
+    }
+
+    func setSnap(_ time: Double?) {
+        if snapTime != time { snapTime = time }
+    }
+}
+
+/// Where dragged bars and edges land: the playhead, clip edges, clicks,
+/// and the edges of every other bar on the timeline — when one is within a
+/// few points. Zooms, annotations, captions, and camera layouts all use it.
+struct VideoTimelineSnapper {
+    /// Sorted timeline times.
+    let targets: [Double]
+    /// Seconds (the reach in points at the current scale).
+    let threshold: Double
+
+    init(targets: [Double], pointsPerSecond: CGFloat, reach: CGFloat = 8) {
+        self.targets = targets.sorted()
+        threshold = Double(reach / max(pointsPerSecond, 0.0001))
+    }
+
+    /// The target nearest `time`, when it's within reach.
+    func target(near time: Double) -> Double? {
+        guard !targets.isEmpty else { return nil }
+        var low = 0
+        var high = targets.count
+        while low < high {
+            let mid = (low + high) / 2
+            if targets[mid] < time { low = mid + 1 } else { high = mid }
+        }
+        let candidates = [low - 1, low].filter { targets.indices.contains($0) }.map { targets[$0] }
+        guard let best = candidates.min(by: { abs($0 - time) < abs($1 - time) }), abs(best - time) <= threshold else { return nil }
+        return best
+    }
+
+    /// An edge being dragged: the target it lands on (or itself).
+    func snap(_ time: Double) -> (time: Double, target: Double?) {
+        guard let target = target(near: time) else { return (time, nil) }
+        return (target, target)
+    }
+
+    /// A whole bar being moved: the shift that lands its nearer edge on a
+    /// target (0 when neither edge is near one).
+    func shift(start: Double, end: Double) -> (delta: Double, target: Double?) {
+        let a = target(near: start).map { ($0 - start, $0) }
+        let b = target(near: end).map { ($0 - end, $0) }
+        switch (a, b) {
+        case let (a?, b?): return abs(a.0) <= abs(b.0) ? a : b
+        case let (a?, nil): return a
+        case let (nil, b?): return b
+        default: return (0, nil)
+        }
     }
 }
 
@@ -63,6 +118,13 @@ struct VideoTimelineHoverLayer: View {
             if let time = hover.time, !hover.dragging {
                 if hover.overZoomTrack { zoomGhost(at: time) }
                 ghostPlayhead(time)
+            }
+            if hover.dragging, let snap = hover.snapTime {
+                // A dragged edge landed on something.
+                Rectangle()
+                    .fill(Color.yellow.opacity(0.85))
+                    .frame(width: 1, height: height - M.rulerHeight)
+                    .offset(x: geometry.x(snap), y: M.rulerHeight)
             }
         }
         .frame(width: geometry.width, height: height, alignment: .topLeading)
@@ -131,13 +193,14 @@ struct VideoCaptionLane: View, Equatable {
         a.items == b.items && a.selectedID == b.selectedID && a.geometry == b.geometry
     }
 
-    private enum Mode { case move, leading, trailing }
+    private typealias Mode = VideoLaneDrag.Mode
 
     private struct Drag {
         let id: UUID
         let mode: Mode
         let originStart: Double
         let originEnd: Double
+        let snapper: VideoTimelineSnapper
         var moved = false
     }
 
@@ -211,7 +274,8 @@ struct VideoCaptionLane: View, Equatable {
                         model.seek(to: geometry.time(value.location.x), fast: true)
                         return
                     }
-                    drag = Drag(id: item.id, mode: mode, originStart: item.start, originEnd: item.end)
+                    let snapper = VideoTimelineSnapper(targets: model.snapTargets(excluding: [item.id]), pointsPerSecond: geometry.pointsPerSecond)
+                    drag = Drag(id: item.id, mode: mode, originStart: item.start, originEnd: item.end, snapper: snapper)
                     hover.setDragging(true)
                     model.selection = .caption(item.id)
                 }
@@ -219,19 +283,7 @@ struct VideoCaptionLane: View, Equatable {
                 if abs(value.translation.width) > 2 { current.moved = true }
                 drag = current
                 guard current.moved else { return }
-                let delta = Double(value.translation.width / geometry.pointsPerSecond)
-                var start = current.originStart
-                var end = current.originEnd
-                switch current.mode {
-                case .move:
-                    let length = end - start
-                    start = min(max(current.originStart + delta, 0), geometry.duration - length)
-                    end = start + length
-                case .leading:
-                    start = min(max(current.originStart + delta, 0), current.originEnd - 0.2)
-                case .trailing:
-                    end = min(max(current.originEnd + delta, current.originStart + 0.2), geometry.duration)
-                }
+                let (start, end) = Self.window(current, delta: Double(value.translation.width / geometry.pointsPerSecond), duration: geometry.duration, minimum: 0.2, hover: hover)
                 model.setCaptionWindow(current.id, timelineStart: start, timelineEnd: end, moveWords: current.mode == .move)
             }
             .onEnded { value in
@@ -246,6 +298,37 @@ struct VideoCaptionLane: View, Equatable {
                 model.endGesture()
                 if !current.moved { model.selectCaption(current.id) }
             }
+    }
+
+    private static func window(_ drag: Drag, delta: Double, duration: Double, minimum: Double, hover: VideoTimelineHover) -> (Double, Double) {
+        VideoLaneDrag.window(mode: drag.mode, start: drag.originStart, end: drag.originEnd, snapper: drag.snapper, delta: delta, duration: duration, minimum: minimum, hover: hover)
+    }
+}
+
+/// Moving a chip on a lane, or dragging one of its edges.
+enum VideoLaneDrag {
+    enum Mode { case move, leading, trailing }
+
+    /// Where the chip goes, landing on anything in reach.
+    @MainActor
+    static func window(mode: Mode, start: Double, end: Double, snapper: VideoTimelineSnapper, delta: Double, duration: Double, minimum: Double, hover: VideoTimelineHover) -> (Double, Double) {
+        switch mode {
+        case .move:
+            let length = end - start
+            let raw = min(max(start + delta, 0), max(duration - length, 0))
+            let shift = snapper.shift(start: raw, end: raw + length)
+            hover.setSnap(shift.target)
+            let moved = min(max(raw + shift.delta, 0), max(duration - length, 0))
+            return (moved, moved + length)
+        case .leading:
+            let snapped = snapper.snap(start + delta)
+            hover.setSnap(snapped.target)
+            return (min(max(snapped.time, 0), end - minimum), end)
+        case .trailing:
+            let snapped = snapper.snap(end + delta)
+            hover.setSnap(snapped.target)
+            return (start, min(max(snapped.time, start + minimum), duration))
+        }
     }
 }
 
@@ -441,13 +524,14 @@ struct VideoCameraLayoutLane: View, Equatable {
         a.items == b.items && a.selectedID == b.selectedID && a.geometry == b.geometry
     }
 
-    private enum Mode { case move, leading, trailing }
+    private typealias Mode = VideoLaneDrag.Mode
 
     private struct Drag {
         let id: UUID
         let mode: Mode
         let originStart: Double
         let originEnd: Double
+        let snapper: VideoTimelineSnapper
         var moved = false
     }
 
@@ -511,7 +595,8 @@ struct VideoCameraLayoutLane: View, Equatable {
                             model.seek(to: geometry.time(value.location.x), fast: true)
                             return
                         }
-                        drag = Drag(id: item.id, mode: mode, originStart: item.start, originEnd: item.end)
+                        let snapper = VideoTimelineSnapper(targets: model.snapTargets(excluding: [item.id]), pointsPerSecond: geometry.pointsPerSecond)
+                        drag = Drag(id: item.id, mode: mode, originStart: item.start, originEnd: item.end, snapper: snapper)
                         hover.setDragging(true)
                         model.selection = .cameraLayout(item.id)
                     }
@@ -519,19 +604,11 @@ struct VideoCameraLayoutLane: View, Equatable {
                     if abs(value.translation.width) > 2 { current.moved = true }
                     drag = current
                     guard current.moved else { return }
-                    let delta = Double(value.translation.width / geometry.pointsPerSecond)
-                    var start = current.originStart
-                    var end = current.originEnd
-                    switch current.mode {
-                    case .move:
-                        let length = end - start
-                        start = min(max(current.originStart + delta, 0), geometry.duration - length)
-                        end = start + length
-                    case .leading:
-                        start = min(max(current.originStart + delta, 0), current.originEnd - VideoCameraLayoutRegion.minimumDuration)
-                    case .trailing:
-                        end = min(max(current.originEnd + delta, current.originStart + VideoCameraLayoutRegion.minimumDuration), geometry.duration)
-                    }
+                    let (start, end) = VideoLaneDrag.window(
+                        mode: current.mode, start: current.originStart, end: current.originEnd, snapper: current.snapper,
+                        delta: Double(value.translation.width / geometry.pointsPerSecond), duration: geometry.duration,
+                        minimum: VideoCameraLayoutRegion.minimumDuration, hover: hover
+                    )
                     model.setCameraLayoutWindow(current.id, timelineStart: start, timelineEnd: end, moving: current.mode == .move)
                 }
                 .onEnded { value in

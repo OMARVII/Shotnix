@@ -100,6 +100,8 @@ enum VideoDemoOverlayEffectKind: String, Codable, CaseIterable, Identifiable {
     case highlight
     // rawValue stays "blur" so saved drafts keep decoding.
     case blur
+    /// Dims the picture around a rectangle or an ellipse.
+    case spotlight
 
     var id: String { rawValue }
 
@@ -109,6 +111,7 @@ enum VideoDemoOverlayEffectKind: String, Codable, CaseIterable, Identifiable {
         case .arrow: return "Arrow"
         case .highlight: return "Highlight"
         case .blur: return "Blur"
+        case .spotlight: return "Spotlight"
         }
     }
 
@@ -118,8 +121,26 @@ enum VideoDemoOverlayEffectKind: String, Codable, CaseIterable, Identifiable {
         case .arrow: return "arrow.up.right"
         case .highlight: return "rectangle.dashed"
         case .blur: return "eye.slash"
+        case .spotlight: return "circle.dashed.inset.filled"
         }
     }
+}
+
+/// Where an arrow starts and points (video-normalized, y down).
+struct VideoArrowEnds: Codable, Equatable {
+    var tailX: Double
+    var tailY: Double
+    var headX: Double
+    var headY: Double
+}
+
+/// The shape a spotlight keeps bright.
+enum VideoOverlayShape: String, Codable, CaseIterable, Identifiable {
+    case rectangle
+    case ellipse
+
+    var id: String { rawValue }
+    var title: String { self == .rectangle ? "Rectangle" : "Ellipse" }
 }
 
 struct VideoDemoOverlayEffect: Codable, Equatable, Identifiable {
@@ -142,6 +163,11 @@ struct VideoDemoOverlayEffect: Codable, Equatable, Identifiable {
     /// kind's default). A clear text tag means text only, with a shadow.
     var color: VideoRGBA?
     var thickness: VideoOverlayThickness
+    /// Arrows point any way: nil for arrows made before ends were saved
+    /// (those run from the box's lower left to its upper right).
+    var arrowEnds: VideoArrowEnds?
+    /// A spotlight's shape (nil: rectangle).
+    var shape: VideoOverlayShape?
 
     init(
         id: UUID = UUID(),
@@ -188,6 +214,8 @@ struct VideoDemoOverlayEffect: Codable, Equatable, Identifiable {
         layer = try container.decodeIfPresent(Int.self, forKey: .layer) ?? 0
         color = try container.decodeIfPresent(VideoRGBA.self, forKey: .color)
         thickness = (try? container.decode(VideoOverlayThickness.self, forKey: .thickness)) ?? .regular
+        arrowEnds = try? container.decodeIfPresent(VideoArrowEnds.self, forKey: .arrowEnds)
+        shape = try? container.decodeIfPresent(VideoOverlayShape.self, forKey: .shape)
     }
 }
 
@@ -216,12 +244,12 @@ extension VideoDemoOverlayEffectKind {
         switch self {
         case .arrow, .highlight: return VideoRGBA(hex: 0xFFD60A)
         case .text: return VideoRGBA(0.06, 0.06, 0.06, 0.84)
-        case .blur: return VideoRGBA(0.5, 0.5, 0.5)
+        case .blur, .spotlight: return VideoRGBA(0.5, 0.5, 0.5)
         }
     }
 
-    /// Whether a color can be chosen (blur has none).
-    var hasColor: Bool { self != .blur }
+    /// Whether a color can be chosen (blur and spotlight have none).
+    var hasColor: Bool { self != .blur && self != .spotlight }
 
     /// Swatches offered for this kind.
     var palette: [VideoRGBA] {
@@ -234,7 +262,7 @@ extension VideoDemoOverlayEffectKind {
             return [defaultColor] + bright + [VideoRGBA(0, 0, 0, 0)]
         case .arrow, .highlight:
             return bright + [VideoRGBA(hex: 0x1C1C1E)]
-        case .blur:
+        case .blur, .spotlight:
             return []
         }
     }

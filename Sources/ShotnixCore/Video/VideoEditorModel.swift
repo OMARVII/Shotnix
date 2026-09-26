@@ -969,22 +969,37 @@ final class VideoEditorModel: ObservableObject {
         return lower...max(lower, upper)
     }
 
-    /// Times a zoom edge likes to land on: the playhead, clip boundaries,
-    /// clicks, and the edges of other zooms.
-    func zoomSnapTargets(excluding id: UUID) -> [Double] {
+    /// Times a dragged edge likes to land on (timeline seconds): the
+    /// playhead, clip boundaries, clicks and shortcuts, and the edges of
+    /// every zoom, annotation, caption, and camera layout but the ones being
+    /// dragged.
+    func snapTargets(excluding ids: Set<UUID>) -> [Double] {
         var targets: [Double] = [0, timelineDuration, clock.time]
         for segment in segments {
             targets.append(segment.timelineStart)
             targets.append(segment.timelineEnd)
         }
-        for click in project.clickEvents {
+        for click in project.clickEvents where !ids.contains(click.id) {
             if let time = timelineTime(forSource: click.time) { targets.append(time) }
         }
-        for region in project.zoomRegions where region.id != id {
+        for keystroke in plan.keystrokes { targets.append(keystroke.start) }
+        for region in project.zoomRegions where !ids.contains(region.id) {
             if let range = zoomTimelineRange(region) {
                 targets.append(range.lowerBound)
                 targets.append(range.upperBound)
             }
+        }
+        for overlay in plan.overlays where !ids.contains(overlay.effect.id) {
+            targets.append(overlay.start)
+            targets.append(overlay.end)
+        }
+        for caption in plan.captions where !ids.contains(caption.id) {
+            targets.append(caption.start)
+            targets.append(caption.end)
+        }
+        for span in cameraLayoutSpans where !ids.contains(span.region.id) {
+            targets.append(span.start)
+            targets.append(span.end)
         }
         return targets
     }
@@ -1110,6 +1125,7 @@ final class VideoEditorModel: ObservableObject {
         copy.id = UUID()
         copy.x = min(original.x + 0.03, 0.98)
         copy.y = min(original.y + 0.03, 0.98)
+        copy.refitArrowEnds(from: original)
         let overlapping = project.overlayEffects.filter { $0.time < copy.time + copy.duration && $0.time + $0.duration > copy.time }
         copy.layer = (overlapping.map(\.layer).max() ?? -1) + 1
         mutate { project in
@@ -1207,11 +1223,12 @@ final class VideoEditorModel: ObservableObject {
             x: 0.5,
             y: kind == .text ? 0.14 : 0.5,
             width: kind == .text ? 0.5 : (kind == .arrow ? 0.18 : 0.3),
-            height: kind == .text ? 0.09 : (kind == .arrow ? 0.18 : 0.2),
+            height: kind == .text ? 0.09 : (kind == .arrow ? 0.18 : (kind == .spotlight ? 0.3 : 0.2)),
             text: kind == .text ? "Your text" : kind.title,
             color: VideoOverlayStyleMemory.color(for: kind),
             thickness: VideoOverlayStyleMemory.thickness(for: kind)
         )
+        if kind == .spotlight { effect.shape = VideoOverlayStyleMemory.shape }
         // Land where it can be seen: zooms and vertical reframing show only
         // part of the frame, so place (and if needed shrink) it inside that.
         let visible = visibleRegion(at: time)
@@ -1236,6 +1253,11 @@ final class VideoEditorModel: ObservableObject {
         let halfHeight = CGFloat(effect.height / 2)
         effect.x = Double(min(max(center.x, visible.minX + halfWidth), visible.maxX - halfWidth))
         effect.y = Double(min(max(center.y, visible.minY + halfHeight), visible.maxY - halfHeight))
+        if kind == .arrow {
+            // Saved ends: it can be turned to point any way.
+            let points = effect.arrowPoints
+            effect.setArrow(tail: points.tail, head: points.head)
+        }
         // New annotations stack ON TOP of anything they overlap: a higher
         // lane on the timeline, drawn in front in the video.
         let overlapping = project.overlayEffects.filter {
@@ -1276,6 +1298,7 @@ final class VideoEditorModel: ObservableObject {
     func updateOverlay(_ id: UUID, coalesce: String? = nil, _ change: (inout VideoDemoOverlayEffect) -> Void) {
         mutate(coalesce: coalesce) { project in
             guard let index = project.overlayEffects.firstIndex(where: { $0.id == id }) else { return }
+            let old = project.overlayEffects[index]
             change(&project.overlayEffects[index])
             var effect = project.overlayEffects[index]
             effect.width = min(max(effect.width, 0.04), 1)
@@ -1283,9 +1306,29 @@ final class VideoEditorModel: ObservableObject {
             effect.x = min(max(effect.x, 0.02), 0.98)
             effect.y = min(max(effect.y, 0.02), 0.98)
             effect.duration = max(effect.duration, 0.2)
+            // A moved or resized arrow takes its ends along.
+            effect.refitArrowEnds(from: old)
             project.overlayEffects[index] = effect
         }
     }
+
+    /// Text size in canvas points (a 1080-tall frame's): it follows the
+    /// box's height, so the size control sets that and keeps the width.
+    func textSize(of effect: VideoDemoOverlayEffect) -> Double {
+        let stage = (project.reframeActive ? project.reframeScene() : project).stageRect(in: plan.canvasSize)
+        return min(Double(stage.height) * effect.height * Self.textSizePerBoxHeight, 64)
+    }
+
+    func setTextSize(_ size: Double, of id: UUID) {
+        let stage = (project.reframeActive ? project.reframeScene() : project).stageRect(in: plan.canvasSize)
+        guard stage.height > 0 else { return }
+        updateOverlay(id, coalesce: "text-size-\(id)") { effect in
+            effect.height = size / Self.textSizePerBoxHeight / Double(stage.height)
+        }
+    }
+
+    /// The renderer draws text at 0.46 of its box's height (at most 64).
+    static let textSizePerBoxHeight = 0.46
 
     func setOverlayWindow(_ id: UUID, start: Double, end: Double, coalesce: String) {
         let safeStart = min(max(start, 0), max(timelineDuration - 0.2, 0))

@@ -28,6 +28,7 @@ enum VideoEditorTheme {
         case .highlight: return Color(red: 0.92, green: 0.7, blue: 0.1)
         case .arrow: return Color(red: 0.95, green: 0.55, blue: 0.15)
         case .blur: return Color(white: 0.42)
+        case .spotlight: return Color(red: 0.3, green: 0.66, blue: 0.82)
         }
     }
 }

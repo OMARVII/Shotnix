@@ -68,6 +68,22 @@ final class VideoEditorFixesSnapshotTests: XCTestCase {
         try await Self.render(VideoEditorRootView(model: model), size: full, name: "fix-01-preview-muted")
     }
 
+    func testAnnotationToolsOnThePreviewAndInspector() async throws {
+        let model = try await T.make(in: directory, T.Options(seconds: 6, size: CGSize(width: 1440, height: 900)))
+        model.mutate { $0.zoomRegions = [] }
+        model.seek(to: 2)
+        model.addOverlay(.arrow)
+        let id = try XCTUnwrap(model.selectedOverlay?.id)
+        model.updateOverlay(id) { $0.setArrow(tail: CGPoint(x: 0.75, y: 0.3), head: CGPoint(x: 0.45, y: 0.62)) }
+        try await Self.render(VideoEditorRootView(model: model), size: full, name: "fix-12-arrow-selected")
+        model.addOverlay(.text)
+        try await Self.render(VideoEditorRootView(model: model), size: full, name: "fix-12-text-size-control")
+        model.addOverlay(.spotlight)
+        if let spot = model.selectedOverlay?.id { model.setOverlayShape(spot, .ellipse) }
+        try await Self.render(VideoEditorRootView(model: model), size: full, name: "fix-12-spotlight-selected")
+        VideoOverlayStyleMemory.shape = .rectangle
+    }
+
     func testTranscriptionShowsItIsWorking() async throws {
         var options = T.Options(seconds: 4, size: CGSize(width: 1440, height: 900))
         options.audio = true

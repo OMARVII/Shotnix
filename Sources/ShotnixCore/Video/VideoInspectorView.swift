@@ -1065,6 +1065,14 @@ struct VideoSelectionInspector: View {
                     .overlay(RoundedRectangle(cornerRadius: 7, style: .continuous).strokeBorder(VideoEditorTheme.cardStroke, lineWidth: 1))
                     .focused($textFocused)
                     .onChange(of: model.textEditRequest) { _ in textFocused = true }
+                // The size of the letters, apart from the box's width.
+                VideoSliderRow(
+                    title: "Size",
+                    value: Binding(get: { model.textSize(of: overlay) }, set: { model.setTextSize($0, of: overlay.id) }),
+                    range: 14...64,
+                    format: { "\(Int($0.rounded()))" },
+                    onEditingEnded: { model.endGesture() }
+                )
             }
         }
         if overlay.kind.hasColor {
@@ -1080,13 +1088,38 @@ struct VideoSelectionInspector: View {
                 )
             }
         }
+        if overlay.kind == .arrow {
+            Button {
+                model.flipArrow(overlay.id)
+            } label: {
+                Label("Turn around", systemImage: "arrow.left.arrow.right")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(VideoSecondaryButtonStyle())
+            .help("Swap the arrow's head and tail")
+        }
+        if overlay.kind == .spotlight {
+            VideoInspectorSection("Shape") {
+                VideoSegmented(
+                    options: VideoOverlayShape.allCases.map { ($0, $0.title) },
+                    selection: Binding(get: { overlay.shape ?? .rectangle }, set: { model.setOverlayShape(overlay.id, $0) })
+                )
+            }
+        }
         VideoInspectorSection("Placement") {
-            Text(overlay.kind == .blur
-                 ? "Drag the box on the preview over anything private. Blur follows zooms and stays until its bar ends."
-                 : "Drag it on the preview to move it; drag a corner to resize. Its bar on the timeline sets when it shows.")
+            Text(placementHelp(overlay.kind))
                 .font(.system(size: 11))
                 .foregroundStyle(VideoEditorTheme.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    private func placementHelp(_ kind: VideoDemoOverlayEffectKind) -> String {
+        switch kind {
+        case .blur: return "Drag the box on the preview over anything private. Blur follows zooms and stays until its bar ends."
+        case .arrow: return "Drag the arrow on the preview to move it; drag its head or tail to point it anywhere. Its bar on the timeline sets when it shows."
+        case .spotlight: return "Drag the spot on the preview; drag a corner to resize it. Everything around it dims while its bar on the timeline runs."
+        default: return "Drag it on the preview to move it; drag a corner to resize. Double-click text to type. Its bar on the timeline sets when it shows."
         }
     }
 }

@@ -753,6 +753,20 @@ extension VideoEditorModel {
         updateOverlay(id) { $0.thickness = thickness }
         VideoOverlayStyleMemory.setThickness(thickness, for: overlay.kind)
     }
+
+    /// A spotlight's shape; new spotlights start with the last one picked.
+    func setOverlayShape(_ id: UUID, _ shape: VideoOverlayShape) {
+        updateOverlay(id) { $0.shape = shape }
+        VideoOverlayStyleMemory.shape = shape
+    }
+
+    /// Turns an arrow around (tail and head swap places).
+    func flipArrow(_ id: UUID) {
+        updateOverlay(id) { effect in
+            let points = effect.arrowPoints
+            effect.setArrow(tail: points.head, head: points.tail)
+        }
+    }
 }
 
 // MARK: - Aspect & reframe

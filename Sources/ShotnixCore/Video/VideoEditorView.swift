@@ -663,6 +663,7 @@ struct VideoCommandPalette: View {
             Command(id: "highlight", title: "Add Highlight", symbol: "rectangle.dashed", shortcut: "H") { model.addOverlay(.highlight) },
             Command(id: "arrow", title: "Add Arrow", symbol: "arrow.up.right", shortcut: "A") { model.addOverlay(.arrow) },
             Command(id: "blur", title: "Add Blur", symbol: "eye.slash", shortcut: "B") { model.addOverlay(.blur) },
+            Command(id: "spotlight", title: "Add Spotlight (Dim Around a Spot)", symbol: VideoDemoOverlayEffectKind.spotlight.icon, shortcut: "") { model.addOverlay(.spotlight) },
             Command(id: "shuffle", title: "Shuffle Background", symbol: "dice", shortcut: "") { model.shuffleBackground() },
             Command(id: "full-frame", title: model.project.usesRawSourceFrame ? "Show Background" : "Full Frame (No Background)", symbol: "rectangle.inset.filled", shortcut: "") {
                 model.setStyle { $0.padding = $0.usesRawSourceFrame ? VideoStylePreset.factory.padding : 0 }
@@ -995,7 +996,7 @@ struct VideoToolDock: View {
                         symbol: kind.icon,
                         tint: VideoEditorTheme.overlayTint(kind),
                         active: selectedKind == kind,
-                        help: "Add \(kind.title.lowercased()) at the playhead (\(Self.keys[kind] ?? ""))"
+                        help: "Add \(kind.title.lowercased()) at the playhead" + (Self.keys[kind].map { " (\($0))" } ?? "")
                     ) {
                         model.addOverlay(kind)
                     }

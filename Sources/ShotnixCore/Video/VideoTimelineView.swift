@@ -25,9 +25,28 @@ enum VideoTimelineMetrics {
         return height > 0 ? height - overlayLaneGap + gap : 0
     }
 
+    /// The annotation layers that get a lane, lowest first: one sitting
+    /// wholly in a part that was cut away draws nothing and takes none.
+    static func overlayLayers(_ project: VideoDemoProject) -> [Int] {
+        let clips = project.timelineClips
+        let shown = project.overlayEffects.filter { effect in
+            clips.isEmpty || clips.contains { $0.sourceStart < effect.time + max(effect.duration, 0.1) && $0.sourceEnd > effect.time }
+        }
+        return Array(Set(shown.map { max($0.layer, 0) })).sorted()
+    }
+
     static func overlayLanes(_ project: VideoDemoProject) -> Int {
-        guard !project.overlayEffects.isEmpty else { return 0 }
-        return (project.overlayEffects.map { max($0.layer, 0) }.max() ?? 0) + 1
+        overlayLayers(project).count
+    }
+
+    /// The layer a pill dragged `lanes` lanes up (down when negative) from
+    /// `layer` lands on, counting only the lanes on show.
+    static func layer(movedFrom layer: Int, by lanes: Int, in layers: [Int]) -> Int {
+        guard let index = layers.firstIndex(of: layer) else { return max(layer + lanes, 0) }
+        let target = index + lanes
+        if target < 0 { return max((layers.first ?? 0) - 1, 0) }
+        if target < layers.count { return layers[target] }
+        return (layers.last ?? 0) + (target - layers.count + 1)
     }
 
     /// Height of the annotation lanes block (0 when there are none).
@@ -207,6 +226,8 @@ struct VideoTimelineSurface: View {
     /// update the freshly rendered closure, so computing from the object's
     /// CURRENT position would compound the movement — always start here.
     @State private var dragOrigin: TimelineDragOrigin?
+    /// Where the dragged bar's edges can land, gathered when the drag began.
+    @State private var snapper: VideoTimelineSnapper?
     @State private var rangeStart: Double?
     @State private var pinchBase: Double?
     @State private var scrollMonitor: Any?
@@ -233,10 +254,29 @@ struct VideoTimelineSurface: View {
     private var clickTop: CGFloat { zoomTop + M.zoomTrackHeight + M.gap }
     private var clipTop: CGFloat { clickTop + (model.project.clickEvents.isEmpty ? 0 : M.clickLaneHeight + 3) }
 
-    /// Lane `layer` sits higher the higher its layer (and draws in front).
-    private func laneY(_ layer: Int) -> CGFloat {
-        let lanes = M.overlayLanes(model.project)
-        return CGFloat(max(lanes - 1 - layer, 0)) * (M.overlayLaneHeight + M.overlayLaneGap)
+    /// Lane `layer` sits higher the higher its layer (and draws in front);
+    /// only the layers on show count.
+    private func laneY(_ layer: Int, in layers: [Int]) -> CGFloat {
+        let index = layers.firstIndex(of: layer) ?? layers.filter { $0 < layer }.count
+        return CGFloat(max(layers.count - 1 - index, 0)) * (M.overlayLaneHeight + M.overlayLaneGap)
+    }
+
+    /// A moved bar, from where it was when the drag began, landing an edge
+    /// on anything within reach.
+    private func movedWindow(_ origin: TimelineDragOrigin, by translation: CGFloat) -> (start: Double, end: Double) {
+        let length = origin.end - origin.start
+        let raw = min(max(origin.start + Double(translation / pointsPerSecond), 0), max(duration - length, 0))
+        let shift = snapper?.shift(start: raw, end: raw + length)
+        hover.setSnap(shift?.target)
+        let start = min(max(raw + (shift?.delta ?? 0), 0), max(duration - length, 0))
+        return (start, start + length)
+    }
+
+    /// A dragged edge, landing on anything within reach.
+    private func snappedEdge(_ time: Double) -> Double {
+        guard let snapped = snapper?.snap(time) else { return time }
+        hover.setSnap(snapped.target)
+        return snapped.time
     }
 
     var body: some View {
@@ -504,6 +544,7 @@ struct VideoTimelineSurface: View {
             .onChanged { value in
                 if dragOrigin?.id != region.id {
                     dragOrigin = TimelineDragOrigin(id: region.id, start: range.lowerBound, end: range.upperBound)
+                    snapper = VideoTimelineSnapper(targets: model.snapTargets(excluding: [region.id]), pointsPerSecond: pointsPerSecond)
                     zoomDrag = (region.id, range.lowerBound, range.upperBound)
                     hover.setDragging(true)
                     model.selection = .zoom(region.id)
@@ -511,10 +552,8 @@ struct VideoTimelineSurface: View {
                 }
                 guard let origin = dragOrigin, abs(value.translation.width) > 2 else { return }
                 NSCursor.closedHand.set()
-                let delta = Double(value.translation.width / pointsPerSecond)
-                let length = origin.end - origin.start
-                let start = min(max(origin.start + delta, 0), duration - length)
-                model.setZoomWindow(region.id, start: start, end: start + length, coalesce: "zoom-move-\(region.id)")
+                let moved = movedWindow(origin, by: value.translation.width)
+                model.setZoomWindow(region.id, start: moved.start, end: moved.end, coalesce: "zoom-move-\(region.id)")
                 if let updated = model.project.zoomRegions.first(where: { $0.id == region.id }).flatMap({ model.zoomTimelineRange($0) }) {
                     zoomDrag = (region.id, updated.lowerBound, updated.upperBound)
                 }
@@ -522,19 +561,12 @@ struct VideoTimelineSurface: View {
             .onEnded { value in
                 let origin = dragOrigin ?? TimelineDragOrigin(id: region.id, start: range.lowerBound, end: range.upperBound)
                 if abs(value.translation.width) > 2 {
-                    // Magnet on release: whichever edge is near a target lands on it.
-                    let delta = Double(value.translation.width / pointsPerSecond)
-                    let length = origin.end - origin.start
-                    let start = min(max(origin.start + delta, 0), duration - length)
-                    let snappedStart = snap(start, excluding: region.id)
-                    let snappedEnd = snap(start + length, excluding: region.id)
-                    let shift = abs(snappedStart - start) <= abs(snappedEnd - (start + length)) ? snappedStart - start : snappedEnd - (start + length)
-                    if abs(shift) > 0.0001 {
-                        model.setZoomWindow(region.id, start: start + shift, end: start + shift + length, coalesce: "zoom-move-\(region.id)")
-                    }
+                    let moved = movedWindow(origin, by: value.translation.width)
+                    model.setZoomWindow(region.id, start: moved.start, end: moved.end, coalesce: "zoom-move-\(region.id)")
                 }
                 zoomDrag = nil
                 dragOrigin = nil
+                snapper = nil
                 hover.setDragging(false)
                 model.endGesture()
                 if abs(value.translation.width) <= 2 {
@@ -555,14 +587,13 @@ struct VideoTimelineSurface: View {
             .onChanged { value in
                 if dragOrigin?.id != region.id {
                     dragOrigin = TimelineDragOrigin(id: region.id, start: range.lowerBound, end: range.upperBound)
+                    snapper = VideoTimelineSnapper(targets: model.snapTargets(excluding: [region.id]), pointsPerSecond: pointsPerSecond)
                     zoomDrag = (region.id, range.lowerBound, range.upperBound)
                     hover.setDragging(true)
                     model.selection = .zoom(region.id)
                 }
                 guard let origin = dragOrigin else { return }
-                let delta = Double(value.translation.width / pointsPerSecond)
-                let start = leading ? min(origin.start + delta, origin.end - VideoZoomRegion.minimumDuration) : origin.start
-                let end = leading ? origin.end : max(origin.end + delta, origin.start + VideoZoomRegion.minimumDuration)
+                let (start, end) = zoomEdges(origin, leading: leading, by: value.translation.width)
                 model.setZoomWindow(region.id, start: start, end: end, coalesce: "zoom-edge-\(region.id)")
                 if let updated = model.project.zoomRegions.first(where: { $0.id == region.id }).flatMap({ model.zoomTimelineRange($0) }) {
                     zoomDrag = (region.id, updated.lowerBound, updated.upperBound)
@@ -570,27 +601,24 @@ struct VideoTimelineSurface: View {
             }
             .onEnded { value in
                 let origin = dragOrigin ?? TimelineDragOrigin(id: region.id, start: range.lowerBound, end: range.upperBound)
-                let delta = Double(value.translation.width / pointsPerSecond)
-                if leading {
-                    let start = snap(min(origin.start + delta, origin.end - VideoZoomRegion.minimumDuration), excluding: region.id)
-                    model.setZoomWindow(region.id, start: start, end: origin.end, coalesce: "zoom-edge-\(region.id)")
-                } else {
-                    let end = snap(max(origin.end + delta, origin.start + VideoZoomRegion.minimumDuration), excluding: region.id)
-                    model.setZoomWindow(region.id, start: origin.start, end: end, coalesce: "zoom-edge-\(region.id)")
-                }
+                let (start, end) = zoomEdges(origin, leading: leading, by: value.translation.width)
+                model.setZoomWindow(region.id, start: start, end: end, coalesce: "zoom-edge-\(region.id)")
                 zoomDrag = nil
                 dragOrigin = nil
+                snapper = nil
                 hover.setDragging(false)
                 model.endGesture()
             }
     }
 
-    /// Lands `time` on a nearby target (within 8 points).
-    private func snap(_ time: Double, excluding id: UUID) -> Double {
-        let threshold = Double(8 / pointsPerSecond)
-        guard let best = model.zoomSnapTargets(excluding: id).min(by: { abs($0 - time) < abs($1 - time) }),
-              abs(best - time) <= threshold else { return time }
-        return best
+    /// A zoom with one edge dragged (snapping), never shorter than a zoom
+    /// can be.
+    private func zoomEdges(_ origin: TimelineDragOrigin, leading: Bool, by translation: CGFloat) -> (Double, Double) {
+        let delta = Double(translation / pointsPerSecond)
+        if leading {
+            return (min(snappedEdge(origin.start + delta), origin.end - VideoZoomRegion.minimumDuration), origin.end)
+        }
+        return (origin.start, max(snappedEdge(origin.end + delta), origin.start + VideoZoomRegion.minimumDuration))
     }
 
     @ViewBuilder
@@ -666,17 +694,18 @@ struct VideoTimelineSurface: View {
         // Where each annotation is on screen after cuts — the same span the
         // renderer draws (its first moment may have been cut away).
         let spans = Dictionary(model.plan.overlays.map { ($0.effect.id, ($0.start, $0.end)) }, uniquingKeysWith: { first, _ in first })
+        let layers = M.overlayLayers(model.project)
         return ZStack(alignment: .topLeading) {
             ForEach(model.project.overlayEffects) { effect in
                 if let span = spans[effect.id] {
-                    overlayPill(effect, start: span.0, end: max(span.1, span.0 + 0.1))
+                    overlayPill(effect, start: span.0, end: max(span.1, span.0 + 0.1), layers: layers)
                 }
             }
         }
         .offset(y: overlayTop)
     }
 
-    private func overlayPill(_ effect: VideoDemoOverlayEffect, start: Double, end: Double) -> some View {
+    private func overlayPill(_ effect: VideoDemoOverlayEffect, start: Double, end: Double, layers: [Int]) -> some View {
         let selected = model.selection == .overlay(effect.id)
         let shown = overlayDrag?.id == effect.id ? (overlayDrag!.start, overlayDrag!.end) : (start, end)
         let width = max(CGFloat(shown.1 - shown.0) * pointsPerSecond, 26)
@@ -709,36 +738,36 @@ struct VideoTimelineSurface: View {
         .frame(width: width, height: M.overlayLaneHeight)
         .contentShape(Rectangle())
         .onHover { inside in (inside ? NSCursor.openHand : NSCursor.arrow).set() }
-        .gesture(overlayMoveGesture(effect, start: start, end: end))
+        .gesture(overlayMoveGesture(effect, start: start, end: end, layers: layers))
         .contextMenu {
             Button("Delete", role: .destructive) { model.deleteOverlay(effect.id) }
         }
-        .offset(x: x(shown.0), y: laneY(effect.layer))
+        .offset(x: x(shown.0), y: laneY(effect.layer, in: layers))
     }
 
-    private func overlayMoveGesture(_ effect: VideoDemoOverlayEffect, start: Double, end: Double) -> some Gesture {
+    private func overlayMoveGesture(_ effect: VideoDemoOverlayEffect, start: Double, end: Double, layers: [Int]) -> some Gesture {
         DragGesture(minimumDistance: 0, coordinateSpace: .global)
             .onChanged { value in
                 if dragOrigin?.id != effect.id {
-                    dragOrigin = TimelineDragOrigin(id: effect.id, start: start, end: end, layer: effect.layer)
+                    dragOrigin = TimelineDragOrigin(id: effect.id, start: start, end: end, layer: effect.layer, layers: layers)
+                    snapper = VideoTimelineSnapper(targets: model.snapTargets(excluding: [effect.id]), pointsPerSecond: pointsPerSecond)
                     overlayDrag = (effect.id, start, end, effect.layer)
                     hover.setDragging(true)
                     model.selection = .overlay(effect.id)
                 }
                 guard let origin = dragOrigin, abs(value.translation.width) > 2 || abs(value.translation.height) > 4 else { return }
-                let delta = Double(value.translation.width / pointsPerSecond)
-                let length = origin.end - origin.start
-                let newStart = min(max(origin.start + delta, 0), duration - length)
-                overlayDrag = (effect.id, newStart, newStart + length, origin.layer)
-                model.setOverlayWindow(effect.id, start: newStart, end: newStart + length, coalesce: "overlay-\(effect.id)")
+                let moved = movedWindow(origin, by: value.translation.width)
+                overlayDrag = (effect.id, moved.start, moved.end, origin.layer)
+                model.setOverlayWindow(effect.id, start: moved.start, end: moved.end, coalesce: "overlay-\(effect.id)")
                 // Dragging UP brings it forward (a higher lane).
-                let lane = Int((-value.translation.height / (M.overlayLaneHeight + M.overlayLaneGap)).rounded())
-                model.setOverlayLayer(effect.id, layer: origin.layer + lane, coalesce: "overlay-\(effect.id)")
+                let lanes = Int((-value.translation.height / (M.overlayLaneHeight + M.overlayLaneGap)).rounded())
+                model.setOverlayLayer(effect.id, layer: M.layer(movedFrom: origin.layer, by: lanes, in: origin.layers), coalesce: "overlay-\(effect.id)")
             }
             .onEnded { value in
                 let origin = dragOrigin ?? TimelineDragOrigin(id: effect.id, start: start, end: end, layer: effect.layer)
                 overlayDrag = nil
                 dragOrigin = nil
+                snapper = nil
                 hover.setDragging(false)
                 model.finishOverlayDrag()
                 if abs(value.translation.width) <= 2, abs(value.translation.height) <= 4 {
@@ -753,20 +782,22 @@ struct VideoTimelineSurface: View {
             .onChanged { value in
                 if dragOrigin?.id != effect.id {
                     dragOrigin = TimelineDragOrigin(id: effect.id, start: start, end: end, layer: effect.layer)
+                    snapper = VideoTimelineSnapper(targets: model.snapTargets(excluding: [effect.id]), pointsPerSecond: pointsPerSecond)
                     overlayDrag = (effect.id, start, end, effect.layer)
                     hover.setDragging(true)
                     model.selection = .overlay(effect.id)
                 }
                 guard let origin = dragOrigin else { return }
                 let delta = Double(value.translation.width / pointsPerSecond)
-                let newStart = leading ? min(max(origin.start + delta, 0), origin.end - 0.2) : origin.start
-                let newEnd = leading ? origin.end : min(max(origin.end + delta, origin.start + 0.2), duration)
+                let newStart = leading ? min(max(snappedEdge(origin.start + delta), 0), origin.end - 0.2) : origin.start
+                let newEnd = leading ? origin.end : min(max(snappedEdge(origin.end + delta), origin.start + 0.2), duration)
                 overlayDrag = (effect.id, newStart, newEnd, origin.layer)
                 model.setOverlayWindow(effect.id, start: newStart, end: newEnd, coalesce: "overlay-edge-\(effect.id)")
             }
             .onEnded { _ in
                 overlayDrag = nil
                 dragOrigin = nil
+                snapper = nil
                 hover.setDragging(false)
                 model.finishOverlayDrag()
             }
@@ -778,6 +809,8 @@ struct TimelineDragOrigin: Equatable {
     let start: Double
     let end: Double
     var layer: Int = 0
+    /// The annotation layers on show when the drag began.
+    var layers: [Int] = []
 }
 
 // MARK: - Clip
