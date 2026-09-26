@@ -134,7 +134,7 @@ final class WelcomeWindowController: NSObject, NSWindowDelegate {
         captureRow = capture
         y -= rowHeight + 6
 
-        let hint = NSTextField(labelWithString: "⌘⇧4 area · ⌘⇧5 window · ⌘⇧3 fullscreen — Shotnix lives in your menu bar")
+        let hint = NSTextField(labelWithString: Self.shortcutsHint())
         hint.font = .systemFont(ofSize: 10.5)
         hint.textColor = .tertiaryLabelColor
         hint.alignment = .center
@@ -203,13 +203,31 @@ final class WelcomeWindowController: NSObject, NSWindowDelegate {
             captureRow?.update(
                 done: false,
                 subtitle: hasPermission
-                    ? "Press ⌘⇧4 anytime — or try it right now."
+                    ? Self.captureHint(captureAreaShortcut: ShotnixShortcut.captureArea.displayShortcut)
                     : "Grant Screen Recording first, then try it here.",
                 primary: ("Take a Test Screenshot", { [weak self] in self?.testCaptureHandler?() }),
                 secondary: nil,
                 primaryEnabled: hasPermission
             )
         }
+    }
+
+    // MARK: – Hints (the user's real bindings, never hardcoded keys)
+
+    /// "⇧⌘4 area · ⇧⌘5 window · ⇧⌘3 fullscreen — Shotnix lives in your menu bar",
+    /// leaving out anything the user unassigned.
+    static func shortcutsHint(shortcut: @MainActor (ShotnixShortcut) -> String? = { $0.displayShortcut }) -> String {
+        let parts = [(ShotnixShortcut.captureArea, "area"), (.captureWindow, "window"), (.captureFullscreenNative, "fullscreen")]
+            .compactMap { item, label in shortcut(item).map { "\($0) \(label)" } }
+        let home = "Shotnix lives in your menu bar"
+        return parts.isEmpty ? home : "\(parts.joined(separator: " · ")) — \(home)"
+    }
+
+    static func captureHint(captureAreaShortcut: String?) -> String {
+        if let captureAreaShortcut {
+            return "Press \(captureAreaShortcut) anytime — or try it right now."
+        }
+        return "Try it right now — Capture Area is also in the menu bar."
     }
 
     private func allowPermissionClicked() {

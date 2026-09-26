@@ -107,6 +107,18 @@ final class ImageExporterTests: XCTestCase {
         XCTAssertTrue(ImageExporter.autoSaveFailureMessage(for: readOnly, directory: dir).contains("can't write to"))
     }
 
+    /// Save As: the user picked the name (and confirmed replacing it), so the
+    /// explicit save writes exactly there — encoded off the main thread.
+    func testExplicitSaveWritesTheChosenFileOffTheMainThread() async throws {
+        let target = dir.appendingPathComponent("Chosen.png")
+        try Data("old".utf8).write(to: target)
+        let saved: URL = try await withCheckedThrowingContinuation { continuation in
+            ImageExporter.saveAsync(image: Self.makeImage(), to: target) { continuation.resume(with: $0) }
+        }
+        XCTAssertEqual(saved, target)
+        XCTAssertNotNil(NSImage(contentsOf: saved), "replaced with the screenshot")
+    }
+
     // MARK: Clipboard
 
     func testFailedCopyLeavesTheClipboardAlone() {

@@ -247,12 +247,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
               Settings.showMenuBarIcon,
               !statusItemIsEffectivelyVisible else { return }
         didWarnHiddenIcon = true
-        let stillWorks = ShotnixShortcut.captureArea.displayShortcut.map { "\($0) still captures" } ?? "your shortcuts still work"
         ToastWindow.show(
-            message: "Menu bar is full, so macOS hid the Shotnix icon — \(stillWorks). Click here for the menu.",
+            message: Self.hiddenIconMessage(captureAreaShortcut: ShotnixShortcut.captureArea.displayShortcut),
             duration: 7.0,
             action: { [weak self] in self?.openCommandCenterFromAnywhere() }
         )
+    }
+
+    /// Names the user's real Capture Area shortcut — or none, if unassigned.
+    static func hiddenIconMessage(captureAreaShortcut: String?) -> String {
+        let stillWorks = captureAreaShortcut.map { "\($0) still captures" } ?? "your shortcuts still work"
+        return "Menu bar is full, so macOS hid the Shotnix icon — \(stillWorks). Click here for the menu."
     }
 
     private func showReadyToastIfNeeded(delay: TimeInterval = 0) {
@@ -601,7 +606,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         )
     }
 
-    private func commandCenterSections() -> [ShotnixMenuSection] {
+    func commandCenterSections(screenCount: Int = NSScreen.screens.count) -> [ShotnixMenuSection] {
         // Capture Fullscreen shoots the display you're on; "Capture All
         // Displays" gets its own row only when there's more than one.
         var captureActions = [
@@ -609,7 +614,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             action(id: "capture.window", title: "Capture Window", symbol: "macwindow", shortcut: .shotnixCaptureWindow) { [weak self] in self?.captureWindow() },
             action(id: "capture.fullscreen", title: "Capture Fullscreen", symbol: "rectangle.on.rectangle", shortcut: .shotnixCaptureFullscreenNative) { [weak self] in self?.captureFullscreen() },
         ]
-        if NSScreen.screens.count > 1 {
+        if screenCount > 1 {
             captureActions.append(action(id: "capture.all-displays", title: "Capture All Displays", symbol: "rectangle.3.group", shortcut: .shotnixCaptureAllDisplays) { [weak self] in self?.captureAllDisplays() })
         }
         captureActions.append(contentsOf: [
