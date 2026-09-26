@@ -103,7 +103,10 @@ extension VideoEditorModel {
                     self.captionJob = nil
                     return
                 }
-                let lines = VideoCaptionBuilder.lines(from: result.words)
+                // Recordings moved (or were added or removed) meanwhile: the
+                // words follow their recordings.
+                let words = VideoSourcesTranscription.remap(result.words, from: snapshot, to: self.project)
+                let lines = VideoCaptionBuilder.lines(from: words)
                 let firstTranscript = !self.project.captions.contains { !$0.words.isEmpty }
                 self.mutate(label: "Transcribe") { project in
                     project.captions = lines

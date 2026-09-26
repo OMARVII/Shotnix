@@ -458,6 +458,24 @@ enum VideoSourcesTranscription {
         return VideoCaptionTranscriber.Result(words: words.sorted { $0.start < $1.start }, language: language ?? Locale.current.identifier(.bcp47))
     }
 
+    /// Words timed on an older order of the recordings, moved to where each
+    /// recording sits now (a recording taken out takes its words along).
+    static func remap(_ words: [VideoCaptionWord], from old: VideoDemoProject, to new: VideoDemoProject) -> [VideoCaptionWord] {
+        typealias Place = (id: UUID?, offset: Double, primary: Bool)
+        func places(_ project: VideoDemoProject) -> [Place] {
+            project.sources.isEmpty ? [(nil, 0, true)] : project.sources.map { ($0.id, $0.offset, $0.isPrimary) }
+        }
+        let before = places(old)
+        let after = places(new)
+        guard before.map(\.offset) != after.map(\.offset) || before.map(\.id) != after.map(\.id) else { return words }
+        return words.compactMap { word in
+            guard let place = before.last(where: { word.start >= $0.offset - 0.0001 }) ?? before.first,
+                  let now = after.first(where: { place.primary ? $0.primary : $0.id == place.id }) else { return nil }
+            let shift = now.offset - place.offset
+            return VideoCaptionWord(text: word.text, start: word.start + shift, end: word.end + shift)
+        }.sorted { $0.start < $1.start }
+    }
+
     /// An added recording's voice on its own — its cleaned-up version when
     /// that's ready — like the project's own.
     static func voice(of source: VideoProjectSource, at url: URL) async -> VideoCaptionTranscriber.Source {

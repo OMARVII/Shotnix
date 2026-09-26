@@ -435,6 +435,25 @@ final class VideoProjectSourcesTests: XCTestCase {
         XCTAssertEqual(project.timelineDuration(totalDuration: 2), 1.7, accuracy: 0.001)
     }
 
+    /// A transcript that finishes after the recordings moved lands on the
+    /// right recordings.
+    func testATranscriptFollowsRecordingsMovedWhileItRan() async throws {
+        let (project, _, _, _) = try await twoRecordings()
+        // Heard while A (0–2) played first and B (2–3.5) second.
+        let words = [VideoCaptionWord(text: "first", start: 0.5, end: 0.8), VideoCaptionWord(text: "second", start: 2.5, end: 2.8)]
+        var moved = project
+        moved.moveSource(from: 1, to: 0)
+        let remapped = VideoSourcesTranscription.remap(words, from: project, to: moved)
+        XCTAssertEqual(remapped.map(\.text), ["second", "first"])
+        XCTAssertEqual(remapped.first { $0.text == "second" }?.start ?? 9, 0.5, accuracy: 0.001, "B plays first now")
+        XCTAssertEqual(remapped.first { $0.text == "first" }?.start ?? 0, 2.0, accuracy: 0.001, "A after it")
+
+        var removed = project
+        XCTAssertTrue(removed.removeSource(id: project.sources[1].id))
+        XCTAssertEqual(VideoSourcesTranscription.remap(words, from: project, to: removed).map(\.text), ["first"], "B's words go with it")
+        XCTAssertEqual(VideoSourcesTranscription.remap(words, from: project, to: project).map(\.start), [0.5, 2.5], "nothing moved, nothing changes")
+    }
+
     func testSourcesRoundTripInDrafts() async throws {
         let (project, _, _, _) = try await twoRecordings()
         let decoded = try JSONDecoder().decode(VideoDemoProject.self, from: JSONEncoder().encode(project))
