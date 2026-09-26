@@ -136,6 +136,22 @@ final class RecordingBarTests: XCTestCase {
         try RecordingUITestSupport.writeSnapshot(of: window, name: "recording-settings")
     }
 
+    /// The countdown before a recording can be called off (Esc, a click, or
+    /// the Stop Recording shortcut, which cancels setup).
+    func testRecordingCountdownCanBeCancelled() throws {
+        let screen = try XCTUnwrap(NSScreen.main)
+        var outcome: Bool?
+        let countdown = CountdownWindow(seconds: 3, on: screen) { finished in outcome = finished }
+        countdown.start()
+        countdown.cancel()
+        RecordingUITestSupport.spinRunLoop(0.2)
+        XCTAssertEqual(outcome, false)
+        XCTAssertFalse(countdown.isVisible)
+        countdown.cancel()
+        RecordingUITestSupport.spinRunLoop(0.1)
+        XCTAssertEqual(outcome, false, "reported once")
+    }
+
     // MARK: Post-recording panel
 
     func testPostRecordingPanelClosesWithoutATimeout() throws {
