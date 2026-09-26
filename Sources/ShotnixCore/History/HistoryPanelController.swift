@@ -74,7 +74,8 @@ final class HistoryPanelController: NSObject {
             }
         }
         p.makeKeyAndOrderFront(nil)
-        // Arrow keys and Delete work on the grid straight away.
+        // Arrow keys and Delete work on the grid straight away; typing
+        // (or ⌘F) moves into the search field.
         p.makeFirstResponder(collectionView)
         NSAnimationContext.runAnimationGroup { ctx in
             ctx.duration = 0.2
@@ -180,6 +181,8 @@ final class HistoryPanelController: NSObject {
         cv.onDelete = { [weak self] in self?.deleteSelection() }
         cv.onOpen = { [weak self] in self?.editSelection() }
         cv.onCopy = { [weak self] in self?.copySelection() }
+        cv.onType = { [weak self] event in self?.searchByTyping(event) ?? false }
+        cv.onFind = { [weak self] in self?.focusSearchField() }
         cv.setAccessibilityLabel("Captures")
 
         // One-time "star us" line, only while the nudge is live (see StarNudge).
@@ -399,6 +402,41 @@ final class HistoryPanelController: NSObject {
         reload()
     }
 
+    /// ⌘F on the grid.
+    func focusSearchField() {
+        guard let panel, let searchField else { return }
+        panel.makeFirstResponder(searchField)
+    }
+
+    /// Typing on the grid searches: the keys go on the end of the query,
+    /// through the text system so input methods and dead keys work.
+    func searchByTyping(_ event: NSEvent) -> Bool {
+        let typed = event.characters ?? ""
+        guard let panel, let searchField,
+              event.modifierFlags.intersection([.command, .control]).isEmpty,
+              event.specialKey == nil,
+              !typed.unicodeScalars.contains(where: { CharacterSet.controlCharacters.contains($0) || (0xF700...0xF8FF).contains($0.value) }),
+              !(searchField.stringValue.isEmpty && !typed.isEmpty && typed.allSatisfy(\.isWhitespace)),
+              panel.makeFirstResponder(searchField),
+              let editor = searchField.currentEditor() as? NSTextView
+        else { return false }
+        editor.setSelectedRange(NSRange(location: (editor.string as NSString).length, length: 0))
+        editor.keyDown(with: event)
+        applySearchQuery(searchField.stringValue)
+        return true
+    }
+
+    /// Down arrow in the search field: on to the results.
+    private func moveFocusToResults() -> Bool {
+        guard let panel, let collectionView, !sections.isEmpty, !sections[0].items.isEmpty else { return false }
+        panel.makeFirstResponder(collectionView)
+        if collectionView.selectionIndexPaths.isEmpty {
+            let first = IndexPath(item: 0, section: 0)
+            collectionView.selectItems(at: [first], scrollPosition: .nearestHorizontalEdge)
+        }
+        return true
+    }
+
     @objc private func typeFilterChanged(_ sender: NSPopUpButton) {
         setTypeFilter((sender.selectedItem?.representedObject as? String).flatMap(CaptureType.init(rawValue:)))
     }
@@ -529,16 +567,36 @@ final class HistoryPanelController: NSObject {
         let ids = items.map(\.id).sorted { (order[$0] ?? 0) < (order[$1] ?? 0) }
         // The manager's change notification reflows the grid — no manual reload.
         manager.delete(items)
+        let actionName = items.count == 1 ? "Delete Screenshot" : "Delete Screenshots"
+        registerUndoRestoring(ids, actionName: actionName)
         ToastWindow.show(
-            message: items.count == 1 ? "Screenshot deleted — click to undo" : "\(items.count) screenshots deleted — click to undo",
+            message: items.count == 1 ? "Screenshot deleted — click or press ⌘Z to undo" : "\(items.count) screenshots deleted — click or press ⌘Z to undo",
             duration: 5.0,
             on: panel?.screen
         ) { [weak self] in
-            guard let self, let manager = self.historyManager else { return }
-            for id in ids {
-                _ = manager.restoreFromTrash(id: id)
-            }
+            self?.restore(ids, actionName: actionName)
         }
+    }
+
+    /// Edit ▸ Undo (⌘Z) brings deleted captures back while History is open,
+    /// long after the toast is gone; Redo deletes them again.
+    private func registerUndoRestoring(_ ids: [UUID], actionName: String) {
+        guard let undoManager = panel?.undoManager else { return }
+        undoManager.registerUndo(withTarget: self) { controller in
+            controller.restore(ids, actionName: actionName)
+        }
+        undoManager.setActionName(actionName)
+    }
+
+    private func restore(_ ids: [UUID], actionName: String) {
+        guard let manager = historyManager else { return }
+        let restored = ids.compactMap { manager.restoreFromTrash(id: $0) }
+        guard !restored.isEmpty, let undoManager = panel?.undoManager else { return }
+        undoManager.registerUndo(withTarget: self) { controller in
+            controller.historyManager?.delete(restored)
+            controller.registerUndoRestoring(restored.map(\.id), actionName: actionName)
+        }
+        undoManager.setActionName(actionName)
     }
 
     // MARK: - Actions
@@ -576,15 +634,13 @@ final class HistoryPanelController: NSObject {
         guard alert.runModal() == .alertFirstButtonReturn else { return }
         let ids = manager.items.map(\.id)
         manager.deleteAll()
+        registerUndoRestoring(ids, actionName: "Clear History")
         ToastWindow.show(
-            message: "History cleared — click to undo",
+            message: "History cleared — click or press ⌘Z to undo",
             duration: 5.0,
             on: panel?.screen
         ) { [weak self] in
-            guard let self, let manager = self.historyManager else { return }
-            for id in ids {
-                _ = manager.restoreFromTrash(id: id)
-            }
+            self?.restore(ids, actionName: "Clear History")
         }
     }
 }
@@ -596,11 +652,17 @@ extension HistoryPanelController: NSSearchFieldDelegate {
     /// Escape in the search field clears the query (and never bubbles up to
     /// close the panel while there is text to clear).
     func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
-        guard control === searchField,
-              commandSelector == #selector(NSResponder.cancelOperation(_:)) else { return false }
-        searchField?.stringValue = ""
-        applySearchQuery("")
-        return true
+        guard control === searchField else { return false }
+        switch commandSelector {
+        case #selector(NSResponder.cancelOperation(_:)):
+            searchField?.stringValue = ""
+            applySearchQuery("")
+            return true
+        case #selector(NSResponder.moveDown(_:)):
+            return moveFocusToResults()
+        default:
+            return false
+        }
     }
 }
 
@@ -672,8 +734,12 @@ extension HistoryPanelController: NSCollectionViewDelegate {
             return file as NSURL
         }
         // The PNG is still being written (a capture from a moment ago):
-        // promise it and encode off the main thread when dropped.
-        return NSFilePromiseProvider(fileType: "public.png", delegate: HistoryImageFilePromiseDelegate(image: item.fullImage, fileName: "\(name).png"))
+        // promise it and encode off the main thread when dropped. The
+        // provider holds its delegate weakly; userInfo keeps it alive.
+        let delegate = HistoryImageFilePromiseDelegate(image: item.fullImage, fileName: "\(name).png")
+        let provider = NSFilePromiseProvider(fileType: "public.png", delegate: delegate)
+        provider.userInfo = delegate
+        return provider
     }
 
     /// The capture-time name, numbered when several dragged captures share
@@ -734,6 +800,19 @@ final class HistoryCollectionView: NSCollectionView {
     var onDelete: (() -> Void)?
     var onOpen: (() -> Void)?
     var onCopy: (() -> Void)?
+    /// Keys that type text; true when they went to the search field.
+    var onType: ((NSEvent) -> Bool)?
+    var onFind: (() -> Void)?
+
+    override func performKeyEquivalent(with event: NSEvent) -> Bool {
+        // ⌘F, matched the way menus match it on any keyboard layout.
+        if event.type == .keyDown, ShortcutKeyMatching.latinLetter(for: event) == "f",
+           event.modifierFlags.intersection(.deviceIndependentFlagsMask).subtracting([.capsLock, .numericPad, .function]) == .command {
+            onFind?()
+            return true
+        }
+        return super.performKeyEquivalent(with: event)
+    }
 
     override func keyDown(with event: NSEvent) {
         switch event.keyCode {
@@ -747,7 +826,7 @@ final class HistoryCollectionView: NSCollectionView {
                 return
             }
         default:
-            break
+            if onType?(event) == true { return }
         }
         super.keyDown(with: event)
     }

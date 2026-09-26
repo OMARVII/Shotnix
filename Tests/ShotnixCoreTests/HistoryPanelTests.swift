@@ -106,6 +106,70 @@ final class HistoryPanelTests: XCTestCase {
         XCTAssertEqual(manager.items.map(\.id), [third.id, second.id, first.id], "back in their places")
     }
 
+    func testTypingOnTheGridSearchesAndDownArrowGoesBackToTheResults() throws {
+        manager.add(image: HistoryManagerTests.makeImage(), rect: nil, type: .area)
+        manager.add(image: HistoryManagerTests.makeImage(), rect: nil, type: .area)
+        panel.show(historyManager: manager)
+        let grid = try XCTUnwrap(panel.collectionView as? HistoryCollectionView)
+        let window = try XCTUnwrap(grid.window)
+        let search = try XCTUnwrap(Self.searchField(in: window.contentView))
+        XCTAssertTrue(window.firstResponder === grid, "arrows and Delete work straight away")
+
+        grid.keyDown(with: try XCTUnwrap(Self.typed("q", keyCode: 12, window: window)))
+        XCTAssertEqual(search.stringValue, "q", "typing starts a search")
+        XCTAssertTrue((window.firstResponder as? NSTextView)?.delegate === search, "and keeps typing into the field")
+        XCTAssertEqual(Self.itemCount(in: grid), 0)
+
+        search.stringValue = ""
+        XCTAssertTrue(search.sendAction(search.action, to: search.target))
+        XCTAssertEqual(Self.itemCount(in: grid), 2)
+        let editor = try XCTUnwrap(window.firstResponder as? NSTextView)
+        XCTAssertTrue(panel.control(search, textView: editor, doCommandBy: #selector(NSResponder.moveDown(_:))))
+        XCTAssertTrue(window.firstResponder === grid, "Down arrow moves on to the results")
+        XCTAssertEqual(grid.selectionIndexPaths, [IndexPath(item: 0, section: 0)])
+
+        // Shortcuts and navigation keys stay with the grid.
+        XCTAssertFalse(panel.searchByTyping(try XCTUnwrap(Self.typed("c", keyCode: 8, window: window, modifiers: .command))))
+        XCTAssertFalse(panel.searchByTyping(try XCTUnwrap(Self.typed(String(UnicodeScalar(NSRightArrowFunctionKey)!), keyCode: 124, window: window))))
+        XCTAssertFalse(panel.searchByTyping(try XCTUnwrap(Self.typed(" ", keyCode: 49, window: window))), "a leading space isn't a search")
+        XCTAssertTrue(window.firstResponder === grid)
+
+        XCTAssertTrue(grid.performKeyEquivalent(with: try XCTUnwrap(Self.typed("f", keyCode: 3, window: window, modifiers: .command))))
+        XCTAssertTrue((window.firstResponder as? NSTextView)?.delegate === search, "⌘F focuses search")
+    }
+
+    private static func typed(_ characters: String, keyCode: UInt16, window: NSWindow, modifiers: NSEvent.ModifierFlags = []) -> NSEvent? {
+        NSEvent.keyEvent(with: .keyDown, location: .zero, modifierFlags: modifiers, timestamp: 0, windowNumber: window.windowNumber,
+                         context: nil, characters: characters, charactersIgnoringModifiers: characters, isARepeat: false, keyCode: keyCode)
+    }
+
+    private static func searchField(in view: NSView?) -> NSSearchField? {
+        guard let view else { return nil }
+        if let field = view as? NSSearchField { return field }
+        for subview in view.subviews {
+            if let field = searchField(in: subview) { return field }
+        }
+        return nil
+    }
+
+    func testCommandZBringsDeletedCapturesBackAndRedoDeletesThemAgain() async throws {
+        let first = manager.add(image: HistoryManagerTests.makeImage(), rect: nil, type: .area)
+        let second = manager.add(image: HistoryManagerTests.makeImage(), rect: nil, type: .area)
+        await manager.waitForPendingFileOperations()
+        panel.show(historyManager: manager)
+        let grid = try XCTUnwrap(panel.collectionView as? HistoryCollectionView)
+        grid.selectItems(at: [IndexPath(item: 0, section: 0)], scrollPosition: [])
+        grid.keyDown(with: try XCTUnwrap(Self.key(51, window: grid.window)))
+        XCTAssertEqual(manager.items.map(\.id), [first.id])
+
+        let undoManager = try XCTUnwrap(grid.window?.undoManager)
+        XCTAssertEqual(undoManager.undoActionName, "Delete Screenshot")
+        undoManager.undo()
+        XCTAssertEqual(manager.items.map(\.id), [second.id, first.id], "long after the toast, ⌘Z still works")
+        undoManager.redo()
+        XCTAssertEqual(manager.items.map(\.id), [first.id])
+    }
+
     func testEmptyStateNamesTheRealShortcut() {
         XCTAssertEqual(HistoryPanelController.emptyStateHint(captureAreaShortcut: "⌃⌥S"), "Press ⌃⌥S to take your first screenshot")
         XCTAssertFalse(HistoryPanelController.emptyStateHint(captureAreaShortcut: nil).contains("⌘"), "never promise an unassigned key")
