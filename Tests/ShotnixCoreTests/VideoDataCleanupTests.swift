@@ -150,7 +150,7 @@ final class VideoDataCleanupTests: XCTestCase {
         XCTAssertNotNil(VideoDataCleanup.missingSince(unseen.key), "missing from today")
     }
 
-    func testDataGoesOnlyAfterThirtyDaysMissingOnEverySweep() throws {
+    func testTheQuietSweepNeverRemovesARecordingsData() throws {
         let gone = try recording("Deleted.mov")
         try FileManager.default.removeItem(at: gone.video)
         let back = try recording("Comes back.mov")
@@ -159,20 +159,19 @@ final class VideoDataCleanupTests: XCTestCase {
 
         let start = Date()
         VideoDataCleanup.sweep(now: start, finder: .nowhere)
-        VideoDataCleanup.sweep(now: start.addingTimeInterval(29 * 86_400), finder: .nowhere)
-        for file in gone.files + back.files { XCTAssertTrue(exists(file), "\(file.lastPathComponent): 29 days missing isn't enough") }
+        XCTAssertNotNil(VideoDataCleanup.missingSince(gone.key), "noted as missing")
 
-        // The other one turns up again: its count starts over.
+        // The other one turns up again: it's no longer noted.
         try FileManager.default.moveItem(at: parked, to: back.video)
         VideoDataCleanup.sweep(now: start.addingTimeInterval(29.5 * 86_400), finder: .nowhere)
         XCTAssertNil(VideoDataCleanup.missingSince(back.key))
-        try FileManager.default.moveItem(at: back.video, to: parked)
 
-        let report = VideoDataCleanup.sweep(now: start.addingTimeInterval(31 * 86_400), finder: .nowhere)
-        for file in gone.files { XCTAssertFalse(exists(file), "\(file.lastPathComponent): missing on every sweep for 30 days") }
-        for file in back.files { XCTAssertTrue(exists(file), "\(file.lastPathComponent): seen a day ago") }
-        XCTAssertEqual(report.removedFiles, 3)
-        XCTAssertTrue(exists(gone.voice), "the quiet sweep leaves cleaned-up voice to Clean Up")
+        // Months later, a recording that never came back still keeps its
+        // data: it may live on a drive that's put away. Clean Up handles it.
+        let report = VideoDataCleanup.sweep(now: start.addingTimeInterval(120 * 86_400), finder: .nowhere)
+        for file in gone.files + back.files { XCTAssertTrue(exists(file), "\(file.lastPathComponent) stays") }
+        XCTAssertTrue(exists(gone.voice))
+        XCTAssertEqual(report.removedFiles, 0)
     }
 
     // MARK: Saved paths

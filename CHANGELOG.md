@@ -79,7 +79,7 @@
 - **Select several items** with ⇧- or ⌘-click and move or delete them together; **drag clips to reorder** them; give **just part of a clip** its own speed or mute.
 - **Exports run in the background:** progress and Cancel sit in the toolbar, exports queue up, you can keep editing (Esc hides the export sheet), and quitting asks first. Export a selection or an In/Out range, then Share or Reveal in Finder straight away.
 - **A File menu** with Export Video… (⌘E), Save Subtitles and Recent Exports (also in the command palette).
-- **Settings → Recording shows how much space video data uses**, with a Clean Up button; leftovers of deleted recordings are also cleaned once a day.
+- **Settings → Recording shows how much space video data uses**, with a Clean Up button that lists everything it would remove and asks first. Old clipboard exports and interrupted export files are cleaned up on their own; your recordings' data stays until you clean it up.
 
 #### Changed
 - **M mutes only the preview.** Exports keep their sound, and the export sheet warns (with a Turn On button) if an export would be silent.

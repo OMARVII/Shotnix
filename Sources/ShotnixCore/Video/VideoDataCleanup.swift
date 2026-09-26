@@ -6,14 +6,16 @@ import SwiftUI
 /// pictures and songs added to videos, and clipboard exports.
 ///
 /// Two ways it goes away:
-/// - Quietly, once a day after launch: clipboard exports older than a day,
-///   Shotnix's own unfinished export files, and the data of recordings that
-///   stayed missing on every sweep for 30 days. A recording that simply
-///   can't be found today (renamed, moved, on a drive that isn't plugged
-///   in, somewhere Spotlight doesn't look) loses nothing.
-/// - Settings → Clean Up: also data of recordings not found right now,
-///   camera footage and cleaned-up voice nothing uses, and pictures and
-///   songs no video uses — listed by name before anything is removed.
+/// - Quietly, once a day after launch: only clipboard exports older than a
+///   day (and, at launch, Shotnix's own unfinished export files). Nothing
+///   that belongs to a recording is ever removed on its own: a recording
+///   that can't be found (renamed, moved, on a drive that isn't plugged in,
+///   somewhere Spotlight doesn't look) may come back, and its camera footage
+///   and pointer data can't be made again. The sweep only notes since when
+///   a recording has been missing.
+/// - Settings → Clean Up: data of recordings not found right now, camera
+///   footage and cleaned-up voice nothing uses, and pictures and songs no
+///   video uses — listed by name before anything is removed.
 enum VideoDataCleanup {
     struct Report: Equatable {
         var removedFiles = 0
@@ -37,9 +39,6 @@ enum VideoDataCleanup {
     /// Data touched this recently is never removed (a recording being
     /// saved, a draft being written).
     static let grace: TimeInterval = 24 * 3600
-    /// How long a recording must stay missing, sweep after sweep, before
-    /// the quiet sweep lets its data go.
-    static let missingPeriod: TimeInterval = 30 * 24 * 3600
 
     /// Tests point these at throwaway folders.
     nonisolated(unsafe) static var clipboardExportsOverride: URL?
@@ -260,8 +259,8 @@ enum VideoDataCleanup {
 
     // MARK: The quiet sweep
 
-    /// What the daily sweep does (see the type's notes). Never removes the
-    /// data of a recording that has been missing for less than 30 days.
+    /// What the daily sweep does (see the type's notes): old clipboard
+    /// exports go; recordings that can't be found are only noted.
     @discardableResult
     static func sweep(now: Date = Date(), finder: Finder = .spotlight) -> Report {
         var report = Report()
@@ -272,13 +271,7 @@ enum VideoDataCleanup {
             case .found, .unknown:
                 ledger.missingSince[recording.key] = nil
             case .missing:
-                let since = ledger.missingSince[recording.key] ?? now
-                ledger.missingSince[recording.key] = since
-                // Missing on every sweep for 30 days (and untouched since).
-                if now.timeIntervalSince(since) >= missingPeriod, recording.dataFiles.allSatisfy({ isOld($0, now: now) }) {
-                    for url in recording.dataFiles { remove(url, into: &report) }
-                    ledger.missingSince[recording.key] = nil
-                }
+                ledger.missingSince[recording.key] = ledger.missingSince[recording.key] ?? now
             }
         }
         // Recordings whose data is gone some other way.
