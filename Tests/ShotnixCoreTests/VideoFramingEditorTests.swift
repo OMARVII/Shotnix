@@ -232,6 +232,25 @@ final class VideoFramingEditorTests: XCTestCase {
         model.stop()
     }
 
+    /// A song removed from the video stays while undo can bring it back —
+    /// in the open editor, and in a closed editor's kept history.
+    func testCleanUpKeepsPicturesAndSongsUndoCanBringBack() async throws {
+        let model = try await model(seconds: 2)
+        let song = directory.appendingPathComponent("Theme.m4a")
+        try VideoInspection.writeTone(to: song, frequency: 440, seconds: 2)
+        await model.addMusic(from: song)
+        let stored = try XCTUnwrap(model.project.music?.path)
+        model.removeMusic()
+        XCTAssertNil(model.project.music)
+        XCTAssertTrue(model.assetPathsInHistory().contains(stored), "undo still has it")
+        model.stop()
+        XCTAssertTrue(VideoEditorModel.keptHistoryAssetPaths().contains(stored), "so does the closed editor's kept history")
+        // Clean Up leaves it alone even once its grace day is over.
+        try FileManager.default.setAttributes([.modificationDate: Date().addingTimeInterval(-3 * 86_400)], ofItemAtPath: stored)
+        let plan = VideoDataCleanup.plan(finder: .nowhere, inUse: VideoEditorModel.keptHistoryAssetPaths())
+        XCTAssertFalse(plan.unusedAssets.map(\.lastPathComponent).contains(URL(fileURLWithPath: stored).lastPathComponent))
+    }
+
     func testHeldFrameCacheKeepsToItsBudget() async throws {
         let url = directory.appendingPathComponent("frames.mp4")
         try await VideoTestSupport.writeFakeRecording(to: url, size: CGSize(width: 640, height: 400), seconds: 3, fps: 10)
