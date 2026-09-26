@@ -276,6 +276,9 @@ final class FrameStitcher {
     /// first scrolls.
     private var capturedBottom: Int?
     private var footerRows = 0
+    /// The footer as the last appended frame showed it: a frame matched
+    /// after scrolling back up may show other rows there.
+    private var footer: CGImage?
     private var lastShift = 0
     private var strips: [CGImage] = []
 
@@ -363,6 +366,7 @@ final class FrameStitcher {
             self.firstFrame = nil
         }
         footerRows = bottom
+        footer = bottom > 0 ? copyRows(of: frame, from: rows - bottom, to: rows) : nil
         let start = max((capturedBottom ?? 0) - position, regionTop)
         var end = regionBottom
         var hitLimit = false
@@ -384,12 +388,12 @@ final class FrameStitcher {
         return appended > 0 ? .appended(rows: appended) : .unchanged
     }
 
-    /// The stitched image: every appended strip, then the last frame's footer.
+    /// The stitched image: every appended strip, then the footer.
     func makeImage() -> CGImage? {
         guard let reference else { return nil }
-        guard capturedBottom != nil, !strips.isEmpty else { return firstFrame ?? reference }
-        var pieces = strips
-        if footerRows > 0, let footer = copyRows(of: reference, from: frameHeight - footerRows, to: frameHeight) {
+        guard let capturedBottom, !strips.isEmpty else { return firstFrame ?? reference }
+        var pieces = strips(upTo: keptContentRows(capturedBottom))
+        if let footer {
             pieces.append(footer)
         }
         let totalHeight = pieces.reduce(0) { $0 + $1.height }
@@ -400,6 +404,62 @@ final class FrameStitcher {
             context.draw(piece, in: CGRect(x: 0, y: y, width: frameWidth, height: piece.height))
         }
         return context.makeImage()
+    }
+
+    /// A trackpad bounce at the end of the page shows overscroll background
+    /// past the last row, then springs back. Captured rows the resting frame
+    /// no longer reaches were that bounce when they're one flat color.
+    private func keptContentRows(_ capturedBottom: Int) -> Int {
+        let resting = referencePosition + frameHeight - footerRows
+        guard resting > 0, resting < capturedBottom, capturedBottom - resting < frameHeight,
+              isFlat(contentRows: resting..<capturedBottom) else { return capturedBottom }
+        return resting
+    }
+
+    /// The strips, cut off after content row `rows`.
+    private func strips(upTo rows: Int) -> [CGImage] {
+        var kept: [CGImage] = []
+        var top = 0
+        for strip in strips {
+            guard top < rows else { break }
+            if top + strip.height <= rows {
+                kept.append(strip)
+            } else if let part = strip.cropping(to: CGRect(x: 0, y: 0, width: strip.width, height: rows - top)) {
+                kept.append(part)
+            }
+            top += strip.height
+        }
+        return kept
+    }
+
+    /// Whether content rows `range` are all one color, give or take noise.
+    private func isFlat(contentRows range: Range<Int>) -> Bool {
+        let height = range.count
+        guard height > 0, let context = makeContext(width: frameWidth, height: height) else { return false }
+        var top = 0
+        for strip in strips {
+            let bottom = top + strip.height
+            defer { top = bottom }
+            let from = max(range.lowerBound, top)
+            let to = min(range.upperBound, bottom)
+            guard from < to,
+                  let part = strip.cropping(to: CGRect(x: 0, y: from - top, width: strip.width, height: to - from)) else { continue }
+            // Content rows run top-down; CG draws bottom-up.
+            context.draw(part, in: CGRect(x: 0, y: range.upperBound - to, width: frameWidth, height: to - from))
+        }
+        guard let data = context.data else { return false }
+        let bytesPerRow = context.bytesPerRow
+        let pixels = data.bindMemory(to: UInt8.self, capacity: bytesPerRow * height)
+        let first = (pixels[0], pixels[1], pixels[2], pixels[3])
+        func near(_ a: UInt8, _ b: UInt8) -> Bool { abs(Int(a) - Int(b)) <= 6 }
+        for row in 0..<height {
+            let line = pixels + row * bytesPerRow
+            for x in 0..<frameWidth {
+                let p = line + x * 4
+                guard near(p[0], first.0), near(p[1], first.1), near(p[2], first.2), near(p[3], first.3) else { return false }
+            }
+        }
+        return true
     }
 
     // MARK: Matching

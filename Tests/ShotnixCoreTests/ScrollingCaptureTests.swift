@@ -25,6 +25,25 @@ final class ScrollingCaptureTests: XCTestCase {
         try Self.assertMatches(result, page)
     }
 
+    func testTrackpadBounceAtTheEndLeavesNoBlankBand() throws {
+        let page = Self.makePage(width: 400, height: 3000, seed: 19)
+        let end = page.height - 600
+        let offsets = Array(stride(from: 0, to: end, by: 170)) + [end]
+        let stitcher = FrameStitcher()
+        for (index, offset) in offsets.enumerated() {
+            _ = stitcher.add(Self.frame(of: page, top: offset, height: 600, noise: 2, seed: UInt64(index + 1)))
+        }
+        // Rubber band: 60 px past the end shows the window background, then settles.
+        for (step, overscroll) in [60, 25, 0].enumerated() {
+            let visible = Self.crop(page, top: end + overscroll, height: 600 - overscroll)
+            let frame = overscroll > 0 ? Self.stack([visible, Self.makeFlat(width: 400, height: overscroll, gray: 0.8)]) : visible
+            _ = stitcher.add(Self.addingNoise(to: frame, amount: 2, seed: UInt64(100 + step)))
+        }
+        let result = try XCTUnwrap(stitcher.makeImage())
+        XCTAssertEqual(result.height, page.height, "the overscroll background isn't part of the page")
+        try Self.assertMatches(result, page)
+    }
+
     func testStickyHeaderAndFooterAppearOnlyOnce() throws {
         let page = Self.makePage(width: 360, height: 2400, seed: 11)
         let header = Self.makeBar(width: 360, height: 48, hue: 0.6)
@@ -283,6 +302,13 @@ final class ScrollingCaptureTests: XCTestCase {
         context.setFillColor(CGColor(gray: 0.95, alpha: 1))
         context.fill(CGRect(x: 12, y: height / 3, width: 80, height: height / 3))
         context.fill(CGRect(x: width - 60, y: height / 3, width: 40, height: height / 3))
+        return context.makeImage()!
+    }
+
+    static func makeFlat(width: Int, height: Int, gray: CGFloat) -> CGImage {
+        let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
+        context.setFillColor(CGColor(gray: gray, alpha: 1))
+        context.fill(CGRect(x: 0, y: 0, width: width, height: height))
         return context.makeImage()!
     }
 
