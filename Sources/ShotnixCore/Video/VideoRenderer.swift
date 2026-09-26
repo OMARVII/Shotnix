@@ -356,7 +356,8 @@ final class VideoRenderPlan: @unchecked Sendable {
         if project.hasAppendedSources {
             // Only recordings that brought camera footage show the bubble.
             let segments = self.segments
-            cameraCoverage = project.sources.filter { $0.isPrimary ? hasWebcam : $0.webcam != nil }.flatMap {
+            // (`hasWebcam` may come from an added recording's camera alone.)
+            cameraCoverage = project.sources.filter { $0.webcam != nil && (hasWebcam || !$0.isPrimary) }.flatMap {
                 VideoDemoProject.timelineRanges(sourceStart: $0.offset, sourceEnd: $0.end, segments: segments)
             }
         } else if cards.intro.enabled || cards.outro.enabled {

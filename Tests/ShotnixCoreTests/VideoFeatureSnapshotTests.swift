@@ -166,6 +166,21 @@ final class VideoFeatureSnapshotTests: XCTestCase {
         model.stop()
     }
 
+    func testCameraTabForAnAddedRecording() async throws {
+        let model = try await model(seconds: 4)
+        let added = directory.appendingPathComponent("with-camera.mp4")
+        let camera = directory.appendingPathComponent("with-camera-cam.mp4")
+        try await VideoInspection.writeColorVideo(to: added, size: CGSize(width: 1440, height: 900), colors: [(NSColor(srgbRed: 0.2, green: 0.6, blue: 0.4, alpha: 1), 2)])
+        try await VideoInspection.writeColorVideo(to: camera, size: CGSize(width: 640, height: 480), colors: [(NSColor(srgbRed: 0.9, green: 0.3, blue: 0.7, alpha: 1), 2)])
+        let metadata = VideoDemoRecordingMetadata(videoURLPath: added.path, createdAt: Date(), duration: 2, sourceWidth: 1440, sourceHeight: 900, fps: 30, nativeCursorVisible: true, cursorSamples: [], clickEvents: [], webcam: VideoWebcamRecording(path: camera.path, offset: 0, width: 640, height: 480))
+        XCTAssertTrue(VideoDemoSidecarStore.save(metadata, for: added))
+        let appended = await model.appendVideo(added)
+        XCTAssertTrue(appended)
+        model.inspectorTab = .camera
+        try await render(VideoInspectorView(model: model), size: CGSize(width: 318, height: 900), name: "98-camera-tab-added-recording")
+        model.stop()
+    }
+
     func testStorageRow() async throws {
         try await render(RecordingSettingsView().background(Color(white: 0.13)), size: CGSize(width: 620, height: 1180), name: "95-settings-storage")
     }

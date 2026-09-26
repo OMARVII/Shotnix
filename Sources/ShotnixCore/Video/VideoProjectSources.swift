@@ -748,6 +748,14 @@ extension VideoEditorModel {
         return true
     }
 
+    /// Camera footage anywhere in the video — this recording's or an added
+    /// one's (the Camera tab works with either).
+    var hasCameraInAnyRecording: Bool {
+        webcamRecording != nil || hasWebcamFootage || project.sources.contains { source in
+            !source.isPrimary && (source.webcam.map { FileManager.default.fileExists(atPath: $0.path) } ?? false)
+        }
+    }
+
     func moveSource(_ id: UUID, by delta: Int) {
         guard let index = project.sources.firstIndex(where: { $0.id == id }) else { return }
         let target = min(max(index + delta, 0), project.sources.count - 1)

@@ -562,7 +562,7 @@ struct VideoCameraInspector: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 22) {
-            if model.webcamRecording == nil {
+            if !model.hasCameraInAnyRecording {
                 VideoCard {
                     Label("No camera in this recording", systemImage: "video.slash")
                         .font(.system(size: 12, weight: .semibold))

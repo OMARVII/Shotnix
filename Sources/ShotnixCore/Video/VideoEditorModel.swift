@@ -1569,7 +1569,11 @@ final class VideoEditorModel: ObservableObject {
             refreshTimeline()
         }
         if self.hasAudio != hasAudio { self.hasAudio = hasAudio }
-        if let hasCamera, hasWebcamFootage != hasCamera { hasWebcamFootage = hasCamera }
+        if let hasCamera, hasWebcamFootage != hasCamera {
+            hasWebcamFootage = hasCamera
+            // An added recording's camera gets the same background looks.
+            if hasCamera { playback.cameraStore.setFindsPerson(project.webcam.needsPersonMask) }
+        }
     }
 
     /// Filmstrip and waveform across every recording.

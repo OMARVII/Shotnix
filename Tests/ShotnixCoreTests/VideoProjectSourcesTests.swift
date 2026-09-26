@@ -119,6 +119,35 @@ final class VideoProjectSourcesTests: XCTestCase {
         XCTAssertGreaterThan(darkest(second), 0.6, "and not over the plain video")
     }
 
+    @MainActor
+    func testTheCameraTabWorksWhenOnlyAnAddedRecordingHasACamera() async throws {
+        let a = directory.appendingPathComponent("plain-a.mp4")
+        let b = directory.appendingPathComponent("with-camera-b.mp4")
+        let camera = directory.appendingPathComponent("b-camera.mp4")
+        try await VideoInspection.writeColorVideo(to: a, size: CGSize(width: 640, height: 400), colors: [(yellow, 1.5)])
+        try await VideoInspection.writeColorVideo(to: b, size: CGSize(width: 640, height: 400), colors: [(green, 1.5)])
+        try await VideoInspection.writeColorVideo(to: camera, size: CGSize(width: 320, height: 240), colors: [(NSColor(srgbRed: 0.9, green: 0.1, blue: 0.8, alpha: 1), 1.5)])
+        let metadata = VideoDemoRecordingMetadata(videoURLPath: b.path, createdAt: Date(), duration: 1.5, sourceWidth: 640, sourceHeight: 400, fps: 30, nativeCursorVisible: true, cursorSamples: [], clickEvents: [], webcam: VideoWebcamRecording(path: camera.path, offset: 0, width: 320, height: 240))
+        XCTAssertTrue(VideoDemoSidecarStore.save(metadata, for: b))
+        VideoDemoDraftStore.delete(for: a)
+        let model = VideoEditorModel(videoURL: a)
+        await model.load()
+        XCTAssertFalse(model.hasCameraInAnyRecording, "no camera yet")
+
+        let added = await model.appendVideo(b)
+        XCTAssertTrue(added)
+        XCTAssertTrue(model.hasCameraInAnyRecording, "the Camera tab offers the added recording's camera")
+        XCTAssertTrue(model.hasWebcamFootage)
+        XCTAssertNotNil(model.plan.webcam, "the bubble is part of the picture")
+        XCTAssertFalse(model.plan.hasCameraFootage(at: 0.7), "not over the first recording, which has none")
+        XCTAssertTrue(model.plan.hasCameraFootage(at: 2.2), "over the added one")
+        // Its settings apply: hiding the camera hides the bubble.
+        model.setStyle { $0.webcam.visible = false }
+        XCTAssertEqual(model.plan.webcam?.visible, false)
+        model.stop()
+        VideoDemoDraftStore.delete(for: a)
+    }
+
     /// Enhance voice cleans up every recording's microphone, not only the
     /// first one's — in the export and in the editor.
     func testEnhanceVoiceCoversEveryRecording() async throws {
