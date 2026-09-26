@@ -341,6 +341,63 @@ extension VideoDemoProject {
         guard hasAppendedSources else { return nil }
         return sources.filter { $0.isPrimary ? (!nativeCursorVisible && $0.hasPointer) : $0.hasPointer }.map { $0.offset...$0.end }
     }
+
+    /// Source ranges cut down to recordings that have pointer data — a
+    /// plain video with no pointer can't tell idle from busy.
+    func limitedToPointerCoverage(_ ranges: [ClosedRange<Double>]) -> [ClosedRange<Double>] {
+        guard let coverage = pointerCoverage else { return ranges }
+        var limited: [ClosedRange<Double>] = []
+        for range in ranges {
+            for covered in coverage {
+                let a = max(range.lowerBound, covered.lowerBound)
+                let b = min(range.upperBound, covered.upperBound)
+                if b > a { limited.append(a...b) }
+            }
+        }
+        return limited
+    }
+}
+
+/// Transcription across every recording of a video: each is transcribed
+/// on its own (on this Mac) and its words moved to where it sits.
+enum VideoSourcesTranscription {
+    static func transcribe(
+        project: VideoDemoProject,
+        languageIdentifier: String?,
+        progress: @escaping @Sendable (VideoCaptionTranscriber.Stage) -> Void
+    ) async throws -> VideoCaptionTranscriber.Result {
+        guard project.hasAppendedSources else {
+            return try await VideoCaptionTranscriber.transcribe(url: project.sourceURL, languageIdentifier: languageIdentifier, progress: progress)
+        }
+        var words: [VideoCaptionWord] = []
+        var language = languageIdentifier
+        let count = Double(project.sources.count)
+        for (index, source) in project.sources.enumerated() {
+            guard let url = source.isPrimary ? project.sourceURL : VideoSourceLocator.resolve(source) else { continue }
+            let base = Double(index)
+            let scaled: @Sendable (VideoCaptionTranscriber.Stage) -> Void = { stage in
+                switch stage {
+                case .transcribing(let fraction): progress(.transcribing((base + fraction) / count))
+                default: progress(stage)
+                }
+            }
+            do {
+                // The first recording's language is used for the rest.
+                let result = try await VideoCaptionTranscriber.transcribe(url: url, languageIdentifier: language, progress: scaled)
+                language = language ?? result.language
+                words += result.words.compactMap { word in
+                    guard word.start < source.duration else { return nil }
+                    return VideoCaptionWord(text: word.text, start: word.start + source.offset, end: min(word.end, source.duration) + source.offset)
+                }
+            } catch VideoCaptionTranscriber.Failure.noAudio {
+                continue
+            } catch VideoCaptionTranscriber.Failure.nothingHeard {
+                continue
+            }
+        }
+        guard !words.isEmpty else { throw VideoCaptionTranscriber.Failure.nothingHeard }
+        return VideoCaptionTranscriber.Result(words: words.sorted { $0.start < $1.start }, language: language ?? Locale.current.identifier(.bcp47))
+    }
 }
 
 // MARK: - Pointer across recordings

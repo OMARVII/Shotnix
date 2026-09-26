@@ -61,7 +61,7 @@ extension VideoEditorModel {
             captionJob = VideoCaptionJob(stage: .preparing, error: VideoCaptionTranscriber.Failure.noAudio.localizedDescription)
             return
         }
-        let url = project.sourceURL
+        let snapshot = project
         let language = captionLanguage.isEmpty ? nil : captionLanguage
         // Each run has its own token: a cancelled run that finishes late
         // never touches the one that replaced it.
@@ -76,7 +76,8 @@ extension VideoEditorModel {
         }
         captionTask = Task { [weak self] in
             do {
-                let result = try await VideoCaptionTranscriber.transcribe(url: url, languageIdentifier: language, progress: report)
+                // Every recording of the video, in order (VideoProjectSources.swift).
+                let result = try await VideoSourcesTranscription.transcribe(project: snapshot, languageIdentifier: language, progress: report)
                 guard let self, self.captionToken == token else { return }
                 self.captionTask = nil
                 self.captionToken = nil

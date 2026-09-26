@@ -117,13 +117,16 @@ final class VideoPlaybackController: NSObject {
 
     /// The camera frame composed for timeline `time`.
     func cameraFrame(at time: Double) -> CIImage? {
-        camera == nil ? nil : cameraStore.frame(at: time)
+        hasCameraTrack ? cameraStore.frame(at: time) : nil
     }
 
     /// The camera frame and person mask composed for timeline `time`.
     func cameraPicture(at time: Double) -> VideoCameraFrame? {
-        camera == nil ? nil : cameraStore.camera(at: time)
+        hasCameraTrack ? cameraStore.camera(at: time) : nil
     }
+
+    /// This recording's camera, or an added recording's.
+    private var hasCameraTrack: Bool { camera != nil || edit?.cameraTrack != nil }
 
     /// Re-composes the frame under the playhead (e.g. once person masks
     /// are wanted, so the paused preview updates).

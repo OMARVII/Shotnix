@@ -1394,7 +1394,8 @@ final class VideoEditorModel: ObservableObject {
             }
             last = max(last, time)
         }
-        return ranges
+        // Added videos without pointer data are never "idle".
+        return project.limitedToPointerCoverage(ranges)
     }
 
     func speedUpIdle(speed: Double = 8) {
@@ -1559,14 +1560,16 @@ final class VideoEditorModel: ObservableObject {
 
     // MARK: Thumbnails & waveform
 
-    /// Added or removed recordings change the source axis.
-    func applySourceDuration(_ duration: Double, hasAudio: Bool) {
+    /// Added or removed recordings change the source axis (and may bring
+    /// sound or camera footage of their own).
+    func applySourceDuration(_ duration: Double, hasAudio: Bool, hasCamera: Bool? = nil) {
         if abs(sourceDuration - duration) > 0.0005 {
             sourceDuration = duration
             segments = project.timelineSegments(totalDuration: duration)
             refreshTimeline()
         }
         if self.hasAudio != hasAudio { self.hasAudio = hasAudio }
+        if let hasCamera, hasWebcamFootage != hasCamera { hasWebcamFootage = hasCamera }
     }
 
     /// Filmstrip and waveform across every recording.

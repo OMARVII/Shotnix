@@ -249,7 +249,11 @@ extension VideoEditorModel {
             media.layout = nil
         }
         let total = project.sourceAxisDuration ?? primary.duration
-        applySourceDuration(total, hasAudio: !primary.audio.isEmpty || (media.layout?.entries.contains { !$0.tracks.audio.isEmpty } ?? false))
+        applySourceDuration(
+            total,
+            hasAudio: !primary.audio.isEmpty || (media.layout?.entries.contains { !$0.tracks.audio.isEmpty } ?? false),
+            hasCamera: playback.camera != nil || (media.layout?.entries.contains { $0.camera != nil } ?? false)
+        )
         refreshPlan()
         refreshPlayback()
         if project.music?.ducking == true { await loadSpeech(); refreshPlayback() }
