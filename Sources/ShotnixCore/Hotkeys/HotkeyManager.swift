@@ -69,6 +69,10 @@ final class HotkeyManager {
             captureEngine?.stopRecording()
         }
 
+        KeyboardShortcuts.onKeyDown(for: .shotnixPauseRecording) { [weak captureEngine] in
+            captureEngine?.togglePauseRecording()
+        }
+
         // Menu-bar-independent access: opens the command center even when a
         // crowded menu bar makes macOS hide the status icon.
         KeyboardShortcuts.onKeyDown(for: .shotnixOpenCommandCenter) {

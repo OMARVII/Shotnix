@@ -187,13 +187,19 @@ final class VideoDemoRecordingMetadataRecorder {
     static let sampleRate = 60.0
 
     private let videoURL: URL
-    private let captureRect: CGRect
+    private let pointPixelScale: Double?
+    /// The screen area being recorded (AppKit space) and where it shows up
+    /// in the video, normalized with y down — all of the frame, until a
+    /// followed window moves or is resized and letterboxed.
+    private var captureRect: CGRect
+    private var videoRect = CGRect(x: 0, y: 0, width: 1, height: 1)
     private let sourcePixelSize: CGSize
     private let fps: Int
     private let nativeCursorVisible: Bool
     private let renderCursor: Bool
     private let recordsKeystrokes: Bool
-    private var startedAt: CFTimeInterval = 0
+    /// Host clock → video time: t=0 at the first frame, pauses cut out.
+    private var timeline = RecordingTimeline()
     private var timer: Timer?
     private var buttonMonitor: Any?
     private var keyMonitor: Any?
@@ -210,6 +216,7 @@ final class VideoDemoRecordingMetadataRecorder {
     init(videoURL: URL, captureRect: CGRect, sourcePixelSize: CGSize, fps: Int, nativeCursorVisible: Bool, renderCursor: Bool, recordsKeystrokes: Bool = false) {
         self.videoURL = videoURL
         self.captureRect = captureRect
+        self.pointPixelScale = captureRect.width > 0 ? Double(sourcePixelSize.width / captureRect.width) : nil
         self.sourcePixelSize = sourcePixelSize
         self.fps = fps
         self.nativeCursorVisible = nativeCursorVisible
@@ -218,7 +225,7 @@ final class VideoDemoRecordingMetadataRecorder {
     }
 
     func start() {
-        startedAt = CACurrentMediaTime()
+        timeline.start(at: CACurrentMediaTime())
         sampleCursor(force: true)
         // .common so sampling keeps running while menus track or the user
         // drags — exactly the moments a demo needs the cursor most.
@@ -258,17 +265,42 @@ final class VideoDemoRecordingMetadataRecorder {
     }
 
     private func recordKeystroke(_ keys: [String]) {
-        keystrokes.append(VideoKeystrokeEvent(time: elapsedTime, keys: keys))
+        guard let time = elapsedTime else { return }
+        keystrokes.append(VideoKeystrokeEvent(time: time, keys: keys))
     }
 
-    /// Re-anchors t=0 to the wall-clock time of the first appended video frame
-    /// so cursor/click timestamps align with the video timeline. Samples taken
+    /// Pausing the recording pauses the data: nothing is sampled until
+    /// `resume`, and later timestamps skip the gap like the video does.
+    func pause(at host: CFTimeInterval) {
+        guard !timeline.isPaused else { return }
+        sampleCursor(force: true)
+        timeline.pause(at: host)
+    }
+
+    func resume(at host: CFTimeInterval) {
+        guard timeline.isPaused else { return }
+        timeline.resume(at: host)
+        sampleCursor(force: true)
+    }
+
+    /// A followed window moved or was resized: new positions map into its
+    /// new place in the video.
+    func updateCapture(screenRect: CGRect, videoRect: CGRect) {
+        guard screenRect != captureRect || videoRect != self.videoRect else { return }
+        captureRect = screenRect
+        self.videoRect = videoRect
+        sampleCursor(force: true)
+    }
+
+    /// Re-anchors t=0 to the host time of the first video frame so
+    /// cursor/click timestamps align with the video timeline. Samples taken
     /// before the first frame are shifted back; the newest pre-frame cursor
     /// sample is clamped to t=0 so the cursor has a known starting position.
     func alignStart(to wallClockTime: CFTimeInterval) {
+        guard let startedAt = timeline.origin else { return }
         let offset = wallClockTime - startedAt
         guard offset > 0 else { return }
-        startedAt = wallClockTime
+        timeline.reanchor(to: wallClockTime)
 
         var shiftedSamples: [VideoDemoCursorSample] = []
         for sample in cursorSamples {
@@ -348,7 +380,7 @@ final class VideoDemoRecordingMetadataRecorder {
             nativeCursorVisible: nativeCursorVisible,
             cursorSamples: cursorSamples,
             clickEvents: clickEvents,
-            pointPixelScale: captureRect.width > 0 ? Double(sourcePixelSize.width / captureRect.width) : nil,
+            pointPixelScale: pointPixelScale,
             cursorShapes: shapes.isEmpty ? nil : shapes,
             cursorShapeEvents: cursorShapeEvents.isEmpty ? nil : cursorShapeEvents,
             renderCursor: renderCursor,
@@ -358,12 +390,13 @@ final class VideoDemoRecordingMetadataRecorder {
     }
 
     private func sampleCursor(force: Bool) {
+        guard let time = elapsedTime else { return }
         let point = normalizedPoint(for: NSEvent.mouseLocation)
         let moved = lastSampledPoint.map { abs($0.x - point.x) > 0.00005 || abs($0.y - point.y) > 0.00005 } ?? true
         // Stationary stretches collapse to one sample every ~0.25s — the
         // path stays exact while long idle recordings stay small.
-        if force || moved || (cursorSamples.last.map { elapsedTime - $0.time >= 0.25 } ?? true) {
-            cursorSamples.append(VideoDemoCursorSample(time: elapsedTime, x: point.x, y: point.y))
+        if force || moved || (cursorSamples.last.map { time - $0.time >= 0.25 } ?? true) {
+            cursorSamples.append(VideoDemoCursorSample(time: time, x: point.x, y: point.y))
             lastSampledPoint = point
         }
         probeCursorShape(force: force, moved: moved)
@@ -376,10 +409,11 @@ final class VideoDemoRecordingMetadataRecorder {
         let interval = moved ? 0.12 : 0.5
         guard force || now - lastShapeProbe >= interval else { return }
         lastShapeProbe = now
-        guard let cursor = NSCursor.currentSystem,
+        guard let time = elapsedTime,
+              let cursor = NSCursor.currentSystem,
               let shapeID = registerShape(cursor) else { return }
         if cursorShapeEvents.last?.shapeID != shapeID {
-            cursorShapeEvents.append(VideoCursorShapeEvent(time: elapsedTime, shapeID: shapeID))
+            cursorShapeEvents.append(VideoCursorShapeEvent(time: time, shapeID: shapeID))
         }
     }
 
@@ -430,19 +464,22 @@ final class VideoDemoRecordingMetadataRecorder {
 
         let point = normalizedPoint(for: NSEvent.mouseLocation)
         if isDown {
-            // Presses outside the captured area are not part of the demo.
-            guard (0...1).contains(point.x), (0...1).contains(point.y) else { return }
-            clickEvents.append(VideoDemoClickEvent(time: elapsedTime, x: point.x, y: point.y, button: button))
+            // Presses outside the captured area (or while paused) are not part of the demo.
+            guard let time = elapsedTime, (0...1).contains(point.x), (0...1).contains(point.y) else { return }
+            clickEvents.append(VideoDemoClickEvent(time: time, x: point.x, y: point.y, button: button))
             openPresses[button] = clickEvents.count - 1
             // A press often changes the pointer (closed hand, I-beam) — look now.
             probeCursorShape(force: true, moved: true)
         } else if let index = openPresses.removeValue(forKey: button), clickEvents.indices.contains(index) {
-            clickEvents[index].endTime = max(elapsedTime, clickEvents[index].time)
+            // Released during a pause: the press ends where the pause began.
+            let time = elapsedTime ?? timeline.duration(at: CACurrentMediaTime())
+            clickEvents[index].endTime = max(time, clickEvents[index].time)
         }
     }
 
-    private var elapsedTime: Double {
-        max(CACurrentMediaTime() - startedAt, 0)
+    /// Video seconds now; nil while paused.
+    private var elapsedTime: Double? {
+        timeline.time(at: CACurrentMediaTime()).map { max($0, 0) }
     }
 
     /// Video-normalized point, y down. NOT clamped: positions outside the
@@ -450,8 +487,15 @@ final class VideoDemoRecordingMetadataRecorder {
     /// leave the frame naturally instead of sticking to its edge.
     private func normalizedPoint(for screenPoint: NSPoint) -> CGPoint {
         guard captureRect.width > 0, captureRect.height > 0 else { return CGPoint(x: -1, y: -1) }
-        let x = (screenPoint.x - captureRect.minX) / captureRect.width
-        let y = 1 - ((screenPoint.y - captureRect.minY) / captureRect.height)
-        return CGPoint(x: min(max(x, -0.5), 1.5), y: min(max(y, -0.5), 1.5))
+        let point = Self.videoPoint(for: screenPoint, captureRect: captureRect, videoRect: videoRect)
+        return CGPoint(x: min(max(point.x, -0.5), 1.5), y: min(max(point.y, -0.5), 1.5))
+    }
+
+    /// A screen point (AppKit space) → video-normalized, y down, given where
+    /// the captured area appears in the video.
+    nonisolated static func videoPoint(for screenPoint: CGPoint, captureRect: CGRect, videoRect: CGRect) -> CGPoint {
+        let u = (screenPoint.x - captureRect.minX) / captureRect.width
+        let v = 1 - ((screenPoint.y - captureRect.minY) / captureRect.height)
+        return CGPoint(x: videoRect.minX + u * videoRect.width, y: videoRect.minY + v * videoRect.height)
     }
 }
