@@ -232,6 +232,39 @@ final class RecordingEngineIntegrationTests: XCTestCase {
         XCTAssertTrue(playable)
     }
 
+    /// Stop pressed while the stream is still starting (a shortcut, the menu
+    /// bar): nothing keeps running, no HUD appears, nothing is left behind.
+    func testStopWhileTheStreamStartsLeavesNothingRunning() async throws {
+        let engine = RecordingEngine()
+        self.engine = engine
+        var finished: URL?
+        engine.recordingFinishedHandler = { url, _ in finished = url }
+        let (rect, screen) = try areaOnMainScreen()
+        let start = Task { await engine.startRecording(rect: rect, on: screen) }
+        let deadline = Date().addingTimeInterval(10)
+        while engine.elapsedSeconds == nil, Date() < deadline {
+            try await Task.sleep(nanoseconds: 1_000_000)
+        }
+        guard engine.elapsedSeconds != nil else { throw XCTSkip("ScreenCaptureKit didn't start a stream") }
+        engine.stopRecording()
+        await start.value
+        try await waitUntil(timeout: 15) { !engine.active }
+
+        XCTAssertFalse(RecordingStopHotkey.isRegistered)
+        XCTAssertFalse(AppTermination.isBusy)
+        XCTAssertFalse(engine.isPreventingDisplaySleep)
+        XCTAssertNil(RecordingRecovery.load())
+        XCTAssertFalse(NSApp.windows.contains { $0 is RecordingHUDWindow && $0.isVisible }, "no HUD for a recording that already ended")
+        if let finished {
+            // The stop landed just after the start: a short, playable file.
+            let playable = try await AVURLAsset(url: finished).load(.isPlayable)
+            XCTAssertTrue(playable)
+        } else {
+            let leftovers = try FileManager.default.contentsOfDirectory(atPath: folder.path)
+            XCTAssertEqual(leftovers, [], "nothing recorded, nothing left")
+        }
+    }
+
     /// A second recording set up while the first saves starts once it's ready.
     func testStartingWhileSavingWaitsForTheFile() async throws {
         let (engine, finished) = try await startedEngine()

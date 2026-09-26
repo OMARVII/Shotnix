@@ -28,8 +28,12 @@ final class RecordingEngine: NSObject {
     private var timeline = RecordingTimeline()
     private var recordingStartedAt: CFTimeInterval = 0
     private var stopHostTime: CFTimeInterval?
+    private var isStarting = false
     private var isRecording = false
     private var isFinishing = false
+    /// Which recording the running start flow belongs to: a stop (or a new
+    /// recording) during one of its awaits changes it.
+    private var recordingSessionID = UUID()
     private var finishSessionID = UUID()
     private var slowSaveWorkItems: [DispatchWorkItem] = []
     private var hud: RecordingHUDWindow?
@@ -64,7 +68,7 @@ final class RecordingEngine: NSObject {
     /// Fired on every recording lifecycle transition (started, paused,
     /// saving, fully stopped) — drives the menu bar recording indicator.
     var stateChangedHandler: (() -> Void)?
-    var active: Bool { isRecording || isFinishing }
+    var active: Bool { isStarting || isRecording || isFinishing }
     /// Between Stop and the file being ready.
     var isSaving: Bool { isFinishing }
     var isPaused: Bool { isRecording && timeline.isPaused }
@@ -109,9 +113,13 @@ final class RecordingEngine: NSObject {
         guard !active else {
             // The recording bar left the camera preview running for us.
             CameraCapture.shared.stop()
-            ToastWindow.show(message: isRecording ? "Recording already in progress" : "Still saving the last recording — try again in a moment.", on: screen)
+            ToastWindow.show(message: isFinishing ? "Still saving the last recording — try again in a moment." : "Recording already in progress", on: screen)
             return
         }
+        isStarting = true
+        defer { isStarting = false }
+        let session = UUID()
+        recordingSessionID = session
 
         let saveFolder = URL(fileURLWithPath: Settings.autoSaveLocation, isDirectory: true)
         if let available = RecordingDiskSpace.availableCapacity(at: saveFolder), available < RecordingDiskSpace.minimumToStart {
@@ -262,6 +270,9 @@ final class RecordingEngine: NSObject {
             // The microphone runs before the stream: what it hears before the
             // first frame is trimmed off, so voice lines up with the picture.
             await microphone?.start()
+            // Stopped while the microphone started: the finish flow already
+            // cleaned up this recording.
+            guard recordingSessionID == session, isRecording else { return }
             cameraFinishTask = nil
             cameraFirstFrameHostTime = nil
             recordsCamera = configuration.recordsCamera
@@ -283,17 +294,26 @@ final class RecordingEngine: NSObject {
             recoveryNote = note
             RecordingRecovery.save(note)
             try await Self.startCapture(StreamBox(stream), within: 15)
+            guard recordingSessionID == session, isRecording else {
+                // Stopped while the stream was starting: the finish flow is
+                // done with this recording, and the stream it couldn't stop
+                // (not started yet) mustn't keep capturing on its own.
+                try? await stream.stopCapture()
+                return
+            }
             didStartRecording(notices: notices, captureRect: prepared.captureRect)
         } catch {
+            guard recordingSessionID == session else {
+                // A stop already finished this recording (and deleted its file).
+                print("[Shotnix] Recording start failed after stop: \(error)")
+                return
+            }
             await failStart(error, url: createdURL, writer: createdWriter, microphone: microphone, screen: screen)
         }
     }
 
     /// Everything that only makes sense once frames flow.
     private func didStartRecording(notices: [String], captureRect: CGRect) {
-        // Stopped (a shortcut) while the stream was still starting: the
-        // finish flow owns what's left.
-        guard isRecording else { return }
         registerForTermination()
         RecordingStopHotkey.register { [weak self] in self?.stopRecording() }
         // Idle display sleep would end up in the video (and stop the
@@ -337,6 +357,9 @@ final class RecordingEngine: NSObject {
             avoiding = captureRect
         }
         if let screen { hud.show(on: screen, avoiding: avoiding) }
+        // Paused (menu or shortcut) while the stream was starting.
+        hud.setPaused(timeline.isPaused)
+        outline?.setPaused(timeline.isPaused)
 
         if !notices.isEmpty {
             ToastWindow.show(message: notices.joined(separator: " "), duration: 4, on: screen)
@@ -942,18 +965,18 @@ final class RecordingEngine: NSObject {
     }
 
     private func completeSave(url: URL, reason: StopReason) {
-        var recordingMetadata = pendingRecordingMetadata
+        // The camera movie finishes first, while this recording still counts
+        // as saving: a new recording can't start and share the camera with it.
         let cameraTask = cameraFinishTask
-        let screenStart = timeline.origin
-        let screen = recordingScreen
-        let forTermination = endsForTermination
-        // The camera movie is finishing on its own — cleanup must not abandon it.
         cameraFinishTask = nil
         recordsCamera = false
-        cleanup(releasingForeground: forTermination)
         Task { @MainActor in
             let camera = await cameraTask?.value
-            CameraCapture.shared.stop()
+            var recordingMetadata = self.pendingRecordingMetadata
+            let screenStart = self.timeline.origin
+            let screen = self.recordingScreen
+            let forTermination = self.endsForTermination
+            self.cleanup(releasingForeground: forTermination)
             Self.attach(camera: camera, screenStart: screenStart, to: &recordingMetadata)
             if let recordingMetadata {
                 VideoDemoSidecarStore.save(recordingMetadata, for: url)
@@ -974,17 +997,16 @@ final class RecordingEngine: NSObject {
     /// the disk usually still plays: keep it rather than lose the take.
     private func salvage(url: URL, writerError: Error?) {
         if let writerError { print("[Shotnix] Recording finish failed: \(writerError)") }
-        var recordingMetadata = pendingRecordingMetadata
         let cameraTask = cameraFinishTask
-        let screenStart = timeline.origin
-        let screen = recordingScreen
-        let forTermination = endsForTermination
         cameraFinishTask = nil
         recordsCamera = false
-        cleanup(releasingForeground: false)
         Task { @MainActor in
             let camera = await cameraTask?.value
-            CameraCapture.shared.stop()
+            var recordingMetadata = self.pendingRecordingMetadata
+            let screenStart = self.timeline.origin
+            let screen = self.recordingScreen
+            let forTermination = self.endsForTermination
+            self.cleanup(releasingForeground: false)
             let playable = await RecordingRecovery.playableDuration(of: url)
             RecordingRecovery.clear()
             guard let playable, playable > 0.2 else {
@@ -1202,6 +1224,7 @@ final class RecordingEngine: NSObject {
         recordsCamera = false
         cameraFirstFrameHostTime = nil
         recoveryNote = nil
+        recordingSessionID = UUID()
         stream = nil
         streamOutput = nil
         streamConfiguration = nil
