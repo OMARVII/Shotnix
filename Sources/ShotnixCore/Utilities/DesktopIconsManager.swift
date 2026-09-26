@@ -72,8 +72,13 @@ final class DesktopIconsCover {
     /// Covers every screen and returns once they're on screen.
     static func show(on screens: [NSScreen] = NSScreen.screens) async -> DesktopIconsCover {
         let cover = DesktopIconsCover()
+        var content: SCShareableContent?
+        if #available(macOS 14.0, *) {
+            // One window-list fetch serves every screen.
+            content = try? await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: true)
+        }
         for screen in screens {
-            let picture = await wallpaperImage(for: screen)
+            let picture = await wallpaperImage(for: screen, content: content)
             let window = DesktopCoverWindow(screen: screen, picture: picture)
             window.orderFrontRegardless()
             cover.windows.append(window)
@@ -99,9 +104,11 @@ final class DesktopIconsCover {
         case color(NSColor)
     }
 
-    private static func wallpaperImage(for screen: NSScreen) async -> Picture {
+    private static func wallpaperImage(for screen: NSScreen, content: SCShareableContent?) async -> Picture {
         if #available(macOS 14.0, *) {
-            if let image = await screenCaptureWallpaper(for: screen) { return .captured(image) }
+            if let content, let image = await screenCaptureWallpaper(for: screen, content: content) {
+                return .captured(image)
+            }
         } else if let image = windowListWallpaper(for: screen) {
             return .captured(image)
         }
@@ -115,9 +122,8 @@ final class DesktopIconsCover {
 
     /// Only the wallpaper windows (below the icon layer) of this display.
     @available(macOS 14.0, *)
-    private static func screenCaptureWallpaper(for screen: NSScreen) async -> CGImage? {
+    private static func screenCaptureWallpaper(for screen: NSScreen, content: SCShareableContent) async -> CGImage? {
         do {
-            let content = try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: true)
             guard let display = ScreenCoordinates.display(for: screen, in: content.displays) else { return nil }
             let iconLevel = Int(CGWindowLevelForKey(.desktopIconWindow))
             let wallpaper = content.windows.filter { $0.windowLayer < iconLevel && $0.frame.intersects(display.frame) }

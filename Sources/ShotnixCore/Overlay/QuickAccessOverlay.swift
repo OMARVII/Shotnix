@@ -118,9 +118,7 @@ private final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
 
     override func keyDown(with event: NSEvent) {
         guard !isClosing else { return }
-        if !handleShortcut(event) {
-            super.keyDown(with: event)
-        }
+        _ = handleShortcut(event)
     }
 
     /// ⌘C / ⌘S / ⌘E / Esc. Letters go through ShortcutKeyMatching so they

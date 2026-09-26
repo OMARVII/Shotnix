@@ -680,21 +680,32 @@ private final class HUDButton: NSButton {
 @MainActor
 final class TemporaryHotKey {
 
-    private static let signature: OSType = 0x5358_4E58 // "SXNX"
+    fileprivate static let signature: OSType = 0x5358_4E58 // "SXNX"
     private static var nextID: UInt32 = 1
 
-    nonisolated let id: UInt32
-    private let action: () -> Void
+    /// What the Carbon handler calls. The handler registration owns it (a
+    /// retained pointer, released on unregister), so a late event can never
+    /// reach freed memory even if this object goes away first.
+    fileprivate final class Target {
+        let id: UInt32
+        var action: (() -> Void)?
+
+        init(id: UInt32, action: @escaping () -> Void) {
+            self.id = id
+            self.action = action
+        }
+    }
+
     private var hotKeyRef: EventHotKeyRef?
     private var handlerRef: EventHandlerRef?
+    private var target: UnsafeMutableRawPointer?
 
     init?(keyCode: UInt32, modifiers: UInt32 = 0, action: @escaping () -> Void) {
-        id = Self.nextID
+        let id = Self.nextID
         Self.nextID += 1
-        self.action = action
+        let target = Unmanaged.passRetained(Target(id: id, action: action)).toOpaque()
 
         var eventType = EventTypeSpec(eventClass: OSType(kEventClassKeyboard), eventKind: UInt32(kEventHotKeyPressed))
-        let userData = Unmanaged.passUnretained(self).toOpaque()
         let installed = InstallEventHandler(GetEventDispatcherTarget(), { _, event, userData -> OSStatus in
             guard let event, let userData else { return OSStatus(eventNotHandledErr) }
             var hotKeyID = EventHotKeyID()
@@ -707,16 +718,17 @@ final class TemporaryHotKey {
                 nil,
                 &hotKeyID
             )
-            let hotKey = Unmanaged<TemporaryHotKey>.fromOpaque(userData).takeUnretainedValue()
-            guard status == noErr, hotKeyID.signature == TemporaryHotKey.signature, hotKeyID.id == hotKey.id else {
+            let target = Unmanaged<TemporaryHotKey.Target>.fromOpaque(userData).takeUnretainedValue()
+            guard status == noErr, hotKeyID.signature == TemporaryHotKey.signature, hotKeyID.id == target.id else {
                 return OSStatus(eventNotHandledErr)
             }
-            DispatchQueue.main.async {
-                MainActor.assumeIsolated { hotKey.fire() }
-            }
+            DispatchQueue.main.async { target.action?() }
             return noErr
-        }, 1, &eventType, userData, &handlerRef)
-        guard installed == noErr else { return nil }
+        }, 1, &eventType, target, &handlerRef)
+        guard installed == noErr else {
+            Unmanaged<Target>.fromOpaque(target).release()
+            return nil
+        }
 
         let registered = RegisterEventHotKey(
             keyCode,
@@ -729,19 +741,22 @@ final class TemporaryHotKey {
         guard registered == noErr else {
             RemoveEventHandler(handlerRef)
             handlerRef = nil
+            Unmanaged<Target>.fromOpaque(target).release()
             return nil
         }
-    }
-
-    private func fire() {
-        guard hotKeyRef != nil else { return }
-        action()
+        self.target = target
     }
 
     func unregister() {
         if let hotKeyRef { UnregisterEventHotKey(hotKeyRef) }
         if let handlerRef { RemoveEventHandler(handlerRef) }
+        if let target {
+            let owned = Unmanaged<Target>.fromOpaque(target)
+            owned.takeUnretainedValue().action = nil
+            owned.release()
+        }
         hotKeyRef = nil
         handlerRef = nil
+        target = nil
     }
 }
