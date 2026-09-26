@@ -29,21 +29,25 @@ struct VideoExportSheet: View {
                 Group {
                     switch model.exportPhase {
                     case .running(let progress, let started, let destination, let clipboard):
-                        runningView(progress: progress, started: started, destination: destination, clipboard: clipboard)
+                        runningView(progress: progress, started: started, destination: destination, clipboard: clipboard).padding(20)
                     case .finished(let url, let bytes, let copied):
-                        finishedView(url: url, bytes: bytes, copied: copied)
+                        finishedView(url: url, bytes: bytes, copied: copied).padding(20)
                     case .failed(let message):
-                        failedView(message)
+                        failedView(message).padding(20)
                     case .idle:
-                        optionsView
+                        // Scrolls in short windows instead of spilling out.
+                        ViewThatFits(in: .vertical) {
+                            optionsView.padding(20)
+                            ScrollView { optionsView.padding(20) }
+                        }
                     }
                 }
-                .padding(20)
             }
             .frame(width: 480)
             .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Color(white: 0.105)))
             .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(Color.white.opacity(0.12), lineWidth: 1))
             .shadow(color: .black.opacity(0.55), radius: 40, y: 20)
+            .padding(.vertical, 24)
         }
         .onAppear(perform: prepareRange)
     }
@@ -446,9 +450,10 @@ struct VideoExportSheet: View {
                 if !copied {
                     VideoShareButton(url: url)
                     Button { model.revealExport(url) } label: {
-                        Label("Show in Finder", systemImage: "folder").frame(maxWidth: .infinity)
+                        Label("Reveal", systemImage: "folder").frame(maxWidth: .infinity)
                     }
                     .buttonStyle(VideoSecondaryButtonStyle())
+                    .help("Reveal in Finder")
                     Button { model.copyExport(url) } label: {
                         Label("Copy", systemImage: "doc.on.doc").frame(maxWidth: .infinity)
                     }

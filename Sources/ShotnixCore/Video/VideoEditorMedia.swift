@@ -270,8 +270,11 @@ extension VideoEditorModel {
                 generator.requestedTimeToleranceBefore = CMTime(value: 1, timescale: 2)
                 generator.requestedTimeToleranceAfter = CMTime(value: 1, timescale: 2)
                 let count = min(max(Int(entry.duration / 1.2), 6), 120)
-                for index in 0..<count {
-                    let local = entry.duration * (Double(index) + 0.5) / Double(count)
+                // Frames right at each end too, so a clip's filmstrip never
+                // borrows the neighbouring recording's picture.
+                let edges = [min(0.05, entry.duration / 2), max(entry.duration - 0.05, entry.duration / 2)]
+                let times = edges + (0..<count).map { entry.duration * (Double($0) + 0.5) / Double(count) }
+                for local in times {
                     guard let cgImage = try? generator.copyCGImage(at: CMTime(seconds: local, preferredTimescale: 600), actualTime: nil) else { continue }
                     thumbnails.append(VideoTimelineThumbnail(time: entry.offset + local, image: NSImage(cgImage: cgImage, size: NSSize(width: cgImage.width, height: cgImage.height))))
                 }

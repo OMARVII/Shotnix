@@ -607,57 +607,65 @@ private struct VideoExportJobRow: View {
 
 // MARK: - Share
 
-/// Opens the system share menu for a file, anchored to the button.
+/// Opens the system share menu (Mail, Messages, AirDrop…) for a file,
+/// anchored to the button.
 struct VideoShareButton: View {
     let url: URL
     var compact = false
 
+    @State private var anchor = VideoShareAnchor.Box()
+
     var body: some View {
-        VideoShareAnchor(url: url, compact: compact)
-            .frame(width: compact ? 24 : nil, height: compact ? 24 : 28)
-            .frame(maxWidth: compact ? nil : .infinity)
-            .help("Share — Mail, Messages, AirDrop…")
-            .accessibilityLabel("Share")
+        Button {
+            anchor.share(url)
+        } label: {
+            if compact {
+                Image(systemName: "square.and.arrow.up").frame(width: 24, height: 24)
+            } else {
+                Label("Share", systemImage: "square.and.arrow.up").frame(maxWidth: .infinity)
+            }
+        }
+        .buttonStyle(ShareStyle(compact: compact))
+        .background(VideoShareAnchor(box: anchor))
+        .help("Share — Mail, Messages, AirDrop…")
+        .accessibilityLabel("Share")
+    }
+
+    private struct ShareStyle: ButtonStyle {
+        let compact: Bool
+
+        func makeBody(configuration: Configuration) -> some View {
+            if compact {
+                VideoToolButtonStyle().makeBody(configuration: configuration)
+            } else {
+                VideoSecondaryButtonStyle().makeBody(configuration: configuration)
+            }
+        }
     }
 }
 
-private struct VideoShareAnchor: NSViewRepresentable {
-    let url: URL
-    let compact: Bool
-
-    func makeCoordinator() -> Coordinator { Coordinator() }
-
-    func makeNSView(context: Context) -> NSButton {
-        let button = NSButton(title: compact ? "" : "Share", image: NSImage(systemSymbolName: "square.and.arrow.up", accessibilityDescription: "Share") ?? NSImage(), target: context.coordinator, action: #selector(Coordinator.share(_:)))
-        button.bezelStyle = .regularSquare
-        button.isBordered = false
-        button.imagePosition = compact ? .imageOnly : .imageLeading
-        button.font = .systemFont(ofSize: 12, weight: .semibold)
-        button.contentTintColor = .white.withAlphaComponent(0.92)
-        button.wantsLayer = true
-        if !compact {
-            button.layer?.backgroundColor = NSColor.white.withAlphaComponent(0.06).cgColor
-            button.layer?.cornerRadius = 7
-            button.layer?.borderWidth = 1
-            button.layer?.borderColor = NSColor.white.withAlphaComponent(0.075).cgColor
-        }
-        context.coordinator.url = url
-        return button
-    }
-
-    func updateNSView(_ nsView: NSButton, context: Context) {
-        context.coordinator.url = url
-    }
-
+/// An invisible view the share menu points at.
+struct VideoShareAnchor: NSViewRepresentable {
     @MainActor
-    final class Coordinator: NSObject {
-        var url: URL?
+    final class Box {
+        weak var view: NSView?
 
-        @objc func share(_ sender: NSButton) {
-            guard let url else { return }
-            let picker = NSSharingServicePicker(items: [url])
-            picker.show(relativeTo: sender.bounds, of: sender, preferredEdge: .minY)
+        func share(_ url: URL) {
+            guard let view else { return }
+            NSSharingServicePicker(items: [url]).show(relativeTo: view.bounds, of: view, preferredEdge: .minY)
         }
+    }
+
+    let box: Box
+
+    func makeNSView(context: Context) -> NSView {
+        let view = NSView(frame: .zero)
+        box.view = view
+        return view
+    }
+
+    func updateNSView(_ nsView: NSView, context: Context) {
+        box.view = nsView
     }
 }
 

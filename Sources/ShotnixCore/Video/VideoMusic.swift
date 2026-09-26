@@ -655,11 +655,13 @@ struct VideoMusicLane: View, Equatable {
                 }
                 inner.fill(bars, with: .color(VideoEditorTheme.music.opacity(0.55)))
             }
-            // The level line: louder toward the top.
+            // The level line (full volume at the top): fades and dips show
+            // their shape whatever the volume.
             if keyframes.count > 1 {
                 var line = Path()
+                let top = max(music.volume, 0.01)
                 for (index, keyframe) in keyframes.enumerated() {
-                    let point = CGPoint(x: geometry.x(keyframe.time), y: size.height - 3 - CGFloat(keyframe.volume) * (size.height - 6))
+                    let point = CGPoint(x: geometry.x(keyframe.time), y: size.height - 4 - CGFloat(min(keyframe.volume / top, 1)) * (size.height - 8))
                     if index == 0 { line.move(to: point) } else { line.addLine(to: point) }
                 }
                 inner.stroke(line, with: .color(.white.opacity(0.85)), lineWidth: 1.2)

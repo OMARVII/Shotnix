@@ -118,7 +118,7 @@ enum VideoTitleCardRenderer {
         var titleText: NSAttributedString?
         if !trimmedTitle.isEmpty {
             titleText = NSAttributedString(string: trimmedTitle, attributes: [
-                .font: NSFont.systemFont(ofSize: 76 * unit, weight: .bold),
+                .font: NSFont.systemFont(ofSize: 84 * unit, weight: .bold),
                 .foregroundColor: ink,
                 .paragraphStyle: paragraph,
                 .kern: -0.6 * unit,
@@ -127,7 +127,7 @@ enum VideoTitleCardRenderer {
         var subtitleText: NSAttributedString?
         if !trimmedSubtitle.isEmpty {
             subtitleText = NSAttributedString(string: trimmedSubtitle, attributes: [
-                .font: NSFont.systemFont(ofSize: 34 * unit, weight: .semibold),
+                .font: NSFont.systemFont(ofSize: 38 * unit, weight: .semibold),
                 .foregroundColor: ink.withAlphaComponent(0.74),
                 .paragraphStyle: paragraph,
             ])

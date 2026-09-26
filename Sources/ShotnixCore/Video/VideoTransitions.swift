@@ -229,11 +229,10 @@ struct VideoTransitionsSection: View {
                 format: { $0 < 0.05 ? "Off" : String(format: "%.1fs", $0) },
                 onEditingEnded: { model.endGesture() }
             )
-            HStack(spacing: 10) {
+            VStack(alignment: .leading, spacing: 6) {
                 Text("Between clips")
                     .font(.system(size: 12, weight: .medium))
                     .foregroundStyle(VideoEditorTheme.textPrimary)
-                    .fixedSize()
                 VideoSegmented(options: VideoTransitionKind.allCases.map { ($0, $0.title) }, selection: Binding(
                     get: { settings.betweenClips },
                     set: { value in model.setStyle { $0.transitions.betweenClips = value } }
@@ -287,7 +286,8 @@ struct VideoClipTransitionSection: View {
     }
 }
 
-/// Small markers on the cuts: click one to pick how that cut plays.
+/// Small markers on the cuts: click one to choose how that cut plays (in
+/// the clip inspector), or right-click for a quick pick.
 struct VideoTransitionMarkers: View {
     let model: VideoEditorModel
     let geometry: VideoTimelineGeometry
@@ -296,7 +296,21 @@ struct VideoTransitionMarkers: View {
     var body: some View {
         ZStack(alignment: .topLeading) {
             ForEach(model.transitionCuts, id: \.clipID) { cut in
-                Menu {
+                Button {
+                    model.selection = .clip(cut.clipID)
+                    model.seek(to: cut.time)
+                } label: {
+                    Image(systemName: cut.kind == .none ? "plus" : cut.kind.symbol)
+                        .font(.system(size: 9.5, weight: .bold))
+                        .foregroundStyle(cut.kind == .none ? Color.white.opacity(0.85) : Color.black.opacity(0.85))
+                        .frame(width: 20, height: 20)
+                        .background(Circle().fill(cut.kind == .none ? Color.black.opacity(0.7) : Color.white.opacity(0.95)))
+                        .overlay(Circle().strokeBorder(Color.white.opacity(0.45), lineWidth: 1))
+                        .shadow(color: .black.opacity(0.4), radius: 2, y: 1)
+                        .contentShape(Circle())
+                }
+                .buttonStyle(.plain)
+                .contextMenu {
                     ForEach(VideoTransitionKind.allCases) { kind in
                         Button {
                             model.setTransition(into: cut.clipID, kind: kind)
@@ -308,19 +322,10 @@ struct VideoTransitionMarkers: View {
                             }
                         }
                     }
-                } label: {
-                    Image(systemName: cut.kind == .none ? "plus" : cut.kind.symbol)
-                        .font(.system(size: 8.5, weight: .bold))
-                        .foregroundStyle(cut.kind == .none ? Color.white.opacity(0.75) : Color.black.opacity(0.85))
-                        .frame(width: 16, height: 16)
-                        .background(Circle().fill(cut.kind == .none ? Color.black.opacity(0.55) : Color.white.opacity(0.92)))
-                        .overlay(Circle().strokeBorder(Color.white.opacity(0.35), lineWidth: 1))
                 }
-                .menuStyle(.borderlessButton)
-                .menuIndicator(.hidden)
-                .fixedSize()
-                .help(cut.kind == .none ? "Add a transition at this cut" : "\(cut.kind.title) — click to change")
-                .offset(x: geometry.x(cut.time) - 8, y: clipTop + VideoTimelineMetrics.clipTrackHeight - 22)
+                .help(cut.kind == .none ? "A cut — click to add a transition" : "\(cut.kind.title) — click to change")
+                .accessibilityLabel(cut.kind == .none ? "Cut, no transition" : "\(cut.kind.title) transition")
+                .offset(x: geometry.x(cut.time) - 10, y: clipTop + (VideoTimelineMetrics.clipTrackHeight - 20) / 2)
             }
         }
     }
