@@ -133,6 +133,19 @@ struct VideoTimelineToolbar: View {
                 .accessibilityLabel("Delete selection")
             }
 
+            if model.hasAudio {
+                Button {
+                    model.togglePreviewMute()
+                } label: {
+                    Image(systemName: model.previewMuted ? "speaker.slash.fill" : "speaker.wave.2.fill")
+                        .font(.system(size: 12, weight: .semibold))
+                        .frame(width: 28, height: 24)
+                }
+                .buttonStyle(VideoToolButtonStyle())
+                .help(model.previewMuted ? "Unmute the preview (M)" : "Mute the preview (M) — the export keeps its sound")
+                .accessibilityLabel(model.previewMuted ? "Unmute preview" : "Mute preview")
+            }
+
             HStack(spacing: 6) {
                 Button {
                     model.timelineZoom = max(model.timelineZoom / 1.4, 1)

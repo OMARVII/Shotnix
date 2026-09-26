@@ -275,6 +275,33 @@ struct VideoNoticePill: View {
     }
 }
 
+/// In the export summary: says so when the export would be silent though
+/// the recording has sound (and turns "Mute video" back off in one click).
+struct VideoExportSoundWarning: View {
+    @ObservedObject var model: VideoEditorModel
+
+    var body: some View {
+        if let warning = model.exportSoundWarning {
+            HStack(alignment: .top, spacing: 8) {
+                Label(warning, systemImage: "speaker.slash.fill")
+                    .font(.system(size: 10.5))
+                    .foregroundStyle(Color.yellow.opacity(0.85))
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 0)
+                if model.project.audio.muted {
+                    Button("Turn On") {
+                        model.setStyle { $0.audio.muted = false }
+                    }
+                    .buttonStyle(.plain)
+                    .font(.system(size: 10.5, weight: .semibold))
+                    .foregroundStyle(VideoEditorTheme.textPrimary)
+                    .help("Turn the video's sound back on")
+                }
+            }
+        }
+    }
+}
+
 // MARK: - Keyboard
 
 struct VideoKeyboardBridge: NSViewRepresentable {
@@ -378,8 +405,9 @@ extension VideoEditorModel {
                 closeExportSheet()
                 return true
             }
-            // Return presses the sheet's default button.
-            if code == 36 || code == 76 { return false }
+            // Return presses the sheet's default button; Tab, Space, and the
+            // arrows move through and press its controls.
+            if [36, 76, 48, 49, 123, 124, 125, 126].contains(code) { return false }
             return modifiers.isEmpty || isUndoKey
         }
         if isCommandPalettePresented || isShortcutsPresented {
@@ -475,8 +503,7 @@ extension VideoEditorModel {
             if let id = selectedClipID, let clip = project.timelineClips.first(where: { $0.id == id }) {
                 setClipMuted(id, !clip.muted)
             } else {
-                setStyle { $0.audio.muted.toggle() }
-                showNotice(project.audio.muted ? "Sound off" : "Sound on", symbol: project.audio.muted ? "speaker.slash.fill" : "speaker.wave.2.fill")
+                togglePreviewMute()
             }
         case "=", "+": timelineZoom = min(timelineZoom * 1.4, 40)
         case "-": timelineZoom = max(timelineZoom / 1.4, 1)
@@ -713,7 +740,7 @@ struct VideoShortcutsSheet: View {
 
     private let groups: [(String, [(String, String)])] = [
         ("Playback", [("Space", "Play / pause"), ("J  K  L", "Back · pause · faster"), ("← →", "Previous / next frame"), ("⇧← ⇧→", "Jump one second"), ("⌘← ⌘→", "Start / end")]),
-        ("Editing", [("S", "Split at playhead"), ("⇧-drag", "Select a range to cut"), ("I  O", "Clip starts / ends here"), ("⌫", "Delete selection"), ("M", "Mute clip (or the whole video)"), ("⌘Z  ⇧⌘Z", "Undo / redo")]),
+        ("Editing", [("S", "Split at playhead"), ("⇧-drag", "Select a range to cut"), ("I  O", "Clip starts / ends here"), ("⌫", "Delete selection"), ("M", "Mute clip, or mute the preview"), ("⌘Z  ⇧⌘Z", "Undo / redo")]),
         ("Zooms & annotations", [("Z", "Add zoom at playhead"), ("1 – 5", "Zoom level (zoom selected)"), ("⌘D", "Duplicate zoom or annotation"), ("T  H  A  B", "Text · highlight · arrow · blur")]),
         ("General", [("⌘E", "Export"), ("⌘K", "All commands"), ("⌘C", "Copy current frame"), ("⌘ scroll", "Zoom the timeline"), ("Esc", "Deselect / close")]),
     ]

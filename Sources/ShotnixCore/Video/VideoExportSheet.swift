@@ -179,6 +179,7 @@ struct VideoExportSheet: View {
                     .foregroundStyle(Color.yellow.opacity(0.85))
                     .fixedSize(horizontal: false, vertical: true)
             }
+            VideoExportSoundWarning(model: model)
             if settings.format == .gif, gifWorkingBytes(size: size, duration: duration) > 1_500_000_000 {
                 // A GIF keeps every frame in memory until it's written.
                 Label("A long GIF — it needs about \(VideoEditorModel.formatBytes(gifWorkingBytes(size: size, duration: duration))) of memory to make. A smaller size, fewer fps, or MP4 is lighter.", systemImage: "exclamationmark.triangle")

@@ -377,6 +377,26 @@ extension VideoEditorModel {
     var hasSeparateVoiceAndSystem: Bool { audioKinds.contains(.microphone) && audioKinds.contains(.system) }
     var canEnhanceVoice: Bool { voiceTrackIndex != nil && VideoVoiceEnhancer.isAvailable }
 
+    /// M: the preview goes quiet; the video's own sound (and the export)
+    /// is untouched.
+    func togglePreviewMute() {
+        previewMuted.toggle()
+        showNotice(
+            previewMuted ? "Preview muted — the export keeps its sound" : "Preview sound on",
+            symbol: previewMuted ? "speaker.slash.fill" : "speaker.wave.2.fill"
+        )
+    }
+
+    /// Why an export would come out silent though the recording has sound
+    /// (nil when it won't).
+    var exportSoundWarning: String? {
+        guard hasAudio else { return nil }
+        if project.audio.muted { return "Mute video is on (Audio tab) — this export will have no sound." }
+        if project.audio.isSilent(kinds: audioKinds) { return "Every sound level is at 0 (Audio tab) — this export will have no sound." }
+        if !segments.isEmpty, segments.allSatisfy(\.clip.muted) { return "Every clip is muted — this export will have no sound." }
+        return nil
+    }
+
     private var enhancedVoiceURL: URL? {
         voiceTrackIndex.map { VideoVoiceEnhancer.cacheURL(for: project.sourceURL, trackIndex: $0) }
     }

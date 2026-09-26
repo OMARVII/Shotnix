@@ -575,7 +575,7 @@ struct VideoAudioInspector: View {
                 }
             } else {
                 VideoInspectorSection("Sound") {
-                    VideoToggleRow(title: "Mute video", isOn: binding(\.muted))
+                    VideoToggleRow(title: "Mute video", detail: "Exports without sound — to quiet just the preview, press M", isOn: binding(\.muted))
                     Group {
                         if model.hasSeparateVoiceAndSystem {
                             level("Voice", \.voiceVolume, detail: "Your microphone")

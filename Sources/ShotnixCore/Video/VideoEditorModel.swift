@@ -142,6 +142,11 @@ final class VideoEditorModel: ObservableObject {
     }
     @Published var inspectorTab: InspectorTab = .background
     @Published private(set) var isPlaying = false
+    /// Silences the editor's player only — never the export (M, or the
+    /// speaker next to the timeline scale).
+    @Published var previewMuted = false {
+        didSet { playback.player.isMuted = previewMuted }
+    }
     @Published var timelineZoom: Double = 1 {
         didSet { refreshTimeline() }
     }
