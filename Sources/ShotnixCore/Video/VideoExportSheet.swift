@@ -114,6 +114,10 @@ struct VideoExportSheet: View {
         }
     }
 
+    private var rangeIsOnlyCard: Bool {
+        exportRange.map { model.project.isOnlyCard($0, totalDuration: model.sourceDuration) } ?? false
+    }
+
     private var exportDuration: Double {
         exportRange.map { $0.upperBound - $0.lowerBound } ?? model.timelineDuration
     }
@@ -168,6 +172,9 @@ struct VideoExportSheet: View {
                     case .custom:
                         mark("In", time: $customStart)
                         mark("Out", time: $customEnd)
+                    }
+                    if rangeIsOnlyCard {
+                        note("That part is only a title card — include a moment of the video to export it.")
                     }
                 }
             }
@@ -241,6 +248,7 @@ struct VideoExportSheet: View {
     /// nothing to export.
     private var canExport: Bool {
         if rangeMode != .whole, exportRange == nil { return false }
+        if rangeIsOnlyCard { return false }
         if settings.format == .gif, gifWorkingBytes > VideoExportSettings.gifMemoryLimit { return false }
         return model.isReady
     }

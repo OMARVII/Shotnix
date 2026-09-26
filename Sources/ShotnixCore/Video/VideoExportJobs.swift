@@ -100,16 +100,27 @@ extension VideoDemoProject {
         if a > VideoDemoProject.minimumClipDuration {
             _ = project.deleteTimelineRange(start: 0, end: a, totalDuration: totalDuration)
         }
-        // The cards the range reaches, shortened to what it covers.
+        // The cards the range reaches, from where it enters them: the
+        // intro carries on mid-animation instead of starting over.
         if cards.intro.enabled, lower < introEnd - 0.05 {
             project.cards.intro = cards.intro
-            project.cards.intro.duration = max(introEnd - lower, VideoTitleCard.durationRange.lowerBound)
+            project.cards.intro.skip = lower
+            if upper < introEnd { project.cards.intro.cutAt = upper }
         }
         if cards.outro.enabled, upper > outroStart + 0.05 {
             project.cards.outro = cards.outro
-            project.cards.outro.duration = max(upper - outroStart, VideoTitleCard.durationRange.lowerBound)
+            if lower > outroStart { project.cards.outro.skip = lower - outroStart }
+            if upper < full { project.cards.outro.cutAt = upper - outroStart }
         }
         return (project, lower)
+    }
+
+    /// A part of the timeline with nothing but a title card in it — the
+    /// video needs at least a moment of the recording.
+    func isOnlyCard(_ span: ClosedRange<Double>, totalDuration: Double) -> Bool {
+        let segments = timelineSegments(totalDuration: totalDuration)
+        guard let first = segments.first, let last = segments.last else { return false }
+        return span.upperBound <= first.timelineStart + 0.05 || span.lowerBound >= last.timelineEnd - 0.05
     }
 }
 

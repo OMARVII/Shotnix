@@ -116,6 +116,69 @@ final class VideoExportFlowTests: XCTestCase {
         XCTAssertEqual(closing.timelineDuration(totalDuration: 6), 3, accuracy: 0.01)
     }
 
+    func testARangeStartingInsideTheIntroCarriesOnItsAnimation() async throws {
+        var project = try await recording(seconds: 3)
+        project.cards.intro = VideoTitleCard(enabled: true, title: "Hello there", subtitle: "A quick tour", duration: 3)
+        project.cards.outro = VideoTitleCard(enabled: true, title: "Thanks", duration: 2)
+        // Timeline: intro 0–3, clips 3–6, outro 6–8. The range: 1.2–7.
+        let total = 3.0
+        let part = project.trimmed(toTimeline: 1.2...7.0, totalDuration: total).project
+        XCTAssertEqual(part.cards.intro.skip, 1.2, accuracy: 0.001)
+        XCTAssertEqual(part.timelineLeadIn, 1.8, accuracy: 0.001, "exactly the part of the intro the range covers")
+        XCTAssertEqual(part.timelineDuration(totalDuration: total), 5.8, accuracy: 0.001)
+        XCTAssertEqual(part.cards.intro.fullLength, 3, "the card's own clock is kept")
+
+        // Frame for frame what the whole video shows at the same moments —
+        // the title mid-rise, the dissolve into the video, the cut outro.
+        let size = CGSize(width: 640, height: 400)
+        let source = CIImage(color: CIColor(red: 0.85, green: 0.85, blue: 0.85)).cropped(to: CGRect(origin: .zero, size: size))
+        let wholePlan = VideoDemoExporter.makePlan(project: project, sourceDuration: total, recording: nil)
+        let partPlan = VideoDemoExporter.makePlan(project: part, sourceDuration: total, recording: nil)
+        let renderer = VideoFrameRenderer()
+        func pixels(_ image: CIImage) -> [UInt8] {
+            let cgImage = VideoRenderContext.shared.createCGImage(image, from: CGRect(origin: .zero, size: size), format: .RGBA8, colorSpace: CGColorSpace(name: CGColorSpace.sRGB))!
+            var data = [UInt8](repeating: 0, count: Int(size.width * size.height) * 4)
+            let context = CGContext(data: &data, width: Int(size.width), height: Int(size.height), bitsPerComponent: 8, bytesPerRow: Int(size.width) * 4, space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
+            context.draw(cgImage, in: CGRect(origin: .zero, size: size))
+            return data
+        }
+        /// Share of pixels that visibly differ.
+        func difference(_ a: CIImage, _ b: CIImage) -> Double {
+            let left = pixels(a), right = pixels(b)
+            var differing = 0
+            for index in stride(from: 0, to: left.count, by: 4) where (0..<3).contains(where: { abs(Int(left[index + $0]) - Int(right[index + $0])) > 20 }) {
+                differing += 1
+            }
+            return Double(differing) / Double(left.count / 4)
+        }
+        for (wholeTime, partTime) in [(1.3, 0.1), (1.7, 0.5), (2.8, 1.6), (6.3, 5.1), (6.9, 5.7)] {
+            let whole = renderer.render(source: source, timelineTime: wholeTime, plan: wholePlan, outputSize: size)
+            let cut = renderer.render(source: source, timelineTime: partTime, plan: partPlan, outputSize: size)
+            XCTAssertLessThan(difference(whole, cut), 0.001, "the range at \(partTime) s shows the video at \(wholeTime) s")
+        }
+        // Starting the card over would show the title only beginning to rise.
+        let restarted = renderer.render(source: source, timelineTime: 0.1, plan: wholePlan, outputSize: size)
+        let carriedOn = renderer.render(source: source, timelineTime: 0.1, plan: partPlan, outputSize: size)
+        XCTAssertGreaterThan(difference(restarted, carriedOn), 0.005, "the check can tell a restarted card apart")
+
+        // The file is exactly the range.
+        let output = directory.appendingPathComponent("from-the-intro.mp4")
+        try await VideoDemoExporter.export(project: project, destinationURL: output, settings: VideoInspection.mp4Settings(), range: .timeline(1.2...7.0))
+        let length = try await AVURLAsset(url: output).load(.duration).seconds
+        XCTAssertEqual(length, 5.8, accuracy: 0.1)
+
+        // A range with nothing but a card in it isn't a video of its own.
+        XCTAssertTrue(project.isOnlyCard(0.5...2.5, totalDuration: total))
+        XCTAssertTrue(project.isOnlyCard(6.2...7.8, totalDuration: total))
+        XCTAssertFalse(project.isOnlyCard(1.2...7.0, totalDuration: total))
+        do {
+            try await VideoDemoExporter.export(project: project, destinationURL: directory.appendingPathComponent("card-only.mp4"), settings: VideoInspection.mp4Settings(), range: .timeline(0.5...2.5))
+            XCTFail("a card on its own isn't exported")
+        } catch {
+            XCTAssertTrue(VideoExportFailure.message(for: error).contains("only a title card"), VideoExportFailure.message(for: error))
+        }
+    }
+
     // MARK: Captions
 
     func testCaptionsCanBeLeftOutOfThePicture() async throws {

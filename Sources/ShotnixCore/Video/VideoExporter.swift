@@ -51,6 +51,9 @@ enum VideoDemoExporter {
         // where that part heard it.
         var musicOffset = 0.0
         if case .timeline(let span) = range {
+            guard !project.isOnlyCard(span, totalDuration: total) else {
+                throw VideoDemoExportError.exportFailed("That part of the timeline is only a title card. Include a moment of the video in the range, then export again.")
+            }
             let trimmed = project.trimmed(toTimeline: span, totalDuration: total)
             project = trimmed.project
             musicOffset = trimmed.musicOffset

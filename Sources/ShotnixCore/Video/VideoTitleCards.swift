@@ -14,6 +14,11 @@ struct VideoTitleCard: Codable, Equatable {
     var title = ""
     var subtitle = ""
     var duration = 3.0
+    /// Range exports only (never saved): seconds of the card already played
+    /// when the exported part starts, so it picks up mid-way instead of
+    /// starting over — and where the part ends inside it.
+    var skip = 0.0
+    var cutAt: Double?
 
     init(enabled: Bool = false, title: String = "", subtitle: String = "", duration: Double = 3) {
         self.enabled = enabled
@@ -22,9 +27,16 @@ struct VideoTitleCard: Codable, Equatable {
         self.duration = duration
     }
 
+    /// The whole card's length (its animation and dissolve follow this).
+    var fullLength: Double {
+        min(max(duration, Self.durationRange.lowerBound), Self.durationRange.upperBound)
+    }
+
     /// Seconds it adds to the timeline (0 when off).
     var effectiveDuration: Double {
-        enabled ? min(max(duration, Self.durationRange.lowerBound), Self.durationRange.upperBound) : 0
+        guard enabled else { return 0 }
+        let end = min(cutAt ?? fullLength, fullLength)
+        return max(end - min(max(skip, 0), end), 0)
     }
 
     private enum CodingKeys: String, CodingKey { case enabled, title, subtitle, duration }
@@ -175,17 +187,22 @@ extension VideoRenderPlan {
     /// (it dissolves into the video after the intro and out of it before
     /// the outro).
     func card(at time: Double) -> (card: VideoTitleCard, isIntro: Bool, elapsed: Double, opacity: Double)? {
+        // Times run on the whole card's clock: a range export that starts
+        // (or stops) inside one shows exactly what the whole video does.
         if cards.intro.enabled, time < introEnd {
-            let remaining = introEnd - time
-            let fade = min(VideoTitleCardRenderer.dissolve, introEnd / 2)
-            let opacity = fade > 0 && remaining < fade ? VideoCameraEasing.glide(remaining / fade) : 1
-            return (cards.intro, true, max(time, 0), opacity)
+            let card = cards.intro
+            let elapsed = max(time, 0) + card.skip
+            let remaining = card.fullLength - elapsed
+            let fade = min(VideoTitleCardRenderer.dissolve, card.fullLength / 2)
+            let opacity = fade > 0 && remaining < fade ? VideoCameraEasing.glide(max(remaining, 0) / fade) : 1
+            return (card, true, elapsed, opacity)
         }
         if cards.outro.enabled, time > outroStart, outroStart < timelineDuration {
-            let elapsed = time - outroStart
-            let fade = min(VideoTitleCardRenderer.dissolve, (timelineDuration - outroStart) / 2)
+            let card = cards.outro
+            let elapsed = time - outroStart + card.skip
+            let fade = min(VideoTitleCardRenderer.dissolve, card.fullLength / 2)
             let opacity = fade > 0 && elapsed < fade ? VideoCameraEasing.glide(elapsed / fade) : 1
-            return (cards.outro, false, elapsed, opacity)
+            return (card, false, elapsed, opacity)
         }
         return nil
     }
