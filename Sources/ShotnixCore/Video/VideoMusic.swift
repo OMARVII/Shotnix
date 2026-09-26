@@ -231,7 +231,11 @@ enum VideoVoiceActivity {
         let sorted = levels.sorted()
         let floor = Double(sorted[Int(Double(sorted.count - 1) * 0.15)])
         let loud = Double(sorted[Int(Double(sorted.count - 1) * 0.95)])
-        let threshold = max(floor * 3.2, loud * 0.12, 0.004)
+        // Nothing louder than a quiet room: no one's talking.
+        guard loud > 0.015 else { return [] }
+        // Well above the noise floor — but a take with no pauses (the floor
+        // is the voice itself) still counts as talking.
+        let threshold = max(min(floor * 3.2, loud * 0.5), loud * 0.12, 0.008)
         var ranges: [ClosedRange<Double>] = []
         var start: Int?
         for (index, level) in levels.enumerated() {
@@ -377,9 +381,22 @@ enum VideoMusicWaveform {
 
 // MARK: - Composition
 
+/// A sound file's track with its asset kept alive (a track can't be read
+/// once its asset is gone).
+struct VideoAudioFile {
+    let asset: AVURLAsset
+    let track: AVAssetTrack
+
+    static func load(_ url: URL) async -> VideoAudioFile? {
+        let asset = AVURLAsset(url: url)
+        guard let track = try? await asset.loadTracks(withMediaType: .audio).first else { return nil }
+        return VideoAudioFile(asset: asset, track: track)
+    }
+}
+
 /// The song, ready to go into an edit.
 struct VideoMusicInput {
-    let track: AVAssetTrack
+    let file: VideoAudioFile
     let settings: VideoMusicTrack
     /// Timeline stretches with speech (the music dips under them).
     var voice: [ClosedRange<Double>]
@@ -413,7 +430,7 @@ extension VideoMusicInput {
         for piece in pieces {
             let range = CMTimeRange(start: VideoCompositionBuilder.time(piece.fileStart), duration: VideoCompositionBuilder.time(piece.length))
             do {
-                try music.insertTimeRange(range, of: track, at: VideoCompositionBuilder.time(piece.start))
+                try music.insertTimeRange(range, of: file.track, at: VideoCompositionBuilder.time(piece.start))
                 inserted = true
             } catch {
                 continue

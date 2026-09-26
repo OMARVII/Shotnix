@@ -83,7 +83,7 @@ enum VideoDemoExporter {
             extras.layout = await VideoSourceLayout.load(project: project, primary: source, primaryAudio: audioSources, primaryCamera: camera, includeCameras: project.webcam.visible)
         }
         let allKinds = kinds + project.sources.filter { !$0.isPrimary }.flatMap(\.audioKinds)
-        if let music = project.music, let track = try? await AVURLAsset(url: music.url).loadTracks(withMediaType: .audio).first {
+        if let music = project.music, let file = await VideoAudioFile.load(music.url) {
             var speech: [String: [ClosedRange<Double>]] = [:]
             if music.ducking {
                 if let index = VideoAudioKind.voiceTrackIndex(in: kinds) {
@@ -95,13 +95,12 @@ enum VideoDemoExporter {
                 }
             }
             let voice = VideoMusicDucking.voiceOnTimeline(project: project, primaryKinds: kinds, speech: speech, segments: segments)
-            extras.music = VideoMusicInput(track: track, settings: music, voice: voice, timelineOffset: musicOffset)
+            extras.music = VideoMusicInput(file: file, settings: music, voice: voice, timelineOffset: musicOffset)
         }
         if project.clickSounds.enabled {
             let times = VideoClickSound.times(project: project, segments: segments)
-            if !times.isEmpty, let url = try? VideoClickSound.fileURL(),
-               let track = try? await AVURLAsset(url: url).loadTracks(withMediaType: .audio).first {
-                extras.clicks = VideoClickSoundInput(track: track, times: times, volume: project.clickSounds.volume)
+            if !times.isEmpty, let url = try? VideoClickSound.fileURL(), let file = await VideoAudioFile.load(url) {
+                extras.clicks = VideoClickSoundInput(file: file, times: times, volume: project.clickSounds.volume)
             }
         }
 

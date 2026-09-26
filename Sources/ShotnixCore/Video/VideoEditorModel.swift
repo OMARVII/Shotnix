@@ -409,6 +409,13 @@ final class VideoEditorModel: ObservableObject {
     // MARK: Project changes
 
     private func projectDidChange(from old: VideoDemoProject) {
+        // Added recordings set the source axis's length (right away, so no
+        // edit ever lays clips out against the old one).
+        if let axis = project.sourceAxisDuration, abs(axis - sourceDuration) > 0.0005 {
+            sourceDuration = axis
+        } else if project.sources.isEmpty, !old.sources.isEmpty, let primary = playback.source?.duration {
+            sourceDuration = primary
+        }
         let oldSegments = segments
         segments = project.timelineSegments(totalDuration: sourceDuration)
         refreshTimeline()
@@ -1554,7 +1561,11 @@ final class VideoEditorModel: ObservableObject {
 
     /// Added or removed recordings change the source axis.
     func applySourceDuration(_ duration: Double, hasAudio: Bool) {
-        if sourceDuration != duration { sourceDuration = duration }
+        if abs(sourceDuration - duration) > 0.0005 {
+            sourceDuration = duration
+            segments = project.timelineSegments(totalDuration: duration)
+            refreshTimeline()
+        }
         if self.hasAudio != hasAudio { self.hasAudio = hasAudio }
     }
 

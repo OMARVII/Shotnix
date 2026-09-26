@@ -102,7 +102,7 @@ enum VideoClickSound {
 
 /// The click, ready to go into an edit.
 struct VideoClickSoundInput {
-    let track: AVAssetTrack
+    let file: VideoAudioFile
     /// Timeline seconds of each click.
     let times: [Double]
     let volume: Double
@@ -125,7 +125,7 @@ struct VideoClickSoundInput {
             let length = min(VideoClickSound.length, next - time, duration - time)
             guard length > 0.003 else { continue }
             do {
-                try clicks.insertTimeRange(CMTimeRange(start: .zero, duration: VideoCompositionBuilder.time(length)), of: track, at: VideoCompositionBuilder.time(time))
+                try clicks.insertTimeRange(CMTimeRange(start: .zero, duration: VideoCompositionBuilder.time(length)), of: file.track, at: VideoCompositionBuilder.time(time))
                 inserted = true
             } catch {
                 continue

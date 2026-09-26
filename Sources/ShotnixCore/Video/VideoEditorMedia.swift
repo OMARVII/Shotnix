@@ -96,9 +96,9 @@ final class VideoSourceFrames: @unchecked Sendable {
 @MainActor
 final class VideoEditorMedia {
     /// The loaded song, for the path it was loaded from.
-    var music: (path: String, track: AVAssetTrack)?
+    var music: (path: String, file: VideoAudioFile)?
     var musicWaveform: (path: String, waveform: VideoWaveform)?
-    var clickTrack: AVAssetTrack?
+    var clickSound: VideoAudioFile?
     /// Speech on each recording's voice track, in its own seconds ("" is
     /// the project's own recording; others by source ID).
     var speech: [String: [ClosedRange<Double>]] = [:]
@@ -135,12 +135,12 @@ extension VideoEditorModel {
         extras.tail = project.timelineTail
         extras.layout = project.hasAppendedSources ? media.layout : nil
         if let music = project.music, let loaded = media.music, loaded.path == music.path {
-            extras.music = VideoMusicInput(track: loaded.track, settings: music, voice: voiceTimelineRanges)
+            extras.music = VideoMusicInput(file: loaded.file, settings: music, voice: voiceTimelineRanges)
         }
-        if project.clickSounds.enabled, let click = media.clickTrack {
+        if project.clickSounds.enabled, let click = media.clickSound {
             let times = VideoClickSound.times(project: project, segments: segments)
             if !times.isEmpty {
-                extras.clicks = VideoClickSoundInput(track: click, times: times, volume: project.clickSounds.volume)
+                extras.clicks = VideoClickSoundInput(file: click, times: times, volume: project.clickSounds.volume)
             }
         }
         return extras
@@ -168,7 +168,7 @@ extension VideoEditorModel {
         if project.music?.path != old.music?.path || (project.music?.ducking == true && old.music?.ducking != true) {
             loadMusic()
         }
-        if project.clickSounds.enabled, media.clickTrack == nil {
+        if project.clickSounds.enabled, media.clickSound == nil {
             loadClickSound()
         }
         if project.sources.map(\.id) != old.sources.map(\.id) || project.sources.map(\.offset) != old.sources.map(\.offset) {
@@ -204,9 +204,8 @@ extension VideoEditorModel {
         guard media.begin("music-\(path)") else { return }
         Task {
             defer { media.end("music-\(path)") }
-            let asset = AVURLAsset(url: URL(fileURLWithPath: path))
-            if media.music?.path != path, let track = try? await asset.loadTracks(withMediaType: .audio).first {
-                media.music = (path, track)
+            if media.music?.path != path, let file = await VideoAudioFile.load(URL(fileURLWithPath: path)) {
+                media.music = (path, file)
             }
             if let waveform = await VideoMusicWaveform.load(url: URL(fileURLWithPath: path)) {
                 media.musicWaveform = (path, waveform)
@@ -231,9 +230,8 @@ extension VideoEditorModel {
         guard media.begin("click") else { return }
         Task {
             defer { media.end("click") }
-            guard let url = try? VideoClickSound.fileURL(),
-                  let track = try? await AVURLAsset(url: url).loadTracks(withMediaType: .audio).first else { return }
-            media.clickTrack = track
+            guard let url = try? VideoClickSound.fileURL(), let file = await VideoAudioFile.load(url) else { return }
+            media.clickSound = file
             refreshPlayback()
         }
     }
