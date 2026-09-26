@@ -686,10 +686,16 @@ struct VideoMusicLane: View, Equatable {
         .contentShape(Rectangle())
         .onTapGesture { location in
             model.seek(to: geometry.time(location.x))
-            model.selection = .none
-            model.inspectorTab = .audio
+            model.showMusicSettings()
         }
         .help("Music — click to change its volume, fades, and ducking")
+        // The lane is drawn: VoiceOver gets it as one element.
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(model.musicAccessibilityLabel)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityHint("Opens its volume, fades, and ducking in Audio")
+        .accessibilityAction { model.showMusicSettings() }
+        .accessibilityAction(named: "Remove Music") { model.removeMusic() }
     }
 }
 
