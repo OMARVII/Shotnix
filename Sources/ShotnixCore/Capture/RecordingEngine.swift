@@ -81,8 +81,14 @@ final class RecordingEngine: NSObject {
     private var recordedSeconds: TimeInterval {
         let now = CACurrentMediaTime()
         if timeline.hasStarted { return timeline.duration(at: now) }
-        return recordingStartedAt > 0 ? max(0, now - recordingStartedAt) : 0
+        // No frame yet: count from the start, still frozen while paused.
+        guard recordingStartedAt > 0 else { return 0 }
+        let end = timeline.pauseStart.map { min($0, now) } ?? now
+        return max(0, end - recordingStartedAt)
     }
+
+    /// Whether the screen has delivered a frame yet (for tests and diagnostics).
+    var hasCapturedFrames: Bool { timeline.hasStarted }
 
     func startRecording(rect: CGRect, on screen: NSScreen) async {
         await startRecording(source: .displayRect(rect: rect, screen: screen))
@@ -276,8 +282,7 @@ final class RecordingEngine: NSObject {
             )
             recoveryNote = note
             RecordingRecovery.save(note)
-            let starting = StreamBox(stream)
-            try await Self.withTimeout(15) { try await starting.stream.startCapture() }
+            try await Self.startCapture(StreamBox(stream), within: 15)
             didStartRecording(notices: notices, captureRect: prepared.captureRect)
         } catch {
             await failStart(error, url: createdURL, writer: createdWriter, microphone: microphone, screen: screen)
@@ -898,6 +903,18 @@ final class RecordingEngine: NSObject {
             return
         }
 
+        guard timeline.hasStarted else {
+            // Not a single frame arrived (the display went dark, the capture
+            // service stalled): there's nothing to save or salvage.
+            writer.cancelWriting()
+            try? FileManager.default.removeItem(at: url)
+            RecordingRecovery.clear()
+            cleanup(releasingForeground: true)
+            ToastWindow.show(message: "Nothing was recorded — the screen didn't send any picture. Try again.", duration: 4, on: screen)
+            finishCompleted()
+            return
+        }
+
         guard writer.status == .writing else {
             salvage(url: url, writerError: writer.error)
             return
@@ -1108,7 +1125,7 @@ final class RecordingEngine: NSObject {
     /// ScreenCaptureKit calls can stall (a display going to sleep mid-call,
     /// a busy window server): give up after `seconds` rather than leave a
     /// recording that never starts or never saves.
-    nonisolated private static func withTimeout<T: Sendable>(_ seconds: Double, _ operation: @escaping @Sendable () async throws -> T) async throws -> T {
+    nonisolated private static func withTimeout<T: Sendable>(_ seconds: Double, _ operation: @escaping @Sendable () async throws -> T, onTimeout: @escaping @Sendable () -> Void = {}) async throws -> T {
         try await withCheckedThrowingContinuation { continuation in
             let once = ResumeOnce(continuation)
             Task {
@@ -1116,8 +1133,24 @@ final class RecordingEngine: NSObject {
             }
             Task {
                 try? await Task.sleep(nanoseconds: UInt64(seconds * 1_000_000_000))
+                onTimeout()
                 once.resume(with: .failure(RecordingError.timedOut))
             }
+        }
+    }
+
+    /// Starts the stream, giving up after `seconds`. A start that finishes
+    /// after that is stopped right away, so no stream keeps capturing the
+    /// screen for a recording that was already abandoned.
+    nonisolated private static func startCapture(_ box: StreamBox, within seconds: Double) async throws {
+        let race = StartRace()
+        try await withTimeout(seconds) {
+            try await box.stream.startCapture()
+            if race.finish() == .lost {
+                try? await box.stream.stopCapture()
+            }
+        } onTimeout: {
+            race.timeOut()
         }
     }
 
@@ -1550,6 +1583,27 @@ final class RecordingEngine: NSObject {
 private struct StreamBox: @unchecked Sendable {
     let stream: SCStream
     init(_ stream: SCStream) { self.stream = stream }
+}
+
+/// Who got there first: a stream's start or its deadline.
+private final class StartRace: @unchecked Sendable {
+    enum Outcome { case won, lost }
+    private let lock = NSLock()
+    private var timedOut = false
+    private var finished = false
+
+    func timeOut() {
+        lock.lock()
+        if !finished { timedOut = true }
+        lock.unlock()
+    }
+
+    func finish() -> Outcome {
+        lock.lock()
+        defer { lock.unlock() }
+        finished = true
+        return timedOut ? .lost : .won
+    }
 }
 
 /// Resumes a continuation once, whichever of two racing tasks gets there first.

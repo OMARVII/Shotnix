@@ -648,7 +648,7 @@ final class CaptureEngine {
             return
         }
 
-        ToastWindow.show(message: "No recording in progress")
+        ToastWindow.show(message: recordingEngine.isSaving ? "Saving the recording…" : "No recording in progress")
     }
 
     func togglePauseRecording() {

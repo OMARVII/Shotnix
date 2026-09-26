@@ -127,6 +127,18 @@ final class RecordingEngineIntegrationTests: XCTestCase {
             await begin()
         }
         guard engine.elapsedSeconds != nil else { throw XCTSkip("ScreenCaptureKit didn't start a stream") }
+        // A started stream that never sends a picture (displays powered
+        // down under a lock screen, a capture service busy elsewhere) is the
+        // machine's state too.
+        let deadline = Date().addingTimeInterval(6)
+        while !engine.hasCapturedFrames, Date() < deadline {
+            try await sleep(0.05)
+        }
+        guard engine.hasCapturedFrames else {
+            engine.discardRecording()
+            try await waitUntil(timeout: 10) { !engine.active }
+            throw XCTSkip("the screen isn't delivering frames")
+        }
     }
 
     func testRecordsAPlayableAreaAndCleansUpAfterwards() async throws {

@@ -47,6 +47,16 @@ private final class RecordingAreaOutlineView: NSView {
         didSet { needsDisplay = true }
     }
 
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        wantsLayer = true
+        layer?.backgroundColor = NSColor.clear.cgColor
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+
+    override var isOpaque: Bool { false }
+
     override func draw(_ dirtyRect: NSRect) {
         let width = RecordingAreaOutlineWindow.lineWidth
         let path = NSBezierPath(rect: bounds.insetBy(dx: width / 2, dy: width / 2))
