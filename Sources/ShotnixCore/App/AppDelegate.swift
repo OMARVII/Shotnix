@@ -56,7 +56,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         Settings.migrateOnboardingFlagIfNeeded()
-        // Leftover data of deleted recordings, swept in the background.
+        // Unfinished exports' working files, then leftover data of deleted
+        // recordings (in the background).
+        VideoExportFiles.removeLeftovers()
         VideoDataCleanup.sweepAfterLaunch()
         updateController = AppUpdateController()
         captureEngine = CaptureEngine()

@@ -135,6 +135,7 @@ enum VideoDemoExporter {
         let estimate = settings.estimatedBytes(duration: timelineDuration, canvas: canvas, hasAudio: !edit.mixedAudioTracks.isEmpty)
         let temporaryURL = VideoExportFiles.temporaryURL(beside: destinationURL, fileExtension: settings.fileExtension)
         try VideoExportFiles.checkSpace(for: temporaryURL, needed: estimate)
+        VideoExportFiles.remember(temporaryURL)
 
         let cancel = CancellationFlag()
         let watcher = Task.detached(priority: .utility) {

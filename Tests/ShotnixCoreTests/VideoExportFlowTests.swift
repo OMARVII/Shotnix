@@ -71,6 +71,35 @@ final class VideoExportFlowTests: XCTestCase {
         XCTAssertEqual(VideoExportFiles.temporaryURL(beside: unwritable, fileExtension: "mp4").deletingLastPathComponent().standardizedFileURL.path, FileManager.default.temporaryDirectory.standardizedFileURL.path)
     }
 
+    /// An export cut off by a crash or a force quit leaves its hidden
+    /// working file behind: the next launch removes it — and only such
+    /// files.
+    func testTheNextLaunchRemovesWorkingFilesOfExportsThatNeverFinished() async throws {
+        // A finished export leaves nothing listed.
+        let project = try await recording()
+        let done = directory.appendingPathComponent("done.mp4")
+        try await VideoDemoExporter.export(project: project, destinationURL: done, settings: VideoInspection.mp4Settings())
+        XCTAssertEqual(VideoExportFiles.removeLeftovers(), 0)
+
+        // A crash mid-export: the working file and the writer's scratch file.
+        let partial = VideoExportFiles.temporaryURL(beside: directory.appendingPathComponent("Big talk.mp4"), fileExtension: "mp4")
+        try Data(repeating: 7, count: 4096).write(to: partial)
+        let scratch = partial.deletingLastPathComponent().appendingPathComponent(partial.lastPathComponent + ".sb-1234")
+        try Data(repeating: 7, count: 1024).write(to: scratch)
+        VideoExportFiles.remember(partial)
+        // Anything else listed there is never touched.
+        let someoneElses = directory.appendingPathComponent("Holiday.mp4")
+        try Data(repeating: 1, count: 16).write(to: someoneElses)
+        VideoExportFiles.remember(someoneElses)
+
+        XCTAssertEqual(VideoExportFiles.removeLeftovers(), 1)
+        XCTAssertFalse(FileManager.default.fileExists(atPath: partial.path), "the unfinished working file goes")
+        XCTAssertFalse(FileManager.default.fileExists(atPath: scratch.path), "and its scratch file")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: someoneElses.path), "not a file Shotnix didn't make")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: done.path))
+        XCTAssertEqual(VideoExportFiles.removeLeftovers(), 0, "the list starts over")
+    }
+
     func testNotEnoughSpaceStopsBeforeStarting() {
         let url = directory.appendingPathComponent("big.mp4")
         XCTAssertThrowsError(try VideoExportFiles.checkSpace(for: url, needed: 2_000_000_000, available: 500_000_000)) { error in
