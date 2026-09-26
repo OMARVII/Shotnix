@@ -1404,7 +1404,11 @@ final class VideoEditorModel: ObservableObject {
         alert.addButton(withTitle: "Start Over")
         alert.addButton(withTitle: "Cancel")
         guard alert.runModal() == .alertFirstButtonReturn else { return }
-        resetToOriginal()
+        Task {
+            // Every added recording's own data first (read off the main thread).
+            await loadAppendedMetadata()
+            resetToOriginal()
+        }
     }
 
     /// Start Over without asking. Edits go; added recordings stay.

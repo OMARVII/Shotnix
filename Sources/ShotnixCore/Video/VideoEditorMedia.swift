@@ -292,24 +292,7 @@ extension VideoEditorModel {
         if project.hasAppendedSources {
             let audio = playback.audioSources ?? VideoAudioSource.sources(from: primary, kinds: audioKinds)
             media.layout = await VideoSourceLayout.load(project: project, primary: primary, primaryAudio: audio, primaryCamera: playback.camera, enhanceVoice: project.audio.enhanceVoice)
-            // Their own data (pointer paths: big), read off the main thread;
-            // a recording found somewhere new has its data point there.
-            let unread = project.sources.filter { !$0.isPrimary && media.appendedMetadata[$0.id] == nil }
-            let read = await Task.detached(priority: .userInitiated) { () -> [(id: UUID, metadata: VideoDemoRecordingMetadata?, movedTo: String?)] in
-                unread.map { source in
-                    guard let url = VideoSourceLocator.resolve(source) else { return (source.id, nil, nil) }
-                    let metadata = VideoDemoSidecarStore.load(for: url).map { VideoDemoSidecarStore.recordLocation(of: $0, for: url) }
-                    return (source.id, metadata, url.standardizedFileURL.path != source.path ? url.standardizedFileURL.path : nil)
-                }
-            }.value
-            if !read.isEmpty { activityCache = nil }
-            for entry in read {
-                media.appendedMetadata[entry.id] = entry.metadata
-                // Moved: the project remembers where it is now (not an edit).
-                if let path = entry.movedTo, let index = project.sources.firstIndex(where: { $0.id == entry.id }) {
-                    project.sources[index].path = path
-                }
-            }
+            await loadAppendedMetadata()
         } else {
             media.layout = nil
         }
@@ -323,6 +306,28 @@ extension VideoEditorModel {
         refreshPlayback()
         if project.music?.ducking == true { await loadSpeech(); refreshPlayback() }
         if project.hasAppendedSources { await loadSourceMedia() }
+    }
+
+    /// The added recordings' own data (pointer paths: big), read off the
+    /// main thread; a recording found somewhere new has its data point there.
+    func loadAppendedMetadata() async {
+        let unread = project.sources.filter { !$0.isPrimary && media.appendedMetadata[$0.id] == nil }
+        guard !unread.isEmpty else { return }
+        let read = await Task.detached(priority: .userInitiated) { () -> [(id: UUID, metadata: VideoDemoRecordingMetadata?, movedTo: String?)] in
+            unread.map { source in
+                guard let url = VideoSourceLocator.resolve(source) else { return (source.id, nil, nil) }
+                let metadata = VideoDemoSidecarStore.load(for: url).map { VideoDemoSidecarStore.recordLocation(of: $0, for: url) }
+                return (source.id, metadata, url.standardizedFileURL.path != source.path ? url.standardizedFileURL.path : nil)
+            }
+        }.value
+        activityCache = nil
+        for entry in read {
+            media.appendedMetadata[entry.id] = entry.metadata
+            // Moved: the project remembers where it is now (not an edit).
+            if let path = entry.movedTo, let index = project.sources.firstIndex(where: { $0.id == entry.id }) {
+                project.sources[index].path = path
+            }
+        }
     }
 
     /// The added recordings' sound again (Enhance voice turned on or off,

@@ -779,7 +779,11 @@ extension VideoEditorModel {
             showNotice("That video is empty", symbol: "exclamationmark.triangle.fill")
             return false
         }
-        let metadata = VideoDemoSidecarStore.load(for: canonical).map { VideoDemoSidecarStore.recordLocation(of: $0, for: canonical) }
+        // Its own data (the pointer path can be megabytes), read off the
+        // main thread.
+        let metadata = await Task.detached(priority: .userInitiated) {
+            VideoDemoSidecarStore.load(for: canonical).map { VideoDemoSidecarStore.recordLocation(of: $0, for: canonical) }
+        }.value
         let kinds = VideoAudioKind.resolve(recorded: metadata?.audioTracks, channelCounts: tracks.audioChannelCounts)
         let hasPointer = metadata.map { $0.shouldRenderCursor && !$0.cursorSamples.isEmpty && !$0.nativeCursorVisible } ?? false
         let webcam = metadata?.webcam.flatMap { FileManager.default.fileExists(atPath: $0.path) ? $0 : nil }
@@ -813,13 +817,10 @@ extension VideoEditorModel {
         return true
     }
 
-    /// Start Over keeps the recordings added to the video, in their order.
+    /// Start Over keeps the recordings added to the video, in their order
+    /// (their own data was read when they were loaded).
     func restoreAddedRecordings(into fresh: inout VideoDemoProject) {
-        var metadata = media.appendedMetadata
-        for source in project.sources where !source.isPrimary && metadata[source.id] == nil {
-            metadata[source.id] = VideoSourceLocator.resolve(source).flatMap { VideoDemoSidecarStore.load(for: $0) }
-        }
-        fresh.restoreSources(from: project, metadata: metadata)
+        fresh.restoreSources(from: project, metadata: media.appendedMetadata)
     }
 
     /// Camera footage anywhere in the video — this recording's or an added

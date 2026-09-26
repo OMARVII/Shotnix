@@ -106,7 +106,11 @@ enum VideoDemoSidecarStore {
             .appendingPathExtension("shotnixvideo.json")
     }
 
+    /// Tests watch where recordings' data is read (whether on the main thread).
+    nonisolated(unsafe) static var loadObserver: ((_ videoURL: URL, _ onMainThread: Bool) -> Void)?
+
     static func load(for videoURL: URL, baseDirectory: URL? = nil) -> VideoDemoRecordingMetadata? {
+        loadObserver?(videoURL, Thread.isMainThread)
         let folder = directory(baseDirectory: baseDirectory)
         let canonical = VideoFileIdentity.canonicalURL(videoURL)
         if let id = VideoFileIdentity.id(of: canonical),

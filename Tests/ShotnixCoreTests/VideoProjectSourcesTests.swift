@@ -119,6 +119,43 @@ final class VideoProjectSourcesTests: XCTestCase {
         XCTAssertGreaterThan(darkest(second), 0.6, "and not over the plain video")
     }
 
+    /// An added recording's own data (the pointer path can be megabytes) is
+    /// never read on the main thread — adding it, or reopening the video.
+    @MainActor
+    func testAddedRecordingsDataIsReadOffTheMainThread() async throws {
+        let a = directory.appendingPathComponent("main-a.mp4")
+        let b = directory.appendingPathComponent("pointer-b.mp4")
+        try await VideoInspection.writeColorVideo(to: a, size: CGSize(width: 640, height: 400), colors: [(yellow, 1)])
+        try await VideoInspection.writeColorVideo(to: b, size: CGSize(width: 640, height: 400), colors: [(green, 1)])
+        let samples = stride(from: 0.0, through: 1.0, by: 0.001).map { VideoDemoCursorSample(time: $0, x: 0.5, y: 0.5) }
+        let metadata = VideoDemoRecordingMetadata(videoURLPath: b.path, createdAt: Date(), duration: 1, sourceWidth: 640, sourceHeight: 400, fps: 30, nativeCursorVisible: false, cursorSamples: samples, clickEvents: [], renderCursor: true)
+        XCTAssertTrue(VideoDemoSidecarStore.save(metadata, for: b))
+        var readsOnMain: [String] = []
+        let lock = NSLock()
+        VideoDemoSidecarStore.loadObserver = { url, onMain in
+            guard onMain, url.lastPathComponent == "pointer-b.mp4" else { return }
+            lock.lock(); readsOnMain.append(url.lastPathComponent); lock.unlock()
+        }
+        defer { VideoDemoSidecarStore.loadObserver = nil }
+
+        VideoDemoDraftStore.delete(for: a)
+        let model = VideoEditorModel(videoURL: a)
+        await model.load()
+        let added = await model.appendVideo(b)
+        XCTAssertTrue(added)
+        XCTAssertNotNil(model.media.appendedMetadata.values.compactMap { $0 }.first, "its data is there")
+        model.stop()
+
+        // Reopened: the draft brings it back, read in the background too.
+        let reopened = VideoEditorModel(videoURL: a)
+        await reopened.load()
+        for _ in 0..<40 where reopened.media.appendedMetadata.isEmpty { try await Task.sleep(nanoseconds: 50_000_000) }
+        XCTAssertFalse(reopened.media.appendedMetadata.isEmpty)
+        reopened.stop()
+        XCTAssertTrue(readsOnMain.isEmpty, "read on the main thread: \(readsOnMain)")
+        VideoDemoDraftStore.delete(for: a)
+    }
+
     @MainActor
     func testStartOverKeepsTheAddedRecordings() async throws {
         let a = directory.appendingPathComponent("start-a.mp4")
