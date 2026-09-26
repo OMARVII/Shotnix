@@ -22,7 +22,7 @@ final class ToastWindow: NSWindow {
         toast.setFrameOrigin(NSPoint(x: toast.finalOrigin.x, y: toast.finalOrigin.y - 12))
         toast.alphaValue = 0
         if let layer = toast.contentView?.layer {
-            layer.transform = CATransform3DMakeScale(0.92, 0.92, 1)
+            layer.transform = layer.scaledAboutCenter(0.92)
         }
         toast.orderFrontRegardless()
 
@@ -34,9 +34,10 @@ final class ToastWindow: NSWindow {
         }
 
         if let layer = toast.contentView?.layer {
-            let spring = CASpringAnimation(keyPath: "transform.scale")
-            spring.fromValue = 0.92
-            spring.toValue = 1.0
+            // Grows from its center (a plain scale grows from a corner).
+            let spring = CASpringAnimation(keyPath: "transform")
+            spring.fromValue = NSValue(caTransform3D: layer.scaledAboutCenter(0.92))
+            spring.toValue = NSValue(caTransform3D: CATransform3DIdentity)
             spring.mass = 1.0
             spring.stiffness = 200
             spring.damping = 12

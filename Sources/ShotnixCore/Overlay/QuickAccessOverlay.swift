@@ -770,7 +770,8 @@ private final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
         badge.layer?.cornerRadius = size / 2
         badge.layer?.cornerCurve = .continuous
         badge.alphaValue = 0
-        badge.layer?.transform = CATransform3DMakeScale(0.7, 0.7, 1)
+        let popStart = badge.layer?.scaledAboutCenter(0.7) ?? CATransform3DIdentity
+        badge.layer?.transform = popStart
         clip.addSubview(badge)
 
         NSAnimationContext.runAnimationGroup({ ctx in
@@ -778,9 +779,10 @@ private final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
             ctx.timingFunction = CAMediaTimingFunction(name: .easeOut)
             badge.animator().alphaValue = 1
             
-            let scaleAnim = CABasicAnimation(keyPath: "transform.scale")
-            scaleAnim.fromValue = 0.7
-            scaleAnim.toValue = 1.0
+            // Pops from its center (a plain scale grows from a corner).
+            let scaleAnim = CABasicAnimation(keyPath: "transform")
+            scaleAnim.fromValue = NSValue(caTransform3D: popStart)
+            scaleAnim.toValue = NSValue(caTransform3D: CATransform3DIdentity)
             scaleAnim.duration = 0.12
             badge.layer?.add(scaleAnim, forKey: "pop")
             badge.layer?.transform = CATransform3DIdentity
@@ -953,29 +955,29 @@ private final class OverlayCornerButton: NSButton {
         layer?.backgroundColor = ShotnixColors.cornerButtonBackground.cgColor
     }
 
+    /// Presses in about its center. NSButton tracks the click inside
+    /// `super.mouseDown` and never gets `mouseUp`, so the spring back runs
+    /// when that returns.
     override func mouseDown(with event: NSEvent) {
         layer?.backgroundColor = ShotnixColors.cornerButtonPressed.cgColor
-        let scale = CATransform3DMakeScale(0.92, 0.92, 1)
-        layer?.transform = scale
+        guard let layer else { return super.mouseDown(with: event) }
+        let pressed = layer.scaledAboutCenter(0.92)
+        layer.transform = pressed
         NSHapticFeedbackManager.defaultPerformer.perform(.generic, performanceTime: .default)
         super.mouseDown(with: event)
-    }
-
-    override func mouseUp(with event: NSEvent) {
-        let spring = CASpringAnimation(keyPath: "transform.scale")
-        spring.fromValue = 0.92
-        spring.toValue = 1.0
+        let spring = CASpringAnimation(keyPath: "transform")
+        spring.fromValue = NSValue(caTransform3D: pressed)
+        spring.toValue = NSValue(caTransform3D: CATransform3DIdentity)
         spring.mass = 1.0
         spring.stiffness = 300
         spring.damping = 15
         spring.initialVelocity = 0
         spring.duration = spring.settlingDuration
-        layer?.add(spring, forKey: "bounceBack")
-        layer?.transform = CATransform3DIdentity
-        layer?.backgroundColor = isHovered
+        layer.add(spring, forKey: "bounceBack")
+        layer.transform = CATransform3DIdentity
+        layer.backgroundColor = isHovered
             ? ShotnixColors.cornerButtonHover.cgColor
             : ShotnixColors.cornerButtonBackground.cgColor
-        super.mouseUp(with: event)
     }
 }
 

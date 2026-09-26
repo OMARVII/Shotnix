@@ -144,7 +144,7 @@ final class AnnotationWindowController: NSWindowController {
 
         let canvasSize = image.size
         let toolbarHeight: CGFloat = 76
-        let toolbarDockHeight: CGFloat = 56
+        let toolbarDockHeight = AnnotationToolbar.height
         let stageInset: CGFloat = 18
 
         // Open as large as the visible display safely allows so the image starts with less scrolling.

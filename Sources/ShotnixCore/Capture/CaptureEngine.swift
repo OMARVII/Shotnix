@@ -1366,10 +1366,12 @@ private final class RecordingWindowChooserWindow: NSWindow {
         makeFirstResponder(contentView)
 
         if let layer = contentView?.layer {
-            layer.transform = CATransform3DMakeScale(0.96, 0.96, 1)
-            let scale = CASpringAnimation(keyPath: "transform.scale")
-            scale.fromValue = 0.96
-            scale.toValue = 1.0
+            // Grows from its center (a plain scale grows from a corner).
+            let start = layer.scaledAboutCenter(0.96)
+            layer.transform = start
+            let scale = CASpringAnimation(keyPath: "transform")
+            scale.fromValue = NSValue(caTransform3D: start)
+            scale.toValue = NSValue(caTransform3D: CATransform3DIdentity)
             scale.mass = 1
             scale.stiffness = 320
             scale.damping = 24
@@ -1762,10 +1764,12 @@ private final class RecordingScreenChooserWindow: NSWindow {
         makeFirstResponder(contentView)
 
         if let layer = contentView?.layer {
-            layer.transform = CATransform3DMakeScale(0.96, 0.96, 1)
-            let scale = CASpringAnimation(keyPath: "transform.scale")
-            scale.fromValue = 0.96
-            scale.toValue = 1.0
+            // Grows from its center (a plain scale grows from a corner).
+            let start = layer.scaledAboutCenter(0.96)
+            layer.transform = start
+            let scale = CASpringAnimation(keyPath: "transform")
+            scale.fromValue = NSValue(caTransform3D: start)
+            scale.toValue = NSValue(caTransform3D: CATransform3DIdentity)
             scale.mass = 1
             scale.stiffness = 320
             scale.damping = 24
@@ -2081,10 +2085,12 @@ final class RecordingControlsWindow: NSWindow {
         makeFirstResponder(contentView)
 
         if let layer = contentView?.layer {
-            layer.transform = CATransform3DMakeScale(0.96, 0.96, 1)
-            let scale = CASpringAnimation(keyPath: "transform.scale")
-            scale.fromValue = 0.96
-            scale.toValue = 1.0
+            // Grows from its center (a plain scale grows from a corner).
+            let start = layer.scaledAboutCenter(0.96)
+            layer.transform = start
+            let scale = CASpringAnimation(keyPath: "transform")
+            scale.fromValue = NSValue(caTransform3D: start)
+            scale.toValue = NSValue(caTransform3D: CATransform3DIdentity)
             scale.mass = 1
             scale.stiffness = 320
             scale.damping = 24

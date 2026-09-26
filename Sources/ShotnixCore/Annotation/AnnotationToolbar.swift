@@ -11,20 +11,43 @@ final class AnnotationToolbar: NSView {
         [.text, .callout, .numberedStep, .highlighter, .freehandHighlighter],
         [.blur, .pixelate, .spotlight, .crop],
     ]
+    // Geometry. Everything sits on the dock's midline, and the insets are
+    // concentric: 8 pt from the dock's edge to each group, 3 pt from a group's
+    // edge to its tool buttons on every side, with corner radii stepping down
+    // to match (18 → 10 → 7).
+    static let height: CGFloat = 56
+    private static let edgeInset: CGFloat = 8
+    private static let groupHeight: CGFloat = height - 2 * edgeInset
+    private static let groupPadding: CGFloat = 3
+    private static let groupSpacing: CGFloat = 8
+    private static let buttonSize: CGFloat = 34
     private static let toolPitch: CGFloat = 36
-    private static let groupGap: CGFloat = 10
+    private static let controlHeight: CGFloat = 30
+    private static let dockRadius: CGFloat = 18
+    private static let groupRadius: CGFloat = dockRadius - edgeInset
+    static let buttonRadius: CGFloat = groupRadius - groupPadding
+    /// The color button sits as far from its group's edge as from its top.
+    private static let colorInset: CGFloat = (groupHeight - controlHeight) / 2
     /// The contextual area after the color button: size, text, strength,
     /// spotlight, or crop controls depending on the tool or selection.
     private static let optionsWidth: CGFloat = 164
+    /// Controls in the options area end this far before its right side.
+    private static let optionsTrailing: CGFloat = 10
+    private static let backgroundButtonWidth: CGFloat = 110
+    private static let actionButtonWidth: CGFloat = 54
+
+    private static func toolGroupWidth(_ count: Int) -> CGFloat {
+        2 * groupPadding + CGFloat(count) * buttonSize + CGFloat(count - 1) * (toolPitch - buttonSize)
+    }
+
+    private static let optionsGroupWidth: CGFloat =
+        colorInset + controlHeight + 10 + (optionsWidth - optionsTrailing) + colorInset
 
     static let requiredWidth: CGFloat = {
-        let toolCount = CGFloat(toolGroups.joined().count)
-        let tools: CGFloat = toolCount * toolPitch + CGFloat(toolGroups.count) * groupGap
-        let colorAndOptions: CGFloat = 40 + optionsWidth + 4
-        // gap, Background, gap, Copy + Save
-        let actions: CGFloat = 10 + 116 + 2 + 58 * 2
-        let insets: CGFloat = 8 + 8
-        return insets + tools + colorAndOptions + actions
+        let tools = toolGroups.reduce(0) { $0 + toolGroupWidth($1.count) + groupSpacing }
+        // Background, gap, Copy, gap, Save
+        let actions = backgroundButtonWidth + 8 + actionButtonWidth + 4 + actionButtonWidth
+        return edgeInset + tools + optionsGroupWidth + groupSpacing + actions + edgeInset
     }()
 
     var onToolChanged: ((AnnotationTool) -> Void)?
@@ -42,6 +65,10 @@ final class AnnotationToolbar: NSView {
     var onBackgroundOptionsChanged: ((ScreenshotBackgroundOptions) -> Void)?
 
     private var toolButtons: [AnnotationTool: NSButton] = [:]
+    /// Group backgrounds, left to right, and the last control's right edge
+    /// (layout tests).
+    private(set) var groupFrames: [NSRect] = []
+    private(set) var trailingControlMaxX: CGFloat = 0
     private var selectedTool: AnnotationTool = .arrow
     private var colorButton: NSButton?
     private var currentColor: NSColor = .systemRed
@@ -114,26 +141,31 @@ final class AnnotationToolbar: NSView {
         border.layer?.borderColor = ShotnixColors.editorDockBorder.cgColor
         addSubview(border)
 
-        var x: CGFloat = 8
+        let midY = Self.height / 2
+        let controlY = midY - Self.controlHeight / 2
+        var x = Self.edgeInset
 
         // Tool groups: shapes, markup, effects
         for group in Self.toolGroups {
-            addToolbarGroupBackground(x: x - 3, width: CGFloat(group.count) * Self.toolPitch + 2)
+            let width = Self.toolGroupWidth(group.count)
+            addToolbarGroupBackground(x: x, width: width)
+            var buttonX = x + Self.groupPadding
             for tool in group {
                 let btn = makeToolButton(tool: tool)
-                btn.frame = NSRect(x: x, y: 8, width: 34, height: 34)
+                btn.frame = NSRect(x: buttonX, y: midY - Self.buttonSize / 2, width: Self.buttonSize, height: Self.buttonSize)
                 addSubview(btn)
                 toolButtons[tool] = btn
-                x += Self.toolPitch
+                buttonX += Self.toolPitch
             }
-            x += Self.groupGap
+            x += width + Self.groupSpacing
         }
 
-        addToolbarGroupBackground(x: x - 6, width: 40 + Self.optionsWidth + 6)
+        addToolbarGroupBackground(x: x, width: Self.optionsGroupWidth)
+        x += Self.colorInset
 
         // Color button (circular, shows current color)
         let colorBtn = NSButton(title: "", target: self, action: #selector(showColorPopover(_:)))
-        colorBtn.frame = NSRect(x: x, y: 10, width: 30, height: 30)
+        colorBtn.frame = NSRect(x: x, y: controlY, width: Self.controlHeight, height: Self.controlHeight)
         colorBtn.title = ""
         colorBtn.alternateTitle = ""
         colorBtn.attributedTitle = NSAttributedString(string: "")
@@ -150,33 +182,33 @@ final class AnnotationToolbar: NSView {
         colorBtn.setAccessibilityValue(Self.colorName(currentColor))
         addSubview(colorBtn)
         colorButton = colorBtn
-        x += 40
+        x += Self.controlHeight + 10
 
-        optionsContainer.frame = NSRect(x: x, y: 0, width: Self.optionsWidth, height: 50)
+        optionsContainer.frame = NSRect(x: x, y: midY - 25, width: Self.optionsWidth, height: 50)
         addSubview(optionsContainer)
         buildOptionControls()
-        x += Self.optionsWidth + 10
+        x += Self.optionsWidth - Self.optionsTrailing + Self.colorInset + Self.groupSpacing
 
         let backgroundBtn = PremiumToolbarActionButton(title: "Background", target: self, action: #selector(backgroundTapped(_:)))
         backgroundBtn.bezelStyle = .regularSquare
         backgroundBtn.font = .systemFont(ofSize: 11, weight: .semibold)
         backgroundBtn.imagePosition = .noImage
         backgroundBtn.toolTip = "Background"
-        backgroundBtn.frame = NSRect(x: x, y: 10, width: 110, height: 30)
+        backgroundBtn.frame = NSRect(x: x, y: controlY, width: Self.backgroundButtonWidth, height: Self.controlHeight)
         addSubview(backgroundBtn)
         backgroundButton = backgroundBtn
-        x += 116
-
-        x += 2
+        x += Self.backgroundButtonWidth + 8
 
         // Action buttons
         for (title, sel, help) in [("Copy", #selector(copyTapped), "Copy (\u{2318}C)"), ("Save", #selector(saveTapped), "Save (\u{2318}S)")] {
             let btn = PremiumToolbarActionButton(title: title, target: self, action: sel)
             btn.bezelStyle = .regularSquare
             btn.font = .systemFont(ofSize: 11, weight: title == "Save" ? .semibold : .regular)
-            btn.frame = NSRect(x: x, y: 10, width: 54, height: 30)
+            btn.frame = NSRect(x: x, y: controlY, width: Self.actionButtonWidth, height: Self.controlHeight)
             btn.toolTip = help
-            addSubview(btn); x += 58
+            addSubview(btn)
+            trailingControlMaxX = btn.frame.maxX
+            x += Self.actionButtonWidth + 4
         }
 
         selectTool(.arrow)
@@ -262,12 +294,12 @@ final class AnnotationToolbar: NSView {
         // Controls end 10 pt before the group's edge, matching the color button's inset.
         switch newOptions.context {
         case .stroke:
-            sizeLabel.frame = NSRect(x: 0, y: 18, width: 30, height: 16)
-            lineWidthSlider.frame = NSRect(x: 32, y: 12, width: 122, height: 28)
+            sizeLabel.frame = NSRect(x: 0, y: 17, width: 30, height: 16)
+            lineWidthSlider.frame = NSRect(x: 32, y: 11, width: 122, height: 28)
             visible = [sizeLabel, lineWidthSlider]
         case .rectangle:
-            sizeLabel.frame = NSRect(x: 0, y: 18, width: 30, height: 16)
-            lineWidthSlider.frame = NSRect(x: 32, y: 12, width: 84, height: 28)
+            sizeLabel.frame = NSRect(x: 0, y: 17, width: 30, height: 16)
+            lineWidthSlider.frame = NSRect(x: 32, y: 11, width: 84, height: 28)
             roundedCornersButton.frame = NSRect(x: 124, y: 10, width: 30, height: 30)
             visible = [sizeLabel, lineWidthSlider, roundedCornersButton]
         case .text:
@@ -275,11 +307,11 @@ final class AnnotationToolbar: NSView {
             boldButton.frame = NSRect(x: 98, y: 10, width: 30, height: 30)
             visible = [fontSizePopUp, boldButton]
         case .redaction:
-            strengthLabel.frame = NSRect(x: 0, y: 18, width: 50, height: 16)
-            strengthSlider.frame = NSRect(x: 52, y: 12, width: 102, height: 28)
+            strengthLabel.frame = NSRect(x: 0, y: 17, width: 50, height: 16)
+            strengthSlider.frame = NSRect(x: 52, y: 11, width: 102, height: 28)
             visible = [strengthLabel, strengthSlider]
         case .spotlight:
-            shapeLabel.frame = NSRect(x: 0, y: 18, width: 38, height: 16)
+            shapeLabel.frame = NSRect(x: 0, y: 17, width: 38, height: 16)
             spotlightShapeControl.frame = NSRect(x: 42, y: 13, width: 84, height: 24)
             visible = [shapeLabel, spotlightShapeControl]
         case .crop:
@@ -287,7 +319,7 @@ final class AnnotationToolbar: NSView {
             resetCropButton.frame = NSRect(x: 80, y: 10, width: 74, height: 30)
             visible = [applyCropButton, resetCropButton]
         case .none:
-            hintLabel.frame = NSRect(x: 0, y: 18, width: Self.optionsWidth - 10, height: 16)
+            hintLabel.frame = NSRect(x: 0, y: 17, width: Self.optionsWidth - Self.optionsTrailing, height: 16)
             hintLabel.stringValue = selectedTool == .numberedStep ? "Click to add the next step" : "Click an annotation to edit it"
             visible = [hintLabel]
         }
@@ -327,9 +359,10 @@ final class AnnotationToolbar: NSView {
     }
 
     private func addToolbarGroupBackground(x: CGFloat, width: CGFloat) {
-        let group = NSView(frame: NSRect(x: x, y: 6, width: width, height: 40))
+        let group = NSView(frame: NSRect(x: x, y: Self.edgeInset, width: width, height: Self.groupHeight))
+        groupFrames.append(group.frame)
         group.wantsLayer = true
-        group.layer?.cornerRadius = 11
+        group.layer?.cornerRadius = Self.groupRadius
         group.layer?.cornerCurve = .continuous
         group.layer?.backgroundColor = NSColor.white.withAlphaComponent(0.055).cgColor
         group.layer?.borderWidth = 1
@@ -339,6 +372,9 @@ final class AnnotationToolbar: NSView {
 
     private func makeToolButton(tool: AnnotationTool) -> NSButton {
         let btn = AnnotationToolButton(frame: .zero)
+        btn.wantsLayer = true
+        btn.layer?.cornerRadius = Self.buttonRadius
+        btn.layer?.cornerCurve = .continuous
         btn.image = NSImage(systemSymbolName: tool.icon, accessibilityDescription: tool.name)
         btn.bezelStyle = .regularSquare
         btn.isBordered = false
@@ -369,13 +405,17 @@ final class AnnotationToolbar: NSView {
         selectedTool = tool
         toolButtons[tool]?.wantsLayer = true
         toolButtons[tool]?.layer?.backgroundColor = NSColor.controlAccentColor.withAlphaComponent(0.28).cgColor
-        toolButtons[tool]?.layer?.cornerRadius = 8
-        toolButtons[tool]?.layer?.cornerCurve = .continuous
         toolButtons[tool]?.setAccessibilityValue(NSNumber(value: 1))
         if let newBtn = toolButtons[tool] as? AnnotationToolButton {
             newBtn.isSelectedTool = true
         }
     }
+
+    func frame(of tool: AnnotationTool) -> NSRect? {
+        toolButtons[tool]?.frame
+    }
+
+    var colorButtonFrame: NSRect? { colorButton?.frame }
 
     func selectToolExternally(_ tool: AnnotationTool) {
         selectTool(tool)
@@ -525,7 +565,7 @@ final class ToolbarToggleButton: NSButton {
         self.toolTip = toolTip
         setAccessibilityLabel(label)
         wantsLayer = true
-        layer?.cornerRadius = 8
+        layer?.cornerRadius = AnnotationToolbar.buttonRadius
         layer?.cornerCurve = .continuous
     }
 
@@ -974,25 +1014,38 @@ private final class AnnotationToolButton: NSButton {
         }
     }
 
+    /// Presses in about its center. NSButton tracks the click inside
+    /// `super.mouseDown` and never gets `mouseUp`, so the spring back runs
+    /// when that returns.
     override func mouseDown(with event: NSEvent) {
         wantsLayer = true
-        let scale = CATransform3DMakeScale(0.92, 0.92, 1)
-        layer?.transform = scale
+        guard let layer else { return super.mouseDown(with: event) }
+        let pressed = layer.scaledAboutCenter(0.92)
+        layer.transform = pressed
         super.mouseDown(with: event)
-    }
-
-    override func mouseUp(with event: NSEvent) {
-        let spring = CASpringAnimation(keyPath: "transform.scale")
-        spring.fromValue = 0.92
-        spring.toValue = 1.0
+        let spring = CASpringAnimation(keyPath: "transform")
+        spring.fromValue = NSValue(caTransform3D: pressed)
+        spring.toValue = NSValue(caTransform3D: CATransform3DIdentity)
         spring.mass = 1.0
         spring.stiffness = 300
         spring.damping = 15
         spring.initialVelocity = 0
         spring.duration = spring.settlingDuration
-        layer?.add(spring, forKey: "bounceBack")
-        layer?.transform = CATransform3DIdentity
-        super.mouseUp(with: event)
+        layer.add(spring, forKey: "bounceBack")
+        layer.transform = CATransform3DIdentity
+    }
+}
+
+extension CALayer {
+    /// A scale about the layer's center, whatever its anchor point. Layers of
+    /// layer-backed views anchor at a corner, so a plain scale would pull a
+    /// button toward that corner.
+    func scaledAboutCenter(_ scale: CGFloat) -> CATransform3D {
+        let dx = bounds.width * (0.5 - anchorPoint.x)
+        let dy = bounds.height * (0.5 - anchorPoint.y)
+        var transform = CATransform3DMakeTranslation(dx, dy, 0)
+        transform = CATransform3DScale(transform, scale, scale, 1)
+        return CATransform3DTranslate(transform, -dx, -dy, 0)
     }
 }
 
@@ -1033,16 +1086,14 @@ private final class PremiumToolbarActionButton: NSButton {
         animateBackground(ShotnixColors.editorActionBackground.cgColor)
     }
 
+    /// NSButton tracks the click inside `super.mouseDown` and never gets
+    /// `mouseUp`, so the release look is restored when that returns.
     override func mouseDown(with event: NSEvent) {
         animateBackground(ShotnixColors.cornerButtonPressed.cgColor)
-        layer?.transform = CATransform3DMakeScale(0.97, 0.97, 1)
+        if let layer { layer.transform = layer.scaledAboutCenter(0.97) }
         super.mouseDown(with: event)
-    }
-
-    override func mouseUp(with event: NSEvent) {
         animateBackground(isHovered ? ShotnixColors.cornerButtonHover.cgColor : ShotnixColors.editorActionBackground.cgColor)
         layer?.transform = CATransform3DIdentity
-        super.mouseUp(with: event)
     }
 
     private func configureLayer() {

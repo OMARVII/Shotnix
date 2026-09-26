@@ -1325,16 +1325,14 @@ private final class HistoryActionButton: NSButton {
         animateBackground(baseColor)
     }
 
+    /// NSButton tracks the click inside `super.mouseDown` and never gets
+    /// `mouseUp`, so the release look is restored when that returns.
     override func mouseDown(with event: NSEvent) {
         animateBackground(pressedColor)
-        layer?.transform = CATransform3DMakeScale(0.97, 0.97, 1)
+        if let layer { layer.transform = layer.scaledAboutCenter(0.97) }
         super.mouseDown(with: event)
-    }
-
-    override func mouseUp(with event: NSEvent) {
         animateBackground(isHovered ? hoverColor : baseColor)
         layer?.transform = CATransform3DIdentity
-        super.mouseUp(with: event)
     }
 
     private func configure() {

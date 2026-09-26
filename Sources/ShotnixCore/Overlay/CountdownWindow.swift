@@ -66,9 +66,10 @@ final class CountdownWindow: NSWindow {
             animator().alphaValue = 1
         }
         if let layer = circleView.layer {
-            let spring = CASpringAnimation(keyPath: "transform.scale")
-            spring.fromValue = 0.86
-            spring.toValue = 1.0
+            // Springs up from its center (a plain scale grows from a corner).
+            let spring = CASpringAnimation(keyPath: "transform")
+            spring.fromValue = NSValue(caTransform3D: layer.scaledAboutCenter(0.86))
+            spring.toValue = NSValue(caTransform3D: CATransform3DIdentity)
             spring.stiffness = 320
             spring.damping = 20
             spring.duration = spring.settlingDuration
