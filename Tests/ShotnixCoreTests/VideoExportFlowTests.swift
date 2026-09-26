@@ -227,6 +227,7 @@ final class VideoExportFlowTests: XCTestCase {
         let model = VideoEditorModel(videoURL: project.sourceURL)
         await model.load()
         model.exportSettings = VideoInspection.mp4Settings()
+        model.isExportPresented = true
         model.enqueueExport(to: directory.appendingPathComponent("snap.mp4"), settings: model.exportSettings, toClipboard: false)
         let job = try XCTUnwrap(model.exportJobs.last)
         let background = job.project.background
@@ -238,6 +239,9 @@ final class VideoExportFlowTests: XCTestCase {
         try await wait(for: job)
         try await Task.sleep(nanoseconds: 300_000_000)
         guard case .finished = model.exportPhase else { return XCTFail("\(model.exportPhase)") }
+        // With the sheet closed the result stays in the pill; ⌘E starts fresh.
+        model.closeExportSheet()
+        XCTAssertEqual(model.exportPhase, .idle)
         VideoExportQueue.shared.dismiss(job)
         model.stop()
         VideoDemoDraftStore.delete(for: project.sourceURL)

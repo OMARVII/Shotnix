@@ -464,18 +464,21 @@ extension VideoEditorModel {
     private func observeExport(_ job: VideoExportQueue.Job) {
         Task { [weak self, weak job] in
             while let job, let self {
+                // Only the export the sheet shows moves it along. With the
+                // sheet closed, the pill carries the result and the next ⌘E
+                // starts on the options.
+                var shown = false
+                if case .running(_, _, let destination, _) = self.exportPhase { shown = destination == job.destination }
                 switch job.state {
                 case .finished(let bytes):
-                    self.exportPhase = .finished(url: job.destination, bytes: bytes, copied: job.toClipboard)
+                    if shown { self.exportPhase = self.isExportPresented ? .finished(url: job.destination, bytes: bytes, copied: job.toClipboard) : .idle }
                     if let note = job.note { self.showNotice(note, symbol: "exclamationmark.triangle.fill") }
                     return
                 case .failed(let message):
-                    self.exportPhase = .failed(message)
+                    if shown { self.exportPhase = self.isExportPresented ? .failed(message) : .idle }
                     return
                 case .cancelled:
-                    if case .running(_, _, let destination, _) = self.exportPhase, destination == job.destination {
-                        self.exportPhase = .idle
-                    }
+                    if shown { self.exportPhase = .idle }
                     self.showNotice("Export cancelled", symbol: "xmark.circle")
                     return
                 default:

@@ -154,7 +154,9 @@ final class VideoFeatureSnapshotTests: XCTestCase {
         while !job.isDone, Date() < deadline { try await Task.sleep(nanoseconds: 100_000_000) }
         try await Task.sleep(nanoseconds: 300_000_000)
         try await render(VideoEditorRootView(model: model), size: full, name: "93-export-pill-finished")
+        XCTAssertEqual(model.exportPhase, .idle, "finished with the sheet closed: the pill has it")
         model.isExportPresented = true
+        model.exportPhase = .finished(url: job.destination, bytes: 9_700_000, copied: false)
         try await render(VideoExportSheet(model: model), size: CGSize(width: 900, height: 700), name: "94-export-finished-share")
         VideoExportQueue.shared.dismiss(job)
         model.stop()
