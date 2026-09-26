@@ -348,8 +348,10 @@ struct VideoCaptionsInspector: View {
                             .font(.system(size: 11.5, weight: .semibold))
                             .foregroundStyle(VideoEditorTheme.textPrimary)
                         Spacer()
-                        if let fraction = job.fraction {
-                            Text("\(Int((fraction * 100).rounded()))%")
+                        // The time spent always moves, even while the
+                        // recognizer hasn't said how far it is.
+                        TimelineView(.periodic(from: .now, by: 1)) { context in
+                            Text([job.fraction.map { "\(Int(($0 * 100).rounded()))%" }, job.elapsed(at: context.date)].compactMap { $0 }.joined(separator: " · "))
                                 .font(.system(size: 11, weight: .semibold, design: .monospaced))
                                 .foregroundStyle(VideoEditorTheme.textSecondary)
                         }
@@ -359,6 +361,10 @@ struct VideoCaptionsInspector: View {
                     } else {
                         ProgressView().progressViewStyle(.linear).tint(VideoEditorTheme.caption)
                     }
+                    Text("Keep editing — the words appear here when Shotnix is done listening.")
+                        .font(.system(size: 10.5))
+                        .foregroundStyle(VideoEditorTheme.textTertiary)
+                        .fixedSize(horizontal: false, vertical: true)
                     Button("Cancel") { model.cancelCaptions() }
                         .buttonStyle(VideoSecondaryButtonStyle())
                 }

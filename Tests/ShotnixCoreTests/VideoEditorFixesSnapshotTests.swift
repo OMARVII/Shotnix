@@ -67,4 +67,17 @@ final class VideoEditorFixesSnapshotTests: XCTestCase {
         model.previewMuted = true
         try await Self.render(VideoEditorRootView(model: model), size: full, name: "fix-01-preview-muted")
     }
+
+    func testTranscriptionShowsItIsWorking() async throws {
+        var options = T.Options(seconds: 4, size: CGSize(width: 1440, height: 900))
+        options.audio = true
+        let model = try await T.make(in: directory, options)
+        model.inspectorTab = .captions
+        // Older Macs: no fraction yet — a moving bar and the time spent.
+        model.captionJob = VideoCaptionJob(stage: .transcribing(0), started: Date().addingTimeInterval(-42))
+        try await Self.render(VideoInspectorView(model: model), size: CGSize(width: 318, height: 560), name: "fix-08-transcribing-indeterminate")
+        model.captionJob = VideoCaptionJob(stage: .transcribing(0.4), started: Date().addingTimeInterval(-65))
+        try await Self.render(VideoInspectorView(model: model), size: CGSize(width: 318, height: 560), name: "fix-08-transcribing-progress")
+        model.captionJob = nil
+    }
 }

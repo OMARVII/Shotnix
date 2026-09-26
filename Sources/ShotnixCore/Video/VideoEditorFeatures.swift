@@ -7,6 +7,7 @@ struct VideoCaptionJob: Equatable {
     var error: String?
     /// The fix is a switch in System Settings.
     var needsPrivacySettings = false
+    var started = Date()
 
     var title: String {
         if error != nil { return "Couldn't make captions" }
@@ -17,11 +18,19 @@ struct VideoCaptionJob: Equatable {
         }
     }
 
+    /// nil until there's real progress to show (the bar runs without a
+    /// value until then, next to the time spent so far).
     var fraction: Double? {
         switch stage {
         case .preparing: return nil
-        case .downloading(let value), .transcribing(let value): return value
+        case .downloading(let value), .transcribing(let value): return value > 0.005 ? value : nil
         }
+    }
+
+    /// "0:42" since it started.
+    func elapsed(at now: Date = Date()) -> String {
+        let seconds = max(Int(now.timeIntervalSince(started)), 0)
+        return String(format: "%d:%02d", seconds / 60, seconds % 60)
     }
 }
 
@@ -61,7 +70,7 @@ extension VideoEditorModel {
             captionJob = VideoCaptionJob(stage: .preparing, error: VideoCaptionTranscriber.Failure.noAudio.localizedDescription)
             return
         }
-        let url = project.sourceURL
+        let source = transcriptionSource
         let language = captionLanguage.isEmpty ? nil : captionLanguage
         // Each run has its own token: a cancelled run that finishes late
         // never touches the one that replaced it.
@@ -82,7 +91,7 @@ extension VideoEditorModel {
         }
         captionTask = Task { [weak self] in
             do {
-                let result = try await VideoCaptionTranscriber.transcribe(url: url, languageIdentifier: language, progress: report)
+                let result = try await VideoCaptionTranscriber.transcribe(url: source.url, trackIndex: source.trackIndex, timeOffset: source.offset, languageIdentifier: language, progress: report)
                 guard let self, self.captionToken == token else { return }
                 self.captionTask = nil
                 self.captionToken = nil
@@ -116,6 +125,20 @@ extension VideoEditorModel {
                 }
             }
         }
+    }
+
+    /// The microphone alone (cleaned up when that's ready), not the Mac's
+    /// sound mixed in.
+    var transcriptionSource: VideoCaptionTranscriber.Source {
+        let voiceStart = voiceTrackIndex.flatMap { index in
+            playback.source.flatMap { $0.audioRanges.indices.contains(index) ? $0.audioRanges[index].start.seconds : nil }
+        } ?? 0
+        return VideoCaptionTranscriber.source(
+            recording: project.sourceURL,
+            kinds: audioKinds,
+            enhancedVoice: enhancedVoiceReady ? enhancedVoiceURL : nil,
+            voiceStart: voiceStart.isFinite ? voiceStart : 0
+        )
     }
 
     /// Real transcribed words (typed caption lines don't count).
@@ -163,26 +186,81 @@ extension VideoEditorModel {
         }
     }
 
-    /// Keeps word highlighting after an edit: same word count → keep the
-    /// timings; otherwise spread the new words across the line.
-    static func retimedWords(for text: String, previous: [VideoCaptionWord], start: Double, end: Double) -> [VideoCaptionWord] {
+    /// Keeps word timings through an edit: words that survived it (matched
+    /// ignoring case and punctuation) keep their real times, a word typed
+    /// over another takes that word's time, and only the rest is estimated
+    /// — inside the time of the words it replaced, so cutting by text later
+    /// still lands on the voice.
+    nonisolated static func retimedWords(for text: String, previous: [VideoCaptionWord], start: Double, end: Double) -> [VideoCaptionWord] {
         let parts = text.split(whereSeparator: { $0.isWhitespace }).map(String.init)
         // A typed line has no voice under it: it stays without word timings
         // (it never becomes transcript you could cut the video with).
         guard !parts.isEmpty, !previous.isEmpty else { return [] }
-        if parts.count == previous.count {
-            return zip(parts, previous).map { VideoCaptionWord(text: $0, start: $1.start, end: $1.end) }
+        func key(_ word: String) -> String {
+            word.lowercased().trimmingCharacters(in: .punctuationCharacters.union(.whitespaces))
         }
-        let first = previous.first?.start ?? start
-        let last = previous.last?.end ?? end
-        let span = max(last - first, 0.1)
-        let characters = max(parts.reduce(0) { $0 + $1.count }, 1)
-        var cursor = first
-        return parts.map { part in
-            let length = span * Double(part.count) / Double(characters)
+        let anchors = commonSubsequence(previous.map { key($0.text) }, parts.map(key))
+        var result: [VideoCaptionWord] = []
+        var lastOld = -1
+        var lastNew = -1
+        for (oldIndex, newIndex) in anchors + [(previous.count, parts.count)] {
+            let replaced = Array(previous[(lastOld + 1)..<oldIndex])
+            let typed = Array(parts[(lastNew + 1)..<newIndex])
+            if !typed.isEmpty {
+                if replaced.count == typed.count {
+                    result += zip(typed, replaced).map { VideoCaptionWord(text: $0, start: $1.start, end: $1.end) }
+                } else {
+                    // The replaced words' time, or the silence between the
+                    // neighbours for a word that was only added.
+                    let lower = replaced.first?.start ?? (lastOld >= 0 ? previous[lastOld].end : previous[0].start)
+                    let upper = replaced.last?.end ?? (oldIndex < previous.count ? previous[oldIndex].start : previous[previous.count - 1].end)
+                    result += spread(typed, from: lower, to: max(upper, lower))
+                }
+            }
+            if newIndex < parts.count {
+                result.append(VideoCaptionWord(text: parts[newIndex], start: previous[oldIndex].start, end: previous[oldIndex].end))
+            }
+            lastOld = oldIndex
+            lastNew = newIndex
+        }
+        return result
+    }
+
+    /// Words across a span, each as long as its share of the characters.
+    private nonisolated static func spread(_ words: [String], from lower: Double, to upper: Double) -> [VideoCaptionWord] {
+        let characters = max(words.reduce(0) { $0 + $1.count }, 1)
+        var cursor = lower
+        return words.map { word in
+            let length = (upper - lower) * Double(word.count) / Double(characters)
             defer { cursor += length }
-            return VideoCaptionWord(text: part, start: cursor, end: cursor + length)
+            return VideoCaptionWord(text: word, start: cursor, end: cursor + length)
         }
+    }
+
+    /// Index pairs of the longest common subsequence (in order).
+    nonisolated static func commonSubsequence(_ a: [String], _ b: [String]) -> [(Int, Int)] {
+        guard !a.isEmpty, !b.isEmpty else { return [] }
+        var lengths = Array(repeating: Array(repeating: 0, count: b.count + 1), count: a.count + 1)
+        for i in stride(from: a.count - 1, through: 0, by: -1) {
+            for j in stride(from: b.count - 1, through: 0, by: -1) {
+                lengths[i][j] = a[i] == b[j] ? lengths[i + 1][j + 1] + 1 : max(lengths[i + 1][j], lengths[i][j + 1])
+            }
+        }
+        var pairs: [(Int, Int)] = []
+        var i = 0
+        var j = 0
+        while i < a.count, j < b.count {
+            if a[i] == b[j] {
+                pairs.append((i, j))
+                i += 1
+                j += 1
+            } else if lengths[i + 1][j] >= lengths[i][j + 1] {
+                i += 1
+            } else {
+                j += 1
+            }
+        }
+        return pairs
     }
 
     func setCaptionTiming(_ id: UUID, start: Double? = nil, end: Double? = nil) {
