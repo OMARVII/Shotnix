@@ -119,6 +119,78 @@ final class VideoProjectSourcesTests: XCTestCase {
         XCTAssertGreaterThan(darkest(second), 0.6, "and not over the plain video")
     }
 
+    /// Recordings made on different screens: each pointer is drawn at its
+    /// own Retina scale, and a recording of another shape keeps its pointer
+    /// on its own picture.
+    func testEachRecordingKeepsItsOwnPointerSizeAndPlace() throws {
+        func samples(_ duration: Double, at point: (Double, Double), after: Double = .infinity, moveTo: (Double, Double) = (0, 0)) -> [VideoDemoCursorSample] {
+            stride(from: 0.0, through: duration, by: 0.05).map { t in
+                t < after ? VideoDemoCursorSample(time: t, x: point.0, y: point.1) : VideoDemoCursorSample(time: t, x: moveTo.0, y: moveTo.1)
+            }
+        }
+        func metadata(_ path: String, width: Double, height: Double, scale: Double, cursor: [VideoDemoCursorSample], clicks: [VideoDemoClickEvent] = []) -> VideoDemoRecordingMetadata {
+            VideoDemoRecordingMetadata(videoURLPath: path, createdAt: Date(), duration: 2, sourceWidth: width, sourceHeight: height, fps: 30, nativeCursorVisible: false, cursorSamples: cursor, clickEvents: clicks, pointPixelScale: scale, renderCursor: true)
+        }
+        // A: 1280×800 on a Retina screen (2×).
+        let primary = metadata("/tmp/pointer-a.mp4", width: 1280, height: 800, scale: 2, cursor: samples(2, at: (0.5, 0.5)))
+        var project = VideoInspection.project(for: URL(fileURLWithPath: primary.videoURLPath), seconds: 2, size: CGSize(width: 1280, height: 800))
+        project.apply(metadata: primary)
+        project.cursor.visible = true
+        project.cursor.hideWhenIdle = false
+        project.cursor.tidyEnding = false
+        project.cursor.motionBlur = false
+        project.cursor.clickEffect = .none
+        project.ensurePrimarySource(duration: 2, kinds: [], webcam: nil, pointPixelScale: 2)
+        // B: the same pixels from a 1× display — a half-size pointer.
+        let b = metadata("/tmp/pointer-b.mp4", width: 1280, height: 800, scale: 1, cursor: samples(2, at: (0.5, 0.5)))
+        project.appendSource(VideoProjectSource(path: b.videoURLPath, name: "b.mp4", duration: 2, width: 1280, height: 800, hasPointer: true, pointPixelScale: 1), metadata: b)
+        // C: a small square area at 2×, fitted (twice as big) into the frame;
+        // its pointer leaves its picture after a second.
+        let corner = VideoDemoClickEvent(time: 0.5, x: 0, y: 0, button: .left, endTime: 0.6)
+        let c = metadata("/tmp/pointer-c.mp4", width: 400, height: 400, scale: 2, cursor: samples(2, at: (0.5, 0.5), after: 1, moveTo: (-0.2, 0.5)), clicks: [corner])
+        project.appendSource(VideoProjectSource(path: c.videoURLPath, name: "c.mp4", duration: 2, width: 400, height: 400, hasPointer: true, pointPixelScale: 2), metadata: c)
+
+        // C's picture spans 18.75%–81.25% of the width: its click in its own
+        // top-left corner lands there.
+        let click = try XCTUnwrap(project.clickEvents.first { $0.time >= 4 })
+        XCTAssertEqual(click.x, 0.1875, accuracy: 0.001)
+        XCTAssertEqual(click.y, 0, accuracy: 0.001)
+        let track = try XCTUnwrap(VideoSourcesPointer.cursorTrack(project: project, duration: 6))
+        XCTAssertGreaterThan(track.alpha(at: 4.5), 0.9, "on its picture, the pointer shows")
+        XCTAssertLessThan(track.alpha(at: 5.9), 0.05, "over the bars beside it, it's hidden")
+
+        let plan = VideoDemoExporter.makePlan(project: project, sourceDuration: 6, recording: primary)
+        XCTAssertEqual(plan.pointerScale(at: 1), 2, accuracy: 0.001)
+        XCTAssertEqual(plan.pointerScale(at: 3), 1, accuracy: 0.001)
+        XCTAssertEqual(plan.pointerScale(at: 4.5), 4, accuracy: 0.001, "2× recording, shown twice as big")
+
+        // Drawn: dark arrow pixels around the middle of the frame.
+        let size = CGSize(width: 640, height: 400)
+        let light = CIImage(color: CIColor(red: 0.85, green: 0.85, blue: 0.85)).cropped(to: CGRect(origin: .zero, size: size))
+        let renderer = VideoFrameRenderer()
+        func arrowPixels(at time: Double) -> Int {
+            let image = renderer.render(source: light, timelineTime: time, plan: plan, outputSize: size)
+            let cgImage = VideoRenderContext.shared.createCGImage(image, from: CGRect(origin: .zero, size: size), format: .RGBA8, colorSpace: CGColorSpace(name: CGColorSpace.sRGB))!
+            var data = [UInt8](repeating: 0, count: Int(size.width * size.height) * 4)
+            let context = CGContext(data: &data, width: Int(size.width), height: Int(size.height), bitsPerComponent: 8, bytesPerRow: Int(size.width) * 4, space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
+            context.draw(cgImage, in: CGRect(origin: .zero, size: size))
+            var count = 0
+            for y in 150..<340 {
+                for x in 280..<440 {
+                    let index = (y * Int(size.width) + x) * 4
+                    if Int(data[index]) + Int(data[index + 1]) + Int(data[index + 2]) < 230 { count += 1 }
+                }
+            }
+            return count
+        }
+        let retina = arrowPixels(at: 1)
+        let standard = arrowPixels(at: 3)
+        let magnified = arrowPixels(at: 4.5)
+        XCTAssertGreaterThan(retina, 20, "the arrow is drawn")
+        XCTAssertEqual(Double(standard) / Double(retina), 0.25, accuracy: 0.12, "half as tall on the 1× recording (\(standard) vs \(retina))")
+        XCTAssertEqual(Double(magnified) / Double(retina), 4, accuracy: 1.5, "twice as tall on the magnified one (\(magnified) vs \(retina))")
+    }
+
     /// A phone clip stored sideways (with a rotation) added after a screen
     /// recording: upright and fitted, with the recording's camera on or off.
     func testARotatedAddedVideoStaysUprightWithOrWithoutTheCamera() async throws {

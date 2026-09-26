@@ -290,6 +290,15 @@ final class VideoRenderPlan: @unchecked Sendable {
     let fullSourceAspect: CGFloat
     /// Several recordings: frames of another shape are letterboxed.
     let fitsMismatchedFrames: Bool
+    /// Several recordings: each one's recorded pixels per point, in the
+    /// project's frame (an added recording's fit included), by where it
+    /// starts on the source axis.
+    let sourcePointerScales: [(start: Double, scale: Double)]
+
+    /// Pointer size at a source moment: that recording's own Retina scale.
+    func pointerScale(at sourceTime: Double) -> Double {
+        sourcePointerScales.last { sourceTime >= $0.start - 0.0001 }?.scale ?? pointPixelScale
+    }
 
     func hasCameraFootage(at time: Double) -> Bool {
         cameraCoverage?.contains { time >= $0.lowerBound - 0.0005 && time <= $0.upperBound + 0.0005 } ?? true
@@ -360,7 +369,12 @@ final class VideoRenderPlan: @unchecked Sendable {
         cursorSettings = project.cursor
         rendersCursor = project.rendersCursor && cursorTrack != nil
         self.artwork = artwork
-        self.pointPixelScale = pointPixelScale ?? 2
+        let baseScale = pointPixelScale ?? 2
+        self.pointPixelScale = baseScale
+        sourcePointerScales = project.hasAppendedSources ? project.sources.map { source in
+            let own = source.isPrimary ? (pointPixelScale ?? source.pointPixelScale ?? baseScale) : (source.pointPixelScale ?? baseScale)
+            return (source.offset, own * source.fitScale(inFrame: project.frameSize))
+        } : []
         motionBlur = project.motionBlur
 
         let segments = self.segments
@@ -668,7 +682,7 @@ final class VideoFrameRenderer {
             }
         } else if plan.cursorSettings.clickEffect == .ripple, !plan.clicks.isEmpty {
             // Baked-cursor recordings still get ripples at the click spots.
-            scene = drawRipples(on: scene, plan: plan, geometry: geometry, time: timelineTime, pointerHeight: 28 * geometry.pixelScale * plan.stageScale * CGFloat(plan.pointPixelScale))
+            scene = drawRipples(on: scene, plan: plan, geometry: geometry, time: timelineTime, pointerHeight: 28 * geometry.pixelScale * plan.stageScale * CGFloat(plan.pointerScale(at: sourceTime)))
         }
 
         // 7. The camera, captions, and shortcuts — on the output, not the
@@ -1508,9 +1522,10 @@ final class VideoFrameRenderer {
 
     // MARK: Pointer
 
-    private func pointerPixelHeight(plan: VideoRenderPlan, geometry: Geometry, shape: VideoCursorArtwork.Shape) -> CGFloat {
-        // Points → recorded pixels → canvas → output, times the user's size.
-        shape.size.height * CGFloat(plan.pointPixelScale) * plan.stageScale * geometry.pixelScale * CGFloat(plan.cursorSettings.size)
+    private func pointerPixelHeight(plan: VideoRenderPlan, geometry: Geometry, shape: VideoCursorArtwork.Shape, sourceTime: Double) -> CGFloat {
+        // Points → recorded pixels (of the recording playing) → canvas →
+        // output, times the user's size.
+        shape.size.height * CGFloat(plan.pointerScale(at: sourceTime)) * plan.stageScale * geometry.pixelScale * CGFloat(plan.cursorSettings.size)
     }
 
     private func drawPointer(
@@ -1524,7 +1539,7 @@ final class VideoFrameRenderer {
         options: Options
     ) -> CIImage {
         let shape = plan.artwork.shape(at: sourceTime, alwaysArrow: plan.cursorSettings.alwaysArrow)
-        let height = pointerPixelHeight(plan: plan, geometry: geometry, shape: shape)
+        let height = pointerPixelHeight(plan: plan, geometry: geometry, shape: shape, sourceTime: sourceTime)
         var output = scene
 
         if plan.cursorSettings.clickEffect == .ripple {

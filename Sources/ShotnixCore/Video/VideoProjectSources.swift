@@ -64,6 +64,23 @@ struct VideoProjectSource: Codable, Equatable, Identifiable {
 
     var end: Double { offset + duration }
 
+    /// Where this recording's picture sits in the project's frame (the
+    /// first recording's shape): fitted and centered, normalized, y down.
+    func frameRect(inFrame frame: CGSize) -> CGRect {
+        let full = CGRect(x: 0, y: 0, width: 1, height: 1)
+        guard !isPrimary, width > 0, height > 0, frame.width > 0, frame.height > 0 else { return full }
+        let scale = min(frame.width / width, frame.height / height)
+        let w = width * scale / frame.width
+        let h = height * scale / frame.height
+        return CGRect(x: (1 - w) / 2, y: (1 - h) / 2, width: w, height: h)
+    }
+
+    /// The project frame's pixels per pixel of this recording.
+    func fitScale(inFrame frame: CGSize) -> Double {
+        guard !isPrimary, width > 0, height > 0, frame.width > 0, frame.height > 0 else { return 1 }
+        return min(frame.width / width, frame.height / height)
+    }
+
     private enum CodingKeys: String, CodingKey {
         case id, isPrimary, path, bookmark, name, duration, width, height, offset, audioKinds, hasPointer, pointPixelScale, webcam
     }
@@ -165,9 +182,13 @@ extension VideoDemoProject {
         )]
     }
 
+    /// The project's frame (the first recording's upright size).
+    var frameSize: CGSize { CGSize(width: sourceWidth, height: sourceHeight) }
+
     /// Adds a recording after the others and a clip for all of it at the
     /// end of the timeline. Its clicks, shortcuts, and pointer path join the
-    /// project's, moved to where it sits.
+    /// project's, moved to where it sits — in time, and in the frame when
+    /// its shape differs (it's fitted into the first recording's).
     mutating func appendSource(_ incoming: VideoProjectSource, metadata: VideoDemoRecordingMetadata?) {
         guard let last = sources.last else { return }
         var source = incoming
@@ -175,17 +196,25 @@ extension VideoDemoProject {
         source.offset = last.end
         sources.append(source)
         let shift = source.offset
+        let rect = source.frameRect(inFrame: frameSize)
+        func place(_ x: Double, _ y: Double) -> (x: Double, y: Double) {
+            (Double(rect.minX) + x * Double(rect.width), Double(rect.minY) + y * Double(rect.height))
+        }
         if let metadata {
             clickEvents += metadata.clickEvents.map { click in
                 var moved = click
                 moved.id = UUID()
                 moved.time += shift
                 moved.endTime = click.endTime.map { $0 + shift }
+                (moved.x, moved.y) = place(click.x, click.y)
                 return moved
             }
             keystrokes += (metadata.keystrokes ?? []).map { VideoKeystrokeEvent(time: $0.time + shift, keys: $0.keys) }
             if source.hasPointer {
-                cursorSamples += metadata.cursorSamples.map { VideoDemoCursorSample(time: $0.time + shift, x: $0.x, y: $0.y) }
+                cursorSamples += metadata.cursorSamples.map { sample in
+                    let point = place(sample.x, sample.y)
+                    return VideoDemoCursorSample(time: sample.time + shift, x: point.x, y: point.y)
+                }
                 cursorSamples.sort { $0.time < $1.time }
             }
         }
@@ -433,13 +462,20 @@ enum VideoSourcesPointer {
                     local.endTime = click.endTime.map { $0 - source.offset }
                     return local
                 }
+            // Outside its own picture (the bars around a recording of
+            // another shape), a recording's pointer hides.
+            let crop = project.crop.normalized
+            let picture = source.frameRect(inFrame: project.frameSize)
+            let x0 = max(crop.x, Double(picture.minX)), y0 = max(crop.y, Double(picture.minY))
+            let x1 = min(crop.x + crop.width, Double(picture.maxX)), y1 = min(crop.y + crop.height, Double(picture.maxY))
+            let kept = x1 > x0 && y1 > y0 ? VideoCropRect(x: x0, y: y0, width: x1 - x0, height: y1 - y0) : crop
             guard let track = VideoCursorTrack.build(
                 samples: samples,
                 clicks: clicks,
                 smoothing: project.cursor.smoothing,
                 hideWhenIdle: project.cursor.hideWhenIdle,
                 tidyEnding: project.cursor.tidyEnding,
-                crop: project.crop.normalized,
+                crop: kept,
                 duration: source.duration
             ) else { continue }
             tracks.append((source, track))
