@@ -671,6 +671,18 @@ final class CaptureEngine {
         recordingEngine.togglePause()
     }
 
+    /// Pauses a running recording; true when this call paused it.
+    func pauseRecordingIfRunning() -> Bool {
+        guard recordingEngine.elapsedSeconds != nil, !recordingEngine.isPaused else { return false }
+        recordingEngine.togglePause()
+        return recordingEngine.isPaused
+    }
+
+    func resumePausedRecording() {
+        guard recordingEngine.isPaused else { return }
+        recordingEngine.togglePause()
+    }
+
     private func cancelRecordingSetup() {
         if recordingSelectionActive {
             recordingSelectionActive = false

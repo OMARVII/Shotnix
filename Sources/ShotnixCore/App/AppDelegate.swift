@@ -59,8 +59,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard AnnotationWindowController.hasUnsavedChanges else {
             return AppTermination.finishThenQuit(sender)
         }
-        AnnotationWindowController.reviewUnsavedChangesBeforeQuitting { canQuit in
-            guard canQuit else { return sender.reply(toApplicationShouldTerminate: false) }
+        // The review brings editors forward: a recording pauses meanwhile so
+        // they stay out of it, and carries on if the quit is cancelled.
+        let pausedRecording = captureEngine?.pauseRecordingIfRunning() ?? false
+        AnnotationWindowController.reviewUnsavedChangesBeforeQuitting { [weak self] canQuit in
+            guard canQuit else {
+                if pausedRecording { self?.captureEngine?.resumePausedRecording() }
+                return sender.reply(toApplicationShouldTerminate: false)
+            }
             // Saving an edit queues History writes; those finish first too.
             AppTermination.finishAll { sender.reply(toApplicationShouldTerminate: true) }
         }
