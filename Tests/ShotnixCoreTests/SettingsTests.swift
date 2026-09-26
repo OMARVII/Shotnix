@@ -36,6 +36,21 @@ final class SettingsTests: XCTestCase {
         XCTAssertTrue(Settings.openVideoEditorAfterRecording)
     }
 
+    func testAnnotationEditorSettingsDefaultsAndClamping() {
+        XCTAssertFalse(Settings.annotationRoundedRectangles)
+        XCTAssertEqual(Settings.annotationTextFontSize, 18)
+        XCTAssertTrue(Settings.annotationTextBold, "text stays bold until the user turns it off")
+        XCTAssertEqual(Settings.annotationRedactionStrength, 12)
+        XCTAssertFalse(Settings.annotationSpotlightEllipse)
+
+        Settings.annotationTextFontSize = 500
+        Settings.annotationRedactionStrength = 1
+        Settings.annotationTextBold = false
+        XCTAssertEqual(Settings.annotationTextFontSize, 96)
+        XCTAssertEqual(Settings.annotationRedactionStrength, 4)
+        XCTAssertFalse(Settings.annotationTextBold)
+    }
+
     func testRecordingSettingsClampInvalidValues() {
         Settings.recordingFPS = 99
         Settings.recordingQuality = "cinematic"

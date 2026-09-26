@@ -4,41 +4,94 @@ import AppKit
 
 enum AnnotationTool: String, CaseIterable {
     case select, arrow, rectangle, filledRectangle, ellipse, line, freehand
-    case text, numberedStep, highlighter, blur, pixelate, crop
+    case text, callout, numberedStep, highlighter, freehandHighlighter
+    case blur, pixelate, spotlight, crop
 
     var icon: String {
         switch self {
-        case .select:          return "cursorarrow"
-        case .arrow:           return "arrow.up.right"
-        case .rectangle:       return "rectangle"
-        case .filledRectangle: return "rectangle.fill"
-        case .ellipse:         return "circle"
-        case .line:            return "line.diagonal"
-        case .freehand:        return "pencil"
-        case .text:            return "textformat"
-        case .numberedStep:    return "1.circle.fill"
-        case .highlighter:     return "highlighter"
-        case .blur:            return "camera.filters"
-        case .pixelate:        return "square.grid.3x3.fill"
-        case .crop:            return "crop"
+        case .select:              return "cursorarrow"
+        case .arrow:               return "arrow.up.right"
+        case .rectangle:           return "rectangle"
+        case .filledRectangle:     return "rectangle.fill"
+        case .ellipse:             return "circle"
+        case .line:                return "line.diagonal"
+        case .freehand:            return "pencil"
+        case .text:                return "textformat"
+        case .callout:             return "text.bubble"
+        case .numberedStep:        return "1.circle.fill"
+        case .highlighter:         return "highlighter"
+        case .freehandHighlighter: return "scribble.variable"
+        case .blur:                return "camera.filters"
+        case .pixelate:            return "square.grid.3x3.fill"
+        case .spotlight:           return "flashlight.on.fill"
+        case .crop:                return "crop"
         }
     }
 
-    var tooltip: String {
+    /// Name read by VoiceOver and shown in the tooltip.
+    var name: String {
         switch self {
-        case .select:          return "Select (V)"
-        case .arrow:           return "Arrow (A)"
-        case .rectangle:       return "Rectangle (R)"
-        case .filledRectangle: return "Filled Rectangle (\u{21E7}R)"
-        case .ellipse:         return "Ellipse (E)"
-        case .line:            return "Line (L)"
-        case .freehand:        return "Freehand Draw (D)"
-        case .text:            return "Text (T)"
-        case .numberedStep:    return "Numbered Steps (N)"
-        case .highlighter:     return "Highlighter (H)"
-        case .blur:            return "Blur (B)"
-        case .pixelate:        return "Pixelate (P)"
-        case .crop:            return "Crop (C)"
+        case .select:              return "Select"
+        case .arrow:               return "Arrow"
+        case .rectangle:           return "Rectangle"
+        case .filledRectangle:     return "Filled Rectangle"
+        case .ellipse:             return "Ellipse"
+        case .line:                return "Line"
+        case .freehand:            return "Freehand Draw"
+        case .text:                return "Text"
+        case .callout:             return "Callout"
+        case .numberedStep:        return "Numbered Steps"
+        case .highlighter:         return "Highlighter"
+        case .freehandHighlighter: return "Freehand Highlighter"
+        case .blur:                return "Blur"
+        case .pixelate:            return "Pixelate"
+        case .spotlight:           return "Spotlight"
+        case .crop:                return "Crop"
+        }
+    }
+
+    var shortcutLabel: String {
+        switch self {
+        case .select:              return "V"
+        case .arrow:               return "A"
+        case .rectangle:           return "R"
+        case .filledRectangle:     return "\u{21E7}R"
+        case .ellipse:             return "E"
+        case .line:                return "L"
+        case .freehand:            return "D"
+        case .text:                return "T"
+        case .callout:             return "O"
+        case .numberedStep:        return "N"
+        case .highlighter:         return "H"
+        case .freehandHighlighter: return "\u{21E7}H"
+        case .blur:                return "B"
+        case .pixelate:            return "P"
+        case .spotlight:           return "S"
+        case .crop:                return "C"
+        }
+    }
+
+    var tooltip: String { "\(name) (\(shortcutLabel))" }
+
+    /// The tool a single-key shortcut selects. `key` is the lowercase Latin
+    /// letter of the pressed key (see `AnnotationKeyboard.latinKey(for:)`).
+    static func forShortcut(_ key: String, shift: Bool) -> AnnotationTool? {
+        switch key {
+        case "v": return .select
+        case "a": return .arrow
+        case "r": return shift ? .filledRectangle : .rectangle
+        case "e": return .ellipse
+        case "l": return .line
+        case "d": return .freehand
+        case "t": return .text
+        case "o": return .callout
+        case "n": return .numberedStep
+        case "h": return shift ? .freehandHighlighter : .highlighter
+        case "b": return .blur
+        case "p": return .pixelate
+        case "s": return .spotlight
+        case "c": return .crop
+        default:  return nil
         }
     }
 }
@@ -52,9 +105,71 @@ protocol AnnotationObject: AnyObject {
     var isSelected: Bool { get set }
     func draw(in context: CGContext, scale: CGFloat)
     func contains(point: CGPoint) -> Bool
+    /// Hit test while a drawing tool is active. Shapes only grab near their
+    /// outline so a drag inside one draws a new annotation; solid objects
+    /// (text, steps, callouts, strokes) grab wherever `contains` does.
+    func outlineContains(point: CGPoint, tolerance: CGFloat) -> Bool
     func move(by delta: CGPoint)
     func copy() -> any AnnotationObject
     var bounds: CGRect { get }
+}
+
+extension AnnotationObject {
+    func outlineContains(point: CGPoint, tolerance: CGFloat) -> Bool { contains(point: point) }
+}
+
+// MARK: – Hit-testing geometry
+
+enum AnnotationGeometry {
+    static func distance(from p: CGPoint, toSegmentFrom a: CGPoint, to b: CGPoint) -> CGFloat {
+        let dx = b.x - a.x, dy = b.y - a.y
+        let len2 = dx*dx + dy*dy
+        guard len2 > 0 else { return hypot(p.x - a.x, p.y - a.y) }
+        let t = max(0, min(1, ((p.x - a.x)*dx + (p.y - a.y)*dy) / len2))
+        return hypot(p.x - (a.x + t*dx), p.y - (a.y + t*dy))
+    }
+
+    static func distance(from p: CGPoint, toPolyline points: [CGPoint]) -> CGFloat {
+        guard let first = points.first else { return .greatestFiniteMagnitude }
+        guard points.count > 1 else { return hypot(p.x - first.x, p.y - first.y) }
+        var closest = CGFloat.greatestFiniteMagnitude
+        for (a, b) in zip(points, points.dropFirst()) {
+            closest = min(closest, distance(from: p, toSegmentFrom: a, to: b))
+        }
+        return closest
+    }
+
+    /// Within `band` of the rectangle's edge, inside or out. Rects too small
+    /// to have an inside count as all edge.
+    static func rectOutlineContains(_ rect: CGRect, point: CGPoint, band: CGFloat) -> Bool {
+        guard rect.insetBy(dx: -band, dy: -band).contains(point) else { return false }
+        let inner = rect.insetBy(dx: band, dy: band)
+        return inner.isNull || inner.isEmpty || !inner.contains(point)
+    }
+
+    static func ellipseContains(_ rect: CGRect, point: CGPoint) -> Bool {
+        let rx = rect.width / 2, ry = rect.height / 2
+        guard rx > 0, ry > 0 else { return false }
+        let nx = (point.x - rect.midX) / rx
+        let ny = (point.y - rect.midY) / ry
+        return nx*nx + ny*ny <= 1
+    }
+
+    static func ellipseOutlineContains(_ rect: CGRect, point: CGPoint, band: CGFloat) -> Bool {
+        guard ellipseContains(rect.insetBy(dx: -band, dy: -band), point: point) else { return false }
+        let inner = rect.insetBy(dx: band, dy: band)
+        return inner.isNull || inner.isEmpty || !ellipseContains(inner, point: point)
+    }
+
+    static func boundingRect(of points: [CGPoint]) -> CGRect {
+        guard let first = points.first else { return .zero }
+        var minX = first.x, maxX = first.x, minY = first.y, maxY = first.y
+        for p in points {
+            minX = min(minX, p.x); maxX = max(maxX, p.x)
+            minY = min(minY, p.y); maxY = max(maxY, p.y)
+        }
+        return CGRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY)
+    }
 }
 
 // MARK: – Arrow
@@ -193,11 +308,7 @@ final class ArrowAnnotation: AnnotationObject {
     }
 
     private func distanceFromLineSegment(point p: CGPoint, a: CGPoint, b: CGPoint) -> CGFloat {
-        let dx = b.x - a.x, dy = b.y - a.y
-        let len2 = dx*dx + dy*dy
-        guard len2 > 0 else { return hypot(p.x-a.x, p.y-a.y) }
-        let t = max(0, min(1, ((p.x-a.x)*dx + (p.y-a.y)*dy) / len2))
-        return hypot(p.x - (a.x + t*dx), p.y - (a.y + t*dy))
+        AnnotationGeometry.distance(from: p, toSegmentFrom: a, to: b)
     }
 
     private func distanceFromQuadraticCurve(point: CGPoint, control: CGPoint) -> CGFloat {
@@ -219,12 +330,17 @@ enum ArrowHandle {
 // MARK: – Rectangle
 
 final class RectangleAnnotation: AnnotationObject {
+    /// Corner radius new rounded rectangles get.
+    static let roundedCornerRadius: CGFloat = 12
+
     let id = UUID()
     var color: NSColor = .systemRed
     var lineWidth: CGFloat = 2
     var isSelected = false
     var filled: Bool
     var rect: CGRect
+    /// 0 = square corners. Never more than half the short side when drawn.
+    var cornerRadius: CGFloat = 0
 
     init(rect: CGRect, filled: Bool = false) {
         self.rect = rect
@@ -233,25 +349,37 @@ final class RectangleAnnotation: AnnotationObject {
 
     var bounds: CGRect { rect.insetBy(dx: -lineWidth, dy: -lineWidth) }
 
+    var path: CGPath {
+        let radius = min(cornerRadius, min(rect.width, rect.height) / 2)
+        guard radius > 0 else { return CGPath(rect: rect, transform: nil) }
+        return CGPath(roundedRect: rect, cornerWidth: radius, cornerHeight: radius, transform: nil)
+    }
+
     func draw(in ctx: CGContext, scale: CGFloat) {
         ctx.saveGState()
         if filled {
             ctx.setFillColor(color.withAlphaComponent(0.3).cgColor)
-            ctx.fill(rect)
+            ctx.addPath(path)
+            ctx.fillPath()
         }
         ctx.setStrokeColor(color.cgColor)
         ctx.setLineWidth(lineWidth)
-        ctx.stroke(rect)
+        ctx.addPath(path)
+        ctx.strokePath()
         ctx.restoreGState()
     }
 
     func contains(point: CGPoint) -> Bool { rect.insetBy(dx: -8, dy: -8).contains(point) }
+    func outlineContains(point: CGPoint, tolerance: CGFloat) -> Bool {
+        AnnotationGeometry.rectOutlineContains(rect, point: point, band: lineWidth / 2 + tolerance)
+    }
     func move(by delta: CGPoint) { rect.origin.x += delta.x; rect.origin.y += delta.y }
     func copy() -> any AnnotationObject {
         let annotation = RectangleAnnotation(rect: rect, filled: filled)
         annotation.color = color
         annotation.lineWidth = lineWidth
         annotation.isSelected = isSelected
+        annotation.cornerRadius = cornerRadius
         return annotation
     }
 }
@@ -278,6 +406,9 @@ final class EllipseAnnotation: AnnotationObject {
     }
 
     func contains(point: CGPoint) -> Bool { rect.insetBy(dx: -8, dy: -8).contains(point) }
+    func outlineContains(point: CGPoint, tolerance: CGFloat) -> Bool {
+        AnnotationGeometry.ellipseOutlineContains(rect, point: point, band: lineWidth / 2 + tolerance)
+    }
     func move(by delta: CGPoint) { rect.origin.x += delta.x; rect.origin.y += delta.y }
     func copy() -> any AnnotationObject {
         let annotation = EllipseAnnotation(rect: rect)
@@ -353,26 +484,30 @@ final class FreehandAnnotation: AnnotationObject {
     var lineWidth: CGFloat = 2
     var isSelected = false
     var points: [CGPoint] = []
+    /// Marker ink instead of pen: translucent, flat-ended, multiplied into
+    /// the screenshot so dark text under it stays crisp.
+    var isHighlighter = false
 
     var bounds: CGRect {
         guard !points.isEmpty else { return .zero }
-        var minX = points[0].x, maxX = minX
-        var minY = points[0].y, maxY = minY
-        for p in points {
-            minX = min(minX, p.x); maxX = max(maxX, p.x)
-            minY = min(minY, p.y); maxY = max(maxY, p.y)
-        }
-        return CGRect(x: minX-lineWidth, y: minY-lineWidth,
-                      width: maxX-minX+lineWidth*2, height: maxY-minY+lineWidth*2)
+        return AnnotationGeometry.boundingRect(of: points).insetBy(dx: -lineWidth, dy: -lineWidth)
     }
 
     func draw(in ctx: CGContext, scale: CGFloat) {
         guard points.count > 1 else { return }
         ctx.saveGState()
-        ctx.setStrokeColor(color.cgColor)
+        if isHighlighter {
+            ctx.setBlendMode(.multiply)
+            ctx.setStrokeColor(color.withAlphaComponent(0.6).cgColor)
+            ctx.setLineCap(.butt)
+        } else {
+            ctx.setStrokeColor(color.cgColor)
+            ctx.setLineCap(.round)
+        }
         ctx.setLineWidth(lineWidth)
-        ctx.setLineCap(.round)
         ctx.setLineJoin(.round)
+        // One path, one stroke: overlapping parts of a highlighter stroke
+        // don't darken twice.
         ctx.move(to: points[0])
         for p in points.dropFirst() { ctx.addLine(to: p) }
         ctx.strokePath()
@@ -380,6 +515,9 @@ final class FreehandAnnotation: AnnotationObject {
     }
 
     func contains(point: CGPoint) -> Bool { bounds.insetBy(dx: -8, dy: -8).contains(point) }
+    func outlineContains(point: CGPoint, tolerance: CGFloat) -> Bool {
+        AnnotationGeometry.distance(from: point, toPolyline: points) <= lineWidth / 2 + tolerance
+    }
     func move(by delta: CGPoint) { points = points.map { CGPoint(x: $0.x+delta.x, y: $0.y+delta.y) } }
     func copy() -> any AnnotationObject {
         let annotation = FreehandAnnotation()
@@ -387,6 +525,7 @@ final class FreehandAnnotation: AnnotationObject {
         annotation.lineWidth = lineWidth
         annotation.isSelected = isSelected
         annotation.points = points
+        annotation.isHighlighter = isHighlighter
         return annotation
     }
 }
@@ -424,7 +563,11 @@ final class HighlighterAnnotation: AnnotationObject {
         ctx.restoreGState()
     }
 
-    func contains(point: CGPoint) -> Bool { bounds.contains(point) }
+    // The stroke itself, not its bounding box — a diagonal highlight would
+    // otherwise grab clicks in the empty corners around it.
+    func contains(point: CGPoint) -> Bool {
+        AnnotationGeometry.distance(from: point, toSegmentFrom: startPoint, to: endPoint) <= lineWidth / 2 + 4
+    }
     func move(by delta: CGPoint) {
         startPoint.x += delta.x; startPoint.y += delta.y
         endPoint.x += delta.x;   endPoint.y += delta.y
@@ -439,7 +582,13 @@ final class HighlighterAnnotation: AnnotationObject {
     }
 }
 
-// MARK: – Blur
+// MARK: – Redaction (blur / pixelate)
+
+enum AnnotationRedaction {
+    /// Default blur radius / pixel block size, in points.
+    static let defaultStrength: CGFloat = 12
+    static let strengthRange: ClosedRange<CGFloat> = 4...40
+}
 
 final class BlurAnnotation: AnnotationObject {
     let id = UUID()
@@ -447,31 +596,32 @@ final class BlurAnnotation: AnnotationObject {
     var lineWidth: CGFloat = 0
     var isSelected = false
     var rect: CGRect
-    var radius: Double = 12
-    var cachedRender: NSImage?
-    var cachedRect: CGRect = .zero
+    /// Blur radius in points — scaled to the screenshot's pixel density when
+    /// rendered, so it's equally strong on Retina and 1x captures.
+    var strength: CGFloat = AnnotationRedaction.defaultStrength
 
     init(rect: CGRect) { self.rect = rect }
 
     var bounds: CGRect { rect }
 
     func draw(in ctx: CGContext, scale: CGFloat) {
-        // Rendered specially by AnnotationCanvas using CIFilter
+        // Rendered by AnnotationRenderer from the screenshot's pixels
     }
 
     func contains(point: CGPoint) -> Bool { rect.insetBy(dx: -8, dy: -8).contains(point) }
+    func outlineContains(point: CGPoint, tolerance: CGFloat) -> Bool {
+        AnnotationGeometry.rectOutlineContains(rect, point: point, band: tolerance)
+    }
     func move(by delta: CGPoint) { rect.origin.x += delta.x; rect.origin.y += delta.y }
     func copy() -> any AnnotationObject {
         let annotation = BlurAnnotation(rect: rect)
         annotation.color = color
         annotation.lineWidth = lineWidth
         annotation.isSelected = isSelected
-        annotation.radius = radius
+        annotation.strength = strength
         return annotation
     }
 }
-
-// MARK: – Pixelate
 
 final class PixelateAnnotation: AnnotationObject {
     let id = UUID()
@@ -479,27 +629,104 @@ final class PixelateAnnotation: AnnotationObject {
     var lineWidth: CGFloat = 0
     var isSelected = false
     var rect: CGRect
-    var scale: Double = 10
-    var cachedRender: NSImage?
-    var cachedRect: CGRect = .zero
+    /// Pixel block size in points (scaled to pixel density when rendered).
+    var strength: CGFloat = AnnotationRedaction.defaultStrength
 
     init(rect: CGRect) { self.rect = rect }
 
     var bounds: CGRect { rect }
 
     func draw(in ctx: CGContext, scale: CGFloat) {
-        // Rendered specially by AnnotationCanvas
+        // Rendered by AnnotationRenderer from the screenshot's pixels
     }
 
     func contains(point: CGPoint) -> Bool { rect.insetBy(dx: -8, dy: -8).contains(point) }
+    func outlineContains(point: CGPoint, tolerance: CGFloat) -> Bool {
+        AnnotationGeometry.rectOutlineContains(rect, point: point, band: tolerance)
+    }
     func move(by delta: CGPoint) { rect.origin.x += delta.x; rect.origin.y += delta.y }
     func copy() -> any AnnotationObject {
         let annotation = PixelateAnnotation(rect: rect)
         annotation.color = color
         annotation.lineWidth = lineWidth
         annotation.isSelected = isSelected
-        annotation.scale = scale
+        annotation.strength = strength
         return annotation
+    }
+}
+
+// MARK: – Spotlight
+
+/// Dims the screenshot everywhere except its rect or ellipse. All spotlights
+/// share one dimmed layer (drawn by AnnotationRenderer), so two spotlights
+/// never darken each other's opening.
+final class SpotlightAnnotation: AnnotationObject {
+    static let dimAlpha: CGFloat = 0.55
+
+    let id = UUID()
+    var color: NSColor = .black
+    var lineWidth: CGFloat = 0
+    var isSelected = false
+    var rect: CGRect
+    var isEllipse: Bool
+
+    init(rect: CGRect, isEllipse: Bool = false) {
+        self.rect = rect
+        self.isEllipse = isEllipse
+    }
+
+    var bounds: CGRect { rect }
+
+    var holePath: CGPath {
+        isEllipse ? CGPath(ellipseIn: rect, transform: nil) : CGPath(rect: rect, transform: nil)
+    }
+
+    func draw(in ctx: CGContext, scale: CGFloat) {
+        // Rendered by AnnotationRenderer together with every other spotlight
+    }
+
+    func contains(point: CGPoint) -> Bool { rect.insetBy(dx: -8, dy: -8).contains(point) }
+    func outlineContains(point: CGPoint, tolerance: CGFloat) -> Bool {
+        isEllipse
+            ? AnnotationGeometry.ellipseOutlineContains(rect, point: point, band: tolerance)
+            : AnnotationGeometry.rectOutlineContains(rect, point: point, band: tolerance)
+    }
+    func move(by delta: CGPoint) { rect.origin.x += delta.x; rect.origin.y += delta.y }
+    func copy() -> any AnnotationObject {
+        let annotation = SpotlightAnnotation(rect: rect, isEllipse: isEllipse)
+        annotation.color = color
+        annotation.lineWidth = lineWidth
+        annotation.isSelected = isSelected
+        return annotation
+    }
+}
+
+// MARK: – Text layout
+
+/// Multi-line text measuring and drawing shared by text annotations,
+/// callouts, and the in-place editor, so all three lay lines out alike.
+enum AnnotationText {
+    static let drawingOptions: NSString.DrawingOptions = [.usesLineFragmentOrigin, .usesFontLeading]
+
+    static func font(size: CGFloat, bold: Bool) -> NSFont {
+        bold ? .boldSystemFont(ofSize: size) : .systemFont(ofSize: size)
+    }
+
+    static func size(of text: String, font: NSFont) -> CGSize {
+        let measured = (text.isEmpty ? " " : text) as NSString
+        let rect = measured.boundingRect(
+            with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: .greatestFiniteMagnitude),
+            options: drawingOptions,
+            attributes: [.font: font]
+        )
+        return CGSize(width: ceil(rect.width), height: ceil(rect.height))
+    }
+
+    static func draw(_ text: String, attributes: [NSAttributedString.Key: Any], in rect: CGRect, context ctx: CGContext) {
+        NSGraphicsContext.saveGraphicsState()
+        NSGraphicsContext.current = NSGraphicsContext(cgContext: ctx, flipped: true)
+        (text as NSString).draw(with: rect, options: drawingOptions, attributes: attributes)
+        NSGraphicsContext.restoreGraphicsState()
     }
 }
 
@@ -513,26 +740,27 @@ final class TextAnnotation: AnnotationObject {
     var origin: CGPoint
     var text: String = ""
     var fontSize: CGFloat = 18
-    var font: NSFont { .boldSystemFont(ofSize: fontSize) }
+    var isBold = true
+    /// Hidden while the in-place editor shows its text.
+    var isEditing = false
+    var font: NSFont { AnnotationText.font(size: fontSize, bold: isBold) }
 
     init(origin: CGPoint) { self.origin = origin }
 
+    var textSize: CGSize { AnnotationText.size(of: text, font: font) }
+
     var bounds: CGRect {
-        let size = (text as NSString).size(withAttributes: [.font: font])
+        let size = textSize
         return CGRect(origin: origin, size: CGSize(width: max(size.width, 40), height: max(size.height, 24)))
     }
 
     func draw(in ctx: CGContext, scale: CGFloat) {
-        guard !text.isEmpty else { return }
+        guard !text.isEmpty, !isEditing else { return }
         let attrs: [NSAttributedString.Key: Any] = [
             .font: font,
             .foregroundColor: color
         ]
-        NSGraphicsContext.saveGraphicsState()
-        let nsCtx = NSGraphicsContext(cgContext: ctx, flipped: true)
-        NSGraphicsContext.current = nsCtx
-        (text as NSString).draw(at: origin, withAttributes: attrs)
-        NSGraphicsContext.restoreGraphicsState()
+        AnnotationText.draw(text, attributes: attrs, in: CGRect(origin: origin, size: textSize), context: ctx)
     }
 
     func contains(point: CGPoint) -> Bool { bounds.insetBy(dx: -8, dy: -8).contains(point) }
@@ -544,6 +772,135 @@ final class TextAnnotation: AnnotationObject {
         annotation.isSelected = isSelected
         annotation.text = text
         annotation.fontSize = fontSize
+        annotation.isBold = isBold
+        return annotation
+    }
+}
+
+// MARK: – Callout
+
+/// Text in a rounded speech bubble with a tail pointing at `tail`. The
+/// bubble fits its text; resizing scales the font, like text annotations.
+final class CalloutAnnotation: AnnotationObject {
+    static let padding = CGSize(width: 12, height: 8)
+    static let minimumBubbleSize = CGSize(width: 48, height: 34)
+
+    let id = UUID()
+    /// Bubble fill; the text picks black or white against it.
+    var color: NSColor = .systemRed
+    var lineWidth: CGFloat = 0
+    var isSelected = false
+    var origin: CGPoint
+    var tail: CGPoint
+    var text: String = ""
+    var fontSize: CGFloat = 16
+    var isBold = true
+    /// Text hidden while the in-place editor shows it.
+    var isEditing = false
+
+    init(origin: CGPoint, tail: CGPoint) {
+        self.origin = origin
+        self.tail = tail
+    }
+
+    var font: NSFont { AnnotationText.font(size: fontSize, bold: isBold) }
+
+    var textColor: NSColor {
+        guard let rgb = color.usingColorSpace(.sRGB) else { return .white }
+        let luminance = 0.2126 * rgb.redComponent + 0.7152 * rgb.greenComponent + 0.0722 * rgb.blueComponent
+        return luminance > 0.6 ? .black : .white
+    }
+
+    var textSize: CGSize { AnnotationText.size(of: text, font: font) }
+
+    var bubbleRect: CGRect {
+        let size = textSize
+        return CGRect(
+            x: origin.x,
+            y: origin.y,
+            width: max(size.width + Self.padding.width * 2, Self.minimumBubbleSize.width),
+            height: max(size.height + Self.padding.height * 2, Self.minimumBubbleSize.height)
+        )
+    }
+
+    /// Where the text (and the editor's text) starts.
+    var textOrigin: CGPoint {
+        let bubble = bubbleRect
+        let size = textSize
+        return CGPoint(x: bubble.minX + Self.padding.width, y: bubble.midY - size.height / 2)
+    }
+
+    var cornerRadius: CGFloat { min(12, bubbleRect.height / 2) }
+
+    var bounds: CGRect {
+        bubbleRect.union(CGRect(origin: tail, size: .zero))
+    }
+
+    /// Triangle from just inside the bubble out to the tip; nil while the
+    /// tip is inside the bubble.
+    var tailPath: CGPath? {
+        let rect = bubbleRect
+        guard !rect.insetBy(dx: -2, dy: -2).contains(tail) else { return nil }
+        let center = CGPoint(x: rect.midX, y: rect.midY)
+        let dx = tail.x - center.x, dy = tail.y - center.y
+        let length = hypot(dx, dy)
+        guard length > 0 else { return nil }
+        let ux = dx / length, uy = dy / length
+        // Where the center→tip ray leaves the bubble
+        let exitX = ux == 0 ? CGFloat.greatestFiniteMagnitude : (rect.width / 2) / abs(ux)
+        let exitY = uy == 0 ? CGFloat.greatestFiniteMagnitude : (rect.height / 2) / abs(uy)
+        let exit = min(exitX, exitY)
+        let halfWidth = min(max(min(rect.width, rect.height) * 0.22, 6), 14)
+        // Starting the base inside the bubble keeps the join seamless.
+        let baseDistance = max(0, exit - halfWidth - 2)
+        let base = CGPoint(x: center.x + ux * baseDistance, y: center.y + uy * baseDistance)
+        let path = CGMutablePath()
+        path.move(to: CGPoint(x: base.x - uy * halfWidth, y: base.y + ux * halfWidth))
+        path.addLine(to: tail)
+        path.addLine(to: CGPoint(x: base.x + uy * halfWidth, y: base.y - ux * halfWidth))
+        path.closeSubpath()
+        return path
+    }
+
+    func draw(in ctx: CGContext, scale: CGFloat) {
+        let bubble = bubbleRect
+        ctx.saveGState()
+        ctx.setShadow(offset: CGSize(width: 0, height: -1), blur: 4,
+                      color: NSColor.black.withAlphaComponent(0.28).cgColor)
+        // One transparency layer so bubble and tail cast a single shadow
+        ctx.beginTransparencyLayer(auxiliaryInfo: nil)
+        ctx.setFillColor(color.cgColor)
+        ctx.addPath(CGPath(roundedRect: bubble, cornerWidth: cornerRadius, cornerHeight: cornerRadius, transform: nil))
+        if let tailPath { ctx.addPath(tailPath) }
+        ctx.fillPath()
+        ctx.endTransparencyLayer()
+        ctx.restoreGState()
+
+        guard !text.isEmpty, !isEditing else { return }
+        let attrs: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: textColor]
+        AnnotationText.draw(text, attributes: attrs, in: CGRect(origin: textOrigin, size: textSize), context: ctx)
+    }
+
+    func contains(point: CGPoint) -> Bool {
+        if bubbleRect.insetBy(dx: -4, dy: -4).contains(point) { return true }
+        guard tailPath != nil else { return false }
+        let center = CGPoint(x: bubbleRect.midX, y: bubbleRect.midY)
+        return AnnotationGeometry.distance(from: point, toSegmentFrom: center, to: tail) <= 8
+    }
+
+    func move(by delta: CGPoint) {
+        origin.x += delta.x; origin.y += delta.y
+        tail.x += delta.x;   tail.y += delta.y
+    }
+
+    func copy() -> any AnnotationObject {
+        let annotation = CalloutAnnotation(origin: origin, tail: tail)
+        annotation.color = color
+        annotation.lineWidth = lineWidth
+        annotation.isSelected = isSelected
+        annotation.text = text
+        annotation.fontSize = fontSize
+        annotation.isBold = isBold
         return annotation
     }
 }

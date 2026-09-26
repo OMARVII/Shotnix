@@ -97,6 +97,44 @@ final class HistoryManager: ObservableObject {
         return item
     }
 
+    // MARK: – Edits
+
+    /// One edit write at a time, in order: a quick copy-then-save must leave
+    /// the later edit on disk.
+    private static let editWriteQueue = DispatchQueue(label: "com.shotnix.history.edits", qos: .userInitiated)
+
+    /// The untouched capture, kept next to an item's image once it's edited.
+    nonisolated static func originalImagePath(for item: HistoryItem) -> String {
+        (item.imagePath as NSString).deletingPathExtension + "_original.png"
+    }
+
+    /// Shows an edited version of a capture (saved or copied from the
+    /// annotation editor) in place of the capture. The first edit keeps the
+    /// capture itself at `originalImagePath`, so it's never lost.
+    func replaceImage(of item: HistoryItem, with image: NSImage) {
+        guard let index = items.firstIndex(where: { $0.id == item.id }) else { return }
+        let current = items[index]
+        let originalPath = Self.originalImagePath(for: current)
+        if !FileManager.default.fileExists(atPath: originalPath) {
+            if FileManager.default.fileExists(atPath: current.imagePath) {
+                try? FileManager.default.copyItem(atPath: current.imagePath, toPath: originalPath)
+            } else if let png = ImageExporter.pngData(from: current.fullImage) {
+                // The capture's own write hasn't landed yet: keep it from memory.
+                try? png.write(to: URL(fileURLWithPath: originalPath), options: .atomic)
+            }
+        }
+        // The edit can add text (labels, callouts), so search re-indexes it.
+        items[index].ocrText = nil
+        HistoryImageCache.primeFull(image, for: current.imagePath)
+        HistoryImageCache.primeThumbnail(image, for: current.thumbnailPath)
+        let rect = current.captureRect?.cgRect
+        Self.editWriteQueue.async { [weak self] in
+            Self.encodeAndPersist(image: image, imagePath: current.imagePath, thumbPath: current.thumbnailPath, rect: rect, manager: self)
+        }
+        scheduleOCRIndexing()
+        notifyChanged()
+    }
+
     /// Posted after any user-visible history mutation so an open history panel
     /// refreshes live. Background OCR-text writes deliberately do NOT post —
     /// that would spam one refresh per indexed item.
@@ -155,6 +193,7 @@ final class HistoryManager: ObservableObject {
         let entry = trashEntries.remove(at: entryIndex)
         restoreFileFromTrash(toPath: entry.item.imagePath)
         restoreFileFromTrash(toPath: entry.item.thumbnailPath)
+        restoreFileFromTrash(toPath: Self.originalImagePath(for: entry.item))
         let insertAt = min(max(entry.originalIndex, 0), items.count)
         items.insert(entry.item, at: insertAt)
         persistCurrentIndex()
@@ -170,6 +209,7 @@ final class HistoryManager: ObservableObject {
     private func moveToTrash(_ entry: HistoryTrashEntry) {
         moveFileToTrash(atPath: entry.item.imagePath)
         moveFileToTrash(atPath: entry.item.thumbnailPath)
+        moveFileToTrash(atPath: Self.originalImagePath(for: entry.item))
         trashEntries.append(entry)
     }
 
@@ -206,7 +246,7 @@ final class HistoryManager: ObservableObject {
         persistTrashIndex()
         let trashDir = self.trashDir
         let fileURLs = expired
-            .flatMap { [$0.item.imagePath, $0.item.thumbnailPath] }
+            .flatMap { [$0.item.imagePath, $0.item.thumbnailPath, Self.originalImagePath(for: $0.item)] }
             .map { trashDir.appendingPathComponent(URL(fileURLWithPath: $0).lastPathComponent) }
         Task.detached(priority: .utility) {
             fileURLs.forEach { try? FileManager.default.removeItem(at: $0) }

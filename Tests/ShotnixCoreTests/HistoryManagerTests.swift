@@ -48,6 +48,51 @@ final class HistoryManagerTests: XCTestCase {
         XCTAssertTrue(manager.items.isEmpty)
     }
 
+    func testReplacingAnImageKeepsTheFirstCaptureAsTheOriginal() async throws {
+        let manager = HistoryManager(storageDir: tempDir)
+        let item = manager.add(image: Self.makeImage(), rect: nil)
+        try await waitForFile(atPath: item.thumbnailPath)
+        let captureBytes = try Data(contentsOf: URL(fileURLWithPath: item.imagePath))
+        var changes = 0
+        let observer = NotificationCenter.default.addObserver(forName: .shotnixHistoryDidChange, object: manager, queue: nil) { _ in
+            changes += 1
+        }
+        defer { NotificationCenter.default.removeObserver(observer) }
+
+        manager.replaceImage(of: item, with: Self.makeImage(color: .systemRed))
+        manager.replaceImage(of: item, with: Self.makeImage(color: .systemGreen))
+
+        let originalPath = HistoryManager.originalImagePath(for: item)
+        XCTAssertEqual(try Data(contentsOf: URL(fileURLWithPath: originalPath)), captureBytes, "the first capture is kept, not an intermediate edit")
+        XCTAssertEqual(changes, 2, "an open history panel refreshes")
+        XCTAssertEqual(manager.items.count, 1)
+        XCTAssertNil(manager.items.first?.ocrText, "the edit is re-indexed for search")
+        let deadline = Date().addingTimeInterval(3)
+        var latest = Data()
+        while Date() < deadline {
+            latest = (try? Data(contentsOf: URL(fileURLWithPath: item.imagePath))) ?? Data()
+            if let image = NSImage(data: latest), let cg = image.bestCGImage {
+                var pixel = [UInt8](repeating: 0, count: 4)
+                let ctx = CGContext(data: &pixel, width: 1, height: 1, bitsPerComponent: 8, bytesPerRow: 4,
+                                    space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
+                ctx.draw(cg, in: CGRect(x: 0, y: 0, width: 1, height: 1))
+                if pixel[1] > 150, pixel[0] < 120 { return } // green: the latest edit landed
+            }
+            try await Task.sleep(nanoseconds: 50_000_000)
+        }
+        XCTFail("the entry's image never became the latest edit")
+    }
+
+    func testReplacingADeletedItemDoesNothing() async throws {
+        let manager = HistoryManager(storageDir: tempDir)
+        let item = manager.add(image: Self.makeImage(), rect: nil)
+        try await waitForFile(atPath: item.imagePath)
+        manager.delete(item)
+        manager.replaceImage(of: item, with: Self.makeImage(color: .systemRed))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: HistoryManager.originalImagePath(for: item)))
+        XCTAssertTrue(manager.items.isEmpty)
+    }
+
     func testCorruptIndexStartsEmptyWithoutOverwritingFile() throws {
         let indexURL = tempDir.appendingPathComponent("index.json")
         try "not-json".data(using: .utf8)?.write(to: indexURL)
@@ -69,10 +114,10 @@ final class HistoryManagerTests: XCTestCase {
         XCTFail("Timed out waiting for file at \(path)")
     }
 
-    private static func makeImage() -> NSImage {
+    private static func makeImage(color: NSColor = .systemBlue) -> NSImage {
         let image = NSImage(size: NSSize(width: 24, height: 24))
         image.lockFocus()
-        NSColor.systemBlue.setFill()
+        color.setFill()
         NSBezierPath(rect: NSRect(x: 0, y: 0, width: 24, height: 24)).fill()
         image.unlockFocus()
         return image
