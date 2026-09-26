@@ -332,11 +332,11 @@ final class MarketingAssetsTests: XCTestCase {
             return CGPoint(x: a.point.x + (b.point.x - a.point.x) * eased, y: a.point.y + (b.point.y - a.point.y) * eased - arc)
         }
         var samples: [VideoDemoCursorSample] = []
-        for index in 0...Int(seconds * 60) {
-            let t = Double(index) / 60
+        for index in 0...Int(seconds * 120) {
+            let t = Double(index) / 120
             var point = position(at: t)
-            point.x += sin(t * 37) * 0.0004
-            point.y += cos(t * 29) * 0.0004
+            point.x += sin(t * 37) * 0.00015
+            point.y += cos(t * 29) * 0.00015
             samples.append(VideoDemoCursorSample(time: t, x: point.x, y: point.y))
         }
         let clicks = clickTimes.map { time -> VideoDemoClickEvent in
@@ -364,7 +364,8 @@ final class MarketingAssetsTests: XCTestCase {
         writer.add(input)
         XCTAssertTrue(writer.startWriting())
         writer.startSession(atSourceTime: .zero)
-        let fps = 30
+        // 60 fps, like a real recording: the website shows what a 60 fps export looks like.
+        let fps = 60
         var cache: [ScreenState: CGImage] = [:]
         for frame in 0..<Int(seconds * Double(fps)) {
             let t = Double(frame) / Double(fps)
@@ -487,7 +488,7 @@ final class MarketingAssetsTests: XCTestCase {
         var settings = VideoExportSettings()
         settings.format = .mp4
         settings.resolution = .p1080
-        settings.fps = 30
+        settings.fps = 60
         settings.codec = .h264
         settings.endCard = false
         let demo = output.appendingPathComponent("shotnix-editor-demo.mp4")
@@ -534,6 +535,86 @@ final class MarketingAssetsTests: XCTestCase {
         model.isExportPresented = true
         try await render(VideoEditorRootView(model: model), size: full, name: "shotnix-export")
         model.isExportPresented = false
+
+        try await renderEditorFrame(model: model, size: full)
+        try writeManifest(model: model, fps: settings.fps)
         VideoDemoDraftStore.delete(for: recording)
+    }
+
+    // MARK: The website's live editor
+
+    /// The editor at 0:00 with its playhead hidden: the website lays the demo
+    /// video over the preview and draws a live playhead, time, and highlights.
+    /// The probe renders (never published) let it measure where things are.
+    private func renderEditorFrame(model: VideoEditorModel, size: CGSize) async throws {
+        model.inspectorTab = .background
+        model.selection = .none
+        defer { VideoTimelinePlayhead.hiddenInSnapshots = false }
+
+        VideoTimelinePlayhead.hiddenInSnapshots = true
+        model.seek(to: 0)
+        try await Task.sleep(nanoseconds: 400_000_000)
+        try await render(VideoEditorRootView(model: model), size: size, name: "shotnix-editor-frame")
+
+        // The time label is what changes between these two (outside the preview).
+        model.seek(to: 5)
+        try await Task.sleep(nanoseconds: 400_000_000)
+        try await render(VideoEditorRootView(model: model), size: size, name: "probe-time-5")
+
+        // The canvas in pure green: its bounding box is the preview.
+        let background = model.project.background
+        model.mutate { $0.background = .color(VideoRGBA(0, 1, 0)) }
+        model.endGesture()
+        model.seek(to: 0)
+        try await Task.sleep(nanoseconds: 400_000_000)
+        try await render(VideoEditorRootView(model: model), size: size, name: "probe-canvas")
+        model.mutate { $0.background = background }
+        model.endGesture()
+
+        // Where the playhead sits at two known times.
+        VideoTimelinePlayhead.hiddenInSnapshots = false
+        for time in [0.0, 10.0] {
+            model.seek(to: time)
+            try await Task.sleep(nanoseconds: 400_000_000)
+            try await render(VideoEditorRootView(model: model), size: size, name: "probe-playhead-\(Int(time))")
+        }
+        model.seek(to: 0)
+    }
+
+    /// The edit as timeline data (seconds in the exported video).
+    private func writeManifest(model: VideoEditorModel, fps: Int) throws {
+        struct Span: Encodable { let start: Double; let end: Double }
+        struct Zoom: Encodable { let start: Double; let end: Double; let scale: Double; let followsCursor: Bool }
+        struct Caption: Encodable { let start: Double; let end: Double; let text: String }
+        struct Keystroke: Encodable { let start: Double; let end: Double; let keys: [String] }
+        struct Manifest: Encodable {
+            let duration: Double
+            let fps: Int
+            let clips: [Span]
+            let cuts: [Double]
+            let zooms: [Zoom]
+            let captions: [Caption]
+            let keystrokes: [Keystroke]
+        }
+        let segments = model.segments
+        let cuts = zip(segments, segments.dropFirst())
+            .filter { $1.clip.sourceStart - $0.clip.sourceEnd > 0.01 }
+            .map { $1.timelineStart }
+        let manifest = Manifest(
+            duration: model.timelineDuration,
+            fps: fps,
+            clips: segments.map { Span(start: $0.timelineStart, end: $0.timelineEnd) },
+            cuts: cuts,
+            zooms: model.project.zoomRegions.compactMap { region in
+                model.zoomTimelineRange(region).map { Zoom(start: $0.lowerBound, end: $0.upperBound, scale: region.scale, followsCursor: region.followsCursor) }
+            },
+            captions: model.plan.captions.map { Caption(start: $0.start, end: $0.end, text: $0.text) },
+            keystrokes: model.plan.keystrokes.map { Keystroke(start: $0.start, end: $0.end, keys: $0.keys) }
+        )
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        let url = output.appendingPathComponent("shotnix-editor-demo.json")
+        try encoder.encode(manifest).write(to: url)
+        print("MARKETING: \(url.path)")
     }
 }

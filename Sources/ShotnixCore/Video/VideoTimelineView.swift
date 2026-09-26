@@ -1036,6 +1036,9 @@ struct VideoTimelineRuler: View {
 }
 
 struct VideoTimelinePlayhead: View {
+    /// Snapshots for the website, which draws its own live playhead.
+    nonisolated(unsafe) static var hiddenInSnapshots = false
+
     @ObservedObject var clock: VideoDemoPlaybackClock
     let x: (Double) -> CGFloat
     let height: CGFloat
@@ -1052,6 +1055,7 @@ struct VideoTimelinePlayhead: View {
                 .shadow(color: .black.opacity(0.4), radius: 2, y: 1)
         }
         .offset(x: position - 6.5)
+        .opacity(Self.hiddenInSnapshots ? 0 : 1)
         .allowsHitTesting(false)
     }
 }
