@@ -2776,6 +2776,11 @@ private final class RecordingToggleButton: NSButton {
     override func accessibilityLabel() -> String? { label }
     override func accessibilityValue() -> Any? { NSNumber(value: isOn ? 1 : 0) }
 
+    override func accessibilityPerformPress() -> Bool {
+        performClick(nil)
+        return true
+    }
+
     private func updateAppearance() {
         layer?.backgroundColor = isOn
             ? activeTint.withAlphaComponent(0.18).cgColor

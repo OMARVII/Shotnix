@@ -44,6 +44,8 @@ final class RecordingHUDWindow: NSPanel {
     private var showsCamera = false
     private var showsKeystrokes = false
     private var hasWarning = false
+    /// Shown in place of the details for a few seconds after it happens.
+    private var freshWarning: String?
     private var microphoneSilent = false
     private var confirmResumeState: State = .recording
     private var warningRevertWorkItem: DispatchWorkItem?
@@ -249,14 +251,15 @@ final class RecordingHUDWindow: NSPanel {
         warningIcon.toolTip = message
         warningIcon.setAccessibilityLabel(message)
         hasWarning = true
-        applyState()
-        guard state == .recording || state == .paused else { return }
-        detailLabel.stringValue = message
-        detailLabel.textColor = .systemOrange
+        freshWarning = message
         warningRevertWorkItem?.cancel()
-        let revert = DispatchWorkItem { [weak self] in self?.restoreDetail() }
+        let revert = DispatchWorkItem { [weak self] in
+            self?.freshWarning = nil
+            self?.restoreDetail()
+        }
         warningRevertWorkItem = revert
         DispatchQueue.main.asyncAfter(deadline: .now() + 6, execute: revert)
+        applyState()
     }
 
     func setPaused(_ paused: Bool) {
@@ -371,8 +374,13 @@ final class RecordingHUDWindow: NSPanel {
 
     private func restoreDetail() {
         guard state == .recording || state == .paused else { return }
-        detailLabel.stringValue = state == .paused ? "Paused" : detailText
-        detailLabel.textColor = state == .paused ? .systemYellow : NSColor.white.withAlphaComponent(0.46)
+        if let freshWarning {
+            detailLabel.stringValue = freshWarning
+            detailLabel.textColor = .systemOrange
+        } else {
+            detailLabel.stringValue = state == .paused ? "Paused" : detailText
+            detailLabel.textColor = state == .paused ? .systemYellow : NSColor.white.withAlphaComponent(0.46)
+        }
     }
 
     private func layoutIndicators() {

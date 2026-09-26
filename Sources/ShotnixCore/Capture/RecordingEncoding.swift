@@ -118,12 +118,15 @@ enum RecordingSizeEstimate {
         return bytesPerMinute(videoBitrate: bitrate, systemAudio: systemAudio, microphone: microphone)
     }
 
-    /// "up to 480 MB/min".
+    /// "up to 480 MB/min" (whole megabytes; gigabytes to one decimal).
     static func label(bytesPerMinute: Int64) -> String {
-        let formatter = ByteCountFormatter()
-        formatter.countStyle = .file
-        formatter.allowedUnits = bytesPerMinute >= 1_000_000_000 ? [.useGB] : [.useMB]
-        return "up to \(formatter.string(fromByteCount: bytesPerMinute))/min"
+        let gigabytes = bytesPerMinute >= 1_000_000_000
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.maximumFractionDigits = gigabytes ? 1 : 0
+        let value = Double(bytesPerMinute) / (gigabytes ? 1_000_000_000 : 1_000_000)
+        let number = formatter.string(from: NSNumber(value: value)) ?? "\(Int(value.rounded()))"
+        return "up to \(number) \(gigabytes ? "GB" : "MB")/min"
     }
 }
 
