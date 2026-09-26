@@ -22,6 +22,7 @@ final class AnnotationWindowControllerTests: XCTestCase {
             controller.window?.close()
         }
         controllers = []
+        AnnotationWindowController.quitReviewPrompt = nil
         NSColorPanel.shared.orderOut(nil)
         if let tempDir { try? FileManager.default.removeItem(at: tempDir) }
         settings.tearDown()
@@ -105,6 +106,123 @@ final class AnnotationWindowControllerTests: XCTestCase {
         defer { NotificationCenter.default.removeObserver(observer) }
         _ = controller.canvas.performKeyEquivalent(with: commandKey("ц", kVK_ANSI_W))
         XCTAssertTrue(closed)
+    }
+
+    // MARK: – Quitting with unsaved edits
+
+    private func watchClose(of controller: AnnotationWindowController) throws -> () -> Bool {
+        var closed = false
+        let observer = NotificationCenter.default.addObserver(forName: NSWindow.willCloseNotification, object: try XCTUnwrap(controller.window), queue: nil) { _ in
+            closed = true
+        }
+        addTeardownBlock { NotificationCenter.default.removeObserver(observer) }
+        return { closed }
+    }
+
+    func testQuittingWithCleanEditorsGoesAheadWithoutAsking() {
+        let controller = makeController()
+        var asked = false
+        controller.unsavedChangesPrompt = { _ in asked = true }
+        var canQuit: Bool?
+        AnnotationWindowController.reviewUnsavedChanges(in: [controller]) { canQuit = $0 }
+        XCTAssertEqual(canQuit, true)
+        XCTAssertFalse(asked)
+    }
+
+    func testQuittingAsksAboutUnsavedEditsAndCancelKeepsTheEditor() throws {
+        let controller = makeController()
+        addRectangle(to: controller.canvas)
+        let closed = try watchClose(of: controller)
+        var answer: AnnotationWindowController.UnsavedChangesChoice = .cancel
+        controller.unsavedChangesPrompt = { $0(answer) }
+
+        var canQuit: Bool?
+        AnnotationWindowController.reviewUnsavedChanges(in: [controller]) { canQuit = $0 }
+        XCTAssertEqual(canQuit, false, "Cancel stops the quit")
+        XCTAssertFalse(closed())
+
+        answer = .discard
+        canQuit = nil
+        AnnotationWindowController.reviewUnsavedChanges(in: [controller]) { canQuit = $0 }
+        XCTAssertEqual(canQuit, true, "Don't Save lets Shotnix quit")
+        XCTAssertTrue(closed())
+    }
+
+    func testQuittingWithSeveralUnsavedEditorsOffersToReviewOrDiscardThem() throws {
+        let first = makeController()
+        let second = makeController()
+        addRectangle(to: first.canvas)
+        addRectangle(to: second.canvas)
+        let firstClosed = try watchClose(of: first)
+        let secondClosed = try watchClose(of: second)
+        var asked: [ObjectIdentifier] = []
+        for controller in [first, second] {
+            controller.unsavedChangesPrompt = { resolve in
+                asked.append(ObjectIdentifier(controller))
+                resolve(.discard)
+            }
+        }
+        var counts: [Int] = []
+        var choice: AnnotationWindowController.QuitReviewChoice = .cancel
+        AnnotationWindowController.quitReviewPrompt = { count in
+            counts.append(count)
+            return choice
+        }
+
+        var canQuit: Bool?
+        AnnotationWindowController.reviewUnsavedChanges(in: [first, second]) { canQuit = $0 }
+        XCTAssertEqual(counts, [2])
+        XCTAssertEqual(canQuit, false)
+        XCTAssertFalse(firstClosed() || secondClosed())
+        XCTAssertTrue(asked.isEmpty)
+
+        choice = .review
+        AnnotationWindowController.reviewUnsavedChanges(in: [first, second]) { canQuit = $0 }
+        XCTAssertEqual(asked, [ObjectIdentifier(first), ObjectIdentifier(second)], "each editor asks in turn")
+        XCTAssertEqual(canQuit, true)
+        XCTAssertTrue(firstClosed() && secondClosed())
+    }
+
+    func testQuitReviewSkipsAnEditorSavedWhileAnotherWasAsking() throws {
+        let first = makeController()
+        let second = makeController()
+        addRectangle(to: first.canvas)
+        addRectangle(to: second.canvas)
+        var asked: [ObjectIdentifier] = []
+        first.unsavedChangesPrompt = { resolve in
+            asked.append(ObjectIdentifier(first))
+            second.canvas.markSaved(revision: second.canvas.documentRevision) // saved meanwhile
+            resolve(.discard)
+        }
+        second.unsavedChangesPrompt = { resolve in
+            asked.append(ObjectIdentifier(second))
+            resolve(.cancel)
+        }
+        AnnotationWindowController.quitReviewPrompt = { _ in .review }
+
+        var canQuit: Bool?
+        AnnotationWindowController.reviewUnsavedChanges(in: [first, second]) { canQuit = $0 }
+        XCTAssertEqual(asked, [ObjectIdentifier(first)], "the saved editor isn't asked about again")
+        XCTAssertEqual(canQuit, true)
+    }
+
+    func testDiscardingAllUnsavedEditorsClosesThemWithoutAskingEach() throws {
+        let first = makeController()
+        let second = makeController()
+        addRectangle(to: first.canvas)
+        addRectangle(to: second.canvas)
+        let firstClosed = try watchClose(of: first)
+        let secondClosed = try watchClose(of: second)
+        var asked = false
+        first.unsavedChangesPrompt = { _ in asked = true }
+        second.unsavedChangesPrompt = { _ in asked = true }
+        AnnotationWindowController.quitReviewPrompt = { _ in .discard }
+
+        var canQuit: Bool?
+        AnnotationWindowController.reviewUnsavedChanges(in: [first, second]) { canQuit = $0 }
+        XCTAssertEqual(canQuit, true)
+        XCTAssertFalse(asked)
+        XCTAssertTrue(firstClosed() && secondClosed())
     }
 
     func testCropAloneCountsAsUnsavedAndASuccessfulCopyClearsIt() throws {

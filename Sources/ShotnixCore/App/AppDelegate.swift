@@ -49,9 +49,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    /// A recording, export, or transcription still running finishes first.
+    /// Work that quitting would cut short (an export, a transcription) asks
+    /// first, then unsaved screenshot edits; a recording or other running work
+    /// wraps up before Shotnix quits. Running work asks before the editors do
+    /// because the editor review closes windows, which a later "Keep Working"
+    /// couldn't undo.
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
-        AppTermination.terminateReply(for: sender)
+        guard AppTermination.confirmQuit() else { return .terminateCancel }
+        guard AnnotationWindowController.hasUnsavedChanges else {
+            return AppTermination.finishThenQuit(sender)
+        }
+        AnnotationWindowController.reviewUnsavedChangesBeforeQuitting { canQuit in
+            guard canQuit else { return sender.reply(toApplicationShouldTerminate: false) }
+            // Saving an edit queues History writes; those finish first too.
+            AppTermination.finishAll { sender.reply(toApplicationShouldTerminate: true) }
+        }
+        return .terminateLater
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {

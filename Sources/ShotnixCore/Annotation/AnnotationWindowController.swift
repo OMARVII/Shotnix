@@ -17,9 +17,14 @@ final class AnnotationWindowController: NSWindowController {
     private let scrollView: NSScrollView
     /// Set once this session wrote an edit back to the history entry.
     private var didUpdateHistory = false
+    private(set) var isClosed = false
 
     enum UnsavedChangesChoice {
         case save, discard, cancel
+    }
+
+    enum QuitReviewChoice {
+        case review, discard, cancel
     }
 
     /// Puts an exported image on the clipboard and says whether it got there.
@@ -29,11 +34,79 @@ final class AnnotationWindowController: NSWindowController {
     /// standard sheet. Tests answer directly.
     var unsavedChangesPrompt: ((@escaping (UnsavedChangesChoice) -> Void) -> Void)?
 
+    /// With several unsaved editors, quitting first asks whether to review
+    /// them one by one; nil shows the standard alert. Tests answer directly.
+    static var quitReviewPrompt: ((_ unsavedCount: Int) -> QuitReviewChoice)?
+
     // Strong references so controllers aren't deallocated while their window is open
     private static var openControllers: [AnnotationWindowController] = []
 
     static var hasOpenEditors: Bool {
         !openControllers.isEmpty
+    }
+
+    static var hasUnsavedChanges: Bool {
+        openControllers.contains { $0.canvas.hasUnsavedChanges || $0.canvas.textEditor != nil }
+    }
+
+    /// Before quitting: every editor with unsaved changes asks to save them.
+    /// `completion(true)` once each one was saved or discarded (and closed),
+    /// `false` as soon as one is kept open.
+    static func reviewUnsavedChangesBeforeQuitting(_ completion: @escaping (_ canQuit: Bool) -> Void) {
+        reviewUnsavedChanges(in: openControllers, completion)
+    }
+
+    static func reviewUnsavedChanges(in editors: [AnnotationWindowController], _ completion: @escaping (_ canQuit: Bool) -> Void) {
+        let unsaved = editors.filter {
+            $0.canvas.commitTextField()
+            return $0.canvas.hasUnsavedChanges
+        }
+        guard !unsaved.isEmpty else { return completion(true) }
+        if unsaved.count > 1 {
+            switch askToReviewBeforeQuitting(unsavedCount: unsaved.count) {
+            case .review:
+                break
+            case .discard:
+                unsaved.forEach { $0.window?.close() }
+                return completion(true)
+            case .cancel:
+                return completion(false)
+            }
+        }
+        reviewOneByOne(unsaved, completion)
+    }
+
+    private static func reviewOneByOne(_ editors: [AnnotationWindowController], _ completion: @escaping (Bool) -> Void) {
+        // Checked at each step: an editor may have been saved or closed while
+        // an earlier one was asking.
+        let remaining = editors.drop {
+            $0.canvas.commitTextField()
+            return $0.isClosed || !$0.canvas.hasUnsavedChanges
+        }
+        guard let editor = remaining.first else { return completion(true) }
+        editor.bringEditorToFront()
+        editor.askAboutUnsavedChanges { closed in
+            guard closed else { return completion(false) }
+            reviewOneByOne(Array(remaining.dropFirst()), completion)
+        }
+    }
+
+    private static func askToReviewBeforeQuitting(unsavedCount: Int) -> QuitReviewChoice {
+        if let quitReviewPrompt { return quitReviewPrompt(unsavedCount) }
+        let alert = NSAlert()
+        alert.alertStyle = .warning
+        alert.messageText = "You have unsaved edits in \(unsavedCount) screenshots."
+        alert.informativeText = "Do you want to review them before quitting?"
+        alert.addButton(withTitle: "Review Changes\u{2026}")
+        alert.addButton(withTitle: "Cancel")
+        let discard = alert.addButton(withTitle: "Discard Changes")
+        discard.hasDestructiveAction = true
+        NSApp.activate(ignoringOtherApps: true)
+        switch alert.runModal() {
+        case .alertFirstButtonReturn: return .review
+        case .alertThirdButtonReturn: return .discard
+        default:                      return .cancel
+        }
     }
 
     static func bringOpenEditorsToFront() {
@@ -241,21 +314,24 @@ final class AnnotationWindowController: NSWindowController {
 
     // MARK: – Actions
 
-    private func save(thenClose: Bool = false) {
+    /// `closed` reports whether the editor closed after saving.
+    private func save(thenClose: Bool = false, closed: ((Bool) -> Void)? = nil) {
         canvas.commitPendingEdits()
         let flat = canvas.flatten()
         let revision = canvas.documentRevision
         ImageExporter.saveWithPanel(image: flat, suggestedName: ImageExporter.timestampedName, presentingWindow: window) { [weak self] result in
-            guard let self else { return }
+            guard let self else { closed?(true); return }
             if case .saved(let url) = result {
                 self.didExport(flat, revision: revision)
                 self.showToast(Self.savedScreenshotMessage(for: url), 3.0)
                 if thenClose {
                     self.window?.close()
+                    closed?(true)
                     return
                 }
             }
             self.bringEditorToFront()
+            closed?(false)
         }
     }
 
@@ -286,19 +362,29 @@ final class AnnotationWindowController: NSWindowController {
         return "Saved to \(destination): \(url.lastPathComponent)"
     }
 
-    private func askAboutUnsavedChanges() {
+    /// `closed` reports whether the editor ended up closed (saved or
+    /// discarded) rather than kept open.
+    private func askAboutUnsavedChanges(closed: ((Bool) -> Void)? = nil) {
         let resolve: (UnsavedChangesChoice) -> Void = { [weak self] choice in
+            guard let self else { closed?(true); return }
             switch choice {
-            case .save:    self?.save(thenClose: true)
-            case .discard: self?.window?.close()
-            case .cancel:  break
+            case .save:
+                self.save(thenClose: true, closed: closed)
+            case .discard:
+                self.window?.close()
+                closed?(true)
+            case .cancel:
+                closed?(false)
             }
         }
         if let unsavedChangesPrompt {
             unsavedChangesPrompt(resolve)
             return
         }
-        guard let window, window.attachedSheet == nil else { return }
+        guard let window, window.attachedSheet == nil else {
+            closed?(false)
+            return
+        }
 
         let alert = NSAlert()
         alert.alertStyle = .warning
@@ -331,6 +417,7 @@ extension AnnotationWindowController: NSWindowDelegate {
     }
 
     func windowWillClose(_ notification: Notification) {
+        isClosed = true
         toolbar.detachColorPanel()
         AnnotationWindowController.openControllers.removeAll { $0 === self }
         ShotnixEditorActivation.sync()
