@@ -293,9 +293,24 @@ struct VideoTransitionMarkers: View {
     let geometry: VideoTimelineGeometry
     let clipTop: CGFloat
 
+    /// Cuts far enough apart for a marker each — packed cuts share one
+    /// (a cut with a transition wins); every cut is still in its clip's
+    /// inspector.
+    private var shownCuts: [(time: Double, clipID: UUID, kind: VideoTransitionKind)] {
+        var kept: [(time: Double, clipID: UUID, kind: VideoTransitionKind)] = []
+        for cut in model.transitionCuts {
+            if let last = kept.last, geometry.x(cut.time) - geometry.x(last.time) < 26 {
+                if cut.kind != .none, last.kind == .none { kept[kept.count - 1] = cut }
+                continue
+            }
+            kept.append(cut)
+        }
+        return kept
+    }
+
     var body: some View {
         ZStack(alignment: .topLeading) {
-            ForEach(model.transitionCuts, id: \.clipID) { cut in
+            ForEach(shownCuts, id: \.clipID) { cut in
                 Button {
                     model.selection = .clip(cut.clipID)
                     model.seek(to: cut.time)
