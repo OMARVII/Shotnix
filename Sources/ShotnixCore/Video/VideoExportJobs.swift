@@ -286,6 +286,8 @@ final class VideoExportQueue: ObservableObject {
         /// Subtitles written next to it.
         fileprivate(set) var subtitlesURL: URL?
         fileprivate var cancelRequested = false
+        /// The work itself: cancelling it stops a voice cleanup mid-way.
+        fileprivate var task: Task<Void, Never>?
         fileprivate var token: AppTermination.Token?
         fileprivate var quitWaiters: [@MainActor () -> Void] = []
 
@@ -364,6 +366,7 @@ final class VideoExportQueue: ObservableObject {
             startNext()
         case .enhancingVoice, .running:
             job.cancelRequested = true
+            job.task?.cancel()
         default:
             break
         }
@@ -385,6 +388,7 @@ final class VideoExportQueue: ObservableObject {
 
     private func finish(_ job: Job, _ state: Job.State) {
         job.state = state
+        job.task = nil
         AppTermination.end(job.token)
         job.token = nil
         let waiters = job.quitWaiters
@@ -402,7 +406,7 @@ final class VideoExportQueue: ObservableObject {
         guard running == nil, let next = jobs.first(where: { $0.state == .queued }) else { return }
         running = next
         next.startedAt = Date()
-        Task { await run(next) }
+        next.task = Task { await run(next) }
     }
 
     private func run(_ job: Job) async {

@@ -299,6 +299,35 @@ final class VideoExportFlowTests: XCTestCase {
     }
 
     @MainActor
+    func testCancelStopsAnExportWhileItCleansUpTheVoice() async throws {
+        try XCTSkipUnless(VideoVoiceEnhancer.isAvailable, "Voice isolation isn't available on this Mac")
+        let url = directory.appendingPathComponent("talk.mp4")
+        try await VideoTestSupport.writeFakeRecording(to: url, size: CGSize(width: 320, height: 200), seconds: 40, fps: 5, audioSeconds: 40)
+        var metadata = VideoDemoRecordingMetadata(videoURLPath: url.path, createdAt: Date(), duration: 40, sourceWidth: 320, sourceHeight: 200, fps: 5, nativeCursorVisible: true, cursorSamples: [], clickEvents: [])
+        metadata.audioTracks = [.microphone]
+        var project = VideoDemoProject.make(sourceURL: url, duration: 40, sourceSize: CGSize(width: 320, height: 200))
+        project.audio.enhanceVoice = true
+        let cache = VideoVoiceEnhancer.cacheURL(for: url, trackIndex: 0)
+        try? FileManager.default.removeItem(at: cache)
+
+        let queue = VideoExportQueue.shared
+        let job = queue.enqueue(project: project, recording: metadata, settings: VideoInspection.mp4Settings(), destination: directory.appendingPathComponent("talk out.mp4"), toClipboard: false)
+        let deadline = Date().addingTimeInterval(10)
+        while Date() < deadline {
+            if case .enhancingVoice = job.state { break }
+            try await Task.sleep(nanoseconds: 20_000_000)
+        }
+        guard case .enhancingVoice = job.state else { return XCTFail("the voice cleanup runs first: \(job.state)") }
+        queue.cancel(job)
+        let cancelledAt = Date()
+        while !job.isDone, Date().timeIntervalSince(cancelledAt) < 20 { try await Task.sleep(nanoseconds: 20_000_000) }
+        XCTAssertEqual(job.state, .cancelled)
+        XCTAssertLessThan(Date().timeIntervalSince(cancelledAt), 3, "stopped right away")
+        XCTAssertFalse(FileManager.default.fileExists(atPath: cache.path), "the cleanup stopped mid-way instead of finishing first")
+        queue.dismiss(job)
+    }
+
+    @MainActor
     func testAQueuedExportCanBeCancelledBeforeItStarts() async throws {
         let project = try await recording()
         let queue = VideoExportQueue.shared
