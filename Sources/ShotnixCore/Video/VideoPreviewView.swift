@@ -98,6 +98,8 @@ final class VideoPreviewRenderer: NSObject, MTKViewDelegate {
 
     private func compose(model: VideoEditorModel, size: CGSize) -> CIImage {
         var options = VideoFrameRenderer.Options(frameRate: 60)
+        // A big recording on the move: skip the costliest passes.
+        options.draft = model.previewPrefersSpeed
         options.solidOverlay = Self.editedOverlay(model)
         options.webcamFrame = model.plan.webcam == nil ? nil : lastCameraFrame?.image
         options.webcamMask = model.plan.webcam == nil ? nil : lastCameraFrame?.mask
@@ -288,6 +290,15 @@ struct VideoStageInteractionLayer: View {
     @State private var overlayOrigin: VideoDemoOverlayEffect?
     @State private var bubbleDrag: CGSize?
     @State private var hoveringBubble = false
+    /// A press on the picture: whether its first moment was handled, and
+    /// the annotation it landed on (nil: empty picture).
+    @State private var pressStarted = false
+    @State private var pressedOverlay: UUID?
+    /// The last click on an annotation, to spot a double-click.
+    @State private var lastClick: (id: UUID, time: Date)?
+
+    /// The layer's own coordinates (it doesn't move while things on it do).
+    static let space = "video-stage"
 
     /// The canvas the scene is laid out on (the recording's own shape when
     /// reframing a narrow output).
@@ -304,13 +315,22 @@ struct VideoStageInteractionLayer: View {
 
     var body: some View {
         ZStack(alignment: .topLeading) {
+            // Clicking an annotation selects it (drag to move, double-click
+            // text to type); clicking the picture around them plays/pauses.
             Color.clear
                 .contentShape(Rectangle())
-                .onTapGesture {
-                    if model.selection != .none {
-                        model.selection = .none
+                .gesture(pictureGesture)
+                .accessibilityElement()
+                .accessibilityLabel("Video preview")
+                .accessibilityHint("Plays or pauses. Use Option-arrow keys to select what's on the timeline.")
+                .accessibilityAddTraits(.isButton)
+                .accessibilityAction { model.togglePlay() }
+                .onContinuousHover(coordinateSpace: .named(Self.space)) { phase in
+                    guard pressedOverlay == nil else { return }
+                    if case .active(let point) = phase, annotation(at: point) != nil {
+                        NSCursor.openHand.set()
                     } else {
-                        model.togglePlay()
+                        NSCursor.arrow.set()
                     }
                 }
 
@@ -336,6 +356,91 @@ struct VideoStageInteractionLayer: View {
             }
         }
         .frame(width: viewSize.width, height: viewSize.height, alignment: .topLeading)
+        .coordinateSpace(name: Self.space)
+    }
+
+    // MARK: Picking annotations
+
+    /// The frontmost annotation on screen under `point` (view points).
+    func annotation(at point: CGPoint) -> VideoDemoOverlayEffect? {
+        // Drawn lowest lane first: the last drawn is in front.
+        for overlay in model.plan.overlays.reversed() where clock.time >= overlay.start - 0.05 && clock.time <= overlay.end + 0.05 {
+            let effect = overlay.effect
+            if VideoAnnotationHitTest.hits(effect, rect: viewRect(effect), arrow: effect.kind == .arrow ? viewArrow(effect) : nil, point: point) {
+                return effect
+            }
+        }
+        return nil
+    }
+
+    private var pictureGesture: some Gesture {
+        DragGesture(minimumDistance: 0, coordinateSpace: .named(Self.space))
+            .onChanged { value in
+                if !pressStarted {
+                    pressStarted = true
+                    pressedOverlay = nil
+                    if let effect = annotation(at: value.startLocation) {
+                        pressedOverlay = effect.id
+                        overlayOrigin = effect
+                        // Editing needs a still frame.
+                        if model.isPlaying { model.pause() }
+                        model.selection = .overlay(effect.id)
+                        if effect.kind == .text, let last = lastClick, last.id == effect.id,
+                           value.time.timeIntervalSince(last.time) < NSEvent.doubleClickInterval {
+                            // Double-click: type in it.
+                            model.textEditRequest += 1
+                        }
+                    }
+                }
+                guard let origin = overlayOrigin, pressedOverlay == origin.id,
+                      hypot(value.translation.width, value.translation.height) > 2 else { return }
+                NSCursor.closedHand.set()
+                model.updateOverlay(origin.id, coalesce: "move-\(origin.id)") { overlay in
+                    // Images move across the frame; the rest across the recording.
+                    let across = overlay.kind == .image ? viewSize : CGSize(width: stage.width * viewScale, height: stage.height * viewScale)
+                    overlay.x = origin.x + Double(value.translation.width / max(across.width, 1))
+                    overlay.y = origin.y + Double(value.translation.height / max(across.height, 1))
+                }
+            }
+            .onEnded { value in
+                let moved = hypot(value.translation.width, value.translation.height) > 2
+                if let id = pressedOverlay {
+                    model.endGesture()
+                    lastClick = moved ? nil : (id, value.time)
+                } else {
+                    lastClick = nil
+                    if !moved {
+                        if model.selection != .none {
+                            model.selection = .none
+                        } else {
+                            model.togglePlay()
+                        }
+                    }
+                }
+                pressStarted = false
+                pressedOverlay = nil
+                overlayOrigin = nil
+            }
+    }
+
+    /// An annotation's box on the view (top-left origin).
+    private func viewRect(_ effect: VideoDemoOverlayEffect) -> CGRect {
+        if effect.kind == .image {
+            // Pinned to the frame, not the recording (VideoImageOverlays.swift).
+            let r = effect.imageRect(in: viewSize)
+            return CGRect(x: r.minX, y: viewSize.height - r.maxY, width: r.width, height: r.height)
+        }
+        let center = viewPoint(CGPoint(x: stage.minX + stage.width * CGFloat(effect.x), y: stage.minY + stage.height * CGFloat(effect.y)))
+        let width = stage.width * CGFloat(effect.width) * viewScale
+        let height = stage.height * CGFloat(effect.height) * viewScale
+        return CGRect(x: center.x - width / 2, y: center.y - height / 2, width: width, height: height)
+    }
+
+    /// An arrow's tail and head on the view.
+    private func viewArrow(_ effect: VideoDemoOverlayEffect) -> (tail: CGPoint, head: CGPoint) {
+        let ends = effect.arrowPoints
+        func view(_ p: CGPoint) -> CGPoint { viewPoint(CGPoint(x: stage.minX + stage.width * p.x, y: stage.minY + stage.height * p.y)) }
+        return (view(ends.tail), view(ends.head))
     }
 
     // MARK: Camera bubble
@@ -556,41 +661,85 @@ struct VideoStageInteractionLayer: View {
 
     // MARK: Overlay editing
 
+    @ViewBuilder
     private func overlayFrame(_ effect: VideoDemoOverlayEffect) -> some View {
-        let center = viewPoint(CGPoint(x: stage.minX + stage.width * CGFloat(effect.x), y: stage.minY + stage.height * CGFloat(effect.y)))
-        let width = stage.width * CGFloat(effect.width) * viewScale
-        let height = stage.height * CGFloat(effect.height) * viewScale
-        let rect = CGRect(x: center.x - width / 2, y: center.y - height / 2, width: width, height: height)
+        if effect.kind == .arrow {
+            arrowHandles(effect)
+        } else {
+            boxFrame(effect)
+        }
+    }
+
+    /// An arrow: a dashed guide along it and a handle at each end — drag
+    /// the head or the tail to point it anywhere (the arrow itself drags
+    /// through the picture below).
+    private func arrowHandles(_ effect: VideoDemoOverlayEffect) -> some View {
+        let ends = viewArrow(effect)
+        let stageWidthInView = stage.width * viewScale
+        let stageHeightInView = stage.height * viewScale
+        return ZStack(alignment: .topLeading) {
+            Path { path in
+                path.move(to: ends.tail)
+                path.addLine(to: ends.head)
+            }
+            .stroke(Color.accentColor.opacity(0.9), style: StrokeStyle(lineWidth: 1.5, dash: [5, 4]))
+            .allowsHitTesting(false)
+
+            ForEach(0..<2, id: \.self) { index in
+                let isHead = index == 1
+                let point = isHead ? ends.head : ends.tail
+                Circle()
+                    .fill(isHead ? Color.accentColor : Color.white)
+                    .overlay(Circle().stroke(isHead ? Color.white : Color.accentColor, lineWidth: 1.5))
+                    .frame(width: 12, height: 12)
+                    .contentShape(Circle().inset(by: -7))
+                    .offset(x: point.x - 6, y: point.y - 6)
+                    .onHover { inside in (inside ? NSCursor.crosshair : NSCursor.arrow).set() }
+                    .help(isHead ? "Drag to point the arrow" : "Drag to move where the arrow starts")
+                    .accessibilityLabel(isHead ? "Arrow head" : "Arrow tail")
+                    .gesture(
+                        DragGesture(minimumDistance: 0, coordinateSpace: .global)
+                            .onChanged { value in
+                                if overlayOrigin?.id != effect.id { overlayOrigin = effect }
+                                guard let origin = overlayOrigin else { return }
+                                let points = origin.arrowPoints
+                                let start = isHead ? points.head : points.tail
+                                let moved = CGPoint(
+                                    x: start.x + value.translation.width / max(stageWidthInView, 1),
+                                    y: start.y + value.translation.height / max(stageHeightInView, 1)
+                                )
+                                model.updateOverlay(effect.id, coalesce: "arrow-end-\(effect.id)") { overlay in
+                                    overlay.setArrow(tail: isHead ? points.tail : moved, head: isHead ? moved : points.head)
+                                }
+                            }
+                            .onEnded { _ in
+                                overlayOrigin = nil
+                                model.endGesture()
+                            }
+                    )
+            }
+        }
+    }
+
+    private func boxFrame(_ effect: VideoDemoOverlayEffect) -> some View {
+        let rect = viewRect(effect)
         let stageWidthInView = stage.width * viewScale
         let stageHeightInView = stage.height * viewScale
 
         return ZStack(alignment: .topLeading) {
-            RoundedRectangle(cornerRadius: 4, style: .continuous)
-                .strokeBorder(Color.accentColor, style: StrokeStyle(lineWidth: 1.5, dash: [5, 4]))
-                .background(Color.white.opacity(0.001))
-                .frame(width: rect.width, height: rect.height)
-                .offset(x: rect.minX, y: rect.minY)
-                .onHover { inside in (inside ? NSCursor.openHand : NSCursor.arrow).set() }
-                .simultaneousGesture(TapGesture(count: 2).onEnded {
-                    // Double-click a text annotation to type in it.
-                    if effect.kind == .text { model.textEditRequest += 1 }
-                })
-                .gesture(
-                    DragGesture(minimumDistance: 1, coordinateSpace: .global)
-                        .onChanged { value in
-                            if overlayOrigin?.id != effect.id { overlayOrigin = effect }
-                            guard let origin = overlayOrigin else { return }
-                            NSCursor.closedHand.set()
-                            model.updateOverlay(effect.id, coalesce: "move-\(effect.id)") { overlay in
-                                overlay.x = origin.x + Double(value.translation.width / max(stageWidthInView, 1))
-                                overlay.y = origin.y + Double(value.translation.height / max(stageHeightInView, 1))
-                            }
-                        }
-                        .onEnded { _ in
-                            overlayOrigin = nil
-                            model.endGesture()
-                        }
-                )
+            // Just the outline: pressing inside reaches the picture layer,
+            // which moves it (and spots a double-click on text).
+            Group {
+                if effect.kind == .spotlight, effect.shape == .ellipse {
+                    Ellipse().strokeBorder(Color.accentColor, style: StrokeStyle(lineWidth: 1.5, dash: [5, 4]))
+                } else {
+                    RoundedRectangle(cornerRadius: 4, style: .continuous)
+                        .strokeBorder(Color.accentColor, style: StrokeStyle(lineWidth: 1.5, dash: [5, 4]))
+                }
+            }
+            .frame(width: rect.width, height: rect.height)
+            .offset(x: rect.minX, y: rect.minY)
+            .allowsHitTesting(false)
 
             ForEach(0..<4, id: \.self) { corner in
                 let isRight = corner == 1 || corner == 3

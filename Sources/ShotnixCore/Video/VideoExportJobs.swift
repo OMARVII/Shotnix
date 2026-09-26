@@ -293,6 +293,8 @@ final class VideoExportQueue: ObservableObject {
     func cancel(_ job: Job) {
         switch job.state {
         case .queued:
+            // It may already be on its way to start: it stops there.
+            job.cancelRequested = true
             finish(job, .cancelled)
             startNext()
         case .enhancingVoice, .running:
@@ -343,6 +345,8 @@ final class VideoExportQueue: ObservableObject {
             running = nil
             startNext()
         }
+        // Cancelled between being picked and starting.
+        guard !job.isDone else { return }
         do {
             let voiceFailed = await enhanceVoiceIfNeeded(job)
             if job.cancelRequested { throw VideoDemoExportError.cancelled }
@@ -481,7 +485,7 @@ extension VideoEditorModel {
                 switch job.state {
                 case .finished(let bytes):
                     if shown { self.exportPhase = self.isExportPresented ? .finished(url: job.destination, bytes: bytes, copied: job.toClipboard) : .idle }
-                    if let note = job.note { self.showNotice(note, symbol: "exclamationmark.triangle.fill") }
+                    if let note = job.note { self.showNotice(note, symbol: "exclamationmark.triangle.fill", duration: 6) }
                     return
                 case .failed(let message):
                     if shown { self.exportPhase = self.isExportPresented ? .failed(message) : .idle }

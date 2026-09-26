@@ -7,6 +7,7 @@ struct VideoCaptionJob: Equatable {
     var error: String?
     /// The fix is a switch in System Settings.
     var needsPrivacySettings = false
+    var started = Date()
 
     var title: String {
         if error != nil { return "Couldn't make captions" }
@@ -17,11 +18,19 @@ struct VideoCaptionJob: Equatable {
         }
     }
 
+    /// nil until there's real progress to show (the bar runs without a
+    /// value until then, next to the time spent so far).
     var fraction: Double? {
         switch stage {
         case .preparing: return nil
-        case .downloading(let value), .transcribing(let value): return value
+        case .downloading(let value), .transcribing(let value): return value > 0.005 ? value : nil
         }
+    }
+
+    /// "0:42" since it started.
+    func elapsed(at now: Date = Date()) -> String {
+        let seconds = max(Int(now.timeIntervalSince(started)), 0)
+        return String(format: "%d:%02d", seconds / 60, seconds % 60)
     }
 }
 
@@ -62,6 +71,7 @@ extension VideoEditorModel {
             return
         }
         let snapshot = project
+        let source = transcriptionSource
         let language = captionLanguage.isEmpty ? nil : captionLanguage
         // Each run has its own token: a cancelled run that finishes late
         // never touches the one that replaced it.
@@ -74,20 +84,28 @@ extension VideoEditorModel {
                 self.captionJob?.stage = stage
             }
         }
+        // Quitting asks, then lets the transcript finish (it lands in the
+        // draft); Cancel stops it.
+        AppTermination.end(captionQuitToken)
+        captionQuitToken = AppTermination.begin("Transcribing “\(project.sourceURL.deletingPathExtension().lastPathComponent)”", asksBeforeQuit: true) { [weak self] done in
+            if self?.captionTask == nil { done() }
+        }
         captionTask = Task { [weak self] in
             do {
-                // Every recording of the video, in order (VideoProjectSources.swift).
-                let result = try await VideoSourcesTranscription.transcribe(project: snapshot, languageIdentifier: language, progress: report)
+                // The voice of every recording in the video, in order
+                // (VideoProjectSources.swift).
+                let result = try await VideoSourcesTranscription.transcribe(project: snapshot, primary: source, languageIdentifier: language, progress: report)
                 guard let self, self.captionToken == token else { return }
                 self.captionTask = nil
                 self.captionToken = nil
+                self.endCaptionQuitToken()
                 guard !Task.isCancelled else {
                     self.captionJob = nil
                     return
                 }
                 let lines = VideoCaptionBuilder.lines(from: result.words)
                 let firstTranscript = !self.project.captions.contains { !$0.words.isEmpty }
-                self.mutate { project in
+                self.mutate(label: "Transcribe") { project in
                     project.captions = lines
                     project.transcriptLanguage = result.language
                     // A first transcript shows up as captions; a new one
@@ -101,6 +119,7 @@ extension VideoEditorModel {
                 guard let self, self.captionToken == token else { return }
                 self.captionTask = nil
                 self.captionToken = nil
+                self.endCaptionQuitToken()
                 if Task.isCancelled || error is CancellationError {
                     self.captionJob = nil
                 } else {
@@ -111,9 +130,35 @@ extension VideoEditorModel {
         }
     }
 
+    /// The microphone alone (cleaned up when that's ready), not the Mac's
+    /// sound mixed in.
+    var transcriptionSource: VideoCaptionTranscriber.Source {
+        let voiceStart = voiceTrackIndex.flatMap { index in
+            playback.source.flatMap { $0.audioRanges.indices.contains(index) ? $0.audioRanges[index].start.seconds : nil }
+        } ?? 0
+        return VideoCaptionTranscriber.source(
+            recording: project.sourceURL,
+            kinds: audioKinds,
+            enhancedVoice: enhancedVoiceReady ? enhancedVoiceURL : nil,
+            voiceStart: voiceStart.isFinite ? voiceStart : 0
+        )
+    }
+
     /// Real transcribed words (typed caption lines don't count).
     var hasTranscript: Bool {
         project.captions.contains { !$0.words.isEmpty }
+    }
+
+    /// A narrated recording nobody has transcribed yet: the editor offers
+    /// captions and edit-by-text (until it's waved away for this video).
+    var suggestsTranscript: Bool {
+        isReady && hasAudio && voiceTrackIndex != nil && project.captions.isEmpty && captionJob == nil
+            && !Settings.videoTranscribeHintDismissed.contains(project.sourcePath)
+    }
+
+    func dismissTranscriptSuggestion() {
+        Settings.videoTranscribeHintDismissed.append(project.sourcePath)
+        objectWillChange.send()
     }
 
     /// A new transcript replaces every line — ask first when there are any.
@@ -138,6 +183,12 @@ extension VideoEditorModel {
         captionTask = nil
         captionToken = nil
         captionJob = nil
+        endCaptionQuitToken()
+    }
+
+    private func endCaptionQuitToken() {
+        AppTermination.end(captionQuitToken)
+        captionQuitToken = nil
     }
 
     func updateCaption(_ id: UUID, text: String) {
@@ -150,26 +201,81 @@ extension VideoEditorModel {
         }
     }
 
-    /// Keeps word highlighting after an edit: same word count → keep the
-    /// timings; otherwise spread the new words across the line.
-    static func retimedWords(for text: String, previous: [VideoCaptionWord], start: Double, end: Double) -> [VideoCaptionWord] {
+    /// Keeps word timings through an edit: words that survived it (matched
+    /// ignoring case and punctuation) keep their real times, a word typed
+    /// over another takes that word's time, and only the rest is estimated
+    /// — inside the time of the words it replaced, so cutting by text later
+    /// still lands on the voice.
+    nonisolated static func retimedWords(for text: String, previous: [VideoCaptionWord], start: Double, end: Double) -> [VideoCaptionWord] {
         let parts = text.split(whereSeparator: { $0.isWhitespace }).map(String.init)
         // A typed line has no voice under it: it stays without word timings
         // (it never becomes transcript you could cut the video with).
         guard !parts.isEmpty, !previous.isEmpty else { return [] }
-        if parts.count == previous.count {
-            return zip(parts, previous).map { VideoCaptionWord(text: $0, start: $1.start, end: $1.end) }
+        func key(_ word: String) -> String {
+            word.lowercased().trimmingCharacters(in: .punctuationCharacters.union(.whitespaces))
         }
-        let first = previous.first?.start ?? start
-        let last = previous.last?.end ?? end
-        let span = max(last - first, 0.1)
-        let characters = max(parts.reduce(0) { $0 + $1.count }, 1)
-        var cursor = first
-        return parts.map { part in
-            let length = span * Double(part.count) / Double(characters)
+        let anchors = commonSubsequence(previous.map { key($0.text) }, parts.map(key))
+        var result: [VideoCaptionWord] = []
+        var lastOld = -1
+        var lastNew = -1
+        for (oldIndex, newIndex) in anchors + [(previous.count, parts.count)] {
+            let replaced = Array(previous[(lastOld + 1)..<oldIndex])
+            let typed = Array(parts[(lastNew + 1)..<newIndex])
+            if !typed.isEmpty {
+                if replaced.count == typed.count {
+                    result += zip(typed, replaced).map { VideoCaptionWord(text: $0, start: $1.start, end: $1.end) }
+                } else {
+                    // The replaced words' time, or the silence between the
+                    // neighbours for a word that was only added.
+                    let lower = replaced.first?.start ?? (lastOld >= 0 ? previous[lastOld].end : previous[0].start)
+                    let upper = replaced.last?.end ?? (oldIndex < previous.count ? previous[oldIndex].start : previous[previous.count - 1].end)
+                    result += spread(typed, from: lower, to: max(upper, lower))
+                }
+            }
+            if newIndex < parts.count {
+                result.append(VideoCaptionWord(text: parts[newIndex], start: previous[oldIndex].start, end: previous[oldIndex].end))
+            }
+            lastOld = oldIndex
+            lastNew = newIndex
+        }
+        return result
+    }
+
+    /// Words across a span, each as long as its share of the characters.
+    private nonisolated static func spread(_ words: [String], from lower: Double, to upper: Double) -> [VideoCaptionWord] {
+        let characters = max(words.reduce(0) { $0 + $1.count }, 1)
+        var cursor = lower
+        return words.map { word in
+            let length = (upper - lower) * Double(word.count) / Double(characters)
             defer { cursor += length }
-            return VideoCaptionWord(text: part, start: cursor, end: cursor + length)
+            return VideoCaptionWord(text: word, start: cursor, end: cursor + length)
         }
+    }
+
+    /// Index pairs of the longest common subsequence (in order).
+    nonisolated static func commonSubsequence(_ a: [String], _ b: [String]) -> [(Int, Int)] {
+        guard !a.isEmpty, !b.isEmpty else { return [] }
+        var lengths = Array(repeating: Array(repeating: 0, count: b.count + 1), count: a.count + 1)
+        for i in stride(from: a.count - 1, through: 0, by: -1) {
+            for j in stride(from: b.count - 1, through: 0, by: -1) {
+                lengths[i][j] = a[i] == b[j] ? lengths[i + 1][j + 1] + 1 : max(lengths[i + 1][j], lengths[i][j + 1])
+            }
+        }
+        var pairs: [(Int, Int)] = []
+        var i = 0
+        var j = 0
+        while i < a.count, j < b.count {
+            if a[i] == b[j] {
+                pairs.append((i, j))
+                i += 1
+                j += 1
+            } else if lengths[i + 1][j] >= lengths[i][j + 1] {
+                i += 1
+            } else {
+                j += 1
+            }
+        }
+        return pairs
     }
 
     func setCaptionTiming(_ id: UUID, start: Double? = nil, end: Double? = nil) {
@@ -183,13 +289,13 @@ extension VideoEditorModel {
     }
 
     /// Retimes a line from timeline times (a drag on the captions lane).
-    func setCaptionWindow(_ id: UUID, timelineStart: Double, timelineEnd: Double, moveWords: Bool) {
+    func setCaptionWindow(_ id: UUID, timelineStart: Double, timelineEnd: Double, moveWords: Bool, coalesce: String? = nil) {
         let start = sourceTime(forTimeline: timelineStart)
         let end = max(sourceTime(forTimeline: timelineEnd), start + 0.2)
         // Where the line starts on screen now, in the recording: if its first
         // words were cut, that's after the cut, not the line's own start.
         let shownStart = plan.captions.first { $0.id == id }.map { placementSourceTime(forTimeline: $0.start) }
-        mutate(coalesce: "caption-window-\(id)") { project in
+        mutate(coalesce: coalesce ?? "caption-window-\(id)") { project in
             guard let index = project.captions.firstIndex(where: { $0.id == id }) else { return }
             var line = project.captions[index]
             if moveWords {
@@ -223,7 +329,7 @@ extension VideoEditorModel {
     }
 
     func clearCaptions() {
-        mutate {
+        mutate(label: "Remove Captions") {
             $0.captions = []
             $0.transcriptLanguage = nil
         }
@@ -238,19 +344,9 @@ extension VideoEditorModel {
         }
     }
 
+    /// File ▸ Save Subtitles and the command palette (VideoCaptionStyles.swift).
     func exportSRT() {
-        let panel = NSSavePanel()
-        panel.allowedContentTypes = [UTType(filenameExtension: "srt") ?? .plainText]
-        panel.nameFieldStringValue = project.sourceURL.deletingPathExtension().lastPathComponent + ".srt"
-        panel.canCreateDirectories = true
-        guard panel.runModal() == .OK, let url = panel.url else { return }
-        let text = VideoCaptionBuilder.srt(lines: project.captions, segments: segments)
-        do {
-            try text.write(to: url, atomically: true, encoding: .utf8)
-            showNotice("Saved \(url.lastPathComponent)", symbol: "checkmark.circle.fill")
-        } catch {
-            showNotice("Couldn't save the captions file", symbol: "exclamationmark.triangle.fill")
-        }
+        exportSubtitles(.srt)
     }
 }
 
@@ -258,7 +354,7 @@ extension VideoEditorModel {
 
 extension VideoEditorModel {
     func isIncluded(sourceTime: Double) -> Bool {
-        timelineTime(forSource: sourceTime) != nil
+        segment(containingSource: sourceTime) != nil
     }
 
     func isIncluded(_ word: VideoTranscriptWord) -> Bool {
@@ -291,7 +387,7 @@ extension VideoEditorModel {
         let ranges = ranges(forWords: kept)
         guard !ranges.isEmpty else { return }
         var ok = true
-        mutate { ok = $0.removeSourceRanges(ranges, totalDuration: sourceDuration) }
+        mutate(label: kept.count == 1 ? "Cut Word" : "Cut Words") { ok = $0.removeSourceRanges(ranges, totalDuration: sourceDuration) }
         guard ok else {
             showNotice("A video needs at least one clip", symbol: "exclamationmark.triangle")
             return
@@ -303,7 +399,7 @@ extension VideoEditorModel {
     func restoreWords(_ indices: IndexSet) {
         let ranges = ranges(forWords: indices)
         guard !ranges.isEmpty else { return }
-        mutate { project in
+        mutate(label: indices.count == 1 ? "Restore Word" : "Restore Words") { project in
             for range in ranges { project.restoreSourceRange(range, totalDuration: sourceDuration) }
         }
         showNotice("Restored \(indices.count) word\(indices.count == 1 ? "" : "s")", symbol: "arrow.uturn.backward")
@@ -318,11 +414,11 @@ extension VideoEditorModel {
         let end = words[index].start - 0.2
         guard end - start > 0.05 else { return }
         if !isIncluded(sourceTime: (start + end) / 2) {
-            mutate { $0.restoreSourceRange(start...end, totalDuration: sourceDuration) }
+            mutate(label: "Restore Pause") { $0.restoreSourceRange(start...end, totalDuration: sourceDuration) }
             showNotice("Pause restored", symbol: "arrow.uturn.backward")
             return
         }
-        mutate { $0.removeSourceRanges([start...end], totalDuration: sourceDuration) }
+        mutate(label: "Shorten Pause") { $0.removeSourceRanges([start...end], totalDuration: sourceDuration) }
         showNotice("Pause shortened", symbol: "scissors")
     }
 
@@ -346,7 +442,7 @@ extension VideoEditorModel {
         }
         let count = fillerCount
         let before = timelineDuration
-        mutate { $0.removeSourceRanges(ranges, totalDuration: sourceDuration) }
+        mutate(label: "Remove Ums") { $0.removeSourceRanges(ranges, totalDuration: sourceDuration) }
         showNotice("Removed \(count) filler word\(count == 1 ? "" : "s") — \(Self.format(max(before - timelineDuration, 0))) shorter", symbol: "wand.and.stars")
     }
 
@@ -357,8 +453,19 @@ extension VideoEditorModel {
             return
         }
         let before = timelineDuration
-        mutate { $0.removeSourceRanges(ranges, totalDuration: sourceDuration) }
+        mutate(label: "Shorten Pauses") { $0.removeSourceRanges(ranges, totalDuration: sourceDuration) }
         showNotice("Shortened \(ranges.count) pause\(ranges.count == 1 ? "" : "s") — \(Self.format(max(before - timelineDuration, 0))) shorter", symbol: "wand.and.stars")
+    }
+
+    /// ⌘F from anywhere: the Captions tab, on its transcript, find bar open.
+    func findInTranscript() {
+        guard hasTranscript else {
+            showNotice("Transcribe the narration to search its words", symbol: "magnifyingglass")
+            return
+        }
+        inspectorTab = .captions
+        UserDefaults.standard.set("transcript", forKey: "videoScriptMode")
+        wantsTranscriptFind = true
     }
 
     /// Plays from a word (or the next moment still in the video).
@@ -379,9 +486,35 @@ extension VideoEditorModel {
     /// Any recording in the video has a voice to clean up.
     var canEnhanceVoice: Bool { (voiceTrackIndex != nil || project.appendedSourceHasVoice) && VideoVoiceEnhancer.isAvailable }
 
+    /// M: the preview goes quiet; the video's own sound (and the export)
+    /// is untouched.
+    func togglePreviewMute() {
+        previewMuted.toggle()
+        showNotice(
+            previewMuted ? "Preview muted — the export keeps its sound" : "Preview sound on",
+            symbol: previewMuted ? "speaker.slash.fill" : "speaker.wave.2.fill"
+        )
+    }
+
+    /// Why an export would come out silent though the recording has sound
+    /// (nil when it won't).
+    var exportSoundWarning: String? {
+        guard hasAudio else { return nil }
+        if project.audio.muted { return "Mute video is on (Audio tab) — this export will have no sound." }
+        let kinds = audioKinds + project.sources.filter { !$0.isPrimary }.flatMap(\.audioKinds)
+        if project.audio.isSilent(kinds: kinds) { return "Every sound level is at 0 (Audio tab) — this export will have no sound." }
+        if !segments.isEmpty, segments.allSatisfy(\.clip.muted) { return "Every clip is muted — this export will have no sound." }
+        return nil
+    }
+
+    private var enhancedVoiceURL: URL? {
+        voiceTrackIndex.map { VideoVoiceEnhancer.cacheURL(for: project.sourceURL, trackIndex: $0) }
+    }
+
+    /// This recording's cleaned-up voice is ready (added recordings each
+    /// have their own — see `voiceTargets`).
     var enhancedVoiceReady: Bool {
-        let targets = project.voiceTargets(primaryKinds: audioKinds)
-        return !targets.isEmpty && targets.allSatisfy { $0.isReady }
+        enhancedVoiceURL.map { FileManager.default.fileExists(atPath: $0.path) } ?? false
     }
 
     /// The toggle (or an undo) changed: process if needed, then swap sources.
@@ -411,6 +544,7 @@ extension VideoEditorModel {
                 guard let self else { return false }
                 self.voiceTask = nil
                 self.voiceJob = nil
+                self.endVoiceQuitToken()
                 await self.refreshAudioSources()
                 if self.project.audio.enhanceVoice {
                     self.showNotice("Voice enhanced — background noise removed", symbol: "waveform")
@@ -420,6 +554,7 @@ extension VideoEditorModel {
                 guard let self else { return false }
                 self.voiceTask = nil
                 self.voiceJob = nil
+                self.endVoiceQuitToken()
                 if !(error is CancellationError) {
                     self.voiceError = error.localizedDescription
                 }
@@ -427,7 +562,19 @@ extension VideoEditorModel {
             }
         }
         voiceTask = task
+        // The cleaned-up voice is a cache (it runs again next time), so a
+        // quit stops it — unless an export is waiting for it.
+        AppTermination.end(voiceQuitToken)
+        voiceQuitToken = AppTermination.begin("Cleaning up the voice in “\(project.sourceURL.deletingPathExtension().lastPathComponent)”", asksBeforeQuit: true) { [weak self] done in
+            guard let self, self.voiceTask != nil else { return done() }
+            if !self.isExporting { self.voiceTask?.cancel() }
+        }
         return task
+    }
+
+    private func endVoiceQuitToken() {
+        AppTermination.end(voiceQuitToken)
+        voiceQuitToken = nil
     }
 
     /// Rebuilds the sound sources (e.g. the enhanced voice became ready).
@@ -449,6 +596,22 @@ extension VideoEditorModel {
     var webcamRecording: VideoWebcamRecording? {
         guard let webcam = recording?.webcam, FileManager.default.fileExists(atPath: webcam.path) else { return nil }
         return webcam
+    }
+
+    /// Camera footage this video was recorded with that's gone from disk
+    /// (moved or deleted) — not the same as a recording without a camera.
+    var missingWebcamFile: URL? {
+        guard let webcam = recording?.webcam, !FileManager.default.fileExists(atPath: webcam.path) else { return nil }
+        return webcam.url
+    }
+}
+
+// MARK: - Recent exports
+
+extension VideoEditorModel {
+    /// This recording's exports that are still on disk, newest first.
+    var recentExports: [VideoDemoRecentExport] {
+        VideoDemoRecentExportStore.load(for: project.sourceURL).filter { FileManager.default.fileExists(atPath: $0.exportPath) }
     }
 }
 
@@ -507,7 +670,7 @@ extension VideoEditorModel {
         }
         let firstStart = segments.first?.clip.sourceStart ?? 0
         let lastEnd = segments.last?.clip.sourceEnd ?? sourceDuration
-        mutate { project in
+        mutate(label: "Intro and Outro") { project in
             project.cameraLayouts.removeAll { $0.start < firstStart + length || $0.end > lastEnd - length }
             project.cameraLayouts.append(VideoCameraLayoutRegion(start: firstStart, end: firstStart + length, layout: .fullscreen))
             project.cameraLayouts.append(VideoCameraLayoutRegion(start: lastEnd - length, end: lastEnd, layout: .fullscreen))
@@ -519,7 +682,7 @@ extension VideoEditorModel {
 
     /// Moves/resizes a layout from timeline times; it slides against its
     /// neighbours instead of overlapping them.
-    func setCameraLayoutWindow(_ id: UUID, timelineStart: Double, timelineEnd: Double, moving: Bool) {
+    func setCameraLayoutWindow(_ id: UUID, timelineStart: Double, timelineEnd: Double, moving: Bool, coalesce: String? = nil) {
         guard let current = project.cameraLayouts.first(where: { $0.id == id }) else { return }
         var start = sourceTime(forTimeline: timelineStart)
         var end = sourceTime(forTimeline: timelineEnd)
@@ -535,7 +698,7 @@ extension VideoEditorModel {
             end = min(end, nextStart)
         }
         guard end - start >= VideoCameraLayoutRegion.minimumDuration * 0.5 else { return }
-        mutate(coalesce: "camera-layout-\(id)") { project in
+        mutate(coalesce: coalesce ?? "camera-layout-\(id)") { project in
             guard let index = project.cameraLayouts.firstIndex(where: { $0.id == id }) else { return }
             project.cameraLayouts[index].start = start
             project.cameraLayouts[index].end = end
@@ -578,6 +741,20 @@ extension VideoEditorModel {
         guard let overlay = project.overlayEffects.first(where: { $0.id == id }) else { return }
         updateOverlay(id) { $0.thickness = thickness }
         VideoOverlayStyleMemory.setThickness(thickness, for: overlay.kind)
+    }
+
+    /// A spotlight's shape; new spotlights start with the last one picked.
+    func setOverlayShape(_ id: UUID, _ shape: VideoOverlayShape) {
+        updateOverlay(id) { $0.shape = shape }
+        VideoOverlayStyleMemory.shape = shape
+    }
+
+    /// Turns an arrow around (tail and head swap places).
+    func flipArrow(_ id: UUID) {
+        updateOverlay(id) { effect in
+            let points = effect.arrowPoints
+            effect.setArrow(tail: points.head, head: points.tail)
+        }
     }
 }
 

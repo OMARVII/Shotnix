@@ -243,6 +243,9 @@ extension VideoDemoProject {
     mutating func moveSource(from: Int, to: Int) {
         guard sources.indices.contains(from), sources.indices.contains(to), from != to else { return }
         let old = sources
+        // Clips in recording order follow their recording to its new place;
+        // clips arranged by hand keep their places on the timeline.
+        let inRecordingOrder = zip(timelineClips, timelineClips.dropFirst()).allSatisfy { $0.sourceStart <= $1.sourceStart + 0.0001 }
         var reordered = sources
         reordered.insert(reordered.remove(at: from), at: to)
         var offset = 0.0
@@ -274,7 +277,7 @@ extension VideoDemoProject {
                 clips.append(part)
             }
         }
-        timelineClips = clips.sorted { $0.sourceStart < $1.sourceStart }
+        timelineClips = inRecordingOrder ? clips.sorted { $0.sourceStart < $1.sourceStart } : clips
 
         zoomRegions = zoomRegions.map { region in
             var moved = region
@@ -405,19 +408,29 @@ extension VideoDemoProject {
 /// Transcription across every recording of a video: each is transcribed
 /// on its own (on this Mac) and its words moved to where it sits.
 enum VideoSourcesTranscription {
+    /// `primary` is the project's own recording's voice (see
+    /// `VideoCaptionTranscriber.source`); each added recording's voice is
+    /// picked the same way.
     static func transcribe(
         project: VideoDemoProject,
+        primary: VideoCaptionTranscriber.Source,
         languageIdentifier: String?,
         progress: @escaping @Sendable (VideoCaptionTranscriber.Stage) -> Void
     ) async throws -> VideoCaptionTranscriber.Result {
         guard project.hasAppendedSources else {
-            return try await VideoCaptionTranscriber.transcribe(url: project.sourceURL, languageIdentifier: languageIdentifier, progress: progress)
+            return try await VideoCaptionTranscriber.transcribe(url: primary.url, trackIndex: primary.trackIndex, timeOffset: primary.offset, languageIdentifier: languageIdentifier, progress: progress)
         }
         var words: [VideoCaptionWord] = []
         var language = languageIdentifier
         let count = Double(project.sources.count)
         for (index, source) in project.sources.enumerated() {
-            guard let url = source.isPrimary ? project.sourceURL : VideoSourceLocator.resolve(source) else { continue }
+            let input: VideoCaptionTranscriber.Source
+            if source.isPrimary {
+                input = primary
+            } else {
+                guard let url = VideoSourceLocator.resolve(source) else { continue }
+                input = await voice(of: source, at: url)
+            }
             let base = Double(index)
             let scaled: @Sendable (VideoCaptionTranscriber.Stage) -> Void = { stage in
                 switch stage {
@@ -427,7 +440,7 @@ enum VideoSourcesTranscription {
             }
             do {
                 // The first recording's language is used for the rest.
-                let result = try await VideoCaptionTranscriber.transcribe(url: url, languageIdentifier: language, progress: scaled)
+                let result = try await VideoCaptionTranscriber.transcribe(url: input.url, trackIndex: input.trackIndex, timeOffset: input.offset, languageIdentifier: language, progress: scaled)
                 language = language ?? result.language
                 words += result.words.compactMap { word in
                     guard word.start < source.duration else { return nil }
@@ -441,6 +454,22 @@ enum VideoSourcesTranscription {
         }
         guard !words.isEmpty else { throw VideoCaptionTranscriber.Failure.nothingHeard }
         return VideoCaptionTranscriber.Result(words: words.sorted { $0.start < $1.start }, language: language ?? Locale.current.identifier(.bcp47))
+    }
+
+    /// An added recording's voice on its own — its cleaned-up version when
+    /// that's ready — like the project's own.
+    static func voice(of source: VideoProjectSource, at url: URL) async -> VideoCaptionTranscriber.Source {
+        var enhanced: URL?
+        var voiceStart = 0.0
+        if let index = VideoAudioKind.voiceTrackIndex(in: source.audioKinds) {
+            let cache = VideoVoiceEnhancer.cacheURL(for: url, trackIndex: index)
+            if FileManager.default.fileExists(atPath: cache.path) { enhanced = cache }
+            if let tracks = try? await AVURLAsset(url: url).loadTracks(withMediaType: .audio), tracks.indices.contains(index),
+               let range = try? await tracks[index].load(.timeRange), range.start.seconds.isFinite {
+                voiceStart = range.start.seconds
+            }
+        }
+        return VideoCaptionTranscriber.source(recording: url, kinds: source.audioKinds, enhancedVoice: enhanced, voiceStart: voiceStart)
     }
 }
 

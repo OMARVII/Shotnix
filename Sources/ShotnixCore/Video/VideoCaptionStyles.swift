@@ -250,19 +250,23 @@ extension VideoCaptionBuilder {
 }
 
 extension VideoEditorModel {
-    /// "Demo.srt", or "Demo.es.vtt" for a translated track.
+    /// "Demo (edited).srt" — named like the video export, so players pair
+    /// them up — or "Demo (edited).es.vtt" for a translated track.
     func subtitleFileName(_ format: VideoSubtitleFormat, base: String? = nil) -> String {
-        let name = base ?? project.sourceURL.deletingPathExtension().lastPathComponent
+        let name = base ?? exportBaseName
         if let language = project.captionTracks.active {
             return "\(name).\(language).\(format.fileExtension)"
         }
         return "\(name).\(format.fileExtension)"
     }
 
+    /// Saves the shown caption track, beside the last export.
     func exportSubtitles(_ format: VideoSubtitleFormat) {
+        followRenamedRecording()
         let panel = NSSavePanel()
         panel.allowedContentTypes = [UTType(filenameExtension: format.fileExtension) ?? .plainText]
         panel.nameFieldStringValue = subtitleFileName(format)
+        panel.directoryURL = recentExports.first?.exportURL.deletingLastPathComponent() ?? URL(fileURLWithPath: Settings.autoSaveLocation, isDirectory: true)
         panel.canCreateDirectories = true
         guard panel.runModal() == .OK, let url = panel.url else { return }
         do {

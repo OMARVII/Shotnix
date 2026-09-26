@@ -100,6 +100,8 @@ enum VideoDemoOverlayEffectKind: String, Codable, CaseIterable, Identifiable {
     case highlight
     // rawValue stays "blur" so saved drafts keep decoding.
     case blur
+    /// Dims the picture around a rectangle or an ellipse.
+    case spotlight
     /// A logo, watermark, or screenshot (see VideoImageOverlays.swift).
     case image
 
@@ -111,6 +113,7 @@ enum VideoDemoOverlayEffectKind: String, Codable, CaseIterable, Identifiable {
         case .arrow: return "Arrow"
         case .highlight: return "Highlight"
         case .blur: return "Blur"
+        case .spotlight: return "Spotlight"
         case .image: return "Image"
         }
     }
@@ -121,9 +124,27 @@ enum VideoDemoOverlayEffectKind: String, Codable, CaseIterable, Identifiable {
         case .arrow: return "arrow.up.right"
         case .highlight: return "rectangle.dashed"
         case .blur: return "eye.slash"
+        case .spotlight: return "circle.dashed.inset.filled"
         case .image: return "photo"
         }
     }
+}
+
+/// Where an arrow starts and points (video-normalized, y down).
+struct VideoArrowEnds: Codable, Equatable {
+    var tailX: Double
+    var tailY: Double
+    var headX: Double
+    var headY: Double
+}
+
+/// The shape a spotlight keeps bright.
+enum VideoOverlayShape: String, Codable, CaseIterable, Identifiable {
+    case rectangle
+    case ellipse
+
+    var id: String { rawValue }
+    var title: String { self == .rectangle ? "Rectangle" : "Ellipse" }
 }
 
 struct VideoDemoOverlayEffect: Codable, Equatable, Identifiable {
@@ -146,6 +167,11 @@ struct VideoDemoOverlayEffect: Codable, Equatable, Identifiable {
     /// kind's default). A clear text tag means text only, with a shadow.
     var color: VideoRGBA?
     var thickness: VideoOverlayThickness
+    /// Arrows point any way: nil for arrows made before ends were saved
+    /// (those run from the box's lower left to its upper right).
+    var arrowEnds: VideoArrowEnds?
+    /// A spotlight's shape (nil: rectangle).
+    var shape: VideoOverlayShape?
     /// The picture an image annotation shows.
     var image: VideoOverlayImage?
 
@@ -194,6 +220,8 @@ struct VideoDemoOverlayEffect: Codable, Equatable, Identifiable {
         layer = try container.decodeIfPresent(Int.self, forKey: .layer) ?? 0
         color = try container.decodeIfPresent(VideoRGBA.self, forKey: .color)
         thickness = (try? container.decode(VideoOverlayThickness.self, forKey: .thickness)) ?? .regular
+        arrowEnds = try? container.decodeIfPresent(VideoArrowEnds.self, forKey: .arrowEnds)
+        shape = try? container.decodeIfPresent(VideoOverlayShape.self, forKey: .shape)
         image = try? container.decodeIfPresent(VideoOverlayImage.self, forKey: .image)
     }
 }
@@ -223,12 +251,12 @@ extension VideoDemoOverlayEffectKind {
         switch self {
         case .arrow, .highlight: return VideoRGBA(hex: 0xFFD60A)
         case .text: return VideoRGBA(0.06, 0.06, 0.06, 0.84)
-        case .blur, .image: return VideoRGBA(0.5, 0.5, 0.5)
+        case .blur, .spotlight, .image: return VideoRGBA(0.5, 0.5, 0.5)
         }
     }
 
-    /// Whether a color can be chosen (blur and images have none).
-    var hasColor: Bool { self != .blur && self != .image }
+    /// Whether a color can be chosen (blur, spotlight, and images have none).
+    var hasColor: Bool { self != .blur && self != .spotlight && self != .image }
 
     /// Swatches offered for this kind.
     var palette: [VideoRGBA] {
@@ -241,7 +269,7 @@ extension VideoDemoOverlayEffectKind {
             return [defaultColor] + bright + [VideoRGBA(0, 0, 0, 0)]
         case .arrow, .highlight:
             return bright + [VideoRGBA(hex: 0x1C1C1E)]
-        case .blur, .image:
+        case .blur, .spotlight, .image:
             return []
         }
     }
@@ -973,9 +1001,11 @@ struct VideoDemoProject: Codable, Equatable, Identifiable {
         guard let index = clips.firstIndex(where: { $0.id == id }) else { return false }
 
         var clip = clips[index]
-        // A clip may not grow into the source range of its neighbours.
-        let lowerBound = index > 0 ? clips[index - 1].sourceEnd : 0
-        let upperBound = index + 1 < clips.count ? clips[index + 1].sourceStart : totalDuration
+        // A clip may not grow into the source range of any other clip (clips
+        // can be in any order on the timeline).
+        let others = clips.indices.filter { $0 != index }.map { clips[$0] }
+        let lowerBound = others.map(\.sourceEnd).filter { $0 <= clip.sourceStart + 0.0001 }.max() ?? 0
+        let upperBound = others.map(\.sourceStart).filter { $0 >= clip.sourceEnd - 0.0001 }.min() ?? totalDuration
         if let sourceStart {
             let floor = min(lowerBound, clip.sourceStart)
             clip.sourceStart = min(max(sourceStart, floor, 0), clip.sourceEnd - Self.minimumClipDuration)

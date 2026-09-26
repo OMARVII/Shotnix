@@ -91,6 +91,48 @@ final class VideoFramingEditorTests: XCTestCase {
         model.stop()
     }
 
+    /// M mutes the preview only: music and click sounds go quiet with the
+    /// rest there, and the export keeps them — nor is it saved.
+    func testPreviewMuteSilencesMusicAndClicksOnlyInThePreview() async throws {
+        let model = try await model(audio: true)
+        let song = directory.appendingPathComponent("song.m4a")
+        try VideoInspection.writeTone(to: song, frequency: 660, seconds: 4, amplitude: 0.4)
+        await model.addMusic(from: song)
+        model.setStyle { $0.clickSounds.enabled = true }
+        try await waitUntil { model.playback.edit?.musicTrack != nil }
+        let before = model.project
+        model.togglePreviewMute()
+        XCTAssertTrue(model.previewMuted)
+        XCTAssertTrue(model.playback.player.isMuted, "the player — music and clicks included — is silent")
+        XCTAssertNotNil(model.playback.edit?.musicTrack, "the music stays in the edit")
+        XCTAssertEqual(model.project, before, "nothing about it goes into the draft")
+
+        var settings = VideoInspection.mp4Settings()
+        settings.endCard = false
+        let output = directory.appendingPathComponent("muted-preview.mp4")
+        try await VideoDemoExporter.export(project: model.project, recording: model.recording, destinationURL: output, settings: settings)
+        let samples = try VideoInspection.audio(of: output)
+        XCTAssertGreaterThan(VideoInspection.toneLevel(samples, frequency: 660, from: 1, to: 2), 0.02, "the export has the music")
+        model.togglePreviewMute()
+        model.stop()
+    }
+
+    func testUndoNamesTheNewEdits() async throws {
+        let model = try await model()
+        model.setIntroEnabled(true)
+        XCTAssertEqual(model.undoLabel, "Add Intro Card")
+        let song = directory.appendingPathComponent("song.m4a")
+        try VideoInspection.writeTone(to: song, frequency: 440, seconds: 2)
+        await model.addMusic(from: song)
+        XCTAssertEqual(model.undoLabel, "Add Music")
+        let other = directory.appendingPathComponent("other.mp4")
+        try await VideoInspection.writeColorVideo(to: other, size: CGSize(width: 640, height: 400), colors: [(.blue, 1)])
+        let added = await model.appendVideo(other)
+        XCTAssertTrue(added)
+        XCTAssertEqual(model.undoLabel, "Add Recording")
+        model.stop()
+    }
+
     func testTransitionsPrefetchTheirHeldFrames() async throws {
         let model = try await model()
         model.seek(to: 1.5)

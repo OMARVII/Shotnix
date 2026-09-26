@@ -156,9 +156,9 @@ final class VideoCaptionStyleTests: XCTestCase {
         VideoDemoDraftStore.delete(for: url)
         let model = VideoEditorModel(videoURL: url)
         await model.load()
-        XCTAssertEqual(model.subtitleFileName(.srt), "Demo.srt")
+        XCTAssertEqual(model.subtitleFileName(.srt), "Demo (edited).srt", "named like the video export")
         model.mutate { $0.captionTracks.active = "de" }
-        XCTAssertEqual(model.subtitleFileName(.vtt), "Demo.de.vtt")
+        XCTAssertEqual(model.subtitleFileName(.vtt), "Demo (edited).de.vtt")
         model.stop()
         VideoDemoDraftStore.delete(for: url)
     }

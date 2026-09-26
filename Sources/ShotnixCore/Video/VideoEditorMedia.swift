@@ -157,6 +157,21 @@ extension VideoEditorModel {
         return built
     }
 
+    /// When the screen changed (typing, scrolling) — every recording's, where
+    /// it sits on the source axis (nil: no recording knows).
+    var screenActivityOnAxis: [Double]? {
+        guard project.hasAppendedSources else { return recording?.screenActivity }
+        var times: [Double] = []
+        var known = false
+        for source in project.sources {
+            let own = source.isPrimary ? recording?.screenActivity : media.appendedMetadata[source.id].flatMap { $0?.screenActivity }
+            guard let own else { continue }
+            known = true
+            times += own.filter { $0 <= source.duration }.map { $0 + source.offset }
+        }
+        return known ? times.sorted() : nil
+    }
+
     /// Where the voice is heard on the timeline (what the music ducks under).
     var voiceTimelineRanges: [ClosedRange<Double>] {
         VideoMusicDucking.voiceOnTimeline(project: project, primaryKinds: audioKinds, speech: media.speech, segments: segments)
@@ -375,6 +390,31 @@ enum VideoMusicDucking {
             }
         }
         return VideoVoiceActivity.timelineRanges(axis, segments: segments)
+    }
+}
+
+// MARK: - Undo names
+
+extension VideoEditDescription {
+    /// "Undo Add Recording", "Redo Add Music"… (nil: none of these changed).
+    static func framing(from old: VideoDemoProject, to new: VideoDemoProject) -> String? {
+        if old.sources.map(\.id) != new.sources.map(\.id) {
+            if new.sources.count > old.sources.count { return "Add Recording" }
+            if new.sources.count < old.sources.count { return "Remove Recording" }
+            return "Move Recording"
+        }
+        if old.music != new.music {
+            if old.music == nil { return "Add Music" }
+            if new.music == nil { return "Remove Music" }
+            return old.music?.path != new.music?.path ? "Replace Music" : "Music Change"
+        }
+        if old.cards.intro.enabled != new.cards.intro.enabled { return new.cards.intro.enabled ? "Add Intro Card" : "Remove Intro Card" }
+        if old.cards.outro.enabled != new.cards.outro.enabled { return new.cards.outro.enabled ? "Add Outro Card" : "Remove Outro Card" }
+        if old.cards != new.cards { return "Title Card" }
+        if old.transitions != new.transitions { return "Transitions" }
+        if old.clickSounds != new.clickSounds { return "Click Sounds" }
+        if old.captionTracks != new.captionTracks { return "Caption Translation" }
+        return nil
     }
 }
 

@@ -15,6 +15,8 @@ struct VideoTranscriptEditor: NSViewRepresentable {
     let model: VideoEditorModel
     @ObservedObject var timeline: VideoTimelineState
     @ObservedObject var clock: VideoDemoPlaybackClock
+    /// ⌘F from elsewhere in the editor: take focus, open the find bar.
+    var wantsFind = false
 
     func makeCoordinator() -> Coordinator { Coordinator(model: model) }
 
@@ -48,16 +50,30 @@ struct VideoTranscriptEditor: NSViewRepresentable {
         let coordinator = context.coordinator
         coordinator.refresh(revision: timeline.revision)
         coordinator.highlight(sourceTime: model.sourceTime(forTimeline: clock.time), playing: model.isPlaying)
+        if wantsFind {
+            // After this update (the view may have just been created).
+            DispatchQueue.main.async { [model, weak coordinator] in
+                model.wantsTranscriptFind = false
+                coordinator?.showFind()
+            }
+        }
     }
 
     @MainActor
     final class Coordinator {
         let model: VideoEditorModel
         weak var textView: TranscriptTextView?
-        private var revision = -1
         private var words: [VideoTranscriptWord] = []
         private var wordRanges: [NSRange] = []
         private var highlighted: Int?
+        /// What the text shows was built from: the words and which of them
+        /// are still in the video. Timeline changes that touch neither (a
+        /// zoom step, thumbnails arriving, a selection) leave it alone.
+        private var shownWords: [VideoTranscriptWord]?
+        private var shownIncluded: [Bool] = []
+        private var revision = -1
+        /// Tests: how many times the text was rebuilt.
+        private(set) var rebuilds = 0
         private static let font = NSFont.systemFont(ofSize: 13)
         private static let pauseFont = NSFont.systemFont(ofSize: 10, weight: .semibold)
 
@@ -66,15 +82,35 @@ struct VideoTranscriptEditor: NSViewRepresentable {
         }
 
         func refresh(revision: Int) {
+            // Playhead ticks update the view too: only a timeline change can
+            // change the words.
             guard revision != self.revision, let textView else { return }
             self.revision = revision
+            let words = model.transcriptWords
+            // In reading order: each pause (a gap over a second), then the
+            // word after it.
+            var included: [Bool] = []
+            included.reserveCapacity(words.count * 2)
+            for (index, word) in words.enumerated() {
+                if index > 0, word.start - words[index - 1].end > 1.0 {
+                    included.append(model.isIncluded(sourceTime: (words[index - 1].end + word.start) / 2))
+                }
+                included.append(model.isIncluded(word))
+            }
+            guard words != shownWords || included != shownIncluded else { return }
+            let keptSelection = textView.selectedRange().length > 0 ? indices(in: textView.selectedRange()).words : IndexSet()
+            let caret = textView.selectedRange().length == 0 ? textView.selectedRange().location : nil
+            shownWords = words
+            shownIncluded = included
+            self.words = words
+            rebuilds += 1
             let visible = textView.visibleRect
-            words = model.transcriptWords
             let text = NSMutableAttributedString()
             wordRanges = []
             let paragraph = NSMutableParagraphStyle()
             paragraph.lineSpacing = 4
             paragraph.paragraphSpacing = 10
+            var slot = 0
             for (index, word) in words.enumerated() {
                 if index > 0 {
                     let previous = words[index - 1]
@@ -82,7 +118,8 @@ struct VideoTranscriptEditor: NSViewRepresentable {
                     let sentenceEnd = previous.text.last.map { ".?!".contains($0) } ?? false
                     if gap > 1.0 {
                         text.append(NSAttributedString(string: " "))
-                        let pauseIncluded = model.isIncluded(sourceTime: (previous.end + word.start) / 2)
+                        let pauseIncluded = included[slot]
+                        slot += 1
                         text.append(NSAttributedString(string: " ⏸ \(VideoEditorModel.format(gap)) ", attributes: [
                             .font: Self.pauseFont,
                             .foregroundColor: NSColor.white.withAlphaComponent(pauseIncluded ? 0.55 : 0.25),
@@ -97,13 +134,14 @@ struct VideoTranscriptEditor: NSViewRepresentable {
                         text.append(NSAttributedString(string: " "))
                     }
                 }
-                let included = model.isIncluded(word)
+                let isIncluded = included[slot]
+                slot += 1
                 var attributes: [NSAttributedString.Key: Any] = [
                     .font: Self.font,
-                    .foregroundColor: NSColor.white.withAlphaComponent(included ? 0.9 : 0.3),
+                    .foregroundColor: NSColor.white.withAlphaComponent(isIncluded ? 0.9 : 0.3),
                     .shotnixWord: index,
                 ]
-                if !included {
+                if !isIncluded {
                     attributes[.strikethroughStyle] = NSUnderlineStyle.single.rawValue
                     attributes[.strikethroughColor] = NSColor.white.withAlphaComponent(0.45)
                 } else if word.isFiller {
@@ -117,7 +155,14 @@ struct VideoTranscriptEditor: NSViewRepresentable {
             }
             text.addAttribute(.paragraphStyle, value: paragraph, range: NSRange(location: 0, length: text.length))
             textView.textStorage?.setAttributedString(text)
-            textView.setSelectedRange(NSRange(location: 0, length: 0))
+            // The same words stay selected (a cut, then ⌫ again, restores
+            // them); a caret stays where it was.
+            if let first = keptSelection.first, let last = keptSelection.last,
+               wordRanges.indices.contains(first), wordRanges.indices.contains(last) {
+                textView.setSelectedRange(NSRange(location: wordRanges[first].location, length: NSMaxRange(wordRanges[last]) - wordRanges[first].location))
+            } else {
+                textView.setSelectedRange(NSRange(location: min(caret ?? 0, text.length), length: 0))
+            }
             highlighted = nil
             textView.scrollToVisible(visible)
         }
@@ -125,7 +170,7 @@ struct VideoTranscriptEditor: NSViewRepresentable {
         /// Marks the word being spoken.
         func highlight(sourceTime: Double, playing: Bool) {
             guard let textView, let storage = textView.textStorage else { return }
-            let index = words.lastIndex { $0.start <= sourceTime + 0.02 }.flatMap { words[$0].end + 0.25 >= sourceTime ? $0 : nil }
+            let index = lastWord(startingBy: sourceTime + 0.02).flatMap { words[$0].end + 0.25 >= sourceTime ? $0 : nil }
             guard index != highlighted else { return }
             if let old = highlighted, wordRanges.indices.contains(old), NSMaxRange(wordRanges[old]) <= storage.length {
                 storage.removeAttribute(.backgroundColor, range: wordRanges[old])
@@ -137,6 +182,18 @@ struct VideoTranscriptEditor: NSViewRepresentable {
                     textView.scrollRangeToVisible(wordRanges[index])
                 }
             }
+        }
+
+        /// The last word that starts at or before `time` (words are in time
+        /// order: a binary search, 60 times a second while playing).
+        private func lastWord(startingBy time: Double) -> Int? {
+            var low = 0
+            var high = words.count
+            while low < high {
+                let mid = (low + high) / 2
+                if words[mid].start <= time { low = mid + 1 } else { high = mid }
+            }
+            return low > 0 ? low - 1 : nil
         }
 
         private func indices(in range: NSRange) -> (words: IndexSet, pauses: [Int]) {
@@ -165,6 +222,30 @@ struct VideoTranscriptEditor: NSViewRepresentable {
             }
         }
 
+        /// ⌫ (or ⌦) with only a cursor in the text: the word (or pause)
+        /// just before (after) it is cut — or put back if it already was.
+        func deleteWord(before: Bool) {
+            guard let textView, let storage = textView.textStorage, storage.length > 0 else { return }
+            let caret = textView.selectedRange().location
+            var index = before ? caret - 1 : caret
+            while index >= 0, index < storage.length {
+                let attributes = storage.attributes(at: index, effectiveRange: nil)
+                if let word = attributes[.shotnixWord] as? Int, words.indices.contains(word) {
+                    if model.isIncluded(words[word]) {
+                        model.cutWords(IndexSet(integer: word))
+                    } else {
+                        model.restoreWords(IndexSet(integer: word))
+                    }
+                    return
+                }
+                if let pause = attributes[.shotnixPause] as? Int {
+                    model.shortenPause(before: pause)
+                    return
+                }
+                index += before ? -1 : 1
+            }
+        }
+
         func restoreSelection() {
             guard let textView else { return }
             let selection = indices(in: textView.selectedRange())
@@ -181,6 +262,14 @@ struct VideoTranscriptEditor: NSViewRepresentable {
         var hasCutWordsInSelection: Bool {
             guard let textView else { return false }
             return indices(in: textView.selectedRange()).words.contains { words.indices.contains($0) && !model.isIncluded(words[$0]) }
+        }
+
+        func showFind() {
+            guard let textView, let window = textView.window else { return }
+            window.makeFirstResponder(textView)
+            let sender = NSMenuItem()
+            sender.tag = NSTextFinder.Action.showFindInterface.rawValue
+            textView.performTextFinderAction(sender)
         }
 
         func playFromSelection() {
@@ -201,9 +290,15 @@ final class TranscriptTextView: NSTextView {
         let modifiers = event.modifierFlags.intersection([.command, .shift, .option, .control])
         let key = event.charactersIgnoringModifiers?.lowercased() ?? ""
         switch (event.keyCode, modifiers) {
-        case (51, []) where selectedRange().length > 0, (117, []) where selectedRange().length > 0:
+        case (51, []), (117, []):
             // Words (or a pause) are selected: ⌫ cuts them from the video.
-            coordinator?.deleteSelection()
+            // With just a cursor, ⌫ takes the word before it (⌦ the one
+            // after) — never a clip selected on the timeline.
+            if selectedRange().length > 0 {
+                coordinator?.deleteSelection()
+            } else {
+                coordinator?.deleteWord(before: event.keyCode == 51)
+            }
         case (123, _), (124, _), (125, _), (126, _):
             // Arrows move through the text (⇧ extends the selection).
             super.keyDown(with: event)

@@ -643,7 +643,7 @@ final class VideoFrameRenderer {
         let stageOut = geometry.rect(plan.stageRect)
         let radius = CGFloat(plan.cornerRadius) * geometry.pixelScale
         if let source {
-            let video = placedVideo(source, plan: plan, geometry: geometry, stageOut: stageOut)
+            let video = placedVideo(source, plan: plan, geometry: geometry, stageOut: stageOut, draft: options.draft)
             if plan.fullBleed || radius < 0.5 {
                 scene = video.cropped(to: stageOut).composited(over: scene)
             } else {
@@ -906,7 +906,7 @@ final class VideoFrameRenderer {
         return image
     }
 
-    private func placedVideo(_ incoming: CIImage, plan: VideoRenderPlan, geometry: Geometry, stageOut: CGRect) -> CIImage {
+    private func placedVideo(_ incoming: CIImage, plan: VideoRenderPlan, geometry: Geometry, stageOut: CGRect, draft: Bool = false) -> CIImage {
         // A frame of another shape (an added recording that reached us
         // unfitted) is letterboxed into the recording's own shape first.
         var fullSource = incoming
@@ -934,7 +934,7 @@ final class VideoFrameRenderer {
         let extent = source.extent
         let normalized = extent.origin == .zero ? source : source.transformed(by: CGAffineTransform(translationX: -extent.minX, y: -extent.minY))
         let effective = stageOut.width / max(extent.width, 1)
-        if effective < 0.8 {
+        if effective < 0.8, !draft {
             // Downscaling a sharp screen recording needs a real filter, or
             // text shimmers — Lanczos once, then a pure translation.
             let scaled = normalized.applyingFilter("CILanczosScaleTransform", parameters: [
@@ -1008,8 +1008,19 @@ final class VideoFrameRenderer {
             let glow = ring.applyingGaussianBlur(sigma: Double(6 * unit)).applyingFilter("CIColorMatrix", parameters: ["inputAVector": CIVector(x: 0, y: 0, z: 0, w: 0.55)])
             return ring.composited(over: fill.composited(over: glow.composited(over: scene)))
         case .arrow:
-            guard let image = arrowImage(size: rect.size, unit: unit, color: effect.resolvedColor, thickness: effect.thickness) else { return scene }
-            return faded(image, opacity).transformed(by: CGAffineTransform(translationX: rect.minX, y: rect.minY)).composited(over: scene)
+            // From its tail to its head, whichever way it points.
+            let ends = effect.arrowPoints
+            func output(_ p: CGPoint) -> CGPoint {
+                geometry.point(CGPoint(x: stage.minX + stage.width * p.x, y: stage.minY + stage.height * p.y))
+            }
+            guard let arrow = arrowImage(from: output(ends.tail), to: output(ends.head), unit: unit, color: effect.resolvedColor, thickness: effect.thickness) else { return scene }
+            return faded(arrow.image, opacity).transformed(by: CGAffineTransform(translationX: arrow.origin.x, y: arrow.origin.y)).composited(over: scene)
+        case .spotlight:
+            // The picture dims around the spot (inside the recording's frame).
+            let stageOut = geometry.rect(plan.stageRect)
+            let dim = roundedRect(stageOut, radius: CGFloat(plan.cornerRadius) * geometry.pixelScale, color: CIColor(red: 0, green: 0, blue: 0, alpha: 0.58 * opacity))
+            let hole = effect.shape == .ellipse ? ellipseMask(rect, feather: 3 * unit) : roundedRect(rect, radius: 12 * unit, color: CIColor.white)
+            return dim.applyingFilter("CISourceOutCompositing", parameters: [kCIInputBackgroundImageKey: hole]).composited(over: scene)
         case .text:
             guard let image = textImage(effect.text, box: rect.size, unit: unit, background: effect.resolvedColor) else { return scene }
             let x = rect.midX - image.extent.width / 2
@@ -1041,20 +1052,44 @@ final class VideoFrameRenderer {
         return image
     }
 
-    private func arrowImage(size: CGSize, unit: CGFloat, color tint: VideoRGBA, thickness: VideoOverlayThickness) -> CIImage? {
-        let width = max(Int(size.width.rounded()), 8)
-        let height = max(Int(size.height.rounded()), 8)
-        let key = "arrow-\(width)x\(height)-\(Int(unit * 100))-\(tint.hashValue)-\(thickness.rawValue)"
-        return cached(key) {
+    /// A soft-edged ellipse filling `rect` (white inside).
+    private func ellipseMask(_ rect: CGRect, feather: CGFloat) -> CIImage {
+        guard rect.width > 1, rect.height > 1 else { return CIImage.empty() }
+        // A unit-circle gradient, stretched into the ellipse.
+        let radius: CGFloat = 1000
+        let soft = min(feather / max(min(rect.width, rect.height) / 2, 1), 0.5) * radius
+        let circle = CIFilter(name: "CIRadialGradient", parameters: [
+            "inputCenter": CIVector(x: 0, y: 0),
+            "inputRadius0": radius - soft,
+            "inputRadius1": radius,
+            "inputColor0": CIColor.white,
+            "inputColor1": CIColor.clear,
+        ])?.outputImage?.cropped(to: CGRect(x: -radius, y: -radius, width: radius * 2, height: radius * 2)) ?? CIImage.empty()
+        return circle.transformed(by: CGAffineTransform(scaleX: rect.width / (radius * 2), y: rect.height / (radius * 2))
+            .concatenating(CGAffineTransform(translationX: rect.midX, y: rect.midY)))
+    }
+
+    /// An arrow from `tail` to `head` (output pixels, y up), and where its
+    /// image goes.
+    private func arrowImage(from tail: CGPoint, to head: CGPoint, unit: CGFloat, color tint: VideoRGBA, thickness: VideoOverlayThickness) -> (image: CIImage, origin: CGPoint)? {
+        let length = hypot(head.x - tail.x, head.y - tail.y)
+        guard length > 2 else { return nil }
+        let line = max(7 * unit * thickness.scale, 2)
+        // Long arrows keep a head of the usual size.
+        let headSize = min(max(line * 3.4, min(length * 0.2, 56 * unit)), length * 0.6)
+        // Room for the head and the shadow around the line's box.
+        let pad = headSize + 10 * unit + 4
+        let origin = CGPoint(x: (min(tail.x, head.x) - pad).rounded(.down), y: (min(tail.y, head.y) - pad).rounded(.down))
+        let width = Int((max(tail.x, head.x) + pad - origin.x).rounded(.up))
+        let height = Int((max(tail.y, head.y) + pad - origin.y).rounded(.up))
+        let start = CGPoint(x: tail.x - origin.x, y: tail.y - origin.y)
+        let end = CGPoint(x: head.x - origin.x, y: head.y - origin.y)
+        let key = "arrow-\(Int(start.x * 2))-\(Int(start.y * 2))-\(Int(end.x * 2))-\(Int(end.y * 2))-\(width)x\(height)-\(Int(unit * 100))-\(tint.hashValue)-\(thickness.rawValue)"
+        let image = cached(key) {
             guard let space = CGColorSpace(name: CGColorSpace.sRGB),
                   let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0, space: space, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return nil }
-            let w = CGFloat(width)
-            let h = CGFloat(height)
-            let line = max(7 * unit * thickness.scale, 2)
-            let start = CGPoint(x: w * 0.1, y: h * 0.1)
-            let end = CGPoint(x: w * 0.88, y: h * 0.88)
             let angle = atan2(end.y - start.y, end.x - start.x)
-            let head = max(line * 3.4, min(w, h) * 0.22)
+            let head = headSize
             let path = CGMutablePath()
             path.move(to: start)
             path.addLine(to: CGPoint(x: end.x - cos(angle) * head * 0.55, y: end.y - sin(angle) * head * 0.55))
@@ -1075,6 +1110,7 @@ final class VideoFrameRenderer {
             context.fillPath()
             return context.makeImage().map { CIImage(cgImage: $0) }
         }
+        return image.map { ($0, origin) }
     }
 
     private func textImage(_ text: String, box: CGSize, unit: CGFloat, background: VideoRGBA) -> CIImage? {

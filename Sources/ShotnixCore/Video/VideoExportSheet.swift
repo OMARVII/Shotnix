@@ -48,7 +48,10 @@ struct VideoExportSheet: View {
             .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Color(white: 0.105)))
             .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(Color.white.opacity(0.12), lineWidth: 1))
             .shadow(color: .black.opacity(0.55), radius: 40, y: 20)
-            .padding(.vertical, 24)
+            .overlay(alignment: .top) { VideoOverlayNotice(model: model) }
+            // Room above for the message that sits over the sheet.
+            .padding(.top, 52)
+            .padding(.bottom, 20)
         }
         .onAppear(perform: prepareRange)
     }
@@ -200,7 +203,7 @@ struct VideoExportSheet: View {
                         .foregroundStyle(VideoEditorTheme.textPrimary)
                         .disabled(!shown)
                         if !shown {
-                            note("Captions are hidden in the editor (Script → Captions → Show captions).")
+                            note("Captions are hidden in the editor (Captions tab → Show captions).")
                         }
                         HStack(spacing: 8) {
                             Text("Subtitles file")
@@ -343,6 +346,9 @@ struct VideoExportSheet: View {
             if upscaled {
                 warning("Larger than the recording — text may look softer than at a lower resolution.")
             }
+            // An export that would come out silent says so (and can turn
+            // the sound back on).
+            VideoExportSoundWarning(model: model)
             if let free, free < bytes + 200_000_000 {
                 warning("Only \(VideoEditorModel.formatBytes(free)) free on your disk — this may not fit. Free up space or save to another drive.")
             }

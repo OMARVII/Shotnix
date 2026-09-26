@@ -31,10 +31,10 @@ struct VideoOverlayColorPicker: View {
                 color: current,
                 isCustom: !palette.contains { same($0, current) },
                 showsAlpha: overlay.kind == .text
-            ) { [model, id = overlay.id, kind = overlay.kind] picked in
-                // The panel outlives the selection: only recolor while this
-                // annotation is still the one being edited.
-                guard model.selection == .overlay(id) else { return }
+            ) { [weak model, id = overlay.id, kind = overlay.kind] picked in
+                // The panel outlives the selection (and the editor): only
+                // recolor while this annotation is still the one being edited.
+                guard let model, model.selection == .overlay(id) else { return }
                 var rgba = picked
                 // The tag keeps a little see-through unless chosen otherwise.
                 if kind != .text { rgba.a = 1 }
@@ -175,7 +175,7 @@ struct VideoScriptInspector: View {
                     .padding(.top, 10)
                 }
                 if mode == "transcript" {
-                    VideoTranscriptPanel(model: model, timeline: model.timelineState)
+                    VideoTranscriptPanel(model: model, timeline: model.timelineState, wantsFind: model.wantsTranscriptFind)
                 } else {
                     ScrollView {
                         VideoCaptionsInspector(model: model)
@@ -192,6 +192,8 @@ struct VideoTranscriptPanel: View {
     let model: VideoEditorModel
     /// Counts refresh only when the timeline changes, not on every edit.
     @ObservedObject var timeline: VideoTimelineState
+    /// ⌘F was pressed: the transcript opens its find bar.
+    var wantsFind = false
 
     var body: some View {
         let fillers = model.fillerCount
@@ -210,10 +212,12 @@ struct VideoTranscriptPanel: View {
                 cleanup(
                     title: pauses.isEmpty ? "No pauses to shorten" : "Shorten \(pauses.count) pause\(pauses.count == 1 ? "" : "s")",
                     symbol: "forward.end",
-                    help: model.project.cursorSamples.isEmpty
+                    help: model.project.cursorSamples.isEmpty && !model.seesScreenChanges
                         ? "Shortens every silence over a second (this video has no Shotnix pointer data to spot what happens on screen)"
+                        : !model.seesScreenChanges
+                        ? (pauses.isEmpty ? "Silences over a second get shortened — except while you move the pointer, click, or press a shortcut" : "Saves \(VideoEditorModel.format(pauseSeconds)) — silences where the pointer rests and nothing is clicked or pressed (this older recording can't see typing)")
                         : pauses.isEmpty
-                        ? "Silences over a second get shortened — except while you click or move the pointer, so the demo itself is never cut"
+                        ? "Silences over a second get shortened — except while you click, type, scroll, or move the pointer, so the demo itself is never cut"
                         : "Saves \(VideoEditorModel.format(pauseSeconds)) — only silences where nothing happens on screen",
                     enabled: !pauses.isEmpty,
                     action: model.shortenPauses
@@ -223,7 +227,7 @@ struct VideoTranscriptPanel: View {
                 .font(.system(size: 10.5))
                 .foregroundStyle(VideoEditorTheme.textTertiary)
                 .fixedSize(horizontal: false, vertical: true)
-            VideoTranscriptEditor(model: model, timeline: timeline, clock: model.clock)
+            VideoTranscriptEditor(model: model, timeline: timeline, clock: model.clock, wantsFind: wantsFind)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .padding(8)
                 .background(RoundedRectangle(cornerRadius: 10, style: .continuous).fill(Color.black.opacity(0.22)))
@@ -347,8 +351,10 @@ struct VideoCaptionsInspector: View {
                             .font(.system(size: 11.5, weight: .semibold))
                             .foregroundStyle(VideoEditorTheme.textPrimary)
                         Spacer()
-                        if let fraction = job.fraction {
-                            Text("\(Int((fraction * 100).rounded()))%")
+                        // The time spent always moves, even while the
+                        // recognizer hasn't said how far it is.
+                        TimelineView(.periodic(from: .now, by: 1)) { context in
+                            Text([job.fraction.map { "\(Int(($0 * 100).rounded()))%" }, job.elapsed(at: context.date)].compactMap { $0 }.joined(separator: " · "))
                                 .font(.system(size: 11, weight: .semibold, design: .monospaced))
                                 .foregroundStyle(VideoEditorTheme.textSecondary)
                         }
@@ -358,6 +364,10 @@ struct VideoCaptionsInspector: View {
                     } else {
                         ProgressView().progressViewStyle(.linear).tint(VideoEditorTheme.caption)
                     }
+                    Text("Keep editing — the words appear here when Shotnix is done listening.")
+                        .font(.system(size: 10.5))
+                        .foregroundStyle(VideoEditorTheme.textTertiary)
+                        .fixedSize(horizontal: false, vertical: true)
                     Button("Cancel") { model.cancelCaptions() }
                         .buttonStyle(VideoSecondaryButtonStyle())
                 }
@@ -562,7 +572,25 @@ struct VideoCameraInspector: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 22) {
-            if !model.hasCameraInAnyRecording {
+            if let missing = model.missingWebcamFile, !model.hasCameraInAnyRecording {
+                // Recorded with a camera, but its file moved or was deleted
+                // (and no added recording brings one).
+                VideoCard {
+                    Label("Camera footage is missing", systemImage: "exclamationmark.triangle.fill")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(VideoEditorTheme.textPrimary)
+                    Text("This video was recorded with your camera, but “\(missing.lastPathComponent)” isn't in \(missing.deletingLastPathComponent().lastPathComponent) anymore. Put it back there and open the video again to get the camera bubble back.")
+                        .font(.system(size: 11))
+                        .foregroundStyle(VideoEditorTheme.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    if FileManager.default.fileExists(atPath: missing.deletingLastPathComponent().path) {
+                        Button("Show Folder in Finder") {
+                            NSWorkspace.shared.open(missing.deletingLastPathComponent())
+                        }
+                        .buttonStyle(VideoSecondaryButtonStyle())
+                    }
+                }
+            } else if !model.hasCameraInAnyRecording {
                 VideoCard {
                     Label("No camera in this recording", systemImage: "video.slash")
                         .font(.system(size: 12, weight: .semibold))

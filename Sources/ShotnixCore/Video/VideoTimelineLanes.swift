@@ -9,6 +9,8 @@ final class VideoTimelineHover: ObservableObject {
     @Published private(set) var overZoomTrack = false
     /// Hover guides hide while anything is being dragged.
     @Published private(set) var dragging = false
+    /// Where a dragged edge snapped (a guide line shows it).
+    @Published private(set) var snapTime: Double?
 
     func update(time: Double?, overZoomTrack: Bool) {
         if self.time != time { self.time = time }
@@ -17,6 +19,59 @@ final class VideoTimelineHover: ObservableObject {
 
     func setDragging(_ dragging: Bool) {
         if self.dragging != dragging { self.dragging = dragging }
+        if !dragging { setSnap(nil) }
+    }
+
+    func setSnap(_ time: Double?) {
+        if snapTime != time { snapTime = time }
+    }
+}
+
+/// Where dragged bars and edges land: the playhead, clip edges, clicks,
+/// and the edges of every other bar on the timeline — when one is within a
+/// few points. Zooms, annotations, captions, and camera layouts all use it.
+struct VideoTimelineSnapper {
+    /// Sorted timeline times.
+    let targets: [Double]
+    /// Seconds (the reach in points at the current scale).
+    let threshold: Double
+
+    init(targets: [Double], pointsPerSecond: CGFloat, reach: CGFloat = 8) {
+        self.targets = targets.sorted()
+        threshold = Double(reach / max(pointsPerSecond, 0.0001))
+    }
+
+    /// The target nearest `time`, when it's within reach.
+    func target(near time: Double) -> Double? {
+        guard !targets.isEmpty else { return nil }
+        var low = 0
+        var high = targets.count
+        while low < high {
+            let mid = (low + high) / 2
+            if targets[mid] < time { low = mid + 1 } else { high = mid }
+        }
+        let candidates = [low - 1, low].filter { targets.indices.contains($0) }.map { targets[$0] }
+        guard let best = candidates.min(by: { abs($0 - time) < abs($1 - time) }), abs(best - time) <= threshold else { return nil }
+        return best
+    }
+
+    /// An edge being dragged: the target it lands on (or itself).
+    func snap(_ time: Double) -> (time: Double, target: Double?) {
+        guard let target = target(near: time) else { return (time, nil) }
+        return (target, target)
+    }
+
+    /// A whole bar being moved: the shift that lands its nearer edge on a
+    /// target (0 when neither edge is near one).
+    func shift(start: Double, end: Double) -> (delta: Double, target: Double?) {
+        let a = target(near: start).map { ($0 - start, $0) }
+        let b = target(near: end).map { ($0 - end, $0) }
+        switch (a, b) {
+        case let (a?, b?): return abs(a.0) <= abs(b.0) ? a : b
+        case let (a?, nil): return a
+        case let (nil, b?): return b
+        default: return (0, nil)
+        }
     }
 }
 
@@ -63,6 +118,13 @@ struct VideoTimelineHoverLayer: View {
             if let time = hover.time, !hover.dragging {
                 if hover.overZoomTrack { zoomGhost(at: time) }
                 ghostPlayhead(time)
+            }
+            if hover.dragging, let snap = hover.snapTime {
+                // A dragged edge landed on something.
+                Rectangle()
+                    .fill(Color.yellow.opacity(0.85))
+                    .frame(width: 1, height: height - M.rulerHeight)
+                    .offset(x: geometry.x(snap), y: M.rulerHeight)
             }
         }
         .frame(width: geometry.width, height: height, alignment: .topLeading)
@@ -122,22 +184,23 @@ struct VideoCaptionLane: View, Equatable {
     }
 
     let items: [Item]
-    let selectedID: UUID?
+    let selectedIDs: Set<UUID>
     let geometry: VideoTimelineGeometry
     let model: VideoEditorModel
     let hover: VideoTimelineHover
 
     nonisolated static func == (a: Self, b: Self) -> Bool {
-        a.items == b.items && a.selectedID == b.selectedID && a.geometry == b.geometry
+        a.items == b.items && a.selectedIDs == b.selectedIDs && a.geometry == b.geometry
     }
 
-    private enum Mode { case move, leading, trailing }
+    private typealias Mode = VideoLaneDrag.Mode
 
     private struct Drag {
         let id: UUID
         let mode: Mode
         let originStart: Double
         let originEnd: Double
+        let press: VideoLaneDrag.Press
         var moved = false
     }
 
@@ -170,7 +233,7 @@ struct VideoCaptionLane: View, Equatable {
             for item in items {
                 let frame = rect(item)
                 guard frame.maxX >= 0, frame.minX <= size.width else { continue }
-                let selected = item.id == selectedID
+                let selected = selectedIDs.contains(item.id)
                 let path = Path(roundedRect: frame, cornerRadius: 6, style: .continuous)
                 context.fill(path, with: .color(VideoEditorTheme.caption.opacity(selected ? 0.85 : 0.34)))
                 context.stroke(path, with: .color(.white.opacity(selected ? 0.95 : 0.12)), lineWidth: selected ? 1.5 : 1)
@@ -200,6 +263,24 @@ struct VideoCaptionLane: View, Equatable {
             (mode == .move ? NSCursor.openHand : NSCursor.resizeLeftRight).set()
         }
         .gesture(dragGesture)
+        // Drawn chips have no views: VoiceOver gets one element for each.
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Captions")
+        .accessibilityChildren {
+            ZStack(alignment: .topLeading) {
+                ForEach(items, id: \.id) { item in
+                    let frame = rect(item)
+                    Color.clear
+                        .frame(width: frame.width, height: frame.height)
+                        .offset(x: frame.minX)
+                        .accessibilityElement()
+                        .accessibilityLabel("Caption “\(item.text)”" + VideoEditorModel.spokenSpan(item.start, item.end))
+                        .accessibilityAddTraits(selectedIDs.contains(item.id) ? [.isButton, .isSelected] : .isButton)
+                        .accessibilityAction { model.selectCaption(item.id) }
+                        .accessibilityAction(named: "Delete") { model.deleteCaption(item.id) }
+                }
+            }
+        }
     }
 
     private var dragGesture: some Gesture {
@@ -211,28 +292,21 @@ struct VideoCaptionLane: View, Equatable {
                         model.seek(to: geometry.time(value.location.x), fast: true)
                         return
                     }
-                    drag = Drag(id: item.id, mode: mode, originStart: item.start, originEnd: item.end)
+                    let press = VideoLaneDrag.Press(model: model, item: .caption(item.id), moving: mode == .move, pointsPerSecond: geometry.pointsPerSecond)
+                    drag = Drag(id: item.id, mode: mode, originStart: item.start, originEnd: item.end, press: press)
                     hover.setDragging(true)
-                    model.selection = .caption(item.id)
+                    if !press.group, !press.extending { model.selection = .caption(item.id) }
                 }
                 guard var current = drag else { return }
                 if abs(value.translation.width) > 2 { current.moved = true }
                 drag = current
                 guard current.moved else { return }
-                let delta = Double(value.translation.width / geometry.pointsPerSecond)
-                var start = current.originStart
-                var end = current.originEnd
-                switch current.mode {
-                case .move:
-                    let length = end - start
-                    start = min(max(current.originStart + delta, 0), geometry.duration - length)
-                    end = start + length
-                case .leading:
-                    start = min(max(current.originStart + delta, 0), current.originEnd - 0.2)
-                case .trailing:
-                    end = min(max(current.originEnd + delta, current.originStart + 0.2), geometry.duration)
+                let (start, end) = VideoLaneDrag.window(mode: current.mode, start: current.originStart, end: current.originEnd, snapper: current.press.snapper, delta: Double(value.translation.width / geometry.pointsPerSecond), duration: geometry.duration, minimum: 0.2, hover: hover)
+                if current.press.group {
+                    model.moveGroup(by: start - current.originStart)
+                } else {
+                    model.setCaptionWindow(current.id, timelineStart: start, timelineEnd: end, moveWords: current.mode == .move)
                 }
-                model.setCaptionWindow(current.id, timelineStart: start, timelineEnd: end, moveWords: current.mode == .move)
             }
             .onEnded { value in
                 defer {
@@ -243,9 +317,60 @@ struct VideoCaptionLane: View, Equatable {
                     model.seek(to: geometry.time(value.location.x), fast: false)
                     return
                 }
-                model.endGesture()
-                if !current.moved { model.selectCaption(current.id) }
+                current.press.end(model: model)
+                if !current.moved {
+                    if current.press.extending { model.toggleSelection(.caption(current.id)) } else { model.selectCaption(current.id) }
+                }
             }
+    }
+}
+
+/// Moving a chip on a lane, or dragging one of its edges.
+enum VideoLaneDrag {
+    enum Mode { case move, leading, trailing }
+
+    /// How a press on a chip began: ⇧/⌘ held (a click adds to or takes
+    /// from the selection), or on one of several selected (a move drags
+    /// them all) — and where its edges can land.
+    @MainActor
+    struct Press {
+        let extending: Bool
+        let group: Bool
+        let snapper: VideoTimelineSnapper
+
+        init(model: VideoEditorModel, item: VideoEditorModel.Selection, moving: Bool, pointsPerSecond: CGFloat) {
+            extending = VideoEditorModel.extendsSelection
+            group = moving && !extending && model.movesAsGroup(item)
+            let excluded = Set((group ? model.selectedItems : [item]).compactMap(\.itemID))
+            snapper = VideoTimelineSnapper(targets: model.snapTargets(excluding: excluded), pointsPerSecond: pointsPerSecond)
+            if group { model.beginGroupMove() }
+        }
+
+        func end(model: VideoEditorModel) {
+            if group { model.endGroupMove() } else { model.endGesture() }
+        }
+    }
+
+    /// Where the chip goes, landing on anything in reach.
+    @MainActor
+    static func window(mode: Mode, start: Double, end: Double, snapper: VideoTimelineSnapper, delta: Double, duration: Double, minimum: Double, hover: VideoTimelineHover) -> (Double, Double) {
+        switch mode {
+        case .move:
+            let length = end - start
+            let raw = min(max(start + delta, 0), max(duration - length, 0))
+            let shift = snapper.shift(start: raw, end: raw + length)
+            hover.setSnap(shift.target)
+            let moved = min(max(raw + shift.delta, 0), max(duration - length, 0))
+            return (moved, moved + length)
+        case .leading:
+            let snapped = snapper.snap(start + delta)
+            hover.setSnap(snapped.target)
+            return (min(max(snapped.time, 0), end - minimum), end)
+        case .trailing:
+            let snapped = snapper.snap(end + delta)
+            hover.setSnap(snapped.target)
+            return (start, min(max(snapped.time, start + minimum), duration))
+        }
     }
 }
 
@@ -260,13 +385,13 @@ struct VideoKeysLane: View, Equatable {
     }
 
     let items: [Item]
-    let selectedID: UUID?
+    let selectedIDs: Set<UUID>
     let hidden: Bool
     let geometry: VideoTimelineGeometry
     let model: VideoEditorModel
 
     nonisolated static func == (a: Self, b: Self) -> Bool {
-        a.items == b.items && a.selectedID == b.selectedID && a.hidden == b.hidden && a.geometry == b.geometry
+        a.items == b.items && a.selectedIDs == b.selectedIDs && a.hidden == b.hidden && a.geometry == b.geometry
     }
 
     private typealias M = VideoTimelineMetrics
@@ -284,7 +409,7 @@ struct VideoKeysLane: View, Equatable {
             for item in items {
                 let frame = rect(item)
                 guard frame.maxX >= 0, frame.minX <= size.width else { continue }
-                let selected = item.id == selectedID
+                let selected = selectedIDs.contains(item.id)
                 let path = Path(roundedRect: frame, cornerRadius: 5, style: .continuous)
                 context.fill(path, with: .color(VideoEditorTheme.keys.opacity(selected ? 0.9 : (hidden ? 0.16 : 0.4))))
                 context.stroke(path, with: .color(.white.opacity(selected ? 0.95 : 0.14)), lineWidth: selected ? 1.5 : 1)
@@ -312,13 +437,30 @@ struct VideoKeysLane: View, Equatable {
                 }
                 .onEnded { value in
                     if let item = hit(value.startLocation), abs(value.translation.width) < 3 {
-                        model.selectKeystroke(item.id)
+                        if VideoEditorModel.extendsSelection { model.toggleSelection(.keystroke(item.id)) } else { model.selectKeystroke(item.id) }
                     } else {
                         model.seek(to: geometry.time(value.location.x), fast: false)
                     }
                 }
         )
         .help("Keyboard shortcuts — click one to select it, ⌫ hides it")
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Keyboard shortcuts")
+        .accessibilityChildren {
+            ZStack(alignment: .topLeading) {
+                ForEach(items, id: \.id) { item in
+                    let frame = rect(item)
+                    Color.clear
+                        .frame(width: frame.width, height: frame.height)
+                        .offset(x: frame.minX)
+                        .accessibilityElement()
+                        .accessibilityLabel("Shortcut \(item.label)" + VideoEditorModel.spokenSpan(item.time, item.time))
+                        .accessibilityAddTraits(selectedIDs.contains(item.id) ? [.isButton, .isSelected] : .isButton)
+                        .accessibilityAction { model.selectKeystroke(item.id) }
+                        .accessibilityAction(named: "Hide") { model.deleteKeystroke(item.id) }
+                }
+            }
+        }
     }
 }
 
@@ -333,19 +475,20 @@ struct VideoClickLane: View, Equatable {
     }
 
     let items: [Item]
-    let selectedID: UUID?
+    let selectedIDs: Set<UUID>
     let geometry: VideoTimelineGeometry
     let model: VideoEditorModel
     let hover: VideoTimelineHover
 
     nonisolated static func == (a: Self, b: Self) -> Bool {
-        a.items == b.items && a.selectedID == b.selectedID && a.geometry == b.geometry
+        a.items == b.items && a.selectedIDs == b.selectedIDs && a.geometry == b.geometry
     }
 
     private struct Drag {
         let id: UUID
         let origin: Double
         var time: Double
+        let press: VideoLaneDrag.Press
         var moved = false
     }
 
@@ -364,7 +507,7 @@ struct VideoClickLane: View, Equatable {
                 let time = drag?.id == item.id ? (drag?.time ?? item.time) : item.time
                 let x = geometry.x(time)
                 guard x >= -8, x <= size.width + 8 else { continue }
-                let selected = item.id == selectedID || drag?.id == item.id
+                let selected = selectedIDs.contains(item.id) || drag?.id == item.id
                 let dot = Path(ellipseIn: CGRect(x: x - 4, y: (M.clickLaneHeight - 8) / 2, width: 8, height: 8))
                 context.fill(dot, with: .color(selected ? .white : .white.opacity(0.55)))
                 context.stroke(dot, with: .color(selected ? VideoEditorTheme.zoom : .black.opacity(0.4)), lineWidth: selected ? 2 : 1)
@@ -387,14 +530,17 @@ struct VideoClickLane: View, Equatable {
                             model.seek(to: geometry.time(value.location.x), fast: true)
                             return
                         }
-                        drag = Drag(id: item.id, origin: item.time, time: item.time)
+                        let press = VideoLaneDrag.Press(model: model, item: .click(item.id), moving: true, pointsPerSecond: geometry.pointsPerSecond)
+                        drag = Drag(id: item.id, origin: item.time, time: item.time, press: press)
                         hover.setDragging(true)
-                        model.selection = .click(item.id)
+                        if !press.group, !press.extending { model.selection = .click(item.id) }
                     }
                     guard var current = drag else { return }
                     if abs(value.translation.width) > 2 { current.moved = true }
                     if current.moved {
                         current.time = min(max(current.origin + Double(value.translation.width / geometry.pointsPerSecond), 0), geometry.duration)
+                        // With others selected, they all move now.
+                        if current.press.group { model.moveGroup(by: current.time - current.origin) }
                     }
                     drag = current
                 }
@@ -408,14 +554,35 @@ struct VideoClickLane: View, Equatable {
                         return
                     }
                     if current.moved {
-                        model.moveClick(current.id, toTimeline: current.time)
-                        model.endGesture()
+                        if !current.press.group { model.moveClick(current.id, toTimeline: current.time) }
+                        current.press.end(model: model)
+                    } else if current.press.extending {
+                        model.toggleSelection(.click(current.id))
                     } else {
                         model.seek(to: current.origin)
                     }
                 }
         )
         .help("Clicks — drag one to retime it, ⌫ removes the selected one")
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Clicks")
+        .accessibilityChildren {
+            ZStack(alignment: .topLeading) {
+                ForEach(items, id: \.id) { item in
+                    Color.clear
+                        .frame(width: 14, height: M.clickLaneHeight)
+                        .offset(x: geometry.x(item.time) - 7)
+                        .accessibilityElement()
+                        .accessibilityLabel("Click" + VideoEditorModel.spokenSpan(item.time, item.time))
+                        .accessibilityAddTraits(selectedIDs.contains(item.id) ? [.isButton, .isSelected] : .isButton)
+                        .accessibilityAction {
+                            model.selection = .click(item.id)
+                            model.seek(to: item.time)
+                        }
+                        .accessibilityAction(named: "Delete") { model.deleteClick(item.id) }
+                }
+            }
+        }
     }
 }
 
@@ -432,22 +599,23 @@ struct VideoCameraLayoutLane: View, Equatable {
     }
 
     let items: [Item]
-    let selectedID: UUID?
+    let selectedIDs: Set<UUID>
     let geometry: VideoTimelineGeometry
     let model: VideoEditorModel
     let hover: VideoTimelineHover
 
     nonisolated static func == (a: Self, b: Self) -> Bool {
-        a.items == b.items && a.selectedID == b.selectedID && a.geometry == b.geometry
+        a.items == b.items && a.selectedIDs == b.selectedIDs && a.geometry == b.geometry
     }
 
-    private enum Mode { case move, leading, trailing }
+    private typealias Mode = VideoLaneDrag.Mode
 
     private struct Drag {
         let id: UUID
         let mode: Mode
         let originStart: Double
         let originEnd: Double
+        let press: VideoLaneDrag.Press
         var moved = false
     }
 
@@ -477,7 +645,7 @@ struct VideoCameraLayoutLane: View, Equatable {
             for item in items {
                 let frame = rect(item)
                 guard frame.maxX >= 0, frame.minX <= size.width else { continue }
-                let selected = item.id == selectedID
+                let selected = selectedIDs.contains(item.id)
                 let path = Path(roundedRect: frame, cornerRadius: 6, style: .continuous)
                 context.fill(path, with: .color(VideoEditorTheme.camera.opacity(selected ? 0.9 : 0.45)))
                 context.stroke(path, with: .color(.white.opacity(selected ? 0.95 : 0.14)), lineWidth: selected ? 1.5 : 1)
@@ -511,28 +679,25 @@ struct VideoCameraLayoutLane: View, Equatable {
                             model.seek(to: geometry.time(value.location.x), fast: true)
                             return
                         }
-                        drag = Drag(id: item.id, mode: mode, originStart: item.start, originEnd: item.end)
+                        let press = VideoLaneDrag.Press(model: model, item: .cameraLayout(item.id), moving: mode == .move, pointsPerSecond: geometry.pointsPerSecond)
+                        drag = Drag(id: item.id, mode: mode, originStart: item.start, originEnd: item.end, press: press)
                         hover.setDragging(true)
-                        model.selection = .cameraLayout(item.id)
+                        if !press.group, !press.extending { model.selection = .cameraLayout(item.id) }
                     }
                     guard var current = drag else { return }
                     if abs(value.translation.width) > 2 { current.moved = true }
                     drag = current
                     guard current.moved else { return }
-                    let delta = Double(value.translation.width / geometry.pointsPerSecond)
-                    var start = current.originStart
-                    var end = current.originEnd
-                    switch current.mode {
-                    case .move:
-                        let length = end - start
-                        start = min(max(current.originStart + delta, 0), geometry.duration - length)
-                        end = start + length
-                    case .leading:
-                        start = min(max(current.originStart + delta, 0), current.originEnd - VideoCameraLayoutRegion.minimumDuration)
-                    case .trailing:
-                        end = min(max(current.originEnd + delta, current.originStart + VideoCameraLayoutRegion.minimumDuration), geometry.duration)
+                    let (start, end) = VideoLaneDrag.window(
+                        mode: current.mode, start: current.originStart, end: current.originEnd, snapper: current.press.snapper,
+                        delta: Double(value.translation.width / geometry.pointsPerSecond), duration: geometry.duration,
+                        minimum: VideoCameraLayoutRegion.minimumDuration, hover: hover
+                    )
+                    if current.press.group {
+                        model.moveGroup(by: start - current.originStart)
+                    } else {
+                        model.setCameraLayoutWindow(current.id, timelineStart: start, timelineEnd: end, moving: current.mode == .move)
                     }
-                    model.setCameraLayoutWindow(current.id, timelineStart: start, timelineEnd: end, moving: current.mode == .move)
                 }
                 .onEnded { value in
                     defer {
@@ -543,13 +708,35 @@ struct VideoCameraLayoutLane: View, Equatable {
                         model.seek(to: geometry.time(value.location.x), fast: false)
                         return
                     }
-                    model.endGesture()
-                    if !current.moved {
+                    current.press.end(model: model)
+                    if !current.moved, current.press.extending {
+                        model.toggleSelection(.cameraLayout(current.id))
+                    } else if !current.moved {
                         model.selectCameraLayout(current.id)
                         model.inspectorTab = .camera
                     }
                 }
         )
         .help("Camera layouts — drag to move, drag an edge to retime, click to change")
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Camera layouts")
+        .accessibilityChildren {
+            ZStack(alignment: .topLeading) {
+                ForEach(items, id: \.id) { item in
+                    let frame = rect(item)
+                    Color.clear
+                        .frame(width: frame.width, height: frame.height)
+                        .offset(x: frame.minX)
+                        .accessibilityElement()
+                        .accessibilityLabel("Camera layout: \(item.layout.title)" + VideoEditorModel.spokenSpan(item.start, item.end))
+                        .accessibilityAddTraits(selectedIDs.contains(item.id) ? [.isButton, .isSelected] : .isButton)
+                        .accessibilityAction {
+                            model.selectCameraLayout(item.id)
+                            model.inspectorTab = .camera
+                        }
+                        .accessibilityAction(named: "Delete") { model.deleteCameraLayout(item.id) }
+                }
+            }
+        }
     }
 }
