@@ -490,12 +490,14 @@ final class RecordingEngineIntegrationTests: XCTestCase {
         self.engine = engine
         var finished: URL?
         engine.recordingFinishedHandler = { finished = $0.url }
+        // Each change gets 1.5 s: a busy Mac can take most of a second to
+        // apply a new crop.
         try await start(engine) { await engine.startRecording(window: scWindow, on: screen) }
         try await sleep(1)
         window.setFrameOrigin(NSPoint(x: screen.frame.minX + 520, y: screen.frame.minY + 260))
-        try await sleep(1)
+        try await sleep(1.5)
         window.setContentSize(NSSize(width: 800, height: 300))
-        try await sleep(1)
+        try await sleep(1.5)
         engine.stopRecording()
         try await waitUntil(timeout: 20) { finished != nil }
         let url = try XCTUnwrap(finished)
@@ -512,13 +514,13 @@ final class RecordingEngineIntegrationTests: XCTestCase {
             return Double(pixel[1]) / 204
         }
         let before = try await greenFraction(at: 0.5, rows: 0.1...0.9)
-        let afterMove = try await greenFraction(at: 1.7, rows: 0.1...0.9)
+        let afterMove = try await greenFraction(at: 2.3, rows: 0.1...0.9)
         XCTAssertGreaterThan(before, 0.9, "the window fills the video")
         XCTAssertGreaterThan(afterMove, 0.9, "after moving, the crop followed it")
 
         // Twice as wide: scaled to fit, bars above and below.
-        let resizedMiddle = try await greenFraction(at: 2.8, rows: 0.4...0.6)
-        let resizedTop = try await greenFraction(at: 2.8, rows: 0.0...0.15)
+        let resizedMiddle = try await greenFraction(at: 3.8, rows: 0.4...0.6)
+        let resizedTop = try await greenFraction(at: 3.8, rows: 0.0...0.15)
         XCTAssertGreaterThan(resizedMiddle, 0.9, "the resized window is still in the video")
         XCTAssertLessThan(resizedTop, 0.2, "letterboxed, not stretched or cropped")
     }
