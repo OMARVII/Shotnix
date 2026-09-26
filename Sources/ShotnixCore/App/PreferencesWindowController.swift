@@ -224,7 +224,7 @@ private struct PreferencesPaneWithFooter<Content: View, Footer: View>: View {
     }
 }
 
-private struct PreferenceSection<Content: View>: View {
+struct PreferenceSection<Content: View>: View {
     let title: String
     let content: Content
 
@@ -253,7 +253,7 @@ private struct PreferenceSection<Content: View>: View {
     }
 }
 
-private struct PreferenceRow<Trailing: View>: View {
+struct PreferenceRow<Trailing: View>: View {
     let title: String
     let detail: String?
     let trailing: Trailing
@@ -291,7 +291,7 @@ private struct PreferenceRow<Trailing: View>: View {
     }
 }
 
-private struct PreferenceDivider: View {
+struct PreferenceDivider: View {
     var body: some View {
         Divider()
             .overlay(Color.white.opacity(0.08))
@@ -299,7 +299,7 @@ private struct PreferenceDivider: View {
     }
 }
 
-private struct PreferenceFootnote: View {
+struct PreferenceFootnote: View {
     let text: String
 
     var body: some View {
@@ -311,14 +311,14 @@ private struct PreferenceFootnote: View {
     }
 }
 
-private struct PreferenceOption<Value: Hashable>: Identifiable {
+struct PreferenceOption<Value: Hashable>: Identifiable {
     let value: Value
     let title: String
 
     var id: Value { value }
 }
 
-private struct PreferenceMenuSelector<Value: Hashable>: View {
+struct PreferenceMenuSelector<Value: Hashable>: View {
     @Binding var selection: Value
     let options: [PreferenceOption<Value>]
     var width: CGFloat = 156
@@ -367,7 +367,7 @@ private struct PreferenceMenuSelector<Value: Hashable>: View {
     }
 }
 
-private struct PreferenceSegmentedSelector<Value: Hashable>: View {
+struct PreferenceSegmentedSelector<Value: Hashable>: View {
     @Binding var selection: Value
     let options: [PreferenceOption<Value>]
     var width: CGFloat = 156
@@ -547,6 +547,8 @@ struct ShortcutsSettingsView: View {
             PreferenceFootnote(text: "Recording shortcuts are unassigned by default — click a field to set one. Stop Recording also cancels recording setup.")
 
             ShortcutSection(title: "Advanced Tools", shortcuts: toolShortcuts)
+
+            PreferenceFootnote(text: "Capture Text and Scrolling Capture come without shortcuts, so ⌘⇧O and ⌘⇧S keep meaning Open and Save As in your other apps — click a field to set your own. Pressing the Scrolling Capture shortcut again finishes a scrolling capture.")
         } footer: {
             HStack {
                 Button("Reset Defaults") {
@@ -645,13 +647,12 @@ struct ScreenshotsSettingsView: View {
         PreferencesPane {
             PreferenceSection("Export Format") {
                 PreferenceRow("Format") {
+                    // WebP is only offered where macOS can actually write it.
                     PreferenceMenuSelector(
                         selection: $screenshotFormat,
-                        options: [
-                            PreferenceOption(value: "png", title: "PNG"),
-                            PreferenceOption(value: "jpeg", title: "JPEG"),
-                            PreferenceOption(value: "webp", title: "WebP")
-                        ]
+                        options: ImageExporter.availableFormats.map { format in
+                            PreferenceOption(value: format, title: ["png": "PNG", "jpeg": "JPEG", "webp": "WebP"][format] ?? format.uppercased())
+                        }
                     )
                 }
 
@@ -682,6 +683,8 @@ struct ScreenshotsSettingsView: View {
 
             PreferenceFootnote(text: "New screenshots are copied automatically. Turn this off if you only want to use the overlay or history actions.")
 
+            CaptureSelectionPreferences()
+
             PreferenceSection("Window Capture") {
                 PreferenceRow("Shadow and transparent padding") {
                     Toggle("", isOn: $windowCaptureShadow)
@@ -706,6 +709,8 @@ struct ScreenshotsSettingsView: View {
             }
 
             PreferenceFootnote(text: "Timed Capture selects the area first, then counts down before the shot — time to open menus or hover states. Esc cancels.")
+
+            TextRecognitionPreferences()
 
             PreferenceSection("Save Location") {
                 PreferenceRow("Auto-save folder", detail: displayLocation) {
@@ -760,6 +765,8 @@ struct ScreenshotsSettingsView: View {
             }
 
             PreferenceFootnote(text: "Used for screenshots and recordings. Tokens: %y year, %m month, %d day, %H hour, %M minute, %S second. Leave empty to restore the default.")
+
+            HistoryPreferences()
         }
     }
 }
