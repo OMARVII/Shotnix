@@ -120,6 +120,9 @@ enum VideoAssetStore {
         let ext = source.pathExtension.isEmpty ? "dat" : source.pathExtension.lowercased()
         let destination = folder.appendingPathComponent("\(UUID().uuidString).\(ext)")
         try fileManager.copyItem(at: source, to: destination)
+        // A copy keeps the original's date: stamp it, so the cleanup's grace
+        // day covers edits no draft has saved yet.
+        try? fileManager.setAttributes([.modificationDate: Date()], ofItemAtPath: destination.path)
         return destination
     }
 

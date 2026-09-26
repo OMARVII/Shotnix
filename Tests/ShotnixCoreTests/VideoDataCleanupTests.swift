@@ -132,6 +132,17 @@ final class VideoDataCleanupTests: XCTestCase {
         XCTAssertEqual(VideoDataCleanup.sweep(finder: finder).removedFiles, 0)
     }
 
+    func testAJustAddedPictureWaitsForItsDraft() throws {
+        // A logo last touched long ago, added to an edit no draft has saved yet.
+        let logo = recordings.appendingPathComponent("logo.png")
+        try write("png", to: logo)
+        try age(logo, days: 400)
+        let stored = try VideoAssetStore.importFile(logo)
+        XCTAssertTrue(stored.path.hasPrefix(support.path), "copied into the app's own folder")
+        _ = VideoDataCleanup.sweep(finder: { _ in [] })
+        XCTAssertTrue(exists(stored), "the copy counts as new, so the grace day covers it")
+    }
+
     func testSpotlightMatchesOnlyTheSameRecording() throws {
         let original = recordings.appendingPathComponent("demo.mp4")
         try Data(repeating: 2, count: 500).write(to: original)
