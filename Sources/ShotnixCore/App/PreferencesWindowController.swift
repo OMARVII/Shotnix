@@ -995,7 +995,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.24.0"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.24.1"
     
     var body: some View {
         PreferencesPane {
@@ -1038,6 +1038,10 @@ struct AboutSettingsView: View {
                 
                 ScrollView {
                     Text("""
+                    Version 0.24.1
+                    • The screenshot editor's toolbar sits straight: a clicked tool no longer stays shrunk toward a corner, every tool has even room on all sides, and hover matches the selection's rounded shape
+                    • Buttons on History cards and the capture thumbnail spring back after a click, and toasts, badges, and the countdown grow from their center
+
                     Version 0.24.0
                     • Heads-up: Esc no longer stops a recording from other apps; press ⌃⌘Esc, or Esc while Shotnix is in front. New installs leave ⌘⇧S and ⌘⇧O free for other apps (yours stay if you use them). Recordings move to 60 fps once; pick 30 again in Settings if you prefer it
                     • Screenshot editor: Spotlight, callouts, a freehand highlighter, rounded rectangles, text in any size and weight, crop you can undo, full-resolution saves on any display, and it asks before closing or quitting with unsaved edits

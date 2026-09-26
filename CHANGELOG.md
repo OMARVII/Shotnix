@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.24.1-beta] - 2026-09-26
+
+### Fixed
+- **The screenshot editor's toolbar sits straight.** Clicking a tool left it shrunk toward its bottom-left corner, so the selected tool looked shifted; it now presses in about its center and springs back. Every tool has the same room on all sides, the rows sit centered in the toolbar, and hovering a tool shows the same rounded shape as selecting it.
+- **Buttons spring back after a click everywhere.** The Copy and Edit buttons on History cards and the thumbnail's corner buttons stayed pressed in after a click, and toasts, the Copied badge, the countdown and the recording pickers grew from a corner instead of their center.
+
 ## [0.24.0-beta] - 2026-09-26
 
 **Three changes to know about:**
