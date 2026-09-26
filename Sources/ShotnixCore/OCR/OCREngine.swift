@@ -8,7 +8,19 @@ enum OCREngineError: Error {
 /// One recognized line, in image pixels with a top-left origin.
 struct OCRLine: Equatable {
     let text: String
+    /// Upright bounding box, top-left origin, in pixels.
     let box: CGRect
+    /// The text's own height: less than the box's when the line is tilted.
+    var textHeight: CGFloat
+    /// Baseline tilt in radians, positive when it runs down to the right.
+    var angle: CGFloat
+
+    init(text: String, box: CGRect, textHeight: CGFloat? = nil, angle: CGFloat = 0) {
+        self.text = text
+        self.box = box
+        self.textHeight = textHeight ?? box.height
+        self.angle = angle
+    }
 }
 
 struct OCRTable: Equatable {
@@ -94,9 +106,18 @@ enum OCREngine {
                     guard !text.isEmpty else { return nil }
                     // Vision boxes are normalized with a bottom-left origin.
                     let box = observation.boundingBox
+                    func pixels(_ a: CGPoint, _ b: CGPoint) -> CGVector {
+                        CGVector(dx: (b.x - a.x) * width, dy: (b.y - a.y) * height)
+                    }
+                    let baseline = pixels(observation.bottomLeft, observation.bottomRight)
+                    let leftEdge = pixels(observation.bottomLeft, observation.topLeft)
+                    let rightEdge = pixels(observation.bottomRight, observation.topRight)
                     return OCRLine(
                         text: text,
-                        box: CGRect(x: box.minX * width, y: (1 - box.maxY) * height, width: box.width * width, height: box.height * height)
+                        box: CGRect(x: box.minX * width, y: (1 - box.maxY) * height, width: box.width * width, height: box.height * height),
+                        textHeight: (hypot(leftEdge.dx, leftEdge.dy) + hypot(rightEdge.dx, rightEdge.dy)) / 2,
+                        // Vision's y points up; ours points down.
+                        angle: -atan2(baseline.dy, baseline.dx)
                     )
                 }
                 continuation.resume(returning: lines)
@@ -137,13 +158,24 @@ enum OCREngine {
         // Fast recognition reads fewer languages; unknown picks fall back to
         // automatic detection rather than failing the request.
         let supported = Set(supportedLanguages(fast: options.fast))
-        let chosen = options.languages.filter(supported.contains)
+        let chosen = recognizerOrder(options.languages.filter(supported.contains))
         if chosen.isEmpty {
             request.automaticallyDetectsLanguage = true
         } else {
             request.automaticallyDetectsLanguage = false
             request.recognitionLanguages = chosen
         }
+    }
+
+    /// Vision's first language picks the recognizer. The Chinese, Japanese,
+    /// Korean, Thai, and Arabic ones also read Latin text but not the other
+    /// way round, so they go first whatever order they were picked in.
+    static func recognizerOrder(_ languages: [String]) -> [String] {
+        let firstScripts: Set<String> = ["zh", "yue", "ja", "ko", "th", "ar", "ars"]
+        func leadsRecognizer(_ code: String) -> Bool {
+            firstScripts.contains(String(code.prefix { $0 != "-" }).lowercased())
+        }
+        return languages.filter(leadsRecognizer) + languages.filter { !leadsRecognizer($0) }
     }
 }
 
@@ -154,19 +186,46 @@ enum OCREngine {
 enum OCRLayout {
 
     /// Lines grouped into visual rows (top to bottom), each row left to right.
+    /// Measured along the text's own tilt, so a slightly rotated page (a
+    /// photo of a receipt, say) still reads line by line.
     static func rows(from lines: [OCRLine]) -> [[OCRLine]] {
-        var rows: [(minY: CGFloat, maxY: CGFloat, lines: [OCRLine])] = []
-        for line in lines.sorted(by: { $0.box.midY < $1.box.midY }) {
-            if let last = rows.last {
-                let overlap = min(last.maxY, line.box.maxY) - max(last.minY, line.box.minY)
-                if overlap >= 0.5 * min(last.maxY - last.minY, line.box.height) {
-                    rows[rows.count - 1] = (min(last.minY, line.box.minY), max(last.maxY, line.box.maxY), last.lines + [line])
-                    continue
-                }
+        guard !lines.isEmpty else { return [] }
+        let angles = lines.map(\.angle).sorted()
+        let tilt = angles[angles.count / 2]
+        let upright = abs(tilt) < 0.5 * .pi / 180
+        let sinTilt = upright ? 0 : sin(tilt)
+        let cosTilt = upright ? 1 : cos(tilt)
+        func across(_ line: OCRLine) -> CGFloat { line.box.midY * cosTilt - line.box.midX * sinTilt }
+        func along(_ line: OCRLine) -> CGFloat { line.box.midX * cosTilt + line.box.midY * sinTilt }
+
+        var rows: [(position: CGFloat, height: CGFloat, lines: [OCRLine])] = []
+        for line in lines.sorted(by: { across($0) < across($1) }) {
+            // Same row when its middle is within half a line of the row's.
+            // The row doesn't grow as lines join, so a tall box can't swallow
+            // the lines above and below it.
+            if let last = rows.last, across(line) - last.position < 0.5 * max(last.height, line.textHeight) {
+                rows[rows.count - 1].lines.append(line)
+                rows[rows.count - 1].height = max(last.height, line.textHeight)
+                continue
             }
-            rows.append((line.box.minY, line.box.maxY, [line]))
+            rows.append((across(line), line.textHeight, [line]))
         }
-        return rows.map { $0.lines.sorted { $0.box.minX < $1.box.minX } }
+        return rows.map { row in
+            // Arabic and Hebrew rows read right to left.
+            let rightToLeft = row.lines.filter { isRightToLeft($0.text) }.count * 2 > row.lines.count
+            return row.lines.sorted { rightToLeft ? along($0) > along($1) : along($0) < along($1) }
+        }
+    }
+
+    /// Whether the text's first strongly directional letter is Hebrew or Arabic.
+    static func isRightToLeft(_ text: String) -> Bool {
+        for scalar in text.unicodeScalars where scalar.properties.isAlphabetic {
+            switch scalar.value {
+            case 0x0590...0x08FF, 0xFB1D...0xFDFF, 0xFE70...0xFEFF: return true
+            default: return false
+            }
+        }
+        return false
     }
 
     /// Rows in reading order: a column is read top to bottom before the one

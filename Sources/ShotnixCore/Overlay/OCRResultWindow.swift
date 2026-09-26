@@ -20,7 +20,7 @@ final class OCRResultWindow: NSWindow, NSWindowDelegate {
             return
         }
         ToastWindow.show(message: "✓ Text copied · \(extras) — click for options", duration: 5, on: screen) {
-            show(result: result)
+            show(result: result, on: screen)
         }
     }
 
@@ -35,10 +35,14 @@ final class OCRResultWindow: NSWindow, NSWindowDelegate {
         return parts.isEmpty ? nil : parts.joined(separator: ", ")
     }
 
-    static func show(result: OCRResult) {
+    static func show(result: OCRResult, on screen: NSScreen? = nil) {
         current?.close()
         let window = OCRResultWindow(result: result)
         current = window
+        // On the display the text was captured from.
+        if let visible = (screen ?? NSScreen.main)?.visibleFrame {
+            window.setFrameOrigin(NSPoint(x: visible.midX - window.frame.width / 2, y: visible.midY - window.frame.height / 2))
+        }
         // Opened from a toast click — the user's action, so taking focus is fine.
         NSApp.ensureForegroundCapable()
         NSApp.activate(ignoringOtherApps: true)
@@ -175,7 +179,8 @@ final class OCRResultWindow: NSWindow, NSWindowDelegate {
         symbol.contentTintColor = .secondaryLabelColor
         parent.addSubview(symbol)
 
-        let label = NSTextField(labelWithString: link.isEmail ? link.url.absoluteString.replacingOccurrences(of: "mailto:", with: "") : link.text)
+        let shown = link.isEmail ? link.url.absoluteString.replacingOccurrences(of: "mailto:", with: "") : link.text
+        let label = NSTextField(labelWithString: shown)
         label.font = .systemFont(ofSize: 12.5)
         label.lineBreakMode = .byTruncatingMiddle
         label.frame = NSRect(x: 48, y: y + 4, width: width - 48 - 170, height: 18)
@@ -185,6 +190,7 @@ final class OCRResultWindow: NSWindow, NSWindowDelegate {
         open.bezelStyle = .rounded
         open.controlSize = .small
         open.tag = index
+        open.setAccessibilityLabel(link.isEmail ? "Email \(shown)" : "Open \(shown)")
         open.frame = NSRect(x: width - 164, y: y, width: 70, height: 26)
         parent.addSubview(open)
 
@@ -192,8 +198,14 @@ final class OCRResultWindow: NSWindow, NSWindowDelegate {
         copy.bezelStyle = .rounded
         copy.controlSize = .small
         copy.tag = index
+        copy.setAccessibilityLabel("Copy \(shown)")
         copy.frame = NSRect(x: width - 94, y: y, width: 70, height: 26)
         parent.addSubview(copy)
+    }
+
+    /// Esc closes, like Done.
+    override func cancelOperation(_ sender: Any?) {
+        close()
     }
 
     @objc private func openLink(_ sender: NSButton) {

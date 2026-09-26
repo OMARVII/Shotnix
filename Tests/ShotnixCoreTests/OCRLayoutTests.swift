@@ -39,6 +39,34 @@ final class OCRLayoutTests: XCTestCase {
         XCTAssertNil(OCRResult(lines: lines).table)
     }
 
+    func testSlightlyTiltedParagraphStillReadsLineByLine() {
+        // A photo of a page, 3° off: every upright box is much taller than
+        // the text and overlaps the lines above and below.
+        let tilt = 3 * CGFloat.pi / 180
+        let lines = (0..<6).map { index -> OCRLine in
+            let center = CGPoint(x: 500, y: 100 + CGFloat(index) * 32)
+            let boxHeight = 20 * cos(tilt) + 900 * sin(tilt)
+            let box = CGRect(x: center.x - 450, y: center.y - boxHeight / 2, width: 900, height: boxHeight)
+            return OCRLine(text: "Sentence \(index)", box: box, textHeight: 20, angle: tilt)
+        }
+        XCTAssertEqual(OCRResult(lines: lines.shuffled()).text, (0..<6).map { "Sentence \($0)" }.joined(separator: "\n"))
+    }
+
+    func testRightToLeftRowsReadFromTheRight() {
+        let rows = OCRLayout.rows(from: [
+            line("שלום", x: 300, y: 40, width: 80),
+            line("עולם", x: 100, y: 40, width: 80),
+        ])
+        XCTAssertEqual(rows.first?.map(\.text), ["שלום", "עולם"])
+        XCTAssertTrue(OCRLayout.isRightToLeft("مرحبا"))
+        XCTAssertFalse(OCRLayout.isRightToLeft("Hello"))
+    }
+
+    func testChosenLanguagesPutTheRecognizersThatAlsoReadLatinFirst() {
+        XCTAssertEqual(OCREngine.recognizerOrder(["en-US", "ja-JP", "fr-FR", "zh-Hans"]), ["ja-JP", "zh-Hans", "en-US", "fr-FR"])
+        XCTAssertEqual(OCREngine.recognizerOrder(["en-US", "de-DE"]), ["en-US", "de-DE"])
+    }
+
     func testAGridOfShortCellsIsATable() throws {
         let rows = [["Item", "Qty", "Price"], ["Pens", "12", "3.50"], ["Paper", "5", "8.00"], ["Ink", "2", "21.00"]]
         var lines: [OCRLine] = []
