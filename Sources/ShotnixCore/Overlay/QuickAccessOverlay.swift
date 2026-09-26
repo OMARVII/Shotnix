@@ -11,6 +11,15 @@ final class QuickAccessOverlay {
         let window = QuickAccessWindow(image: image, historyItem: historyItem, historyManager: historyManager)
         window.show()
     }
+
+    /// Post-save toast text: the file actually written, its folder, and the
+    /// reveal affordance hint.
+    static func savedMessage(for url: URL) -> String {
+        let folder = url.deletingLastPathComponent()
+        let folderName = FileManager.default.displayName(atPath: folder.path)
+        let destination = folderName.isEmpty ? folder.lastPathComponent : folderName
+        return "Saved \(url.lastPathComponent) to \(destination) — click to reveal in Finder"
+    }
 }
 
 /// Where post-capture thumbnails stack on a screen: a column rising from
@@ -701,7 +710,7 @@ private final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
                     // Clickable toast — reveals the file actually written (its
                     // name may have gained " 2", or .png for an unwritable WebP).
                     ToastWindow.show(
-                        message: Self.savedMessage(for: savedURL),
+                        message: QuickAccessOverlay.savedMessage(for: savedURL),
                         duration: 3.0,
                         on: self.captureScreen,
                         action: { NSWorkspace.shared.activateFileViewerSelecting([savedURL]) }
@@ -709,14 +718,6 @@ private final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
                 }
             }
         }
-    }
-
-    /// Post-save toast text: destination folder + the reveal affordance hint.
-    static func savedMessage(for url: URL) -> String {
-        let folder = url.deletingLastPathComponent()
-        let folderName = FileManager.default.displayName(atPath: folder.path)
-        let destination = folderName.isEmpty ? folder.lastPathComponent : folderName
-        return "Saved \(url.lastPathComponent) to \(destination) — click to reveal in Finder"
     }
 
     /// The drag hands over the history PNG itself (a clone: instant, tags and

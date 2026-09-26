@@ -53,9 +53,9 @@ enum ImageExporter {
     /// Encodes first and only then replaces the clipboard — a failed encode
     /// must never leave the user with an emptied clipboard.
     @discardableResult
-    static func copyToClipboard(image: NSImage) -> Bool {
+    static func copyToClipboard(image: NSImage, pasteboard: NSPasteboard = .general) -> Bool {
         guard let cg = image.bestCGImage, let png = pngData(from: cg) else { return false }
-        writePNGToPasteboard(png)
+        writePNG(png, to: pasteboard)
         return true
     }
 
@@ -63,7 +63,7 @@ enum ImageExporter {
     /// encode otherwise lands exactly while the overlay animates in. The
     /// pasteboard itself is only touched back on the main actor.
     @MainActor
-    static func copyToClipboardAsync(image: NSImage, completion: ((Bool) -> Void)? = nil) {
+    static func copyToClipboardAsync(image: NSImage, pasteboard: NSPasteboard = .general, completion: ((Bool) -> Void)? = nil) {
         guard let cg = image.bestCGImage else {
             completion?(false)
             return
@@ -72,14 +72,13 @@ enum ImageExporter {
         Task.detached(priority: .userInitiated) {
             let png = pngData(from: box.image)
             await MainActor.run {
-                if let png { writePNGToPasteboard(png) }
+                if let png { writePNG(png, to: pasteboard) }
                 completion?(png != nil)
             }
         }
     }
 
-    private static func writePNGToPasteboard(_ png: Data) {
-        let pb = NSPasteboard.general
+    private static func writePNG(_ png: Data, to pb: NSPasteboard) {
         pb.clearContents()
         // PNG only — NSPasteboard synthesizes TIFF on demand for legacy readers,
         // and every modern macOS app (Slack, Notion, Figma, Preview, Messages)
