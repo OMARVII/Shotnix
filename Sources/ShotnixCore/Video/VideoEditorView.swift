@@ -19,7 +19,7 @@ struct VideoEditorRootView: View {
     /// The crop bar and the tips sit under the picture, never over it.
     private var stageBottomInset: CGFloat {
         if model.isCropping { return 66 }
-        return tipsDismissed ? 22 : 58
+        return tipsDismissed && !model.suggestsTranscript ? 22 : 58
     }
 
     private func editor(height: CGFloat) -> some View {
@@ -54,6 +54,9 @@ struct VideoEditorRootView: View {
                             if model.isCropping {
                                 VideoCropBar(model: model)
                                     .padding(.bottom, 12)
+                            } else if model.suggestsTranscript {
+                                VideoTranscribeSuggestion(model: model)
+                                    .padding(.bottom, 10)
                             } else {
                                 VideoTipsBar()
                                     .padding(.bottom, 10)
@@ -99,7 +102,9 @@ struct VideoEditorRootView: View {
         ZStack {
             VideoEditorTheme.window.opacity(0.92)
             VStack(spacing: 12) {
-                if let error = model.loadError {
+                if let failure = model.loadFailure {
+                    VideoLoadFailureView(model: model, failure: failure)
+                } else if let error = model.loadError {
                     Image(systemName: "exclamationmark.triangle.fill")
                         .font(.system(size: 28))
                         .foregroundStyle(.yellow)
@@ -460,6 +465,7 @@ extension VideoEditorModel {
             return true
         case ([.command], "b"): splitAtPlayhead(); return true
         case ([.command], "c"): copyCurrentFrame(); return true
+        case ([.command], "f"): findInTranscript(); return true
         case ([.command], "d"):
             if let id = selectedZoomID {
                 duplicateZoom(id)
@@ -548,6 +554,9 @@ struct VideoCommandPalette: View {
     @ObservedObject var model: VideoEditorModel
     @State private var query = ""
     @State private var highlighted = 0
+    /// Read once per opening (a file on disk), not on every keystroke.
+    @State private var recent: [VideoDemoRecentExport]?
+    @AppStorage("videoEditorTipsDismissed") private var tipsDismissed = false
     @FocusState private var focused: Bool
 
     struct Command: Identifiable {
@@ -616,7 +625,10 @@ struct VideoCommandPalette: View {
             .shadow(color: .black.opacity(0.5), radius: 30, y: 16)
             .padding(.top, 90)
         }
-        .onAppear { focused = true }
+        .onAppear {
+            focused = true
+            recent = model.recentExports
+        }
         .background(
             VideoArrowKeyCatcher { delta in
                 guard !filtered.isEmpty else { return }
@@ -637,7 +649,7 @@ struct VideoCommandPalette: View {
         return commands.filter { $0.title.lowercased().contains(search) }
     }
 
-    private var commands: [Command] {
+    var commands: [Command] {
         [
             Command(id: "export", title: "Export…", symbol: "square.and.arrow.up", shortcut: "⌘E") { model.isExportPresented = true },
             Command(id: "play", title: model.isPlaying ? "Pause" : "Play", symbol: "playpause.fill", shortcut: "Space") { model.togglePlay() },
@@ -665,7 +677,8 @@ struct VideoCommandPalette: View {
             Command(id: "reveal", title: "Show Recording in Finder", symbol: "folder", shortcut: "") { model.revealSource() },
             Command(id: "start-over", title: "Start Over from the Original Recording…", symbol: "arrow.counterclockwise.circle", shortcut: "") { model.startOver() },
             Command(id: "shortcuts", title: "Keyboard Shortcuts", symbol: "keyboard", shortcut: "?") { model.isShortcutsPresented = true },
-        ] + scriptCommands + cameraCommands + soundCommands + VideoDemoProject.AspectPreset.allCases.map { preset in
+        ] + (tipsDismissed ? [Command(id: "tips", title: "Show Editor Tips", symbol: "lightbulb", shortcut: "") { tipsDismissed = false }] : [])
+            + scriptCommands + recentCommands + cameraCommands + soundCommands + VideoDemoProject.AspectPreset.allCases.map { preset in
             Command(id: "aspect-\(preset.rawValue)", title: "Aspect Ratio \(preset.title) — \(preset.detail)", symbol: preset.symbol, shortcut: "") {
                 model.setAspect(preset)
             }
@@ -674,21 +687,39 @@ struct VideoCommandPalette: View {
 }
 
 extension VideoCommandPalette {
-    /// Words, captions, and edit-by-text.
+    /// Words, captions, and edit-by-text — each wherever it can work (typed
+    /// captions need no sound).
     fileprivate var scriptCommands: [Command] {
-        guard model.hasAudio else { return [] }
-        if model.project.captions.isEmpty {
-            return [Command(id: "transcribe", title: "Transcribe Narration (Captions, Edit by Text)", symbol: "waveform", shortcut: "") {
+        var commands: [Command] = []
+        if model.hasAudio, model.captionTask == nil {
+            commands.append(Command(id: "transcribe", title: model.hasTranscript ? "Transcribe Again…" : "Transcribe Narration (Captions, Edit by Text)", symbol: "waveform", shortcut: "") {
                 model.inspectorTab = .captions
-                model.generateCaptions()
-            }]
+                model.selection = .none
+                model.transcribeAgain()
+            })
         }
-        return [
-            Command(id: "fillers", title: "Remove Ums", symbol: "wand.and.stars", shortcut: "") { model.removeFillers() },
-            Command(id: "pauses", title: "Shorten Pauses", symbol: "forward.end", shortcut: "") { model.shortenPauses() },
-            Command(id: "caption-line", title: "Add Caption Line at Playhead", symbol: "captions.bubble", shortcut: "") { model.addCaptionAtPlayhead() },
-            Command(id: "srt", title: "Save Subtitles (.srt)…", symbol: "doc.text", shortcut: "") { model.exportSRT() },
-        ]
+        if model.hasTranscript {
+            commands.append(Command(id: "fillers", title: "Remove Ums", symbol: "wand.and.stars", shortcut: "") { model.removeFillers() })
+            commands.append(Command(id: "pauses", title: "Shorten Pauses", symbol: "forward.end", shortcut: "") { model.shortenPauses() })
+            commands.append(Command(id: "find", title: "Find in Transcript", symbol: "magnifyingglass", shortcut: "⌘F") { model.findInTranscript() })
+        }
+        commands.append(Command(id: "caption-line", title: "Add Caption Line at Playhead", symbol: "captions.bubble", shortcut: "") {
+            model.inspectorTab = .captions
+            model.addCaptionAtPlayhead()
+        })
+        if !model.project.captions.isEmpty {
+            commands.append(Command(id: "srt", title: "Save Subtitles (.srt)…", symbol: "doc.text", shortcut: "") { model.exportSRT() })
+        }
+        return commands
+    }
+
+    /// This recording's latest exports, shown in Finder.
+    fileprivate var recentCommands: [Command] {
+        (recent ?? model.recentExports).prefix(3).map { export in
+            Command(id: "recent-\(export.id)", title: "Show Recent Export “\(export.exportURL.lastPathComponent)” in Finder", symbol: "clock.arrow.circlepath", shortcut: "") {
+                model.revealExport(export.exportURL)
+            }
+        }
     }
 
     fileprivate var cameraCommands: [Command] {
@@ -702,6 +733,11 @@ extension VideoCommandPalette {
 
     fileprivate var soundCommands: [Command] {
         var commands: [Command] = []
+        if model.hasAudio {
+            commands.append(Command(id: "preview-mute", title: model.previewMuted ? "Unmute the Preview" : "Mute the Preview (the Export Keeps Its Sound)", symbol: model.previewMuted ? "speaker.wave.2" : "speaker.slash", shortcut: "M") {
+                model.togglePreviewMute()
+            })
+        }
         if model.canEnhanceVoice || model.project.audio.enhanceVoice {
             let on = model.project.audio.enhanceVoice
             commands.append(Command(id: "enhance", title: on ? "Stop Enhancing Voice" : "Enhance Voice", symbol: "waveform.badge.plus", shortcut: "") {
@@ -756,13 +792,18 @@ struct VideoArrowKeyCatcher: NSViewRepresentable {
 
 struct VideoShortcutsSheet: View {
     @ObservedObject var model: VideoEditorModel
+    @AppStorage("videoEditorTipsDismissed") private var tipsDismissed = false
 
-    private let groups: [(String, [(String, String)])] = [
-        ("Playback", [("Space", "Play / pause"), ("J  K  L", "Back · pause · faster"), ("← →", "Previous / next frame"), ("⇧← ⇧→", "Jump one second"), ("⌘← ⌘→", "Start / end")]),
-        ("Editing", [("S", "Split at playhead"), ("⇧-drag", "Select a range to cut"), ("I  O", "Clip starts / ends here"), ("⌫", "Delete selection"), ("M", "Mute clip, or mute the preview"), ("⌘Z  ⇧⌘Z", "Undo / redo")]),
-        ("Zooms & annotations", [("Z", "Add zoom at playhead"), ("1 – 5", "Zoom level (zoom selected)"), ("⌘D", "Duplicate zoom or annotation"), ("T  H  A  B", "Text · highlight · arrow · blur")]),
-        ("General", [("⌘E", "Export"), ("⌘K", "All commands"), ("⌘C", "Copy current frame"), ("⌘ scroll", "Zoom the timeline"), ("Esc", "Deselect / close")]),
+    /// Every key the editor answers to (VideoEditorModel.handleKey).
+    static let groups: [(String, [(String, String)])] = [
+        ("Playback", [("Space", "Play / pause"), ("J  K  L", "Back · pause · faster"), ("← →", "Previous / next frame"), ("⇧← ⇧→", "Jump one second"), ("⌘← ⌘→", "Start / end"), ("Home  End", "Start / end"), ("M", "Mute the preview (or the selected clip)")]),
+        ("Editing", [("S  C  ⌘B", "Split at playhead"), ("⇧-drag", "Select a range to cut"), ("⇧/⌘-click", "Select several items"), ("I  O", "Clip starts / ends here"), ("⌫", "Delete selection"), ("⌥← ⌥→", "Select previous / next item"), ("⌘Z  ⇧⌘Z", "Undo / redo")]),
+        ("Zooms & annotations", [("Z", "Add zoom at playhead"), ("1 – 5", "Zoom level (zoom selected)"), ("⌘D", "Duplicate zoom or annotation"), ("T  H  A  B", "Text · highlight · arrow · blur"), ("Double-click", "Type in a text annotation")]),
+        ("Timeline", [("=  −", "Show more / less detail"), ("⌘=  ⌘−", "Show more / less detail"), ("⌘ scroll", "Zoom in at the pointer")]),
+        ("General", [("⌘E", "Export"), ("⌘K", "All commands"), ("⌘C", "Copy current frame"), ("⌘F", "Find in the transcript"), ("?", "This list"), ("Esc", "Deselect / close")]),
     ]
+
+    private var groups: [(String, [(String, String)])] { Self.groups }
 
     var body: some View {
         ZStack {
@@ -808,6 +849,12 @@ struct VideoShortcutsSheet: View {
                         .frame(width: 280, alignment: .leading)
                     }
                 }
+                if tipsDismissed {
+                    Button("Show tips under the video again") { tipsDismissed = false }
+                        .buttonStyle(.plain)
+                        .font(.system(size: 11.5, weight: .medium))
+                        .foregroundStyle(VideoEditorTheme.textSecondary)
+                }
             }
             .frame(width: 2 * 280 + 28)
             .padding(24)
@@ -818,7 +865,114 @@ struct VideoShortcutsSheet: View {
     }
 }
 
-/// One-time orientation for the first editor session.
+/// Under the preview of a narrated recording nobody has transcribed yet:
+/// captions and edit-by-text are one click away (and easy to wave off).
+struct VideoTranscribeSuggestion: View {
+    @ObservedObject var model: VideoEditorModel
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "captions.bubble.fill")
+                .foregroundStyle(VideoEditorTheme.caption)
+                .accessibilityHidden(true)
+            Text("Your narration can become captions — then cut the video by editing its words.")
+                .foregroundStyle(VideoEditorTheme.textPrimary)
+            Button {
+                model.inspectorTab = .captions
+                model.selection = .none
+                model.generateCaptions()
+            } label: {
+                Text("Transcribe")
+                    .font(.system(size: 11.5, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 10)
+                    .frame(height: 22)
+                    .background(Capsule().fill(VideoEditorTheme.primary))
+            }
+            .buttonStyle(.plain)
+            .help("Listens on this Mac — nothing is uploaded")
+            Button {
+                withAnimation(.easeOut(duration: 0.2)) { model.dismissTranscriptSuggestion() }
+            } label: {
+                Image(systemName: "xmark")
+                    .font(.system(size: 10, weight: .bold))
+                    .frame(width: 18, height: 18)
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(VideoEditorTheme.textSecondary)
+            .help("Not for this video")
+            .accessibilityLabel("Dismiss")
+        }
+        .font(.system(size: 11.5, weight: .medium))
+        .padding(.horizontal, 14)
+        .padding(.vertical, 7)
+        .background(Capsule().fill(Color.black.opacity(0.72)))
+        .overlay(Capsule().strokeBorder(VideoEditorTheme.caption.opacity(0.35), lineWidth: 1))
+        .transition(.opacity)
+        .accessibilityElement(children: .contain)
+    }
+}
+
+/// A video that couldn't be opened: what happened in plain words, and a
+/// way on — another video, the file in Finder, or closing the window.
+struct VideoLoadFailureView: View {
+    @ObservedObject var model: VideoEditorModel
+    let failure: VideoLoadFailure
+
+    var body: some View {
+        VStack(spacing: 12) {
+            Image(systemName: failure.kind == .missing ? "questionmark.folder.fill" : "exclamationmark.triangle.fill")
+                .font(.system(size: 30))
+                .foregroundStyle(.yellow)
+                .accessibilityHidden(true)
+            Text(failure.title)
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundStyle(VideoEditorTheme.textPrimary)
+            Text(model.project.sourceURL.lastPathComponent)
+                .font(.system(size: 12, weight: .medium))
+                .foregroundStyle(VideoEditorTheme.textSecondary)
+                .lineLimit(1)
+                .truncationMode(.middle)
+            Text(failure.message)
+                .font(.system(size: 12))
+                .foregroundStyle(VideoEditorTheme.textSecondary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: 380)
+            HStack(spacing: 8) {
+                Button("Close") { model.closeEditor?() }
+                    .buttonStyle(VideoSecondaryButtonStyle())
+                if let reveal = revealURL {
+                    Button("Show in Finder") { NSWorkspace.shared.activateFileViewerSelecting([reveal]) }
+                        .buttonStyle(VideoSecondaryButtonStyle())
+                }
+                Button("Open Another Video…") {
+                    guard let url = VideoDemoEditorWindowController.chooseVideo() else { return }
+                    model.closeEditor?()
+                    VideoDemoEditorWindowController.open(videoURL: url)
+                }
+                .buttonStyle(VideoPrimaryButtonStyle())
+            }
+            .padding(.top, 4)
+            Text(failure.detail)
+                .font(.system(size: 10.5))
+                .foregroundStyle(VideoEditorTheme.textTertiary)
+                .textSelection(.enabled)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: 380)
+        }
+        .padding(24)
+    }
+
+    /// The file itself, or the folder it was in.
+    private var revealURL: URL? {
+        let url = model.project.sourceURL
+        if FileManager.default.fileExists(atPath: url.path) { return url }
+        let folder = url.deletingLastPathComponent()
+        return FileManager.default.fileExists(atPath: folder.path) ? folder : nil
+    }
+}
+
 /// Annotation and zoom tools where people look for them — centered above
 /// the preview, like the screenshot editor's dock. One click adds the
 /// effect at the playhead, selected, with handles on the video.
@@ -913,18 +1067,42 @@ struct VideoDockButton: View {
     }
 }
 
+/// Tips under the preview, a few at a time: the arrow shows the next few,
+/// and each new editor window starts on the next page. Dismissed tips come
+/// back from the command palette or the shortcuts sheet.
 struct VideoTipsBar: View {
     @AppStorage("videoEditorTipsDismissed") private var dismissed = false
+    @State private var page = 0
+
+    static let pages: [[(String, String)]] = [
+        [("Space", "play"), ("Hover the Zoom track", "add a zoom"), ("Click a zoom", "aim or resize it"), ("⌘E", "export")],
+        [("S", "split at the playhead"), ("⇧-drag the timeline", "select a part to cut"), ("I  O", "trim to the playhead")],
+        [("T H A B", "text, highlight, arrow, blur"), ("Click it on the video", "select it"), ("Double-click text", "type")],
+        [("⌥← ⌥→", "step through the timeline"), ("⌘-scroll", "zoom the timeline"), ("M", "mute the preview")],
+        [("Captions tab", "cut by editing words"), ("⌘K", "every command"), ("?", "all shortcuts")],
+    ]
 
     var body: some View {
         if !dismissed {
             HStack(spacing: 14) {
                 Image(systemName: "lightbulb.fill")
                     .foregroundStyle(Color.yellow)
-                tip("Space", "play")
-                tip("Hover the Zoom track", "add a zoom")
-                tip("Click a zoom", "aim or resize it")
-                tip("⌘E", "export")
+                    .accessibilityHidden(true)
+                ForEach(Array(Self.pages[page % Self.pages.count].enumerated()), id: \.offset) { _, item in
+                    tip(item.0, item.1)
+                }
+                Button {
+                    withAnimation(.easeOut(duration: 0.15)) { page += 1 }
+                    Settings.videoEditorTipPage = page
+                } label: {
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 10, weight: .bold))
+                        .frame(width: 18, height: 18)
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(VideoEditorTheme.textSecondary)
+                .help("More tips")
+                .accessibilityLabel("More tips")
                 Button {
                     withAnimation(.easeOut(duration: 0.2)) { dismissed = true }
                 } label: {
@@ -934,7 +1112,7 @@ struct VideoTipsBar: View {
                 }
                 .buttonStyle(.plain)
                 .foregroundStyle(VideoEditorTheme.textSecondary)
-                .help("Got it")
+                .help("Hide tips (bring them back from ⌘K or the shortcuts list)")
                 .accessibilityLabel("Dismiss tips")
             }
             .font(.system(size: 11.5, weight: .medium))
@@ -943,6 +1121,13 @@ struct VideoTipsBar: View {
             .background(Capsule().fill(Color.black.opacity(0.72)))
             .overlay(Capsule().strokeBorder(Color.white.opacity(0.1), lineWidth: 1))
             .transition(.opacity)
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel("Tips")
+            .onAppear {
+                // Each editor window starts on the next page.
+                page = Settings.videoEditorTipPage
+                Settings.videoEditorTipPage = page + 1
+            }
         }
     }
 

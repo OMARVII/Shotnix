@@ -44,6 +44,34 @@ final class VideoDemoEditorWindowController: NSWindowController, NSWindowDelegat
         model.setClipMuted(id, !clip.muted)
     }
 
+    /// The editor in the key window (menu items act on it only).
+    static var keyModel: VideoEditorModel? {
+        (NSApp.keyWindow?.delegate as? VideoDemoEditorWindowController)?.model
+    }
+
+    static func exportActive() {
+        guard let model = keyModel, model.isReady, !model.isCropping else { return }
+        withAnimation(.easeOut(duration: 0.15)) { model.isExportPresented = true }
+    }
+
+    static func saveActiveSubtitles() {
+        guard let model = keyModel, !model.project.captions.isEmpty else { return }
+        model.exportSRT()
+    }
+
+    /// Asks for a video to edit (nil: cancelled).
+    static func chooseVideo() -> URL? {
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+        panel.canChooseFiles = true
+        panel.allowedContentTypes = [.mpeg4Movie, .quickTimeMovie, .movie]
+        panel.directoryURL = URL(fileURLWithPath: Settings.autoSaveLocation, isDirectory: true)
+        guard panel.runModal() == .OK, let url = panel.url else { return nil }
+        Settings.lastRecordingPath = url.path
+        return url
+    }
+
     private static func frontController() -> VideoDemoEditorWindowController? {
         openControllers.first(where: { $0.window?.isKeyWindow == true })
             ?? openControllers.first(where: { $0.window?.isVisible == true })
@@ -82,6 +110,7 @@ final class VideoDemoEditorWindowController: NSWindowController, NSWindowDelegat
 
         super.init(window: window)
         window.delegate = self
+        model.closeEditor = { [weak self] in self?.window?.performClose(nil) }
     }
 
     required init?(coder: NSCoder) {
@@ -145,6 +174,9 @@ final class VideoDemoEditorWindowController: NSWindowController, NSWindowDelegat
     func windowDidBecomeKey(_ notification: Notification) {
         Self.openControllers.removeAll { $0 === self }
         Self.openControllers.append(self)
+        // Renamed in Finder meanwhile: the title and exports follow.
+        model.followRenamedRecording()
+        window?.title = model.project.sourceURL.deletingPathExtension().lastPathComponent
     }
 
     func windowDidResignKey(_ notification: Notification) {

@@ -53,6 +53,42 @@ struct VideoEditorNotice: Equatable, Identifiable {
     let symbol: String
 }
 
+/// Why a video couldn't be opened, in words people can act on (the
+/// system's own message is kept as the small print).
+struct VideoLoadFailure: Equatable {
+    enum Kind: Equatable {
+        case missing
+        case noVideo
+        case unreadable
+    }
+
+    let kind: Kind
+    let detail: String
+
+    static func classify(_ error: Error, url: URL) -> VideoLoadFailure {
+        let detail = error.localizedDescription
+        if !FileManager.default.fileExists(atPath: url.path) { return VideoLoadFailure(kind: .missing, detail: detail) }
+        if case VideoDemoExportError.missingVideoTrack = error { return VideoLoadFailure(kind: .noVideo, detail: detail) }
+        return VideoLoadFailure(kind: .unreadable, detail: detail)
+    }
+
+    var title: String {
+        switch kind {
+        case .missing: return "This video isn't there anymore"
+        case .noVideo: return "There's no video in this file"
+        case .unreadable: return "Shotnix can't open this file"
+        }
+    }
+
+    var message: String {
+        switch kind {
+        case .missing: return "It was moved, renamed, or deleted. Open it from where it is now."
+        case .noVideo: return "It only has sound, or nothing at all. Shotnix edits screen recordings and other videos."
+        case .unreadable: return "It may be damaged, still being saved, or in a format this Mac can't play. MP4 and MOV videos work best."
+        }
+    }
+}
+
 @MainActor
 final class VideoEditorModel: ObservableObject {
     enum Selection: Equatable {
@@ -82,7 +118,7 @@ final class VideoEditorModel: ObservableObject {
             case .cursor: return "Cursor"
             case .zoom: return "Zoom"
             case .camera: return "Camera"
-            case .captions: return "Script"
+            case .captions: return "Captions"
             case .audio: return "Audio"
             }
         }
@@ -92,7 +128,7 @@ final class VideoEditorModel: ObservableObject {
             case .cursor: return "Cursor, clicks, and keyboard shortcuts"
             case .zoom: return "Zoom moves"
             case .camera: return "Camera bubble"
-            case .captions: return "Edit the video by editing its words, and add captions"
+            case .captions: return "Captions from your narration — and cut the video by editing its words"
             case .audio: return "Sound"
             }
         }
@@ -133,6 +169,9 @@ final class VideoEditorModel: ObservableObject {
     var voiceTask: Task<Bool, Never>?
     @Published private(set) var isReady = false
     @Published var loadError: String?
+    @Published private(set) var loadFailure: VideoLoadFailure?
+    /// Closes this editor's window (set by the window controller).
+    var closeEditor: (() -> Void)?
     @Published var selection: Selection = .none {
         didSet {
             guard selection != oldValue else { return }
@@ -180,6 +219,9 @@ final class VideoEditorModel: ObservableObject {
     /// Bumped to put the cursor in the selected text annotation's field
     /// (double-click the text on the preview).
     @Published var textEditRequest = 0
+    /// ⌘F: the transcript takes focus with its find bar open (cleared once
+    /// it has).
+    @Published var wantsTranscriptFind = false
     @Published var cropAspect: VideoCropAspect = .free
     /// Caption generation in progress or failed (nil when idle).
     @Published var captionJob: VideoCaptionJob?
@@ -200,6 +242,7 @@ final class VideoEditorModel: ObservableObject {
     let playback = VideoPlaybackController()
     lazy var previewRenderer = VideoPreviewRenderer(model: self)
     let recording: VideoDemoRecordingMetadata?
+    private let sourceBookmark: Data?
     let artwork: VideoCursorArtwork
     private(set) var plan: VideoRenderPlan
     private(set) var segments: [VideoDemoTimelineSegment] = []
@@ -311,6 +354,7 @@ final class VideoEditorModel: ObservableObject {
     init(videoURL: URL) {
         let recording = VideoDemoSidecarStore.load(for: videoURL)
         self.recording = recording
+        sourceBookmark = try? videoURL.bookmarkData(options: [.minimalBookmark], includingResourceValuesForKeys: nil, relativeTo: nil)
         artwork = VideoCursorArtwork(metadata: recording)
         var project = VideoDemoProject.make(sourceURL: videoURL)
         if let recording {
@@ -419,6 +463,7 @@ final class VideoEditorModel: ObservableObject {
             }
         } catch {
             loadError = error.localizedDescription
+            loadFailure = VideoLoadFailure.classify(error, url: project.sourceURL)
         }
     }
 
@@ -1505,6 +1550,7 @@ final class VideoEditorModel: ObservableObject {
 
     func beginExport(toClipboard: Bool) {
         if case .running = exportPhase { return }
+        followRenamedRecording()
         let settings = exportSettings
         settings.saveAsDefaults()
         let destination: URL
@@ -1524,10 +1570,38 @@ final class VideoEditorModel: ObservableObject {
         runExport(to: destination, settings: settings, toClipboard: toClipboard)
     }
 
-    private var exportBaseName: String {
-        let stamp = ImageExporter.timestampedName
-        let cleaned = stamp.hasPrefix("Shotnix ") ? String(stamp.dropFirst("Shotnix ".count)) : stamp
-        return "Shotnix Video \(cleaned)"
+    /// The recording's name as it is now (renamed in Finder while open
+    /// included).
+    var recordingName: String { currentSourceURL.deletingPathExtension().lastPathComponent }
+
+    /// One name for everything made from this recording — the video and
+    /// its subtitles side by side ("Demo (edited).mp4", "Demo (edited).srt",
+    /// which players pair up) — never the recording's own file name.
+    var exportBaseName: String { "\(recordingName) (edited)" }
+
+    /// Where the recording is now: a bookmark follows it through renames
+    /// and moves.
+    var currentSourceURL: URL {
+        var stale = false
+        guard let sourceBookmark,
+              let url = try? URL(resolvingBookmarkData: sourceBookmark, options: [.withoutUI, .withoutMounting], relativeTo: nil, bookmarkDataIsStale: &stale) else { return project.sourceURL }
+        return url.standardizedFileURL
+    }
+
+    /// A recording renamed or moved while it's open: the project (and its
+    /// undo history) points at where it is now, so exports can read it.
+    func followRenamedRecording() {
+        let current = currentSourceURL
+        guard VideoFileIdentity.canonicalURL(current) != VideoFileIdentity.canonicalURL(project.sourceURL),
+              FileManager.default.fileExists(atPath: current.path) else { return }
+        func moved(_ snapshot: VideoDemoProject) -> VideoDemoProject {
+            var copy = snapshot
+            copy.sourcePath = current.path
+            return copy
+        }
+        undoStack = undoStack.map(moved)
+        redoStack = redoStack.map(moved)
+        project = moved(project)
     }
 
     private func runExport(to destination: URL, settings: VideoExportSettings, toClipboard: Bool) {

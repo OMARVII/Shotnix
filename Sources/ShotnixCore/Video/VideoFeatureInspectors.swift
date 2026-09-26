@@ -175,7 +175,7 @@ struct VideoScriptInspector: View {
                     .padding(.top, 10)
                 }
                 if mode == "transcript" {
-                    VideoTranscriptPanel(model: model, timeline: model.timelineState)
+                    VideoTranscriptPanel(model: model, timeline: model.timelineState, wantsFind: model.wantsTranscriptFind)
                 } else {
                     ScrollView {
                         VideoCaptionsInspector(model: model)
@@ -192,6 +192,8 @@ struct VideoTranscriptPanel: View {
     let model: VideoEditorModel
     /// Counts refresh only when the timeline changes, not on every edit.
     @ObservedObject var timeline: VideoTimelineState
+    /// ⌘F was pressed: the transcript opens its find bar.
+    var wantsFind = false
 
     var body: some View {
         let fillers = model.fillerCount
@@ -225,7 +227,7 @@ struct VideoTranscriptPanel: View {
                 .font(.system(size: 10.5))
                 .foregroundStyle(VideoEditorTheme.textTertiary)
                 .fixedSize(horizontal: false, vertical: true)
-            VideoTranscriptEditor(model: model, timeline: timeline, clock: model.clock)
+            VideoTranscriptEditor(model: model, timeline: timeline, clock: model.clock, wantsFind: wantsFind)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .padding(8)
                 .background(RoundedRectangle(cornerRadius: 10, style: .continuous).fill(Color.black.opacity(0.22)))
@@ -571,7 +573,24 @@ struct VideoCameraInspector: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 22) {
-            if model.webcamRecording == nil {
+            if let missing = model.missingWebcamFile {
+                // Recorded with a camera, but its file moved or was deleted.
+                VideoCard {
+                    Label("Camera footage is missing", systemImage: "exclamationmark.triangle.fill")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(VideoEditorTheme.textPrimary)
+                    Text("This video was recorded with your camera, but “\(missing.lastPathComponent)” isn't in \(missing.deletingLastPathComponent().lastPathComponent) anymore. Put it back there and open the video again to get the camera bubble back.")
+                        .font(.system(size: 11))
+                        .foregroundStyle(VideoEditorTheme.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    if FileManager.default.fileExists(atPath: missing.deletingLastPathComponent().path) {
+                        Button("Show Folder in Finder") {
+                            NSWorkspace.shared.open(missing.deletingLastPathComponent())
+                        }
+                        .buttonStyle(VideoSecondaryButtonStyle())
+                    }
+                }
+            } else if model.webcamRecording == nil {
                 VideoCard {
                     Label("No camera in this recording", systemImage: "video.slash")
                         .font(.system(size: 12, weight: .semibold))

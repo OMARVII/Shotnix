@@ -146,6 +146,18 @@ extension VideoEditorModel {
         project.captions.contains { !$0.words.isEmpty }
     }
 
+    /// A narrated recording nobody has transcribed yet: the editor offers
+    /// captions and edit-by-text (until it's waved away for this video).
+    var suggestsTranscript: Bool {
+        isReady && hasAudio && voiceTrackIndex != nil && project.captions.isEmpty && captionJob == nil
+            && !Settings.videoTranscribeHintDismissed.contains(project.sourcePath)
+    }
+
+    func dismissTranscriptSuggestion() {
+        Settings.videoTranscribeHintDismissed.append(project.sourcePath)
+        objectWillChange.send()
+    }
+
     /// A new transcript replaces every line — ask first when there are any.
     func transcribeAgain() {
         guard captionTask == nil else { return }
@@ -330,9 +342,13 @@ extension VideoEditorModel {
     }
 
     func exportSRT() {
+        followRenamedRecording()
         let panel = NSSavePanel()
         panel.allowedContentTypes = [UTType(filenameExtension: "srt") ?? .plainText]
-        panel.nameFieldStringValue = project.sourceURL.deletingPathExtension().lastPathComponent + ".srt"
+        // Named like the video export and saved beside it, so players pick
+        // the subtitles up on their own.
+        panel.nameFieldStringValue = exportBaseName + ".srt"
+        panel.directoryURL = recentExports.first?.exportURL.deletingLastPathComponent() ?? URL(fileURLWithPath: Settings.autoSaveLocation, isDirectory: true)
         panel.canCreateDirectories = true
         guard panel.runModal() == .OK, let url = panel.url else { return }
         let text = VideoCaptionBuilder.srt(lines: project.captions, segments: segments)
@@ -450,6 +466,17 @@ extension VideoEditorModel {
         let before = timelineDuration
         mutate { $0.removeSourceRanges(ranges, totalDuration: sourceDuration) }
         showNotice("Shortened \(ranges.count) pause\(ranges.count == 1 ? "" : "s") — \(Self.format(max(before - timelineDuration, 0))) shorter", symbol: "wand.and.stars")
+    }
+
+    /// ⌘F from anywhere: the Captions tab, on its transcript, find bar open.
+    func findInTranscript() {
+        guard hasTranscript else {
+            showNotice("Transcribe the narration to search its words", symbol: "magnifyingglass")
+            return
+        }
+        inspectorTab = .captions
+        UserDefaults.standard.set("transcript", forKey: "videoScriptMode")
+        wantsTranscriptFind = true
     }
 
     /// Plays from a word (or the next moment still in the video).
@@ -580,6 +607,22 @@ extension VideoEditorModel {
     var webcamRecording: VideoWebcamRecording? {
         guard let webcam = recording?.webcam, FileManager.default.fileExists(atPath: webcam.path) else { return nil }
         return webcam
+    }
+
+    /// Camera footage this video was recorded with that's gone from disk
+    /// (moved or deleted) — not the same as a recording without a camera.
+    var missingWebcamFile: URL? {
+        guard let webcam = recording?.webcam, !FileManager.default.fileExists(atPath: webcam.path) else { return nil }
+        return webcam.url
+    }
+}
+
+// MARK: - Recent exports
+
+extension VideoEditorModel {
+    /// This recording's exports that are still on disk, newest first.
+    var recentExports: [VideoDemoRecentExport] {
+        VideoDemoRecentExportStore.load(for: project.sourceURL).filter { FileManager.default.fileExists(atPath: $0.exportPath) }
     }
 }
 

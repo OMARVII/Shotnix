@@ -94,10 +94,20 @@ struct VideoInspectorView: View {
                         RoundedRectangle(cornerRadius: 8, style: .continuous)
                             .fill(selected ? Color.white.opacity(0.09) : Color.clear)
                     )
+                    .overlay(alignment: .topTrailing) {
+                        // A narrated video nobody transcribed yet.
+                        if tab == .captions, model.suggestsTranscript {
+                            Circle()
+                                .fill(VideoEditorTheme.caption)
+                                .frame(width: 7, height: 7)
+                                .padding(.top, 7)
+                                .padding(.trailing, 9)
+                        }
+                    }
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .help(tab.help)
+                .help(tab == .captions && model.suggestsTranscript ? "Your narration can become captions — transcribe it here" : tab.help)
             }
         }
         .padding(8)

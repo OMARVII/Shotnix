@@ -287,6 +287,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         appMenuItem.submenu = appMenu
         mainMenu.addItem(appMenuItem)
 
+        // File menu. The video editor adds its items (Export, Save Subtitles,
+        // Recent Exports) as a section of their own below anything else here.
+        let fileMenuItem = NSMenuItem()
+        let fileMenu = NSMenu(title: "File")
+        VideoEditorFileMenu.shared.addItems(to: fileMenu)
+        fileMenuItem.submenu = fileMenu
+        mainMenu.addItem(fileMenuItem)
+
         // Standard Edit menu — LSUIElement apps get no default menus, so without
         // it ⌘X/C/V/A/Z have no responder route (breaking paste into text
         // annotation fields and save-panel filename fields). The items target

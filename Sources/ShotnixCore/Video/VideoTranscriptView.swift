@@ -15,6 +15,8 @@ struct VideoTranscriptEditor: NSViewRepresentable {
     let model: VideoEditorModel
     @ObservedObject var timeline: VideoTimelineState
     @ObservedObject var clock: VideoDemoPlaybackClock
+    /// ⌘F from elsewhere in the editor: take focus, open the find bar.
+    var wantsFind = false
 
     func makeCoordinator() -> Coordinator { Coordinator(model: model) }
 
@@ -48,6 +50,13 @@ struct VideoTranscriptEditor: NSViewRepresentable {
         let coordinator = context.coordinator
         coordinator.refresh(revision: timeline.revision)
         coordinator.highlight(sourceTime: model.sourceTime(forTimeline: clock.time), playing: model.isPlaying)
+        if wantsFind {
+            // After this update (the view may have just been created).
+            DispatchQueue.main.async { [model, weak coordinator] in
+                model.wantsTranscriptFind = false
+                coordinator?.showFind()
+            }
+        }
     }
 
     @MainActor
@@ -181,6 +190,14 @@ struct VideoTranscriptEditor: NSViewRepresentable {
         var hasCutWordsInSelection: Bool {
             guard let textView else { return false }
             return indices(in: textView.selectedRange()).words.contains { words.indices.contains($0) && !model.isIncluded(words[$0]) }
+        }
+
+        func showFind() {
+            guard let textView, let window = textView.window else { return }
+            window.makeFirstResponder(textView)
+            let sender = NSMenuItem()
+            sender.tag = NSTextFinder.Action.showFindInterface.rawValue
+            textView.performTextFinderAction(sender)
         }
 
         func playFromSelection() {
