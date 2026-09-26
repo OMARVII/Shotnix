@@ -128,7 +128,8 @@ private final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
             dismissAction()
             return true
         }
-        guard event.modifierFlags.intersection(.deviceIndependentFlagsMask) == .command else { return false }
+        // Caps Lock (and the fn/keypad bits) don't change which shortcut it is.
+        guard event.modifierFlags.intersection(.deviceIndependentFlagsMask).subtracting([.capsLock, .function, .numericPad]) == .command else { return false }
         switch ShortcutKeyMatching.latinLetter(for: event) {
         case "c": copyAction()
         case "s": saveAction()

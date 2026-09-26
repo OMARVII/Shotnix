@@ -72,8 +72,8 @@ enum ImageExporter {
         Task.detached(priority: .userInitiated) {
             let png = pngData(from: box.image)
             await MainActor.run {
-                if let png { writePNG(png, to: pasteboard) }
-                completion?(png != nil)
+                let copied = png.map { writePNG($0, to: pasteboard) } ?? false
+                completion?(copied)
             }
         }
     }
@@ -141,8 +141,9 @@ enum ImageExporter {
     private static func writeWithoutReplacing(_ data: Data, in directory: URL, baseName: String, pathExtension: String) throws -> URL {
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         let temp = directory.appendingPathComponent(".shotnix-\(UUID().uuidString).tmp")
-        try data.write(to: temp)
+        // Registered first: a write that fails halfway (a full disk) leaves no temp file behind.
         defer { try? FileManager.default.removeItem(at: temp) }
+        try data.write(to: temp)
 
         for _ in 0..<1000 {
             let candidate = uniqueURL(in: directory, baseName: baseName, pathExtension: pathExtension)

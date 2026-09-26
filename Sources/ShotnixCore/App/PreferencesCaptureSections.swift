@@ -181,7 +181,10 @@ struct HistoryPreferences: View {
         guard let historyManager else { return }
         let alert = NSAlert()
         alert.messageText = "Clean Up History?"
-        alert.informativeText = "Deleted captures waiting in History's trash and files no capture uses are removed for good. The captures in your history stay."
+        let expiring = historyManager.itemsExceedingRetention(Settings.historyRetention).count
+        alert.informativeText = expiring == 0
+            ? "Deleted captures waiting in History's trash and files no capture uses are removed for good. The captures in your history stay."
+            : "Deleted captures waiting in History's trash and files no capture uses are removed for good, along with \(expiring == 1 ? "1 capture" : "\(expiring.formatted()) captures") past your History limit. The rest of your history stays."
         alert.addButton(withTitle: "Clean Up")
         alert.addButton(withTitle: "Cancel")
         guard alert.runModal() == .alertFirstButtonReturn else { return }
