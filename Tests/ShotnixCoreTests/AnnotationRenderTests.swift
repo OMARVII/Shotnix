@@ -52,12 +52,14 @@ final class AnnotationRenderTests: XCTestCase {
                 var maxNeighborDelta = 0
                 var darkest = 255
                 var lightest = 0
+                var smallestChange = 255
                 for y in px.minY..<px.maxY {
                     for x in px.minX..<px.maxX {
                         let value = output.luminance(x, y)
                         minAlpha = min(minAlpha, output.pixel(x, y).a)
                         darkest = min(darkest, value)
                         lightest = max(lightest, value)
+                        smallestChange = min(smallestChange, abs(value - source.luminance(x, y)))
                         if x + 1 < px.maxX { maxNeighborDelta = max(maxNeighborDelta, abs(value - output.luminance(x + 1, y))) }
                         if y + 1 < px.maxY { maxNeighborDelta = max(maxNeighborDelta, abs(value - output.luminance(x, y + 1))) }
                     }
@@ -66,6 +68,7 @@ final class AnnotationRenderTests: XCTestCase {
                 // leak (semi-transparent edges, a faint copy mid-box) shows
                 // up as neighbor differences.
                 XCTAssertEqual(minAlpha, 255, "blur must be opaque at \(density)x, \(region)")
+                XCTAssertGreaterThanOrEqual(smallestChange, 30, "every pixel, edges included, differs meaningfully from the original at \(density)x")
                 XCTAssertLessThanOrEqual(maxNeighborDelta, 6, "original shows through the blur at \(density)x, \(region)")
                 // Core Image blurs in linear light, so the gray is light;
                 // edge clamping shades the corners a little. No black or
@@ -262,6 +265,37 @@ final class AnnotationRenderTests: XCTestCase {
         XCTAssertEqual(export.size, NSSize(width: 140, height: 100))
         XCTAssertEqual(export.bestCGImage?.width, 280)
         XCTAssertEqual(export.bestCGImage?.height, 200)
+    }
+
+    func testCroppedScreenshotInABackdropExportsTheCropAtFullResolution() throws {
+        let image = AnnotationTestImages.make(pointSize: CGSize(width: 200, height: 100), density: 2) { ctx, size in
+            ctx.setFillColor(NSColor.red.cgColor)
+            ctx.fill(CGRect(x: 0, y: 0, width: size.width / 2, height: size.height))
+            ctx.setFillColor(NSColor.blue.cgColor)
+            ctx.fill(CGRect(x: size.width / 2, y: 0, width: size.width / 2, height: size.height))
+        }
+        let canvas = makeCanvas(image)
+        canvas.activeTool = .crop
+        drag(canvas, from: CGPoint(x: 110, y: 20), to: CGPoint(x: 190, y: 80)) // blue half only
+        canvas.applyCrop()
+        var options = ScreenshotBackgroundOptions.editorDefault
+        options.isEnabled = true
+        options.padding = 24
+        options.shadow = 0
+        canvas.setBackgroundOptions(options)
+        let blur = BlurAnnotation(rect: CGRect(x: 100, y: 0, width: 100, height: 100)) // straddles the crop edge
+        canvas.objects = [blur]
+
+        let export = canvas.flatten()
+        XCTAssertEqual(export.size, NSSize(width: 128, height: 108), "crop plus the backdrop's padding")
+        let pixels = AnnotationPixels(export)
+        XCTAssertEqual(pixels.width, 256, "at the screenshot's 2x density")
+        let inside = pixels.pixel(128, 108)
+        XCTAssertGreaterThan(inside.b, 200)
+        XCTAssertLessThan(inside.r, 40, "only the cropped (blue) part shows, blurred or not")
+        // The blur is confined to the screenshot: none of it spills onto the backdrop margin.
+        let margin = pixels.pixel(10, 108)
+        XCTAssertFalse(margin.b > 200 && margin.r < 40, "the backdrop margin isn't painted with blurred screenshot")
     }
 
     // MARK: – Item 5: editing chrome never reaches an export

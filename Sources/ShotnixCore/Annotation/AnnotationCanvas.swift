@@ -757,6 +757,9 @@ final class AnnotationCanvas: NSView {
     }
 
     private func handleSelectUp(point: CGPoint) {
+        if didPushSelectMoveUndo {
+            onOptionsChanged?() // a resize changes the size the toolbar shows
+        }
         selectDragStart = nil
         selectDragAction = nil
         didPushSelectMoveUndo = false
@@ -1355,9 +1358,11 @@ final class AnnotationCanvas: NSView {
             target.color = color
             syncEditorStyle()
         }
-        guard !selectedObjects.isEmpty else { return }
+        // Blur, pixelate, and spotlight have no color of their own.
+        let targets = selectedObjects.filter { !AnnotationRenderer.isScreenshotEffect($0) }
+        guard !targets.isEmpty else { return }
         pushUndo(coalescing: "color")
-        for obj in selectedObjects {
+        for obj in targets {
             obj.color = color
         }
         setNeedsDisplay(bounds)
