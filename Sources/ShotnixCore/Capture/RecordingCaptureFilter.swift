@@ -12,13 +12,15 @@ enum RecordingCaptureFilter {
     /// stays out of a display recording, even windows that open
     /// mid-recording. Its real windows stay in, as they do in screenshots.
     static func recordableOwnWindowIDs() -> Set<CGWindowID> {
-        recordableOwnWindowIDs(in: NSApp.windows, front: NSApp.keyWindow ?? NSApp.mainWindow)
+        // The key window only: a menu is open from whatever has the keyboard,
+        // and with Shotnix in the background its menus are chrome's.
+        recordableOwnWindowIDs(in: NSApp.windows, front: NSApp.keyWindow)
     }
 
     /// Kept: Shotnix's real windows (titled, and not owned by a framework
     /// bundled in the app — the updater's prompts are titled too), anything
     /// attached to one of them whatever its owner (popovers, sheets,
-    /// alerts), and, while one of them is in front, the menus opened from it.
+    /// alerts), and, while one of them is key, the menus opened from it.
     static func recordableOwnWindowIDs(in windows: [NSWindow], front: NSWindow?) -> Set<CGWindowID> {
         let visible = windows.filter { $0.isVisible && $0.windowNumber > 0 }
         let real = Set(visible.filter(isRealWindow).map(ObjectIdentifier.init))
