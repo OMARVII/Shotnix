@@ -112,6 +112,19 @@ final class CaptureChromeTests: XCTestCase {
         XCTAssertTrue(cover.windows.isEmpty)
     }
 
+    func testDesktopCoverNeverWaitsLongOnScreenCapture() async throws {
+        guard let screen = NSScreen.main else { throw XCTSkip("no screen") }
+        let deadline = DesktopIconsCover.screenCaptureDeadline
+        DesktopIconsCover.screenCaptureDeadline = 0
+        defer { DesktopIconsCover.screenCaptureDeadline = deadline }
+        let started = Date()
+        let cover = await DesktopIconsCover.show(on: [screen])
+        defer { cover.remove() }
+        XCTAssertLessThan(Date().timeIntervalSince(started), 1.5, "a stalled ScreenCaptureKit call can't hold up the capture")
+        let window = try XCTUnwrap(cover.windows.first)
+        XCTAssertTrue(window.contentView?.layer?.contents != nil || window.contentView?.layer?.backgroundColor != nil, "falls back to the desktop picture")
+    }
+
     // MARK: What captures leave out
 
     func testFloatingChromeIsLeftOutButContentWindowsStay() {

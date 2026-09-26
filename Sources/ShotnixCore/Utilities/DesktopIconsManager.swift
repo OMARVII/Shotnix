@@ -69,17 +69,34 @@ final class DesktopIconsCover {
         window is DesktopCoverWindow
     }
 
+    /// How long a ScreenCaptureKit call may take before the cover falls back
+    /// to the desktop picture file. ScreenCaptureKit can wait indefinitely
+    /// (while macOS asks about screen recording, for one), and hiding icons
+    /// must never hold up the capture itself.
+    static var screenCaptureDeadline: TimeInterval = 1
+
     /// Covers every screen and returns once they're on screen.
     static func show(on screens: [NSScreen] = NSScreen.screens) async -> DesktopIconsCover {
         let cover = DesktopIconsCover()
         var content: SCShareableContent?
         if #available(macOS 14.0, *) {
             // One window-list fetch serves every screen.
-            content = try? await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: true)
+            if case .finished(let fetched) = await withDeadline(screenCaptureDeadline, {
+                try? await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: true)
+            }) {
+                content = fetched
+            }
         }
         for screen in screens {
-            let picture = await wallpaperImage(for: screen, content: content)
-            let window = DesktopCoverWindow(screen: screen, picture: picture)
+            var picture: Picture?
+            if #available(macOS 14.0, *), let shareable = content {
+                switch await withDeadline(screenCaptureDeadline, { await screenCaptureWallpaper(for: screen, content: shareable) }) {
+                case .finished(let image?): picture = .captured(image)
+                case .finished(nil):        break
+                case .timedOut:             content = nil // it would stall on the other screens too
+                }
+            }
+            let window = DesktopCoverWindow(screen: screen, picture: picture ?? wallpaperFallback(for: screen))
             window.orderFrontRegardless()
             cover.windows.append(window)
         }
@@ -104,12 +121,10 @@ final class DesktopIconsCover {
         case color(NSColor)
     }
 
-    private static func wallpaperImage(for screen: NSScreen, content: SCShareableContent?) async -> Picture {
-        if #available(macOS 14.0, *) {
-            if let content, let image = await screenCaptureWallpaper(for: screen, content: content) {
-                return .captured(image)
-            }
-        } else if let image = windowListWallpaper(for: screen) {
+    /// Without ScreenCaptureKit's picture: the window list on macOS 13, then
+    /// the desktop picture file, then its fill color.
+    private static func wallpaperFallback(for screen: NSScreen) -> Picture {
+        if #unavailable(macOS 14.0), let image = windowListWallpaper(for: screen) {
             return .captured(image)
         }
         let options = NSWorkspace.shared.desktopImageOptions(for: screen)
@@ -153,6 +168,42 @@ final class DesktopIconsCover {
         }
         guard !ids.isEmpty else { return nil }
         return CaptureEngine.windowListImage(rect: ScreenCoordinates.cgRect(fromAppKit: screen.frame), windowIDs: ids)
+    }
+}
+
+private enum DeadlineResult<T> {
+    case finished(T)
+    case timedOut
+}
+
+/// `work`'s result, or `.timedOut` once `seconds` pass. The work isn't
+/// cancelled — it finishes on its own and its result is dropped.
+@MainActor
+private func withDeadline<T>(_ seconds: TimeInterval, _ work: @escaping @MainActor () async -> T) async -> DeadlineResult<T> {
+    await withCheckedContinuation { (continuation: CheckedContinuation<DeadlineResult<T>, Never>) in
+        let once = ResumeOnce(continuation)
+        Task { @MainActor in once.resume(.finished(await work())) }
+        Task { @MainActor in
+            try? await Task.sleep(nanoseconds: UInt64(max(0, seconds) * 1_000_000_000))
+            once.resume(.timedOut)
+        }
+    }
+}
+
+private final class ResumeOnce<T>: @unchecked Sendable {
+    private let lock = NSLock()
+    private var continuation: CheckedContinuation<T, Never>?
+
+    init(_ continuation: CheckedContinuation<T, Never>) {
+        self.continuation = continuation
+    }
+
+    func resume(_ value: T) {
+        lock.lock()
+        let pending = continuation
+        continuation = nil
+        lock.unlock()
+        pending?.resume(returning: value)
     }
 }
 
