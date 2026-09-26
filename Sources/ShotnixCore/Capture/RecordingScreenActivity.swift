@@ -20,31 +20,36 @@ struct RecordingScreenActivity {
     /// `time` is recording seconds; `dirtyRects` and `frameSize` are in
     /// output pixels.
     mutating func observe(time: Double, dirtyRects: [CGRect]?, frameSize: CGSize, pixelsPerPoint: CGFloat, grid: () -> [UInt32]?) {
-        if let last = samples.last, time - last < Self.minimumInterval - 0.000_1 { return }
         let frameArea = frameSize.width * frameSize.height
         guard frameArea > 0 else { return }
-
-        if let dirtyRects {
-            let frame = CGRect(origin: .zero, size: frameSize)
-            let dirtyArea = dirtyRects.reduce(CGFloat(0)) { total, rect in
+        let frame = CGRect(origin: .zero, size: frameSize)
+        let dirtyArea = dirtyRects.map { rects in
+            rects.reduce(CGFloat(0)) { total, rect in
                 let visible = rect.intersection(frame)
                 return visible.isNull ? total : total + visible.width * visible.height
             }
-            if dirtyArea < frameArea * Self.wholeFrameFraction {
-                let scale = max(pixelsPerPoint, 0.01)
-                if dirtyArea / (scale * scale) >= Self.minimumChangedPoints {
-                    samples.append(time)
-                }
-                return
+        } ?? frameArea
+        let dueForSample = samples.last.map { time - $0 >= Self.minimumInterval - 0.000_1 } ?? true
+        let dueForGrid = time - lastGridTime >= Self.minimumInterval - 0.000_1
+
+        if dirtyArea < frameArea * Self.wholeFrameFraction {
+            let scale = max(pixelsPerPoint, 0.01)
+            if dueForSample, dirtyArea / (scale * scale) >= Self.minimumChangedPoints {
+                samples.append(time)
             }
+            // Kept fresh for the frames that don't say what changed.
+            if dueForGrid, let current = grid() {
+                lastGrid = current
+                lastGridTime = time
+            }
+            return
         }
 
-        guard time - lastGridTime >= Self.minimumInterval - 0.000_1, let current = grid() else { return }
-        defer {
-            lastGrid = current
-            lastGridTime = time
-        }
-        if let lastGrid, Self.changed(lastGrid, current) {
+        guard dueForGrid, let current = grid() else { return }
+        let changed = lastGrid.map { Self.changed($0, current) } ?? true
+        lastGrid = current
+        lastGridTime = time
+        if changed, dueForSample {
             samples.append(time)
         }
     }

@@ -1164,9 +1164,9 @@ final class RecordingEngine: NSObject {
     /// Fragments every 2 s: a crash, force quit or power loss leaves a movie
     /// that plays up to the last fragment instead of an unreadable file.
     /// Finishing still produces a regular MP4.
-    static let fragmentInterval = CMTime(seconds: 2, preferredTimescale: 600)
+    nonisolated static let fragmentInterval = CMTime(seconds: 2, preferredTimescale: 600)
 
-    static func makeWriter(url: URL, format: RecordingVideoFormat, fps: Int, quality: RecordingQuality, microphone: Bool, systemAudio: Bool) throws -> WriterHandles {
+    nonisolated static func makeWriter(url: URL, format: RecordingVideoFormat, fps: Int, quality: RecordingQuality, microphone: Bool, systemAudio: Bool) throws -> WriterHandles {
         let writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
         writer.movieFragmentInterval = fragmentInterval
         let videoInput = AVAssetWriterInput(mediaType: .video, outputSettings: videoSettings(format: format, fps: fps, quality: quality))
@@ -1198,11 +1198,11 @@ final class RecordingEngine: NSObject {
         return WriterHandles(writer: writer, videoInput: videoInput, systemAudioInput: systemAudioInput, microphoneInput: microphoneInput)
     }
 
-    static func videoSettings(width: Int, height: Int, fps: Int, quality: RecordingQuality) -> [String: Any] {
+    nonisolated static func videoSettings(width: Int, height: Int, fps: Int, quality: RecordingQuality) -> [String: Any] {
         videoSettings(format: RecordingVideoFormat.plan(width: width, height: height, fps: fps), fps: fps, quality: quality)
     }
 
-    static func videoSettings(format: RecordingVideoFormat, fps: Int, quality: RecordingQuality) -> [String: Any] {
+    nonisolated static func videoSettings(format: RecordingVideoFormat, fps: Int, quality: RecordingQuality) -> [String: Any] {
         var compression: [String: Any] = [
             AVVideoAverageBitRateKey: quality.bitrate(width: format.width, height: format.height, fps: fps, codec: format.codec),
             AVVideoExpectedSourceFrameRateKey: fps,
@@ -1232,7 +1232,7 @@ final class RecordingEngine: NSObject {
         ]
     }
 
-    private static func audioInput(channels: Int, bitrate: Int) -> AVAssetWriterInput {
+    nonisolated private static func audioInput(channels: Int, bitrate: Int) -> AVAssetWriterInput {
         let input = AVAssetWriterInput(mediaType: .audio, outputSettings: [
             AVFormatIDKey: kAudioFormatMPEG4AAC,
             AVSampleRateKey: 48_000,
