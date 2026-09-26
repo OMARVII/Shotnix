@@ -97,6 +97,15 @@ final class HistoryManager: ObservableObject {
     private var fileTasks: [UUID: (generation: Int, task: Task<Void, Never>)] = [:]
     private var fileTaskGeneration = 0
 
+    /// The orphan sweep only trusts indexes that loaded completely. A missing,
+    /// unreadable, or partly stale index would make real captures look
+    /// orphaned, so the sweep leaves that folder alone.
+    private var indexLoadedCleanly = false
+    private var trashLoadedCleanly = false
+    /// Unlisted files younger than this are left alone: a capture written
+    /// just before a crash, or while the index write was still pending.
+    static let orphanMinimumAge: TimeInterval = 24 * 60 * 60
+
     init(storageDir overrideStorageDir: URL? = nil) {
         if let overrideStorageDir {
             storageDir = overrideStorageDir
@@ -116,6 +125,13 @@ final class HistoryManager: ObservableObject {
         purgeExpiredTrash()
         applyRetention()
         scheduleOCRIndexing()
+        defaultsObserver = NotificationCenter.default.addObserver(
+            forName: UserDefaults.didChangeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated { self?.reindexIfOCRSettingsChanged() }
+        }
         Task { [weak self] in await self?.sweepOrphanedFiles() }
         // Batched writes still pending at quit land before the process exits.
         NotificationCenter.default.addObserver(
@@ -204,8 +220,11 @@ final class HistoryManager: ObservableObject {
         if fileTasks[id] == nil {
             Self.keepOriginal(at: originalPath, of: imagePath, unsaved: unsavedCapture)
         }
-        // The edit can add text (labels, callouts), so search re-indexes it.
+        // The old text goes now: it may hold exactly what the edit redacted.
+        // The edit is indexed once it's on disk (it can add labels and callouts).
         items[index].ocrText = nil
+        imageGenerations[id, default: 0] += 1
+        editsInFlight[id, default: 0] += 1
         HistoryImageCache.primeFull(image, for: imagePath)
         HistoryImageCache.primeThumbnail(image, for: thumbPath)
         let edit = HistoryImageBox(image: image)
@@ -216,14 +235,17 @@ final class HistoryManager: ObservableObject {
                 Self.keepOriginal(at: originalPath, of: imagePath, unsaved: unsavedCapture)
                 return Self.encodeAndPersist(image: edit.image, imagePath: imagePath, thumbPath: thumbPath, rect: rect, type: type)
             }.value
-            guard let self, self.items.contains(where: { $0.id == id }) else { return }
+            guard let self else { return }
+            let remaining = (self.editsInFlight[id] ?? 1) - 1
+            self.editsInFlight[id] = remaining > 0 ? remaining : nil
+            guard self.items.contains(where: { $0.id == id }) else { return }
             if let thumbnail {
                 HistoryImageCache.primeThumbnail(thumbnail.image, for: thumbPath)
             }
             self.scheduleIndexWrite()
+            self.scheduleOCRIndexing()
         }
         scheduleIndexWrite()
-        scheduleOCRIndexing()
         notifyChanged()
     }
 
@@ -327,14 +349,38 @@ final class HistoryManager: ObservableObject {
         let previous = fileTasks[id]?.task
         fileTaskGeneration += 1
         let generation = fileTaskGeneration
+        // Quitting or relaunching for an update waits for these writes, so a
+        // capture or an edit saved right before ⌘Q still reaches History.
+        if fileWork == nil {
+            fileWork = AppTermination.begin("Saving captures to History") { [weak self] done in
+                Task { @MainActor in
+                    await self?.waitForPendingFileOperations()
+                    done()
+                }
+            }
+        }
+        let work = fileWork
         let task = Task { @MainActor [weak self] in
             await previous?.value
             await operation()
-            if self?.fileTasks[id]?.generation == generation {
-                self?.fileTasks[id] = nil
+            guard let self else {
+                AppTermination.end(work)
+                return
             }
+            if self.fileTasks[id]?.generation == generation {
+                self.fileTasks[id] = nil
+            }
+            self.endFileWorkIfIdle()
         }
         fileTasks[id] = (generation, task)
+    }
+
+    private var fileWork: AppTermination.Token?
+
+    private func endFileWorkIfIdle() {
+        guard fileTasks.isEmpty else { return }
+        AppTermination.end(fileWork)
+        fileWork = nil
     }
 
     /// Runs `operation` right away, or after the item's pending file work.
@@ -419,10 +465,17 @@ final class HistoryManager: ObservableObject {
     }
 
     private func loadTrash() {
-        guard FileManager.default.fileExists(atPath: trashIndexURL.path) else { return }
+        guard FileManager.default.fileExists(atPath: trashIndexURL.path) else {
+            trashLoadedCleanly = Self.captureFiles(in: trashDir).isEmpty
+            return
+        }
         do {
             let data = try Data(contentsOf: trashIndexURL)
-            trashEntries = try JSONDecoder().decode([HistoryTrashEntry].self, from: data)
+            let storageDir = self.storageDir
+            trashEntries = try JSONDecoder().decode([HistoryTrashEntry].self, from: data).map {
+                HistoryTrashEntry(item: $0.item.relocated(to: storageDir), deletedAt: $0.deletedAt, originalIndex: $0.originalIndex)
+            }
+            trashLoadedCleanly = true
         } catch {
             print("[Shotnix] Trash index corrupted, starting fresh: \(error)")
             // Don't overwrite — the corrupt file may be recoverable manually.
@@ -476,25 +529,36 @@ final class HistoryManager: ObservableObject {
     // MARK: – Disk upkeep
 
     /// Deletes capture files no history or trash entry points at — PNGs left
-    /// by a crash or by the old delete/write race. Only names Shotnix writes
-    /// (<UUID>.png, <UUID>_thumb.png, <UUID>_original.png) are ever touched.
+    /// by the old delete/write race. Only names Shotnix writes
+    /// (<UUID>.png, <UUID>_thumb.png, <UUID>_original.png) are ever touched,
+    /// only in a folder whose index loaded completely, and only once they're
+    /// older than a day and older than that index's last write.
     @discardableResult
-    func sweepOrphanedFiles() async -> Int {
+    func sweepOrphanedFiles(now: Date = Date()) async -> Int {
         let storageDir = self.storageDir
         let trashDir = self.trashDir
+        let sweepStorage = indexLoadedCleanly
+        let sweepTrash = trashLoadedCleanly
+        guard sweepStorage || sweepTrash else { return 0 }
+        let indexURL = self.indexURL
+        let trashIndexURL = self.trashIndexURL
+        let cutoff = now.addingTimeInterval(-Self.orphanMinimumAge)
         let listed = await Self.onIOQueue {
-            (storage: Self.captureFiles(in: storageDir), trash: Self.captureFiles(in: trashDir))
+            (storage: sweepStorage ? Self.captureFiles(in: storageDir, olderThan: cutoff, andIndexAt: indexURL) : [],
+             trash: sweepTrash ? Self.captureFiles(in: trashDir, olderThan: cutoff, andIndexAt: trashIndexURL) : [])
         }
         // Decided on the main actor AFTER listing: a capture added before the
         // listing is already in `items`, so its fresh files never look orphaned.
-        let liveNames = Set(items.flatMap { [$0.imagePath, $0.thumbnailPath, Self.originalImagePath(for: $0)] }.map { URL(fileURLWithPath: $0).lastPathComponent })
-        let trashNames = Set(trashEntries.flatMap { [$0.item.imagePath, $0.item.thumbnailPath, Self.originalImagePath(for: $0.item)] }.map { URL(fileURLWithPath: $0).lastPathComponent })
+        // A file named by any entry stays, in either folder: a delete or undo
+        // cut short before its index write leaves the file in the other one.
+        let entries = items + trashEntries.map(\.item)
+        let namedFiles = Set(entries.flatMap { [$0.imagePath, $0.thumbnailPath, Self.originalImagePath(for: $0)] }.map { URL(fileURLWithPath: $0).lastPathComponent })
         let busyIDs = Set(fileTasks.keys)
-        func isBusy(_ url: URL) -> Bool {
-            Self.captureID(fromFileName: url.lastPathComponent).map(busyIDs.contains) ?? false
+        func isOrphan(_ url: URL) -> Bool {
+            guard !namedFiles.contains(url.lastPathComponent) else { return false }
+            return !(Self.captureID(fromFileName: url.lastPathComponent).map(busyIDs.contains) ?? false)
         }
-        let orphans = listed.storage.filter { !liveNames.contains($0.lastPathComponent) && !isBusy($0) }
-            + listed.trash.filter { !trashNames.contains($0.lastPathComponent) && !isBusy($0) }
+        let orphans = (listed.storage + listed.trash).filter(isOrphan)
         guard !orphans.isEmpty else { return 0 }
         await Self.onIOQueue {
             orphans.forEach { try? FileManager.default.removeItem(at: $0) }
@@ -516,9 +580,10 @@ final class HistoryManager: ObservableObject {
         await waitForPendingFileOperations()
         purgeTrash(trashEntries)
         applyRetention()
-        await sweepOrphanedFiles()
         await waitForPendingFileOperations()
+        // The sweep judges files against the index on disk, so it goes last.
         flushPendingWrites()
+        await sweepOrphanedFiles()
         let after = await diskUsage()
         return max(0, before - after)
     }
@@ -526,10 +591,21 @@ final class HistoryManager: ObservableObject {
     nonisolated private static func captureFiles(in directory: URL) -> [URL] {
         let urls = (try? FileManager.default.contentsOfDirectory(
             at: directory,
-            includingPropertiesForKeys: [.isRegularFileKey],
+            includingPropertiesForKeys: [.isRegularFileKey, .contentModificationDateKey],
             options: [.skipsHiddenFiles]
         )) ?? []
         return urls.filter { captureID(fromFileName: $0.lastPathComponent) != nil }
+    }
+
+    /// Capture files last written before `cutoff` and before the index at
+    /// `indexURL` was last written.
+    nonisolated private static func captureFiles(in directory: URL, olderThan cutoff: Date, andIndexAt indexURL: URL) -> [URL] {
+        let indexWritten = (try? indexURL.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate ?? .distantPast
+        let limit = min(cutoff, indexWritten)
+        return captureFiles(in: directory).filter { url in
+            guard let written = (try? url.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate else { return false }
+            return written < limit
+        }
     }
 
     /// The capture UUID in "<UUID>.png" / "<UUID>_thumb.png" / "<UUID>_original.png", else nil.
@@ -569,30 +645,68 @@ final class HistoryManager: ObservableObject {
     // "" so an unreadable capture is never re-queued forever.
 
     private var ocrIndexingActive = false
+    /// Captures whose edited image is still being written: indexing them
+    /// now would read the old picture.
+    private var editsInFlight: [UUID: Int] = [:]
+    /// Bumped when OCR settings change or an image is replaced; a result
+    /// read before that is dropped and the capture indexed again.
+    private var ocrGeneration = 0
+    private var imageGenerations: [UUID: Int] = [:]
+    private var indexedWithOptions = OCREngine.Options.current
+    private var defaultsObserver: NSObjectProtocol?
+
+    private struct OCRJob {
+        let id: UUID
+        let imagePath: String
+        let stamp: [Int]
+    }
 
     private func scheduleOCRIndexing() {
         guard !ocrIndexingActive else { return }
-        guard items.contains(where: { $0.ocrText == nil }) else { return }
+        guard items.contains(where: needsOCR) else { return }
         ocrIndexingActive = true
         Task(priority: .utility) { [weak self] in
             while let job = self?.nextOCRJob() {
                 let text = await Self.recognizeText(atImagePath: job.imagePath)
-                self?.storeOCRText(text, forItemID: job.id)
+                self?.storeOCRText(text, for: job)
             }
             self?.ocrIndexingActive = false
         }
     }
 
-    private func nextOCRJob() -> (id: UUID, imagePath: String)? {
-        guard let item = items.first(where: { $0.ocrText == nil }) else { return nil }
-        return (item.id, item.imagePath)
+    private func needsOCR(_ item: HistoryItem) -> Bool {
+        item.ocrText == nil && editsInFlight[item.id] == nil
     }
 
-    private func storeOCRText(_ text: String, forItemID id: UUID) {
+    private func ocrStamp(for id: UUID) -> [Int] {
+        [ocrGeneration, imageGenerations[id, default: 0]]
+    }
+
+    private func nextOCRJob() -> OCRJob? {
+        guard let item = items.first(where: needsOCR) else { return nil }
+        return OCRJob(id: item.id, imagePath: item.imagePath, stamp: ocrStamp(for: item.id))
+    }
+
+    private func storeOCRText(_ text: String, for job: OCRJob) {
         // The item may have been deleted while OCR was running — drop the result.
-        guard let index = items.firstIndex(where: { $0.id == id }) else { return }
+        guard let index = items.firstIndex(where: { $0.id == job.id }) else { return }
+        // Read from a replaced image or with old settings: it's queued again.
+        guard job.stamp == ocrStamp(for: job.id) else { return }
         items[index].ocrText = text
         scheduleIndexWrite()
+    }
+
+    /// Picking other OCR languages or accuracy re-indexes History, newest first.
+    private func reindexIfOCRSettingsChanged() {
+        let options = OCREngine.Options.current
+        guard options != indexedWithOptions else { return }
+        indexedWithOptions = options
+        ocrGeneration += 1
+        for index in items.indices where items[index].ocrText != nil {
+            items[index].ocrText = nil
+        }
+        scheduleIndexWrite()
+        scheduleOCRIndexing()
     }
 
     /// Loads the image and runs Vision OCR, entirely off the main actor.
@@ -612,11 +726,16 @@ final class HistoryManager: ObservableObject {
     // MARK: – Persistence
 
     private func load() {
-        guard FileManager.default.fileExists(atPath: indexURL.path) else { return }
+        guard FileManager.default.fileExists(atPath: indexURL.path) else {
+            indexLoadedCleanly = Self.captureFiles(in: storageDir).isEmpty
+            return
+        }
         do {
             let data = try Data(contentsOf: indexURL)
-            let decoded = try JSONDecoder().decode([HistoryItem].self, from: data)
+            let storageDir = self.storageDir
+            let decoded = try JSONDecoder().decode([HistoryItem].self, from: data).map { $0.relocated(to: storageDir) }
             items = decoded.filter { FileManager.default.fileExists(atPath: $0.imagePath) }
+            indexLoadedCleanly = items.count == decoded.count
         } catch {
             print("[Shotnix] History index corrupted, starting fresh: \(error)")
             // Don't overwrite — the corrupt file may be recoverable manually.

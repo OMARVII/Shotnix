@@ -190,8 +190,10 @@ final class HistoryManagerTests: XCTestCase {
         let strayTrash = trashDir.appendingPathComponent("\(UUID().uuidString).png")
         let notes = tempDir.appendingPathComponent("notes.txt")
         let lookalike = tempDir.appendingPathComponent("holiday.png")
+        try Data("[]".utf8).write(to: trashDir.appendingPathComponent("trash.json"))
         for url in [stray, strayThumb, strayTrash, notes, lookalike] {
             try Data([1, 2, 3]).write(to: url)
+            try Self.backdate(url, days: 2)
         }
 
         let manager = HistoryManager(storageDir: tempDir)
@@ -243,6 +245,7 @@ final class HistoryManagerTests: XCTestCase {
         manager.delete(deleted)
         let orphan = tempDir.appendingPathComponent("\(UUID().uuidString).png")
         try Data(repeating: 7, count: 200_000).write(to: orphan)
+        try Self.backdate(orphan, days: 2)
 
         let before = await manager.diskUsage()
         XCTAssertGreaterThan(before, 200_000)
@@ -255,6 +258,92 @@ final class HistoryManagerTests: XCTestCase {
         XCTAssertTrue(manager.trashEntries.isEmpty, "Clean Up empties the History trash")
         XCTAssertFalse(FileManager.default.fileExists(atPath: orphan.path))
         XCTAssertTrue(FileManager.default.fileExists(atPath: kept.imagePath), "live captures are untouched")
+    }
+
+    func testMovedHistoryStillLoadsAndNothingIsSwept() async throws {
+        // An index written under another home folder (a new Mac, a renamed account).
+        let png = try XCTUnwrap(ImageExporter.pngData(from: Self.makeImage()))
+        let id = UUID()
+        let elsewhere = URL(fileURLWithPath: "/Users/someone-else/Library/Application Support/Shotnix/History", isDirectory: true)
+        let item = HistoryItem(id: id, createdAt: Date(), imagePath: elsewhere.appendingPathComponent("\(id.uuidString).png").path,
+                               thumbnailPath: elsewhere.appendingPathComponent("\(id.uuidString)_thumb.png").path, captureRect: nil, ocrText: "")
+        let local = tempDir.appendingPathComponent("\(id.uuidString).png")
+        try png.write(to: local)
+        try png.write(to: tempDir.appendingPathComponent("\(id.uuidString)_thumb.png"))
+        try JSONEncoder().encode([item]).write(to: tempDir.appendingPathComponent("index.json"))
+        try Self.backdate(local, days: 30)
+
+        let manager = HistoryManager(storageDir: tempDir)
+        XCTAssertEqual(manager.items.map(\.id), [id], "found by file name in History's own folder")
+        XCTAssertEqual(manager.items.first?.imagePath, local.path)
+        let removed = await manager.sweepOrphanedFiles()
+        XCTAssertEqual(removed, 0)
+        XCTAssertTrue(FileManager.default.fileExists(atPath: local.path))
+    }
+
+    func testAnIndexThatDidntLoadCompletelyIsNeverSwept() async throws {
+        let unlisted = tempDir.appendingPathComponent("\(UUID().uuidString).png")
+        try Data([1, 2, 3]).write(to: unlisted)
+        try Self.backdate(unlisted, days: 30)
+
+        // Corrupt index.
+        try Data("not-json".utf8).write(to: tempDir.appendingPathComponent("index.json"))
+        var removed = await HistoryManager(storageDir: tempDir).sweepOrphanedFiles()
+        XCTAssertEqual(removed, 0)
+        XCTAssertTrue(FileManager.default.fileExists(atPath: unlisted.path), "a corrupt index can't vouch for anything")
+
+        // An index entry whose file is gone: the index is stale.
+        let seeded = try seedIndex(ages: [0, 0])
+        try FileManager.default.removeItem(atPath: seeded[1].imagePath)
+        try Self.backdate(unlisted, days: 30)
+        removed = await HistoryManager(storageDir: tempDir).sweepOrphanedFiles()
+        XCTAssertEqual(removed, 0)
+        XCTAssertTrue(FileManager.default.fileExists(atPath: unlisted.path))
+
+        // No index at all, but captures on disk: the index was lost.
+        try FileManager.default.removeItem(at: tempDir.appendingPathComponent("index.json"))
+        removed = await HistoryManager(storageDir: tempDir).sweepOrphanedFiles()
+        XCTAssertEqual(removed, 0)
+        XCTAssertTrue(FileManager.default.fileExists(atPath: unlisted.path))
+    }
+
+    func testRecentUnlistedFilesAreKept() async throws {
+        try seedIndex(ages: [0])
+        let fresh = tempDir.appendingPathComponent("\(UUID().uuidString).png")
+        try Data([1, 2, 3]).write(to: fresh)
+        let removed = await HistoryManager(storageDir: tempDir).sweepOrphanedFiles()
+        XCTAssertEqual(removed, 0, "written less than a day ago, maybe just before a crash")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: fresh.path))
+    }
+
+    func testChangingOCRSettingsReindexesHistory() async throws {
+        let seeded = try seedIndex(ages: [0])
+        var stale = seeded[0]
+        stale.ocrText = "read with the old languages"
+        try JSONEncoder().encode([stale]).write(to: tempDir.appendingPathComponent("index.json"))
+        let manager = HistoryManager(storageDir: tempDir)
+        XCTAssertEqual(manager.items.first?.ocrText, "read with the old languages")
+
+        Settings.ocrLanguages = ["ja-JP", "en-US"]
+        let deadline = Date().addingTimeInterval(10)
+        while manager.items.first?.ocrText == "read with the old languages", Date() < deadline {
+            try await Task.sleep(nanoseconds: 50_000_000)
+        }
+        XCTAssertNotEqual(manager.items.first?.ocrText, "read with the old languages", "search follows the new languages")
+    }
+
+    func testAnEditIsIndexedFromTheEditedImageNotTheOldOne() async throws {
+        let manager = HistoryManager(storageDir: tempDir)
+        let item = manager.add(image: Self.makeImage(), rect: nil, ocrText: "secret-token-123")
+        await manager.waitForPendingFileOperations()
+        manager.replaceImage(of: item, with: Self.makeSolidImage(color: .systemRed))
+        XCTAssertNil(manager.items.first?.ocrText, "the redacted text leaves the index at once")
+        await manager.waitForPendingFileOperations()
+        let deadline = Date().addingTimeInterval(10)
+        while manager.items.first?.ocrText == nil, Date() < deadline {
+            try await Task.sleep(nanoseconds: 50_000_000)
+        }
+        XCTAssertEqual(manager.items.first?.ocrText, "", "indexed again from the edit, which has no text")
     }
 
     func testCaptureFileNamesAreRecognizedStrictly() {
@@ -283,6 +372,10 @@ final class HistoryManagerTests: XCTestCase {
         }
         try JSONEncoder().encode(items).write(to: tempDir.appendingPathComponent("index.json"))
         return items
+    }
+
+    private static func backdate(_ url: URL, days: Double) throws {
+        try FileManager.default.setAttributes([.modificationDate: Date().addingTimeInterval(-days * 24 * 60 * 60)], ofItemAtPath: url.path)
     }
 
     private func waitForFile(atPath path: String, timeout: TimeInterval = 3) async throws {

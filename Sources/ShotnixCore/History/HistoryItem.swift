@@ -38,6 +38,24 @@ struct HistoryItem: Codable, Identifiable {
 
     var fullImage: NSImage { HistoryImageCache.fullImage(for: imagePath) }
     var thumbnail: NSImage { HistoryImageCache.thumbnail(for: thumbnailPath) }
+
+    /// The same capture with its files in `directory`. The index stores
+    /// absolute paths, which go stale when the home folder is renamed or
+    /// History is moved to another Mac.
+    func relocated(to directory: URL) -> HistoryItem {
+        func moved(_ path: String) -> String {
+            directory.appendingPathComponent(URL(fileURLWithPath: path).lastPathComponent).path
+        }
+        return HistoryItem(
+            id: id,
+            createdAt: createdAt,
+            imagePath: moved(imagePath),
+            thumbnailPath: moved(thumbnailPath),
+            captureRect: captureRect,
+            ocrText: ocrText,
+            captureTypeRaw: captureTypeRaw
+        )
+    }
 }
 
 struct CodableRect: Codable {

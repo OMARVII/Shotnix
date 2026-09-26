@@ -3,6 +3,13 @@ import XCTest
 
 @MainActor
 final class AppTerminationTests: XCTestCase {
+    override func setUp() async throws {
+        // Other suites' History writes register here too; let them drain.
+        let idle = expectation(description: "idle")
+        AppTermination.whenIdle { idle.fulfill() }
+        await fulfillment(of: [idle], timeout: 10)
+    }
+
     func testFinishAllWaitsForEveryPieceOfWork() {
         var finished: [String] = []
         var completed = false
