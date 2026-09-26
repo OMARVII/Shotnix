@@ -420,10 +420,17 @@ final class RecordingEngineIntegrationTests: XCTestCase {
         back.orderFrontRegardless()
         front.orderFrontRegardless()
         defer { [back, front].forEach { $0.orderOut(nil) } }
-        try await sleep(0.4)
 
-        let shareable = await Self.within(10) { try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: true) }
-        let scWindow = try XCTUnwrap(shareable?.windows.first { $0.windowID == CGWindowID(back.windowNumber) })
+        // Both windows listed before recording (a busy Mac can take a while).
+        var listed: SCShareableContent?
+        let listDeadline = Date().addingTimeInterval(8)
+        while Date() < listDeadline {
+            try await sleep(0.2)
+            listed = await Self.within(10) { try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: true) }
+            let ids = Set(listed?.windows.map(\.windowID) ?? [])
+            if ids.contains(CGWindowID(back.windowNumber)), ids.contains(CGWindowID(front.windowNumber)) { break }
+        }
+        let scWindow = try XCTUnwrap(listed?.windows.first { $0.windowID == CGWindowID(back.windowNumber) })
 
         let engine = RecordingEngine()
         self.engine = engine
