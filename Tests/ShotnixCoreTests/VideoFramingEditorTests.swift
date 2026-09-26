@@ -133,6 +133,54 @@ final class VideoFramingEditorTests: XCTestCase {
         model.stop()
     }
 
+    /// Many dissolves: held frames are decoded at preview size, only around
+    /// the playhead, within a byte budget — and not while dragging.
+    func testHeldFramesStaySmallFewAndNearThePlayhead() async throws {
+        let url = directory.appendingPathComponent("big.mp4")
+        try await VideoTestSupport.writeFakeRecording(to: url, size: CGSize(width: 2560, height: 1440), seconds: 20, fps: 5)
+        VideoDemoDraftStore.delete(for: url)
+        let model = VideoEditorModel(videoURL: url)
+        await model.load()
+        // 40 clips back to back, each cut dissolving.
+        model.mutate { project in
+            project.timelineClips = (0..<40).map { VideoDemoTimelineClip(sourceStart: Double($0) * 0.5, sourceEnd: Double($0 + 1) * 0.5) }
+            project.transitions.betweenClips = .dissolve
+        }
+        model.seek(to: 0)
+        XCTAssertEqual(model.plan.transitions.count, 39)
+        let frames = model.media.frames(for: model.project)
+        try await waitUntil { frames.decodeRequests > 0 }
+        let near = model.plan.transitions.filter { $0.end >= -1 && $0.start <= VideoEditorModel.heldFrameWindow }.count
+        XCTAssertLessThanOrEqual(frames.decodeRequests, near * 2 + 2, "only the dissolves near the playhead (\(frames.decodeRequests) of \(39 * 2))")
+        try await Task.sleep(nanoseconds: 1_500_000_000)
+        XCTAssertLessThanOrEqual(frames.cachedBytes, VideoEditorMedia.previewFrameBytes)
+        let held = try XCTUnwrap(frames.image(at: model.plan.transitions[0].incomingSource))
+        XCTAssertLessThanOrEqual(max(held.extent.width, held.extent.height), VideoEditorMedia.previewFrameSize.width, "preview-sized, not the full 2560 px")
+
+        // Dragging far along: nothing more is decoded until it's let go.
+        let before = frames.decodeRequests
+        model.seek(to: 15, fast: true)
+        model.setStyle(coalesce: "drag-padding") { $0.padding += 1 }
+        model.setStyle(coalesce: "drag-padding") { $0.padding += 1 }
+        XCTAssertEqual(frames.decodeRequests, before, "no fetching mid-drag")
+        model.seek(to: 15)
+        model.endGesture()
+        model.prefetchHeldFrames()
+        XCTAssertGreaterThan(frames.decodeRequests, before, "the dissolves at the new spot once it's let go")
+        model.stop()
+        VideoDemoDraftStore.delete(for: url)
+    }
+
+    func testHeldFrameCacheKeepsToItsBudget() async throws {
+        let url = directory.appendingPathComponent("frames.mp4")
+        try await VideoTestSupport.writeFakeRecording(to: url, size: CGSize(width: 640, height: 400), seconds: 3, fps: 10)
+        let perFrame = 640 * 400 * 4
+        let frames = VideoSourceFrames(byteLimit: perFrame * 3) { (url, $0) }
+        for index in 0..<8 { _ = frames.image(at: Double(index) * 0.3) }
+        XCTAssertLessThanOrEqual(frames.cachedBytes, perFrame * 3, "the oldest frames make room")
+        XCTAssertGreaterThan(frames.cachedBytes, 0)
+    }
+
     func testTransitionsPrefetchTheirHeldFrames() async throws {
         let model = try await model()
         model.seek(to: 1.5)

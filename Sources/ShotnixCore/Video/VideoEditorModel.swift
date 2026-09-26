@@ -697,6 +697,11 @@ final class VideoEditorModel: ObservableObject {
         lastCoalesceKey = nil
     }
 
+    /// Something is being dragged (a slider, a clip edge, the playhead).
+    var isGestureInProgress: Bool {
+        (lastCoalesceKey != nil && Date().timeIntervalSince(lastMutation) < 1.5) || holdsPlayerRebuild || isScrubbing || layoutDurationLock != nil
+    }
+
     /// What ⌘Z would undo, and ⇧⌘Z redo.
     var undoLabel: String? { undoStack.last?.label }
     var redoLabel: String? { redoStack.last?.label }
