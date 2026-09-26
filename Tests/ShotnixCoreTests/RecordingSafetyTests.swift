@@ -94,6 +94,24 @@ final class RecordingSafetyTests: XCTestCase {
         XCTAssertNil(nothing)
     }
 
+    /// A take that finishes late never deletes the recovery note of the
+    /// next one, already recording.
+    func testClearingANoteOnlyClearsThatRecordingsNote() throws {
+        let base = FileManager.default.temporaryDirectory.appendingPathComponent("recovery-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: base, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: base) }
+        let takeA = base.appendingPathComponent("A.mp4")
+        let takeB = base.appendingPathComponent("B.mp4")
+        RecordingRecovery.save(RecordingRecoveryNote(
+            videoPath: takeB.path, cameraPath: nil, cameraOffset: nil,
+            fps: 60, nativeCursorVisible: false, audioTracks: nil, startedAt: Date()
+        ), baseDirectory: base)
+        RecordingRecovery.clear(ifFor: takeA, baseDirectory: base)
+        XCTAssertEqual(RecordingRecovery.load(baseDirectory: base)?.videoPath, takeB.path)
+        RecordingRecovery.clear(ifFor: takeB, baseDirectory: base)
+        XCTAssertNil(RecordingRecovery.load(baseDirectory: base))
+    }
+
     func testUnplayableLeftoversAreDeleted() async throws {
         let base = FileManager.default.temporaryDirectory.appendingPathComponent("recovery-\(UUID().uuidString)", isDirectory: true)
         try FileManager.default.createDirectory(at: base, withIntermediateDirectories: true)

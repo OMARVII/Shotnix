@@ -55,8 +55,8 @@ final class CaptureEngine {
     /// Setting up the next recording is fine while the last one saves.
     var recordingActionsEnabled: Bool { recordingEngine.elapsedSeconds == nil && !recordingSetupActive }
     var recordingElapsedSeconds: TimeInterval? { recordingEngine.elapsedSeconds }
-    /// The finished file and the screen it was recorded on.
-    var recordingFinishedHandler: ((URL, NSScreen?) -> Void)? {
+    /// A saved take: the app opens it in the editor or announces it.
+    var recordingFinishedHandler: ((FinishedRecording) -> Void)? {
         get { recordingEngine.recordingFinishedHandler }
         set { recordingEngine.recordingFinishedHandler = newValue }
     }
@@ -98,6 +98,9 @@ final class CaptureEngine {
 
     init() {
         installScreenChangeObserverIfNeeded()
+        // A take finishing while the next one is set up doesn't open its
+        // editor over the new recording.
+        recordingEngine.nextTakeInProgress = { [weak self] in self?.recordingSetupActive ?? false }
     }
 
     private func installScreenChangeObserverIfNeeded() {
@@ -612,6 +615,7 @@ final class CaptureEngine {
             guard let self else { return }
             let owner = window?.owningApplication.flatMap { NSRunningApplication(processIdentifier: $0.processID) }
             RecordingFocus.returnFocus(to: owner)
+            self.recordingEngine.startWillFollow()
             Task {
                 if let window {
                     await self.recordingEngine.startRecording(window: window, on: screen)
