@@ -14,31 +14,122 @@ final class RecordingSafetyTests: XCTestCase {
 
     // MARK: Shotnix's own windows
 
+    private func window(titled: Bool, level: NSWindow.Level = .normal) -> NSWindow {
+        let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 300, height: 200), styleMask: titled ? [.titled, .closable] : [.borderless], backing: .buffered, defer: false)
+        window.isReleasedWhenClosed = false
+        window.level = level
+        window.setFrameOrigin(RecordingUITestSupport.offscreen)
+        window.orderFrontRegardless()
+        return window
+    }
+
     func testOnlyShotnixsRealWindowsAreKeptInDisplayRecordings() {
-        func window(titled: Bool) -> NSWindow {
-            let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 200, height: 120), styleMask: titled ? [.titled, .closable] : [.borderless], backing: .buffered, defer: false)
-            window.isReleasedWhenClosed = false
-            window.setFrameOrigin(RecordingUITestSupport.offscreen)
-            window.orderFrontRegardless()
-            return window
-        }
         let editor = window(titled: true)
         let editorController = ShotnixStyleController(window: editor)
         let chrome = window(titled: false)          // toast, HUD, overlay…
-        let framework = window(titled: true)        // e.g. Sparkle's update window
-        let frameworkController = NSWindowController(window: framework)
+        let appKitOwned = window(titled: true)      // e.g. an open panel
+        let appKitController = NSWindowController(window: appKitOwned)
         let plain = window(titled: true)            // a titled panel without a controller
         let hidden = window(titled: true)
         hidden.orderOut(nil)
         defer {
-            [editor, chrome, framework, plain, hidden].forEach { $0.orderOut(nil) }
-            _ = (editorController, frameworkController)
+            [editor, chrome, appKitOwned, plain, hidden].forEach { $0.orderOut(nil) }
+            _ = (editorController, appKitController)
         }
 
-        let kept = RecordingCaptureFilter.recordableOwnWindowIDs(in: [editor, chrome, framework, plain, hidden])
-        XCTAssertEqual(kept, [CGWindowID(editor.windowNumber), CGWindowID(plain.windowNumber)])
-        XCTAssertTrue(RecordingCaptureFilter.isShotnixType(editorController))
-        XCTAssertFalse(RecordingCaptureFilter.isShotnixType(frameworkController))
+        let kept = RecordingCaptureFilter.recordableOwnWindowIDs(in: [editor, chrome, appKitOwned, plain, hidden], front: nil)
+        XCTAssertEqual(kept, Set([editor, appKitOwned, plain].map { CGWindowID($0.windowNumber) }))
+    }
+
+    /// Framework UI shipped inside the app (the updater's prompts) stays out;
+    /// Shotnix's own code and the system's (AppKit alerts, panels) don't.
+    func testOnlyBundledFrameworksAreTreatedAsForeign() throws {
+        XCTAssertFalse(RecordingCaptureFilter.isBundledFramework(Bundle(for: RecordingEngine.self)))
+        XCTAssertFalse(RecordingCaptureFilter.isBundledFramework(Bundle(for: NSAlert.self)))
+        XCTAssertFalse(RecordingCaptureFilter.isBundledFramework(Bundle(for: NSWindowController.self)))
+        let updater: AnyClass = try XCTUnwrap(NSClassFromString("SPUStandardUpdaterController"), "the updater framework is linked")
+        XCTAssertTrue(RecordingCaptureFilter.isBundledFramework(Bundle(for: updater)))
+    }
+
+    /// Recording Shotnix's own editor keeps what opens from it: a real
+    /// popover (an untitled child window), a real alert sheet (owned by
+    /// AppKit), and menus while the editor is in front.
+    func testPopoversSheetsAndMenusOfShotnixsWindowsAreKept() throws {
+        let screen = try XCTUnwrap(NSScreen.main)
+        let editor = window(titled: true)
+        let editorController = ShotnixStyleController(window: editor)
+        editor.setFrameOrigin(NSPoint(x: screen.frame.minX + 200, y: screen.frame.minY + 200))
+        let anchor = NSView(frame: NSRect(x: 130, y: 90, width: 40, height: 20))
+        editor.contentView?.addSubview(anchor)
+        let chrome = window(titled: false)
+        let chromeAnchor = NSView(frame: NSRect(x: 130, y: 90, width: 40, height: 20))
+        chrome.contentView?.addSubview(chromeAnchor)
+        chrome.setFrameOrigin(NSPoint(x: screen.frame.minX + 700, y: screen.frame.minY + 200))
+        RecordingUITestSupport.spinRunLoop(0.1)
+
+        func popover(from view: NSView) -> NSPopover {
+            let popover = NSPopover()
+            let content = NSViewController()
+            content.view = NSView(frame: NSRect(x: 0, y: 0, width: 120, height: 80))
+            popover.contentViewController = content
+            popover.show(relativeTo: view.bounds, of: view, preferredEdge: .maxY)
+            return popover
+        }
+        let editorPopover = popover(from: anchor)
+        let chromePopover = popover(from: chromeAnchor)
+        let alert = NSAlert()
+        alert.messageText = "Delete this zoom?"
+        alert.beginSheetModal(for: editor) { _ in }
+        let menu = window(titled: false, level: .popUpMenu)
+        RecordingUITestSupport.spinRunLoop(0.4)
+        defer {
+            editor.endSheet(alert.window)
+            editorPopover.close()
+            chromePopover.close()
+            [editor, chrome, menu].forEach { $0.orderOut(nil) }
+            _ = editorController
+        }
+
+        let editorPopoverWindow = try XCTUnwrap(editorPopover.contentViewController?.view.window)
+        let chromePopoverWindow = try XCTUnwrap(chromePopover.contentViewController?.view.window)
+        XCTAssertTrue(editorPopoverWindow.parent === editor, "a popover is a child window")
+        XCTAssertTrue(alert.window.sheetParent === editor, "the alert is a sheet")
+
+        let all = NSApp.windows
+        let whileEditing = RecordingCaptureFilter.recordableOwnWindowIDs(in: all, front: editor)
+        XCTAssertTrue(whileEditing.contains(CGWindowID(editor.windowNumber)))
+        XCTAssertTrue(whileEditing.contains(CGWindowID(editorPopoverWindow.windowNumber)), "the editor's popover stays in")
+        XCTAssertTrue(whileEditing.contains(CGWindowID(alert.window.windowNumber)), "the alert sheet stays in, AppKit-owned or not")
+        XCTAssertTrue(whileEditing.contains(CGWindowID(menu.windowNumber)), "menus opened from the editor stay in")
+        XCTAssertFalse(whileEditing.contains(CGWindowID(chrome.windowNumber)))
+        XCTAssertFalse(whileEditing.contains(CGWindowID(chromePopoverWindow.windowNumber)), "Command Center-style popovers stay out")
+
+        // Working in another app (or in Shotnix's chrome): menus aren't the editor's.
+        let elsewhere = RecordingCaptureFilter.recordableOwnWindowIDs(in: all, front: nil)
+        XCTAssertFalse(elsewhere.contains(CGWindowID(menu.windowNumber)))
+        XCTAssertTrue(elsewhere.contains(CGWindowID(alert.window.windowNumber)))
+        let fromChrome = RecordingCaptureFilter.recordableOwnWindowIDs(in: all, front: chrome)
+        XCTAssertFalse(fromChrome.contains(CGWindowID(menu.windowNumber)))
+    }
+
+    // MARK: Window recordings
+
+    /// Recording one window of an app leaves its other windows out — they'd
+    /// cover it where they overlap — but not its menus, popovers or sheets.
+    func testWindowRecordingsHideTheAppsOtherWindows() {
+        typealias Summary = RecordingCaptureFilter.WindowSummary
+        let chosen = Summary(id: 1, layer: 0, title: "Report.pdf", frame: CGRect(x: 100, y: 100, width: 800, height: 600))
+        let others = [
+            Summary(id: 2, layer: 0, title: "Budget.xlsx", frame: CGRect(x: 300, y: 200, width: 700, height: 500)),   // another window, in front
+            Summary(id: 3, layer: 0, title: "Notes", frame: CGRect(x: 1400, y: 100, width: 300, height: 300)),        // elsewhere
+            Summary(id: 4, layer: 0, title: "", frame: CGRect(x: 300, y: 128, width: 400, height: 200)),              // its sheet
+            Summary(id: 5, layer: 0, title: nil, frame: CGRect(x: 600, y: 500, width: 200, height: 150)),             // a popover over it
+            Summary(id: 6, layer: 101, title: "", frame: CGRect(x: 120, y: 120, width: 180, height: 240)),            // a menu
+            Summary(id: 7, layer: 0, title: "", frame: CGRect(x: 2000, y: 900, width: 100, height: 100)),             // untitled, far away
+            Summary(id: 1, layer: 0, title: "Report.pdf", frame: chosen.frame),                                      // itself
+        ]
+        let hidden = RecordingCaptureFilter.windowsToHide(recording: chosen, others: others)
+        XCTAssertEqual(hidden, [2, 3, 7])
     }
 
     // MARK: Stop shortcut

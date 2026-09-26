@@ -614,6 +614,7 @@ final class CaptureEngine {
         let start = { [weak self] in
             guard let self else { return }
             let owner = window?.owningApplication.flatMap { NSRunningApplication(processIdentifier: $0.processID) }
+            if let window { RecordingFocus.raise(window) }
             RecordingFocus.returnFocus(to: owner)
             self.recordingEngine.startWillFollow()
             Task {

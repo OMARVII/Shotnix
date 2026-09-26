@@ -401,6 +401,53 @@ final class RecordingEngineIntegrationTests: XCTestCase {
         XCTAssertNil(RecordingRecovery.load())
     }
 
+    /// Recording the back one of two overlapping windows of the same app:
+    /// the front one isn't painted over it.
+    func testWindowRecordingLeavesTheAppsOtherWindowsOut() async throws {
+        let screen = try XCTUnwrap(NSScreen.main)
+        func coloredWindow(_ title: String, _ color: NSColor, at origin: NSPoint) -> NSWindow {
+            let window = NSWindow(contentRect: NSRect(origin: origin, size: NSSize(width: 480, height: 320)), styleMask: [.titled], backing: .buffered, defer: false)
+            window.isReleasedWhenClosed = false
+            window.title = title
+            let content = NSView(frame: NSRect(x: 0, y: 0, width: 480, height: 320))
+            content.wantsLayer = true
+            content.layer?.backgroundColor = color.cgColor
+            window.contentView = content
+            return window
+        }
+        let back = coloredWindow("Back", NSColor(srgbRed: 0, green: 0.8, blue: 0.2, alpha: 1), at: NSPoint(x: screen.frame.minX + 160, y: screen.frame.minY + 140))
+        let front = coloredWindow("Front", NSColor(srgbRed: 0.9, green: 0.1, blue: 0.1, alpha: 1), at: NSPoint(x: screen.frame.minX + 300, y: screen.frame.minY + 200))
+        back.orderFrontRegardless()
+        front.orderFrontRegardless()
+        defer { [back, front].forEach { $0.orderOut(nil) } }
+        try await sleep(0.4)
+
+        let shareable = await Self.within(10) { try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: true) }
+        let scWindow = try XCTUnwrap(shareable?.windows.first { $0.windowID == CGWindowID(back.windowNumber) })
+
+        let engine = RecordingEngine()
+        self.engine = engine
+        var finished: URL?
+        engine.recordingFinishedHandler = { finished = $0.url }
+        try await start(engine) { await engine.startRecording(window: scWindow, on: screen) }
+        try await sleep(1.2)
+        engine.stopRecording()
+        try await waitUntil(timeout: 20) { finished != nil }
+        let url = try XCTUnwrap(finished)
+
+        let generator = AVAssetImageGenerator(asset: AVURLAsset(url: url))
+        generator.requestedTimeToleranceBefore = .zero
+        generator.requestedTimeToleranceAfter = .zero
+        let image = try await generator.image(at: CMTime(seconds: 0.8, preferredTimescale: 600)).image
+        let ci = CIImage(cgImage: image)
+        // The overlap: the front window covers the back one's right half.
+        let overlap = CGRect(x: ci.extent.width * 0.65, y: ci.extent.height * 0.2, width: ci.extent.width * 0.25, height: ci.extent.height * 0.4)
+        var pixel = [UInt8](repeating: 0, count: 4)
+        CIContext().render(ci.applyingFilter("CIAreaAverage", parameters: [kCIInputExtentKey: CIVector(cgRect: overlap)]), toBitmap: &pixel, rowBytes: 4, bounds: CGRect(x: 0, y: 0, width: 1, height: 1), format: .RGBA8, colorSpace: CGColorSpace(name: CGColorSpace.sRGB))
+        XCTAssertGreaterThan(Int(pixel[1]), 170, "the chosen window's green shows where the other window overlaps it (\(pixel))")
+        XCTAssertLessThan(Int(pixel[0]), 60, "not the other window's red (\(pixel))")
+    }
+
     /// A second recording set up while the first saves starts once it's ready.
     func testStartingWhileSavingWaitsForTheFile() async throws {
         let (engine, finished) = try await startedEngine()

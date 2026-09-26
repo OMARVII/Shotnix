@@ -56,6 +56,8 @@ final class RecordingEngine: NSObject {
     private var didWarnWindowClosed = false
     private var lastMicrophoneSampleAt: CFTimeInterval = 0
     private var followedWindow: SCWindow?
+    /// The followed window's app's other windows, left out of the video.
+    private var followedWindowHidden: [SCWindow] = []
     private var followedWindowFrame: CGRect?
     private var outputPixelSize: CGSize = .zero
     private var excludesOwnApp = true
@@ -231,6 +233,7 @@ final class RecordingEngine: NSObject {
             recordingScreen = prepared.screen
             excludesOwnApp = prepared.excludesOwnApp
             followedWindow = prepared.window
+            followedWindowHidden = prepared.hiddenWindows
             followedWindowFrame = prepared.window?.frame
             outputPixelSize = CGSize(width: format.width, height: format.height)
             let videoBitrate = configuration.quality.bitrate(width: format.width, height: format.height, fps: configuration.fps, codec: format.codec)
@@ -524,11 +527,14 @@ final class RecordingEngine: NSObject {
             // the screen backing the display we filter on.
             let targetScreen = NSScreen.screens.first { $0.displayID == display.displayID } ?? screen
             let appKitRect = ScreenCoordinates.appKitRect(fromCG: selectedWindow.frame)
+            // The app's other windows would cover the chosen one where they
+            // overlap it; its menus, popovers and sheets still come through.
+            let hidden = RecordingCaptureFilter.windowsToHide(recording: selectedWindow, in: content)
             var prepared = prepareGeometry(
                 rect: appKitRect,
                 on: targetScreen,
                 configuration: configuration,
-                filter: Self.windowFilter(for: selectedWindow, on: display)
+                filter: RecordingCaptureFilter.windowFilter(for: selectedWindow, hiding: hidden, on: display)
             )
             // Resizing mid-recording scales the window into the fixed-size
             // video instead of cropping it.
@@ -537,17 +543,9 @@ final class RecordingEngine: NSObject {
                 prepared.streamConfig.preservesAspectRatio = true
             }
             prepared.window = selectedWindow
+            prepared.hiddenWindows = hidden
             return prepared
         }
-    }
-
-    /// The window's whole app, cropped to the window: menus, popovers and
-    /// sheets are windows of their own, which a window-only filter left out.
-    private static func windowFilter(for window: SCWindow, on display: SCDisplay) -> SCContentFilter {
-        if let app = window.owningApplication {
-            return SCContentFilter(display: display, including: [app], exceptingWindows: [])
-        }
-        return SCContentFilter(display: display, including: [window])
     }
 
     private static func display(mostOverlapping cgRect: CGRect, in displays: [SCDisplay]) -> SCDisplay? {
@@ -778,6 +776,7 @@ final class RecordingEngine: NSObject {
         ownWindowsSignature = currentOwnWindowsSignature()
         let names: [Notification.Name] = [
             NSWindow.didBecomeKeyNotification,
+            NSWindow.didBecomeMainNotification,
             NSWindow.willCloseNotification,
             NSWindow.didChangeOcclusionStateNotification,
             NSWindow.didMiniaturizeNotification,
@@ -788,6 +787,20 @@ final class RecordingEngine: NSObject {
                 MainActor.assumeIsolated { self?.scheduleFilterUpdate() }
             }
         }
+        // A menu opened from one of Shotnix's own windows has to join the
+        // video while it's still open: look right away, and again once its
+        // window (and any submenu) is up.
+        ownWindowObservers.append(NotificationCenter.default.addObserver(forName: NSMenu.didBeginTrackingNotification, object: nil, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated {
+                self?.scheduleFilterUpdate(after: 0.05)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                    MainActor.assumeIsolated { self?.scheduleFilterUpdate(after: 0) }
+                }
+            }
+        })
+        ownWindowObservers.append(NotificationCenter.default.addObserver(forName: NSMenu.didEndTrackingNotification, object: nil, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated { self?.scheduleFilterUpdate() }
+        })
     }
 
     private func currentOwnWindowsSignature() -> [CGWindowID] {
@@ -798,7 +811,7 @@ final class RecordingEngine: NSObject {
             : RecordingCaptureFilter.ownWindowsSignature()
     }
 
-    private func scheduleFilterUpdate() {
+    private func scheduleFilterUpdate(after delay: TimeInterval = 0.15) {
         guard isRecording, filterUpdateWorkItem == nil else { return }
         let work = DispatchWorkItem { [weak self] in
             MainActor.assumeIsolated {
@@ -807,7 +820,7 @@ final class RecordingEngine: NSObject {
             }
         }
         filterUpdateWorkItem = work
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: work)
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: work)
     }
 
     private func updateFilterIfNeeded() {
@@ -816,7 +829,7 @@ final class RecordingEngine: NSObject {
         guard signature != ownWindowsSignature else { return }
         ownWindowsSignature = signature
         Task { @MainActor in
-            guard let content = try? await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: false),
+            guard let content = try? await Self.withTimeout(5, { try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: false) }),
                   self.isRecording,
                   let display = ScreenCoordinates.display(for: screen, in: content.displays) else { return }
             do {
@@ -846,7 +859,7 @@ final class RecordingEngine: NSObject {
               let display = ScreenCoordinates.display(for: screen, in: displays) else { return }
         if screen != recordingScreen {
             recordingScreen = screen
-            stream.updateContentFilter(Self.windowFilter(for: window, on: display)) { error in
+            stream.updateContentFilter(RecordingCaptureFilter.windowFilter(for: window, hiding: followedWindowHidden, on: display)) { error in
                 if let error { print("[Shotnix] Recording display switch failed: \(error)") }
             }
         }
@@ -1283,6 +1296,7 @@ final class RecordingEngine: NSObject {
         recordingScreen = nil
         displays = []
         followedWindow = nil
+        followedWindowHidden = []
         followedWindowFrame = nil
         if let metadataRecorder {
             _ = metadataRecorder.finish(duration: 0)
@@ -1635,6 +1649,7 @@ final class RecordingEngine: NSObject {
         let captureRect: CGRect
         let screen: NSScreen
         var window: SCWindow?
+        var hiddenWindows: [SCWindow] = []
         var excludesOwnApp = true
     }
 
