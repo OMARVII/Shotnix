@@ -948,6 +948,13 @@ struct RecordingSettingsView: View {
             }
 
             PreferenceFootnote(text: "Your camera is recorded as its own layer: a live bubble shows while you record (it never appears in the screen capture), and the editor lets you move, resize, and restyle it — or hide it — afterwards.")
+
+            // Leftover video data (VideoDataCleanup.swift).
+            PreferenceSection("Storage") {
+                VideoDataSettingsRow()
+            }
+
+            PreferenceFootnote(text: "Clean Up removes camera footage, cleaned-up voice, drafts, and pictures for recordings that no longer exist anywhere, plus clipboard exports older than a day. Recordings in the Trash or on a disconnected drive keep their data. Shotnix also does this quietly once a day.")
         }
     }
 }

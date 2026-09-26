@@ -114,6 +114,10 @@ final class VideoPreviewRenderer: NSObject, MTKViewDelegate {
         } else if model.isAimingZoom {
             options.cameraOverride = .rest
         }
+        // The held side of a dissolve (VideoEditorMedia.swift).
+        if !model.isCropping, model.trimPeekSourceTime == nil {
+            options.transitionFrame = model.heldFrame(at: time)
+        }
         return renderer.render(source: source, timelineTime: time, plan: model.plan, outputSize: size, options: options)
     }
 
@@ -127,6 +131,17 @@ final class VideoPreviewRenderer: NSObject, MTKViewDelegate {
     /// edit), fetched one at a time, newest request wins.
     private func requestPeek(_ time: Double) {
         if let peekTime, abs(peekTime - time) < 0.001 { return }
+        // Several recordings: the frame comes from whichever one is there.
+        if let model, model.project.hasAppendedSources {
+            let image = model.media.frames(for: model.project).cachedImage(at: time) { [weak self] in
+                MainActor.assumeIsolated { self?.dirty = true }
+            }
+            if let image {
+                peekImage = image
+                peekTime = time
+            }
+            return
+        }
         guard !peekInFlight else {
             pendingPeek = time
             return
@@ -155,12 +170,13 @@ final class VideoPreviewRenderer: NSObject, MTKViewDelegate {
     /// playback — offscreen windows (editor snapshots) never show Metal.
     func still(size: CGSize, at time: Double) -> NSImage? {
         guard let model, size.width > 2, size.height > 2 else { return nil }
-        let generator = AVAssetImageGenerator(asset: AVURLAsset(url: model.project.sourceURL))
+        // From whichever recording is at that moment (VideoEditorMedia.swift).
+        let location = model.sourceFrameLocation(at: model.sourceTime(forTimeline: time))
+        let generator = AVAssetImageGenerator(asset: AVURLAsset(url: location.url))
         generator.appliesPreferredTrackTransform = true
         generator.requestedTimeToleranceBefore = .zero
         generator.requestedTimeToleranceAfter = .zero
-        let sourceTime = model.sourceTime(forTimeline: time)
-        let frame = try? generator.copyCGImage(at: CMTime(seconds: sourceTime, preferredTimescale: 600), actualTime: nil)
+        let frame = try? generator.copyCGImage(at: CMTime(seconds: location.time, preferredTimescale: 600), actualTime: nil)
         var options = VideoFrameRenderer.Options(frameRate: 60)
         options.rawSource = model.isCropping
         options.solidOverlay = Self.editedOverlay(model)
@@ -169,6 +185,9 @@ final class VideoPreviewRenderer: NSObject, MTKViewDelegate {
         if model.plan.webcam != nil, let camera = model.playback.cameraPicture(at: time) {
             options.webcamFrame = camera.image
             options.webcamMask = camera.mask
+        }
+        if let request = model.plan.heldFrameRequest(at: time) {
+            options.transitionFrame = model.media.frames(for: model.project).image(at: request.sourceTime)
         }
         let pixels = CGSize(width: size.width * 2, height: size.height * 2)
         let image = renderer.render(source: frame.map { CIImage(cgImage: $0) }, timelineTime: time, plan: model.plan, outputSize: pixels, options: options)
@@ -302,12 +321,17 @@ struct VideoStageInteractionLayer: View {
             }
 
             if !model.isPlaying, let overlay = model.selectedOverlay, isVisibleNow(overlay) {
-                overlayFrame(overlay)
+                if overlay.kind == .image {
+                    // Pinned to the frame (VideoImageOverlays.swift).
+                    VideoImageOverlayHandles(model: model, effect: overlay, viewSize: viewSize)
+                } else {
+                    overlayFrame(overlay)
+                }
             }
 
             // The bubble handle only where the bubble is (not during a full
             // camera, side by side, or hidden stretch).
-            if let webcam = model.plan.webcam, webcam.visible, !model.isAimingZoom, model.plan.cameraLayout(at: clock.time) == nil {
+            if let webcam = model.plan.webcam, webcam.visible, !model.isAimingZoom, model.plan.cameraLayout(at: clock.time) == nil, model.plan.hasCameraFootage(at: clock.time) {
                 webcamHandle(webcam)
             }
         }

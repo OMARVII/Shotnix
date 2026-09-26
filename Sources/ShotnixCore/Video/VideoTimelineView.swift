@@ -45,6 +45,8 @@ enum VideoTimelineMetrics {
         var height = rulerHeight + gap + textLanesHeight(project) + overlayAreaHeight(project) + zoomTrackHeight + gap
         if !project.clickEvents.isEmpty { height += clickLaneHeight + 3 }
         height += clipTrackHeight
+        // Music and other lanes under the clips (VideoTimelineExtras.swift).
+        height += bottomLanesHeight(project)
         return height + 12
     }
 }
@@ -260,6 +262,8 @@ struct VideoTimelineSurface: View {
                     .offset(y: clickTop)
                 }
                 clipTrack
+                // Cards, cut markers, recording boundaries, music.
+                VideoTimelineExtrasLayer(model: model, geometry: geometry, clipTop: clipTop)
                 if !model.project.overlayEffects.isEmpty { overlayLanes }
                 if !model.project.captions.isEmpty {
                     VideoCaptionLane(

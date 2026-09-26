@@ -186,6 +186,11 @@ struct VideoBackgroundInspector: View {
                 .buttonStyle(VideoSecondaryButtonStyle())
             }
 
+            // Cards, transitions, and more recordings (each in its own file).
+            VideoTitleCardsSection(model: model)
+            VideoTransitionsSection(model: model)
+            VideoSourcesSection(model: model)
+
             VideoInspectorSection("Your look") {
                 if model.styleMatchesDefault {
                     Label("New recordings use this look", systemImage: "checkmark.seal.fill")
@@ -629,6 +634,10 @@ struct VideoAudioInspector: View {
                     .foregroundStyle(VideoEditorTheme.textTertiary)
                     .fixedSize(horizontal: false, vertical: true)
             }
+
+            // Music and click sounds work with or without recorded sound.
+            VideoMusicSection(model: model)
+            VideoClickSoundSection(model: model)
         }
     }
 }
@@ -1011,6 +1020,9 @@ struct VideoSelectionInspector: View {
             )
         }
 
+        // How the cut into this clip plays (VideoTransitions.swift).
+        VideoClipTransitionSection(model: model, segment: segment)
+
         VideoInspectorSection("Edit") {
             HStack(spacing: 8) {
                 Button {
@@ -1044,6 +1056,9 @@ struct VideoSelectionInspector: View {
 
     @ViewBuilder
     private func overlayEditor(_ overlay: VideoDemoOverlayEffect) -> some View {
+        if overlay.kind == .image {
+            VideoImageOverlayInspector(model: model, overlay: overlay)
+        }
         if overlay.kind == .text {
             VideoInspectorSection("Text") {
                 TextField("Text", text: Binding(get: { overlay.text }, set: { value in model.updateOverlay(overlay.id, coalesce: "text-\(overlay.id)") { $0.text = value } }), axis: .vertical)
@@ -1070,13 +1085,15 @@ struct VideoSelectionInspector: View {
                 )
             }
         }
-        VideoInspectorSection("Placement") {
-            Text(overlay.kind == .blur
-                 ? "Drag the box on the preview over anything private. Blur follows zooms and stays until its bar ends."
-                 : "Drag it on the preview to move it; drag a corner to resize. Its bar on the timeline sets when it shows.")
-                .font(.system(size: 11))
-                .foregroundStyle(VideoEditorTheme.textSecondary)
-                .fixedSize(horizontal: false, vertical: true)
+        if overlay.kind != .image {
+            VideoInspectorSection("Placement") {
+                Text(overlay.kind == .blur
+                     ? "Drag the box on the preview over anything private. Blur follows zooms and stays until its bar ends."
+                     : "Drag it on the preview to move it; drag a corner to resize. Its bar on the timeline sets when it shows.")
+                    .font(.system(size: 11))
+                    .foregroundStyle(VideoEditorTheme.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
     }
 }

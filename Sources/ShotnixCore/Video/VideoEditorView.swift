@@ -47,6 +47,11 @@ struct VideoEditorRootView: View {
                                 .padding(.top, model.isCropping ? 12 : 80)
                                 .transition(.move(edge: .top).combined(with: .opacity))
                         }
+                        // Background exports (VideoExportJobs.swift).
+                        VideoExportJobsPill(model: model)
+                            .padding(.trailing, 16)
+                            .padding(.bottom, 64)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
                         VStack {
                             Spacer()
                             if model.isCropping {
@@ -619,7 +624,7 @@ struct VideoCommandPalette: View {
             Command(id: "reveal", title: "Show Recording in Finder", symbol: "folder", shortcut: "") { model.revealSource() },
             Command(id: "start-over", title: "Start Over from the Original Recording…", symbol: "arrow.counterclockwise.circle", shortcut: "") { model.startOver() },
             Command(id: "shortcuts", title: "Keyboard Shortcuts", symbol: "keyboard", shortcut: "?") { model.isShortcutsPresented = true },
-        ] + scriptCommands + cameraCommands + soundCommands + VideoDemoProject.AspectPreset.allCases.map { preset in
+        ] + scriptCommands + cameraCommands + soundCommands + framingCommands + VideoDemoProject.AspectPreset.allCases.map { preset in
             Command(id: "aspect-\(preset.rawValue)", title: "Aspect Ratio \(preset.title) — \(preset.detail)", symbol: preset.symbol, shortcut: "") {
                 model.setAspect(preset)
             }
@@ -795,7 +800,7 @@ struct VideoToolDock: View {
                         symbol: kind.icon,
                         tint: VideoEditorTheme.overlayTint(kind),
                         active: selectedKind == kind,
-                        help: "Add \(kind.title.lowercased()) at the playhead (\(Self.keys[kind] ?? ""))"
+                        help: "Add \(kind.title.lowercased()) at the playhead\(Self.keys[kind].map { " (\($0))" } ?? "")"
                     ) {
                         model.addOverlay(kind)
                     }

@@ -56,6 +56,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         Settings.migrateOnboardingFlagIfNeeded()
+        // Leftover data of deleted recordings, swept in the background.
+        VideoDataCleanup.sweepAfterLaunch()
         updateController = AppUpdateController()
         captureEngine = CaptureEngine()
         captureEngine.recordingStateChangedHandler = { [weak self] in

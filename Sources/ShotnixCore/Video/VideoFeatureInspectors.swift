@@ -264,6 +264,8 @@ struct VideoCaptionsInspector: View {
                 VideoInspectorSection("Look") {
                     VideoToggleRow(title: "Show captions", isOn: binding(\.visible))
                     VideoToggleRow(title: "Highlight words", detail: "Words light up as they're spoken", isOn: binding(\.highlightWords))
+                    // Caption looks (VideoCaptionStyles.swift).
+                    VideoCaptionPresetPicker(model: model)
                     labeled("Size") {
                         VideoSegmented(options: VideoTextSize.allCases.map { ($0, $0.title) }, selection: binding(\.size))
                     }
@@ -287,15 +289,12 @@ struct VideoCaptionsInspector: View {
                     VideoCaptionLinesList(model: model, clock: model.clock)
                 }
 
+                // Translated caption tracks (VideoCaptionTranslation.swift).
+                VideoCaptionTranslationSection(model: model)
+
                 HStack(spacing: 8) {
-                    Button {
-                        model.exportSRT()
-                    } label: {
-                        Label("Save .srt", systemImage: "square.and.arrow.down")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(VideoSecondaryButtonStyle())
-                    .help("Subtitles file for YouTube and other players — follows your cuts")
+                    // .srt or .vtt (VideoCaptionStyles.swift).
+                    VideoSubtitlesButton(model: model)
                     Menu {
                         Button(model.hasTranscript ? "Transcribe Again…" : "Transcribe…") { model.transcribeAgain() }
                             .disabled(model.captionTask != nil)

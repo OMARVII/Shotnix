@@ -362,3 +362,38 @@ enum VideoMusicDucking {
         return VideoVoiceActivity.timelineRanges(axis, segments: segments)
     }
 }
+
+// MARK: - Commands
+
+extension VideoCommandPalette {
+    /// Images, music, cards, transitions, recordings, and subtitles.
+    var framingCommands: [Command] {
+        var commands: [Command] = [
+            Command(id: "add-image", title: "Add Image or Logo…", symbol: "photo", shortcut: "") { model.chooseImageOverlay() },
+            Command(id: "add-music", title: model.project.music == nil ? "Add Music…" : "Replace Music…", symbol: "music.note", shortcut: "") { model.chooseMusic() },
+            Command(id: "append-video", title: "Append Video…", symbol: "film.stack", shortcut: "") { model.chooseVideoToAppend() },
+            Command(id: "intro-card", title: model.project.cards.intro.enabled ? "Remove Intro Card" : "Add Intro Card", symbol: "textformat.size", shortcut: "") {
+                model.setIntroEnabled(!model.project.cards.intro.enabled)
+                model.inspectorTab = .background
+            },
+            Command(id: "outro-card", title: model.project.cards.outro.enabled ? "Remove Outro Card" : "Add Outro Card", symbol: "textformat.size", shortcut: "") {
+                model.setOutroEnabled(!model.project.cards.outro.enabled)
+                model.inspectorTab = .background
+            },
+            Command(id: "click-sounds", title: model.project.clickSounds.enabled ? "Turn Off Click Sounds" : "Play Click Sounds", symbol: "cursorarrow.click", shortcut: "") {
+                model.setStyle { $0.clickSounds.enabled.toggle() }
+            },
+        ]
+        let dissolving = model.project.transitions.betweenClips == .dissolve
+        commands.append(Command(id: "dissolves", title: dissolving ? "Hard Cuts Between Clips" : "Dissolve Between Clips", symbol: "square.on.square.intersection.dashed", shortcut: "") {
+            model.setStyle { $0.transitions.betweenClips = dissolving ? .none : .dissolve }
+        })
+        if model.project.music != nil {
+            commands.append(Command(id: "remove-music", title: "Remove Music", symbol: "trash", shortcut: "") { model.removeMusic() })
+        }
+        if !model.project.captions.isEmpty {
+            commands.append(Command(id: "vtt", title: "Save Subtitles (.vtt)…", symbol: "doc.text", shortcut: "") { model.exportSubtitles(.vtt) })
+        }
+        return commands
+    }
+}
