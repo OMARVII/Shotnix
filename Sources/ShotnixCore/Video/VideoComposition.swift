@@ -25,6 +25,8 @@ struct VideoEditComposition {
     var musicTrack: AVMutableCompositionTrack? = nil
     /// Where the music's loops meet (timeline seconds).
     var musicSeams: [Double] = []
+    /// How long the music runs: the edit, plus the export's end card.
+    var musicDuration: Double = 0
     /// A click sound on every recorded click.
     var clickTrack: AVMutableCompositionTrack? = nil
     /// With several recordings: the transform that fits each stretch of
@@ -34,6 +36,12 @@ struct VideoEditComposition {
     /// Every sound track, for reading the final mix.
     var mixedAudioTracks: [AVMutableCompositionTrack] {
         audioTracks + [musicTrack, clickTrack].compactMap { $0 }
+    }
+
+    /// What a video composition must cover: the whole asset, including
+    /// music that plays on past the picture (a reader refuses less).
+    var coveredDuration: CMTime {
+        CMTimeMaximum(duration, composition.duration)
     }
 }
 
@@ -90,6 +98,8 @@ struct VideoSourceTracks {
 struct VideoEditExtras {
     /// Seconds after the last clip (the outro card) — the last frame holds.
     var tail: Double = 0
+    /// Seconds the music plays on past the edit (the export's end card).
+    var musicTail: Double = 0
     /// Other recordings on the source axis (nil: just the one).
     var layout: VideoSourceLayout?
     var music: VideoMusicInput?
@@ -100,6 +110,7 @@ struct VideoEditExtras {
     /// What the player item is built from.
     struct StructureKey: Equatable {
         let tail: Double
+        let musicTail: Double
         let layout: [String]
         let music: VideoMusicInput.StructureKey?
         let clicks: VideoClickSoundInput.StructureKey?
@@ -112,7 +123,7 @@ struct VideoEditExtras {
     }
 
     var structureKey: StructureKey {
-        StructureKey(tail: (tail * 1000).rounded() / 1000, layout: layout?.identity ?? [], music: music?.structureKey, clicks: clicks?.structureKey)
+        StructureKey(tail: (tail * 1000).rounded() / 1000, musicTail: musicTail, layout: layout?.identity ?? [], music: music?.structureKey, clicks: clicks?.structureKey)
     }
 
     var mixKey: MixKey { MixKey(music: music?.mixKey, clickVolume: clicks?.volume) }
@@ -338,7 +349,8 @@ enum VideoCompositionBuilder {
         }
 
         let total = cursor.seconds
-        let music = extras.music?.insert(into: composition, duration: total)
+        let musicLength = total + max(extras.musicTail, 0)
+        let music = extras.music?.insert(into: composition, duration: musicLength)
         let clicks = extras.clicks?.insert(into: composition, duration: total)
 
         var edit = VideoEditComposition(
@@ -354,6 +366,7 @@ enum VideoCompositionBuilder {
             orientation: source.orientation,
             musicTrack: music?.track,
             musicSeams: music?.seams ?? [],
+            musicDuration: music == nil ? 0 : musicLength,
             clickTrack: clicks,
             pieceTransforms: pieceTransforms
         )
@@ -383,7 +396,9 @@ enum VideoCompositionBuilder {
         }
         if let track = edit.musicTrack, let music = extras.music {
             let params = AVMutableAudioMixInputParameters(track: track)
-            let keyframes = VideoMusicMix.envelope(music: music.settings, duration: edit.duration.seconds, voice: music.voice, seams: edit.musicSeams)
+            // Fades out where the music ends (after the end card, if any).
+            let length = edit.musicDuration > 0 ? edit.musicDuration : edit.duration.seconds
+            let keyframes = VideoMusicMix.envelope(music: music.settings, duration: length, voice: music.voice, seams: edit.musicSeams)
             VideoMusicMix.apply(keyframes, to: params)
             parameters.append(params)
         }
@@ -425,7 +440,7 @@ enum VideoCompositionBuilder {
         videoComposition.renderSize = CGSize(width: max(edit.sourceSize.width, 2), height: max(edit.sourceSize.height, 2))
         videoComposition.frameDuration = CMTime(value: 1, timescale: CMTimeScale(max(Int(frameRate.rounded()), 1)))
         let instruction = AVMutableVideoCompositionInstruction()
-        instruction.timeRange = CMTimeRange(start: .zero, duration: edit.duration)
+        instruction.timeRange = CMTimeRange(start: .zero, duration: edit.coveredDuration)
         let layer = AVMutableVideoCompositionLayerInstruction(assetTrack: edit.videoTrack)
         if edit.pieceTransforms.isEmpty {
             layer.setTransform(edit.orientation, at: .zero)

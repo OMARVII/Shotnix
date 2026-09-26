@@ -283,6 +283,41 @@ final class VideoFramingTests: XCTestCase {
         XCTAssertLessThan(VideoInspection.toneLevel(onceSamples, frequency: 880, from: 1.65, to: 1.95), 0.02, "no loop: silence after the song")
     }
 
+    func testMusicCoversTheCardsAndTheEndCardAndFadesAtTheVeryEnd() async throws {
+        let source = directory.appendingPathComponent("short.mp4")
+        try await VideoInspection.writeColorVideo(to: source, size: size, colors: [(.gray, 3)])
+        let song = directory.appendingPathComponent("long-song.m4a")
+        try VideoInspection.writeTone(to: song, frequency: 330, seconds: 14, amplitude: 0.4)
+        let stored = try VideoAssetStore.importFile(song)
+        var project = VideoInspection.project(for: source, seconds: 3, size: size)
+        project.cards.intro = VideoTitleCard(enabled: true, title: "Intro", duration: 2)
+        project.cards.outro = VideoTitleCard(enabled: true, title: "Outro", duration: 2)
+        var music = VideoMusicTrack(path: stored.path, name: "long-song.m4a", duration: 14)
+        music.volume = 0.8
+        music.fadeIn = 0.5
+        music.fadeOut = 2.5
+        music.ducking = false
+        project.music = music
+        var settings = VideoInspection.mp4Settings()
+        settings.endCard = true
+
+        // Intro 0–2, clips 2–5, outro 5–7, then the 2-second end card.
+        let output = directory.appendingPathComponent("with-end-card.mp4")
+        try await VideoDemoExporter.export(project: project, destinationURL: output, settings: settings)
+        let length = try await duration(output)
+        XCTAssertEqual(length, 9, accuracy: 0.15)
+        let samples = try VideoInspection.audio(of: output)
+        func level(_ from: Double, _ to: Double) -> Double {
+            VideoInspection.toneLevel(samples, frequency: 330, from: from, to: to)
+        }
+        XCTAssertGreaterThan(level(0.8, 1.2), 0.15, "music under the intro card")
+        XCTAssertGreaterThan(level(5.8, 6.2), 0.15, "and the outro card")
+        XCTAssertGreaterThan(level(6.75, 6.95), 0.12, "no fade-out where the timeline ends: \(level(6.75, 6.95))")
+        let underEndCard = level(7.3, 7.7)
+        XCTAssertGreaterThan(underEndCard, 0.07, "the music plays on under the end card: \(underEndCard)")
+        XCTAssertLessThan(level(8.8, 8.95), underEndCard * 0.35, "and fades out at the very end")
+    }
+
     func testMusicDucksUnderTheVoice() async throws {
         // A "voice" (440 Hz) for the first 1.5 s, then quiet.
         let source = directory.appendingPathComponent("voice.mp4")

@@ -288,7 +288,7 @@ enum VideoCameraComposition {
         videoComposition.renderSize = CGSize(width: max(edit.sourceSize.width, 2), height: max(edit.sourceSize.height, 2))
         videoComposition.frameDuration = CMTime(value: 1, timescale: CMTimeScale(max(Int(frameRate.rounded()), 1)))
         videoComposition.instructions = [VideoCameraInstruction(
-            timeRange: CMTimeRange(start: .zero, duration: edit.duration),
+            timeRange: CMTimeRange(start: .zero, duration: edit.coveredDuration),
             screenTrackID: edit.videoTrack.trackID,
             cameraTrackID: cameraTrack.trackID,
             store: store

@@ -96,6 +96,9 @@ enum VideoDemoExporter {
             }
             let voice = VideoMusicDucking.voiceOnTimeline(project: project, primaryKinds: kinds, speech: speech, segments: segments)
             extras.music = VideoMusicInput(file: file, settings: music, voice: voice, timelineOffset: musicOffset)
+            // The song carries on under the end card and fades out at the
+            // very end of the file.
+            if settings.format == .mp4, settings.endCard { extras.musicTail = endCardDuration }
         }
         if project.clickSounds.enabled {
             let times = VideoClickSound.times(project: project, segments: segments)
