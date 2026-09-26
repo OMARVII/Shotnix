@@ -543,6 +543,12 @@ struct VideoMusicSection: View {
                     .fixedSize()
                     .accessibilityLabel("Music options")
                 }
+                if !FileManager.default.fileExists(atPath: music.path) {
+                    Label("The song's file is gone — choose it again with Replace.", systemImage: "exclamationmark.triangle.fill")
+                        .font(.system(size: 10.5, weight: .medium))
+                        .foregroundStyle(Color.orange)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
                 VideoSliderRow(
                     title: "Volume",
                     value: Binding(get: { music.volume }, set: { value in model.updateMusic(coalesce: "music-volume") { $0.volume = value } }),

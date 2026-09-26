@@ -228,10 +228,23 @@ enum VideoCompositionBuilder {
             hold(piece, atEnd: false, seconds: leadIn)
         }
 
+        /// Black for a stretch of a recording that can't be found, so the
+        /// edit keeps its timing.
+        func gap(_ seconds: Double) {
+            guard seconds > 0.001 else { return }
+            let start = cursor
+            videoTrack.insertEmptyTimeRange(CMTimeRange(start: start, duration: time(seconds)))
+            let end = videoTrack.timeRange.end
+            cursor = end.isNumeric && end > start ? end : start + time(seconds)
+        }
+
         for segment in clips {
             let start = cursor
             let speed = segment.clip.normalizedSpeed
+            var covered = segment.clip.sourceStart
             for piece in pieces(of: segment.clip, primary: source, primaryAudio: sources, camera: camera, layout: layout) {
+                gap((segment.clip.sourceStart + piece.offsetInClip - covered) / speed)
+                covered = segment.clip.sourceStart + piece.offsetInClip + piece.length
                 let pieceStart = cursor
                 let sourceRange = CMTimeRange(start: time(piece.localStart), duration: time(piece.length))
                 try videoTrack.insertTimeRange(sourceRange, of: piece.tracks.video, at: pieceStart)
@@ -243,6 +256,7 @@ enum VideoCompositionBuilder {
                 let end = videoTrack.timeRange.end
                 cursor = end.isNumeric && end > pieceStart ? end : pieceStart + outputDuration
             }
+            gap((segment.clip.sourceEnd - covered) / speed)
             placements.append(Placement(start: start, duration: cursor - start, segment: segment))
         }
         guard !placements.isEmpty else { throw VideoDemoExportError.invalidTrim }

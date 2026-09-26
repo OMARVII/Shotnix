@@ -400,6 +400,12 @@ struct VideoImageOverlayInspector: View {
                     }
                     Spacer(minLength: 0)
                 }
+                if !FileManager.default.fileExists(atPath: image.path) {
+                    Label("The picture's file is gone — choose it again with Replace.", systemImage: "exclamationmark.triangle.fill")
+                        .font(.system(size: 10.5, weight: .medium))
+                        .foregroundStyle(Color.orange)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
                 VideoSliderRow(
                     title: "Opacity",
                     value: Binding(get: { image.opacity }, set: { model.setImageOpacity(overlay.id, $0) }),

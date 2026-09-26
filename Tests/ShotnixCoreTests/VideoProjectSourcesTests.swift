@@ -157,6 +157,19 @@ final class VideoProjectSourcesTests: XCTestCase {
         XCTAssertEqual(decoded.sourceAxisDuration ?? 0, 3.5, accuracy: 0.001)
     }
 
+    func testAMissingRecordingKeepsTheTimingAsBlack() async throws {
+        let (project, a, b, _) = try await twoRecordings()
+        try FileManager.default.removeItem(at: b)
+        let primary = try await VideoSourceTracks.load(url: a)
+        let loaded = await VideoSourceLayout.load(project: project, primary: primary, primaryAudio: [], primaryCamera: nil)
+        let layout = try XCTUnwrap(loaded)
+        XCTAssertEqual(layout.entries.count, 1, "only the recording that's there loads")
+        var extras = VideoEditExtras()
+        extras.layout = layout
+        let edit = try VideoCompositionBuilder.build(source: primary, segments: project.timelineSegments(totalDuration: 3.5), audio: project.audio, extras: extras)
+        XCTAssertEqual(edit.duration.seconds, 3.5, accuracy: 0.05, "the missing part stays on the timeline (black)")
+    }
+
     func testAddedRecordingsAreFoundAfterAMove() async throws {
         let (project, _, b, _) = try await twoRecordings()
         var added = project.sources[1]
