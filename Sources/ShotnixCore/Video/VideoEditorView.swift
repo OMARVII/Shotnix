@@ -1101,7 +1101,7 @@ struct VideoTipsBar: View {
                 }
                 Button {
                     withAnimation(.easeOut(duration: 0.15)) { page += 1 }
-                    Settings.videoEditorTipPage = page
+                    Settings.videoEditorTipPage = page + 1
                 } label: {
                     Image(systemName: "chevron.right")
                         .font(.system(size: 10, weight: .bold))

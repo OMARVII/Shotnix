@@ -1246,7 +1246,8 @@ struct VideoSelectionInspector: View {
         case .blur: return "Drag the box on the preview over anything private. Blur follows zooms and stays until its bar ends."
         case .arrow: return "Drag the arrow on the preview to move it; drag its head or tail to point it anywhere. Its bar on the timeline sets when it shows."
         case .spotlight: return "Drag the spot on the preview; drag a corner to resize it. Everything around it dims while its bar on the timeline runs."
-        default: return "Drag it on the preview to move it; drag a corner to resize. Double-click text to type. Its bar on the timeline sets when it shows."
+        case .text: return "Drag it on the preview to move it; drag a corner to resize; double-click it to type. Its bar on the timeline sets when it shows."
+        default: return "Drag it on the preview to move it; drag a corner to resize. Its bar on the timeline sets when it shows."
         }
     }
 }
