@@ -171,6 +171,51 @@ final class VideoFramingEditorTests: XCTestCase {
         VideoDemoDraftStore.delete(for: url)
     }
 
+    /// After a clip is moved, dragging or setting an item's window across
+    /// the moved clip keeps a sensible length instead of 0.2 s.
+    func testWindowsAfterMovingAClipKeepTheirLength() async throws {
+        let model = try await model(seconds: 4)
+        let a = VideoDemoTimelineClip(sourceStart: 0, sourceEnd: 2)
+        let b = VideoDemoTimelineClip(sourceStart: 2, sourceEnd: 4)
+        model.mutate { $0.timelineClips = [a, b] }
+        model.moveClip(b.id, toIndex: 0)
+        // Timeline: B (recording 2–4) then A (recording 0–2).
+        XCTAssertEqual(model.segments.first?.clip.sourceStart ?? 0, 2, accuracy: 0.001)
+
+        // An annotation dragged from 1 s to 2.6 s: it stays in B, to B's end.
+        model.seek(to: 0.5)
+        model.addOverlay(.highlight)
+        let overlay = try XCTUnwrap(model.project.overlayEffects.first)
+        model.setOverlayWindow(overlay.id, start: 1.0, end: 2.6, coalesce: "drag")
+        let moved = try XCTUnwrap(model.project.overlayEffects.first)
+        XCTAssertEqual(moved.time, 3.0, accuracy: 0.01)
+        XCTAssertEqual(moved.duration, 1.0, accuracy: 0.01, "to the end of its clip, not 0.2 s")
+
+        // A caption, the same.
+        model.mutate { $0.captions = [VideoCaptionLine(start: 2.2, end: 2.8, text: "Hi")] }
+        let line = try XCTUnwrap(model.project.captions.first)
+        model.setCaptionWindow(line.id, timelineStart: 1.0, timelineEnd: 2.6, moveWords: false)
+        let caption = try XCTUnwrap(model.project.captions.first)
+        XCTAssertEqual(caption.end - caption.start, 1.0, accuracy: 0.01)
+
+        // A zoom made at the playhead near B's end runs to B's end.
+        model.seek(to: 1.5)
+        _ = model.addZoom(at: 1.5)
+        let zoom = try XCTUnwrap(model.project.zoomRegions.first { $0.start >= 2 })
+        XCTAssertGreaterThan(zoom.end, zoom.start + 0.3, "\(zoom.start)–\(zoom.end)")
+        XCTAssertLessThanOrEqual(zoom.end, 4.0001)
+
+        // An image for the whole video covers all of the recording on it.
+        let logo = directory.appendingPathComponent("logo.png")
+        try VideoInspection.writePNG(to: logo, size: CGSize(width: 120, height: 60), color: .orange)
+        let image = try XCTUnwrap(model.addImageOverlay(from: logo))
+        model.showImageForWholeVideo(image)
+        let whole = try XCTUnwrap(model.project.overlayEffects.first { $0.id == image })
+        XCTAssertEqual(whole.time, 0, accuracy: 0.001)
+        XCTAssertEqual(whole.duration, 4, accuracy: 0.001)
+        model.stop()
+    }
+
     func testHeldFrameCacheKeepsToItsBudget() async throws {
         let url = directory.appendingPathComponent("frames.mp4")
         try await VideoTestSupport.writeFakeRecording(to: url, size: CGSize(width: 640, height: 400), seconds: 3, fps: 10)

@@ -808,6 +808,31 @@ final class VideoEditorModel: ObservableObject {
         VideoDemoProject.sourceTime(forTimelineTime: time, segments: segments)
     }
 
+    /// A timeline window as a stretch of the recording: from where `start`
+    /// plays (on a cut, the clip after it), on through the clips that follow
+    /// it in the recording's own order. A clip moved out of order ends it —
+    /// otherwise the stretch would run backwards or over other clips.
+    func sourceWindow(timelineStart: Double, timelineEnd: Double) -> ClosedRange<Double> {
+        let segments = self.segments
+        guard let first = segments.first, let last = segments.last else { return timelineStart...max(timelineEnd, timelineStart) }
+        let start = min(max(timelineStart, first.timelineStart), last.timelineEnd)
+        let end = max(timelineEnd, start)
+        var index = segments.firstIndex { start >= $0.timelineStart - 0.0005 && start < $0.timelineEnd - 0.0005 } ?? (segments.count - 1)
+        let sourceStart = segments[index].sourceTime(forTimelineTime: start)
+        while index + 1 < segments.count, end > segments[index].timelineEnd + 0.0005,
+              segments[index + 1].clip.sourceStart >= segments[index].clip.sourceEnd - 0.0005 {
+            index += 1
+        }
+        let sourceEnd = segments[index].sourceTime(forTimelineTime: min(end, segments[index].timelineEnd))
+        return sourceStart...max(sourceEnd, sourceStart)
+    }
+
+    /// The whole recording the timeline uses, whatever order its clips are in.
+    var sourceSpanOnTimeline: ClosedRange<Double>? {
+        guard let start = segments.map(\.clip.sourceStart).min(), let end = segments.map(\.clip.sourceEnd).max() else { return nil }
+        return start...max(end, start)
+    }
+
     /// The moment of the recording something new at the playhead starts
     /// from. On a cut that's the frame after it — the one on screen — not
     /// the last frame of the material before it.
@@ -1289,8 +1314,9 @@ final class VideoEditorModel: ObservableObject {
             start = max(gap.lowerBound, end - length)
             end = min(gap.upperBound, start + length)
         }
-        let sourceStart = sourceTime(forTimeline: start)
-        let sourceEnd = sourceTime(forTimeline: end)
+        let window = sourceWindow(timelineStart: start, timelineEnd: end)
+        let sourceStart = window.lowerBound
+        let sourceEnd = window.upperBound
         guard sourceEnd - sourceStart >= VideoZoomRegion.minimumDuration else { return nil }
         // Aim where the pointer is, when we know it.
         let pointer = plan.cursorTrack?.visiblePosition(at: sourceTime(forTimeline: min(start + 0.6, end)))
@@ -1342,8 +1368,9 @@ final class VideoEditorModel: ObservableObject {
                 newEnd = newStart + VideoZoomRegion.minimumDuration
             }
         }
-        let sourceStart = sourceTime(forTimeline: newStart)
-        let sourceEnd = sourceTime(forTimeline: newEnd)
+        let window = sourceWindow(timelineStart: newStart, timelineEnd: newEnd)
+        let sourceStart = window.lowerBound
+        let sourceEnd = window.upperBound
         updateZoom(id, coalesce: coalesce) { region in
             region.start = sourceStart
             region.end = max(sourceEnd, sourceStart + VideoZoomRegion.minimumDuration)
@@ -1431,8 +1458,9 @@ final class VideoEditorModel: ObservableObject {
         let end = min(start + length, gap.upperBound)
         var copy = region
         copy.id = UUID()
-        copy.start = sourceTime(forTimeline: start)
-        copy.end = sourceTime(forTimeline: end)
+        let window = sourceWindow(timelineStart: start, timelineEnd: end)
+        copy.start = window.lowerBound
+        copy.end = max(window.upperBound, window.lowerBound + VideoZoomRegion.minimumDuration)
         copy.isAuto = false
         mutate { project in
             project.zoomRegions.append(copy)
@@ -1498,8 +1526,9 @@ final class VideoEditorModel: ObservableObject {
         // A picture needs a file first (VideoImageOverlays.swift).
         guard kind != .image else { return chooseImageOverlay() }
         let time = clock.time
-        let sourceStart = placementSourceTime(forTimeline: time)
-        let sourceEnd = sourceTime(forTimeline: min(time + (kind == .blur ? 4 : 3), timelineDuration))
+        let window = sourceWindow(timelineStart: time, timelineEnd: min(time + (kind == .blur ? 4 : 3), timelineDuration))
+        let sourceStart = window.lowerBound
+        let sourceEnd = window.upperBound
         var effect = VideoDemoOverlayEffect(
             kind: kind,
             time: sourceStart,
@@ -1617,8 +1646,9 @@ final class VideoEditorModel: ObservableObject {
     func setOverlayWindow(_ id: UUID, start: Double, end: Double, coalesce: String) {
         let safeStart = min(max(start, 0), max(timelineDuration - 0.2, 0))
         let safeEnd = min(max(end, safeStart + 0.2), timelineDuration)
-        let sourceStart = sourceTime(forTimeline: safeStart)
-        let sourceEnd = sourceTime(forTimeline: safeEnd)
+        let window = sourceWindow(timelineStart: safeStart, timelineEnd: safeEnd)
+        let sourceStart = window.lowerBound
+        let sourceEnd = window.upperBound
         updateOverlay(id, coalesce: coalesce) { effect in
             effect.time = sourceStart
             effect.duration = max(sourceEnd - sourceStart, 0.2)

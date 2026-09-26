@@ -290,8 +290,9 @@ extension VideoEditorModel {
 
     /// Retimes a line from timeline times (a drag on the captions lane).
     func setCaptionWindow(_ id: UUID, timelineStart: Double, timelineEnd: Double, moveWords: Bool, coalesce: String? = nil) {
-        let start = sourceTime(forTimeline: timelineStart)
-        let end = max(sourceTime(forTimeline: timelineEnd), start + 0.2)
+        let window = sourceWindow(timelineStart: timelineStart, timelineEnd: timelineEnd)
+        let start = window.lowerBound
+        let end = max(window.upperBound, start + 0.2)
         // Where the line starts on screen now, in the recording: if its first
         // words were cut, that's after the cut, not the line's own start.
         let shownStart = plan.captions.first { $0.id == id }.map { placementSourceTime(forTimeline: $0.start) }
@@ -664,19 +665,21 @@ extension VideoEditorModel {
     func addCameraIntroOutro(length preferred: Double = 3) {
         guard hasWebcamFootage else { return }
         // Short takes get a shorter intro and outro, with some screen between.
-        let firstSource = segments.first?.clip.sourceStart ?? 0
-        let lastSource = segments.last?.clip.sourceEnd ?? sourceDuration
-        let length = min(preferred, (timelineDuration - 1) / 2, (lastSource - firstSource - 1) / 2)
+        guard let first = segments.first, let last = segments.last, let span = sourceSpanOnTimeline else { return }
+        let length = min(preferred, (timelineDuration - 1) / 2, (span.upperBound - span.lowerBound - 1) / 2)
         guard length >= VideoCameraLayoutRegion.minimumDuration else {
             showNotice("Too short for an intro and outro", symbol: "exclamationmark.triangle")
             return
         }
-        let firstStart = segments.first?.clip.sourceStart ?? 0
-        let lastEnd = segments.last?.clip.sourceEnd ?? sourceDuration
+        // Each stays in the clip that opens (or closes) the video — clips
+        // may be in any order.
+        let intro = sourceWindow(timelineStart: first.timelineStart, timelineEnd: first.timelineStart + length)
+        let outroStart = max(last.clip.sourceEnd - length * last.clip.normalizedSpeed, last.clip.sourceStart)
+        let outro = outroStart...last.clip.sourceEnd
         mutate(label: "Intro and Outro") { project in
-            project.cameraLayouts.removeAll { $0.start < firstStart + length || $0.end > lastEnd - length }
-            project.cameraLayouts.append(VideoCameraLayoutRegion(start: firstStart, end: firstStart + length, layout: .fullscreen))
-            project.cameraLayouts.append(VideoCameraLayoutRegion(start: lastEnd - length, end: lastEnd, layout: .fullscreen))
+            project.cameraLayouts.removeAll { $0.end > intro.lowerBound && $0.start < intro.upperBound || $0.end > outro.lowerBound && $0.start < outro.upperBound }
+            project.cameraLayouts.append(VideoCameraLayoutRegion(start: intro.lowerBound, end: intro.upperBound, layout: .fullscreen))
+            project.cameraLayouts.append(VideoCameraLayoutRegion(start: outro.lowerBound, end: outro.upperBound, layout: .fullscreen))
             project.cameraLayouts.sort { $0.start < $1.start }
             project.webcam.visible = true
         }
@@ -687,8 +690,9 @@ extension VideoEditorModel {
     /// neighbours instead of overlapping them.
     func setCameraLayoutWindow(_ id: UUID, timelineStart: Double, timelineEnd: Double, moving: Bool, coalesce: String? = nil) {
         guard let current = project.cameraLayouts.first(where: { $0.id == id }) else { return }
-        var start = sourceTime(forTimeline: timelineStart)
-        var end = sourceTime(forTimeline: timelineEnd)
+        let window = sourceWindow(timelineStart: timelineStart, timelineEnd: timelineEnd)
+        var start = window.lowerBound
+        var end = window.upperBound
         let others = project.cameraLayouts.filter { $0.id != id }
         let previousEnd = others.filter { $0.end <= current.start + 0.001 }.map(\.end).max() ?? 0
         let nextStart = others.filter { $0.start >= current.end - 0.001 }.map(\.start).min() ?? sourceDuration
