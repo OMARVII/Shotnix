@@ -167,19 +167,19 @@ struct VideoTimelineToolbar: View {
 
             HStack(spacing: 6) {
                 Button {
-                    model.timelineZoom = max(model.timelineZoom / 1.4, 1)
+                    model.zoomTimeline(by: 1 / 1.4)
                 } label: {
                     Image(systemName: "arrow.right.and.line.vertical.and.arrow.left")
                 }
                 .buttonStyle(.plain)
                 .foregroundStyle(VideoEditorTheme.textSecondary)
                 .accessibilityLabel("Show more of the timeline")
-                Slider(value: Binding(get: { log(model.timelineZoom) / log(40) }, set: { model.timelineZoom = pow(40, $0) }), in: 0...1)
+                Slider(value: Binding(get: { log(model.timelineZoom) / log(model.maxTimelineZoom) }, set: { model.timelineZoom = pow(model.maxTimelineZoom, $0) }), in: 0...1)
                     .frame(width: 90)
                     .controlSize(.small)
                     .accessibilityLabel("Timeline scale")
                 Button {
-                    model.timelineZoom = min(model.timelineZoom * 1.4, 40)
+                    model.zoomTimeline(by: 1.4)
                 } label: {
                     Image(systemName: "arrow.left.and.line.vertical.and.arrow.right")
                 }
@@ -230,7 +230,8 @@ struct VideoTimelineSurface: View {
     @State private var snapper: VideoTimelineSnapper?
     @State private var rangeStart: Double?
     @State private var pinchBase: Double?
-    @State private var scrollMonitor: Any?
+    /// Anchored zooming, ⌘-scroll, and paging after the playhead.
+    @State private var scroller = VideoTimelineScroller()
 
     private typealias M = VideoTimelineMetrics
 
@@ -361,8 +362,10 @@ struct VideoTimelineSurface: View {
                     viewportWidth: viewport.width
                 )
                 VideoTimelinePlayhead(clock: model.clock, x: { x($0) }, height: height)
+                VideoTimelinePlayheadFollower(clock: model.clock, model: model, scroller: scroller, x: { x($0) })
             }
             .frame(width: contentWidth + M.inset * 2, height: height, alignment: .topLeading)
+            .background(VideoTimelineScrollFinder(scroller: scroller, model: model))
             .onContinuousHover { phase in
                 switch phase {
                 case .active(let location):
@@ -375,7 +378,9 @@ struct VideoTimelineSurface: View {
                 MagnificationGesture()
                     .onChanged { value in
                         if pinchBase == nil { pinchBase = model.timelineZoom }
-                        model.timelineZoom = min(max((pinchBase ?? 1) * value, 1), 40)
+                        // Pinching zooms around the pointer.
+                        if let time = hover.time { model.pendingZoomAnchor = (time, x(time) - scroller.visible.minX) }
+                        model.timelineZoom = min(max((pinchBase ?? 1) * value, 1), model.maxTimelineZoom)
                     }
                     .onEnded { _ in pinchBase = nil }
             )
@@ -390,31 +395,25 @@ struct VideoTimelineSurface: View {
             if now, !hover.dragging { reader.scrollTo(Self.bottomAnchor, anchor: .bottom) }
         }
         }
-        .onAppear(perform: installScrollZoom)
-        .onDisappear {
-            if let scrollMonitor { NSEvent.removeMonitor(scrollMonitor) }
-            scrollMonitor = nil
+        .onAppear {
+            scroller.pointsPerSecond = pointsPerSecond
+            model.timelineViewportWidth = max(viewport.width - M.inset * 2, 100)
         }
+        .onChange(of: viewport.width) { width in
+            model.timelineViewportWidth = max(width - M.inset * 2, 100)
+        }
+        .onChange(of: contentWidth) { _ in
+            // A new scale: the moment under the pointer (or the playhead)
+            // stays where it was once the strip has its new width.
+            let anchor = scroller.anchor(playhead: model.clock.time)
+            let scale = pointsPerSecond
+            scroller.pointsPerSecond = scale
+            DispatchQueue.main.async { scroller.restore(anchor, pointsPerSecond: scale) }
+        }
+        .onChange(of: duration) { _ in scroller.pointsPerSecond = pointsPerSecond }
     }
 
-    /// ⌘-scroll zooms the timeline.
     private static let bottomAnchor = "timeline-bottom"
-
-    private func installScrollZoom() {
-        guard scrollMonitor == nil else { return }
-        scrollMonitor = NSEvent.addLocalMonitorForEvents(matching: .scrollWheel) { [model] event in
-            // Only in this editor's own window (two editors can be open).
-            guard event.modifierFlags.contains(.command),
-                  let controller = event.window?.delegate as? VideoDemoEditorWindowController,
-                  MainActor.assumeIsolated({ controller.model === model }) else { return event }
-            let delta = event.scrollingDeltaY != 0 ? event.scrollingDeltaY : event.scrollingDeltaX
-            let factor = pow(1.01, Double(delta) * (event.hasPreciseScrollingDeltas ? 1 : 6))
-            MainActor.assumeIsolated {
-                model.timelineZoom = min(max(model.timelineZoom * factor, 1), 40)
-            }
-            return nil
-        }
-    }
 
     private var scrubGesture: some Gesture {
         DragGesture(minimumDistance: 0)
@@ -666,26 +665,53 @@ struct VideoTimelineSurface: View {
                     .allowsHitTesting(false)
             }
 
-            ForEach(model.cutGaps) { gap in
-                Button {
-                    model.restore(gap)
-                } label: {
-                    HStack(spacing: 3) {
-                        Image(systemName: "scissors")
-                        Text(VideoEditorModel.format(gap.duration))
+            // Markers closer than a marker's width share one (Remove Ums can
+            // leave dozens): it lists each cut and can restore them all.
+            ForEach(VideoEditorModel.CutGap.grouped(model.cutGaps, within: 46 / pointsPerSecond), id: \.first!.id) { group in
+                if group.count == 1, let gap = group.first {
+                    Button {
+                        model.restore(gap)
+                    } label: {
+                        restorePill(symbol: "scissors", text: VideoEditorModel.format(gap.duration))
                     }
-                    .font(.system(size: 9.5, weight: .bold))
-                    .foregroundStyle(Color.black.opacity(0.8))
-                    .padding(.horizontal, 6)
-                    .frame(height: 16)
-                    .background(Capsule().fill(Color(red: 1, green: 0.84, blue: 0.3)))
+                    .buttonStyle(.plain)
+                    .help("Removed \(VideoEditorModel.format(gap.duration)) — click to restore")
+                    .accessibilityLabel("Restore \(VideoEditorModel.format(gap.duration)) cut at \(VideoEditorModel.timecode(gap.timelineTime))")
+                    .offset(x: x(gap.timelineTime) - 24, y: -9)
+                } else {
+                    let total = group.reduce(0) { $0 + $1.duration }
+                    Menu {
+                        ForEach(group) { gap in
+                            Button("Restore \(VideoEditorModel.format(gap.duration)) at \(VideoEditorModel.timecode(gap.timelineTime))") { model.restore(gap) }
+                        }
+                        Divider()
+                        Button("Restore All \(group.count)") { model.restore(group) }
+                    } label: {
+                        restorePill(symbol: "scissors", text: "\(group.count) · \(VideoEditorModel.format(total))")
+                    }
+                    .menuStyle(.button)
+                    .buttonStyle(.plain)
+                    .menuIndicator(.hidden)
+                    .fixedSize()
+                    .help("\(group.count) cuts here (\(VideoEditorModel.format(total)) removed) — click to restore some or all")
+                    .accessibilityLabel("\(group.count) cuts, \(VideoEditorModel.format(total)) removed")
+                    .offset(x: x(group.first?.timelineTime ?? 0) - 24, y: -9)
                 }
-                .buttonStyle(.plain)
-                .help("Removed \(VideoEditorModel.format(gap.duration)) — click to restore")
-                .offset(x: x(gap.timelineTime) - 24, y: -9)
             }
         }
         .offset(y: clipTop)
+    }
+
+    private func restorePill(symbol: String, text: String) -> some View {
+        HStack(spacing: 3) {
+            Image(systemName: symbol)
+            Text(text)
+        }
+        .font(.system(size: 9.5, weight: .bold))
+        .foregroundStyle(Color.black.opacity(0.8))
+        .padding(.horizontal, 6)
+        .frame(height: 16)
+        .background(Capsule().fill(Color(red: 1, green: 0.84, blue: 0.3)))
     }
 
     // MARK: Overlays

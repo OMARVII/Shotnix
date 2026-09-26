@@ -365,7 +365,7 @@ extension VideoEditorModel {
 
 extension VideoEditorModel {
     func isIncluded(sourceTime: Double) -> Bool {
-        timelineTime(forSource: sourceTime) != nil
+        segment(containingSource: sourceTime) != nil
     }
 
     func isIncluded(_ word: VideoTranscriptWord) -> Bool {

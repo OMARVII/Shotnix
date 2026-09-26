@@ -563,7 +563,7 @@ final class VideoFrameRenderer {
         let stageOut = geometry.rect(plan.stageRect)
         let radius = CGFloat(plan.cornerRadius) * geometry.pixelScale
         if let source {
-            let video = placedVideo(source, plan: plan, geometry: geometry, stageOut: stageOut)
+            let video = placedVideo(source, plan: plan, geometry: geometry, stageOut: stageOut, draft: options.draft)
             if plan.fullBleed || radius < 0.5 {
                 scene = video.cropped(to: stageOut).composited(over: scene)
             } else {
@@ -725,7 +725,7 @@ final class VideoFrameRenderer {
         return image
     }
 
-    private func placedVideo(_ fullSource: CIImage, plan: VideoRenderPlan, geometry: Geometry, stageOut: CGRect) -> CIImage {
+    private func placedVideo(_ fullSource: CIImage, plan: VideoRenderPlan, geometry: Geometry, stageOut: CGRect, draft: Bool = false) -> CIImage {
         // Crop first (source-normalized, y down → pixels, y up).
         var source = fullSource
         if !plan.crop.isFull {
@@ -741,7 +741,7 @@ final class VideoFrameRenderer {
         let extent = source.extent
         let normalized = extent.origin == .zero ? source : source.transformed(by: CGAffineTransform(translationX: -extent.minX, y: -extent.minY))
         let effective = stageOut.width / max(extent.width, 1)
-        if effective < 0.8 {
+        if effective < 0.8, !draft {
             // Downscaling a sharp screen recording needs a real filter, or
             // text shimmers — Lanczos once, then a pure translation.
             let scaled = normalized.applyingFilter("CILanczosScaleTransform", parameters: [

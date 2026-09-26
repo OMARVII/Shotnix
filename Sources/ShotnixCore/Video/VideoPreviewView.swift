@@ -98,6 +98,8 @@ final class VideoPreviewRenderer: NSObject, MTKViewDelegate {
 
     private func compose(model: VideoEditorModel, size: CGSize) -> CIImage {
         var options = VideoFrameRenderer.Options(frameRate: 60)
+        // A big recording on the move: skip the costliest passes.
+        options.draft = model.previewPrefersSpeed
         options.solidOverlay = Self.editedOverlay(model)
         options.webcamFrame = model.plan.webcam == nil ? nil : lastCameraFrame?.image
         options.webcamMask = model.plan.webcam == nil ? nil : lastCameraFrame?.mask

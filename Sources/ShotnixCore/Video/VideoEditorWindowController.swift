@@ -169,6 +169,10 @@ final class VideoDemoEditorWindowController: NSWindowController, NSWindowDelegat
         model.stop()
         Self.openControllers.removeAll { $0 === self }
         ShotnixEditorActivation.sync()
+        // Take the editor's views down with the window: the preview's
+        // display link would otherwise keep the window, and with it the
+        // editor, alive after closing.
+        window?.contentView = nil
     }
 
     func windowDidBecomeKey(_ notification: Notification) {

@@ -31,10 +31,10 @@ struct VideoOverlayColorPicker: View {
                 color: current,
                 isCustom: !palette.contains { same($0, current) },
                 showsAlpha: overlay.kind == .text
-            ) { [model, id = overlay.id, kind = overlay.kind] picked in
-                // The panel outlives the selection: only recolor while this
-                // annotation is still the one being edited.
-                guard model.selection == .overlay(id) else { return }
+            ) { [weak model, id = overlay.id, kind = overlay.kind] picked in
+                // The panel outlives the selection (and the editor): only
+                // recolor while this annotation is still the one being edited.
+                guard let model, model.selection == .overlay(id) else { return }
                 var rgba = picked
                 // The tag keeps a little see-through unless chosen otherwise.
                 if kind != .text { rgba.a = 1 }

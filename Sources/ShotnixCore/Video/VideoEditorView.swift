@@ -475,8 +475,8 @@ extension VideoEditorModel {
                 showNotice("Zooms and annotations can be duplicated", symbol: "plus.square.on.square")
             }
             return true
-        case ([.command], "="), ([.command], "+"): timelineZoom = min(timelineZoom * 1.4, 40); return true
-        case ([.command], "-"): timelineZoom = max(timelineZoom / 1.4, 1); return true
+        case ([.command], "="), ([.command], "+"): zoomTimeline(by: 1.4); return true
+        case ([.command], "-"): zoomTimeline(by: 1 / 1.4); return true
         default: break
         }
 
@@ -530,8 +530,8 @@ extension VideoEditorModel {
             } else {
                 togglePreviewMute()
             }
-        case "=", "+": timelineZoom = min(timelineZoom * 1.4, 40)
-        case "-": timelineZoom = max(timelineZoom / 1.4, 1)
+        case "=", "+": zoomTimeline(by: 1.4)
+        case "-": zoomTimeline(by: 1 / 1.4)
         case "1", "2", "3", "4", "5":
             guard let id = selectedZoomID else { return false }
             let levels = ["1": 1.25, "2": 1.5, "3": 2.0, "4": 2.5, "5": 3.0]

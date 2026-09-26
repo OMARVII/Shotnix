@@ -189,6 +189,12 @@ final class VideoEditorModel: ObservableObject {
     @Published var timelineZoom: Double = 1 {
         didSet { refreshTimeline() }
     }
+    /// Width of the timeline's lanes on screen (the surface keeps it up to
+    /// date) — how far it can zoom depends on it.
+    var timelineViewportWidth: CGFloat = 1000
+    /// Where the next timeline zoom stays put: a moment and where it sits
+    /// in the visible strip (nil: the playhead, wherever it is).
+    var pendingZoomAnchor: (time: Double, viewportX: CGFloat)?
     @Published var isCommandPalettePresented = false
     @Published var isExportPresented = false
     @Published var isShortcutsPresented = false
@@ -245,7 +251,12 @@ final class VideoEditorModel: ObservableObject {
     private let sourceBookmark: Data?
     let artwork: VideoCursorArtwork
     private(set) var plan: VideoRenderPlan
-    private(set) var segments: [VideoDemoTimelineSegment] = []
+    private(set) var segments: [VideoDemoTimelineSegment] = [] {
+        didSet { segmentsBySource = segments.sorted { $0.clip.sourceStart < $1.clip.sourceStart } }
+    }
+    /// The clips in recording order, for binary searches ("is this moment
+    /// still in the video, and where?") on long, heavily cut takes.
+    private(set) var segmentsBySource: [VideoDemoTimelineSegment] = []
 
     private var undoStack: [VideoDemoProject] = []
     private var redoStack: [VideoDemoProject] = []
@@ -286,6 +297,8 @@ final class VideoEditorModel: ObservableObject {
     private var shuttleRate: Float = 1
     private var exportCancelled = false
     private var didLoad = false
+    /// A clip edge is being dragged: the player waits for the drag to end.
+    private var holdsPlayerRebuild = false
     private nonisolated(unsafe) var terminationObserver: NSObjectProtocol?
 
     /// Everything the camera path depends on — captions, shortcuts,
@@ -375,6 +388,7 @@ final class VideoEditorModel: ObservableObject {
             guard let self else { return }
             self.isPlaying = playing
             if !playing { self.shuttleRate = 1 }
+            self.updatePreviewQuality()
             self.previewRenderer.invalidate()
         }
         // Quitting skips the window's close: the last edits (autosave waits
@@ -486,14 +500,18 @@ final class VideoEditorModel: ObservableObject {
         if !isCropping { rebuildPlan() }
         validateSelection(keepingRange: true)
         if isReady {
-            // Stay on the same moment of the recording — read through the
-            // cut list it was on (a speed change or cut before the playhead
-            // moves that moment along the timeline).
-            let keepSource = VideoDemoProject.sourceTime(forTimelineTime: clock.time, segments: oldSegments.isEmpty ? segments : oldSegments)
-            // The playhead follows that moment to its new place on the
-            // timeline (paused, the player won't report the move).
-            if let moved = playback.apply(segments: segments, audio: project.audio, keepSourceTime: keepSource), !isPlaying {
-                clock.time = moved
+            // A clip edge being dragged rebuilds the player once, at the end
+            // (the preview shows the edge from a still meanwhile).
+            if !holdsPlayerRebuild {
+                // Stay on the same moment of the recording — read through the
+                // cut list it was on (a speed change or cut before the playhead
+                // moves that moment along the timeline).
+                let keepSource = VideoDemoProject.sourceTime(forTimelineTime: clock.time, segments: oldSegments.isEmpty ? segments : oldSegments)
+                // The playhead follows that moment to its new place on the
+                // timeline (paused, the player won't report the move).
+                if let moved = playback.apply(segments: segments, audio: project.audio, keepSourceTime: keepSource), !isPlaying {
+                    clock.time = moved
+                }
             }
             scheduleAutosave()
         }
@@ -693,7 +711,29 @@ final class VideoEditorModel: ObservableObject {
     }
 
     func timelineTime(forSource time: Double) -> Double? {
-        VideoDemoProject.timelineTimeIfIncluded(sourceTime: time, segments: segments)
+        segment(containingSource: time)?.timelineTime(forSourceTime: time)
+    }
+
+    /// The clip that plays this moment of the recording (binary search; the
+    /// first in timeline order where two clips meet).
+    func segment(containingSource time: Double) -> VideoDemoTimelineSegment? {
+        let sorted = segmentsBySource
+        var low = 0
+        var high = sorted.count
+        // First clip that ends at or after `time`.
+        while low < high {
+            let mid = (low + high) / 2
+            if sorted[mid].clip.sourceEnd < time { low = mid + 1 } else { high = mid }
+        }
+        var found: VideoDemoTimelineSegment?
+        var index = low
+        while index < sorted.count, sorted[index].clip.sourceStart <= time {
+            if sorted[index].contains(sourceTime: time), found.map({ sorted[index].timelineStart < $0.timelineStart }) ?? true {
+                found = sorted[index]
+            }
+            index += 1
+        }
+        return found
     }
 
     func segment(atTimeline time: Double) -> VideoDemoTimelineSegment? {
@@ -703,6 +743,19 @@ final class VideoEditorModel: ObservableObject {
     /// Camera at a timeline moment (for preview handles).
     func cameraState(at time: Double) -> VideoCameraState {
         plan.camera.state(at: time)
+    }
+
+    // MARK: Timeline scale
+
+    /// Zoomed all the way in, a second is 150 points on any length of
+    /// recording (a 30-minute take can be trimmed frame by frame too).
+    var maxTimelineZoom: Double {
+        max(40, timelineDuration * 150 / Double(max(timelineViewportWidth, 100)))
+    }
+
+    /// = / − and the buttons: in or out around the playhead.
+    func zoomTimeline(by factor: Double) {
+        timelineZoom = min(max(timelineZoom * factor, 1), maxTimelineZoom)
     }
 
     // MARK: Transport
@@ -724,8 +777,26 @@ final class VideoEditorModel: ObservableObject {
     func seek(to time: Double, fast: Bool = false) {
         let target = min(max(time, 0), timelineDuration)
         clock.time = target
+        // Fast seeks come while the playhead is dragged; the exact one on
+        // release ends it.
+        isScrubbing = fast
+        updatePreviewQuality()
         playback.seek(to: target, fast: fast)
         previewRenderer.invalidate()
+    }
+
+    /// The playhead is being dragged.
+    private(set) var isScrubbing = false
+
+    /// 4K and bigger recordings.
+    var hasLargeSource: Bool { project.sourceWidth * project.sourceHeight >= 3840 * 2160 * 0.9 }
+
+    /// While a big recording plays or scrubs, the preview draws in draft
+    /// quality from smaller frames; the paused frame is full quality.
+    var previewPrefersSpeed: Bool { hasLargeSource && (isPlaying || isScrubbing) }
+
+    func updatePreviewQuality() {
+        playback.setUsesSmallFrames(previewPrefersSpeed)
     }
 
     func step(frames: Int) {
@@ -836,6 +907,7 @@ final class VideoEditorModel: ObservableObject {
     /// at it while dragging.
     func trimClip(_ id: UUID, leading: Bool, toSource sourceTime: Double) {
         if layoutDurationLock == nil { layoutDurationLock = timelineDuration }
+        holdsPlayerRebuild = true
         mutate(coalesce: "trim-\(id)-\(leading)") { project in
             if leading {
                 _ = project.trimClip(id: id, sourceStart: sourceTime, totalDuration: sourceDuration)
@@ -853,6 +925,10 @@ final class VideoEditorModel: ObservableObject {
         endGesture()
         trimPeekSourceTime = nil
         layoutDurationLock = nil
+        if holdsPlayerRebuild {
+            holdsPlayerRebuild = false
+            playback.apply(segments: segments, audio: project.audio, keepSourceTime: nil)
+        }
         if let segment = segments.first(where: { $0.id == id }) {
             seek(to: leading ? segment.timelineStart : max(segment.timelineEnd - 0.02, segment.timelineStart))
         }
@@ -890,6 +966,20 @@ final class VideoEditorModel: ObservableObject {
         let sourceEnd: Double
         let afterClip: UUID?
         var duration: Double { sourceEnd - sourceStart }
+
+        /// Runs of gaps whose markers sit within `spacing` timeline seconds
+        /// of each other.
+        static func grouped(_ gaps: [CutGap], within spacing: Double) -> [[CutGap]] {
+            var groups: [[CutGap]] = []
+            for gap in gaps.sorted(by: { $0.timelineTime < $1.timelineTime }) {
+                if let last = groups.last?.last, gap.timelineTime - last.timelineTime < spacing {
+                    groups[groups.count - 1].append(gap)
+                } else {
+                    groups.append([gap])
+                }
+            }
+            return groups
+        }
     }
 
     var cutGaps: [CutGap] {
@@ -929,6 +1019,18 @@ final class VideoEditorModel: ObservableObject {
             project.ensureTimeline(totalDuration: sourceDuration)
         }
         showNotice("Restored \(Self.format(gap.duration))", symbol: "arrow.uturn.backward")
+    }
+
+    /// Several cuts back at once (one undo step).
+    func restore(_ gaps: [CutGap]) {
+        guard !gaps.isEmpty else { return }
+        mutate { project in
+            for gap in gaps {
+                project.restoreSourceRange(gap.sourceStart...gap.sourceEnd, totalDuration: sourceDuration)
+            }
+        }
+        let total = gaps.reduce(0) { $0 + $1.duration }
+        showNotice("Restored \(gaps.count) cuts — \(Self.format(total))", symbol: "arrow.uturn.backward")
     }
 
     // MARK: Zooms

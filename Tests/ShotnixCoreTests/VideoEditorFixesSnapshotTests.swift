@@ -84,6 +84,16 @@ final class VideoEditorFixesSnapshotTests: XCTestCase {
         VideoOverlayStyleMemory.shape = .rectangle
     }
 
+    func testCrowdedCutsShareOneMarker() async throws {
+        let model = try await T.make(in: directory, T.Options(seconds: 12, size: CGSize(width: 1440, height: 900)))
+        let ranges: [ClosedRange<Double>] = [2.0...2.2, 2.4...2.6, 2.8...3.0, 3.2...3.4, 3.6...3.8, 8.0...8.5]
+        model.mutate { _ = $0.removeSourceRanges(ranges, totalDuration: 12) }
+        model.endGesture()
+        model.selection = .none
+        let height = 44 + 1 + VideoTimelineMetrics.contentHeight(model.project) + 10
+        try await Self.render(VideoTimelineView(model: model), size: CGSize(width: 1200, height: height), name: "fix-10-grouped-restore-markers")
+    }
+
     func testTranscriptionShowsItIsWorking() async throws {
         var options = T.Options(seconds: 4, size: CGSize(width: 1440, height: 900))
         options.audio = true

@@ -64,6 +64,11 @@ final class VideoPlaybackController: NSObject {
 
     private(set) var timelineDuration: Double = 0
     private(set) var isPlaying = false
+    /// Big recordings (4K and up) play and scrub from smaller frames — the
+    /// preview can't show more pixels than that anyway while moving. Paused,
+    /// the frame is full size again; the export always reads full frames.
+    private(set) var usesSmallFrames = false
+    static let smallFrameWidth: CGFloat = 2560
 
     var onTick: ((Double) -> Void)?
     var onPlayingChanged: ((Bool) -> Void)?
@@ -170,12 +175,7 @@ final class VideoPlaybackController: NSObject {
             item.videoComposition = VideoCompositionBuilder.readerVideoComposition(for: built, frameRate: max(source.frameRate, 30))
         }
         item.audioTimePitchAlgorithm = .spectral
-        let output = AVPlayerItemVideoOutput(pixelBufferAttributes: [
-            kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA,
-            kCVPixelBufferMetalCompatibilityKey as String: true,
-            kCVPixelBufferIOSurfacePropertiesKey as String: [:] as [String: Any],
-        ])
-        output.suppressesPlayerRendering = true
+        let output = makeOutput()
         item.add(output)
         self.output = output
 
@@ -197,6 +197,36 @@ final class VideoPlaybackController: NSObject {
         seek(to: target, fast: false)
         if wasPlaying { player.play() }
         return target
+    }
+
+    private func makeOutput() -> AVPlayerItemVideoOutput {
+        var attributes: [String: Any] = [
+            kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA,
+            kCVPixelBufferMetalCompatibilityKey as String: true,
+            kCVPixelBufferIOSurfacePropertiesKey as String: [:] as [String: Any],
+        ]
+        if usesSmallFrames, let size = source?.size, size.width > Self.smallFrameWidth {
+            let scale = Self.smallFrameWidth / size.width
+            attributes[kCVPixelBufferWidthKey as String] = Int((size.width * scale / 2).rounded()) * 2
+            attributes[kCVPixelBufferHeightKey as String] = Int((size.height * scale / 2).rounded()) * 2
+        }
+        let output = AVPlayerItemVideoOutput(pixelBufferAttributes: attributes)
+        output.suppressesPlayerRendering = true
+        return output
+    }
+
+    /// Switches between small (moving) and full-size (paused) frames.
+    func setUsesSmallFrames(_ small: Bool) {
+        guard small != usesSmallFrames else { return }
+        usesSmallFrames = small
+        guard let item = player.currentItem, let old = output else { return }
+        let replacement = makeOutput()
+        item.remove(old)
+        item.add(replacement)
+        output = replacement
+        frameRequested = true
+        // Paused again: the full-size frame under the playhead.
+        if !small, !isPlaying { refreshCurrentFrame() }
     }
 
     var currentTime: Double {
