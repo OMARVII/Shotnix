@@ -181,6 +181,55 @@ final class RecordingTimelineTests: XCTestCase {
         }
     }
 
+    /// A microphone gone for seconds: its track is kept up with silence as
+    /// the video runs, and its sound lands in place when it comes back.
+    func testALongMicrophoneGapIsFilledAsTheVideoRuns() async throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("long-gap-\(UUID().uuidString).mp4")
+        defer { try? FileManager.default.removeItem(at: url) }
+        let handles = try RecordingEngine.makeWriter(url: url, format: RecordingVideoFormat(codec: .h264, width: 64, height: 36), fps: 30, quality: .balanced, microphone: true, systemAudio: false)
+        let core = RecordingWriterCore()
+        core.begin(handles: handles, frameDuration: CMTime(value: 1, timescale: 30), onFirstFrame: { _ in }, onWriterFailure: {})
+
+        let origin = 800.0
+        let beep: (Double) -> Float = { t in
+            let local = t - origin
+            return local >= 4.2 && local < 4.25 ? Float(sin(t * 2 * .pi * 660)) * 0.7 : 0
+        }
+        var audioTime = origin
+        var lagDuringGap = 0.0
+        for frame in 0..<150 {
+            let host = origin + Double(frame) / 30
+            RecordingTestBuffers.waitUntilReady(handles.videoInput)
+            RecordingTestBuffers.waitUntilReady(handles.microphoneInput)
+            core.appendVideo(RecordingTestBuffers.video(at: host))
+            let local = host - origin
+            if local > 1.5, local < 4 {
+                lagDuringGap = max(lagDuringGap, local - core.writtenAudio(for: .microphone))
+            }
+            while audioTime < host + 1.0 / 30 {
+                // Nothing from the microphone between 1 s and 4 s.
+                let silentStretch = audioTime - origin >= 1 && audioTime - origin < 4
+                if !silentStretch {
+                    core.appendAudio(RecordingTestBuffers.audio(at: audioTime, frames: 480, channels: 1, planar: false, value: beep), to: .microphone)
+                }
+                audioTime += 480.0 / 48_000
+            }
+        }
+        XCTAssertLessThan(lagDuringGap, 1.1, "the track never fell more than about a second behind")
+        let end = core.appendFinalStaticFrame(at: origin + 5)
+        core.padAudio(to: end)
+        core.deactivate()
+        handles.videoInput.markAsFinished()
+        handles.microphoneInput?.markAsFinished()
+        await handles.writer.finishWriting()
+        XCTAssertEqual(handles.writer.status, .completed)
+        let samples = try await RecordingTestBuffers.decodeAudio(url)
+        let onsets = RecordingTestBuffers.onsets(in: samples)
+        XCTAssertEqual(onsets.count, 1, "\(onsets)")
+        XCTAssertEqual(onsets.first ?? -1, 4.2, accuracy: 0.02)
+        XCTAssertEqual(Double(samples.count) / 48_000, 5, accuracy: 0.1)
+    }
+
     /// A microphone dropout and a pause: later audio stays where the picture
     /// is, and the paused stretch is gone from video, audio and activity.
     func testDropoutsAndPausesKeepEverythingAligned() async throws {

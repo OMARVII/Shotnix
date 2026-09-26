@@ -358,6 +358,7 @@ final class RecordingWriterCore: @unchecked Sendable {
             lastVideoTime = time
             lastCompleteSampleBuffer = sampleBuffer
             _ = frameDrops.record(dropped: false, at: time)
+            keepAudioUp(with: time)
             if let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
                 activity.observe(
                     time: time,
@@ -413,6 +414,20 @@ final class RecordingWriterCore: @unchecked Sendable {
         else { return end }
         _ = input.append(retimed)
         return end
+    }
+
+    /// A source that goes quiet — a microphone unplugged with nothing to
+    /// switch to, no system sound being sent — is padded with silence as the
+    /// video moves on, so its track never falls far behind and there's no
+    /// minutes-long gap to fill in one go when it comes back. Half a second
+    /// of slack leaves room for buffers still on their way.
+    private func keepAudioUp(with videoTime: Double) {
+        for target in [RecordingAudioTarget.microphone, .system] {
+            guard input(for: target) != nil, let format = audioFormats[target] else { continue }
+            let written = audioWritten[target] ?? 0
+            guard videoTime - written > 1 else { continue }
+            writeSilence(videoTime - 0.5 - written, format: format, to: target)
+        }
     }
 
     /// Fills every audio track with silence up to `end`, so a microphone that
