@@ -20,7 +20,7 @@ final class AnnotationToolbar: NSView {
     static let requiredWidth: CGFloat = {
         let toolCount = CGFloat(toolGroups.joined().count)
         let tools: CGFloat = toolCount * toolPitch + CGFloat(toolGroups.count) * groupGap
-        let colorAndOptions: CGFloat = 40 + optionsWidth
+        let colorAndOptions: CGFloat = 40 + optionsWidth + 4
         // gap, Background, gap, Copy + Save
         let actions: CGFloat = 10 + 116 + 2 + 58 * 2
         let insets: CGFloat = 8 + 8
@@ -129,7 +129,7 @@ final class AnnotationToolbar: NSView {
             x += Self.groupGap
         }
 
-        addToolbarGroupBackground(x: x - 6, width: 40 + Self.optionsWidth + 2)
+        addToolbarGroupBackground(x: x - 6, width: 40 + Self.optionsWidth + 6)
 
         // Color button (circular, shows current color)
         let colorBtn = NSButton(title: "", target: self, action: #selector(showColorPopover(_:)))
@@ -259,15 +259,16 @@ final class AnnotationToolbar: NSView {
     func showOptions(_ newOptions: AnnotationToolOptions) {
         options = newOptions
         let visible: [NSView]
+        // Controls end 10 pt before the group's edge, matching the color button's inset.
         switch newOptions.context {
         case .stroke:
             sizeLabel.frame = NSRect(x: 0, y: 18, width: 30, height: 16)
-            lineWidthSlider.frame = NSRect(x: 32, y: 12, width: 128, height: 28)
+            lineWidthSlider.frame = NSRect(x: 32, y: 12, width: 122, height: 28)
             visible = [sizeLabel, lineWidthSlider]
         case .rectangle:
             sizeLabel.frame = NSRect(x: 0, y: 18, width: 30, height: 16)
-            lineWidthSlider.frame = NSRect(x: 32, y: 12, width: 92, height: 28)
-            roundedCornersButton.frame = NSRect(x: 130, y: 10, width: 30, height: 30)
+            lineWidthSlider.frame = NSRect(x: 32, y: 12, width: 84, height: 28)
+            roundedCornersButton.frame = NSRect(x: 124, y: 10, width: 30, height: 30)
             visible = [sizeLabel, lineWidthSlider, roundedCornersButton]
         case .text:
             fontSizePopUp.frame = NSRect(x: 0, y: 11, width: 92, height: 28)
@@ -275,18 +276,18 @@ final class AnnotationToolbar: NSView {
             visible = [fontSizePopUp, boldButton]
         case .redaction:
             strengthLabel.frame = NSRect(x: 0, y: 18, width: 50, height: 16)
-            strengthSlider.frame = NSRect(x: 52, y: 12, width: 108, height: 28)
+            strengthSlider.frame = NSRect(x: 52, y: 12, width: 102, height: 28)
             visible = [strengthLabel, strengthSlider]
         case .spotlight:
             shapeLabel.frame = NSRect(x: 0, y: 18, width: 38, height: 16)
             spotlightShapeControl.frame = NSRect(x: 42, y: 13, width: 84, height: 24)
             visible = [shapeLabel, spotlightShapeControl]
         case .crop:
-            applyCropButton.frame = NSRect(x: 0, y: 10, width: 76, height: 30)
-            resetCropButton.frame = NSRect(x: 82, y: 10, width: 76, height: 30)
+            applyCropButton.frame = NSRect(x: 0, y: 10, width: 74, height: 30)
+            resetCropButton.frame = NSRect(x: 80, y: 10, width: 74, height: 30)
             visible = [applyCropButton, resetCropButton]
         case .none:
-            hintLabel.frame = NSRect(x: 0, y: 18, width: Self.optionsWidth - 4, height: 16)
+            hintLabel.frame = NSRect(x: 0, y: 18, width: Self.optionsWidth - 10, height: 16)
             hintLabel.stringValue = selectedTool == .numberedStep ? "Click to add the next step" : "Click an annotation to edit it"
             visible = [hintLabel]
         }
@@ -433,7 +434,7 @@ final class AnnotationToolbar: NSView {
 
     /// The system color panel, targeting this toolbar and kept above the
     /// editor window so it can't open behind it.
-    private func showColorPanel() {
+    func showColorPanel() {
         let panel = NSColorPanel.shared
         panel.setTarget(nil)
         panel.color = currentColor

@@ -134,12 +134,25 @@ enum AnnotationSnapshots {
         return url
     }
 
-    /// Renders a view (with its subviews) the way it appears on screen.
+    /// Renders a view (with its subviews) the way it appears on screen, at
+    /// 2x so small chrome is inspectable.
     @MainActor
     @discardableResult
     static func write(view: NSView, name: String) throws -> URL {
         view.layoutSubtreeIfNeeded()
-        let rep = try XCTUnwrap(view.bitmapImageRepForCachingDisplay(in: view.bounds))
+        let rep = try XCTUnwrap(NSBitmapImageRep(
+            bitmapDataPlanes: nil,
+            pixelsWide: Int(view.bounds.width * 2),
+            pixelsHigh: Int(view.bounds.height * 2),
+            bitsPerSample: 8,
+            samplesPerPixel: 4,
+            hasAlpha: true,
+            isPlanar: false,
+            colorSpaceName: .deviceRGB,
+            bytesPerRow: 0,
+            bitsPerPixel: 0
+        ))
+        rep.size = view.bounds.size
         view.cacheDisplay(in: view.bounds, to: rep)
         return try write(XCTUnwrap(rep.cgImage), name: name)
     }

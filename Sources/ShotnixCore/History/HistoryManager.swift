@@ -99,6 +99,10 @@ final class HistoryManager: ObservableObject {
 
     // MARK: – Edits
 
+    /// One edit write at a time, in order: a quick copy-then-save must leave
+    /// the later edit on disk.
+    private static let editWriteQueue = DispatchQueue(label: "com.shotnix.history.edits", qos: .userInitiated)
+
     /// The untouched capture, kept next to an item's image once it's edited.
     nonisolated static func originalImagePath(for item: HistoryItem) -> String {
         (item.imagePath as NSString).deletingPathExtension + "_original.png"
@@ -124,7 +128,7 @@ final class HistoryManager: ObservableObject {
         HistoryImageCache.primeFull(image, for: current.imagePath)
         HistoryImageCache.primeThumbnail(image, for: current.thumbnailPath)
         let rect = current.captureRect?.cgRect
-        Task.detached(priority: .userInitiated) { [weak self] in
+        Self.editWriteQueue.async { [weak self] in
             Self.encodeAndPersist(image: image, imagePath: current.imagePath, thumbPath: current.thumbnailPath, rect: rect, manager: self)
         }
         scheduleOCRIndexing()

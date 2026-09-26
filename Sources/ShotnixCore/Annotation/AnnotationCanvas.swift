@@ -162,14 +162,17 @@ final class AnnotationCanvas: NSView {
     }
 
     private func updateLayout(refit: Bool) {
+        var sizeChanged = false
         if backgroundImage != nil {
             let size = layout.canvasSize
-            if frame.size != size { setFrameSize(size) }
+            sizeChanged = frame.size != size
+            if sizeChanged { setFrameSize(size) }
         }
         positionTextEditor()
         window?.invalidateCursorRects(for: self)
         setNeedsDisplay(bounds)
-        onLayoutChanged?(refit)
+        // Only a real size change re-fits; the user's zoom stays otherwise.
+        onLayoutChanged?(refit && sizeChanged)
     }
 
     // MARK: - Hover feedback
@@ -320,6 +323,7 @@ final class AnnotationCanvas: NSView {
         }
         ctx.restoreGState()
 
+        activeTextEditor?.drawPlaceholderAndFrame(in: ctx)
         drawCropOverlay(in: ctx)
     }
 
@@ -1216,7 +1220,7 @@ final class AnnotationCanvas: NSView {
         editor.delegate = self
         editor.onCommit = { [weak self] in self?.commitTextField() }
         addSubview(editor)
-        editor.sizeToFit()
+        editor.fitToText()
         positionTextEditor()
         window?.makeFirstResponder(editor)
         if !isNew { editor.selectAll(nil) }
@@ -1847,6 +1851,7 @@ extension AnnotationCanvas: NSTextViewDelegate {
         // Live, so a callout's bubble grows as you type.
         (target as? TextAnnotation)?.text = editor.string
         (target as? CalloutAnnotation)?.text = editor.string
+        editor.fitToText()
         positionTextEditor()
         setNeedsDisplay(bounds)
     }

@@ -25,6 +25,7 @@ final class AnnotationWindowController: NSWindowController {
 
     /// Puts an exported image on the clipboard and says whether it got there.
     var copyImage: (NSImage) -> Bool = { ImageExporter.copyToClipboard(image: $0) }
+    var showToast: (_ message: String, _ duration: TimeInterval) -> Void = { ToastWindow.show(message: $0, duration: $1) }
     /// Asks what to do with unsaved changes before closing; nil shows the
     /// standard sheet. Tests answer directly.
     var unsavedChangesPrompt: ((@escaping (UnsavedChangesChoice) -> Void) -> Void)?
@@ -249,7 +250,7 @@ final class AnnotationWindowController: NSWindowController {
             guard let self else { return }
             if case .saved(let url) = result {
                 self.didExport(flat, revision: revision)
-                ToastWindow.show(message: Self.savedScreenshotMessage(for: url), duration: 3.0)
+                self.showToast(Self.savedScreenshotMessage(for: url), 3.0)
                 if thenClose {
                     self.window?.close()
                     return
@@ -263,11 +264,11 @@ final class AnnotationWindowController: NSWindowController {
         canvas.commitPendingEdits()
         let flat = canvas.flatten()
         guard copyImage(flat) else {
-            ToastWindow.show(message: "Couldn't copy the screenshot. Try again, or save it instead.", duration: 3.0)
+            showToast("Couldn't copy the screenshot. Try again, or save it instead.", 3.0)
             return
         }
         didExport(flat, revision: canvas.documentRevision)
-        ToastWindow.show(message: "Copied to clipboard")
+        showToast("Copied to clipboard", 2.0)
     }
 
     /// A save or copy succeeded: nothing is unsaved any more, and history

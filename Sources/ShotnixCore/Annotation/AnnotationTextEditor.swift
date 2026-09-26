@@ -15,7 +15,9 @@ final class AnnotationTextEditor: NSTextView {
     var placeholder = "Type here\u{2026}"
 
     convenience init(font: NSFont, color: NSColor) {
-        self.init(frame: NSRect(x: 0, y: 0, width: 80, height: 28))
+        // TextKit 1: its layout matches how committed text is drawn, and it
+        // reports the laid-out size the editor grows to.
+        self.init(usingTextLayoutManager: false)
         isRichText = false
         importsGraphics = false
         allowsUndo = true
@@ -45,9 +47,22 @@ final class AnnotationTextEditor: NSTextView {
         insertionPointColor = color
         typingAttributes = [.font: font, .foregroundColor: color]
         let lineHeight = ceil(font.ascender - font.descender + font.leading)
-        minSize = NSSize(width: max(60, font.pointSize * 3), height: lineHeight + Self.inset.height * 2)
-        sizeToFit()
+        let placeholderWidth = ceil((placeholder as NSString).size(withAttributes: [.font: font]).width)
+        minSize = NSSize(width: placeholderWidth + Self.inset.width * 2, height: lineHeight + Self.inset.height * 2)
+        fitToText()
         needsDisplay = true
+    }
+
+    /// Grows (or shrinks) to the laid-out text, never below the placeholder.
+    func fitToText() {
+        guard let layoutManager, let textContainer else { return }
+        layoutManager.ensureLayout(for: textContainer)
+        let used = layoutManager.usedRect(for: textContainer)
+        let size = NSSize(
+            width: max(minSize.width, ceil(used.width) + Self.inset.width * 2 + 2), // + room for the caret
+            height: max(minSize.height, ceil(used.height) + Self.inset.height * 2)
+        )
+        if frame.size != size { setFrameSize(size) }
     }
 
     override func doCommand(by selector: Selector) {
@@ -61,20 +76,25 @@ final class AnnotationTextEditor: NSTextView {
         }
     }
 
-    override func draw(_ dirtyRect: NSRect) {
-        super.draw(dirtyRect)
+    /// Drawn by the canvas behind this (transparent) view: the editor's own
+    /// text layers would cover anything drawn here.
+    func drawPlaceholderAndFrame(in ctx: CGContext) {
         if string.isEmpty, let font {
             let attrs: [NSAttributedString.Key: Any] = [
                 .font: font,
                 .foregroundColor: (textColor ?? .labelColor).withAlphaComponent(0.45)
             ]
-            (placeholder as NSString).draw(at: NSPoint(x: Self.inset.width, y: Self.inset.height), withAttributes: attrs)
+            NSGraphicsContext.saveGraphicsState()
+            NSGraphicsContext.current = NSGraphicsContext(cgContext: ctx, flipped: true)
+            (placeholder as NSString).draw(at: NSPoint(x: frame.minX + Self.inset.width, y: frame.minY + Self.inset.height), withAttributes: attrs)
+            NSGraphicsContext.restoreGraphicsState()
         }
-        // Dashed frame so it's obvious where typing goes.
-        let frame = NSBezierPath(rect: bounds.insetBy(dx: 0.5, dy: 0.5))
-        frame.setLineDash([4, 3], count: 2, phase: 0)
-        frame.lineWidth = 1
-        NSColor.controlAccentColor.withAlphaComponent(0.6).setStroke()
-        frame.stroke()
+        // Dashed frame just outside the text, so it's clear where typing goes.
+        ctx.saveGState()
+        ctx.setStrokeColor(NSColor.controlAccentColor.withAlphaComponent(0.7).cgColor)
+        ctx.setLineWidth(1)
+        ctx.setLineDash(phase: 0, lengths: [4, 3])
+        ctx.stroke(frame.insetBy(dx: -1.5, dy: -1.5))
+        ctx.restoreGState()
     }
 }
