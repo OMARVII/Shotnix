@@ -89,6 +89,9 @@ struct VideoDemoRecordingMetadata: Codable, Equatable {
     var keystrokes: [VideoKeystrokeEvent]? = nil
     /// What each audio track carries, in file order.
     var audioTracks: [VideoAudioKind]? = nil
+    /// Finds the recording again after a rename or a move on the same
+    /// drive (the leftover-data cleanup looks it up).
+    var bookmark: Data? = nil
 
     var shouldRenderCursor: Bool { renderCursor ?? !nativeCursorVisible }
 }
@@ -103,7 +106,11 @@ enum VideoDemoSidecarStore {
             .appendingPathExtension("shotnixvideo.json")
     }
 
+    /// Tests watch where recordings' data is read (whether on the main thread).
+    nonisolated(unsafe) static var loadObserver: ((_ videoURL: URL, _ onMainThread: Bool) -> Void)?
+
     static func load(for videoURL: URL, baseDirectory: URL? = nil) -> VideoDemoRecordingMetadata? {
+        loadObserver?(videoURL, Thread.isMainThread)
         let folder = directory(baseDirectory: baseDirectory)
         let canonical = VideoFileIdentity.canonicalURL(videoURL)
         if let id = VideoFileIdentity.id(of: canonical),
@@ -140,6 +147,19 @@ enum VideoDemoSidecarStore {
         let destination = folder.appendingPathComponent(VideoFileIdentity.idKey(new)).appendingPathExtension("json")
         guard FileManager.default.fileExists(atPath: source.path), !FileManager.default.fileExists(atPath: destination.path) else { return }
         try? FileManager.default.copyItem(at: source, to: destination)
+    }
+
+    /// The recording was opened or added from where it is now: its data
+    /// points there (a rename or move since recording included), so nothing
+    /// mistakes it for gone. Returns the data as saved.
+    static func recordLocation(of metadata: VideoDemoRecordingMetadata, for videoURL: URL, baseDirectory: URL? = nil) -> VideoDemoRecordingMetadata {
+        let canonical = VideoFileIdentity.canonicalURL(videoURL)
+        guard FileManager.default.fileExists(atPath: canonical.path),
+              metadata.videoURLPath != canonical.path || metadata.bookmark == nil else { return metadata }
+        var moved = metadata
+        moved.videoURLPath = canonical.path
+        moved.bookmark = try? canonical.bookmarkData(options: [], includingResourceValuesForKeys: nil, relativeTo: nil)
+        return save(moved, for: canonical, baseDirectory: baseDirectory) ? moved : metadata
     }
 
     @discardableResult
@@ -385,7 +405,9 @@ final class VideoDemoRecordingMetadataRecorder {
             cursorShapeEvents: cursorShapeEvents.isEmpty ? nil : cursorShapeEvents,
             renderCursor: renderCursor,
             // The stop shortcut itself isn't part of the demo.
-            keystrokes: keystrokes.filter { $0.time < end - 0.05 }
+            keystrokes: keystrokes.filter { $0.time < end - 0.05 },
+            // Renamed or moved later, it can still be found.
+            bookmark: try? videoURL.bookmarkData(options: [], includingResourceValuesForKeys: nil, relativeTo: nil)
         )
     }
 

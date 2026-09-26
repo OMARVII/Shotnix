@@ -119,6 +119,43 @@ final class VideoProjectSourcesTests: XCTestCase {
         XCTAssertGreaterThan(darkest(second), 0.6, "and not over the plain video")
     }
 
+    /// An added recording's own data (the pointer path can be megabytes) is
+    /// never read on the main thread — adding it, or reopening the video.
+    @MainActor
+    func testAddedRecordingsDataIsReadOffTheMainThread() async throws {
+        let a = directory.appendingPathComponent("main-a.mp4")
+        let b = directory.appendingPathComponent("pointer-b.mp4")
+        try await VideoInspection.writeColorVideo(to: a, size: CGSize(width: 640, height: 400), colors: [(yellow, 1)])
+        try await VideoInspection.writeColorVideo(to: b, size: CGSize(width: 640, height: 400), colors: [(green, 1)])
+        let samples = stride(from: 0.0, through: 1.0, by: 0.001).map { VideoDemoCursorSample(time: $0, x: 0.5, y: 0.5) }
+        let metadata = VideoDemoRecordingMetadata(videoURLPath: b.path, createdAt: Date(), duration: 1, sourceWidth: 640, sourceHeight: 400, fps: 30, nativeCursorVisible: false, cursorSamples: samples, clickEvents: [], renderCursor: true)
+        XCTAssertTrue(VideoDemoSidecarStore.save(metadata, for: b))
+        var readsOnMain: [String] = []
+        let lock = NSLock()
+        VideoDemoSidecarStore.loadObserver = { url, onMain in
+            guard onMain, url.lastPathComponent == "pointer-b.mp4" else { return }
+            lock.lock(); readsOnMain.append(url.lastPathComponent); lock.unlock()
+        }
+        defer { VideoDemoSidecarStore.loadObserver = nil }
+
+        VideoDemoDraftStore.delete(for: a)
+        let model = VideoEditorModel(videoURL: a)
+        await model.load()
+        let added = await model.appendVideo(b)
+        XCTAssertTrue(added)
+        XCTAssertNotNil(model.media.appendedMetadata.values.compactMap { $0 }.first, "its data is there")
+        model.stop()
+
+        // Reopened: the draft brings it back, read in the background too.
+        let reopened = VideoEditorModel(videoURL: a)
+        await reopened.load()
+        for _ in 0..<40 where reopened.media.appendedMetadata.isEmpty { try await Task.sleep(nanoseconds: 50_000_000) }
+        XCTAssertFalse(reopened.media.appendedMetadata.isEmpty)
+        reopened.stop()
+        XCTAssertTrue(readsOnMain.isEmpty, "read on the main thread: \(readsOnMain)")
+        VideoDemoDraftStore.delete(for: a)
+    }
+
     @MainActor
     func testStartOverKeepsTheAddedRecordings() async throws {
         let a = directory.appendingPathComponent("start-a.mp4")
@@ -414,6 +451,46 @@ final class VideoProjectSourcesTests: XCTestCase {
         XCTAssertEqual(project.timelineDuration(totalDuration: 2), 2, accuracy: 0.001)
     }
 
+    func testRemovingARecordingThatPlaysFirstKeepsTheCuts() async throws {
+        var (project, _, _, _) = try await twoRecordings()
+        // A cut in the project's own recording (A: 0–2 s): 0.5–0.8 goes.
+        project.timelineClips = [
+            VideoDemoTimelineClip(sourceStart: 0, sourceEnd: 0.5),
+            VideoDemoTimelineClip(sourceStart: 0.8, sourceEnd: 2),
+            VideoDemoTimelineClip(sourceStart: 2, sourceEnd: 3.5),
+        ]
+        let added = project.sources[1].id
+        project.moveSource(from: 1, to: 0)
+        XCTAssertEqual(project.primaryOffset, 1.5, accuracy: 0.001, "B plays first")
+        XCTAssertTrue(project.removeSource(id: added))
+        XCTAssertFalse(project.hasAppendedSources)
+        XCTAssertEqual(project.timelineClips.count, 2, "the cut is still there")
+        XCTAssertEqual(project.timelineClips.first?.sourceStart ?? 9, 0, accuracy: 0.001)
+        XCTAssertEqual(project.timelineClips.first?.sourceEnd ?? 0, 0.5, accuracy: 0.001)
+        XCTAssertEqual(project.timelineClips.last?.sourceStart ?? 0, 0.8, accuracy: 0.001)
+        XCTAssertEqual(project.timelineClips.last?.sourceEnd ?? 0, 2, accuracy: 0.001)
+        XCTAssertEqual(project.timelineDuration(totalDuration: 2), 1.7, accuracy: 0.001)
+    }
+
+    /// A transcript that finishes after the recordings moved lands on the
+    /// right recordings.
+    func testATranscriptFollowsRecordingsMovedWhileItRan() async throws {
+        let (project, _, _, _) = try await twoRecordings()
+        // Heard while A (0–2) played first and B (2–3.5) second.
+        let words = [VideoCaptionWord(text: "first", start: 0.5, end: 0.8), VideoCaptionWord(text: "second", start: 2.5, end: 2.8)]
+        var moved = project
+        moved.moveSource(from: 1, to: 0)
+        let remapped = VideoSourcesTranscription.remap(words, from: project, to: moved)
+        XCTAssertEqual(remapped.map(\.text), ["second", "first"])
+        XCTAssertEqual(remapped.first { $0.text == "second" }?.start ?? 9, 0.5, accuracy: 0.001, "B plays first now")
+        XCTAssertEqual(remapped.first { $0.text == "first" }?.start ?? 0, 2.0, accuracy: 0.001, "A after it")
+
+        var removed = project
+        XCTAssertTrue(removed.removeSource(id: project.sources[1].id))
+        XCTAssertEqual(VideoSourcesTranscription.remap(words, from: project, to: removed).map(\.text), ["first"], "B's words go with it")
+        XCTAssertEqual(VideoSourcesTranscription.remap(words, from: project, to: project).map(\.start), [0.5, 2.5], "nothing moved, nothing changes")
+    }
+
     func testSourcesRoundTripInDrafts() async throws {
         let (project, _, _, _) = try await twoRecordings()
         let decoded = try JSONDecoder().decode(VideoDemoProject.self, from: JSONEncoder().encode(project))
@@ -433,6 +510,20 @@ final class VideoProjectSourcesTests: XCTestCase {
         extras.layout = layout
         let edit = try VideoCompositionBuilder.build(source: primary, segments: project.timelineSegments(totalDuration: 3.5), audio: project.audio, extras: extras)
         XCTAssertEqual(edit.duration.seconds, 3.5, accuracy: 0.05, "the missing part stays on the timeline (black)")
+    }
+
+    func testAnUnreadableAddedRecordingStopsTheExportWithAClearMessage() async throws {
+        let (project, _, b, metadata) = try await twoRecordings()
+        // Still there, but not a video any more.
+        try Data(repeating: 0x42, count: 4096).write(to: b)
+        do {
+            try await VideoDemoExporter.export(project: project, recording: metadata, destinationURL: directory.appendingPathComponent("broken.mp4"), settings: VideoInspection.mp4Settings())
+            XCTFail("its part would have been silent black")
+        } catch {
+            let message = VideoExportFailure.message(for: error)
+            XCTAssertTrue(message.contains("“b.mp4” can't be read"), message)
+        }
+        XCTAssertFalse(FileManager.default.fileExists(atPath: directory.appendingPathComponent("broken.mp4").path))
     }
 
     func testAddedRecordingsAreFoundAfterAMove() async throws {

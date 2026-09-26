@@ -71,6 +71,35 @@ final class VideoExportFlowTests: XCTestCase {
         XCTAssertEqual(VideoExportFiles.temporaryURL(beside: unwritable, fileExtension: "mp4").deletingLastPathComponent().standardizedFileURL.path, FileManager.default.temporaryDirectory.standardizedFileURL.path)
     }
 
+    /// An export cut off by a crash or a force quit leaves its hidden
+    /// working file behind: the next launch removes it — and only such
+    /// files.
+    func testTheNextLaunchRemovesWorkingFilesOfExportsThatNeverFinished() async throws {
+        // A finished export leaves nothing listed.
+        let project = try await recording()
+        let done = directory.appendingPathComponent("done.mp4")
+        try await VideoDemoExporter.export(project: project, destinationURL: done, settings: VideoInspection.mp4Settings())
+        XCTAssertEqual(VideoExportFiles.removeLeftovers(), 0)
+
+        // A crash mid-export: the working file and the writer's scratch file.
+        let partial = VideoExportFiles.temporaryURL(beside: directory.appendingPathComponent("Big talk.mp4"), fileExtension: "mp4")
+        try Data(repeating: 7, count: 4096).write(to: partial)
+        let scratch = partial.deletingLastPathComponent().appendingPathComponent(partial.lastPathComponent + ".sb-1234")
+        try Data(repeating: 7, count: 1024).write(to: scratch)
+        VideoExportFiles.remember(partial)
+        // Anything else listed there is never touched.
+        let someoneElses = directory.appendingPathComponent("Holiday.mp4")
+        try Data(repeating: 1, count: 16).write(to: someoneElses)
+        VideoExportFiles.remember(someoneElses)
+
+        XCTAssertEqual(VideoExportFiles.removeLeftovers(), 1)
+        XCTAssertFalse(FileManager.default.fileExists(atPath: partial.path), "the unfinished working file goes")
+        XCTAssertFalse(FileManager.default.fileExists(atPath: scratch.path), "and its scratch file")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: someoneElses.path), "not a file Shotnix didn't make")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: done.path))
+        XCTAssertEqual(VideoExportFiles.removeLeftovers(), 0, "the list starts over")
+    }
+
     func testNotEnoughSpaceStopsBeforeStarting() {
         let url = directory.appendingPathComponent("big.mp4")
         XCTAssertThrowsError(try VideoExportFiles.checkSpace(for: url, needed: 2_000_000_000, available: 500_000_000)) { error in
@@ -267,6 +296,35 @@ final class VideoExportFlowTests: XCTestCase {
         XCTAssertTrue(text.contains("Subtitles too"))
         queue.dismiss(first)
         queue.dismiss(second)
+    }
+
+    @MainActor
+    func testCancelStopsAnExportWhileItCleansUpTheVoice() async throws {
+        try XCTSkipUnless(VideoVoiceEnhancer.isAvailable, "Voice isolation isn't available on this Mac")
+        let url = directory.appendingPathComponent("talk.mp4")
+        try await VideoTestSupport.writeFakeRecording(to: url, size: CGSize(width: 320, height: 200), seconds: 40, fps: 5, audioSeconds: 40)
+        var metadata = VideoDemoRecordingMetadata(videoURLPath: url.path, createdAt: Date(), duration: 40, sourceWidth: 320, sourceHeight: 200, fps: 5, nativeCursorVisible: true, cursorSamples: [], clickEvents: [])
+        metadata.audioTracks = [.microphone]
+        var project = VideoDemoProject.make(sourceURL: url, duration: 40, sourceSize: CGSize(width: 320, height: 200))
+        project.audio.enhanceVoice = true
+        let cache = VideoVoiceEnhancer.cacheURL(for: url, trackIndex: 0)
+        try? FileManager.default.removeItem(at: cache)
+
+        let queue = VideoExportQueue.shared
+        let job = queue.enqueue(project: project, recording: metadata, settings: VideoInspection.mp4Settings(), destination: directory.appendingPathComponent("talk out.mp4"), toClipboard: false)
+        let deadline = Date().addingTimeInterval(10)
+        while Date() < deadline {
+            if case .enhancingVoice = job.state { break }
+            try await Task.sleep(nanoseconds: 20_000_000)
+        }
+        guard case .enhancingVoice = job.state else { return XCTFail("the voice cleanup runs first: \(job.state)") }
+        queue.cancel(job)
+        let cancelledAt = Date()
+        while !job.isDone, Date().timeIntervalSince(cancelledAt) < 20 { try await Task.sleep(nanoseconds: 20_000_000) }
+        XCTAssertEqual(job.state, .cancelled)
+        XCTAssertLessThan(Date().timeIntervalSince(cancelledAt), 3, "stopped right away")
+        XCTAssertFalse(FileManager.default.fileExists(atPath: cache.path), "the cleanup stopped mid-way instead of finishing first")
+        queue.dismiss(job)
     }
 
     @MainActor

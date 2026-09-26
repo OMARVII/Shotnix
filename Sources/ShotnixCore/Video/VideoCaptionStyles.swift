@@ -204,14 +204,12 @@ extension VideoCaptionBuilder {
     /// video shows (cuts removed, speed applied), for web players.
     static func vtt(lines: [VideoCaptionLine], segments: [VideoDemoTimelineSegment], translation: [UUID: String]? = nil) -> String {
         var output = "WEBVTT\n\n"
-        for caption in VideoRenderPlan.visibleCaptions(lines, segments: segments, translation: translation) {
-            let text = caption.text.trimmingCharacters(in: .whitespacesAndNewlines)
-            guard !text.isEmpty else { continue }
-            let escaped = text
+        for cue in cues(lines, segments: segments, translation: translation) {
+            let escaped = cue.text
                 .replacingOccurrences(of: "&", with: "&amp;")
                 .replacingOccurrences(of: "<", with: "&lt;")
                 .replacingOccurrences(of: ">", with: "&gt;")
-            output += "\(vttTimestamp(caption.start)) --> \(vttTimestamp(caption.end))\n\(escaped)\n\n"
+            output += "\(vttTimestamp(cue.start)) --> \(vttTimestamp(cue.end))\n\(escaped)\n\n"
         }
         return output
     }
@@ -229,12 +227,8 @@ extension VideoCaptionBuilder {
     static func srt(lines: [VideoCaptionLine], segments: [VideoDemoTimelineSegment], translation: [UUID: String]?) -> String {
         guard let translation else { return srt(lines: lines, segments: segments) }
         var output = ""
-        var index = 1
-        for caption in VideoRenderPlan.visibleCaptions(lines, segments: segments, translation: translation) {
-            let text = caption.text.trimmingCharacters(in: .whitespacesAndNewlines)
-            guard !text.isEmpty else { continue }
-            output += "\(index)\n\(timestamp(caption.start)) --> \(timestamp(caption.end))\n\(text)\n\n"
-            index += 1
+        for (index, cue) in cues(lines, segments: segments, translation: translation).enumerated() {
+            output += "\(index + 1)\n\(timestamp(cue.start)) --> \(timestamp(cue.end))\n\(cue.text)\n\n"
         }
         return output
     }

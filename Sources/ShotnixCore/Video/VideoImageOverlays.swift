@@ -99,6 +99,15 @@ extension VideoDemoOverlayEffect {
 
 // MARK: - Stored copies
 
+extension VideoDemoProject {
+    /// Pictures and songs this project uses (Shotnix's own copies).
+    var assetPaths: Set<String> {
+        var paths = Set(overlayEffects.compactMap { $0.image?.path })
+        if let music { paths.insert(music.path) }
+        return paths
+    }
+}
+
 /// Pictures and music added to a video are copied here, so the draft keeps
 /// working when the originals move.
 enum VideoAssetStore {
@@ -214,8 +223,9 @@ extension VideoEditorModel {
         }
         let aspect = Double(size.width / size.height)
         let at = time ?? clock.time
-        let sourceStart = placementSourceTime(forTimeline: at)
-        let sourceEnd = sourceTime(forTimeline: min(at + 5, timelineDuration))
+        let window = sourceWindow(timelineStart: at, timelineEnd: min(at + 5, timelineDuration))
+        let sourceStart = window.lowerBound
+        let sourceEnd = window.upperBound
         let canvas = project.canvasSize()
         // Small pictures are logos (a corner); big ones are screenshots (centered).
         let isLogo = size.width <= 900 && size.height <= 900
@@ -264,12 +274,13 @@ extension VideoEditorModel {
         }
     }
 
-    /// Shows the image from the first moment of the video to the last.
+    /// Shows the image from the first moment of the video to the last
+    /// (every part of the recording on the timeline, in any order).
     func showImageForWholeVideo(_ id: UUID) {
-        guard let first = segments.first, let last = segments.last else { return }
+        guard let span = sourceSpanOnTimeline else { return }
         updateOverlay(id) { effect in
-            effect.time = first.clip.sourceStart
-            effect.duration = max(last.clip.sourceEnd - first.clip.sourceStart, 0.2)
+            effect.time = span.lowerBound
+            effect.duration = max(span.upperBound - span.lowerBound, 0.2)
         }
     }
 

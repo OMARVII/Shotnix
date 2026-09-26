@@ -289,13 +289,15 @@ final class VideoEditorModel: ObservableObject {
     private var cameraTrackCache: (key: CameraTrackKey, track: VideoCameraTrack)?
     private var reframeCache: (key: CameraTrackKey, fraction: CGFloat, reframe: VideoReframe)?
     private var transcriptCache: (captions: [VideoCaptionLine], language: String?, words: [VideoTranscriptWord])?
-    private var activityCache: (key: [Int], times: [Double])?
+    /// Dropped whenever the pointer path, clicks, shortcuts, or recordings
+    /// change (or an added recording's own data arrives).
+    var activityCache: (key: [Int], times: [Double])?
 
     /// When something happens on screen (pointer moves, clicks, shortcuts,
     /// typing and scrolling when the recording saw the screen change).
     var activityTimes: [Double] {
         let screen = screenActivityOnAxis
-        let key = [project.cursorSamples.count, project.clickEvents.count, project.keystrokes.count, Int((project.cursorSamples.last?.time ?? 0) * 100), screen?.count ?? -1, Int(project.primaryOffset * 100)]
+        let key = [project.cursorSamples.count, project.clickEvents.count, project.keystrokes.count, screen?.count ?? -1]
         if let cache = activityCache, cache.key == key { return cache.times }
         let times = VideoTranscript.activityTimes(cursor: project.cursorSamples, clicks: project.clickEvents, keystrokes: project.keystrokes, screen: screen)
         activityCache = (key, times)
@@ -391,7 +393,8 @@ final class VideoEditorModel: ObservableObject {
     }
 
     init(videoURL: URL) {
-        let recording = VideoDemoSidecarStore.load(for: videoURL)
+        // Opened from where it is now: its data points here (VideoDataCleanup).
+        let recording = VideoDemoSidecarStore.load(for: videoURL).map { VideoDemoSidecarStore.recordLocation(of: $0, for: videoURL) }
         self.recording = recording
         sourceBookmark = try? videoURL.bookmarkData(options: [.minimalBookmark], includingResourceValuesForKeys: nil, relativeTo: nil)
         artwork = VideoCursorArtwork(metadata: recording)
@@ -525,6 +528,12 @@ final class VideoEditorModel: ObservableObject {
         let oldSegments = segments
         segments = project.timelineSegments(totalDuration: sourceDuration)
         refreshTimeline()
+        // What Shorten Pauses and Speed Up Idle read (cheap when unchanged:
+        // the arrays share storage).
+        if old.cursorSamples != project.cursorSamples || old.clickEvents != project.clickEvents
+            || old.keystrokes != project.keystrokes || old.sources != project.sources {
+            activityCache = nil
+        }
         if isReady, old.audio.enhanceVoice != project.audio.enhanceVoice {
             enhanceVoiceChanged()
         }
@@ -696,6 +705,11 @@ final class VideoEditorModel: ObservableObject {
         lastCoalesceKey = nil
     }
 
+    /// Something is being dragged (a slider, a clip edge, the playhead).
+    var isGestureInProgress: Bool {
+        (lastCoalesceKey != nil && Date().timeIntervalSince(lastMutation) < 1.5) || holdsPlayerRebuild || isScrubbing || layoutDurationLock != nil
+    }
+
     /// What ⌘Z would undo, and ⇧⌘Z redo.
     var undoLabel: String? { undoStack.last?.label }
     var redoLabel: String? { redoStack.last?.label }
@@ -736,6 +750,23 @@ final class VideoEditorModel: ObservableObject {
     private static var keptHistoryOrder: [String] = []
 
     private var historyKey: String { VideoFileIdentity.canonicalURL(project.sourceURL).path }
+
+    /// Pictures and songs this editor's project, undo, and redo use.
+    func assetPathsInHistory() -> Set<String> {
+        var paths = project.assetPaths
+        for step in undoStack + redoStack { paths.formUnion(step.project.assetPaths) }
+        return paths
+    }
+
+    /// Pictures and songs closed editors' kept undo history uses.
+    static func keptHistoryAssetPaths() -> Set<String> {
+        var paths = Set<String>()
+        for kept in keptHistory.values {
+            paths.formUnion(kept.project.assetPaths)
+            for step in kept.undo + kept.redo { paths.formUnion(step.project.assetPaths) }
+        }
+        return paths
+    }
 
     private func keepHistoryForSession() {
         guard isReady, !undoStack.isEmpty || !redoStack.isEmpty else { return }
@@ -783,6 +814,31 @@ final class VideoEditorModel: ObservableObject {
 
     func sourceTime(forTimeline time: Double) -> Double {
         VideoDemoProject.sourceTime(forTimelineTime: time, segments: segments)
+    }
+
+    /// A timeline window as a stretch of the recording: from where `start`
+    /// plays (on a cut, the clip after it), on through the clips that follow
+    /// it in the recording's own order. A clip moved out of order ends it —
+    /// otherwise the stretch would run backwards or over other clips.
+    func sourceWindow(timelineStart: Double, timelineEnd: Double) -> ClosedRange<Double> {
+        let segments = self.segments
+        guard let first = segments.first, let last = segments.last else { return timelineStart...max(timelineEnd, timelineStart) }
+        let start = min(max(timelineStart, first.timelineStart), last.timelineEnd)
+        let end = max(timelineEnd, start)
+        var index = segments.firstIndex { start >= $0.timelineStart - 0.0005 && start < $0.timelineEnd - 0.0005 } ?? (segments.count - 1)
+        let sourceStart = segments[index].sourceTime(forTimelineTime: start)
+        while index + 1 < segments.count, end > segments[index].timelineEnd + 0.0005,
+              segments[index + 1].clip.sourceStart >= segments[index].clip.sourceEnd - 0.0005 {
+            index += 1
+        }
+        let sourceEnd = segments[index].sourceTime(forTimelineTime: min(end, segments[index].timelineEnd))
+        return sourceStart...max(sourceEnd, sourceStart)
+    }
+
+    /// The whole recording the timeline uses, whatever order its clips are in.
+    var sourceSpanOnTimeline: ClosedRange<Double>? {
+        guard let start = segments.map(\.clip.sourceStart).min(), let end = segments.map(\.clip.sourceEnd).max() else { return nil }
+        return start...max(end, start)
     }
 
     /// The moment of the recording something new at the playhead starts
@@ -1266,8 +1322,9 @@ final class VideoEditorModel: ObservableObject {
             start = max(gap.lowerBound, end - length)
             end = min(gap.upperBound, start + length)
         }
-        let sourceStart = sourceTime(forTimeline: start)
-        let sourceEnd = sourceTime(forTimeline: end)
+        let window = sourceWindow(timelineStart: start, timelineEnd: end)
+        let sourceStart = window.lowerBound
+        let sourceEnd = window.upperBound
         guard sourceEnd - sourceStart >= VideoZoomRegion.minimumDuration else { return nil }
         // Aim where the pointer is, when we know it.
         let pointer = plan.cursorTrack?.visiblePosition(at: sourceTime(forTimeline: min(start + 0.6, end)))
@@ -1319,8 +1376,9 @@ final class VideoEditorModel: ObservableObject {
                 newEnd = newStart + VideoZoomRegion.minimumDuration
             }
         }
-        let sourceStart = sourceTime(forTimeline: newStart)
-        let sourceEnd = sourceTime(forTimeline: newEnd)
+        let window = sourceWindow(timelineStart: newStart, timelineEnd: newEnd)
+        let sourceStart = window.lowerBound
+        let sourceEnd = window.upperBound
         updateZoom(id, coalesce: coalesce) { region in
             region.start = sourceStart
             region.end = max(sourceEnd, sourceStart + VideoZoomRegion.minimumDuration)
@@ -1346,7 +1404,11 @@ final class VideoEditorModel: ObservableObject {
         alert.addButton(withTitle: "Start Over")
         alert.addButton(withTitle: "Cancel")
         guard alert.runModal() == .alertFirstButtonReturn else { return }
-        resetToOriginal()
+        Task {
+            // Every added recording's own data first (read off the main thread).
+            await loadAppendedMetadata()
+            resetToOriginal()
+        }
     }
 
     /// Start Over without asking. Edits go; added recordings stay.
@@ -1408,8 +1470,9 @@ final class VideoEditorModel: ObservableObject {
         let end = min(start + length, gap.upperBound)
         var copy = region
         copy.id = UUID()
-        copy.start = sourceTime(forTimeline: start)
-        copy.end = sourceTime(forTimeline: end)
+        let window = sourceWindow(timelineStart: start, timelineEnd: end)
+        copy.start = window.lowerBound
+        copy.end = max(window.upperBound, window.lowerBound + VideoZoomRegion.minimumDuration)
         copy.isAuto = false
         mutate { project in
             project.zoomRegions.append(copy)
@@ -1475,8 +1538,9 @@ final class VideoEditorModel: ObservableObject {
         // A picture needs a file first (VideoImageOverlays.swift).
         guard kind != .image else { return chooseImageOverlay() }
         let time = clock.time
-        let sourceStart = placementSourceTime(forTimeline: time)
-        let sourceEnd = sourceTime(forTimeline: min(time + (kind == .blur ? 4 : 3), timelineDuration))
+        let window = sourceWindow(timelineStart: time, timelineEnd: min(time + (kind == .blur ? 4 : 3), timelineDuration))
+        let sourceStart = window.lowerBound
+        let sourceEnd = window.upperBound
         var effect = VideoDemoOverlayEffect(
             kind: kind,
             time: sourceStart,
@@ -1594,8 +1658,9 @@ final class VideoEditorModel: ObservableObject {
     func setOverlayWindow(_ id: UUID, start: Double, end: Double, coalesce: String) {
         let safeStart = min(max(start, 0), max(timelineDuration - 0.2, 0))
         let safeEnd = min(max(end, safeStart + 0.2), timelineDuration)
-        let sourceStart = sourceTime(forTimeline: safeStart)
-        let sourceEnd = sourceTime(forTimeline: safeEnd)
+        let window = sourceWindow(timelineStart: safeStart, timelineEnd: safeEnd)
+        let sourceStart = window.lowerBound
+        let sourceEnd = window.upperBound
         updateOverlay(id, coalesce: coalesce) { effect in
             effect.time = sourceStart
             effect.duration = max(sourceEnd - sourceStart, 0.2)
@@ -1849,6 +1914,8 @@ final class VideoEditorModel: ObservableObject {
         playback.pause()
         cancelCaptions()
         voiceTask?.cancel()
+        // Nothing left running asks about the quit (or holds an update).
+        endVoiceQuitToken()
         saveDraftNow()
         keepHistoryForSession()
         VideoExportQueue.shared.editorClosed(sourcePath: project.sourcePath)

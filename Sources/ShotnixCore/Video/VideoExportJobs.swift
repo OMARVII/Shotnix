@@ -53,6 +53,71 @@ enum VideoExportFiles {
         for name in (try? fileManager.contentsOfDirectory(atPath: folder.path)) ?? [] where name.hasPrefix(prefix) {
             try? fileManager.removeItem(at: folder.appendingPathComponent(name))
         }
+        forget(temporary)
+    }
+
+    // MARK: Working files in progress
+
+    /// Working files being written right now, so a crash or a force quit
+    /// mid-export doesn't leave hidden gigabytes beside the destination:
+    /// the next launch removes whatever is still listed.
+    private static let registryLock = NSLock()
+
+    private static var registryURL: URL {
+        VideoStorageLocation.root.appendingPathComponent("Shotnix", isDirectory: true).appendingPathComponent("VideoExportsInProgress.json")
+    }
+
+    private static func readRegistry() -> [String] {
+        guard let data = try? Data(contentsOf: registryURL) else { return [] }
+        return (try? JSONDecoder().decode([String].self, from: data)) ?? []
+    }
+
+    private static func writeRegistry(_ paths: [String]) {
+        try? FileManager.default.createDirectory(at: registryURL.deletingLastPathComponent(), withIntermediateDirectories: true)
+        if let data = try? JSONEncoder().encode(paths) { try? data.write(to: registryURL, options: .atomic) }
+    }
+
+    /// An export starts writing `temporary`.
+    static func remember(_ temporary: URL) {
+        registryLock.lock()
+        defer { registryLock.unlock() }
+        let path = temporary.standardizedFileURL.path
+        var paths = readRegistry()
+        if !paths.contains(path) { paths.append(path) }
+        writeRegistry(paths)
+    }
+
+    private static func forget(_ temporary: URL) {
+        registryLock.lock()
+        defer { registryLock.unlock() }
+        let path = temporary.standardizedFileURL.path
+        let paths = readRegistry()
+        guard paths.contains(path) else { return }
+        writeRegistry(paths.filter { $0 != path })
+    }
+
+    /// Working files left by an export that never finished (a crash, a
+    /// force quit) — only ever Shotnix's own ".shotnix-partial." files.
+    /// Call at launch, before any export starts.
+    @discardableResult
+    static func removeLeftovers() -> Int {
+        registryLock.lock()
+        let paths = readRegistry()
+        writeRegistry([])
+        registryLock.unlock()
+        var removed = 0
+        for path in paths where URL(fileURLWithPath: path).lastPathComponent.contains(".shotnix-partial.") {
+            let url = URL(fileURLWithPath: path)
+            if FileManager.default.fileExists(atPath: url.path) { removed += 1 }
+            let fileManager = FileManager.default
+            try? fileManager.removeItem(at: url)
+            let folder = url.deletingLastPathComponent()
+            let prefix = url.lastPathComponent + ".sb-"
+            for name in (try? fileManager.contentsOfDirectory(atPath: folder.path)) ?? [] where name.hasPrefix(prefix) {
+                try? fileManager.removeItem(at: folder.appendingPathComponent(name))
+            }
+        }
+        return removed
     }
 
     /// Puts the finished file in place. An existing file is replaced in one
@@ -221,6 +286,8 @@ final class VideoExportQueue: ObservableObject {
         /// Subtitles written next to it.
         fileprivate(set) var subtitlesURL: URL?
         fileprivate var cancelRequested = false
+        /// The work itself: cancelling it stops a voice cleanup mid-way.
+        fileprivate var task: Task<Void, Never>?
         fileprivate var token: AppTermination.Token?
         fileprivate var quitWaiters: [@MainActor () -> Void] = []
 
@@ -299,6 +366,7 @@ final class VideoExportQueue: ObservableObject {
             startNext()
         case .enhancingVoice, .running:
             job.cancelRequested = true
+            job.task?.cancel()
         default:
             break
         }
@@ -320,6 +388,7 @@ final class VideoExportQueue: ObservableObject {
 
     private func finish(_ job: Job, _ state: Job.State) {
         job.state = state
+        job.task = nil
         AppTermination.end(job.token)
         job.token = nil
         let waiters = job.quitWaiters
@@ -337,7 +406,7 @@ final class VideoExportQueue: ObservableObject {
         guard running == nil, let next = jobs.first(where: { $0.state == .queued }) else { return }
         running = next
         next.startedAt = Date()
-        Task { await run(next) }
+        next.task = Task { await run(next) }
     }
 
     private func run(_ job: Job) async {

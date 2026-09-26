@@ -10,21 +10,30 @@ final class VideoSourceFrames: @unchecked Sendable {
 
     private let lock = NSLock()
     private let resolver: Resolver
+    /// Frames are decoded no bigger than this (nil: full size — the export).
+    let maximumSize: CGSize?
+    /// The most the cache keeps, in decoded bytes.
+    let byteLimit: Int
     private var generators: [String: AVAssetImageGenerator] = [:]
     private var cache: [String: CIImage] = [:]
     private var order: [String] = []
     private var pending: Set<String> = []
+    private(set) var cachedBytes = 0
+    /// Frames asked of the decoder so far (tests watch it).
+    private(set) var decodeRequests = 0
 
-    init(resolver: @escaping Resolver) {
+    init(maximumSize: CGSize? = nil, byteLimit: Int = 512 << 20, resolver: @escaping Resolver) {
+        self.maximumSize = maximumSize
+        self.byteLimit = byteLimit
         self.resolver = resolver
     }
 
     /// Frames of a project's recordings (one or several).
-    convenience init(project: VideoDemoProject) {
+    convenience init(project: VideoDemoProject, maximumSize: CGSize? = nil, byteLimit: Int = 512 << 20) {
         let primary = project.sourceURL
         let sources = project.hasAppendedSources ? project.sources : []
         let paths = Dictionary(sources.map { ($0.id, $0.isPrimary ? primary : (VideoSourceLocator.resolve($0) ?? URL(fileURLWithPath: $0.path))) }, uniquingKeysWith: { first, _ in first })
-        self.init { time in
+        self.init(maximumSize: maximumSize, byteLimit: byteLimit) { time in
             guard !sources.isEmpty else { return (primary, time) }
             guard let source = sources.last(where: { time >= $0.offset - 0.0001 }) ?? sources.first, let url = paths[source.id] else { return nil }
             return (url, min(max(time - source.offset, 0), source.duration))
@@ -39,14 +48,33 @@ final class VideoSourceFrames: @unchecked Sendable {
         generator.appliesPreferredTrackTransform = true
         generator.requestedTimeToleranceBefore = .zero
         generator.requestedTimeToleranceAfter = .zero
+        if let maximumSize { generator.maximumSize = maximumSize }
         generators[url.path] = generator
         return generator
     }
 
+    private static func bytes(of image: CIImage) -> Int {
+        Int(image.extent.width * image.extent.height) * 4
+    }
+
+    /// Keeps the newest frames within the byte budget.
     private func store(_ image: CIImage, for key: String) {
+        if let old = cache[key] { cachedBytes -= Self.bytes(of: old) } else { order.append(key) }
         cache[key] = image
-        order.append(key)
-        if order.count > 24 { cache.removeValue(forKey: order.removeFirst()) }
+        cachedBytes += Self.bytes(of: image)
+        while cachedBytes > byteLimit, order.count > 1 {
+            let oldest = order.removeFirst()
+            if let dropped = cache.removeValue(forKey: oldest) { cachedBytes -= Self.bytes(of: dropped) }
+        }
+    }
+
+    /// Whether the frame for a source moment is decoded (or on its way).
+    func isCachedOrPending(_ sourceTime: Double) -> Bool {
+        guard let (url, time) = resolver(sourceTime) else { return false }
+        let key = key(url, time)
+        lock.lock()
+        defer { lock.unlock() }
+        return cache[key] != nil || pending.contains(key)
     }
 
     /// Decodes now (the export's render thread).
@@ -59,6 +87,7 @@ final class VideoSourceFrames: @unchecked Sendable {
             return cached
         }
         let generator = generator(for: url)
+        decodeRequests += 1
         lock.unlock()
         guard let cgImage = try? generator.copyCGImage(at: CMTime(seconds: time, preferredTimescale: 600), actualTime: nil) else { return nil }
         let image = CIImage(cgImage: cgImage)
@@ -78,6 +107,7 @@ final class VideoSourceFrames: @unchecked Sendable {
         if let cached = cache[key] { return cached }
         guard !pending.contains(key) else { return nil }
         pending.insert(key)
+        decodeRequests += 1
         let generator = generator(for: url)
         generator.generateCGImageAsynchronously(for: CMTime(seconds: time, preferredTimescale: 600)) { [weak self] cgImage, _, _ in
             guard let self else { return }
@@ -115,11 +145,16 @@ final class VideoEditorMedia {
     func begin(_ key: String) -> Bool { loading.insert(key).inserted }
     func end(_ key: String) { loading.remove(key) }
 
+    /// The preview's held frames: no bigger than a large preview needs, and
+    /// a budget that holds the dissolves around the playhead.
+    static let previewFrameSize = CGSize(width: 1920, height: 1920)
+    static let previewFrameBytes = 160 << 20
+
     /// Frames for the project's current recordings (rebuilt when they change).
     func frames(for project: VideoDemoProject) -> VideoSourceFrames {
         let key = [project.sourcePath] + project.sources.map { "\($0.id)@\($0.offset)" }
         if let frames, key == framesKey { return frames }
-        let built = VideoSourceFrames(project: project)
+        let built = VideoSourceFrames(project: project, maximumSize: Self.previewFrameSize, byteLimit: Self.previewFrameBytes)
         frames = built
         framesKey = key
         return built
@@ -257,9 +292,7 @@ extension VideoEditorModel {
         if project.hasAppendedSources {
             let audio = playback.audioSources ?? VideoAudioSource.sources(from: primary, kinds: audioKinds)
             media.layout = await VideoSourceLayout.load(project: project, primary: primary, primaryAudio: audio, primaryCamera: playback.camera, enhanceVoice: project.audio.enhanceVoice)
-            for source in project.sources where !source.isPrimary && media.appendedMetadata[source.id] == nil {
-                media.appendedMetadata[source.id] = VideoSourceLocator.resolve(source).flatMap { VideoDemoSidecarStore.load(for: $0) }
-            }
+            await loadAppendedMetadata()
         } else {
             media.layout = nil
         }
@@ -273,6 +306,28 @@ extension VideoEditorModel {
         refreshPlayback()
         if project.music?.ducking == true { await loadSpeech(); refreshPlayback() }
         if project.hasAppendedSources { await loadSourceMedia() }
+    }
+
+    /// The added recordings' own data (pointer paths: big), read off the
+    /// main thread; a recording found somewhere new has its data point there.
+    func loadAppendedMetadata() async {
+        let unread = project.sources.filter { !$0.isPrimary && media.appendedMetadata[$0.id] == nil }
+        guard !unread.isEmpty else { return }
+        let read = await Task.detached(priority: .userInitiated) { () -> [(id: UUID, metadata: VideoDemoRecordingMetadata?, movedTo: String?)] in
+            unread.map { source in
+                guard let url = VideoSourceLocator.resolve(source) else { return (source.id, nil, nil) }
+                let metadata = VideoDemoSidecarStore.load(for: url).map { VideoDemoSidecarStore.recordLocation(of: $0, for: url) }
+                return (source.id, metadata, url.standardizedFileURL.path != source.path ? url.standardizedFileURL.path : nil)
+            }
+        }.value
+        activityCache = nil
+        for entry in read {
+            media.appendedMetadata[entry.id] = entry.metadata
+            // Moved: the project remembers where it is now (not an edit).
+            if let path = entry.movedTo, let index = project.sources.firstIndex(where: { $0.id == entry.id }) {
+                project.sources[index].path = path
+            }
+        }
     }
 
     /// The added recordings' sound again (Enhance voice turned on or off,
@@ -318,8 +373,9 @@ extension VideoEditorModel {
     }
 
     /// The held frame a dissolve at `time` needs, if it's ready (the preview
-    /// redraws when it arrives).
+    /// redraws when it arrives). The dissolves just ahead are fetched too.
     func heldFrame(at time: Double) -> CIImage? {
+        prefetchHeldFrames(around: time)
         guard let request = plan.heldFrameRequest(at: time) else { return nil }
         let renderer = previewRenderer
         return media.frames(for: project).cachedImage(at: request.sourceTime) {
@@ -327,13 +383,19 @@ extension VideoEditorModel {
         }
     }
 
-    /// Fetches every dissolve's held frames ahead of playback.
-    func prefetchHeldFrames() {
+    /// Seconds around the playhead whose dissolves are fetched ahead.
+    static let heldFrameWindow = 6.0
+
+    /// Fetches the held frames of the dissolves near the playhead — not
+    /// while something is being dragged (the plan changes every moment).
+    func prefetchHeldFrames(around time: Double? = nil) {
+        guard !isGestureInProgress else { return }
+        let center = time ?? clock.time
         let frames = media.frames(for: project)
         let renderer = previewRenderer
-        for span in plan.transitions where span.kind == .dissolve {
-            for time in [span.incomingSource, span.outgoingSource] {
-                _ = frames.cachedImage(at: time) { MainActor.assumeIsolated { renderer.invalidate() } }
+        for span in plan.transitions where span.kind == .dissolve && span.end >= center - 1 && span.start <= center + Self.heldFrameWindow {
+            for sourceTime in [span.incomingSource, span.outgoingSource] where !frames.isCachedOrPending(sourceTime) {
+                _ = frames.cachedImage(at: sourceTime) { MainActor.assumeIsolated { renderer.invalidate() } }
             }
         }
     }

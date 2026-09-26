@@ -191,6 +191,9 @@ enum VideoRenderContext {
 /// geometry, the camera path, the pointer path, and timeline-mapped
 /// clicks and overlays. Immutable — safe to hand to an export thread.
 final class VideoRenderPlan: @unchecked Sendable {
+    /// This plan and no other (a freed plan's memory address gets reused).
+    let id = UUID()
+
     struct Click {
         let start: Double
         let end: Double
@@ -200,8 +203,22 @@ final class VideoRenderPlan: @unchecked Sendable {
 
     struct Overlay {
         let effect: VideoDemoOverlayEffect
+        /// First start to last end (lanes, snapping).
         let start: Double
         let end: Double
+        /// Where it actually plays: one stretch per clip it's in, apart when
+        /// clips were moved around.
+        var ranges: [ClosedRange<Double>]
+
+        init(effect: VideoDemoOverlayEffect, start: Double, end: Double, ranges: [ClosedRange<Double>]? = nil) {
+            self.effect = effect
+            self.start = start
+            self.end = end
+            self.ranges = ranges ?? [start...end]
+        }
+
+        func isShowing(at time: Double, margin: Double = 0) -> Bool { VideoRenderPlan.contains(ranges, time, margin: margin) }
+        func range(at time: Double) -> ClosedRange<Double>? { VideoRenderPlan.range(in: ranges, at: time) }
     }
 
     /// A shortcut on screen; repeats of the same combo stack into one
@@ -220,11 +237,34 @@ final class VideoRenderPlan: @unchecked Sendable {
 
     struct Caption {
         let id: UUID
+        /// First start to last end (lanes, snapping).
         let start: Double
         let end: Double
         let text: String
         /// Source-time word timings for highlighting.
         let words: [VideoCaptionWord]
+        /// Where it actually plays (apart when clips were moved around).
+        var ranges: [ClosedRange<Double>]
+
+        init(id: UUID, start: Double, end: Double, text: String, words: [VideoCaptionWord], ranges: [ClosedRange<Double>]? = nil) {
+            self.id = id
+            self.start = start
+            self.end = end
+            self.text = text
+            self.words = words
+            self.ranges = ranges ?? [start...end]
+        }
+
+        func range(at time: Double) -> ClosedRange<Double>? { VideoRenderPlan.range(in: ranges, at: time, upperOpen: true) }
+    }
+
+    /// Whether `time` falls in one of `ranges`.
+    static func contains(_ ranges: [ClosedRange<Double>], _ time: Double, margin: Double = 0) -> Bool {
+        ranges.contains { time >= $0.lowerBound - margin && time <= $0.upperBound + margin }
+    }
+
+    static func range(in ranges: [ClosedRange<Double>], at time: Double, upperOpen: Bool = false) -> ClosedRange<Double>? {
+        ranges.first { time >= $0.lowerBound && (upperOpen ? time < $0.upperBound : time <= $0.upperBound) }
     }
 
     /// How long a shortcut stays up after its last press (timeline seconds).
@@ -264,6 +304,15 @@ final class VideoRenderPlan: @unchecked Sendable {
         let start: Double
         let end: Double
         let layout: VideoCameraLayoutRegion.Layout
+        /// Where it actually plays (apart when clips were moved around).
+        var ranges: [ClosedRange<Double>]
+
+        init(start: Double, end: Double, layout: VideoCameraLayoutRegion.Layout, ranges: [ClosedRange<Double>]? = nil) {
+            self.start = start
+            self.end = end
+            self.layout = layout
+            self.ranges = ranges ?? [start...end]
+        }
     }
 
     /// Timeline stretches where the camera changes layout.
@@ -307,10 +356,13 @@ final class VideoRenderPlan: @unchecked Sendable {
     /// The layout at `time` and how far into it we are (0 → 1 → 0 across
     /// the stretch, easing over half a second at each end).
     func cameraLayout(at time: Double) -> (layout: VideoCameraLayoutRegion.Layout, progress: Double)? {
-        guard let span = cameraLayouts.first(where: { time >= $0.start && time <= $0.end }) else { return nil }
-        let ramp = min(0.5, (span.end - span.start) / 3)
-        let progress = ramp > 0 ? min((time - span.start) / ramp, (span.end - time) / ramp, 1) : 1
-        return (span.layout, min(max(progress, 0), 1))
+        for span in cameraLayouts {
+            guard let range = Self.range(in: span.ranges, at: time) else { continue }
+            let ramp = min(0.5, (range.upperBound - range.lowerBound) / 3)
+            let progress = ramp > 0 ? min((time - range.lowerBound) / ramp, (range.upperBound - time) / ramp, 1) : 1
+            return (span.layout, min(max(progress, 0), 1))
+        }
+        return nil
     }
 
     init(
@@ -330,9 +382,9 @@ final class VideoRenderPlan: @unchecked Sendable {
         self.reframe = reframe
         let layoutSegments = project.timelineSegments(totalDuration: sourceDuration)
         cameraLayouts = hasWebcam ? project.cameraLayouts.sorted { $0.start < $1.start }.compactMap { region in
-            let ranges = VideoDemoProject.timelineRanges(sourceStart: region.start, sourceEnd: region.end, segments: layoutSegments)
+            let ranges = VideoDemoProject.timelineRanges(sourceStart: region.start, sourceEnd: region.end, segments: layoutSegments).sorted { $0.lowerBound < $1.lowerBound }
             guard let first = ranges.first, let last = ranges.last else { return nil }
-            return CameraLayoutSpan(start: first.lowerBound, end: last.upperBound, layout: region.layout)
+            return CameraLayoutSpan(start: first.lowerBound, end: last.upperBound, layout: region.layout, ranges: ranges)
         } : []
         stageRect = project.stageRect(in: canvasSize)
         crop = project.crop.normalized
@@ -389,16 +441,16 @@ final class VideoRenderPlan: @unchecked Sendable {
         // highest lane ends up in front.
         let ordered = project.overlayEffects.sorted { $0.layer != $1.layer ? $0.layer < $1.layer : $0.time < $1.time }
         overlays = ordered.compactMap { effect in
-            let ranges = VideoDemoProject.timelineRanges(sourceStart: effect.time, sourceEnd: effect.time + max(effect.duration, 0.1), segments: segments)
+            let ranges = VideoDemoProject.timelineRanges(sourceStart: effect.time, sourceEnd: effect.time + max(effect.duration, 0.1), segments: segments).sorted { $0.lowerBound < $1.lowerBound }
             guard let first = ranges.first, let last = ranges.last else { return nil }
-            return Overlay(effect: effect, start: first.lowerBound, end: last.upperBound)
+            return Overlay(effect: effect, start: first.lowerBound, end: last.upperBound, ranges: ranges)
         }
 
         keystrokeStyle = project.keystrokeStyle
-        let pressed: [(time: Double, keys: [String])] = project.keystrokes.sorted { $0.time < $1.time }.compactMap { event in
+        let pressed: [(time: Double, keys: [String])] = project.keystrokes.compactMap { event in
             guard let time = VideoDemoProject.timelineTimeIfIncluded(sourceTime: event.time, segments: segments) else { return nil }
             return (time, event.keys)
-        }
+        }.sorted { $0.time < $1.time }
         var keystrokes: [Keystroke] = []
         for press in pressed {
             if var last = keystrokes.last, last.keys == press.keys, press.time < last.end {
@@ -444,7 +496,7 @@ final class VideoRenderPlan: @unchecked Sendable {
             return false
         }
         return lines.sorted { $0.start < $1.start }.compactMap { line in
-            let ranges = VideoDemoProject.timelineRanges(sourceStart: line.start, sourceEnd: max(line.end, line.start + 0.1), segments: segments)
+            let ranges = VideoDemoProject.timelineRanges(sourceStart: line.start, sourceEnd: max(line.end, line.start + 0.1), segments: segments).sorted { $0.lowerBound < $1.lowerBound }
             guard let first = ranges.first, let last = ranges.last else { return nil }
             var text = line.text
             var words = line.words
@@ -460,7 +512,7 @@ final class VideoRenderPlan: @unchecked Sendable {
                 text = translated
                 words = []
             }
-            return Caption(id: line.id, start: first.lowerBound, end: last.upperBound, text: text, words: words)
+            return Caption(id: line.id, start: first.lowerBound, end: last.upperBound, text: text, words: words, ranges: ranges)
         }
     }
 
@@ -469,7 +521,7 @@ final class VideoRenderPlan: @unchecked Sendable {
     }
 
     func caption(at time: Double) -> Caption? {
-        captions.last { time >= $0.start && time < $0.end }
+        captions.last { $0.range(at: time) != nil }
     }
 
     func sourceTime(forTimelineTime time: Double) -> Double {
@@ -666,7 +718,7 @@ final class VideoFrameRenderer {
 
         // 4. Overlays (text, arrows, highlights, blur). Images are pinned
         // to the frame, so they come later, with the output layers.
-        for overlay in plan.overlays where overlay.effect.kind != .image && timelineTime >= overlay.start && timelineTime <= overlay.end {
+        for overlay in plan.overlays where overlay.effect.kind != .image && overlay.isShowing(at: timelineTime) {
             scene = composite(overlay: overlay, over: scene, plan: plan, geometry: geometry, time: timelineTime, solid: overlay.effect.id == options.solidOverlay)
         }
 
@@ -755,12 +807,13 @@ final class VideoFrameRenderer {
     /// Image annotations, pinned to the output frame (lower lanes first).
     private func drawImages(on input: CIImage, plan: VideoRenderPlan, outputSize: CGSize, time: Double, options: Options) -> CIImage {
         var scene = input
-        for overlay in plan.overlays where overlay.effect.kind == .image && time >= overlay.start && time <= overlay.end {
-            guard let image = overlay.effect.image, let picture = VideoImageOverlayRenderer.picture(path: image.path) else { continue }
-            let fade = min(0.18, (overlay.end - overlay.start) / 3)
+        for overlay in plan.overlays where overlay.effect.kind == .image {
+            guard let range = overlay.range(at: time),
+                  let image = overlay.effect.image, let picture = VideoImageOverlayRenderer.picture(path: image.path) else { continue }
+            let fade = min(0.18, (range.upperBound - range.lowerBound) / 3)
             var opacity = 1.0
             if fade > 0, overlay.effect.id != options.solidOverlay {
-                opacity = min(max(min((time - overlay.start) / fade, (overlay.end - time) / fade, 1), 0), 1)
+                opacity = min(max(min((time - range.lowerBound) / fade, (range.upperBound - time) / fade, 1), 0), 1)
             }
             opacity *= min(max(image.opacity, 0), 1)
             guard opacity > 0.001 else { continue }
@@ -814,7 +867,7 @@ final class VideoFrameRenderer {
 
     /// One side of a dissolve, frozen at the cut — rendered once per cut.
     private func heldSide(_ span: VideoTransitionSpan, incoming: Bool, source: CIImage, plan: VideoRenderPlan, outputSize: CGSize, options: Options) -> CIImage {
-        let key = "\(ObjectIdentifier(plan).hashValue)-\(span.index)-\(incoming)-\(Int(outputSize.width))x\(Int(outputSize.height))"
+        let key = "\(plan.id)-\(span.index)-\(incoming)-\(Int(outputSize.width))x\(Int(outputSize.height))"
         if let cached = heldCache[key] { return cached }
         var held = options
         held.skipFinish = true
@@ -979,11 +1032,13 @@ final class VideoFrameRenderer {
         let logical = CGRect(x: center.x - width / 2, y: center.y - height / 2, width: width, height: height)
         let rect = geometry.rect(logical)
 
-        // Fade in and out (blur stays fully opaque while visible).
-        let fade = min(0.18, (overlay.end - overlay.start) / 3)
+        // Fade in and out of each stretch it plays in (blur stays fully
+        // opaque while visible).
+        let range = overlay.range(at: time) ?? overlay.start...overlay.end
+        let fade = min(0.18, (range.upperBound - range.lowerBound) / 3)
         var opacity = 1.0
         if effect.kind != .blur, fade > 0, !solid {
-            opacity = min((time - overlay.start) / fade, (overlay.end - time) / fade, 1)
+            opacity = min((time - range.lowerBound) / fade, (range.upperBound - time) / fade, 1)
         }
         opacity = min(max(opacity, 0), 1)
         guard opacity > 0.001 else { return scene }
@@ -1207,8 +1262,8 @@ final class VideoFrameRenderer {
             output = faded(placed, opacity).composited(over: output)
         }
 
-        if plan.captionStyle.visible, let caption = plan.caption(at: timelineTime) {
-            let opacity = Self.fade(time: timelineTime, start: caption.start, end: caption.end, fadeIn: 0.08, fadeOut: 0.12)
+        if plan.captionStyle.visible, let caption = plan.caption(at: timelineTime), let range = caption.range(at: timelineTime) {
+            let opacity = Self.fade(time: timelineTime, start: range.lowerBound, end: range.upperBound, fadeIn: 0.08, fadeOut: 0.12)
             if opacity > 0.001, let image = captionImage(caption, style: plan.captionStyle, sourceTime: sourceTime, outputSize: outputSize) {
                 place(image, position: plan.captionStyle.position, opacity: opacity, pop: 1)
             }

@@ -57,6 +57,31 @@ final class VideoAccessibilityTests: XCTestCase {
         XCTAssertGreaterThan(model.clock.time, time)
     }
 
+    /// The music lane and the intro and outro cards are drawn, so they give
+    /// VoiceOver an element each — what they are, and actions to open or
+    /// remove them.
+    func testMusicAndCardsHaveSpokenDescriptionsAndActions() async throws {
+        let model = try await T.make(in: directory, T.Options(seconds: 6, pointer: false))
+        let song = directory.appendingPathComponent("Calm Theme.m4a")
+        try VideoInspection.writeTone(to: song, frequency: 330, seconds: 4)
+        await model.addMusic(from: song)
+        model.setIntroEnabled(true)
+        model.setOutroEnabled(true)
+        model.setStyle { $0.cards.intro.title = "Welcome" }
+
+        XCTAssertEqual(model.cardAccessibilityLabel(isIntro: true), "Intro card “Welcome”, 0:00.0 to 0:03.0")
+        XCTAssertTrue(model.cardAccessibilityLabel(isIntro: false).hasPrefix("Outro card “Thanks for watching”, 0:09.0 to 0:12.0"), model.cardAccessibilityLabel(isIntro: false))
+        XCTAssertTrue(model.musicAccessibilityLabel.hasPrefix("Music “Calm Theme.m4a”, 35% volume, dips under your voice"), model.musicAccessibilityLabel)
+
+        // Their actions: open the settings, with the playhead on the card.
+        model.inspectorTab = .captions
+        model.showMusicSettings()
+        XCTAssertEqual(model.inspectorTab, .audio)
+        model.showCardSettings(isIntro: false)
+        XCTAssertEqual(model.inspectorTab, .background)
+        XCTAssertGreaterThanOrEqual(model.clock.time, 9)
+    }
+
     func testEveryKindOfItemHasASpokenDescription() async throws {
         let model = try await T.make(in: directory, T.Options(seconds: 10, pointer: false))
         let zoom = try XCTUnwrap(model.addZoom(at: 1, length: 1))

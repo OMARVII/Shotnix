@@ -77,6 +77,84 @@ final class VideoFramingTests: XCTestCase {
         XCTAssertNil(plan.card(at: 2.5))
     }
 
+    /// After a clip is moved, things timed across the cut show only where
+    /// their own clips play — not over the clips now between them.
+    func testItemsInMovedClipsShowOnlyWhereTheirClipsPlay() throws {
+        var project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/moved-clips.mp4"), duration: 4, sourceSize: CGSize(width: 1280, height: 720))
+        let a = VideoDemoTimelineClip(sourceStart: 0, sourceEnd: 2)
+        let b = VideoDemoTimelineClip(sourceStart: 2, sourceEnd: 4)
+        project.timelineClips = [a, b]
+        // Everything spans the cut at 2 s (source 1.5–2.5).
+        project.overlayEffects = [VideoDemoOverlayEffect(kind: .highlight, time: 1.5, duration: 1)]
+        project.captions = [VideoCaptionLine(start: 1.5, end: 2.5, text: "Across the cut")]
+        project.cameraLayouts = [VideoCameraLayoutRegion(start: 1.5, end: 2.5, layout: .fullscreen)]
+        project.keystrokes = [VideoKeystrokeEvent(time: 3.0, keys: ["⌘", "S"]), VideoKeystrokeEvent(time: 0.5, keys: ["⌘", "Z"])]
+        // B first: B plays 0–2 (source 2–4), A plays 2–4 (source 0–2).
+        XCTAssertTrue(project.moveClip(id: b.id, toIndex: 0, totalDuration: 4))
+        let plan = VideoDemoExporter.makePlan(project: project, sourceDuration: 4, recording: nil, hasWebcam: true)
+
+        let overlay = try XCTUnwrap(plan.overlays.first)
+        XCTAssertTrue(overlay.isShowing(at: 0.25), "in B's part")
+        XCTAssertTrue(overlay.isShowing(at: 3.75), "in A's part")
+        XCTAssertFalse(overlay.isShowing(at: 2.0), "not over A's start, which it never covered")
+        XCTAssertNotNil(plan.caption(at: 0.25))
+        XCTAssertNotNil(plan.caption(at: 3.75))
+        XCTAssertNil(plan.caption(at: 2.0))
+        XCTAssertNotNil(plan.cameraLayout(at: 0.25))
+        XCTAssertNil(plan.cameraLayout(at: 2.0))
+        // Shortcuts in the order they play.
+        XCTAssertEqual(plan.keystrokes.map(\.start), [1.0, 2.5])
+
+        // The subtitles have a cue for each part, in order.
+        let srt = VideoCaptionBuilder.srt(lines: project.captions, segments: project.timelineSegments(totalDuration: 4))
+        XCTAssertTrue(srt.contains("1\n00:00:00,000 --> 00:00:00,500\nAcross the cut"), srt)
+        XCTAssertTrue(srt.contains("2\n00:00:03,500 --> 00:00:04,000\nAcross the cut"), srt)
+        let vtt = VideoCaptionBuilder.vtt(lines: project.captions, segments: project.timelineSegments(totalDuration: 4))
+        XCTAssertEqual(vtt.components(separatedBy: "Across the cut").count - 1, 2, vtt)
+
+        // Drawn: the highlight's dark ring isn't in the frame at 2 s.
+        let size = CGSize(width: 640, height: 360)
+        let white = CIImage(color: .white).cropped(to: CGRect(origin: .zero, size: size))
+        let renderer = VideoFrameRenderer()
+        let over = renderer.render(source: white, timelineTime: 0.25, plan: plan, outputSize: size)
+        let clear = renderer.render(source: white, timelineTime: 2.0, plan: plan, outputSize: size)
+        let reference = renderer.render(source: white, timelineTime: 2.0, plan: VideoDemoExporter.makePlan(project: { var p = project; p.overlayEffects = []; p.captions = []; return p }(), sourceDuration: 4, recording: nil, hasWebcam: true), outputSize: size)
+        func sample(_ image: CIImage) -> (r: Double, g: Double, b: Double) { VideoInspection.color(of: image, size: size, x: 0.5, y: 0.5) }
+        XCTAssertFalse(VideoInspection.isClose(sample(over), sample(clear), tolerance: 0.02), "the highlight shows in B's part")
+        XCTAssertTrue(VideoInspection.isClose(sample(clear), sample(reference), tolerance: 0.02), "and nothing at 2 s")
+    }
+
+    /// A dissolve's frozen side belongs to the plan it was drawn for — a new
+    /// plan (even one that lands at the old one's address) draws its own.
+    func testDissolvesNeverShowAnOlderPlansFrozenSide() throws {
+        var project = VideoDemoProject.make(sourceURL: URL(fileURLWithPath: "/tmp/held-sides.mp4"), duration: 4, sourceSize: CGSize(width: 640, height: 360))
+        project.aspectPreset = .source
+        project.padding = 0.2
+        project.timelineClips = [VideoDemoTimelineClip(sourceStart: 0, sourceEnd: 2), VideoDemoTimelineClip(sourceStart: 2, sourceEnd: 4)]
+        project.transitions.betweenClips = .dissolve
+        project.background = .color(VideoRGBA(1, 0, 0))
+        let size = CGSize(width: 320, height: 180)
+        let white = CIImage(color: .white).cropped(to: CGRect(origin: .zero, size: CGSize(width: 640, height: 360)))
+        var options = VideoFrameRenderer.Options()
+        options.transitionFrame = white
+        let renderer = VideoFrameRenderer()
+        // Drawn many times over, so freed plans' memory gets handed out again.
+        for _ in 0..<20 {
+            autoreleasepool {
+                let red = VideoDemoExporter.makePlan(project: project, sourceDuration: 4, recording: nil)
+                _ = renderer.render(source: white, timelineTime: 1.9, plan: red, outputSize: size, options: options)
+            }
+        }
+        project.background = .color(VideoRGBA(0, 0, 1))
+        for _ in 0..<20 {
+            let blue = VideoDemoExporter.makePlan(project: project, sourceDuration: 4, recording: nil)
+            let frame = renderer.render(source: white, timelineTime: 1.9, plan: blue, outputSize: size, options: options)
+            let corner = VideoInspection.color(of: frame, size: size, x: 0.03, y: 0.05)
+            XCTAssertLessThan(corner.r, 0.1, "only the new background, no red from an older plan: \(corner)")
+            XCTAssertGreaterThan(corner.b, 0.6)
+        }
+    }
+
     func testCardsDecodeFromOldDraftsAndRoundTrip() throws {
         let url = URL(fileURLWithPath: "/tmp/cards.mp4")
         var project = VideoDemoProject.make(sourceURL: url, duration: 5, sourceSize: CGSize(width: 1280, height: 720))

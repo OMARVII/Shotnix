@@ -78,14 +78,20 @@ enum VideoCaptionBuilder {
     /// the video too), speed applied — exactly what the video shows.
     static func srt(lines: [VideoCaptionLine], segments: [VideoDemoTimelineSegment]) -> String {
         var output = ""
-        var index = 1
-        for caption in VideoRenderPlan.visibleCaptions(lines, segments: segments) {
-            let text = caption.text.trimmingCharacters(in: .whitespacesAndNewlines)
-            guard !text.isEmpty else { continue }
-            output += "\(index)\n\(timestamp(caption.start)) --> \(timestamp(caption.end))\n\(text)\n\n"
-            index += 1
+        for (index, cue) in cues(lines, segments: segments).enumerated() {
+            output += "\(index + 1)\n\(timestamp(cue.start)) --> \(timestamp(cue.end))\n\(cue.text)\n\n"
         }
         return output
+    }
+
+    /// One cue for each stretch a line plays in (a line in clips that were
+    /// moved apart shows twice), in the order they play.
+    static func cues(_ lines: [VideoCaptionLine], segments: [VideoDemoTimelineSegment], translation: [UUID: String]? = nil) -> [(start: Double, end: Double, text: String)] {
+        VideoRenderPlan.visibleCaptions(lines, segments: segments, translation: translation).flatMap { caption -> [(start: Double, end: Double, text: String)] in
+            let text = caption.text.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !text.isEmpty else { return [] }
+            return caption.ranges.map { ($0.lowerBound, $0.upperBound, text) }
+        }.sorted { $0.start < $1.start }
     }
 
     /// Words back into a line: spaces between words, but none between

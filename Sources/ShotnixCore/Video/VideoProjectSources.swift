@@ -373,11 +373,13 @@ extension VideoDemoProject {
         for later in sources.indices where later >= index {
             sources[later].offset -= gap
         }
+        // The length of what's left, before the list may go (with just one
+        // recording left, it has none).
+        let total = sources.map(\.end).max() ?? removed.offset
         if sources.count == 1 {
             // Back to a single recording.
             sources = []
         }
-        let total = sourceAxisDuration ?? (sources.first?.duration ?? removed.offset)
         ensureTimeline(totalDuration: total)
         return true
     }
@@ -454,6 +456,24 @@ enum VideoSourcesTranscription {
         }
         guard !words.isEmpty else { throw VideoCaptionTranscriber.Failure.nothingHeard }
         return VideoCaptionTranscriber.Result(words: words.sorted { $0.start < $1.start }, language: language ?? Locale.current.identifier(.bcp47))
+    }
+
+    /// Words timed on an older order of the recordings, moved to where each
+    /// recording sits now (a recording taken out takes its words along).
+    static func remap(_ words: [VideoCaptionWord], from old: VideoDemoProject, to new: VideoDemoProject) -> [VideoCaptionWord] {
+        typealias Place = (id: UUID?, offset: Double, primary: Bool)
+        func places(_ project: VideoDemoProject) -> [Place] {
+            project.sources.isEmpty ? [(nil, 0, true)] : project.sources.map { ($0.id, $0.offset, $0.isPrimary) }
+        }
+        let before = places(old)
+        let after = places(new)
+        guard before.map(\.offset) != after.map(\.offset) || before.map(\.id) != after.map(\.id) else { return words }
+        return words.compactMap { word in
+            guard let place = before.last(where: { word.start >= $0.offset - 0.0001 }) ?? before.first,
+                  let now = after.first(where: { place.primary ? $0.primary : $0.id == place.id }) else { return nil }
+            let shift = now.offset - place.offset
+            return VideoCaptionWord(text: word.text, start: word.start + shift, end: word.end + shift)
+        }.sorted { $0.start < $1.start }
     }
 
     /// An added recording's voice on its own — its cleaned-up version when
@@ -759,7 +779,11 @@ extension VideoEditorModel {
             showNotice("That video is empty", symbol: "exclamationmark.triangle.fill")
             return false
         }
-        let metadata = VideoDemoSidecarStore.load(for: canonical)
+        // Its own data (the pointer path can be megabytes), read off the
+        // main thread.
+        let metadata = await Task.detached(priority: .userInitiated) {
+            VideoDemoSidecarStore.load(for: canonical).map { VideoDemoSidecarStore.recordLocation(of: $0, for: canonical) }
+        }.value
         let kinds = VideoAudioKind.resolve(recorded: metadata?.audioTracks, channelCounts: tracks.audioChannelCounts)
         let hasPointer = metadata.map { $0.shouldRenderCursor && !$0.cursorSamples.isEmpty && !$0.nativeCursorVisible } ?? false
         let webcam = metadata?.webcam.flatMap { FileManager.default.fileExists(atPath: $0.path) ? $0 : nil }
@@ -781,6 +805,7 @@ extension VideoEditorModel {
             project.appendSource(source, metadata: metadata)
         }
         media.appendedMetadata[source.id] = metadata
+        activityCache = nil
         await reloadSources()
         // With Enhance voice on, the new recording's voice is cleaned up too.
         if project.audio.enhanceVoice { startVoiceEnhancementIfNeeded() }
@@ -792,13 +817,10 @@ extension VideoEditorModel {
         return true
     }
 
-    /// Start Over keeps the recordings added to the video, in their order.
+    /// Start Over keeps the recordings added to the video, in their order
+    /// (their own data was read when they were loaded).
     func restoreAddedRecordings(into fresh: inout VideoDemoProject) {
-        var metadata = media.appendedMetadata
-        for source in project.sources where !source.isPrimary && metadata[source.id] == nil {
-            metadata[source.id] = VideoSourceLocator.resolve(source).flatMap { VideoDemoSidecarStore.load(for: $0) }
-        }
-        fresh.restoreSources(from: project, metadata: metadata)
+        fresh.restoreSources(from: project, metadata: media.appendedMetadata)
     }
 
     /// Camera footage anywhere in the video — this recording's or an added

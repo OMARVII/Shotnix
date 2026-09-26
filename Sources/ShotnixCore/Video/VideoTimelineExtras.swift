@@ -1,6 +1,41 @@
 import AppKit
 import SwiftUI
 
+// MARK: - VoiceOver
+
+extension VideoEditorModel {
+    /// What VoiceOver says for an intro or outro card on the timeline.
+    func cardAccessibilityLabel(isIntro: Bool) -> String {
+        let card = isIntro ? project.cards.intro : project.cards.outro
+        let span = isIntro ? 0...(segments.first?.timelineStart ?? 0) : (segments.last?.timelineEnd ?? 0)...timelineDuration
+        let title = card.title.trimmingCharacters(in: .whitespacesAndNewlines)
+        return "\(isIntro ? "Intro" : "Outro") card\(title.isEmpty ? "" : " “\(title)”"), \(Self.timecode(span.lowerBound)) to \(Self.timecode(span.upperBound))"
+    }
+
+    /// Opens a card's settings (Style), with the playhead on it.
+    func showCardSettings(isIntro: Bool) {
+        let span = isIntro ? 0...(segments.first?.timelineStart ?? 0) : (segments.last?.timelineEnd ?? 0)...timelineDuration
+        selection = .none
+        inspectorTab = .background
+        seek(to: span.lowerBound + min(1, (span.upperBound - span.lowerBound) / 2))
+    }
+
+    /// What VoiceOver says for the music lane.
+    var musicAccessibilityLabel: String {
+        guard let music = project.music else { return "No music" }
+        var parts = ["Music “\(music.name)”", "\(Int((music.volume * 100).rounded()))% volume"]
+        if music.ducking { parts.append("dips under your voice") }
+        if music.loops { parts.append("loops") }
+        return parts.joined(separator: ", ") + ", \(Self.timecode(0)) to \(Self.timecode(timelineDuration))"
+    }
+
+    /// Opens the music's settings (Audio).
+    func showMusicSettings() {
+        selection = .none
+        inspectorTab = .audio
+    }
+}
+
 extension VideoTimelineMetrics {
     /// Lanes under the clips (music) — 0 when there are none.
     static func bottomLanesHeight(_ project: VideoDemoProject) -> CGFloat {
@@ -72,12 +107,17 @@ struct VideoTimelineExtrasLayer: View {
         }
         .frame(width: width, height: M.clipTrackHeight)
         .contentShape(Rectangle())
-        .onTapGesture {
-            model.selection = .none
-            model.inspectorTab = .background
-            model.seek(to: start + min(1, (end - start) / 2))
-        }
+        .onTapGesture { model.showCardSettings(isIntro: label == "Intro") }
         .help("\(label) card — click to edit it in Style")
+        // VoiceOver: what it is, and what can be done with it.
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(model.cardAccessibilityLabel(isIntro: label == "Intro"))
+        .accessibilityAddTraits(.isButton)
+        .accessibilityHint("Opens its title and length in Style")
+        .accessibilityAction { model.showCardSettings(isIntro: label == "Intro") }
+        .accessibilityAction(named: "Remove \(label) Card") {
+            if label == "Intro" { model.setIntroEnabled(false) } else { model.setOutroEnabled(false) }
+        }
         .offset(x: geometry.x(start) + 1, y: clipTop)
     }
 }

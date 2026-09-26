@@ -78,7 +78,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // Before the welcome window marks this install as launched.
         Settings.migrateCaptureSettingsIfNeeded()
         Settings.migrateRecordingFPSIfNeeded()
-        // Leftover data of deleted recordings, swept in the background.
+        // Unfinished exports' working files, then old clipboard exports (in
+        // the background).
+        VideoExportFiles.removeLeftovers()
         VideoDataCleanup.sweepAfterLaunch()
         updateController = AppUpdateController()
         captureEngine = CaptureEngine()

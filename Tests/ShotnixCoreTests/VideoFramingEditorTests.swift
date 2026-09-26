@@ -133,6 +133,134 @@ final class VideoFramingEditorTests: XCTestCase {
         model.stop()
     }
 
+    /// Many dissolves: held frames are decoded at preview size, only around
+    /// the playhead, within a byte budget — and not while dragging.
+    func testHeldFramesStaySmallFewAndNearThePlayhead() async throws {
+        let url = directory.appendingPathComponent("big.mp4")
+        try await VideoTestSupport.writeFakeRecording(to: url, size: CGSize(width: 2560, height: 1440), seconds: 20, fps: 5)
+        VideoDemoDraftStore.delete(for: url)
+        let model = VideoEditorModel(videoURL: url)
+        await model.load()
+        // 40 clips back to back, each cut dissolving.
+        model.mutate { project in
+            project.timelineClips = (0..<40).map { VideoDemoTimelineClip(sourceStart: Double($0) * 0.5, sourceEnd: Double($0 + 1) * 0.5) }
+            project.transitions.betweenClips = .dissolve
+        }
+        model.seek(to: 0)
+        XCTAssertEqual(model.plan.transitions.count, 39)
+        let frames = model.media.frames(for: model.project)
+        try await waitUntil { frames.decodeRequests > 0 }
+        let near = model.plan.transitions.filter { $0.end >= -1 && $0.start <= VideoEditorModel.heldFrameWindow }.count
+        XCTAssertLessThanOrEqual(frames.decodeRequests, near * 2 + 2, "only the dissolves near the playhead (\(frames.decodeRequests) of \(39 * 2))")
+        try await Task.sleep(nanoseconds: 1_500_000_000)
+        XCTAssertLessThanOrEqual(frames.cachedBytes, VideoEditorMedia.previewFrameBytes)
+        let held = try XCTUnwrap(frames.image(at: model.plan.transitions[0].incomingSource))
+        XCTAssertLessThanOrEqual(max(held.extent.width, held.extent.height), VideoEditorMedia.previewFrameSize.width, "preview-sized, not the full 2560 px")
+
+        // Dragging far along: nothing more is decoded until it's let go.
+        let before = frames.decodeRequests
+        model.seek(to: 15, fast: true)
+        model.setStyle(coalesce: "drag-padding") { $0.padding += 1 }
+        model.setStyle(coalesce: "drag-padding") { $0.padding += 1 }
+        XCTAssertEqual(frames.decodeRequests, before, "no fetching mid-drag")
+        model.seek(to: 15)
+        model.endGesture()
+        model.prefetchHeldFrames()
+        XCTAssertGreaterThan(frames.decodeRequests, before, "the dissolves at the new spot once it's let go")
+        model.stop()
+        VideoDemoDraftStore.delete(for: url)
+    }
+
+    /// After a clip is moved, dragging or setting an item's window across
+    /// the moved clip keeps a sensible length instead of 0.2 s.
+    func testWindowsAfterMovingAClipKeepTheirLength() async throws {
+        let model = try await model(seconds: 4)
+        let a = VideoDemoTimelineClip(sourceStart: 0, sourceEnd: 2)
+        let b = VideoDemoTimelineClip(sourceStart: 2, sourceEnd: 4)
+        model.mutate { $0.timelineClips = [a, b] }
+        model.moveClip(b.id, toIndex: 0)
+        // Timeline: B (recording 2–4) then A (recording 0–2).
+        XCTAssertEqual(model.segments.first?.clip.sourceStart ?? 0, 2, accuracy: 0.001)
+
+        // An annotation dragged from 1 s to 2.6 s: it stays in B, to B's end.
+        model.seek(to: 0.5)
+        model.addOverlay(.highlight)
+        let overlay = try XCTUnwrap(model.project.overlayEffects.first)
+        model.setOverlayWindow(overlay.id, start: 1.0, end: 2.6, coalesce: "drag")
+        let moved = try XCTUnwrap(model.project.overlayEffects.first)
+        XCTAssertEqual(moved.time, 3.0, accuracy: 0.01)
+        XCTAssertEqual(moved.duration, 1.0, accuracy: 0.01, "to the end of its clip, not 0.2 s")
+
+        // A caption, the same.
+        model.mutate { $0.captions = [VideoCaptionLine(start: 2.2, end: 2.8, text: "Hi")] }
+        let line = try XCTUnwrap(model.project.captions.first)
+        model.setCaptionWindow(line.id, timelineStart: 1.0, timelineEnd: 2.6, moveWords: false)
+        let caption = try XCTUnwrap(model.project.captions.first)
+        XCTAssertEqual(caption.end - caption.start, 1.0, accuracy: 0.01)
+
+        // A zoom made at the playhead near B's end runs to B's end.
+        model.seek(to: 1.5)
+        _ = model.addZoom(at: 1.5)
+        let zoom = try XCTUnwrap(model.project.zoomRegions.first { $0.start >= 2 })
+        XCTAssertGreaterThan(zoom.end, zoom.start + 0.3, "\(zoom.start)–\(zoom.end)")
+        XCTAssertLessThanOrEqual(zoom.end, 4.0001)
+
+        // An image for the whole video covers all of the recording on it.
+        let logo = directory.appendingPathComponent("logo.png")
+        try VideoInspection.writePNG(to: logo, size: CGSize(width: 120, height: 60), color: .orange)
+        let image = try XCTUnwrap(model.addImageOverlay(from: logo))
+        model.showImageForWholeVideo(image)
+        let whole = try XCTUnwrap(model.project.overlayEffects.first { $0.id == image })
+        XCTAssertEqual(whole.time, 0, accuracy: 0.001)
+        XCTAssertEqual(whole.duration, 4, accuracy: 0.001)
+        model.stop()
+    }
+
+    /// Moving a click (same number of clicks, same pointer path end) or a
+    /// recording changes what Shorten Pauses sees at once.
+    func testPauseDetectionSeesEditsThatKeepTheCounts() async throws {
+        let model = try await model(seconds: 4)
+        model.mutate {
+            $0.cursorSamples = [VideoDemoCursorSample(time: 0, x: 0.5, y: 0.5), VideoDemoCursorSample(time: 4, x: 0.5, y: 0.5)]
+            $0.clickEvents = [VideoDemoClickEvent(time: 1.0, x: 0.5, y: 0.5, button: .left, endTime: 1.05)]
+        }
+        XCTAssertTrue(model.activityTimes.contains { abs($0 - 1.0) < 0.001 })
+        let click = try XCTUnwrap(model.project.clickEvents.first)
+        model.moveClick(click.id, toTimeline: 3.0)
+        XCTAssertTrue(model.activityTimes.contains { abs($0 - 3.0) < 0.001 }, "the moved click: \(model.activityTimes)")
+        XCTAssertFalse(model.activityTimes.contains { abs($0 - 1.0) < 0.001 }, "not where it was")
+        model.stop()
+    }
+
+    /// A song removed from the video stays while undo can bring it back —
+    /// in the open editor, and in a closed editor's kept history.
+    func testCleanUpKeepsPicturesAndSongsUndoCanBringBack() async throws {
+        let model = try await model(seconds: 2)
+        let song = directory.appendingPathComponent("Theme.m4a")
+        try VideoInspection.writeTone(to: song, frequency: 440, seconds: 2)
+        await model.addMusic(from: song)
+        let stored = try XCTUnwrap(model.project.music?.path)
+        model.removeMusic()
+        XCTAssertNil(model.project.music)
+        XCTAssertTrue(model.assetPathsInHistory().contains(stored), "undo still has it")
+        model.stop()
+        XCTAssertTrue(VideoEditorModel.keptHistoryAssetPaths().contains(stored), "so does the closed editor's kept history")
+        // Clean Up leaves it alone even once its grace day is over.
+        try FileManager.default.setAttributes([.modificationDate: Date().addingTimeInterval(-3 * 86_400)], ofItemAtPath: stored)
+        let plan = VideoDataCleanup.plan(finder: .nowhere, inUse: VideoEditorModel.keptHistoryAssetPaths())
+        XCTAssertFalse(plan.unusedAssets.map(\.lastPathComponent).contains(URL(fileURLWithPath: stored).lastPathComponent))
+    }
+
+    func testHeldFrameCacheKeepsToItsBudget() async throws {
+        let url = directory.appendingPathComponent("frames.mp4")
+        try await VideoTestSupport.writeFakeRecording(to: url, size: CGSize(width: 640, height: 400), seconds: 3, fps: 10)
+        let perFrame = 640 * 400 * 4
+        let frames = VideoSourceFrames(byteLimit: perFrame * 3) { (url, $0) }
+        for index in 0..<8 { _ = frames.image(at: Double(index) * 0.3) }
+        XCTAssertLessThanOrEqual(frames.cachedBytes, perFrame * 3, "the oldest frames make room")
+        XCTAssertGreaterThan(frames.cachedBytes, 0)
+    }
+
     func testTransitionsPrefetchTheirHeldFrames() async throws {
         let model = try await model()
         model.seek(to: 1.5)

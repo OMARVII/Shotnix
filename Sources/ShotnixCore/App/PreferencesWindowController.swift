@@ -989,7 +989,7 @@ struct RecordingSettingsView: View {
                 VideoDataSettingsRow()
             }
 
-            PreferenceFootnote(text: "Clean Up removes camera footage, cleaned-up voice, drafts, and pictures for recordings that no longer exist anywhere, plus clipboard exports older than a day. Recordings in the Trash or on a disconnected drive keep their data. Shotnix also does this quietly once a day.")
+            PreferenceFootnote(text: "Clean Up lists what it would remove — the data of recordings Shotnix can't find, camera footage and pictures nothing uses, and clipboard exports older than a day — and asks first. On its own, once a day, Shotnix only removes clipboard exports older than a day and the data of recordings it hasn't found for 30 days in a row; renamed or moved recordings keep theirs.")
         }
     }
 }
