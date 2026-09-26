@@ -38,15 +38,18 @@ enum ImageExporter {
 
     // MARK: – Clipboard
 
-    static func copyToClipboard(image: NSImage) {
-        let pb = NSPasteboard.general
-        pb.clearContents()
+    /// Returns whether the image actually reached the clipboard, so callers
+    /// only confirm a copy that happened.
+    @discardableResult
+    static func copyToClipboard(image: NSImage) -> Bool {
         // PNG only — NSPasteboard synthesizes TIFF on demand for legacy readers,
         // and every modern macOS app (Slack, Notion, Figma, Preview, Messages)
         // prefers PNG. Skipping the TIFF encode saves ~30 MB + ~50 ms per 4K copy.
-        guard let cg = image.bestCGImage, let png = pngData(from: cg) else { return }
+        guard let cg = image.bestCGImage, let png = pngData(from: cg) else { return false }
+        let pb = NSPasteboard.general
+        pb.clearContents()
         pb.declareTypes([.png], owner: nil)
-        pb.setData(png, forType: .png)
+        return pb.setData(png, forType: .png)
     }
 
     /// Clipboard copy with the PNG encode off the main thread — a 5K capture's
