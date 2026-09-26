@@ -414,6 +414,27 @@ final class VideoProjectSourcesTests: XCTestCase {
         XCTAssertEqual(project.timelineDuration(totalDuration: 2), 2, accuracy: 0.001)
     }
 
+    func testRemovingARecordingThatPlaysFirstKeepsTheCuts() async throws {
+        var (project, _, _, _) = try await twoRecordings()
+        // A cut in the project's own recording (A: 0–2 s): 0.5–0.8 goes.
+        project.timelineClips = [
+            VideoDemoTimelineClip(sourceStart: 0, sourceEnd: 0.5),
+            VideoDemoTimelineClip(sourceStart: 0.8, sourceEnd: 2),
+            VideoDemoTimelineClip(sourceStart: 2, sourceEnd: 3.5),
+        ]
+        let added = project.sources[1].id
+        project.moveSource(from: 1, to: 0)
+        XCTAssertEqual(project.primaryOffset, 1.5, accuracy: 0.001, "B plays first")
+        XCTAssertTrue(project.removeSource(id: added))
+        XCTAssertFalse(project.hasAppendedSources)
+        XCTAssertEqual(project.timelineClips.count, 2, "the cut is still there")
+        XCTAssertEqual(project.timelineClips.first?.sourceStart ?? 9, 0, accuracy: 0.001)
+        XCTAssertEqual(project.timelineClips.first?.sourceEnd ?? 0, 0.5, accuracy: 0.001)
+        XCTAssertEqual(project.timelineClips.last?.sourceStart ?? 0, 0.8, accuracy: 0.001)
+        XCTAssertEqual(project.timelineClips.last?.sourceEnd ?? 0, 2, accuracy: 0.001)
+        XCTAssertEqual(project.timelineDuration(totalDuration: 2), 1.7, accuracy: 0.001)
+    }
+
     func testSourcesRoundTripInDrafts() async throws {
         let (project, _, _, _) = try await twoRecordings()
         let decoded = try JSONDecoder().decode(VideoDemoProject.self, from: JSONEncoder().encode(project))

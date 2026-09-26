@@ -373,11 +373,13 @@ extension VideoDemoProject {
         for later in sources.indices where later >= index {
             sources[later].offset -= gap
         }
+        // The length of what's left, before the list may go (with just one
+        // recording left, it has none).
+        let total = sources.map(\.end).max() ?? removed.offset
         if sources.count == 1 {
             // Back to a single recording.
             sources = []
         }
-        let total = sourceAxisDuration ?? (sources.first?.duration ?? removed.offset)
         ensureTimeline(totalDuration: total)
         return true
     }
