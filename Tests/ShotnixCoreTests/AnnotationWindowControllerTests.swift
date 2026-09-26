@@ -189,6 +189,7 @@ final class AnnotationWindowControllerTests: XCTestCase {
         XCTAssertEqual(manager.items.first?.id, item.id, "same entry, updated in place")
 
         // Deleting and restoring the entry moves the original with it.
+        await manager.waitForPendingFileOperations()
         manager.delete(item)
         XCTAssertFalse(FileManager.default.fileExists(atPath: originalPath))
         manager.restoreFromTrash(id: item.id)

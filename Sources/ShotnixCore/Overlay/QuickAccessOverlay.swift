@@ -11,6 +11,45 @@ final class QuickAccessOverlay {
         let window = QuickAccessWindow(image: image, historyItem: historyItem, historyManager: historyManager)
         window.show()
     }
+
+    /// Post-save toast text: the file actually written, its folder, and the
+    /// reveal affordance hint.
+    static func savedMessage(for url: URL) -> String {
+        let folder = url.deletingLastPathComponent()
+        let folderName = FileManager.default.displayName(atPath: folder.path)
+        let destination = folderName.isEmpty ? folder.lastPathComponent : folderName
+        return "Saved \(url.lastPathComponent) to \(destination) — click to reveal in Finder"
+    }
+}
+
+/// Where post-capture thumbnails stack on a screen: a column rising from
+/// above the Dock line, never reaching under the menu bar.
+enum QuickAccessStackLayout {
+    /// Vertical gap between stacked thumbnails.
+    static let gap: CGFloat = 12
+    static let sideMargin: CGFloat = 36
+    /// Sits noticeably above the bottom edge (Dock line) — comfortable to
+    /// glance at without looking "docked" to the corner.
+    static let bottomMargin: CGFloat = 84
+    static let topMargin: CGFloat = 12
+    /// More than this per screen and the oldest card is dismissed.
+    static let maxCards = 5
+
+    /// Cards that fit between the Dock line and the menu bar — fewer than
+    /// five on a small screen.
+    static func capacity(visibleFrame: CGRect, cardHeight: CGFloat) -> Int {
+        let usable = visibleFrame.height - bottomMargin - topMargin
+        let fitting = Int(floor((usable + gap) / (cardHeight + gap)))
+        return max(1, min(maxCards, fitting))
+    }
+
+    /// Slot 0 is the anchor at the bottom (the oldest card).
+    static func origin(slot: Int, visibleFrame: CGRect, cardSize: CGSize, onLeft: Bool) -> CGPoint {
+        let x = onLeft ? visibleFrame.minX + sideMargin : visibleFrame.maxX - cardSize.width - sideMargin
+        let y = visibleFrame.minY + bottomMargin + CGFloat(slot) * (cardSize.height + gap)
+        let highest = visibleFrame.maxY - cardSize.height - topMargin
+        return CGPoint(x: x, y: max(visibleFrame.minY, min(y, highest)))
+    }
 }
 
 /// Non-activating panel: the overlay appears without stealing focus from the
@@ -18,7 +57,7 @@ final class QuickAccessOverlay {
 /// in. Keyboard shortcuts engage on hover, when the panel takes key status
 /// without activating the app (the Spotlight mechanism).
 @MainActor
-private final class QuickAccessWindow: NSPanel {
+private final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
 
     /// Keep strong refs so ARC doesn't deallocate while visible.
     private static var openWindows: [QuickAccessWindow] = []
@@ -71,18 +110,32 @@ private final class QuickAccessWindow: NSPanel {
 
     override var canBecomeKey: Bool { true }
 
+    func closeFromCommand() {
+        dismissAction()
+    }
+
     // MARK: – Keyboard (direct override — works when window IS key)
 
     override func keyDown(with event: NSEvent) {
         guard !isClosing else { return }
-        let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
-        switch (event.charactersIgnoringModifiers, flags) {
-        case ("c", .command):  copyAction()
-        case ("s", .command):  saveAction()
-        case ("e", .command):  editAction()
-        default: break
+        _ = handleShortcut(event)
+    }
+
+    /// ⌘C / ⌘S / ⌘E / Esc. Letters go through ShortcutKeyMatching so they
+    /// work on Cyrillic, Greek, and other non-Latin layouts too.
+    private func handleShortcut(_ event: NSEvent) -> Bool {
+        if event.keyCode == 53 {
+            dismissAction()
+            return true
         }
-        if event.keyCode == 53 { dismissAction() }
+        guard event.modifierFlags.intersection(.deviceIndependentFlagsMask) == .command else { return false }
+        switch ShortcutKeyMatching.latinLetter(for: event) {
+        case "c": copyAction()
+        case "s": saveAction()
+        case "e": editAction()
+        default: return false
+        }
+        return true
     }
 
     // MARK: – Event Monitors (bypass view hierarchy entirely)
@@ -93,15 +146,7 @@ private final class QuickAccessWindow: NSPanel {
             guard let self, !self.isClosing else { return event }
             // Only handle if mouse is over our window
             guard self.frame.contains(NSEvent.mouseLocation) else { return event }
-            let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
-            switch (event.charactersIgnoringModifiers, flags) {
-            case ("c", .command):  self.copyAction(); return nil
-            case ("s", .command):  self.saveAction(); return nil
-            case ("e", .command):  self.editAction(); return nil
-            default: break
-            }
-            if event.keyCode == 53 { self.dismissAction(); return nil }
-            return event
+            return self.handleShortcut(event) ? nil : event
         }
 
         // Global mouse: hover tracking while the app is inactive. On enter the
@@ -270,6 +315,9 @@ private final class QuickAccessWindow: NSPanel {
         thumb.layer?.backgroundColor = ShotnixColors.overlayContainerFill.cgColor
         thumb.layer?.contentsScale = NSScreen.main?.backingScaleFactor ?? 2.0
         thumb.dragImage = image
+        thumb.dragFileProvider = { [weak self] in self?.makeDragFile() }
+        thumb.setAccessibilityLabel("Screenshot thumbnail")
+        thumb.setAccessibilityHelp("Double-click to edit, or drag into another app. Command-C copies, Command-S saves, Escape dismisses.")
         thumb.onDoubleClick = { [weak self] in self?.editAction() }
         thumb.onDragStarted = { [weak self] in self?.dismissTimer?.invalidate() }
         thumb.onDragCompleted = { [weak self] in self?.animatedClose() }
@@ -435,28 +483,19 @@ private final class QuickAccessWindow: NSPanel {
 
     // MARK: – Stack layout (multiple captures pile into a column)
 
-    /// Vertical gap between stacked thumbnails.
-    private static let stackGap: CGFloat = 12
-    /// More than this per screen and the oldest card is dismissed.
-    private static let maxStackPerScreen = 5
-
     /// Origin for a given stack slot on this window's screen. Slot 0 is the
     /// anchor at the bottom (the oldest card); new captures land on TOP of
     /// the pile, and cards drop down a slot when one below them leaves.
     private func slotOrigin(index: Int) -> NSPoint? {
         guard let screen = captureScreen else { return nil }
-        let margin: CGFloat = 36
-        // Sits noticeably above the bottom edge (Dock line) — comfortable to
-        // glance at without looking "docked" to the corner.
-        let bottomMargin: CGFloat = 84
-        let x: CGFloat
-        if Settings.overlayOnLeft {
-            x = screen.visibleFrame.minX + margin
-        } else {
-            x = screen.visibleFrame.maxX - frame.width - margin
-        }
-        let y = screen.visibleFrame.minY + bottomMargin + CGFloat(index) * (frame.height + Self.stackGap)
-        return NSPoint(x: x, y: y)
+        return QuickAccessStackLayout.origin(slot: index, visibleFrame: screen.visibleFrame, cardSize: frame.size, onLeft: Settings.overlayOnLeft)
+    }
+
+    /// How many cards this window's screen can stack without the column
+    /// reaching the menu bar.
+    private var stackCapacity: Int {
+        guard let screen = captureScreen else { return QuickAccessStackLayout.maxCards }
+        return QuickAccessStackLayout.capacity(visibleFrame: screen.visibleFrame, cardHeight: frame.height)
     }
 
     private var screenKey: CGDirectDisplayID {
@@ -500,13 +539,16 @@ private final class QuickAccessWindow: NSPanel {
         }
     }
 
-    /// Keeps each screen's pile manageable — beyond the cap, the oldest
-    /// card animates out (its history entry is untouched).
+    /// Keeps each screen's pile manageable — beyond the cap (fewer cards on
+    /// a small screen), the oldest card animates out (its history entry is
+    /// untouched).
     private static func enforceStackLimit() {
         let active = openWindows.filter { !$0.isClosing }
         let byScreen = Dictionary(grouping: active, by: { $0.screenKey })
-        for (_, group) in byScreen where group.count > maxStackPerScreen {
-            for window in group.prefix(group.count - maxStackPerScreen) {
+        for (_, group) in byScreen {
+            let capacity = group.last?.stackCapacity ?? QuickAccessStackLayout.maxCards
+            guard group.count > capacity else { continue }
+            for window in group.prefix(group.count - capacity) {
                 window.animatedClose()
             }
         }
@@ -636,55 +678,71 @@ private final class QuickAccessWindow: NSPanel {
     // MARK: – Actions
 
     @objc private func copyAction() {
-        ImageExporter.copyToClipboard(image: image)
-        showConfirmation(icon: "checkmark") { [weak self] in self?.animatedClose() }
+        // The encode runs off the main thread; the checkmark waits for it.
+        ImageExporter.copyToClipboardAsync(image: image) { [weak self] copied in
+            guard let self, !self.isClosing else { return }
+            guard copied else {
+                ToastWindow.show(message: "Could not copy the screenshot", on: self.captureScreen)
+                return
+            }
+            self.showConfirmation(icon: "checkmark") { [weak self] in self?.animatedClose() }
+        }
     }
 
     @objc private func saveAction() {
-        let dir = Settings.autoSaveLocation
-        let name = ImageExporter.timestampedName
-        let ext = Settings.screenshotFormat
-        let url = URL(fileURLWithPath: dir, isDirectory: true).appendingPathComponent("\(name).\(ext)")
-
-        guard ImageExporter.save(image: image, to: url) != nil else {
-            ToastWindow.show(message: "Could not save screenshot", on: captureScreen)
-            return
-        }
-
-        showConfirmation(icon: "checkmark") { [weak self] in
+        let directory = URL(fileURLWithPath: Settings.autoSaveLocation, isDirectory: true)
+        ImageExporter.autoSave(image: image, in: directory) { [weak self] result in
             guard let self else { return }
-            self.animatedClose()
-            // Clickable toast — reveals the freshly saved file in Finder.
-            ToastWindow.show(
-                message: Self.savedMessage(for: url),
-                duration: 3.0,
-                on: self.captureScreen,
-                action: { NSWorkspace.shared.activateFileViewerSelecting([url]) }
-            )
+            switch result {
+            case .failure(let error):
+                ToastWindow.show(
+                    message: ImageExporter.autoSaveFailureMessage(for: error, directory: directory),
+                    duration: 6,
+                    on: self.captureScreen,
+                    action: { PreferencesWindowController.shared.show(tab: .screenshots) }
+                )
+            case .success(let savedURL):
+                self.showConfirmation(icon: "checkmark") { [weak self] in
+                    guard let self else { return }
+                    self.animatedClose()
+                    // Clickable toast — reveals the file actually written (its
+                    // name may have gained " 2", or .png for an unwritable WebP).
+                    ToastWindow.show(
+                        message: QuickAccessOverlay.savedMessage(for: savedURL),
+                        duration: 3.0,
+                        on: self.captureScreen,
+                        action: { NSWorkspace.shared.activateFileViewerSelecting([savedURL]) }
+                    )
+                }
+            }
         }
     }
 
-    /// Post-save toast text: destination folder + the reveal affordance hint.
-    private static func savedMessage(for url: URL) -> String {
-        let folder = url.deletingLastPathComponent()
-        let folderName = FileManager.default.displayName(atPath: folder.path)
-        let destination = folderName.isEmpty ? folder.lastPathComponent : folderName
-        return "Saved to \(destination) — click to reveal in Finder"
+    /// The drag hands over the history PNG itself (a clone: instant, tags and
+    /// metadata intact) named for when the capture was taken. Only a drag in
+    /// the split second before that file lands encodes a fresh copy.
+    private func makeDragFile() -> URL? {
+        let name = ImageExporter.captureName(for: historyItem.createdAt)
+        if let stored = historyManager.storedImageURL(for: historyItem) {
+            return ImageExporter.dragFile(copying: stored, named: name)
+        }
+        guard let png = ImageExporter.pngData(from: image) else { return nil }
+        return ImageExporter.dragFile(data: png, named: name)
     }
 
     @objc private func copyTextAction() {
         Task { [weak self] in
             guard let self else { return }
             do {
-                let text = try await OCREngine.recognizeText(in: self.image)
+                let result = try await OCREngine.recognize(in: self.image)
                 // Only touch the pasteboard when there is actual text —
                 // never clobber the user's clipboard for an empty result.
-                if text.isEmpty {
+                if result.isEmpty {
                     ToastWindow.show(message: "No text found in this selection", on: self.captureScreen)
                 } else {
                     NSPasteboard.general.clearContents()
-                    NSPasteboard.general.setString(text, forType: .string)
-                    ToastWindow.show(message: "✓ Text copied to clipboard", on: self.captureScreen)
+                    NSPasteboard.general.setString(result.text, forType: .string)
+                    OCRResultWindow.showCopiedToast(for: result, on: self.captureScreen)
                     self.animatedClose()
                 }
             } catch {
@@ -767,6 +825,12 @@ private final class QuickAccessWindow: NSPanel {
         // it there); nobody else moves on arrival.
         Self.relayoutStacks(animated: true)
         Self.enforceStackLimit()
+        // VoiceOver users otherwise get no sign the capture happened.
+        NSAccessibility.post(
+            element: self,
+            notification: .announcementRequested,
+            userInfo: [.announcement: "Screenshot captured", .priority: NSAccessibilityPriorityLevel.medium.rawValue]
+        )
     }
 }
 
@@ -776,14 +840,13 @@ private final class QuickAccessWindow: NSPanel {
 private final class DraggableImageView: NSImageView, NSDraggingSource {
 
     var dragImage: NSImage?
+    /// Supplies the file handed to the drag (see ImageExporter.dragFile).
+    var dragFileProvider: (() -> URL?)?
     var onDoubleClick: (() -> Void)?
     var onDragStarted: (() -> Void)?
     var onDragCompleted: (() -> Void)?
 
     private var dragOrigin: NSPoint?
-    private var activeDragFileURL: URL?
-    private static var retainedDragFiles: Set<URL> = []
-    private static let dragFileCleanupDelay: TimeInterval = 300
 
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
     override var mouseDownCanMoveWindow: Bool { false }
@@ -805,32 +868,13 @@ private final class DraggableImageView: NSImageView, NSDraggingSource {
 
         dragOrigin = nil
 
-        guard let png = ImageExporter.pngData(from: dragImg),
-              let fileURL = Self.makeTemporaryDragFile(data: png) else { return }
+        guard let fileURL = dragFileProvider?() else { return }
 
         onDragStarted?()
-
-        activeDragFileURL = fileURL
-        Self.retainedDragFiles.insert(fileURL)
 
         let item = NSDraggingItem(pasteboardWriter: fileURL as NSURL)
         item.setDraggingFrame(bounds, contents: dragImg)
         beginDraggingSession(with: [item], event: event, source: self)
-    }
-
-    private static func makeTemporaryDragFile(data: Data) -> URL? {
-        let directory = FileManager.default.temporaryDirectory.appendingPathComponent("ShotnixDrag", isDirectory: true)
-        let filename = "\(ImageExporter.timestampedName)-\(UUID().uuidString.prefix(8)).png"
-        let url = directory.appendingPathComponent(filename)
-
-        do {
-            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-            try data.write(to: url, options: .atomic)
-            return url
-        } catch {
-            print("[Shotnix] Drag export failed at \(url.path): \(error)")
-            return nil
-        }
     }
 
     nonisolated func draggingSession(_ session: NSDraggingSession, sourceOperationMaskFor context: NSDraggingContext) -> NSDragOperation {
@@ -839,21 +883,7 @@ private final class DraggableImageView: NSImageView, NSDraggingSource {
 
     nonisolated func draggingSession(_ session: NSDraggingSession, endedAt screenPoint: NSPoint, operation: NSDragOperation) {
         DispatchQueue.main.async { [weak self] in
-            self?.scheduleActiveDragFileCleanup()
             self?.onDragCompleted?()
-        }
-    }
-
-    private func scheduleActiveDragFileCleanup() {
-        guard let url = activeDragFileURL else { return }
-        activeDragFileURL = nil
-        Self.scheduleDragFileCleanup(url)
-    }
-
-    private static func scheduleDragFileCleanup(_ url: URL) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + dragFileCleanupDelay) {
-            try? FileManager.default.removeItem(at: url)
-            retainedDragFiles.remove(url)
         }
     }
 }

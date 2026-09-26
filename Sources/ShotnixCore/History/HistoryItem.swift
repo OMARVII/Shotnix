@@ -1,5 +1,25 @@
 import AppKit
 
+/// How a capture was taken — shown on history cards and used by the
+/// history type filter.
+enum CaptureType: String, Codable, CaseIterable {
+    case area
+    case window
+    case fullscreen
+    case scrolling
+    case text
+
+    var title: String {
+        switch self {
+        case .area: return "Area"
+        case .window: return "Window"
+        case .fullscreen: return "Fullscreen"
+        case .scrolling: return "Scrolling"
+        case .text: return "Text"
+        }
+    }
+}
+
 struct HistoryItem: Codable, Identifiable {
     let id: UUID
     let createdAt: Date
@@ -10,6 +30,11 @@ struct HistoryItem: Codable, Identifiable {
     /// nil = not indexed yet; "" = indexed, no text found (never re-OCRed).
     /// Optional so index.json files written before this field existed still decode.
     var ocrText: String? = nil
+    /// Raw CaptureType. Stored as a String, not the enum, so an index written
+    /// by a newer version with a type this one doesn't know still decodes.
+    var captureTypeRaw: String? = nil
+
+    var captureType: CaptureType? { captureTypeRaw.flatMap(CaptureType.init(rawValue:)) }
 
     var fullImage: NSImage { HistoryImageCache.fullImage(for: imagePath) }
     var thumbnail: NSImage { HistoryImageCache.thumbnail(for: thumbnailPath) }

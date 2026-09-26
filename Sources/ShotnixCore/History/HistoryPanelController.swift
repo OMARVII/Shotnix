@@ -8,13 +8,16 @@ final class HistoryPanelController: NSObject {
 
     private var panel: NSPanel?
     private weak var historyManager: HistoryManager?
-    private var collectionView: NSCollectionView?
+    private(set) var collectionView: NSCollectionView?
     private var emptyOverlay: NSView?
     private var countLabel: NSTextField?
     private var searchField: NSSearchField?
+    private var typeFilterButton: NSPopUpButton?
     private var scrollView: NSScrollView?
     private var nudgeBanner: NSView?
     private var searchQuery = ""
+    /// nil = every capture type.
+    private(set) var typeFilter: CaptureType?
     private var closeObserver: NSObjectProtocol?
     private var historyObserver: NSObjectProtocol?
 
@@ -71,6 +74,8 @@ final class HistoryPanelController: NSObject {
             }
         }
         p.makeKeyAndOrderFront(nil)
+        // Arrow keys and Delete work on the grid straight away.
+        p.makeFirstResponder(collectionView)
         NSAnimationContext.runAnimationGroup { ctx in
             ctx.duration = 0.2
             ctx.timingFunction = CAMediaTimingFunction(name: .easeOut)
@@ -112,8 +117,24 @@ final class HistoryPanelController: NSObject {
         clearBtn.toolTip = "Delete every saved capture"
         header.addSubview(clearBtn)
 
+        // Capture-type filter, next to search.
+        let typeFilter = NSPopUpButton(frame: NSRect(x: 392, y: 44, width: 120, height: 30), pullsDown: false)
+        typeFilter.autoresizingMask = [.minXMargin]
+        typeFilter.appearance = NSAppearance(named: .darkAqua)
+        typeFilter.addItem(withTitle: "All Captures")
+        for type in CaptureType.allCases {
+            typeFilter.addItem(withTitle: type.title)
+            typeFilter.lastItem?.representedObject = type.rawValue
+        }
+        typeFilter.target = self
+        typeFilter.action = #selector(typeFilterChanged(_:))
+        typeFilter.toolTip = "Show one kind of capture"
+        typeFilter.setAccessibilityLabel("Capture type")
+        header.addSubview(typeFilter)
+        typeFilterButton = typeFilter
+
         // Live text search: matches OCR-recognized text and the capture date.
-        let search = NSSearchField(frame: NSRect(x: 500, y: 44, width: 250, height: 30))
+        let search = NSSearchField(frame: NSRect(x: 520, y: 44, width: 230, height: 30))
         search.autoresizingMask = [.minXMargin]
         search.placeholderString = "Search text in captures"
         search.font = .systemFont(ofSize: 13)
@@ -136,7 +157,7 @@ final class HistoryPanelController: NSObject {
         layout.sectionInset = NSEdgeInsets(top: 8, left: 20, bottom: 24, right: 20)
         layout.headerReferenceSize = NSSize(width: 920, height: 36)
 
-        let cv = NSCollectionView()
+        let cv = HistoryCollectionView()
         cv.collectionViewLayout = layout
         cv.register(
             HistoryCollectionItem.self,
@@ -150,8 +171,16 @@ final class HistoryPanelController: NSObject {
         cv.dataSource = self
         cv.delegate = self
         cv.backgroundColors = [.clear]
-        cv.isSelectable = false
+        // Selection drives keyboard navigation, Delete, multi-select (⌘/⇧
+        // click), and multi-card drags to Finder.
+        cv.isSelectable = true
+        cv.allowsMultipleSelection = true
+        cv.allowsEmptySelection = true
         cv.setDraggingSourceOperationMask(.copy, forLocal: false)
+        cv.onDelete = { [weak self] in self?.deleteSelection() }
+        cv.onOpen = { [weak self] in self?.editSelection() }
+        cv.onCopy = { [weak self] in self?.copySelection() }
+        cv.setAccessibilityLabel("Captures")
 
         // One-time "star us" line, only while the nudge is live (see StarNudge).
         let bannerHeight: CGFloat = StarNudge.shouldShowInHistoryPanel ? Self.nudgeBannerHeight : 0
@@ -273,7 +302,7 @@ final class HistoryPanelController: NSObject {
         title.frame = NSRect(x: 0, y: 88, width: 360, height: 24)
         stack.addSubview(title)
 
-        let subtitle = NSTextField(labelWithString: "Press \u{2318}\u{21E7}4 to take your first screenshot")
+        let subtitle = NSTextField(labelWithString: Self.emptyStateHint(captureAreaShortcut: ShotnixShortcut.captureArea.displayShortcut))
         subtitle.font = .systemFont(ofSize: 13, weight: .medium)
         subtitle.textColor = NSColor.white.withAlphaComponent(0.50)
         subtitle.alignment = .center
@@ -308,12 +337,16 @@ final class HistoryPanelController: NSObject {
     private func updateHeader() {
         let total = sections.reduce(0) { $0 + $1.items.count }
         let query = trimmedSearchQuery
-        if !query.isEmpty {
+        let kind = typeFilter.map { "\($0.title.lowercased()) " } ?? ""
+        if !query.isEmpty || typeFilter != nil {
             let all = historyManager?.items.count ?? 0
-            let captureWord = total == 1 ? "capture matches" : "captures match"
-            countLabel?.stringValue = total == 0
-                ? "No captures match \u{201C}\(query)\u{201D}"
-                : "\(total) of \(all) \(captureWord) \u{201C}\(query)\u{201D}"
+            let matchText = query.isEmpty ? "" : " \u{201C}\(query)\u{201D}"
+            if total == 0 {
+                countLabel?.stringValue = query.isEmpty ? "No \(kind)captures" : "No \(kind)captures match\(matchText)"
+            } else {
+                let verb = query.isEmpty ? "" : (total == 1 ? " matches" : " match")
+                countLabel?.stringValue = "\(total) of \(all) \(kind)\(total == 1 ? "capture" : "captures")\(verb)\(matchText)"
+            }
             return
         }
         let captureWord = total == 1 ? "capture" : "captures"
@@ -322,20 +355,32 @@ final class HistoryPanelController: NSObject {
             : "\(total) saved \(captureWord) · drag any card to Finder · right-click for more actions"
     }
 
+    /// Empty-state line naming the user's real Capture Area shortcut.
+    static func emptyStateHint(captureAreaShortcut: String?) -> String {
+        if let captureAreaShortcut {
+            return "Press \(captureAreaShortcut) to take your first screenshot"
+        }
+        return "Choose Capture Area in the Shotnix menu to start"
+    }
+
     // MARK: - Search
 
     private var trimmedSearchQuery: String {
         searchQuery.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    /// Items to display: everything when the query is empty, otherwise a
-    /// case- and diacritic-insensitive match against the OCR text and the
-    /// capture date string shown on the card.
+    /// Items to display: filtered by capture type, then — when there's a
+    /// query — a case- and diacritic-insensitive match against the OCR text
+    /// and the capture date string shown on the card.
     private func filteredItems(in manager: HistoryManager) -> [HistoryItem] {
-        let query = trimmedSearchQuery
-        guard !query.isEmpty else { return manager.items }
+        Self.filter(manager.items, query: trimmedSearchQuery, type: typeFilter)
+    }
+
+    static func filter(_ items: [HistoryItem], query: String, type: CaptureType?) -> [HistoryItem] {
         let options: String.CompareOptions = [.caseInsensitive, .diacriticInsensitive]
-        return manager.items.filter { item in
+        return items.filter { item in
+            if let type, item.captureType != type { return false }
+            guard !query.isEmpty else { return true }
             if let text = item.ocrText, text.range(of: query, options: options) != nil {
                 return true
             }
@@ -352,6 +397,57 @@ final class HistoryPanelController: NSObject {
         guard query != searchQuery else { return }
         searchQuery = query
         reload()
+    }
+
+    @objc private func typeFilterChanged(_ sender: NSPopUpButton) {
+        setTypeFilter((sender.selectedItem?.representedObject as? String).flatMap(CaptureType.init(rawValue:)))
+    }
+
+    func setTypeFilter(_ type: CaptureType?) {
+        guard type != typeFilter else { return }
+        typeFilter = type
+        if let button = typeFilterButton {
+            let index = type.flatMap { CaptureType.allCases.firstIndex(of: $0) }.map { $0 + 1 } ?? 0
+            if button.indexOfSelectedItem != index { button.selectItem(at: index) }
+        }
+        reload()
+    }
+
+    // MARK: - Selection
+
+    /// Selected captures in grid order.
+    var selectedItems: [HistoryItem] {
+        guard let collectionView else { return [] }
+        return collectionView.selectionIndexPaths.sorted().compactMap(item(at:))
+    }
+
+    private func item(at indexPath: IndexPath) -> HistoryItem? {
+        guard indexPath.section < sections.count,
+              indexPath.item < sections[indexPath.section].items.count else { return nil }
+        return sections[indexPath.section].items[indexPath.item]
+    }
+
+    private func deleteSelection() {
+        let items = selectedItems
+        guard !items.isEmpty else { return }
+        deleteWithUndo(items)
+    }
+
+    private func editSelection() {
+        guard let manager = historyManager, let item = selectedItems.first else { return }
+        AnnotationWindowController.open(image: item.fullImage, historyItem: item, historyManager: manager)
+    }
+
+    private func copySelection() {
+        guard let item = selectedItems.first else { return }
+        copy(item)
+    }
+
+    /// Copies off the main thread and says so — the grid gives no other sign.
+    func copy(_ item: HistoryItem) {
+        ImageExporter.copyToClipboardAsync(image: item.fullImage) { [weak self] copied in
+            ToastWindow.show(message: copied ? "✓ Copied to clipboard" : "Could not copy this capture", on: self?.panel?.screen)
+        }
     }
 
     // MARK: - Sections
@@ -422,17 +518,26 @@ final class HistoryPanelController: NSObject {
     /// Deletes an item (moved to History/Trash/, not destroyed) and offers a
     /// clickable undo toast that restores it to its original grid position.
     func deleteWithUndo(_ item: HistoryItem) {
-        guard let manager = historyManager else { return }
+        deleteWithUndo([item])
+    }
+
+    func deleteWithUndo(_ items: [HistoryItem]) {
+        guard let manager = historyManager, !items.isEmpty else { return }
+        // Undo restores lowest original position first so every item lands
+        // back where it was.
+        let order = Dictionary(uniqueKeysWithValues: manager.items.enumerated().map { ($1.id, $0) })
+        let ids = items.map(\.id).sorted { (order[$0] ?? 0) < (order[$1] ?? 0) }
         // The manager's change notification reflows the grid — no manual reload.
-        manager.delete(item)
-        let id = item.id
+        manager.delete(items)
         ToastWindow.show(
-            message: "Screenshot deleted — click to undo",
+            message: items.count == 1 ? "Screenshot deleted — click to undo" : "\(items.count) screenshots deleted — click to undo",
             duration: 5.0,
             on: panel?.screen
         ) { [weak self] in
             guard let self, let manager = self.historyManager else { return }
-            _ = manager.restoreFromTrash(id: id)
+            for id in ids {
+                _ = manager.restoreFromTrash(id: id)
+            }
         }
     }
 
@@ -453,9 +558,11 @@ final class HistoryPanelController: NSObject {
         emptyOverlay = nil
         countLabel = nil
         searchField = nil
+        typeFilterButton = nil
         scrollView = nil
         nudgeBanner = nil
         searchQuery = ""
+        typeFilter = nil
         NSApp.restoreBackgroundOnlyActivationPolicyIfNeeded(excluding: closedWindow)
     }
 
@@ -548,14 +655,34 @@ extension HistoryPanelController: NSCollectionViewDataSource {
 
 extension HistoryPanelController: NSCollectionViewDelegate {
 
+    func collectionView(_ collectionView: NSCollectionView, canDragItemsAt indexPaths: Set<IndexPath>, with event: NSEvent) -> Bool {
+        true
+    }
+
+    /// Drags hand Finder the capture's own PNG — cloned (instant, Finder tags
+    /// and metadata kept), not re-encoded — named for when it was taken.
     func collectionView(
         _ collectionView: NSCollectionView,
         pasteboardWriterForItemAt indexPath: IndexPath
     ) -> (any NSPasteboardWriting)? {
-        guard indexPath.section < sections.count,
-              indexPath.item < sections[indexPath.section].items.count else { return nil }
-        let item = sections[indexPath.section].items[indexPath.item]
-        return NSFilePromiseProvider(fileType: "public.png", delegate: HistoryImageFilePromiseDelegate(image: item.fullImage))
+        guard let item = item(at: indexPath) else { return nil }
+        let name = dragFileName(for: item, among: selectedItems)
+        if let stored = historyManager?.storedImageURL(for: item),
+           let file = ImageExporter.dragFile(copying: stored, named: name) {
+            return file as NSURL
+        }
+        // The PNG is still being written (a capture from a moment ago):
+        // promise it and encode off the main thread when dropped.
+        return NSFilePromiseProvider(fileType: "public.png", delegate: HistoryImageFilePromiseDelegate(image: item.fullImage, fileName: "\(name).png"))
+    }
+
+    /// The capture-time name, numbered when several dragged captures share
+    /// the same second.
+    func dragFileName(for item: HistoryItem, among dragged: [HistoryItem]) -> String {
+        let name = ImageExporter.captureName(for: item.createdAt)
+        let twins = dragged.filter { ImageExporter.captureName(for: $0.createdAt) == name }
+        guard twins.count > 1, let position = twins.firstIndex(where: { $0.id == item.id }), position > 0 else { return name }
+        return "\(name) \(position + 1)"
     }
 }
 
@@ -570,13 +697,15 @@ private final class HistoryImageFilePromiseDelegate: NSObject, NSFilePromiseProv
     }()
 
     private let image: NSImage
+    private let fileName: String
 
-    init(image: NSImage) {
+    init(image: NSImage, fileName: String) {
         self.image = image
+        self.fileName = fileName
     }
 
     func filePromiseProvider(_ filePromiseProvider: NSFilePromiseProvider, fileNameForType fileType: String) -> String {
-        "\(ImageExporter.timestampedName).png"
+        fileName
     }
 
     func filePromiseProvider(_ filePromiseProvider: NSFilePromiseProvider, writePromiseTo url: URL, completionHandler handler: @escaping (Error?) -> Void) {
@@ -586,6 +715,7 @@ private final class HistoryImageFilePromiseDelegate: NSObject, NSFilePromiseProv
                 return
             }
             try png.write(to: url, options: .atomic)
+            HistoryManager.applyScreenshotMetadata(to: url.path, rect: nil)
             handler(nil)
         } catch {
             handler(error)
@@ -594,6 +724,37 @@ private final class HistoryImageFilePromiseDelegate: NSObject, NSFilePromiseProv
 
     func operationQueue(for filePromiseProvider: NSFilePromiseProvider) -> OperationQueue {
         Self.queue
+    }
+}
+
+/// The grid's keyboard: Delete removes the selection (undoable), Return
+/// opens it in the editor, ⌘C copies it; arrows move the selection.
+@MainActor
+final class HistoryCollectionView: NSCollectionView {
+    var onDelete: (() -> Void)?
+    var onOpen: (() -> Void)?
+    var onCopy: (() -> Void)?
+
+    override func keyDown(with event: NSEvent) {
+        switch event.keyCode {
+        case 51, 117: // Delete, Forward Delete
+            if !selectionIndexPaths.isEmpty { onDelete?(); return }
+        case 36, 76: // Return, Enter
+            if !selectionIndexPaths.isEmpty { onOpen?(); return }
+        case 53: // Escape clears the selection
+            if !selectionIndexPaths.isEmpty {
+                deselectAll(nil)
+                return
+            }
+        default:
+            break
+        }
+        super.keyDown(with: event)
+    }
+
+    /// Edit → Copy (⌘C) arrives here through the responder chain.
+    @objc func copy(_ sender: Any?) {
+        onCopy?()
     }
 }
 
@@ -673,10 +834,21 @@ final class HistoryCollectionItem: NSCollectionViewItem {
         self.view = container
     }
 
+    override var isSelected: Bool {
+        didSet { cardView.isSelected = isSelected }
+    }
+
     func configure(with item: HistoryItem, historyManager: HistoryManager) {
         self.historyItem = item
         self.historyManager = historyManager
         dateLabel.stringValue = item.createdAt.formatted(date: .abbreviated, time: .shortened)
+        cardView.isSelected = isSelected
+        let kind = item.captureType.map { "\($0.title) capture" } ?? "Capture"
+        thumbView.setAccessibilityLabel("\(kind), \(item.createdAt.formatted(date: .abbreviated, time: .shortened))")
+        thumbView.setAccessibilityRole(.image)
+        view.setAccessibilityElement(true)
+        view.setAccessibilityRole(.group)
+        view.setAccessibilityLabel("\(kind) from \(item.createdAt.formatted(date: .abbreviated, time: .shortened))")
         if let cached = historyManager.cachedThumbnail(for: item) {
             thumbView.image = cached
             detailLabel.stringValue = detailText(for: item, thumbnail: cached)
@@ -719,19 +891,23 @@ final class HistoryCollectionItem: NSCollectionViewItem {
         thumbView.layer?.transform = CATransform3DIdentity
         thumbView.layer?.shadowOpacity = 0
         cardView.isHovered = false
+        cardView.isSelected = false
         previewWell.isHovered = false
         cardView.alphaValue = 1
         previewWell.alphaValue = 1
     }
 
     private func detailText(for item: HistoryItem, thumbnail: NSImage?) -> String {
+        // A stitched capture is taller than its selection; its size isn't the rect's.
+        if item.captureType == .scrolling { return "Scrolling capture" }
+        let kind = item.captureType?.title ?? "Saved"
         if let rect = item.captureRect?.cgRect {
-            return String(format: "%.0f x %.0f capture", rect.width, rect.height)
+            return String(format: "\(kind) · %.0f x %.0f", rect.width, rect.height)
         }
         // No stored rect: size comes from the thumbnail — but never decode one
         // from disk here; the async load refreshes this label when it arrives.
-        guard let size = thumbnail?.size, size.width > 0, size.height > 0 else { return "Saved capture" }
-        return String(format: "%.0f x %.0f image", size.width, size.height)
+        guard let size = thumbnail?.size, size.width > 0, size.height > 0 else { return item.captureType == nil ? "Saved capture" : kind }
+        return String(format: "\(kind) · %.0f x %.0f image", size.width, size.height)
     }
 
     // MARK: Hover
@@ -773,6 +949,16 @@ final class HistoryCollectionItem: NSCollectionViewItem {
         thumbView.layer?.shadowOpacity = 0
     }
 
+    /// Double-click opens the editor; single clicks select (the collection
+    /// view handles those further up the responder chain).
+    override func mouseDown(with event: NSEvent) {
+        if event.clickCount == 2 {
+            editImage()
+            return
+        }
+        super.mouseDown(with: event)
+    }
+
     // MARK: Context Menu
 
     override func rightMouseDown(with event: NSEvent) {
@@ -798,7 +984,7 @@ final class HistoryCollectionItem: NSCollectionViewItem {
 
     @objc private func copyImage() {
         guard let item = historyItem else { return }
-        ImageExporter.copyToClipboard(image: item.fullImage)
+        HistoryPanelController.shared.copy(item)
     }
 
     @objc private func editImage() {
@@ -808,7 +994,7 @@ final class HistoryCollectionItem: NSCollectionViewItem {
 
     @objc private func saveImage() {
         guard let item = historyItem else { return }
-        ImageExporter.saveWithPanel(image: item.fullImage, suggestedName: ImageExporter.timestampedName)
+        ImageExporter.saveWithPanel(image: item.fullImage, suggestedName: ImageExporter.captureName(for: item.createdAt))
     }
 
     @objc private func pinImage() {
@@ -932,6 +1118,7 @@ private final class HistoryPreviewWellView: NSView {
 @MainActor
 private final class HistoryCaptureCardView: NSView {
     var isHovered = false { didSet { needsDisplay = true } }
+    var isSelected = false { didSet { needsDisplay = true } }
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
@@ -959,9 +1146,18 @@ private final class HistoryCaptureCardView: NSView {
         )
 
         context.addPath(path)
-        context.setFillColor(NSColor(calibratedWhite: 0.045, alpha: isHovered ? 0.94 : 0.86).cgColor)
+        context.setFillColor(NSColor(calibratedWhite: 0.045, alpha: isHovered || isSelected ? 0.94 : 0.86).cgColor)
         context.fillPath()
 
+        // Selected: an accent ring, like Finder's icon selection.
+        if isSelected {
+            let ring = CGPath(roundedRect: bounds.insetBy(dx: 1.5, dy: 1.5), cornerWidth: 17, cornerHeight: 17, transform: nil)
+            context.addPath(ring)
+            context.setStrokeColor(NSColor.controlAccentColor.cgColor)
+            context.setLineWidth(3)
+            context.strokePath()
+            return
+        }
         context.addPath(path)
         context.setStrokeColor(NSColor.white.withAlphaComponent(isHovered ? 0.12 : 0.06).cgColor)
         context.setLineWidth(1)

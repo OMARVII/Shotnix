@@ -28,6 +28,11 @@ final class HotkeyManager {
             Task { await e.captureFullscreen(historyManager: h) }
         }
 
+        KeyboardShortcuts.onKeyDown(for: .shotnixCaptureAllDisplays) { [weak captureEngine, weak historyManager] in
+            guard let e = captureEngine, let h = historyManager else { return }
+            Task { await e.captureAllDisplays(historyManager: h) }
+        }
+
         KeyboardShortcuts.onKeyDown(for: .shotnixCapturePreviousArea) { [weak captureEngine, weak historyManager] in
             guard let e = captureEngine, let h = historyManager else { return }
             Task { await e.capturePreviousArea(historyManager: h) }
@@ -38,11 +43,12 @@ final class HotkeyManager {
             Task { await e.startTimedCapture(historyManager: h) }
         }
 
-        KeyboardShortcuts.onKeyDown(for: .shotnixCaptureText) { [weak captureEngine] in
+        KeyboardShortcuts.onKeyDown(for: .shotnixCaptureText) { [weak captureEngine, weak historyManager] in
             guard let e = captureEngine else { return }
-            Task { await e.startOCRCapture() }
+            Task { await e.startOCRCapture(historyManager: historyManager) }
         }
 
+        // Pressed again during a scrolling capture, this finishes it.
         KeyboardShortcuts.onKeyDown(for: .shotnixCaptureScrolling) { [weak captureEngine, weak historyManager] in
             guard let e = captureEngine, let h = historyManager else { return }
             Task { await e.startScrollingCapture(historyManager: h) }

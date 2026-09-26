@@ -66,17 +66,13 @@ final class CaptureEngine {
         recordingSelectionActive || recordingControlsWindow != nil || recordingScreenChooserWindow != nil || recordingWindowChooserWindow != nil
     }
 
-    private func hideDesktopIconsForCaptureIfNeeded() async -> Bool {
-        guard Settings.hideDesktopIconsWhileCapturing else { return false }
-        let hiddenByCapture = DesktopIconsManager.hideForCapture()
-        if hiddenByCapture {
-            try? await Task.sleep(nanoseconds: 350_000_000)
-        }
-        return hiddenByCapture
+    private func hideDesktopIconsForCaptureIfNeeded() async -> DesktopIconsCover? {
+        guard Settings.hideDesktopIconsWhileCapturing else { return nil }
+        return await DesktopIconsCover.show()
     }
 
-    private func restoreDesktopIconsIfNeeded(_ hiddenByCapture: Bool) {
-        DesktopIconsManager.showAfterCapture(ifHiddenByCapture: hiddenByCapture)
+    private func restoreDesktopIconsIfNeeded(_ cover: DesktopIconsCover?) {
+        cover?.remove()
     }
 
     // Cached SCShareableContent. `SCShareableContent.excludingDesktopWindows`
@@ -150,7 +146,7 @@ final class CaptureEngine {
             }
             self.lastCaptureRect = rect
             Task {
-                await self.captureRect(rect, on: screen, historyManager: historyManager)
+                await self.captureRect(rect, on: screen, type: .area, historyManager: historyManager)
                 self.restoreDesktopIconsIfNeeded(hiddenByCapture)
             }
         }
@@ -178,7 +174,7 @@ final class CaptureEngine {
                 guard finished else { return }
                 Task {
                     let hiddenByCapture = await self.hideDesktopIconsForCaptureIfNeeded()
-                    await self.captureRect(rect, on: screen, historyManager: historyManager)
+                    await self.captureRect(rect, on: screen, type: .area, historyManager: historyManager)
                     self.restoreDesktopIconsIfNeeded(hiddenByCapture)
                 }
             }
@@ -222,10 +218,10 @@ final class CaptureEngine {
     private func captureWindow(windowID: CGWindowID?, fallbackRect: CGRect, on screen: NSScreen, historyManager: HistoryManager) async {
         if #available(macOS 14.0, *), let windowID,
            let image = await captureIsolatedWindowImage(windowID: windowID, expectedSize: fallbackRect.size) {
-            finishCapture(image: image, rect: fallbackRect, historyManager: historyManager)
+            finishCapture(image: image, rect: fallbackRect, type: .window, historyManager: historyManager, on: screen)
             return
         }
-        await captureRect(fallbackRect, on: screen, historyManager: historyManager)
+        await captureRect(fallbackRect, on: screen, type: .window, historyManager: historyManager)
     }
 
     @available(macOS 14.0, *)
@@ -318,7 +314,7 @@ final class CaptureEngine {
         let screen = screenUnderMouse() ?? NSScreen.main ?? screens[0]
         let hiddenByCapture = await hideDesktopIconsForCaptureIfNeeded()
         defer { restoreDesktopIconsIfNeeded(hiddenByCapture) }
-        await captureRect(screen.frame, on: screen, historyManager: historyManager)
+        await captureRect(screen.frame, on: screen, type: .fullscreen, historyManager: historyManager)
     }
 
     /// Captures every connected display, one image per screen, each through
@@ -330,7 +326,7 @@ final class CaptureEngine {
         let hiddenByCapture = await hideDesktopIconsForCaptureIfNeeded()
         defer { restoreDesktopIconsIfNeeded(hiddenByCapture) }
         for (index, screen) in NSScreen.screens.enumerated() {
-            await captureRect(screen.frame, on: screen, historyManager: historyManager, playSound: index == 0)
+            await captureRect(screen.frame, on: screen, type: .fullscreen, historyManager: historyManager, playSound: index == 0)
         }
     }
 
@@ -653,7 +649,7 @@ final class CaptureEngine {
         }
         let hiddenByCapture = await hideDesktopIconsForCaptureIfNeeded()
         defer { restoreDesktopIconsIfNeeded(hiddenByCapture) }
-        await captureRect(rect, on: screen, historyManager: historyManager)
+        await captureRect(rect, on: screen, type: .area, historyManager: historyManager)
     }
 
     // MARK: – Scrolling Capture
@@ -662,14 +658,38 @@ final class CaptureEngine {
         guard PermissionsManager.hasScreenRecordingPermission else {
             PermissionsManager.showPermissionDeniedAlert(); return
         }
-        guard scrollingCapture?.isActive != true else { return }
-        scrollingCapture = ScrollingCaptureController()
-        await scrollingCapture?.start(historyManager: historyManager, hiddenDesktopIconsByCapture: await hideDesktopIconsForCaptureIfNeeded())
+        // The shortcut again, mid-capture, finishes it (ignored while selecting).
+        if let scrollingCapture {
+            scrollingCapture.finishFromShortcut()
+            return
+        }
+        guard areaSelectionWindow == nil else { return }
+        let hiddenByCapture = await hideDesktopIconsForCaptureIfNeeded()
+        let controller = ScrollingCaptureController(frameProvider: { [weak self] rect, screen in
+            await self?.captureRectToImage(rect, on: screen)
+        }) { [weak self] outcome in
+            self?.restoreDesktopIconsIfNeeded(hiddenByCapture)
+            guard let self else { return }
+            self.scrollingCapture = nil
+            switch outcome {
+            case .captured(let image, let rect, let screen, let note):
+                self.finishCapture(image: image, rect: rect, type: .scrolling, historyManager: historyManager, on: screen)
+                if let note {
+                    ToastWindow.show(message: note, duration: 4, on: screen)
+                }
+            case .failed(let message, let screen):
+                ToastWindow.show(message: message, on: screen)
+            case .cancelled:
+                break
+            }
+        }
+        scrollingCapture = controller
+        await controller.start(engine: self)
     }
 
     // MARK: – OCR Capture
 
-    func startOCRCapture() async {
+    func startOCRCapture(historyManager: HistoryManager? = nil) async {
         guard PermissionsManager.hasScreenRecordingPermission else {
             PermissionsManager.showPermissionDeniedAlert(); return
         }
@@ -689,16 +709,18 @@ final class CaptureEngine {
                     return
                 }
                 do {
-                    let text = try await OCREngine.recognizeText(in: image)
+                    let result = try await OCREngine.recognize(in: image)
                     await MainActor.run {
                         // Only touch the pasteboard when there is actual text —
                         // never clobber the user's clipboard for an empty result.
-                        if text.isEmpty {
+                        if result.isEmpty {
                             ToastWindow.show(message: "No text found in this selection", on: screen)
                         } else {
                             NSPasteboard.general.clearContents()
-                            NSPasteboard.general.setString(text, forType: .string)
-                            ToastWindow.show(message: "✓ Text copied to clipboard", on: screen)
+                            NSPasteboard.general.setString(result.text, forType: .string)
+                            // Kept in History too, already indexed for search.
+                            historyManager?.add(image: image, rect: rect, type: .text, ocrText: result.text)
+                            OCRResultWindow.showCopiedToast(for: result, on: screen)
                         }
                     }
                 } catch {
@@ -750,21 +772,23 @@ final class CaptureEngine {
 
     // MARK: – Core capture
 
-    func captureRect(_ rect: CGRect, on screen: NSScreen, historyManager: HistoryManager, playSound: Bool = true) async {
+    func captureRect(_ rect: CGRect, on screen: NSScreen, type: CaptureType = .area, historyManager: HistoryManager, playSound: Bool = true) async {
+        let clamped = rect.intersection(screen.frame)
+        let rect = clamped.isNull ? rect : clamped
         guard let image = await captureRectToImage(rect, on: screen) else {
             print("[Shotnix] Capture failed for rect \(rect)")
             ToastWindow.show(message: "Capture failed", on: screen)
             return
         }
-        finishCapture(image: image, rect: rect, historyManager: historyManager, playSound: playSound)
+        finishCapture(image: image, rect: rect, type: type, historyManager: historyManager, playSound: playSound, on: screen)
     }
 
     /// Shared post-capture pipeline: sound, haptic, history, auto-actions,
     /// overlay — and the first successful capture completes onboarding.
-    private func finishCapture(image: NSImage, rect: CGRect, historyManager: HistoryManager, playSound: Bool = true) {
+    private func finishCapture(image: NSImage, rect: CGRect, type: CaptureType, historyManager: HistoryManager, playSound: Bool = true, on screen: NSScreen? = nil) {
         if playSound { playCaptureSound() }
         NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .default)
-        let item = historyManager.add(image: image, rect: rect)
+        let item = historyManager.add(image: image, rect: rect, type: type)
         StarNudge.captureDidFinish(rect: rect)
 
         // After-capture auto-actions (from Preferences). Both encode off the
@@ -774,11 +798,7 @@ final class CaptureEngine {
             ImageExporter.copyToClipboardAsync(image: image)
         }
         if Settings.afterCaptureSaveAutomatically {
-            let dir = Settings.autoSaveLocation
-            let name = ImageExporter.timestampedName
-            let ext = Settings.screenshotFormat
-            let url = URL(fileURLWithPath: dir).appendingPathComponent("\(name).\(ext)")
-            ImageExporter.saveAsync(image: image, to: url)
+            Self.autoSave(image, on: screen)
         }
         if Settings.afterCaptureShowOverlay {
             QuickAccessOverlay.show(image: image, historyItem: item, historyManager: historyManager)
@@ -787,6 +807,21 @@ final class CaptureEngine {
         if !Settings.onboardingCompleted {
             Settings.onboardingCompleted = true
             NotificationCenter.default.post(name: .shotnixDidFinishFirstCapture, object: nil)
+        }
+    }
+
+    /// Auto-save never replaces an existing file, and a failed save (folder
+    /// gone read-only, disk full) says so instead of silently losing the shot.
+    private static func autoSave(_ image: NSImage, on screen: NSScreen?) {
+        let directory = URL(fileURLWithPath: Settings.autoSaveLocation, isDirectory: true)
+        ImageExporter.autoSave(image: image, in: directory) { result in
+            guard case .failure(let error) = result else { return }
+            ToastWindow.show(
+                message: ImageExporter.autoSaveFailureMessage(for: error, directory: directory),
+                duration: 6,
+                on: screen,
+                action: { PreferencesWindowController.shared.show(tab: .screenshots) }
+            )
         }
     }
 
@@ -821,11 +856,50 @@ final class CaptureEngine {
     }
 
     func captureRectToImage(_ rect: CGRect, on screen: NSScreen) async -> NSImage? {
+        // A capture never spans displays: whatever lies past this screen's
+        // edge would come back black.
+        let rect = rect.intersection(screen.frame)
+        guard !rect.isNull, rect.width >= 1, rect.height >= 1 else { return nil }
         if #available(macOS 14.0, *) {
             return await captureRectSCK(rect, on: screen)
         } else {
             return fallbackCapture(rect: rect)
         }
+    }
+
+    /// Shotnix windows that belong in a screenshot: its real content windows
+    /// (editors, history, Settings — users capture those) and the desktop
+    /// covers. Everything else it owns — overlays, toasts, pins, the quick
+    /// access thumbnail, HUDs — is floating chrome, left out of every capture.
+    static func isCapturableOwnWindow(_ window: NSWindow) -> Bool {
+        window.level == .normal || window.styleMask.contains(.titled) || DesktopIconsCover.isCoverWindow(window)
+    }
+
+    /// Window numbers of Shotnix's visible floating chrome.
+    static func ownChromeWindowNumbers() -> Set<CGWindowID> {
+        Set(NSApp.windows.compactMap { window -> CGWindowID? in
+            guard window.isVisible, window.windowNumber > 0, !isCapturableOwnWindow(window) else { return nil }
+            return CGWindowID(window.windowNumber)
+        })
+    }
+
+    /// On-screen window IDs front to back, minus `excluded` — the input
+    /// CGWindowListCreateImageFromArray wants.
+    nonisolated static func windowIDs(in windowList: [[String: Any]], excluding excluded: Set<CGWindowID>) -> [CGWindowID] {
+        windowList.compactMap { info in
+            guard let number = info[kCGWindowNumber as String] as? Int else { return nil }
+            let id = CGWindowID(number)
+            return excluded.contains(id) ? nil : id
+        }
+    }
+
+    /// Composites exactly these windows (front to back) inside `rect`
+    /// (CG global coordinates). The pre-ScreenCaptureKit path: macOS 13.
+    nonisolated static func windowListImage(rect: CGRect, windowIDs: [CGWindowID]) -> CGImage? {
+        guard !windowIDs.isEmpty else { return nil }
+        var pointers = windowIDs.map { UnsafeRawPointer(bitPattern: UInt($0)) }
+        guard let array = CFArrayCreate(kCFAllocatorDefault, &pointers, pointers.count, nil) else { return nil }
+        return CGImage(windowListFromArrayScreenBounds: rect, windowArray: array, imageOption: .bestResolution)
     }
 
     @available(macOS 14.0, *)
@@ -848,13 +922,13 @@ final class CaptureEngine {
             // REAL windows (video editor, annotation editor, history,
             // preferences) must stay capturable: users screenshot the editor
             // itself. Chrome is always borderless; content windows are titled
-            // or normal-level, so except those back into the capture.
+            // or normal-level, so except those (and the desktop covers that
+            // hide the icons) back into the capture.
             let currentProcessID = pid_t(ProcessInfo.processInfo.processIdentifier)
             let filter: SCContentFilter
             if let ownApp = content.applications.first(where: { $0.processID == currentProcessID }) {
                 let contentWindowIDs = Set(NSApp.windows.compactMap { window -> CGWindowID? in
-                    guard window.isVisible,
-                          window.level == .normal || window.styleMask.contains(.titled) else { return nil }
+                    guard window.isVisible, Self.isCapturableOwnWindow(window) else { return nil }
                     return CGWindowID(window.windowNumber)
                 })
                 var exceptedWindows: [SCWindow] = []
@@ -928,7 +1002,17 @@ final class CaptureEngine {
         // CGWindowListCreateImage takes CG global coordinates (top-left
         // origin); `rect` arrives in AppKit global coordinates (bottom-left).
         let cgRect = ScreenCoordinates.cgRect(fromAppKit: rect)
-        guard let cgImage = CGWindowListCreateImage(cgRect, .optionAll, kCGNullWindowID, .bestResolution) else {
+        // Same rule as the ScreenCaptureKit filter: Shotnix's pins, toasts,
+        // and overlays stay out of the shot on macOS 13 too.
+        let chrome = Self.ownChromeWindowNumbers()
+        let cgImage: CGImage?
+        if chrome.isEmpty {
+            cgImage = CGWindowListCreateImage(cgRect, .optionAll, kCGNullWindowID, .bestResolution)
+        } else {
+            let windowList = CGWindowListCopyWindowInfo([.optionOnScreenOnly], kCGNullWindowID) as? [[String: Any]] ?? []
+            cgImage = Self.windowListImage(rect: cgRect, windowIDs: Self.windowIDs(in: windowList, excluding: chrome))
+        }
+        guard let cgImage else {
             print("[Shotnix] CGWindowListCreateImage returned nil for rect \(rect)")
             return nil
         }
