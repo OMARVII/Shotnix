@@ -49,6 +49,7 @@ struct VideoExportSheet: View {
             .shadow(color: .black.opacity(0.55), radius: 40, y: 20)
             .padding(.vertical, 24)
         }
+        .background(VideoExportSheetEscape(model: model).frame(width: 0, height: 0))
         .onAppear(perform: prepareRange)
     }
 
@@ -67,7 +68,7 @@ struct VideoExportSheet: View {
                 Image(systemName: "xmark").frame(width: 26, height: 26)
             }
             .buttonStyle(VideoToolButtonStyle())
-            .help(model.isExporting ? "Hide — the export keeps going" : "Close (Esc)")
+            .help(model.isExporting ? "Hide — the export keeps going (Esc)" : "Close (Esc)")
             .accessibilityLabel("Close")
         }
         .padding(.horizontal, 20)
@@ -432,7 +433,7 @@ struct VideoExportSheet: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(VideoPrimaryButtonStyle())
-                .help("The export carries on in the background")
+                .help("The export carries on in the background (Esc)")
             }
         }
     }
@@ -507,6 +508,65 @@ struct VideoExportSheet: View {
                 }
                 .buttonStyle(VideoPrimaryButtonStyle())
             }
+        }
+    }
+}
+
+/// Esc while an export runs hides the sheet; the export carries on in the
+/// toolbar. The sheet keeps its own key watch for this: added after the
+/// editor's, it hears Esc first, and every other key passes through.
+private struct VideoExportSheetEscape: NSViewRepresentable {
+    let model: VideoEditorModel
+
+    func makeCoordinator() -> Coordinator { Coordinator(model: model) }
+
+    func makeNSView(context: Context) -> NSView {
+        let view = NSView(frame: .zero)
+        context.coordinator.install(on: view)
+        return view
+    }
+
+    func updateNSView(_ nsView: NSView, context: Context) {}
+
+    static func dismantleNSView(_ nsView: NSView, coordinator: Coordinator) {
+        coordinator.remove()
+    }
+
+    @MainActor
+    final class Coordinator {
+        private let model: VideoEditorModel
+        private var monitor: Any?
+        private weak var view: NSView?
+
+        init(model: VideoEditorModel) {
+            self.model = model
+        }
+
+        func install(on view: NSView) {
+            self.view = view
+            guard monitor == nil else { return }
+            monitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] incoming in
+                nonisolated(unsafe) let event = incoming
+                let hidden: Bool = MainActor.assumeIsolated {
+                    guard let self, event.keyCode == 53,
+                          event.modifierFlags.intersection([.command, .shift, .option, .control]).isEmpty,
+                          let window = self.view?.window, event.window === window,
+                          self.model.isExportPresented,
+                          case .running = self.model.exportPhase else { return false }
+                    self.model.closeExportSheet()
+                    return true
+                }
+                return hidden ? nil : incoming
+            }
+        }
+
+        func remove() {
+            if let monitor { NSEvent.removeMonitor(monitor) }
+            monitor = nil
+        }
+
+        deinit {
+            if let monitor { NSEvent.removeMonitor(monitor) }
         }
     }
 }
