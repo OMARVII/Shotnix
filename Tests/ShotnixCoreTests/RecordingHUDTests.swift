@@ -131,6 +131,23 @@ final class RecordingHUDTests: XCTestCase {
         XCTAssertEqual(events.last, "stop")
     }
 
+    /// The outline around an area recording: click-through, never focused,
+    /// and drawn entirely outside the recorded pixels.
+    func testAreaOutlineStaysOutsideTheRecordedArea() throws {
+        let area = CGRect(x: RecordingUITestSupport.offscreen.x, y: RecordingUITestSupport.offscreen.y, width: 360, height: 200)
+        let outline = RecordingAreaOutlineWindow(around: area)
+        defer { outline.close() }
+        XCTAssertTrue(outline.ignoresMouseEvents)
+        XCTAssertFalse(outline.canBecomeKey)
+        XCTAssertTrue(outline.styleMask.contains(.nonactivatingPanel))
+        let inset = RecordingAreaOutlineWindow.gap + RecordingAreaOutlineWindow.lineWidth
+        XCTAssertEqual(outline.frame, area.insetBy(dx: -inset, dy: -inset))
+        outline.show()
+        try RecordingUITestSupport.writeSnapshot(of: outline, name: "area-outline")
+        outline.setPaused(true)
+        try RecordingUITestSupport.writeSnapshot(of: outline, name: "area-outline-paused")
+    }
+
     func testSavingStateHidesTheControls() throws {
         let hud = makeHUD()
         defer { hud.closeHUD() }

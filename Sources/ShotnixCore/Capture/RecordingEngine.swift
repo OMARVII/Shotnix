@@ -49,6 +49,7 @@ final class RecordingEngine: NSObject {
     private var followTimer: Timer?
     private var bytesPerSecond: Int64 = 0
     private var didWarnLowDiskSpace = false
+    private var didWarnWindowClosed = false
     private var lastMicrophoneSampleAt: CFTimeInterval = 0
     private var followedWindow: SCWindow?
     private var followedWindowFrame: CGRect?
@@ -151,7 +152,9 @@ final class RecordingEngine: NSObject {
                 CameraCapture.shared.stop()
             }
 
-            let content = try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: false)
+            let content = try await Self.withTimeout(10) {
+                try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: false)
+            }
             let prepared = try prepareCaptureSource(source, configuration: configuration, content: content)
             let format = RecordingVideoFormat.plan(width: prepared.pixelWidth, height: prepared.pixelHeight, fps: configuration.fps)
             if format.width != prepared.pixelWidth || format.height != prepared.pixelHeight {
@@ -204,6 +207,7 @@ final class RecordingEngine: NSObject {
                 microphone: configuration.recordsMicrophone
             ) / 60 + (configuration.recordsCamera ? 420_000 : 0)
             didWarnLowDiskSpace = false
+            didWarnWindowClosed = false
 
             let metadataRecorder = VideoDemoRecordingMetadataRecorder(
                 videoURL: url,
@@ -272,7 +276,8 @@ final class RecordingEngine: NSObject {
             )
             recoveryNote = note
             RecordingRecovery.save(note)
-            try await stream.startCapture()
+            let starting = StreamBox(stream)
+            try await Self.withTimeout(15) { try await starting.stream.startCapture() }
             didStartRecording(notices: notices, captureRect: prepared.captureRect)
         } catch {
             await failStart(error, url: createdURL, writer: createdWriter, microphone: microphone, screen: screen)
@@ -281,6 +286,9 @@ final class RecordingEngine: NSObject {
 
     /// Everything that only makes sense once frames flow.
     private func didStartRecording(notices: [String], captureRect: CGRect) {
+        // Stopped (a shortcut) while the stream was still starting: the
+        // finish flow owns what's left.
+        guard isRecording else { return }
         registerForTermination()
         RecordingStopHotkey.register { [weak self] in self?.stopRecording() }
         // Idle display sleep would end up in the video (and stop the
@@ -372,10 +380,14 @@ final class RecordingEngine: NSObject {
         let streamToStop = stream
         let outputToRemove = streamOutput
         Task {
-            do {
-                try await streamToStop?.stopCapture()
-            } catch {
-                print("[Shotnix] Recording stop failed: \(error)")
+            if let streamToStop {
+                // A stalled stop still ends with the file saved.
+                let stopping = StreamBox(streamToStop)
+                do {
+                    try await Self.withTimeout(5) { try await stopping.stream.stopCapture() }
+                } catch {
+                    print("[Shotnix] Recording stop failed: \(error)")
+                }
             }
             if let streamToStop, let outputToRemove {
                 try? streamToStop.removeStreamOutput(outputToRemove, type: .screen)
@@ -771,10 +783,15 @@ final class RecordingEngine: NSObject {
     /// it; resized, the window scales into the video; dragged to another
     /// display, the capture switches display. Pointer data follows too.
     private func followWindow() {
-        guard isRecording, let window = followedWindow,
-              let stream, let streamConfiguration,
-              let frame = Self.onScreenFrame(of: window.windowID),
-              frame != followedWindowFrame, frame.width >= 2, frame.height >= 2 else { return }
+        guard isRecording, let window = followedWindow, let stream, let streamConfiguration else { return }
+        guard let frame = Self.onScreenFrame(of: window.windowID) else {
+            if !didWarnWindowClosed, !Self.windowExists(window.windowID) {
+                didWarnWindowClosed = true
+                warn(hud: "Window closed", toast: "The window you're recording closed. Stop when you're ready — the recording keeps going.")
+            }
+            return
+        }
+        guard frame != followedWindowFrame, frame.width >= 2, frame.height >= 2 else { return }
         followedWindowFrame = frame
         let appKitFrame = ScreenCoordinates.appKitRect(fromCG: frame)
         guard let screen = NSScreen.screenContaining(rect: appKitFrame) ?? recordingScreen,
@@ -795,6 +812,10 @@ final class RecordingEngine: NSObject {
             outputSize: outputPixelSize
         )
         metadataRecorder?.updateCapture(screenRect: geometry.capturedRect, videoRect: videoRect)
+    }
+
+    nonisolated static func windowExists(_ windowID: CGWindowID) -> Bool {
+        !((CGWindowListCopyWindowInfo([.optionIncludingWindow], windowID) as? [[String: Any]]) ?? []).isEmpty
     }
 
     /// The window's current frame (CG space); nil while it's minimized,
@@ -994,8 +1015,19 @@ final class RecordingEngine: NSObject {
     }
 
     private func failStart(_ error: Error, url: URL?, writer: AVAssetWriter?, microphone: RecordingMicrophone?, screen: NSScreen) async {
+        // A stop already under way cleans up (and deletes an empty file) itself.
+        guard isRecording || !isFinishing else {
+            print("[Shotnix] Recording start failed after stop: \(error)")
+            return
+        }
+        // From here nothing else may start finishing this recording (a late
+        // stream error, a stop shortcut) while the stream is torn down.
+        isRecording = false
+        isFinishing = true
+        stopMonitoring()
         if let stream {
-            try? await stream.stopCapture()
+            let stopping = StreamBox(stream)
+            try? await Self.withTimeout(5) { try await stopping.stream.stopCapture() }
         }
         microphone?.stop()
         // A recording that never started leaves nothing behind.
@@ -1071,6 +1103,22 @@ final class RecordingEngine: NSObject {
     private func cancelSlowSaveNotices() {
         slowSaveWorkItems.forEach { $0.cancel() }
         slowSaveWorkItems.removeAll()
+    }
+
+    /// ScreenCaptureKit calls can stall (a display going to sleep mid-call,
+    /// a busy window server): give up after `seconds` rather than leave a
+    /// recording that never starts or never saves.
+    nonisolated private static func withTimeout<T: Sendable>(_ seconds: Double, _ operation: @escaping @Sendable () async throws -> T) async throws -> T {
+        try await withCheckedThrowingContinuation { continuation in
+            let once = ResumeOnce(continuation)
+            Task {
+                do { once.resume(with: .success(try await operation())) } catch { once.resume(with: .failure(error)) }
+            }
+            Task {
+                try? await Task.sleep(nanoseconds: UInt64(seconds * 1_000_000_000))
+                once.resume(with: .failure(RecordingError.timedOut))
+            }
+        }
     }
 
     private func waitUntilSaved(timeout: TimeInterval) async {
@@ -1253,6 +1301,7 @@ final class RecordingEngine: NSObject {
             case .noDisplay: return "That display isn't available anymore."
             case .windowGone: return "That window closed before recording could start."
             case .cannotAddWriterInput, .cannotStartWriter: return "Couldn't create the video file."
+            case .timedOut: return "Screen recording didn't start in time. Try again."
             }
         }
         if nsError.domain == SCStreamErrorDomain {
@@ -1492,6 +1541,32 @@ final class RecordingEngine: NSObject {
         case windowGone
         case cannotAddWriterInput
         case cannotStartWriter
+        case timedOut
+    }
+}
+
+/// SCStream crosses into the timeout helper's tasks; it's only used there
+/// for the one start or stop call.
+private struct StreamBox: @unchecked Sendable {
+    let stream: SCStream
+    init(_ stream: SCStream) { self.stream = stream }
+}
+
+/// Resumes a continuation once, whichever of two racing tasks gets there first.
+private final class ResumeOnce<T>: @unchecked Sendable {
+    private let lock = NSLock()
+    private var continuation: CheckedContinuation<T, Error>?
+
+    init(_ continuation: CheckedContinuation<T, Error>) {
+        self.continuation = continuation
+    }
+
+    func resume(with result: Result<T, Error>) {
+        lock.lock()
+        let pending = continuation
+        continuation = nil
+        lock.unlock()
+        pending?.resume(with: result)
     }
 }
 

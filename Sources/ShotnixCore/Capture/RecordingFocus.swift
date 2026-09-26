@@ -7,6 +7,7 @@ import AppKit
 @MainActor
 enum RecordingFocus {
     private static var lastExternalApp: NSRunningApplication?
+    private static var returnTarget: NSRunningApplication?
     private static var observer: NSObjectProtocol?
 
     static func startTracking() {
@@ -27,10 +28,19 @@ enum RecordingFocus {
         return app
     }
 
+    /// Recording setup begins (before any Shotnix UI shows): focus will go
+    /// back to the app the user was in — unless they were working in one of
+    /// Shotnix's own windows (recording the editor itself, say).
+    static func noteSetupStarted() {
+        let workingInShotnix = NSApp.isActive && NSApp.keyWindow?.styleMask.contains(.titled) == true
+        returnTarget = workingInShotnix ? nil : previousApp
+    }
+
     /// Call while Shotnix is the active app — right at the user's click:
-    /// macOS only lets the active app pass focus on.
+    /// macOS only lets the active app pass focus on. `app` wins (a window
+    /// recording's own app); otherwise the target noted at setup.
     static func returnFocus(to app: NSRunningApplication? = nil) {
-        guard let target = app ?? previousApp, !target.isTerminated,
+        guard let target = app ?? returnTarget, !target.isTerminated,
               target.processIdentifier != ProcessInfo.processInfo.processIdentifier else { return }
         if #available(macOS 14.0, *) {
             NSApp.yieldActivation(to: target)

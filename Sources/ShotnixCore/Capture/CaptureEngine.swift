@@ -347,6 +347,7 @@ final class CaptureEngine {
             PermissionsManager.showPermissionDeniedAlert(); return
         }
         guard canBeginRecordingSetup() else { return }
+        RecordingFocus.noteSetupStarted()
 
         recordingSelectionActive = true
         areaSelectionWindow = AreaSelectionWindow(mode: .area) { [weak self] rect, screen in
@@ -366,6 +367,7 @@ final class CaptureEngine {
             PermissionsManager.showPermissionDeniedAlert(); return
         }
         guard canBeginRecordingSetup() else { return }
+        RecordingFocus.noteSetupStarted()
 
         do {
             let content = try await SCShareableContent.excludingDesktopWindows(true, onScreenWindowsOnly: true)
@@ -405,6 +407,7 @@ final class CaptureEngine {
             PermissionsManager.showPermissionDeniedAlert(); return
         }
         guard canBeginRecordingSetup() else { return }
+        RecordingFocus.noteSetupStarted()
         let screens = NSScreen.screens
         guard !screens.isEmpty else { return }
         guard screens.count > 1 else {

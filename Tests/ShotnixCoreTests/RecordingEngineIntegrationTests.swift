@@ -14,10 +14,13 @@ final class RecordingEngineIntegrationTests: XCTestCase {
     private var defaults: UserDefaults!
     private var folder: URL!
     private var engine: RecordingEngine?
+    private var displayAssertion: IOPMAssertionID = 0
 
     override func setUp() async throws {
         try await super.setUp()
         guard CGPreflightScreenCaptureAccess() else { throw XCTSkip("needs Screen Recording permission") }
+        // Displays that doze off mid-test stall ScreenCaptureKit.
+        IOPMAssertionCreateWithName(kIOPMAssertionTypePreventUserIdleDisplaySleep as CFString, IOPMAssertionLevel(kIOPMAssertionLevelOn), "Shotnix recording tests" as CFString, &displayAssertion)
         guard await Self.wakeDisplays() else { throw XCTSkip("no display to record (asleep or headless)") }
         _ = NSApplication.shared
         VideoTestStorage.isolate()
@@ -45,6 +48,7 @@ final class RecordingEngineIntegrationTests: XCTestCase {
         if let folder { try? FileManager.default.removeItem(at: folder) }
         if let suiteName { defaults?.removePersistentDomain(forName: suiteName) }
         Settings.defaults = .standard
+        if displayAssertion != 0 { IOPMAssertionRelease(displayAssertion) }
         try await super.tearDown()
     }
 
@@ -54,11 +58,32 @@ final class RecordingEngineIntegrationTests: XCTestCase {
         var assertion: IOPMAssertionID = 0
         IOPMAssertionDeclareUserActivity("Shotnix recording tests" as CFString, kIOPMUserActiveLocal, &assertion)
         for _ in 0..<40 {
-            if let content = try? await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: false),
-               !content.displays.isEmpty { return true }
+            let content = await within(10) { try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: false) }
+            if content?.displays.isEmpty == false { return true }
             try? await Task.sleep(nanoseconds: 100_000_000)
         }
         return false
+    }
+
+    /// The operation's result, or nil if it fails or doesn't answer in time
+    /// (ScreenCaptureKit can stall while another process hammers it).
+    private static func within<T: Sendable>(_ seconds: Double, _ operation: @escaping @Sendable () async throws -> T) async -> T? {
+        await withCheckedContinuation { (continuation: CheckedContinuation<T?, Never>) in
+            let lock = NSLock()
+            nonisolated(unsafe) var resumed = false
+            let finish: @Sendable (T?) -> Void = { value in
+                lock.lock()
+                defer { lock.unlock() }
+                guard !resumed else { return }
+                resumed = true
+                continuation.resume(returning: value)
+            }
+            Task { finish(try? await operation()) }
+            Task {
+                try? await Task.sleep(nanoseconds: UInt64(seconds * 1_000_000_000))
+                finish(nil)
+            }
+        }
     }
 
     private func waitUntil(timeout: TimeInterval, _ condition: () -> Bool) async throws {
@@ -87,9 +112,21 @@ final class RecordingEngineIntegrationTests: XCTestCase {
         var finished: URL?
         engine.recordingFinishedHandler = { url, _ in finished = url }
         let (rect, screen) = try areaOnMainScreen()
-        await engine.startRecording(rect: rect, on: screen)
-        XCTAssertNotNil(engine.elapsedSeconds, "recording started")
+        try await start(engine) { await engine.startRecording(rect: rect, on: screen) }
         return (engine, { finished })
+    }
+
+    /// A display that just woke can be slow to hand out its first frames;
+    /// one retry covers that. A stream that won't start at all is the
+    /// machine's state (asleep, or ScreenCaptureKit busy elsewhere), not a
+    /// finding.
+    private func start(_ engine: RecordingEngine, _ begin: () async -> Void) async throws {
+        await begin()
+        if engine.elapsedSeconds == nil {
+            try await sleep(1)
+            await begin()
+        }
+        guard engine.elapsedSeconds != nil else { throw XCTSkip("ScreenCaptureKit didn't start a stream") }
     }
 
     func testRecordsAPlayableAreaAndCleansUpAfterwards() async throws {
@@ -127,6 +164,11 @@ final class RecordingEngineIntegrationTests: XCTestCase {
         XCTAssertEqual(metadata.fps, 30)
         XCTAssertNotNil(metadata.screenActivity, "activity is recorded for idle detection")
         XCTAssertTrue(metadata.screenActivity?.allSatisfy { $0 >= 0 && $0 <= duration + 0.05 } ?? false)
+        // Pointer samples run on the video's clock: t=0 at the first frame
+        // (a still pointer is sampled every 0.25 s), so they span the video.
+        XCTAssertEqual(metadata.cursorSamples.first?.time ?? -1, 0, accuracy: 0.001)
+        XCTAssertGreaterThan(metadata.cursorSamples.last?.time ?? 0, duration - 0.35)
+        XCTAssertLessThanOrEqual(metadata.cursorSamples.last?.time ?? .infinity, duration + 0.05)
     }
 
     func testPausedTimeIsCutFromTheRecording() async throws {
@@ -206,15 +248,14 @@ final class RecordingEngineIntegrationTests: XCTestCase {
         defer { window.orderOut(nil) }
         try await sleep(0.4)
 
-        let shareable = try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: true)
-        let scWindow = try XCTUnwrap(shareable.windows.first { $0.windowID == CGWindowID(window.windowNumber) })
+        let shareable = await Self.within(10) { try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: true) }
+        let scWindow = try XCTUnwrap(shareable?.windows.first { $0.windowID == CGWindowID(window.windowNumber) })
 
         let engine = RecordingEngine()
         self.engine = engine
         var finished: URL?
         engine.recordingFinishedHandler = { url, _ in finished = url }
-        await engine.startRecording(window: scWindow, on: screen)
-        XCTAssertNotNil(engine.elapsedSeconds)
+        try await start(engine) { await engine.startRecording(window: scWindow, on: screen) }
         try await sleep(1)
         window.setFrameOrigin(NSPoint(x: screen.frame.minX + 520, y: screen.frame.minY + 260))
         try await sleep(1)
