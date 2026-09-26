@@ -74,6 +74,10 @@ struct VideoDemoRecordingMetadata: Codable, Equatable {
     /// Source pixels per screen point (2 on Retina) — sizes the rendered
     /// cursor exactly like the real one.
     var pointPixelScale: Double? = nil
+    /// Source seconds when the screen changed (ScreenCaptureKit's dirty rects),
+    /// at most one sample per 0.1 s — lets idle detection see typing and
+    /// animations that the pointer data misses. nil for older recordings.
+    var screenActivity: [Double]? = nil
     var cursorShapes: [VideoCursorShape]? = nil
     var cursorShapeEvents: [VideoCursorShapeEvent]? = nil
     /// Whether the editor should draw the pointer. nil (older sidecars)

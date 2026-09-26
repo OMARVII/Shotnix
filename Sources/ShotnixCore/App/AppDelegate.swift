@@ -49,6 +49,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
+    /// A recording, export, or transcription still running finishes first.
+    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        AppTermination.terminateReply(for: sender)
+    }
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         Settings.migrateOnboardingFlagIfNeeded()
         updateController = AppUpdateController()

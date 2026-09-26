@@ -2,7 +2,7 @@ import Foundation
 import Sparkle
 
 @MainActor
-final class AppUpdateController: NSObject {
+final class AppUpdateController: NSObject, SPUUpdaterDelegate {
     private var updaterController: SPUStandardUpdaterController?
 
     override init() {
@@ -15,9 +15,19 @@ final class AppUpdateController: NSObject {
 
         updaterController = SPUStandardUpdaterController(
             startingUpdater: true,
-            updaterDelegate: nil,
+            updaterDelegate: self,
             userDriverDelegate: nil
         )
+    }
+
+    /// An update never relaunches the app in the middle of a recording or an
+    /// export: it installs once they have ended.
+    nonisolated func updater(_ updater: SPUUpdater, shouldPostponeRelaunchForUpdate item: SUAppcastItem, untilInvokingBlock installHandler: @escaping () -> Void) -> Bool {
+        MainActor.assumeIsolated {
+            guard AppTermination.isBusy else { return false }
+            AppTermination.whenIdle { installHandler() }
+            return true
+        }
     }
 
     var canCheckForUpdates: Bool {
