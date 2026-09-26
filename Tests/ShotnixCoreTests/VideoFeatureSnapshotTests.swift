@@ -171,37 +171,25 @@ final class VideoFeatureSnapshotTests: XCTestCase {
         model.stop()
     }
 
-    /// Esc while an export runs hides the sheet — the export keeps going
-    /// (and shows in the toolbar); other keys still reach the sheet.
+    /// Esc while an export runs hides the sheet — through the editor's own
+    /// keys — and the export keeps going (it shows in the toolbar).
     func testEscapeHidesTheSheetWhileTheExportCarriesOn() async throws {
         let model = try await model(seconds: 3)
-        let size = CGSize(width: 1280, height: 800)
-        let host = NSHostingView(rootView: VideoEditorRootView(model: model).frame(width: size.width, height: size.height))
-        host.frame = NSRect(origin: .zero, size: size)
-        let window = NSWindow(contentRect: host.frame, styleMask: [.titled], backing: .buffered, defer: false)
-        window.contentView = host
-        window.orderFrontRegardless()
-        defer { window.orderOut(nil) }
-
         model.exportSettings.resolution = .p720
         model.exportSettings.endCard = false
         model.isExportPresented = true
         model.enqueueExport(to: directory.appendingPathComponent("Esc Demo.mp4"), settings: model.exportSettings, toClipboard: false)
         let job = try XCTUnwrap(model.exportJobs.last)
-        try await Task.sleep(nanoseconds: 400_000_000)
-        host.layoutSubtreeIfNeeded()
-        guard case .running = model.exportPhase else { return XCTFail("the sheet shows the running export: \(model.exportPhase)") }
+        guard case .exporting = model.exportPhase else { return XCTFail("the sheet follows the export: \(model.exportPhase)") }
+        XCTAssertFalse(model.isExporting, "a background export doesn't hold the editor")
 
-        func press(_ keyCode: UInt16, _ characters: String) {
-            let event = NSEvent.keyEvent(with: .keyDown, location: .zero, modifierFlags: [], timestamp: ProcessInfo.processInfo.systemUptime, windowNumber: window.windowNumber, context: nil, characters: characters, charactersIgnoringModifiers: characters, isARepeat: false, keyCode: keyCode)!
-            NSApp.sendEvent(event)
+        func key(_ keyCode: UInt16, _ characters: String) -> NSEvent {
+            NSEvent.keyEvent(with: .keyDown, location: .zero, modifierFlags: [], timestamp: ProcessInfo.processInfo.systemUptime, windowNumber: 0, context: nil, characters: characters, charactersIgnoringModifiers: characters, isARepeat: false, keyCode: keyCode)!
         }
-        // Tab moves through the sheet; it doesn't close it.
-        press(48, "\t")
-        XCTAssertTrue(model.isExportPresented, "Tab passes through to the sheet")
-        press(53, "\u{1b}")
-        XCTAssertFalse(model.isExportPresented, "Esc hides the sheet")
-        XCTAssertFalse(job.isDone, "and the export goes on")
+        XCTAssertTrue(model.handleKey(key(53, "\u{1b}")), "the editor takes Esc")
+        XCTAssertFalse(model.isExportPresented, "and hides the sheet")
+        XCTAssertEqual(model.exportPhase, .idle, "the next export opens on the options")
+        XCTAssertFalse(job.isDone, "the export goes on")
 
         let deadline = Date().addingTimeInterval(60)
         while !job.isDone, Date() < deadline { try await Task.sleep(nanoseconds: 100_000_000) }

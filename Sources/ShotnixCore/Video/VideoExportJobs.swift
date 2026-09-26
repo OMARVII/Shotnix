@@ -465,7 +465,7 @@ extension VideoEditorModel {
         // needs it whole.
         if snapshot.cursorSamples.isEmpty, let recording { snapshot.cursorSamples = recording.cursorSamples }
         let job = VideoExportQueue.shared.enqueue(project: snapshot, recording: recording, settings: settings, range: range, destination: destination, toClipboard: toClipboard)
-        exportPhase = .running(progress: 0, started: Date(), destination: destination, toClipboard: toClipboard)
+        exportPhase = .exporting(progress: 0, started: Date(), destination: destination, toClipboard: toClipboard)
         observeExport(job)
     }
 
@@ -477,7 +477,7 @@ extension VideoEditorModel {
                 // sheet closed, the pill carries the result and the next ⌘E
                 // starts on the options.
                 var shown = false
-                if case .running(_, _, let destination, _) = self.exportPhase { shown = destination == job.destination }
+                if case .exporting(_, _, let destination, _) = self.exportPhase { shown = destination == job.destination }
                 switch job.state {
                 case .finished(let bytes):
                     if shown { self.exportPhase = self.isExportPresented ? .finished(url: job.destination, bytes: bytes, copied: job.toClipboard) : .idle }
@@ -491,8 +491,8 @@ extension VideoEditorModel {
                     self.showNotice("Export cancelled", symbol: "xmark.circle")
                     return
                 default:
-                    if case .running(_, let started, let destination, let clipboard) = self.exportPhase, destination == job.destination {
-                        self.exportPhase = .running(progress: job.progress, started: job.startedAt ?? started, destination: destination, toClipboard: clipboard)
+                    if case .exporting(_, let started, let destination, let clipboard) = self.exportPhase, destination == job.destination {
+                        self.exportPhase = .exporting(progress: job.progress, started: job.startedAt ?? started, destination: destination, toClipboard: clipboard)
                     }
                 }
                 try? await Task.sleep(nanoseconds: 150_000_000)

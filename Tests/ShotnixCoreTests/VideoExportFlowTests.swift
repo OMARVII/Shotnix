@@ -298,7 +298,7 @@ final class VideoExportFlowTests: XCTestCase {
         model.setStyle { $0.background = .color(VideoRGBA(1, 0, 0)) }
         XCTAssertEqual(job.project.background, background)
         XCTAssertNotEqual(model.project.background, background)
-        if case .running = model.exportPhase {} else { XCTFail("the sheet shows it running") }
+        if case .exporting = model.exportPhase {} else { XCTFail("the sheet shows it running") }
         try await wait(for: job)
         try await Task.sleep(nanoseconds: 300_000_000)
         guard case .finished = model.exportPhase else { return XCTFail("\(model.exportPhase)") }

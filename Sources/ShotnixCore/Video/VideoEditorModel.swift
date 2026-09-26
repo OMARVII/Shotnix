@@ -110,7 +110,12 @@ final class VideoEditorModel: ObservableObject {
 
     enum ExportPhase: Equatable {
         case idle
+        /// An export that holds the editor until it ends. Exports run in the
+        /// background now (`.exporting`), so nothing holds it: the editor's
+        /// keys keep working — Esc hides the sheet.
         case running(progress: Double, started: Date, destination: URL, toClipboard: Bool)
+        /// A background export the sheet is following.
+        case exporting(progress: Double, started: Date, destination: URL, toClipboard: Bool)
         case finished(url: URL, bytes: Int64, copied: Bool)
         case failed(String)
     }

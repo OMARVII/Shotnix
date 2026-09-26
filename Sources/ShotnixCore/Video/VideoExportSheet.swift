@@ -28,7 +28,8 @@ struct VideoExportSheet: View {
                 Rectangle().fill(VideoEditorTheme.hairline).frame(height: 1)
                 Group {
                     switch model.exportPhase {
-                    case .running(let progress, let started, let destination, let clipboard):
+                    case .running(let progress, let started, let destination, let clipboard),
+                         .exporting(let progress, let started, let destination, let clipboard):
                         runningView(progress: progress, started: started, destination: destination, clipboard: clipboard).padding(20)
                     case .finished(let url, let bytes, let copied):
                         finishedView(url: url, bytes: bytes, copied: copied).padding(20)
@@ -49,7 +50,6 @@ struct VideoExportSheet: View {
             .shadow(color: .black.opacity(0.55), radius: 40, y: 20)
             .padding(.vertical, 24)
         }
-        .background(VideoExportSheetEscape(model: model).frame(width: 0, height: 0))
         .onAppear(perform: prepareRange)
     }
 
@@ -68,17 +68,23 @@ struct VideoExportSheet: View {
                 Image(systemName: "xmark").frame(width: 26, height: 26)
             }
             .buttonStyle(VideoToolButtonStyle())
-            .help(model.isExporting ? "Hide — the export keeps going (Esc)" : "Close (Esc)")
+            .help(showsExport ? "Hide — the export keeps going (Esc)" : "Close (Esc)")
             .accessibilityLabel("Close")
         }
         .padding(.horizontal, 20)
         .frame(height: 52)
     }
 
+    /// A background export is on show (hiding the sheet leaves it going).
+    private var showsExport: Bool {
+        if case .exporting = model.exportPhase { return true }
+        return false
+    }
+
     private var title: String {
         switch model.exportPhase {
         case .idle: return "Export"
-        case .running(_, _, _, let clipboard): return clipboard ? "Preparing to copy…" : "Exporting…"
+        case .running(_, _, _, let clipboard), .exporting(_, _, _, let clipboard): return clipboard ? "Preparing to copy…" : "Exporting…"
         case .finished(_, _, let copied): return copied ? "Copied to clipboard" : "Export complete"
         case .failed: return "Export failed"
         }
@@ -508,65 +514,6 @@ struct VideoExportSheet: View {
                 }
                 .buttonStyle(VideoPrimaryButtonStyle())
             }
-        }
-    }
-}
-
-/// Esc while an export runs hides the sheet; the export carries on in the
-/// toolbar. The sheet keeps its own key watch for this: added after the
-/// editor's, it hears Esc first, and every other key passes through.
-private struct VideoExportSheetEscape: NSViewRepresentable {
-    let model: VideoEditorModel
-
-    func makeCoordinator() -> Coordinator { Coordinator(model: model) }
-
-    func makeNSView(context: Context) -> NSView {
-        let view = NSView(frame: .zero)
-        context.coordinator.install(on: view)
-        return view
-    }
-
-    func updateNSView(_ nsView: NSView, context: Context) {}
-
-    static func dismantleNSView(_ nsView: NSView, coordinator: Coordinator) {
-        coordinator.remove()
-    }
-
-    @MainActor
-    final class Coordinator {
-        private let model: VideoEditorModel
-        private var monitor: Any?
-        private weak var view: NSView?
-
-        init(model: VideoEditorModel) {
-            self.model = model
-        }
-
-        func install(on view: NSView) {
-            self.view = view
-            guard monitor == nil else { return }
-            monitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] incoming in
-                nonisolated(unsafe) let event = incoming
-                let hidden: Bool = MainActor.assumeIsolated {
-                    guard let self, event.keyCode == 53,
-                          event.modifierFlags.intersection([.command, .shift, .option, .control]).isEmpty,
-                          let window = self.view?.window, event.window === window,
-                          self.model.isExportPresented,
-                          case .running = self.model.exportPhase else { return false }
-                    self.model.closeExportSheet()
-                    return true
-                }
-                return hidden ? nil : incoming
-            }
-        }
-
-        func remove() {
-            if let monitor { NSEvent.removeMonitor(monitor) }
-            monitor = nil
-        }
-
-        deinit {
-            if let monitor { NSEvent.removeMonitor(monitor) }
         }
     }
 }
