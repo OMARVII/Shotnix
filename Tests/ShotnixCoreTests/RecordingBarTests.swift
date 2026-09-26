@@ -1,4 +1,5 @@
 import AppKit
+import SwiftUI
 import XCTest
 @testable import ShotnixCore
 
@@ -112,6 +113,27 @@ final class RecordingBarTests: XCTestCase {
         let bar = try makeBar()
         defer { bar.closeControls() }
         try RecordingUITestSupport.writeSnapshot(of: bar, name: "recording-bar")
+    }
+
+    func testRendersTheRecordingSettings() throws {
+        Settings.recordingCountdownSeconds = 3
+        let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 560, height: 1100), styleMask: [.borderless], backing: .buffered, defer: false)
+        window.isReleasedWhenClosed = false
+        window.appearance = NSAppearance(named: .darkAqua)
+        window.backgroundColor = NSColor(calibratedWhite: 0.1, alpha: 1)
+        // The Preferences window draws a dark stage behind the panes.
+        let stage = NSView(frame: NSRect(x: 0, y: 0, width: 560, height: 1100))
+        stage.wantsLayer = true
+        stage.layer?.backgroundColor = ShotnixColors.editorStageTop.cgColor
+        let hosting = NSHostingView(rootView: RecordingSettingsView())
+        hosting.frame = stage.bounds
+        stage.addSubview(hosting)
+        window.contentView = stage
+        window.setFrameOrigin(RecordingUITestSupport.offscreen)
+        window.orderFrontRegardless()
+        defer { window.orderOut(nil) }
+        RecordingUITestSupport.spinRunLoop(0.2)
+        try RecordingUITestSupport.writeSnapshot(of: window, name: "recording-settings")
     }
 
     // MARK: Post-recording panel

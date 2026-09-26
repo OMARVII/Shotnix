@@ -50,6 +50,20 @@ final class RecordingMicrophone {
         return AVCaptureDevice.default(for: .audio)
     }
 
+    /// The system default — or, while the default still names the device
+    /// that just vanished, any other connected microphone.
+    private static func replacement(excluding lostID: String?) -> AVCaptureDevice? {
+        let types: [AVCaptureDevice.DeviceType]
+        if #available(macOS 14.0, *) {
+            types = [.microphone, .externalUnknown]
+        } else {
+            types = [.builtInMicrophone, .externalUnknown]
+        }
+        let others = AVCaptureDevice.DiscoverySession(deviceTypes: types, mediaType: .audio, position: .unspecified).devices
+        return ([AVCaptureDevice.default(for: .audio)].compactMap { $0 } + others)
+            .first { $0.uniqueID != lostID && $0.isConnected }
+    }
+
     /// Builds the session (not running yet); throws when the device can't open.
     func prepare(device: AVCaptureDevice) throws {
         let session = try Self.makeSession(device: device, delegate: delegate, queue: sampleQueue)
@@ -158,7 +172,7 @@ final class RecordingMicrophone {
         }
         session = nil
         device = nil
-        guard let next = AVCaptureDevice.default(for: .audio), next.uniqueID != lostID, next.isConnected else {
+        guard let next = Self.replacement(excluding: lostID) else {
             eventHandler?(.lost)
             return
         }
