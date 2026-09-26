@@ -206,8 +206,10 @@ final class VideoLongTakeTests: XCTestCase {
             for i in 0..<10 { _ = context.createCGImage(renderer.render(source: source, timelineTime: 0.5 + Double(i) * 0.01, plan: model.plan, outputSize: size, options: options), from: CGRect(origin: .zero, size: size)) }
             return (CFAbsoluteTimeGetCurrent() - start) * 100
         }
-        let full = time(draft: false)
-        let draft = time(draft: true)
+        // The best of a few runs each, so other work in the process doesn't
+        // decide it.
+        let full = (0..<3).map { _ in time(draft: false) }.min() ?? 0
+        let draft = (0..<3).map { _ in time(draft: true) }.min() ?? 0
         print(String(format: "LONGTAKE: 4K preview frame %.1f ms full, %.1f ms draft", full, draft))
         XCTAssertLessThan(draft, full * 1.05)
         model.stop()

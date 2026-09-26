@@ -155,6 +155,9 @@ final class VideoPreviewInteractionTests: XCTestCase {
         label.layer = 1
         var arrow = VideoDemoOverlayEffect(kind: .arrow, time: 1, duration: 3)
         arrow.setArrow(tail: CGPoint(x: 0.9, y: 0.25), head: CGPoint(x: 0.6, y: 0.1))
+        // A lane of its own: the lanes are sorted out in ID order, so an
+        // arrow asking for lane 0 could push the highlight above the label.
+        arrow.layer = 2
         add(highlight)
         add(label)
         add(arrow)
