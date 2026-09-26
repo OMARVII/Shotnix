@@ -83,7 +83,13 @@ enum VideoDemoExporter {
                 }
                 if let metadata = VideoDemoSidecarStore.load(for: url) { appendedMetadata[added.id] = metadata }
             }
-            extras.layout = await VideoSourceLayout.load(project: project, primary: source, primaryAudio: audioSources, primaryCamera: camera, includeCameras: project.webcam.visible, enhanceVoice: project.audio.enhanceVoice)
+            let layout = await VideoSourceLayout.load(project: project, primary: source, primaryAudio: audioSources, primaryCamera: camera, includeCameras: project.webcam.visible, enhanceVoice: project.audio.enhanceVoice)
+            // There but unreadable (damaged, not a video): say so, rather
+            // than export its part as silent black.
+            if let unreadable = project.sources.first(where: { added in !added.isPrimary && !(layout?.entries.contains { $0.source.id == added.id } ?? false) }) {
+                throw VideoDemoExportError.exportFailed("“\(unreadable.name)” can't be read — it may be damaged, still being saved, or in a format this Mac can't play. Remove it from this video (Style → Recordings), or put a working copy in its place, then export again.")
+            }
+            extras.layout = layout
         }
         let allKinds = kinds + project.sources.filter { !$0.isPrimary }.flatMap(\.audioKinds)
         if let music = project.music, let file = await VideoAudioFile.load(music.url) {

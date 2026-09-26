@@ -456,6 +456,20 @@ final class VideoProjectSourcesTests: XCTestCase {
         XCTAssertEqual(edit.duration.seconds, 3.5, accuracy: 0.05, "the missing part stays on the timeline (black)")
     }
 
+    func testAnUnreadableAddedRecordingStopsTheExportWithAClearMessage() async throws {
+        let (project, _, b, metadata) = try await twoRecordings()
+        // Still there, but not a video any more.
+        try Data(repeating: 0x42, count: 4096).write(to: b)
+        do {
+            try await VideoDemoExporter.export(project: project, recording: metadata, destinationURL: directory.appendingPathComponent("broken.mp4"), settings: VideoInspection.mp4Settings())
+            XCTFail("its part would have been silent black")
+        } catch {
+            let message = VideoExportFailure.message(for: error)
+            XCTAssertTrue(message.contains("“b.mp4” can't be read"), message)
+        }
+        XCTAssertFalse(FileManager.default.fileExists(atPath: directory.appendingPathComponent("broken.mp4").path))
+    }
+
     func testAddedRecordingsAreFoundAfterAMove() async throws {
         let (project, _, b, _) = try await twoRecordings()
         var added = project.sources[1]
