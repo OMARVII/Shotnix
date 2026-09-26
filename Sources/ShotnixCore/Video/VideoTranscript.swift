@@ -205,41 +205,45 @@ extension VideoDemoProject {
     }
 
     /// Puts a span of the recording back: neighbouring clips grow over it
-    /// (and merge when they meet), or it returns as its own clip.
+    /// (and merge when they meet), or it returns as its own clip. Clips keep
+    /// their order on the timeline (they may have been moved around).
     mutating func restoreSourceRange(_ range: ClosedRange<Double>, totalDuration: Double) {
         let lower = max(range.lowerBound, 0)
         let upper = min(range.upperBound, totalDuration)
         guard upper - lower > 0.01 else { return }
-        var clips = normalizedTimelineClips(totalDuration: totalDuration).sorted { $0.sourceStart < $1.sourceStart }
+        var clips = normalizedTimelineClips(totalDuration: totalDuration)
         let epsilon = 0.02
-        // Grow clips that touch the restored span.
-        for index in clips.indices {
+        // Neighbours in the recording bound how far a clip can grow.
+        let bySource = clips.indices.sorted { clips[$0].sourceStart < clips[$1].sourceStart }
+        for (rank, index) in bySource.enumerated() {
+            let previousEnd = rank > 0 ? clips[bySource[rank - 1]].sourceEnd : 0
+            let nextStart = rank + 1 < bySource.count ? clips[bySource[rank + 1]].sourceStart : totalDuration
             if abs(clips[index].sourceEnd - lower) <= epsilon || (clips[index].sourceEnd >= lower && clips[index].sourceEnd < upper && clips[index].sourceStart < lower) {
-                let nextStart = index + 1 < clips.count ? clips[index + 1].sourceStart : totalDuration
                 clips[index].sourceEnd = min(max(clips[index].sourceEnd, upper), nextStart)
             }
             if abs(clips[index].sourceStart - upper) <= epsilon || (clips[index].sourceStart <= upper && clips[index].sourceStart > lower && clips[index].sourceEnd > upper) {
-                let previousEnd = index > 0 ? clips[index - 1].sourceEnd : 0
                 clips[index].sourceStart = max(min(clips[index].sourceStart, lower), previousEnd)
             }
         }
-        // Still uncovered (restored in the middle of a gap): its own clip.
+        // Still uncovered (restored in the middle of a gap): its own clip,
+        // right after the clip it follows in the recording.
         let covered = clips.contains { $0.sourceStart <= lower + epsilon && $0.sourceEnd >= upper - epsilon }
         if !covered {
-            clips.append(VideoDemoTimelineClip(sourceStart: lower, sourceEnd: upper))
-            clips.sort { $0.sourceStart < $1.sourceStart }
+            let before = clips.indices.filter { clips[$0].sourceStart <= lower + epsilon }.max { clips[$0].sourceStart < clips[$1].sourceStart }
+            clips.insert(VideoDemoTimelineClip(sourceStart: lower, sourceEnd: upper), at: before.map { $0 + 1 } ?? 0)
         }
-        // Merge clips that now meet seamlessly.
+        // Merge timeline neighbours that now meet seamlessly in the recording.
         var merged: [VideoDemoTimelineClip] = []
         for clip in clips {
             if var last = merged.last,
+               clip.sourceStart >= last.sourceStart,
                clip.sourceStart <= last.sourceEnd + epsilon,
                abs(last.normalizedSpeed - clip.normalizedSpeed) < 0.001,
                last.muted == clip.muted {
                 last.sourceEnd = max(last.sourceEnd, clip.sourceEnd)
                 last.fadeOut = clip.fadeOut
                 merged[merged.count - 1] = last
-            } else if let last = merged.last, clip.sourceStart < last.sourceEnd {
+            } else if let last = merged.last, clip.sourceStart > last.sourceStart, clip.sourceStart < last.sourceEnd {
                 var trimmed = clip
                 trimmed.sourceStart = last.sourceEnd
                 if trimmed.sourceDuration >= Self.minimumClipDuration { merged.append(trimmed) }
@@ -249,5 +253,19 @@ extension VideoDemoProject {
         }
         timelineClips = merged
         ensureTimeline(totalDuration: totalDuration)
+    }
+
+    /// Moves a clip to another place in the video (the recording itself
+    /// stays as it is).
+    @discardableResult
+    mutating func moveClip(id: UUID, toIndex index: Int, totalDuration: Double) -> Bool {
+        var clips = normalizedTimelineClips(totalDuration: totalDuration)
+        guard let from = clips.firstIndex(where: { $0.id == id }) else { return false }
+        let target = min(max(index, 0), clips.count - 1)
+        guard target != from else { return false }
+        clips.insert(clips.remove(at: from), at: target)
+        timelineClips = clips
+        ensureTimeline(totalDuration: totalDuration)
+        return true
     }
 }

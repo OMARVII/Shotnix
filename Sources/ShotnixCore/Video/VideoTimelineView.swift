@@ -228,6 +228,10 @@ struct VideoTimelineSurface: View {
     @State private var dragOrigin: TimelineDragOrigin?
     /// Where the dragged bar's edges can land, gathered when the drag began.
     @State private var snapper: VideoTimelineSnapper?
+    /// The drag moves every selected bar (it began on one of several).
+    @State private var movesGroup = false
+    /// ⇧ or ⌘ was held when the press began: a click adds or removes.
+    @State private var extending = false
     @State private var rangeStart: Double?
     @State private var pinchBase: Double?
     /// Anchored zooming, ⌘-scroll, and paging after the playhead.
@@ -305,7 +309,7 @@ struct VideoTimelineSurface: View {
                         items: model.project.clickEvents.compactMap { click in
                             model.timelineTime(forSource: click.time).map { VideoClickLane.Item(id: click.id, time: $0) }
                         },
-                        selectedID: { if case .click(let id) = model.selection { return id } else { return nil } }(),
+                        selectedIDs: model.selectedIDs { if case .click(let id) = $0 { return id } else { return nil } },
                         geometry: geometry,
                         model: model,
                         hover: hover
@@ -318,7 +322,7 @@ struct VideoTimelineSurface: View {
                 if !model.project.captions.isEmpty {
                     VideoCaptionLane(
                         items: model.plan.captions.map { VideoCaptionLane.Item(id: $0.id, start: $0.start, end: $0.end, text: $0.text) },
-                        selectedID: model.selectedCaptionID,
+                        selectedIDs: model.selectedIDs { if case .caption(let id) = $0 { return id } else { return nil } },
                         geometry: geometry,
                         model: model,
                         hover: hover
@@ -331,7 +335,7 @@ struct VideoTimelineSurface: View {
                         items: model.project.keystrokes.compactMap { event in
                             model.timelineTime(forSource: event.time).map { VideoKeysLane.Item(id: event.id, time: $0, label: event.keys.joined()) }
                         },
-                        selectedID: { if case .keystroke(let id) = model.selection { return id } else { return nil } }(),
+                        selectedIDs: model.selectedIDs { if case .keystroke(let id) = $0 { return id } else { return nil } },
                         hidden: !model.project.keystrokeStyle.visible,
                         geometry: geometry,
                         model: model
@@ -343,7 +347,7 @@ struct VideoTimelineSurface: View {
                 if !model.project.cameraLayouts.isEmpty {
                     VideoCameraLayoutLane(
                         items: model.cameraLayoutSpans.map { VideoCameraLayoutLane.Item(id: $0.region.id, start: $0.start, end: $0.end, layout: $0.region.layout) },
-                        selectedID: model.selectedCameraLayoutID,
+                        selectedIDs: model.selectedIDs { if case .cameraLayout(let id) = $0 { return id } else { return nil } },
                         geometry: geometry,
                         model: model,
                         hover: hover
@@ -475,7 +479,7 @@ struct VideoTimelineSurface: View {
     }
 
     private func zoomBlock(_ region: VideoZoomRegion, range: ClosedRange<Double>) -> some View {
-        let selected = model.selectedZoomID == region.id
+        let selected = model.isSelected(.zoom(region.id))
         let shown = zoomDrag?.id == region.id ? (zoomDrag!.start...zoomDrag!.end) : range
         let width = max(CGFloat(shown.upperBound - shown.lowerBound) * pointsPerSecond, 14)
         return ZStack {
@@ -543,42 +547,75 @@ struct VideoTimelineSurface: View {
             .onChanged { value in
                 if dragOrigin?.id != region.id {
                     dragOrigin = TimelineDragOrigin(id: region.id, start: range.lowerBound, end: range.upperBound)
-                    snapper = VideoTimelineSnapper(targets: model.snapTargets(excluding: [region.id]), pointsPerSecond: pointsPerSecond)
+                    beginBarDrag(.zoom(region.id))
                     zoomDrag = (region.id, range.lowerBound, range.upperBound)
                     hover.setDragging(true)
-                    model.selection = .zoom(region.id)
-                    if !region.followsCursor { model.pause() }
+                    if !movesGroup, !extending {
+                        model.selection = .zoom(region.id)
+                        if !region.followsCursor { model.pause() }
+                    }
                 }
                 guard let origin = dragOrigin, abs(value.translation.width) > 2 else { return }
                 NSCursor.closedHand.set()
                 let moved = movedWindow(origin, by: value.translation.width)
-                model.setZoomWindow(region.id, start: moved.start, end: moved.end, coalesce: "zoom-move-\(region.id)")
+                if movesGroup {
+                    model.moveGroup(by: moved.start - origin.start)
+                } else {
+                    model.setZoomWindow(region.id, start: moved.start, end: moved.end, coalesce: "zoom-move-\(region.id)")
+                }
                 if let updated = model.project.zoomRegions.first(where: { $0.id == region.id }).flatMap({ model.zoomTimelineRange($0) }) {
                     zoomDrag = (region.id, updated.lowerBound, updated.upperBound)
                 }
             }
             .onEnded { value in
                 let origin = dragOrigin ?? TimelineDragOrigin(id: region.id, start: range.lowerBound, end: range.upperBound)
-                if abs(value.translation.width) > 2 {
+                let clicked = abs(value.translation.width) <= 2
+                if !clicked {
                     let moved = movedWindow(origin, by: value.translation.width)
-                    model.setZoomWindow(region.id, start: moved.start, end: moved.end, coalesce: "zoom-move-\(region.id)")
+                    if movesGroup {
+                        model.moveGroup(by: moved.start - origin.start)
+                    } else {
+                        model.setZoomWindow(region.id, start: moved.start, end: moved.end, coalesce: "zoom-move-\(region.id)")
+                    }
                 }
+                let wasExtending = extending
+                endBarDrag()
                 zoomDrag = nil
-                dragOrigin = nil
-                snapper = nil
-                hover.setDragging(false)
                 model.endGesture()
-                if abs(value.translation.width) <= 2 {
-                    model.selection = .zoom(region.id)
-                    model.inspectorTab = .zoom
-                    if !(region.followsCursor) || !model.isPlaying {
-                        // Show the zoom: park inside it once the camera arrived.
-                        let target = min(origin.start + min(1.2, (origin.end - origin.start) / 2), origin.end)
-                        model.seek(to: target)
+                if clicked {
+                    if wasExtending {
+                        model.toggleSelection(.zoom(region.id))
+                    } else {
+                        model.selection = .zoom(region.id)
+                        model.inspectorTab = .zoom
+                        if !(region.followsCursor) || !model.isPlaying {
+                            // Show the zoom: park inside it once the camera arrived.
+                            let target = min(origin.start + min(1.2, (origin.end - origin.start) / 2), origin.end)
+                            model.seek(to: target)
+                        }
                     }
                 }
                 NSCursor.openHand.set()
             }
+    }
+
+    /// A press on a bar begins: will a click add to the selection, and does
+    /// a drag move the whole selection?
+    private func beginBarDrag(_ item: VideoEditorModel.Selection) {
+        extending = VideoEditorModel.extendsSelection
+        movesGroup = !extending && model.movesAsGroup(item)
+        let excluded = Set((movesGroup ? model.selectedItems : [item]).compactMap(\.itemID))
+        snapper = VideoTimelineSnapper(targets: model.snapTargets(excluding: excluded), pointsPerSecond: pointsPerSecond)
+        if movesGroup { model.beginGroupMove() }
+    }
+
+    private func endBarDrag() {
+        if movesGroup { model.endGroupMove() }
+        movesGroup = false
+        extending = false
+        dragOrigin = nil
+        snapper = nil
+        hover.setDragging(false)
     }
 
     private func zoomEdgeGesture(_ region: VideoZoomRegion, range: ClosedRange<Double>, leading: Bool) -> some Gesture {
@@ -647,10 +684,11 @@ struct VideoTimelineSurface: View {
                     segment: segment,
                     index: index,
                     pointsPerSecond: pointsPerSecond,
-                    selected: model.selectedClipID == segment.id,
+                    selected: model.isSelected(.clip(segment.id)),
                     thumbnails: model.thumbnails,
                     waveform: model.waveform,
-                    sourceAspect: model.project.sourceHeight > 0 ? model.project.sourceWidth / model.project.sourceHeight : 16 / 9
+                    sourceAspect: model.project.sourceHeight > 0 ? model.project.sourceWidth / model.project.sourceHeight : 16 / 9,
+                    hover: hover
                 )
                 .equatable()
                 .offset(x: x(segment.timelineStart) + 1)
@@ -732,7 +770,7 @@ struct VideoTimelineSurface: View {
     }
 
     private func overlayPill(_ effect: VideoDemoOverlayEffect, start: Double, end: Double, layers: [Int]) -> some View {
-        let selected = model.selection == .overlay(effect.id)
+        let selected = model.isSelected(.overlay(effect.id))
         let shown = overlayDrag?.id == effect.id ? (overlayDrag!.start, overlayDrag!.end) : (start, end)
         let width = max(CGFloat(shown.1 - shown.0) * pointsPerSecond, 26)
         // The pill wears the annotation's own color, so the two match up.
@@ -776,14 +814,19 @@ struct VideoTimelineSurface: View {
             .onChanged { value in
                 if dragOrigin?.id != effect.id {
                     dragOrigin = TimelineDragOrigin(id: effect.id, start: start, end: end, layer: effect.layer, layers: layers)
-                    snapper = VideoTimelineSnapper(targets: model.snapTargets(excluding: [effect.id]), pointsPerSecond: pointsPerSecond)
+                    beginBarDrag(.overlay(effect.id))
                     overlayDrag = (effect.id, start, end, effect.layer)
                     hover.setDragging(true)
-                    model.selection = .overlay(effect.id)
+                    if !movesGroup, !extending { model.selection = .overlay(effect.id) }
                 }
                 guard let origin = dragOrigin, abs(value.translation.width) > 2 || abs(value.translation.height) > 4 else { return }
                 let moved = movedWindow(origin, by: value.translation.width)
                 overlayDrag = (effect.id, moved.start, moved.end, origin.layer)
+                if movesGroup {
+                    // Everything selected moves along in time (lanes stay).
+                    model.moveGroup(by: moved.start - origin.start)
+                    return
+                }
                 model.setOverlayWindow(effect.id, start: moved.start, end: moved.end, coalesce: "overlay-\(effect.id)")
                 // Dragging UP brings it forward (a higher lane).
                 let lanes = Int((-value.translation.height / (M.overlayLaneHeight + M.overlayLaneGap)).rounded())
@@ -791,14 +834,18 @@ struct VideoTimelineSurface: View {
             }
             .onEnded { value in
                 let origin = dragOrigin ?? TimelineDragOrigin(id: effect.id, start: start, end: end, layer: effect.layer)
+                let wasExtending = extending
+                let wasGroup = movesGroup
+                endBarDrag()
                 overlayDrag = nil
-                dragOrigin = nil
-                snapper = nil
-                hover.setDragging(false)
-                model.finishOverlayDrag()
+                if !wasGroup { model.finishOverlayDrag() }
                 if abs(value.translation.width) <= 2, abs(value.translation.height) <= 4 {
-                    model.selection = .overlay(effect.id)
-                    model.seek(to: origin.start + min(0.3, (origin.end - origin.start) / 2))
+                    if wasExtending {
+                        model.toggleSelection(.overlay(effect.id))
+                    } else {
+                        model.selection = .overlay(effect.id)
+                        model.seek(to: origin.start + min(0.3, (origin.end - origin.start) / 2))
+                    }
                 }
             }
     }
@@ -850,6 +897,7 @@ struct VideoTimelineClipView: View, Equatable {
     let thumbnails: [VideoTimelineThumbnail]
     let waveform: VideoWaveform?
     let sourceAspect: Double
+    let hover: VideoTimelineHover
 
     nonisolated static func == (a: Self, b: Self) -> Bool {
         a.segment == b.segment && a.index == b.index && a.pointsPerSecond == b.pointsPerSecond && a.selected == b.selected
@@ -858,6 +906,8 @@ struct VideoTimelineClipView: View, Equatable {
 
     @State private var hovered = false
     @State private var trimOrigin: (leading: Bool, source: Double)?
+    /// Dragging the clip by its name to another place in the video.
+    @State private var reorderOffset: CGFloat?
 
     private typealias M = VideoTimelineMetrics
 
@@ -898,9 +948,12 @@ struct VideoTimelineClipView: View, Equatable {
                 .foregroundStyle(.white)
                 .padding(.horizontal, 7)
                 .frame(height: 19)
-                .background(Capsule().fill(Color.black.opacity(0.62)))
+                .background(Capsule().fill(Color.black.opacity(reorderOffset == nil ? 0.62 : 0.85)))
+                .contentShape(Capsule())
+                .onHover { inside in (inside ? NSCursor.openHand : NSCursor.arrow).set() }
+                .gesture(reorderGesture)
+                .help("Drag to move this clip to another place in the video")
                 .padding(5)
-                .allowsHitTesting(false)
             }
 
             RoundedRectangle(cornerRadius: 8, style: .continuous)
@@ -918,6 +971,41 @@ struct VideoTimelineClipView: View, Equatable {
         .onHover { hovered = $0 }
         .gesture(scrubGesture)
         .contextMenu { clipMenu }
+        .offset(x: reorderOffset ?? 0)
+        .opacity(reorderOffset == nil ? 1 : 0.85)
+        .shadow(color: .black.opacity(reorderOffset == nil ? 0 : 0.6), radius: 10, y: 4)
+    }
+
+    /// Where the dragged clip would land: the number of other clips whose
+    /// middle is before its middle.
+    private func reorderTarget(offset: CGFloat) -> (index: Int, boundary: Double) {
+        let center = segment.timelineStart + segment.duration / 2 + Double(offset / pointsPerSecond)
+        let others = model.segments.filter { $0.id != segment.id }
+        let index = others.filter { $0.timelineStart + $0.duration / 2 < center }.count
+        let boundary = index < others.count ? others[index].timelineStart : (others.last?.timelineEnd ?? 0)
+        return (index, boundary)
+    }
+
+    /// Drag a clip by its name to put it somewhere else in the video.
+    private var reorderGesture: some Gesture {
+        // Global space: the clip moves under the pointer.
+        DragGesture(minimumDistance: 3, coordinateSpace: .global)
+            .onChanged { value in
+                if reorderOffset == nil {
+                    model.pause()
+                    hover.setDragging(true)
+                }
+                NSCursor.closedHand.set()
+                reorderOffset = value.translation.width
+                hover.setSnap(reorderTarget(offset: value.translation.width).boundary)
+            }
+            .onEnded { value in
+                let target = reorderTarget(offset: value.translation.width)
+                reorderOffset = nil
+                hover.setDragging(false)
+                model.moveClip(segment.id, toIndex: target.index)
+                NSCursor.openHand.set()
+            }
     }
 
     @State private var rangeAnchor: Double?
@@ -926,25 +1014,32 @@ struct VideoTimelineClipView: View, Equatable {
         min(max(segment.timelineStart + Double(localX / pointsPerSecond), 0), model.timelineDuration)
     }
 
-    /// Drag scrubs; ⇧-drag marks a range to delete; a click selects.
+    /// Drag scrubs; ⇧-drag marks a range to delete; a click selects (⇧- or
+    /// ⌘-click adds the clip to the selection, or takes it out).
     private var scrubGesture: some Gesture {
         DragGesture(minimumDistance: 0)
             .onChanged { value in
                 let time = timelineTime(value.location.x)
                 if NSEvent.modifierFlags.contains(.shift) || rangeAnchor != nil {
+                    // Not a range until it moves: a ⇧-click picks the clip.
+                    if rangeAnchor == nil, abs(value.translation.width) < 3 { return }
                     if rangeAnchor == nil { rangeAnchor = timelineTime(value.startLocation.x) }
                     if let rangeAnchor {
                         model.selection = .range(VideoDemoTimelineRange(start: rangeAnchor, end: time).normalized)
                     }
-                } else {
+                } else if !NSEvent.modifierFlags.contains(.command) {
                     model.seek(to: time, fast: true)
                 }
             }
             .onEnded { value in
                 if rangeAnchor == nil {
-                    model.seek(to: timelineTime(value.location.x), fast: false)
-                    if abs(value.translation.width) < 3 {
-                        model.selectClip(segment.id)
+                    if abs(value.translation.width) < 3, VideoEditorModel.extendsSelection {
+                        model.toggleSelection(.clip(segment.id))
+                    } else {
+                        model.seek(to: timelineTime(value.location.x), fast: false)
+                        if abs(value.translation.width) < 3 {
+                            model.selectClip(segment.id)
+                        }
                     }
                 } else if case .range(let range) = model.selection, range.duration < 0.1 {
                     model.selection = .none
@@ -1007,6 +1102,10 @@ struct VideoTimelineClipView: View, Equatable {
         Button(segment.clip.muted ? "Unmute Clip" : "Mute Clip") {
             model.setClipMuted(segment.id, !segment.clip.muted)
         }
+        Button("Move Earlier") { model.moveClip(segment.id, toIndex: index - 1) }
+            .disabled(index == 0)
+        Button("Move Later") { model.moveClip(segment.id, toIndex: index + 1) }
+            .disabled(index >= model.segments.count - 1)
         Divider()
         Button("Delete Clip", role: .destructive) {
             model.deleteClip(segment.id)

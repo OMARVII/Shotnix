@@ -983,9 +983,11 @@ struct VideoDemoProject: Codable, Equatable, Identifiable {
         guard let index = clips.firstIndex(where: { $0.id == id }) else { return false }
 
         var clip = clips[index]
-        // A clip may not grow into the source range of its neighbours.
-        let lowerBound = index > 0 ? clips[index - 1].sourceEnd : 0
-        let upperBound = index + 1 < clips.count ? clips[index + 1].sourceStart : totalDuration
+        // A clip may not grow into the source range of any other clip (clips
+        // can be in any order on the timeline).
+        let others = clips.indices.filter { $0 != index }.map { clips[$0] }
+        let lowerBound = others.map(\.sourceEnd).filter { $0 <= clip.sourceStart + 0.0001 }.max() ?? 0
+        let upperBound = others.map(\.sourceStart).filter { $0 >= clip.sourceEnd - 0.0001 }.min() ?? totalDuration
         if let sourceStart {
             let floor = min(lowerBound, clip.sourceStart)
             clip.sourceStart = min(max(sourceStart, floor, 0), clip.sourceEnd - Self.minimumClipDuration)

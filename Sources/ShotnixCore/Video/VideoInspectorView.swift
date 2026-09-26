@@ -728,6 +728,7 @@ struct VideoSelectionInspector: View {
     }
 
     private var headerTitle: String {
+        if !model.extraSelection.isEmpty { return "\(model.selectedItems.count) selected" }
         switch model.selection {
         case .zoom: return "Zoom"
         case .clip(let id): return "Clip \((model.segments.firstIndex { $0.id == id } ?? 0) + 1)"
@@ -742,6 +743,7 @@ struct VideoSelectionInspector: View {
     }
 
     private var headerSymbol: String {
+        if !model.extraSelection.isEmpty { return "square.stack.3d.up" }
         switch model.selection {
         case .zoom: return "plus.magnifyingglass"
         case .clip: return "film"
@@ -770,6 +772,49 @@ struct VideoSelectionInspector: View {
 
     @ViewBuilder
     private var content: some View {
+        if !model.extraSelection.isEmpty {
+            multipleContent
+        } else {
+            singleContent
+        }
+    }
+
+    /// Several items: what they are, and what can be done with all of them.
+    private var multipleContent: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            let counts = Dictionary(grouping: model.selectedItems, by: Self.kindName).map { "\($0.value.count) \($0.key)\($0.value.count == 1 ? "" : "s")" }.sorted()
+            Text(counts.joined(separator: " · "))
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(VideoEditorTheme.textPrimary)
+            Text("Drag one of them on the timeline to move them all together; ⌫ removes them all. ⇧- or ⌘-click adds or takes one out.")
+                .font(.system(size: 11))
+                .foregroundStyle(VideoEditorTheme.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+            Button(role: .destructive) {
+                model.deleteSelectedItems()
+            } label: {
+                Label("Remove all \(model.selectedItems.count)", systemImage: "trash")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(VideoSecondaryButtonStyle(destructive: true))
+        }
+    }
+
+    private static func kindName(_ item: VideoEditorModel.Selection) -> String {
+        switch item {
+        case .zoom: return "zoom"
+        case .clip: return "clip"
+        case .overlay: return "annotation"
+        case .click: return "click"
+        case .caption: return "caption"
+        case .keystroke: return "shortcut"
+        case .cameraLayout: return "camera layout"
+        case .range, .none: return "part"
+        }
+    }
+
+    @ViewBuilder
+    private var singleContent: some View {
         switch model.selection {
         case .zoom(let id):
             if let zoom = model.project.zoomRegions.first(where: { $0.id == id }) {
@@ -852,6 +897,31 @@ struct VideoSelectionInspector: View {
                 Text("Removed parts can be restored from the yellow marker on the timeline.")
                     .font(.system(size: 10.5))
                     .foregroundStyle(VideoEditorTheme.textTertiary)
+            }
+            // Or change just this part.
+            VideoInspectorSection("Speed of this part") {
+                let current = model.rangeSpeed(range)
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 4), spacing: 6) {
+                    ForEach([0.5, 1.0, 1.5, 2.0, 3.0, 4.0, 8.0, 16.0], id: \.self) { speed in
+                        let selected = current.map { abs($0 - speed) < 0.01 } ?? false
+                        Button {
+                            model.setRangeSpeed(range, speed)
+                        } label: {
+                            Text(VideoEditorModel.formatScale(speed))
+                                .font(.system(size: 11.5, weight: selected ? .bold : .semibold))
+                                .foregroundStyle(selected ? Color.black : VideoEditorTheme.textPrimary)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 26)
+                                .background(RoundedRectangle(cornerRadius: 6, style: .continuous).fill(selected ? VideoEditorTheme.clip : VideoEditorTheme.card))
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("\(VideoEditorModel.formatScale(speed)) speed")
+                        .accessibilityAddTraits(selected ? .isSelected : [])
+                    }
+                }
+            }
+            VideoInspectorSection("Sound") {
+                VideoToggleRow(title: "Mute this part", isOn: Binding(get: { model.rangeIsMuted(range) }, set: { _ in model.toggleRangeMute(range) }))
             }
         case .none:
             EmptyView()
@@ -1078,6 +1148,27 @@ struct VideoSelectionInspector: View {
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(VideoSecondaryButtonStyle())
+            if let index = model.segments.firstIndex(where: { $0.id == segment.id }), model.segments.count > 1 {
+                // Or drag the clip by its name on the timeline.
+                HStack(spacing: 8) {
+                    Button {
+                        model.moveClip(segment.id, toIndex: index - 1)
+                    } label: {
+                        Label("Move earlier", systemImage: "arrow.left")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(VideoSecondaryButtonStyle())
+                    .disabled(index == 0)
+                    Button {
+                        model.moveClip(segment.id, toIndex: index + 1)
+                    } label: {
+                        Label("Move later", systemImage: "arrow.right")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(VideoSecondaryButtonStyle())
+                    .disabled(index >= model.segments.count - 1)
+                }
+            }
         }
     }
 

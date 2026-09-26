@@ -171,15 +171,15 @@ struct VideoEditorToolbar: View {
                     }
                     .buttonStyle(VideoToolButtonStyle())
                     .disabled(!model.canUndo)
-                    .help("Undo (⌘Z)")
-                    .accessibilityLabel("Undo")
+                    .help(model.undoLabel.map { "Undo \($0) (⌘Z)" } ?? "Undo (⌘Z)")
+                    .accessibilityLabel(model.undoLabel.map { "Undo \($0)" } ?? "Undo")
                     Button { model.redo() } label: {
                         Image(systemName: "arrow.uturn.forward").frame(width: 30, height: 28)
                     }
                     .buttonStyle(VideoToolButtonStyle())
                     .disabled(!model.canRedo)
-                    .help("Redo (⇧⌘Z)")
-                    .accessibilityLabel("Redo")
+                    .help(model.redoLabel.map { "Redo \($0) (⇧⌘Z)" } ?? "Redo (⇧⌘Z)")
+                    .accessibilityLabel(model.redoLabel.map { "Redo \($0)" } ?? "Redo")
                 }
                 .font(.system(size: 13, weight: .semibold))
 
@@ -671,8 +671,8 @@ struct VideoCommandPalette: View {
             Command(id: "save-look", title: "Use This Look for New Recordings", symbol: "checkmark.seal", shortcut: "") { model.saveStyleAsDefault() },
             Command(id: "reset-look", title: "Reset to the Shotnix Look", symbol: "arrow.counterclockwise", shortcut: "") { model.resetStyle() },
             Command(id: "copy-frame", title: "Copy Current Frame", symbol: "photo.on.rectangle", shortcut: "⌘C") { model.copyCurrentFrame() },
-            Command(id: "undo", title: "Undo", symbol: "arrow.uturn.backward", shortcut: "⌘Z") { model.undo() },
-            Command(id: "redo", title: "Redo", symbol: "arrow.uturn.forward", shortcut: "⇧⌘Z") { model.redo() },
+            Command(id: "undo", title: model.undoLabel.map { "Undo \($0)" } ?? "Undo", symbol: "arrow.uturn.backward", shortcut: "⌘Z") { model.undo() },
+            Command(id: "redo", title: model.redoLabel.map { "Redo \($0)" } ?? "Redo", symbol: "arrow.uturn.forward", shortcut: "⇧⌘Z") { model.redo() },
             Command(id: "start", title: "Go to Start", symbol: "backward.end.fill", shortcut: "⌘←") { model.seek(to: 0) },
             Command(id: "end", title: "Go to End", symbol: "forward.end.fill", shortcut: "⌘→") { model.seek(to: model.timelineDuration) },
             Command(id: "reveal", title: "Show Recording in Finder", symbol: "folder", shortcut: "") { model.revealSource() },

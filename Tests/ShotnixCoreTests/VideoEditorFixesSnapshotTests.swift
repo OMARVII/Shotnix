@@ -84,6 +84,22 @@ final class VideoEditorFixesSnapshotTests: XCTestCase {
         VideoOverlayStyleMemory.shape = .rectangle
     }
 
+    func testSeveralSelectedAndARangeSelected() async throws {
+        let model = try await T.make(in: directory, T.Options(seconds: 12, size: CGSize(width: 1440, height: 900)))
+        model.seek(to: 3)
+        model.addOverlay(.text)
+        let text = try XCTUnwrap(model.selectedOverlay?.id)
+        model.seek(to: 7)
+        model.addOverlay(.highlight)
+        let highlight = try XCTUnwrap(model.selectedOverlay?.id)
+        model.selection = .overlay(text)
+        model.toggleSelection(.overlay(highlight))
+        if let zoom = model.project.zoomRegions.first { model.toggleSelection(.zoom(zoom.id)) }
+        try await Self.render(VideoEditorRootView(model: model), size: full, name: "fix-13-several-selected")
+        model.selection = .range(VideoDemoTimelineRange(start: 8, end: 10))
+        try await Self.render(VideoEditorRootView(model: model), size: full, name: "fix-13-range-actions")
+    }
+
     func testCrowdedCutsShareOneMarker() async throws {
         let model = try await T.make(in: directory, T.Options(seconds: 12, size: CGSize(width: 1440, height: 900)))
         let ranges: [ClosedRange<Double>] = [2.0...2.2, 2.4...2.6, 2.8...3.0, 3.2...3.4, 3.6...3.8, 8.0...8.5]

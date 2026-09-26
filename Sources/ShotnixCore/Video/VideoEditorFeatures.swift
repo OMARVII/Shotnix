@@ -102,7 +102,7 @@ extension VideoEditorModel {
                 }
                 let lines = VideoCaptionBuilder.lines(from: result.words)
                 let firstTranscript = !self.project.captions.contains { !$0.words.isEmpty }
-                self.mutate { project in
+                self.mutate(label: "Transcribe") { project in
                     project.captions = lines
                     project.transcriptLanguage = result.language
                     // A first transcript shows up as captions; a new one
@@ -286,13 +286,13 @@ extension VideoEditorModel {
     }
 
     /// Retimes a line from timeline times (a drag on the captions lane).
-    func setCaptionWindow(_ id: UUID, timelineStart: Double, timelineEnd: Double, moveWords: Bool) {
+    func setCaptionWindow(_ id: UUID, timelineStart: Double, timelineEnd: Double, moveWords: Bool, coalesce: String? = nil) {
         let start = sourceTime(forTimeline: timelineStart)
         let end = max(sourceTime(forTimeline: timelineEnd), start + 0.2)
         // Where the line starts on screen now, in the recording: if its first
         // words were cut, that's after the cut, not the line's own start.
         let shownStart = plan.captions.first { $0.id == id }.map { placementSourceTime(forTimeline: $0.start) }
-        mutate(coalesce: "caption-window-\(id)") { project in
+        mutate(coalesce: coalesce ?? "caption-window-\(id)") { project in
             guard let index = project.captions.firstIndex(where: { $0.id == id }) else { return }
             var line = project.captions[index]
             if moveWords {
@@ -326,7 +326,7 @@ extension VideoEditorModel {
     }
 
     func clearCaptions() {
-        mutate {
+        mutate(label: "Remove Captions") {
             $0.captions = []
             $0.transcriptLanguage = nil
         }
@@ -398,7 +398,7 @@ extension VideoEditorModel {
         let ranges = ranges(forWords: kept)
         guard !ranges.isEmpty else { return }
         var ok = true
-        mutate { ok = $0.removeSourceRanges(ranges, totalDuration: sourceDuration) }
+        mutate(label: kept.count == 1 ? "Cut Word" : "Cut Words") { ok = $0.removeSourceRanges(ranges, totalDuration: sourceDuration) }
         guard ok else {
             showNotice("A video needs at least one clip", symbol: "exclamationmark.triangle")
             return
@@ -410,7 +410,7 @@ extension VideoEditorModel {
     func restoreWords(_ indices: IndexSet) {
         let ranges = ranges(forWords: indices)
         guard !ranges.isEmpty else { return }
-        mutate { project in
+        mutate(label: indices.count == 1 ? "Restore Word" : "Restore Words") { project in
             for range in ranges { project.restoreSourceRange(range, totalDuration: sourceDuration) }
         }
         showNotice("Restored \(indices.count) word\(indices.count == 1 ? "" : "s")", symbol: "arrow.uturn.backward")
@@ -425,11 +425,11 @@ extension VideoEditorModel {
         let end = words[index].start - 0.2
         guard end - start > 0.05 else { return }
         if !isIncluded(sourceTime: (start + end) / 2) {
-            mutate { $0.restoreSourceRange(start...end, totalDuration: sourceDuration) }
+            mutate(label: "Restore Pause") { $0.restoreSourceRange(start...end, totalDuration: sourceDuration) }
             showNotice("Pause restored", symbol: "arrow.uturn.backward")
             return
         }
-        mutate { $0.removeSourceRanges([start...end], totalDuration: sourceDuration) }
+        mutate(label: "Shorten Pause") { $0.removeSourceRanges([start...end], totalDuration: sourceDuration) }
         showNotice("Pause shortened", symbol: "scissors")
     }
 
@@ -453,7 +453,7 @@ extension VideoEditorModel {
         }
         let count = fillerCount
         let before = timelineDuration
-        mutate { $0.removeSourceRanges(ranges, totalDuration: sourceDuration) }
+        mutate(label: "Remove Ums") { $0.removeSourceRanges(ranges, totalDuration: sourceDuration) }
         showNotice("Removed \(count) filler word\(count == 1 ? "" : "s") — \(Self.format(max(before - timelineDuration, 0))) shorter", symbol: "wand.and.stars")
     }
 
@@ -464,7 +464,7 @@ extension VideoEditorModel {
             return
         }
         let before = timelineDuration
-        mutate { $0.removeSourceRanges(ranges, totalDuration: sourceDuration) }
+        mutate(label: "Shorten Pauses") { $0.removeSourceRanges(ranges, totalDuration: sourceDuration) }
         showNotice("Shortened \(ranges.count) pause\(ranges.count == 1 ? "" : "s") — \(Self.format(max(before - timelineDuration, 0))) shorter", symbol: "wand.and.stars")
     }
 
@@ -681,7 +681,7 @@ extension VideoEditorModel {
         }
         let firstStart = segments.first?.clip.sourceStart ?? 0
         let lastEnd = segments.last?.clip.sourceEnd ?? sourceDuration
-        mutate { project in
+        mutate(label: "Intro and Outro") { project in
             project.cameraLayouts.removeAll { $0.start < firstStart + length || $0.end > lastEnd - length }
             project.cameraLayouts.append(VideoCameraLayoutRegion(start: firstStart, end: firstStart + length, layout: .fullscreen))
             project.cameraLayouts.append(VideoCameraLayoutRegion(start: lastEnd - length, end: lastEnd, layout: .fullscreen))
@@ -693,7 +693,7 @@ extension VideoEditorModel {
 
     /// Moves/resizes a layout from timeline times; it slides against its
     /// neighbours instead of overlapping them.
-    func setCameraLayoutWindow(_ id: UUID, timelineStart: Double, timelineEnd: Double, moving: Bool) {
+    func setCameraLayoutWindow(_ id: UUID, timelineStart: Double, timelineEnd: Double, moving: Bool, coalesce: String? = nil) {
         guard let current = project.cameraLayouts.first(where: { $0.id == id }) else { return }
         var start = sourceTime(forTimeline: timelineStart)
         var end = sourceTime(forTimeline: timelineEnd)
@@ -709,7 +709,7 @@ extension VideoEditorModel {
             end = min(end, nextStart)
         }
         guard end - start >= VideoCameraLayoutRegion.minimumDuration * 0.5 else { return }
-        mutate(coalesce: "camera-layout-\(id)") { project in
+        mutate(coalesce: coalesce ?? "camera-layout-\(id)") { project in
             guard let index = project.cameraLayouts.firstIndex(where: { $0.id == id }) else { return }
             project.cameraLayouts[index].start = start
             project.cameraLayouts[index].end = end
