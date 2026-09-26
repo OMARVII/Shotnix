@@ -138,6 +138,74 @@ final class RecordingEncodingTests: XCTestCase {
         XCTAssertNotNil(RecordingDiskSpace.availableCapacity(at: FileManager.default.temporaryDirectory))
     }
 
+    /// Starting needs the recording's own stop threshold and a margin: at
+    /// Max quality on 4K and 5K displays that threshold alone passes 500 MB,
+    /// and a take started with 0.5–0.6 GB free stopped itself at once.
+    @MainActor func testStartingNeedsRoomBeyondTheRecordingsOwnStopThreshold() {
+        let cases: [(name: String, width: Int, height: Int, fps: Int, quality: RecordingQuality)] = [
+            ("4K60 Max", 3840, 2160, 60, .max),
+            ("5K60 Max (HEVC)", 5120, 2880, 60, .max),
+            ("6K60 High (HEVC)", 6016, 3384, 60, .high),
+            ("laptop 30 Balanced", 3024, 1964, 30, .balanced),
+        ]
+        for take in cases {
+            let format = RecordingVideoFormat.plan(width: take.width, height: take.height, fps: take.fps, hevcAvailable: true)
+            let rate = RecordingSizeEstimate.bytesPerMinute(
+                videoBitrate: take.quality.bitrate(width: format.width, height: format.height, fps: take.fps, codec: format.codec),
+                systemAudio: true,
+                microphone: true
+            ) / 60
+            let stop = RecordingDiskSpace.stopThreshold(bytesPerSecond: rate)
+            let required = RecordingDiskSpace.requiredToStart(bytesPerSecond: rate)
+            XCTAssertGreaterThanOrEqual(required, stop + rate * 30, "\(take.name): at least half a minute before it stops itself")
+            XCTAssertGreaterThanOrEqual(required, RecordingDiskSpace.minimumToStart, take.name)
+            // With just enough to start, it records at least 30 s.
+            XCTAssertGreaterThanOrEqual(RecordingDiskSpace.secondsLeft(available: required, bytesPerSecond: rate), 30, take.name)
+        }
+        let maxFourK = RecordingQuality.max.bitrate(width: 3840, height: 2160, fps: 60)
+        let maxFourKRate = RecordingSizeEstimate.bytesPerMinute(videoBitrate: maxFourK, systemAudio: false, microphone: false) / 60
+        XCTAssertGreaterThan(RecordingDiskSpace.stopThreshold(bytesPerSecond: maxFourKRate), 500 * 1_024 * 1_024, "the old fixed 500 MB wasn't enough here")
+
+        let message = RecordingDiskSpace.notEnoughSpaceMessage(required: 1_100_000_000, available: 600_000_000)
+        XCTAssertTrue(message.contains("needs about"), message)
+        XCTAssertTrue(message.contains("Balanced"), message)
+        XCTAssertEqual(RecordingEngine.startFailureMessage(for: RecordingEngine.RecordingError.notEnoughSpace(required: 1_100_000_000, available: 600_000_000)), message)
+        // At the floor, lower settings wouldn't help: don't suggest them.
+        let atFloor = RecordingDiskSpace.notEnoughSpaceMessage(required: RecordingDiskSpace.minimumToStart, available: 300_000_000)
+        XCTAssertFalse(atFloor.contains("Balanced"), atFloor)
+        XCTAssertTrue(RecordingDiskSpace.lowSpaceWarning(secondsLeft: 45).contains("about 40 seconds"))
+        XCTAssertTrue(RecordingDiskSpace.lowSpaceWarning(secondsLeft: 300).contains("about 5 minutes"))
+    }
+
+    /// The per-second check answers from the cheap reading far from the
+    /// thresholds, and asks the slow, accurate one only near them.
+    func testFreeSpaceCheckUsesTheCheapReadingFarFromTheThresholds() throws {
+        let rate: Int64 = 10_000_000
+        let warning = RecordingDiskSpace.warningThreshold(bytesPerSecond: rate)
+        XCTAssertFalse(RecordingDiskSpace.needsAccurateCheck(quickCapacity: 200_000_000_000, bytesPerSecond: rate))
+        XCTAssertFalse(RecordingDiskSpace.needsAccurateCheck(quickCapacity: warning + rate * 61, bytesPerSecond: rate))
+        XCTAssertTrue(RecordingDiskSpace.needsAccurateCheck(quickCapacity: warning + rate * 30, bytesPerSecond: rate))
+        XCTAssertTrue(RecordingDiskSpace.needsAccurateCheck(quickCapacity: 100_000_000, bytesPerSecond: rate))
+
+        // The cheap reading never claims more than the accurate one, and costs
+        // a small fraction of it.
+        let folder = FileManager.default.temporaryDirectory
+        let quick = try XCTUnwrap(RecordingDiskSpace.quickCapacity(at: folder))
+        let accurate = try XCTUnwrap(RecordingDiskSpace.availableCapacity(at: folder))
+        XCTAssertLessThanOrEqual(quick, accurate + 50_000_000)
+        // A fresh URL each time, as the engine makes: one URL caches its
+        // resource values, which would time the cache instead.
+        func milliseconds(_ work: (URL) -> Void) -> Double {
+            let start = CFAbsoluteTimeGetCurrent()
+            for _ in 0..<20 { work(URL(fileURLWithPath: folder.path, isDirectory: true)) }
+            return (CFAbsoluteTimeGetCurrent() - start) * 1000 / 20
+        }
+        let quickTime = milliseconds { _ = RecordingDiskSpace.quickCapacity(at: $0) }
+        let accurateTime = milliseconds { _ = RecordingDiskSpace.availableCapacity(at: $0) }
+        print("FREE-SPACE: quick \(quickTime) ms, accurate \(accurateTime) ms")
+        XCTAssertLessThan(quickTime, 1, "cheap enough for the main thread")
+    }
+
     /// The HEVC settings the engine uses are accepted and encode real frames.
     func testHEVCWriterEncodesABigDisplay() async throws {
         let url = FileManager.default.temporaryDirectory.appendingPathComponent("hevc-\(UUID().uuidString).mp4")

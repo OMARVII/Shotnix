@@ -64,6 +64,7 @@ final class RecordingEngine: NSObject {
     private var ownWindowObservers: [NSObjectProtocol] = []
     private var ownWindowsSignature: [CGWindowID] = []
     private var filterUpdateWorkItem: DispatchWorkItem?
+    private var isCheckingDiskSpace = false
     /// Stop took the foreground for the editor; whatever doesn't open it
     /// must give it back, or Shotnix keeps a Dock icon.
     private var holdsForegroundForEditor = false
@@ -142,13 +143,6 @@ final class RecordingEngine: NSObject {
         let session = UUID()
         recordingSessionID = session
 
-        let saveFolder = URL(fileURLWithPath: Settings.autoSaveLocation, isDirectory: true)
-        if let available = RecordingDiskSpace.availableCapacity(at: saveFolder), available < RecordingDiskSpace.minimumToStart {
-            CameraCapture.shared.stop()
-            ToastWindow.show(message: "Not enough free disk space to record.", on: screen)
-            return
-        }
-
         var configuration = RecordingConfiguration.current
         var notices: [String] = []
         var microphone: RecordingMicrophone?
@@ -177,16 +171,6 @@ final class RecordingEngine: NSObject {
         var createdURL: URL?
         var createdWriter: AVAssetWriter?
         do {
-            if configuration.recordsCamera {
-                let result = await CameraCapture.shared.start(deviceID: configuration.cameraDeviceID, around: source.initialRect, on: screen)
-                if let message = result.message {
-                    configuration.recordsCamera = false
-                    notices.append("\(message) Recording without the camera.")
-                }
-            } else {
-                CameraCapture.shared.stop()
-            }
-
             let content = try await Self.withTimeout(10) {
                 try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: false)
             }
@@ -199,6 +183,30 @@ final class RecordingEngine: NSObject {
                 prepared.streamConfig.scalesToFit = true
             }
             prepared.streamConfig.queueDepth = RecordingVideoFormat.queueDepth(width: format.width, height: format.height)
+
+            let videoBitrate = configuration.quality.bitrate(width: format.width, height: format.height, fps: configuration.fps, codec: format.codec)
+            let rate = RecordingSizeEstimate.bytesPerMinute(
+                videoBitrate: videoBitrate,
+                systemAudio: configuration.recordsSystemAudio,
+                microphone: configuration.recordsMicrophone
+            ) / 60 + (configuration.recordsCamera ? 420_000 : 0)
+            // Room for this recording's own stop threshold and then some, or
+            // it would stop itself right after starting.
+            let saveFolder = URL(fileURLWithPath: Settings.autoSaveLocation, isDirectory: true)
+            let required = RecordingDiskSpace.requiredToStart(bytesPerSecond: rate)
+            if let available = await Self.availableCapacity(at: saveFolder), available < required {
+                throw RecordingError.notEnoughSpace(required: required, available: available)
+            }
+
+            if configuration.recordsCamera {
+                let result = await CameraCapture.shared.start(deviceID: configuration.cameraDeviceID, around: source.initialRect, on: screen)
+                if let message = result.message {
+                    configuration.recordsCamera = false
+                    notices.append("\(message) Recording without the camera.")
+                }
+            } else {
+                CameraCapture.shared.stop()
+            }
 
             let url = Self.makeOutputURL()
             let handles = try Self.makeWriter(
@@ -236,12 +244,7 @@ final class RecordingEngine: NSObject {
             followedWindowHidden = prepared.hiddenWindows
             followedWindowFrame = prepared.window?.frame
             outputPixelSize = CGSize(width: format.width, height: format.height)
-            let videoBitrate = configuration.quality.bitrate(width: format.width, height: format.height, fps: configuration.fps, codec: format.codec)
-            bytesPerSecond = RecordingSizeEstimate.bytesPerMinute(
-                videoBitrate: videoBitrate,
-                systemAudio: configuration.recordsSystemAudio,
-                microphone: configuration.recordsMicrophone
-            ) / 60 + (configuration.recordsCamera ? 420_000 : 0)
+            bytesPerSecond = rate
             didWarnLowDiskSpace = false
             didWarnWindowClosed = false
 
@@ -719,15 +722,35 @@ final class RecordingEngine: NSObject {
         checkMicrophone()
     }
 
+    /// Once a second. The cheap reading settles almost every tick; near the
+    /// thresholds the accurate one (6–20 ms) runs off the main thread, which
+    /// also samples the pointer 60 times a second.
     private func checkDiskSpace() {
-        guard let url = outputURL,
-              let available = RecordingDiskSpace.availableCapacity(at: url.deletingLastPathComponent()) else { return }
+        guard !isCheckingDiskSpace, let folder = outputURL?.deletingLastPathComponent() else { return }
+        if let quick = RecordingDiskSpace.quickCapacity(at: folder),
+           !RecordingDiskSpace.needsAccurateCheck(quickCapacity: quick, bytesPerSecond: bytesPerSecond) { return }
+        isCheckingDiskSpace = true
+        Task { @MainActor [weak self] in
+            let available = await Self.availableCapacity(at: folder)
+            self?.diskSpaceMeasured(available)
+        }
+    }
+
+    private func diskSpaceMeasured(_ available: Int64?) {
+        isCheckingDiskSpace = false
+        guard isRecording, let available else { return }
         if available < RecordingDiskSpace.stopThreshold(bytesPerSecond: bytesPerSecond) {
             requestStop(.diskFull)
         } else if !didWarnLowDiskSpace, available < RecordingDiskSpace.warningThreshold(bytesPerSecond: bytesPerSecond) {
             didWarnLowDiskSpace = true
-            warn(hud: "Disk almost full", toast: "Your disk is almost full. In about a minute the recording stops and saves itself.")
+            let secondsLeft = RecordingDiskSpace.secondsLeft(available: available, bytesPerSecond: bytesPerSecond)
+            warn(hud: "Disk almost full", toast: RecordingDiskSpace.lowSpaceWarning(secondsLeft: secondsLeft))
         }
+    }
+
+    /// The accurate free-space reading, taken off the main thread.
+    nonisolated private static func availableCapacity(at folder: URL) async -> Int64? {
+        await Task.detached(priority: .utility) { RecordingDiskSpace.availableCapacity(at: folder) }.value
     }
 
     /// A connected microphone delivers buffers even in silence; none for
@@ -1418,6 +1441,7 @@ final class RecordingEngine: NSObject {
             case .windowGone: return "That window closed before recording could start."
             case .cannotAddWriterInput, .cannotStartWriter: return "Couldn't create the video file."
             case .timedOut: return "Screen recording didn't start in time. Try again."
+            case .notEnoughSpace(let required, let available): return RecordingDiskSpace.notEnoughSpaceMessage(required: required, available: available)
             }
         }
         if nsError.domain == SCStreamErrorDomain {
@@ -1659,6 +1683,7 @@ final class RecordingEngine: NSObject {
         case cannotAddWriterInput
         case cannotStartWriter
         case timedOut
+        case notEnoughSpace(required: Int64, available: Int64)
     }
 }
 
