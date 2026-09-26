@@ -35,6 +35,7 @@ struct VideoExportSheet: View {
             .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Color(white: 0.105)))
             .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(Color.white.opacity(0.12), lineWidth: 1))
             .shadow(color: .black.opacity(0.55), radius: 40, y: 20)
+            .overlay(alignment: .top) { VideoOverlayNotice(model: model) }
         }
     }
 

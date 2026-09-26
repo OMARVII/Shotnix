@@ -74,12 +74,19 @@ extension VideoEditorModel {
                 self.captionJob?.stage = stage
             }
         }
+        // Quitting asks, then lets the transcript finish (it lands in the
+        // draft); Cancel stops it.
+        AppTermination.end(captionQuitToken)
+        captionQuitToken = AppTermination.begin("Transcribing “\(project.sourceURL.deletingPathExtension().lastPathComponent)”", asksBeforeQuit: true) { [weak self] done in
+            if self?.captionTask == nil { done() }
+        }
         captionTask = Task { [weak self] in
             do {
                 let result = try await VideoCaptionTranscriber.transcribe(url: url, languageIdentifier: language, progress: report)
                 guard let self, self.captionToken == token else { return }
                 self.captionTask = nil
                 self.captionToken = nil
+                self.endCaptionQuitToken()
                 guard !Task.isCancelled else {
                     self.captionJob = nil
                     return
@@ -100,6 +107,7 @@ extension VideoEditorModel {
                 guard let self, self.captionToken == token else { return }
                 self.captionTask = nil
                 self.captionToken = nil
+                self.endCaptionQuitToken()
                 if Task.isCancelled || error is CancellationError {
                     self.captionJob = nil
                 } else {
@@ -137,6 +145,12 @@ extension VideoEditorModel {
         captionTask = nil
         captionToken = nil
         captionJob = nil
+        endCaptionQuitToken()
+    }
+
+    private func endCaptionQuitToken() {
+        AppTermination.end(captionQuitToken)
+        captionQuitToken = nil
     }
 
     func updateCaption(_ id: UUID, text: String) {
@@ -437,6 +451,7 @@ extension VideoEditorModel {
                 guard let self else { return false }
                 self.voiceTask = nil
                 self.voiceJob = nil
+                self.endVoiceQuitToken()
                 await self.refreshAudioSources()
                 if self.project.audio.enhanceVoice {
                     self.showNotice("Voice enhanced — background noise removed", symbol: "waveform")
@@ -446,6 +461,7 @@ extension VideoEditorModel {
                 guard let self else { return false }
                 self.voiceTask = nil
                 self.voiceJob = nil
+                self.endVoiceQuitToken()
                 if !(error is CancellationError) {
                     self.voiceError = error.localizedDescription
                 }
@@ -453,7 +469,19 @@ extension VideoEditorModel {
             }
         }
         voiceTask = task
+        // The cleaned-up voice is a cache (it runs again next time), so a
+        // quit stops it — unless an export is waiting for it.
+        AppTermination.end(voiceQuitToken)
+        voiceQuitToken = AppTermination.begin("Cleaning up the voice in “\(project.sourceURL.deletingPathExtension().lastPathComponent)”", asksBeforeQuit: true) { [weak self] done in
+            guard let self, self.voiceTask != nil else { return done() }
+            if !self.isExporting { self.voiceTask?.cancel() }
+        }
         return task
+    }
+
+    private func endVoiceQuitToken() {
+        AppTermination.end(voiceQuitToken)
+        voiceQuitToken = nil
     }
 
     /// Rebuilds the sound sources (e.g. the enhanced voice became ready).

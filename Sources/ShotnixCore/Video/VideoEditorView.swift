@@ -42,7 +42,9 @@ struct VideoEditorRootView: View {
                                 .padding(.top, model.isCropping ? 22 : 12)
                                 .padding(.bottom, stageBottomInset)
                         }
-                        if let notice = model.notice {
+                        // With the export sheet up, the message shows on the
+                        // sheet instead (see VideoOverlayNotice).
+                        if let notice = model.notice, !model.isExportPresented {
                             VideoNoticePill(notice: notice)
                                 .padding(.top, model.isCropping ? 12 : 80)
                                 .transition(.move(edge: .top).combined(with: .opacity))
@@ -271,6 +273,23 @@ struct VideoNoticePill: View {
         .background(Capsule().fill(Color.black.opacity(0.78)))
         .overlay(Capsule().strokeBorder(Color.white.opacity(0.12), lineWidth: 1))
         .shadow(color: .black.opacity(0.35), radius: 10, y: 4)
+        .allowsHitTesting(false)
+    }
+}
+
+/// The editor's latest message, pinned just above the export sheet so it
+/// isn't lost under the dimming ("Copied", "Export cancelled"…).
+struct VideoOverlayNotice: View {
+    @ObservedObject var model: VideoEditorModel
+
+    var body: some View {
+        ZStack {
+            if let notice = model.notice {
+                VideoNoticePill(notice: notice)
+                    .transition(.opacity)
+            }
+        }
+        .offset(y: -42)
         .allowsHitTesting(false)
     }
 }

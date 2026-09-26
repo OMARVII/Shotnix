@@ -189,6 +189,10 @@ final class VideoEditorModel: ObservableObject {
     @Published var captionLanguages: [VideoCaptionTranscriber.Language] = []
     var captionTask: Task<Void, Never>?
     var captionToken: UUID?
+    /// Running work that quitting has to ask about.
+    var exportQuitToken: AppTermination.Token?
+    var captionQuitToken: AppTermination.Token?
+    var voiceQuitToken: AppTermination.Token?
 
     let clock = VideoDemoPlaybackClock()
     let timelineState = VideoTimelineState()
@@ -234,6 +238,7 @@ final class VideoEditorModel: ObservableObject {
     private var shuttleRate: Float = 1
     private var exportCancelled = false
     private var didLoad = false
+    private nonisolated(unsafe) var terminationObserver: NSObjectProtocol?
 
     /// Everything the camera path depends on — captions, shortcuts,
     /// annotations, and most style changes leave it alone.
@@ -323,6 +328,15 @@ final class VideoEditorModel: ObservableObject {
             if !playing { self.shuttleRate = 1 }
             self.previewRenderer.invalidate()
         }
+        // Quitting skips the window's close: the last edits (autosave waits
+        // a moment) are written now.
+        terminationObserver = NotificationCenter.default.addObserver(forName: NSApplication.willTerminateNotification, object: nil, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated { self?.saveDraftNow() }
+        }
+    }
+
+    deinit {
+        if let terminationObserver { NotificationCenter.default.removeObserver(terminationObserver) }
     }
 
     // MARK: Loading
@@ -1418,7 +1432,9 @@ final class VideoEditorModel: ObservableObject {
 
     // MARK: Notices
 
-    func showNotice(_ message: String, symbol: String = "info.circle") {
+    /// A short message where the user is looking (over the export sheet or
+    /// command palette while one is up). Warnings stay up longer.
+    func showNotice(_ message: String, symbol: String = "info.circle", duration: Double = 2.4) {
         noticeWork?.cancel()
         withAnimation(.spring(response: 0.3, dampingFraction: 0.86)) {
             notice = VideoEditorNotice(message: message, symbol: symbol)
@@ -1427,7 +1443,7 @@ final class VideoEditorModel: ObservableObject {
             withAnimation(.easeOut(duration: 0.25)) { self?.notice = nil }
         }
         noticeWork = work
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.4, execute: work)
+        DispatchQueue.main.asyncAfter(deadline: .now() + duration, execute: work)
     }
 
     // MARK: Autosave
@@ -1547,7 +1563,7 @@ final class VideoEditorModel: ObservableObject {
                 }
                 exportPhase = .finished(url: destination, bytes: bytes, copied: toClipboard)
                 if voiceFailed {
-                    showNotice("Exported without Enhance voice — it couldn't finish", symbol: "exclamationmark.triangle.fill")
+                    showNotice("Exported without Enhance voice — it couldn't finish", symbol: "exclamationmark.triangle.fill", duration: 6)
                 }
             } catch {
                 if exportCancelled {
@@ -1557,6 +1573,13 @@ final class VideoEditorModel: ObservableObject {
                     exportPhase = .failed(error.localizedDescription)
                 }
             }
+            AppTermination.end(exportQuitToken)
+            exportQuitToken = nil
+        }
+        // Quitting mid-export asks first, then waits for the file (Cancel in
+        // the sheet stops it and lets the quit go ahead).
+        exportQuitToken = AppTermination.begin("Exporting “\(destination.lastPathComponent)”", asksBeforeQuit: true) { [weak self] done in
+            if self?.isExporting != true { done() }
         }
     }
 
