@@ -42,6 +42,13 @@ enum RecordingRecovery {
         try? FileManager.default.removeItem(at: noteURL(baseDirectory: baseDirectory))
     }
 
+    /// Clears the note only if it's `video`'s: a take finishing late must
+    /// never delete the note of the next one, already recording.
+    static func clear(ifFor video: URL, baseDirectory: URL? = nil) {
+        guard let note = load(baseDirectory: baseDirectory), note.videoPath == video.path else { return }
+        clear(baseDirectory: baseDirectory)
+    }
+
     /// Launch-time check: returns the interrupted recording when it plays,
     /// with its camera reattached; an unplayable leftover is deleted.
     static func recoverInterruptedRecording(baseDirectory: URL? = nil) async -> URL? {

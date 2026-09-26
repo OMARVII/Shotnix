@@ -85,7 +85,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         captureEngine.recordingStateChangedHandler = { [weak self] in
             self?.recordingStateDidChange()
         }
-        captureEngine.recordingFinishedHandler = { url, screen in
+        captureEngine.recordingFinishedHandler = { finished in
+            let url = finished.url
             Settings.lastRecordingPath = url.path
             let openEditor = {
                 DispatchQueue.main.async {
@@ -98,11 +99,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                     VideoDemoEditorWindowController.open(videoURL: url)
                 }
             }
-            // Straight into the editor: no panel flashing on the way.
-            if Settings.openVideoEditorAfterRecording {
+            // Straight into the editor: no panel flashing on the way. The
+            // engine decided (and gave back its foreground hold if it won't).
+            if finished.opensEditor {
                 openEditor()
             } else {
-                VideoDemoPostRecordingPanel.show(videoURL: url, on: screen, openHandler: openEditor)
+                VideoDemoPostRecordingPanel.show(videoURL: url, on: finished.screen, openHandler: openEditor)
             }
         }
         hotkeyManager = HotkeyManager()

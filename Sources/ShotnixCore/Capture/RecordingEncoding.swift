@@ -147,9 +147,50 @@ enum RecordingDiskSpace {
         stopThreshold(bytesPerSecond: bytesPerSecond) + max(bytesPerSecond, 0) * 60
     }
 
-    /// nil when the volume can't be asked; let the writer surface the real error then.
+    /// Starting needs the recording's own stop threshold plus half a minute
+    /// of recording: at Max quality on a 4K or 5K display the threshold alone
+    /// passes 500 MB, and a take that stops itself a second in is no take.
+    static func requiredToStart(bytesPerSecond: Int64) -> Int64 {
+        max(minimumToStart, stopThreshold(bytesPerSecond: bytesPerSecond) + max(bytesPerSecond, 0) * 30)
+    }
+
+    /// Seconds of recording left before it stops itself.
+    static func secondsLeft(available: Int64, bytesPerSecond: Int64) -> Int {
+        guard bytesPerSecond > 0 else { return .max }
+        return Int(max(0, available - stopThreshold(bytesPerSecond: bytesPerSecond)) / bytesPerSecond)
+    }
+
+    static func notEnoughSpaceMessage(required: Int64, available: Int64) -> String {
+        let formatter = ByteCountFormatter()
+        formatter.countStyle = .file
+        // Lower settings only help while the recording's own rate sets the bar.
+        let advice = required > minimumToStart ? "Free up space, or choose Balanced quality or 30 fps." : "Free up some space and try again."
+        return "Not enough free disk space for this recording: it needs about \(formatter.string(fromByteCount: required)) free, "
+            + "and \(formatter.string(fromByteCount: max(available, 0))) is available. \(advice)"
+    }
+
+    static func lowSpaceWarning(secondsLeft: Int) -> String {
+        let left = secondsLeft >= 90 ? "about \(Int((Double(secondsLeft) / 60).rounded())) minutes" : "about \(max(10, (secondsLeft / 10) * 10)) seconds"
+        return "Your disk is almost full. In \(left) the recording stops and saves itself."
+    }
+
+    /// Accurate — it counts space the system can purge on demand — but
+    /// 6–20 ms a call, so never on the main thread while recording. nil when
+    /// the volume can't be asked; the writer surfaces the real error then.
     static func availableCapacity(at directory: URL) -> Int64? {
         try? directory.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey])
             .volumeAvailableCapacityForImportantUsage
+    }
+
+    /// Cheap (a hundredth of a millisecond), but it leaves out purgeable
+    /// space, so it can only read low, never high.
+    static func quickCapacity(at directory: URL) -> Int64? {
+        (try? directory.resourceValues(forKeys: [.volumeAvailableCapacityKey]).volumeAvailableCapacity).map(Int64.init)
+    }
+
+    /// Whether the cheap reading is near enough to the warning to ask the
+    /// accurate one. Far from it, the cheap one alone settles it.
+    static func needsAccurateCheck(quickCapacity: Int64, bytesPerSecond: Int64) -> Bool {
+        quickCapacity < warningThreshold(bytesPerSecond: bytesPerSecond) + max(bytesPerSecond, 0) * 60
     }
 }

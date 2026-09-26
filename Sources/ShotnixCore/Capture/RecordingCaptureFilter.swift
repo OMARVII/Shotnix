@@ -1,26 +1,57 @@
 import AppKit
 import ScreenCaptureKit
 
-/// Which of Shotnix's own windows a recording shows. Everything the app
-/// floats over the screen — HUD, camera bubble, toasts, the menu bar timer,
-/// Command Center, overlays, update prompts — stays out of the video, even
-/// windows that open mid-recording. The app's real windows (editors,
-/// history, preferences) stay in, as they do in screenshots.
+/// Which windows a recording shows, beyond the display or window chosen.
 @MainActor
 enum RecordingCaptureFilter {
-    /// Visible titled windows that Shotnix itself owns — not a framework:
-    /// Sparkle's update windows are titled too.
-    static func recordableOwnWindowIDs(in windows: [NSWindow]? = nil) -> Set<CGWindowID> {
-        Set((windows ?? NSApp.windows).compactMap { window -> CGWindowID? in
-            guard window.isVisible, window.windowNumber > 0, window.styleMask.contains(.titled) else { return nil }
-            let owner: AnyObject? = window.windowController ?? (window.delegate as AnyObject?)
-            if let owner, !isShotnixType(owner) { return nil }
-            return CGWindowID(window.windowNumber)
-        })
+
+    // MARK: Display recordings: Shotnix's own windows
+
+    /// Everything Shotnix floats over the screen — HUD, camera bubble,
+    /// toasts, the menu bar timer, Command Center, overlays, update prompts —
+    /// stays out of a display recording, even windows that open
+    /// mid-recording. Its real windows stay in, as they do in screenshots.
+    static func recordableOwnWindowIDs() -> Set<CGWindowID> {
+        // The key window only: a menu is open from whatever has the keyboard,
+        // and with Shotnix in the background its menus are chrome's.
+        recordableOwnWindowIDs(in: NSApp.windows, front: NSApp.keyWindow)
     }
 
-    static func isShotnixType(_ object: AnyObject) -> Bool {
-        Bundle(for: type(of: object)) == Bundle(for: RecordingEngine.self)
+    /// Kept: Shotnix's real windows (titled, and not owned by a framework
+    /// bundled in the app — the updater's prompts are titled too), anything
+    /// attached to one of them whatever its owner (popovers, sheets,
+    /// alerts), and, while one of them is key, the menus opened from it.
+    static func recordableOwnWindowIDs(in windows: [NSWindow], front: NSWindow?) -> Set<CGWindowID> {
+        let visible = windows.filter { $0.isVisible && $0.windowNumber > 0 }
+        let real = Set(visible.filter(isRealWindow).map(ObjectIdentifier.init))
+        func belongsToReal(_ window: NSWindow) -> Bool {
+            var current: NSWindow? = window
+            for _ in 0..<12 {
+                guard let candidate = current else { return false }
+                if real.contains(ObjectIdentifier(candidate)) { return true }
+                current = candidate.sheetParent ?? candidate.parent
+            }
+            return false
+        }
+        var kept = visible.filter(belongsToReal)
+        if let front, belongsToReal(front) {
+            kept += visible.filter { $0.level == .popUpMenu }
+        }
+        return Set(kept.map { CGWindowID($0.windowNumber) })
+    }
+
+    static func isRealWindow(_ window: NSWindow) -> Bool {
+        guard window.styleMask.contains(.titled) else { return false }
+        let owner: AnyObject? = window.windowController ?? (window.delegate as AnyObject?)
+        if let owner, isBundledFramework(Bundle(for: type(of: owner))) { return false }
+        return true
+    }
+
+    /// A framework shipped inside the app (the updater), as opposed to
+    /// Shotnix's own code or the system's (AppKit alerts and open panels
+    /// are part of whatever window they belong to).
+    static func isBundledFramework(_ bundle: Bundle) -> Bool {
+        bundle != Bundle(for: RecordingEngine.self) && !bundle.bundlePath.hasPrefix("/System/")
     }
 
     /// A display (or area) recording: the display without Shotnix, except
@@ -44,5 +75,50 @@ enum RecordingCaptureFilter {
     static func ownWindowsSignature() -> [CGWindowID] {
         let visible = NSApp.windows.filter { $0.isVisible && $0.windowNumber > 0 }.map { CGWindowID($0.windowNumber) }
         return (visible + recordableOwnWindowIDs().map { $0 | 0x8000_0000 }).sorted()
+    }
+
+    // MARK: Window recordings: the chosen window and what belongs to it
+
+    struct WindowSummary: Equatable {
+        let id: CGWindowID
+        /// CG window layer: 0 for normal windows, 101 for menus.
+        let layer: Int
+        let title: String?
+        /// CG space.
+        let frame: CGRect
+    }
+
+    /// The app's windows a window recording leaves out: its other normal
+    /// windows (layer 0), which would cover the chosen one where they
+    /// overlap it. Menus, popovers and sheets that open later still come
+    /// through, and so does an untitled window already over the chosen one
+    /// when recording starts — that's its sheet or popover.
+    static func windowsToHide(recording chosen: WindowSummary, others: [WindowSummary]) -> Set<CGWindowID> {
+        Set(others.compactMap { other -> CGWindowID? in
+            guard other.id != chosen.id, other.layer == 0 else { return nil }
+            let untitled = (other.title ?? "").trimmingCharacters(in: .whitespaces).isEmpty
+            if untitled, other.frame.intersects(chosen.frame) { return nil }
+            return other.id
+        })
+    }
+
+    /// The chosen window's app, minus its other windows present now.
+    static func windowFilter(for window: SCWindow, hiding hidden: [SCWindow], on display: SCDisplay) -> SCContentFilter {
+        if let app = window.owningApplication {
+            return SCContentFilter(display: display, including: [app], exceptingWindows: hidden)
+        }
+        return SCContentFilter(display: display, including: [window])
+    }
+
+    /// The windows of `window`'s app to leave out, from `content`.
+    static func windowsToHide(recording window: SCWindow, in content: SCShareableContent) -> [SCWindow] {
+        guard let processID = window.owningApplication?.processID else { return [] }
+        let siblings = content.windows.filter { $0.owningApplication?.processID == processID && $0.windowID != window.windowID }
+        let hide = windowsToHide(recording: summary(of: window), others: siblings.map(summary(of:)))
+        return siblings.filter { hide.contains($0.windowID) }
+    }
+
+    static func summary(of window: SCWindow) -> WindowSummary {
+        WindowSummary(id: window.windowID, layer: window.windowLayer, title: window.title, frame: window.frame)
     }
 }

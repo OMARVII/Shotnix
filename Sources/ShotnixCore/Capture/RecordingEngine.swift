@@ -56,15 +56,28 @@ final class RecordingEngine: NSObject {
     private var didWarnWindowClosed = false
     private var lastMicrophoneSampleAt: CFTimeInterval = 0
     private var followedWindow: SCWindow?
+    /// The followed window's app's other windows, left out of the video.
+    private var followedWindowHidden: [SCWindow] = []
     private var followedWindowFrame: CGRect?
     private var outputPixelSize: CGSize = .zero
     private var excludesOwnApp = true
     private var ownWindowObservers: [NSObjectProtocol] = []
     private var ownWindowsSignature: [CGWindowID] = []
     private var filterUpdateWorkItem: DispatchWorkItem?
+    private var isCheckingDiskSpace = false
+    /// Stop took the foreground for the editor; whatever doesn't open it
+    /// must give it back, or Shotnix keeps a Dock icon.
+    private var holdsForegroundForEditor = false
+    private var startIsWaitingForSave = false
 
-    /// The finished file and the screen it was recorded on.
-    var recordingFinishedHandler: ((URL, NSScreen?) -> Void)?
+    /// A saved take: the app opens it or announces it.
+    var recordingFinishedHandler: ((FinishedRecording) -> Void)?
+    /// Whether the next take is being set up (area selection, the recording
+    /// bar, a countdown): a finished take's editor would open over it.
+    var nextTakeInProgress: (() -> Bool)?
+    /// Tests: sends the next finished take down the salvage path, as if the
+    /// writer had failed, and runs this where it checks what still plays.
+    var salvagesNextSaveForTesting: (() -> Void)?
     /// Fired on every recording lifecycle transition (started, paused,
     /// saving, fully stopped) — drives the menu bar recording indicator.
     var stateChangedHandler: (() -> Void)?
@@ -94,6 +107,12 @@ final class RecordingEngine: NSObject {
     /// Whether the screen has delivered a frame yet (for tests and diagnostics).
     var hasCapturedFrames: Bool { timeline.hasStarted }
 
+    /// Record was pressed; the start itself runs a moment later. A take
+    /// finishing in between already counts the new one as queued.
+    func startWillFollow() {
+        if isFinishing, !isRecording { startIsWaitingForSave = true }
+    }
+
     func startRecording(rect: CGRect, on screen: NSScreen) async {
         await startRecording(source: .displayRect(rect: rect, screen: screen))
     }
@@ -106,10 +125,13 @@ final class RecordingEngine: NSObject {
         let screen = source.screen
         if isFinishing, !isRecording {
             // The next recording can be set up while the last one saves;
-            // it starts as soon as that file is ready.
+            // it starts as soon as that file is ready (without the last
+            // one's editor opening over it).
             ToastWindow.show(message: "Saving the last recording…", on: screen)
+            startIsWaitingForSave = true
             await waitUntilSaved(timeout: 30)
         }
+        startIsWaitingForSave = false
         guard !active else {
             // The recording bar left the camera preview running for us.
             CameraCapture.shared.stop()
@@ -120,13 +142,6 @@ final class RecordingEngine: NSObject {
         defer { isStarting = false }
         let session = UUID()
         recordingSessionID = session
-
-        let saveFolder = URL(fileURLWithPath: Settings.autoSaveLocation, isDirectory: true)
-        if let available = RecordingDiskSpace.availableCapacity(at: saveFolder), available < RecordingDiskSpace.minimumToStart {
-            CameraCapture.shared.stop()
-            ToastWindow.show(message: "Not enough free disk space to record.", on: screen)
-            return
-        }
 
         var configuration = RecordingConfiguration.current
         var notices: [String] = []
@@ -156,16 +171,6 @@ final class RecordingEngine: NSObject {
         var createdURL: URL?
         var createdWriter: AVAssetWriter?
         do {
-            if configuration.recordsCamera {
-                let result = await CameraCapture.shared.start(deviceID: configuration.cameraDeviceID, around: source.initialRect, on: screen)
-                if let message = result.message {
-                    configuration.recordsCamera = false
-                    notices.append("\(message) Recording without the camera.")
-                }
-            } else {
-                CameraCapture.shared.stop()
-            }
-
             let content = try await Self.withTimeout(10) {
                 try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: false)
             }
@@ -178,6 +183,32 @@ final class RecordingEngine: NSObject {
                 prepared.streamConfig.scalesToFit = true
             }
             prepared.streamConfig.queueDepth = RecordingVideoFormat.queueDepth(width: format.width, height: format.height)
+
+            let videoBitrate = configuration.quality.bitrate(width: format.width, height: format.height, fps: configuration.fps, codec: format.codec)
+            let screenRate = RecordingSizeEstimate.bytesPerMinute(
+                videoBitrate: videoBitrate,
+                systemAudio: configuration.recordsSystemAudio,
+                microphone: configuration.recordsMicrophone
+            ) / 60
+            let cameraRate: Int64 = 420_000
+            // Room for this recording's own stop threshold and then some, or
+            // it would stop itself right after starting. The camera counts if
+            // it's asked for: whether it starts is only known later.
+            let saveFolder = URL(fileURLWithPath: Settings.autoSaveLocation, isDirectory: true)
+            let required = RecordingDiskSpace.requiredToStart(bytesPerSecond: screenRate + (configuration.recordsCamera ? cameraRate : 0))
+            if let available = await Self.availableCapacity(at: saveFolder), available < required {
+                throw RecordingError.notEnoughSpace(required: required, available: available)
+            }
+
+            if configuration.recordsCamera {
+                let result = await CameraCapture.shared.start(deviceID: configuration.cameraDeviceID, around: source.initialRect, on: screen)
+                if let message = result.message {
+                    configuration.recordsCamera = false
+                    notices.append("\(message) Recording without the camera.")
+                }
+            } else {
+                CameraCapture.shared.stop()
+            }
 
             let url = Self.makeOutputURL()
             let handles = try Self.makeWriter(
@@ -212,14 +243,10 @@ final class RecordingEngine: NSObject {
             recordingScreen = prepared.screen
             excludesOwnApp = prepared.excludesOwnApp
             followedWindow = prepared.window
+            followedWindowHidden = prepared.hiddenWindows
             followedWindowFrame = prepared.window?.frame
             outputPixelSize = CGSize(width: format.width, height: format.height)
-            let videoBitrate = configuration.quality.bitrate(width: format.width, height: format.height, fps: configuration.fps, codec: format.codec)
-            bytesPerSecond = RecordingSizeEstimate.bytesPerMinute(
-                videoBitrate: videoBitrate,
-                systemAudio: configuration.recordsSystemAudio,
-                microphone: configuration.recordsMicrophone
-            ) / 60 + (configuration.recordsCamera ? 420_000 : 0)
+            bytesPerSecond = screenRate + (configuration.recordsCamera ? cameraRate : 0)
             didWarnLowDiskSpace = false
             didWarnWindowClosed = false
 
@@ -397,11 +424,12 @@ final class RecordingEngine: NSObject {
 
     private func requestStop(_ reason: StopReason) {
         guard isRecording, !isFinishing else { return }
-        if case .user = reason, Settings.openVideoEditorAfterRecording {
+        if case .user = reason, Settings.openVideoEditorAfterRecording, !isNextTakeQueued {
             // The user just acted — the one moment macOS lets Shotnix take
             // focus. Keep it until the editor opens, or the editor would open
             // behind the app that was being recorded.
             ShotnixEditorActivation.holdForeground()
+            holdsForegroundForEditor = true
         }
         beginFinishing(reason)
 
@@ -504,11 +532,14 @@ final class RecordingEngine: NSObject {
             // the screen backing the display we filter on.
             let targetScreen = NSScreen.screens.first { $0.displayID == display.displayID } ?? screen
             let appKitRect = ScreenCoordinates.appKitRect(fromCG: selectedWindow.frame)
+            // The app's other windows would cover the chosen one where they
+            // overlap it; its menus, popovers and sheets still come through.
+            let hidden = RecordingCaptureFilter.windowsToHide(recording: selectedWindow, in: content)
             var prepared = prepareGeometry(
                 rect: appKitRect,
                 on: targetScreen,
                 configuration: configuration,
-                filter: Self.windowFilter(for: selectedWindow, on: display)
+                filter: RecordingCaptureFilter.windowFilter(for: selectedWindow, hiding: hidden, on: display)
             )
             // Resizing mid-recording scales the window into the fixed-size
             // video instead of cropping it.
@@ -517,17 +548,9 @@ final class RecordingEngine: NSObject {
                 prepared.streamConfig.preservesAspectRatio = true
             }
             prepared.window = selectedWindow
+            prepared.hiddenWindows = hidden
             return prepared
         }
-    }
-
-    /// The window's whole app, cropped to the window: menus, popovers and
-    /// sheets are windows of their own, which a window-only filter left out.
-    private static func windowFilter(for window: SCWindow, on display: SCDisplay) -> SCContentFilter {
-        if let app = window.owningApplication {
-            return SCContentFilter(display: display, including: [app], exceptingWindows: [])
-        }
-        return SCContentFilter(display: display, including: [window])
     }
 
     private static func display(mostOverlapping cgRect: CGRect, in displays: [SCDisplay]) -> SCDisplay? {
@@ -701,15 +724,35 @@ final class RecordingEngine: NSObject {
         checkMicrophone()
     }
 
+    /// Once a second. The cheap reading settles almost every tick; near the
+    /// thresholds the accurate one (6–20 ms) runs off the main thread, which
+    /// also samples the pointer 60 times a second.
     private func checkDiskSpace() {
-        guard let url = outputURL,
-              let available = RecordingDiskSpace.availableCapacity(at: url.deletingLastPathComponent()) else { return }
+        guard !isCheckingDiskSpace, let folder = outputURL?.deletingLastPathComponent() else { return }
+        if let quick = RecordingDiskSpace.quickCapacity(at: folder),
+           !RecordingDiskSpace.needsAccurateCheck(quickCapacity: quick, bytesPerSecond: bytesPerSecond) { return }
+        isCheckingDiskSpace = true
+        Task { @MainActor [weak self] in
+            let available = await Self.availableCapacity(at: folder)
+            self?.diskSpaceMeasured(available)
+        }
+    }
+
+    private func diskSpaceMeasured(_ available: Int64?) {
+        isCheckingDiskSpace = false
+        guard isRecording, let available else { return }
         if available < RecordingDiskSpace.stopThreshold(bytesPerSecond: bytesPerSecond) {
             requestStop(.diskFull)
         } else if !didWarnLowDiskSpace, available < RecordingDiskSpace.warningThreshold(bytesPerSecond: bytesPerSecond) {
             didWarnLowDiskSpace = true
-            warn(hud: "Disk almost full", toast: "Your disk is almost full. In about a minute the recording stops and saves itself.")
+            let secondsLeft = RecordingDiskSpace.secondsLeft(available: available, bytesPerSecond: bytesPerSecond)
+            warn(hud: "Disk almost full", toast: RecordingDiskSpace.lowSpaceWarning(secondsLeft: secondsLeft))
         }
+    }
+
+    /// The accurate free-space reading, taken off the main thread.
+    nonisolated private static func availableCapacity(at folder: URL) async -> Int64? {
+        await Task.detached(priority: .utility) { RecordingDiskSpace.availableCapacity(at: folder) }.value
     }
 
     /// A connected microphone delivers buffers even in silence; none for
@@ -758,6 +801,7 @@ final class RecordingEngine: NSObject {
         ownWindowsSignature = currentOwnWindowsSignature()
         let names: [Notification.Name] = [
             NSWindow.didBecomeKeyNotification,
+            NSWindow.didBecomeMainNotification,
             NSWindow.willCloseNotification,
             NSWindow.didChangeOcclusionStateNotification,
             NSWindow.didMiniaturizeNotification,
@@ -768,6 +812,20 @@ final class RecordingEngine: NSObject {
                 MainActor.assumeIsolated { self?.scheduleFilterUpdate() }
             }
         }
+        // A menu opened from one of Shotnix's own windows has to join the
+        // video while it's still open: look right away, and again once its
+        // window (and any submenu) is up.
+        ownWindowObservers.append(NotificationCenter.default.addObserver(forName: NSMenu.didBeginTrackingNotification, object: nil, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated {
+                self?.scheduleFilterUpdate(after: 0.05)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                    MainActor.assumeIsolated { self?.scheduleFilterUpdate(after: 0) }
+                }
+            }
+        })
+        ownWindowObservers.append(NotificationCenter.default.addObserver(forName: NSMenu.didEndTrackingNotification, object: nil, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated { self?.scheduleFilterUpdate() }
+        })
     }
 
     private func currentOwnWindowsSignature() -> [CGWindowID] {
@@ -778,7 +836,7 @@ final class RecordingEngine: NSObject {
             : RecordingCaptureFilter.ownWindowsSignature()
     }
 
-    private func scheduleFilterUpdate() {
+    private func scheduleFilterUpdate(after delay: TimeInterval = 0.15) {
         guard isRecording, filterUpdateWorkItem == nil else { return }
         let work = DispatchWorkItem { [weak self] in
             MainActor.assumeIsolated {
@@ -787,7 +845,7 @@ final class RecordingEngine: NSObject {
             }
         }
         filterUpdateWorkItem = work
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: work)
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: work)
     }
 
     private func updateFilterIfNeeded() {
@@ -796,7 +854,7 @@ final class RecordingEngine: NSObject {
         guard signature != ownWindowsSignature else { return }
         ownWindowsSignature = signature
         Task { @MainActor in
-            guard let content = try? await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: false),
+            guard let content = try? await Self.withTimeout(5, { try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: false) }),
                   self.isRecording,
                   let display = ScreenCoordinates.display(for: screen, in: content.displays) else { return }
             do {
@@ -826,7 +884,7 @@ final class RecordingEngine: NSObject {
               let display = ScreenCoordinates.display(for: screen, in: displays) else { return }
         if screen != recordingScreen {
             recordingScreen = screen
-            stream.updateContentFilter(Self.windowFilter(for: window, on: display)) { error in
+            stream.updateContentFilter(RecordingCaptureFilter.windowFilter(for: window, hiding: followedWindowHidden, on: display)) { error in
                 if let error { print("[Shotnix] Recording display switch failed: \(error)") }
             }
         }
@@ -919,7 +977,7 @@ final class RecordingEngine: NSObject {
         guard let writer = assetWriter,
               let videoInput,
               let url = outputURL else {
-            RecordingRecovery.clear()
+            if let outputURL { RecordingRecovery.clear(ifFor: outputURL) }
             cleanup(releasingForeground: true)
             ToastWindow.show(message: "Recording failed before saving.", on: screen)
             finishCompleted()
@@ -931,7 +989,7 @@ final class RecordingEngine: NSObject {
             // service stalled): there's nothing to save or salvage.
             writer.cancelWriting()
             try? FileManager.default.removeItem(at: url)
-            RecordingRecovery.clear()
+            RecordingRecovery.clear(ifFor: url)
             cleanup(releasingForeground: true)
             ToastWindow.show(message: "Nothing was recorded — the screen didn't send any picture. Try again.", duration: 4, on: screen)
             finishCompleted()
@@ -955,85 +1013,107 @@ final class RecordingEngine: NSObject {
             DispatchQueue.main.async {
                 guard let self, self.finishSessionID == sessionID else { return }
                 self.cancelSlowSaveNotices()
-                if writerStatus == .completed, writerError == nil, Self.fileHasContent(at: url) {
+                let salvageCheck = self.salvagesNextSaveForTesting
+                self.salvagesNextSaveForTesting = nil
+                if writerStatus == .completed, writerError == nil, Self.fileHasContent(at: url), salvageCheck == nil {
                     self.completeSave(url: url, reason: reason)
                 } else {
-                    self.salvage(url: url, writerError: writerError)
+                    self.salvage(url: url, writerError: writerError, whileChecking: salvageCheck)
                 }
             }
         }
     }
 
     private func completeSave(url: URL, reason: StopReason) {
-        // The camera movie finishes first, while this recording still counts
-        // as saving: a new recording can't start and share the camera with it.
-        let cameraTask = cameraFinishTask
-        cameraFinishTask = nil
-        recordsCamera = false
+        let cameraTask = takeCameraFinishTask()
         Task { @MainActor in
             let camera = await cameraTask?.value
-            var recordingMetadata = self.pendingRecordingMetadata
-            let screenStart = self.timeline.origin
-            let screen = self.recordingScreen
-            let forTermination = self.endsForTermination
-            self.cleanup(releasingForeground: forTermination)
-            Self.attach(camera: camera, screenStart: screenStart, to: &recordingMetadata)
-            if let recordingMetadata {
-                VideoDemoSidecarStore.save(recordingMetadata, for: url)
-            }
-            RecordingRecovery.clear()
-            if forTermination {
-                Settings.lastRecordingPath = url.path
-            } else {
-                ToastWindow.show(message: Self.finishedMessage(for: url, reason: reason), duration: 3.0, on: screen)
-                self.recordingFinishedHandler?(url, screen)
-            }
-            self.finishCompleted()
+            self.finalize(url: url, camera: camera, playable: nil, message: Self.finishedMessage(for: url, reason: reason))
         }
     }
 
     /// The writer failed before the file was finished — a full disk is the
     /// classic cause. The movie is written in fragments, so what reached
     /// the disk usually still plays: keep it rather than lose the take.
-    private func salvage(url: URL, writerError: Error?) {
+    private func salvage(url: URL, writerError: Error?, whileChecking: (() -> Void)? = nil) {
         if let writerError { print("[Shotnix] Recording finish failed: \(writerError)") }
-        let cameraTask = cameraFinishTask
-        cameraFinishTask = nil
-        recordsCamera = false
+        let cameraTask = takeCameraFinishTask()
         Task { @MainActor in
             let camera = await cameraTask?.value
-            var recordingMetadata = self.pendingRecordingMetadata
-            let screenStart = self.timeline.origin
-            let screen = self.recordingScreen
-            let forTermination = self.endsForTermination
-            self.cleanup(releasingForeground: false)
+            whileChecking?()
             let playable = await RecordingRecovery.playableDuration(of: url)
-            RecordingRecovery.clear()
             guard let playable, playable > 0.2 else {
-                try? FileManager.default.removeItem(at: url)
-                if let camera { try? FileManager.default.removeItem(at: camera.url) }
-                ShotnixEditorActivation.releaseForeground()
-                ToastWindow.show(message: Self.saveFailureMessage(for: writerError), duration: 4, on: screen)
-                self.finishCompleted()
+                self.discardUnplayableTake(url: url, camera: camera, writerError: writerError)
                 return
             }
-            if let recorded = recordingMetadata?.duration {
-                recordingMetadata?.duration = min(recorded, playable)
-            }
-            Self.attach(camera: camera, screenStart: screenStart, to: &recordingMetadata)
-            if let recordingMetadata {
-                VideoDemoSidecarStore.save(recordingMetadata, for: url)
-            }
-            if forTermination {
-                Settings.lastRecordingPath = url.path
-                ShotnixEditorActivation.releaseForeground()
-            } else {
-                let reason = Self.isDiskFull(writerError) ? "Your disk filled up" : "The recording couldn't be finished"
-                ToastWindow.show(message: "\(reason) — saved the first \(Self.durationText(playable)).", duration: 4, on: screen)
-                self.recordingFinishedHandler?(url, screen)
-            }
-            self.finishCompleted()
+            let reason = Self.isDiskFull(writerError) ? "Your disk filled up" : "The recording couldn't be finished"
+            self.finalize(url: url, camera: camera, playable: playable, message: "\(reason) — saved the first \(Self.durationText(playable)).")
         }
+    }
+
+    /// The camera movie finishes on its own; this take waits for it while
+    /// still counting as saving, so a new take can't share the camera.
+    private func takeCameraFinishTask() -> Task<CameraPipeline.Result?, Never>? {
+        let task = cameraFinishTask
+        cameraFinishTask = nil
+        recordsCamera = false
+        return task
+    }
+
+    /// Everything after the waiting, in one synchronous go: the editor data
+    /// and the recovery note are settled before the engine goes idle, so a
+    /// quit meanwhile waits for them and a queued take can't start early.
+    private func finalize(url: URL, camera: CameraPipeline.Result?, playable: Double?, message: String) {
+        var recordingMetadata = pendingRecordingMetadata
+        if let playable, let recorded = recordingMetadata?.duration {
+            recordingMetadata?.duration = min(recorded, playable)
+        }
+        Self.attach(camera: camera, screenStart: timeline.origin, to: &recordingMetadata)
+        if let recordingMetadata {
+            VideoDemoSidecarStore.save(recordingMetadata, for: url)
+        }
+        RecordingRecovery.clear(ifFor: url)
+        let screen = recordingScreen
+        let forTermination = endsForTermination
+        // Decided once, here: the next take already on its way (its editor
+        // would open over it) or the setting turned off during the save both
+        // mean no editor — and then the hold Stop took goes back.
+        let opensEditor = !forTermination && Settings.openVideoEditorAfterRecording && !isNextTakeQueued
+        if opensEditor {
+            // The editor ends the hold once it's in front.
+            holdsForegroundForEditor = false
+        } else {
+            releaseEditorHold()
+        }
+        cleanup(releasingForeground: false)
+        if forTermination {
+            Settings.lastRecordingPath = url.path
+        } else {
+            ToastWindow.show(message: message, duration: playable == nil ? 3 : 4, on: screen)
+            recordingFinishedHandler?(FinishedRecording(url: url, screen: screen, opensEditor: opensEditor))
+        }
+        finishCompleted()
+    }
+
+    private func discardUnplayableTake(url: URL, camera: CameraPipeline.Result?, writerError: Error?) {
+        try? FileManager.default.removeItem(at: url)
+        if let camera { try? FileManager.default.removeItem(at: camera.url) }
+        RecordingRecovery.clear(ifFor: url)
+        let screen = recordingScreen
+        cleanup(releasingForeground: true)
+        ToastWindow.show(message: Self.saveFailureMessage(for: writerError), duration: 4, on: screen)
+        finishCompleted()
+    }
+
+    /// A take is on its way: its setup is open, or a start waits for this save.
+    private var isNextTakeQueued: Bool {
+        startIsWaitingForSave || (nextTakeInProgress?() ?? false)
+    }
+
+    private func releaseEditorHold() {
+        guard holdsForegroundForEditor else { return }
+        holdsForegroundForEditor = false
+        ShotnixEditorActivation.releaseForeground()
     }
 
     private func finishDiscard() {
@@ -1046,8 +1126,10 @@ final class RecordingEngine: NSObject {
         // cancelWriting deletes the file; the explicit remove covers a writer
         // that had already failed.
         if let writer = assetWriter, writer.status == .writing { writer.cancelWriting() }
-        if let url = outputURL { try? FileManager.default.removeItem(at: url) }
-        RecordingRecovery.clear()
+        if let url = outputURL {
+            try? FileManager.default.removeItem(at: url)
+            RecordingRecovery.clear(ifFor: url)
+        }
         cleanup(releasingForeground: true)
         ToastWindow.show(message: "Recording discarded", on: screen)
         finishCompleted()
@@ -1071,8 +1153,10 @@ final class RecordingEngine: NSObject {
         microphone?.stop()
         // A recording that never started leaves nothing behind.
         if let writer, writer.status == .writing { writer.cancelWriting() }
-        if let url { try? FileManager.default.removeItem(at: url) }
-        RecordingRecovery.clear()
+        if let url {
+            try? FileManager.default.removeItem(at: url)
+            RecordingRecovery.clear(ifFor: url)
+        }
         cleanup(releasingForeground: true)
         finishCompleted()
         ToastWindow.show(message: Self.startFailureMessage(for: error), duration: 4.5, on: screen)
@@ -1237,6 +1321,7 @@ final class RecordingEngine: NSObject {
         recordingScreen = nil
         displays = []
         followedWindow = nil
+        followedWindowHidden = []
         followedWindowFrame = nil
         if let metadataRecorder {
             _ = metadataRecorder.finish(duration: 0)
@@ -1257,7 +1342,7 @@ final class RecordingEngine: NSObject {
         finishSessionID = UUID()
         if releasingForeground {
             // No editor is coming: don't leave a Dock icon behind.
-            ShotnixEditorActivation.releaseForeground()
+            releaseEditorHold()
         }
         NSApp.restoreBackgroundOnlyActivationPolicyIfNeeded()
         stateChangedHandler?()
@@ -1358,6 +1443,7 @@ final class RecordingEngine: NSObject {
             case .windowGone: return "That window closed before recording could start."
             case .cannotAddWriterInput, .cannotStartWriter: return "Couldn't create the video file."
             case .timedOut: return "Screen recording didn't start in time. Try again."
+            case .notEnoughSpace(let required, let available): return RecordingDiskSpace.notEnoughSpaceMessage(required: required, available: available)
             }
         }
         if nsError.domain == SCStreamErrorDomain {
@@ -1589,6 +1675,7 @@ final class RecordingEngine: NSObject {
         let captureRect: CGRect
         let screen: NSScreen
         var window: SCWindow?
+        var hiddenWindows: [SCWindow] = []
         var excludesOwnApp = true
     }
 
@@ -1598,7 +1685,18 @@ final class RecordingEngine: NSObject {
         case cannotAddWriterInput
         case cannotStartWriter
         case timedOut
+        case notEnoughSpace(required: Int64, available: Int64)
     }
+}
+
+/// A saved take, handed to the app to open or announce.
+struct FinishedRecording {
+    let url: URL
+    /// Where it was recorded: the panel shows up there.
+    let screen: NSScreen?
+    /// Open it in the editor now. False when the setting is off — or when
+    /// the next take is already being set up, which the editor would cover.
+    let opensEditor: Bool
 }
 
 /// SCStream crosses into the timeout helper's tasks; it's only used there

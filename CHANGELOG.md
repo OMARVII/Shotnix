@@ -50,7 +50,7 @@
 
 #### Changed
 - **Shotnix's own toasts, menus, timer, HUD and camera bubble never appear in recordings.** Its editor and Settings windows still record normally.
-- **Window recordings include the app's menus, popovers and sheets**, and follow the window when you move or resize it, even onto another display.
+- **Window recordings show the window you picked with its menus, popovers and sheets**, leave the app's other windows out, and follow the window when you move or resize it, even onto another display.
 - **The HUD never takes focus** from the app you're recording, remembers where you put it, and keeps off the recorded area. It shows the camera and shortcut state, warns about dropped frames and low disk space, and says "Saving…" while it saves.
 - **5K, 6K and "More Space" displays record in HEVC** (H.264 can't encode frames that large), and 60 fps recordings get a bitrate to match.
 - **Sizes are shown in pixels.**
@@ -59,7 +59,7 @@
 - **The voice lines up with the picture from the first frame.** Sound captured just before the first frame was played at the start and pushed the rest late.
 - **A microphone that drops out or is unplugged** no longer shifts the rest of the audio; Shotnix switches to another microphone and tells you.
 - **Recording with no microphone connected works** and says so, instead of failing with a message about permissions and leaving a broken file.
-- **A full disk stops the recording cleanly** and keeps what was recorded, and slow saves are never cancelled.
+- **A full disk stops the recording cleanly** and keeps what was recorded, and slow saves are never cancelled. Recording only starts when there's room for it, and says how much space it needs.
 - **The display no longer sleeps mid-recording.**
 - **Starting a new recording while the last one saves** waits for the save instead of failing.
 - **The saved-recording panel** has a close button, closes with Esc, and appears on the screen you recorded.
