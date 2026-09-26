@@ -210,10 +210,12 @@ struct VideoTranscriptPanel: View {
                 cleanup(
                     title: pauses.isEmpty ? "No pauses to shorten" : "Shorten \(pauses.count) pause\(pauses.count == 1 ? "" : "s")",
                     symbol: "forward.end",
-                    help: model.project.cursorSamples.isEmpty
+                    help: model.project.cursorSamples.isEmpty && !model.seesScreenChanges
                         ? "Shortens every silence over a second (this video has no Shotnix pointer data to spot what happens on screen)"
+                        : !model.seesScreenChanges
+                        ? (pauses.isEmpty ? "Silences over a second get shortened — except while you move the pointer, click, or press a shortcut" : "Saves \(VideoEditorModel.format(pauseSeconds)) — silences where the pointer rests and nothing is clicked or pressed (this older recording can't see typing)")
                         : pauses.isEmpty
-                        ? "Silences over a second get shortened — except while you click or move the pointer, so the demo itself is never cut"
+                        ? "Silences over a second get shortened — except while you click, type, scroll, or move the pointer, so the demo itself is never cut"
                         : "Saves \(VideoEditorModel.format(pauseSeconds)) — only silences where nothing happens on screen",
                     enabled: !pauses.isEmpty,
                     action: model.shortenPauses

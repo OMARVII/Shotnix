@@ -107,15 +107,24 @@ enum VideoTranscript {
         return low < sorted.count ? low : nil
     }
 
-    /// Moments of on-screen activity (sorted).
-    static func activityTimes(cursor: [VideoDemoCursorSample], clicks: [VideoDemoClickEvent], keystrokes: [VideoKeystrokeEvent]) -> [Double] {
+    /// Moments of on-screen activity (sorted): the pointer moving (more
+    /// than `pointerStep` between samples), clicks, shortcuts, and bursts
+    /// of screen changes (typing, scrolling — recordings made since the
+    /// recorder watched the screen; nil for older ones).
+    static func activityTimes(
+        cursor: [VideoDemoCursorSample],
+        clicks: [VideoDemoClickEvent],
+        keystrokes: [VideoKeystrokeEvent],
+        screen: [Double]? = nil,
+        pointerStep: Double = 0.004
+    ) -> [Double] {
         var times: [Double] = []
         var previous: VideoDemoCursorSample?
         for sample in cursor {
             if let previous {
                 let dx = sample.x - previous.x
                 let dy = sample.y - previous.y
-                if dx * dx + dy * dy > 0.004 * 0.004 { times.append(sample.time) }
+                if dx * dx + dy * dy > pointerStep * pointerStep { times.append(sample.time) }
             }
             previous = sample
         }
@@ -124,7 +133,19 @@ enum VideoTranscript {
             times.append(click.time + click.pressDuration)
         }
         times.append(contentsOf: keystrokes.map(\.time))
+        if let screen { times.append(contentsOf: screenBusyTimes(screen)) }
         return times.sorted()
+    }
+
+    /// Screen changes that come in bursts. A lone change — a text cursor
+    /// blinking, a clock ticking over — isn't someone working; typing and
+    /// scrolling change the screen several times a second.
+    static func screenBusyTimes(_ samples: [Double], within gap: Double = 0.35) -> [Double] {
+        let sorted = samples.sorted()
+        return sorted.indices.filter { index in
+            (index > 0 && sorted[index] - sorted[index - 1] <= gap)
+                || (index + 1 < sorted.count && sorted[index + 1] - sorted[index] <= gap)
+        }.map { sorted[$0] }
     }
 
     static func merge(_ ranges: [ClosedRange<Double>]) -> [ClosedRange<Double>] {

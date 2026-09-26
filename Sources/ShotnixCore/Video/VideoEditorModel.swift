@@ -216,14 +216,19 @@ final class VideoEditorModel: ObservableObject {
     private var transcriptCache: (captions: [VideoCaptionLine], language: String?, words: [VideoTranscriptWord])?
     private var activityCache: (key: [Int], times: [Double])?
 
-    /// When something happens on screen (pointer moves, clicks, shortcuts).
+    /// When something happens on screen (pointer moves, clicks, shortcuts,
+    /// typing and scrolling when the recording saw the screen change).
     var activityTimes: [Double] {
-        let key = [project.cursorSamples.count, project.clickEvents.count, project.keystrokes.count, Int((project.cursorSamples.last?.time ?? 0) * 100)]
+        let key = [project.cursorSamples.count, project.clickEvents.count, project.keystrokes.count, Int((project.cursorSamples.last?.time ?? 0) * 100), recording?.screenActivity?.count ?? -1]
         if let cache = activityCache, cache.key == key { return cache.times }
-        let times = VideoTranscript.activityTimes(cursor: project.cursorSamples, clicks: project.clickEvents, keystrokes: project.keystrokes)
+        let times = VideoTranscript.activityTimes(cursor: project.cursorSamples, clicks: project.clickEvents, keystrokes: project.keystrokes, screen: recording?.screenActivity)
         activityCache = (key, times)
         return times
     }
+
+    /// Whether the recording knows when its screen changed (older ones
+    /// only have the pointer, clicks, and shortcuts to go by).
+    var seesScreenChanges: Bool { recording?.screenActivity != nil }
 
     /// Every spoken word (from the captions), in time order.
     var transcriptWords: [VideoTranscriptWord] {
@@ -1366,23 +1371,17 @@ final class VideoEditorModel: ObservableObject {
     // MARK: Idle speed-up
 
     /// Stretches of the recording where nothing happens: the pointer is
-    /// still, nobody clicks, and it's quiet. Source seconds.
+    /// still, nobody clicks or presses a shortcut, the screen isn't
+    /// changing (typing, scrolling), and it's quiet. Source seconds.
     func idleRanges(minimum: Double = 2.5) -> [ClosedRange<Double>] {
         guard sourceDuration > 0 else { return [] }
-        var activity: [Double] = []
-        var previous: VideoDemoCursorSample?
-        for sample in project.cursorSamples {
-            if let previous {
-                let dx = sample.x - previous.x
-                let dy = sample.y - previous.y
-                if dx * dx + dy * dy > 0.002 * 0.002 { activity.append(sample.time) }
-            }
-            previous = sample
-        }
-        for click in project.clickEvents {
-            activity.append(click.time)
-            activity.append(click.time + click.pressDuration)
-        }
+        var activity = VideoTranscript.activityTimes(
+            cursor: project.cursorSamples,
+            clicks: project.clickEvents,
+            keystrokes: project.keystrokes,
+            screen: recording?.screenActivity,
+            pointerStep: 0.002
+        )
         if let waveform, !waveform.peaks.isEmpty {
             let loud: Float = 0.06
             for (index, peak) in waveform.peaks.enumerated() where peak > loud && index % 5 == 0 {
@@ -1403,9 +1402,10 @@ final class VideoEditorModel: ObservableObject {
     }
 
     func speedUpIdle(speed: Double = 8) {
-        // Without the pointer's path there's no telling a quiet screen from
-        // a busy one — it would speed up everything.
-        guard !project.cursorSamples.isEmpty else {
+        // Without the pointer's path (or the screen's changes) there's no
+        // telling a quiet screen from a busy one — it would speed up
+        // everything.
+        guard !project.cursorSamples.isEmpty || seesScreenChanges else {
             showNotice("Speed Up Idle works on Shotnix recordings — it watches the pointer", symbol: "hare")
             return
         }
@@ -1427,13 +1427,20 @@ final class VideoEditorModel: ObservableObject {
                 }
             }
         }
-        showNotice("Sped up \(ranges.count) idle moment\(ranges.count == 1 ? "" : "s") — saved \(Self.format(saved))", symbol: "hare.fill")
+        let summary = "Sped up \(ranges.count) idle moment\(ranges.count == 1 ? "" : "s") — saved \(Self.format(saved))"
+        if seesScreenChanges {
+            showNotice(summary, symbol: "hare.fill")
+        } else {
+            // Recordings from before the recorder watched the screen can't
+            // tell typing from waiting.
+            showNotice(summary + " · check any typing", symbol: "hare.fill", duration: 4)
+        }
     }
 
     // MARK: Notices
 
-    /// A short message where the user is looking (over the export sheet or
-    /// command palette while one is up). Warnings stay up longer.
+    /// A short message where the user is looking (over the export sheet
+    /// while it's up). Warnings stay up longer.
     func showNotice(_ message: String, symbol: String = "info.circle", duration: Double = 2.4) {
         noticeWork?.cancel()
         withAnimation(.spring(response: 0.3, dampingFraction: 0.86)) {
