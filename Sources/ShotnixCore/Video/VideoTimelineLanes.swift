@@ -263,6 +263,24 @@ struct VideoCaptionLane: View, Equatable {
             (mode == .move ? NSCursor.openHand : NSCursor.resizeLeftRight).set()
         }
         .gesture(dragGesture)
+        // Drawn chips have no views: VoiceOver gets one element for each.
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Captions")
+        .accessibilityChildren {
+            ZStack(alignment: .topLeading) {
+                ForEach(items, id: \.id) { item in
+                    let frame = rect(item)
+                    Color.clear
+                        .frame(width: frame.width, height: frame.height)
+                        .offset(x: frame.minX)
+                        .accessibilityElement()
+                        .accessibilityLabel(model.accessibilityDescription(of: .caption(item.id)))
+                        .accessibilityAddTraits(selectedIDs.contains(item.id) ? [.isButton, .isSelected] : .isButton)
+                        .accessibilityAction { model.selectCaption(item.id) }
+                        .accessibilityAction(named: "Delete") { model.deleteCaption(item.id) }
+                }
+            }
+        }
     }
 
     private var dragGesture: some Gesture {
@@ -426,6 +444,23 @@ struct VideoKeysLane: View, Equatable {
                 }
         )
         .help("Keyboard shortcuts — click one to select it, ⌫ hides it")
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Keyboard shortcuts")
+        .accessibilityChildren {
+            ZStack(alignment: .topLeading) {
+                ForEach(items, id: \.id) { item in
+                    let frame = rect(item)
+                    Color.clear
+                        .frame(width: frame.width, height: frame.height)
+                        .offset(x: frame.minX)
+                        .accessibilityElement()
+                        .accessibilityLabel(model.accessibilityDescription(of: .keystroke(item.id)))
+                        .accessibilityAddTraits(selectedIDs.contains(item.id) ? [.isButton, .isSelected] : .isButton)
+                        .accessibilityAction { model.selectKeystroke(item.id) }
+                        .accessibilityAction(named: "Hide") { model.deleteKeystroke(item.id) }
+                }
+            }
+        }
     }
 }
 
@@ -529,6 +564,25 @@ struct VideoClickLane: View, Equatable {
                 }
         )
         .help("Clicks — drag one to retime it, ⌫ removes the selected one")
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Clicks")
+        .accessibilityChildren {
+            ZStack(alignment: .topLeading) {
+                ForEach(items, id: \.id) { item in
+                    Color.clear
+                        .frame(width: 14, height: M.clickLaneHeight)
+                        .offset(x: geometry.x(item.time) - 7)
+                        .accessibilityElement()
+                        .accessibilityLabel(model.accessibilityDescription(of: .click(item.id)))
+                        .accessibilityAddTraits(selectedIDs.contains(item.id) ? [.isButton, .isSelected] : .isButton)
+                        .accessibilityAction {
+                            model.selection = .click(item.id)
+                            model.seek(to: item.time)
+                        }
+                        .accessibilityAction(named: "Delete") { model.deleteClick(item.id) }
+                }
+            }
+        }
     }
 }
 
@@ -664,5 +718,25 @@ struct VideoCameraLayoutLane: View, Equatable {
                 }
         )
         .help("Camera layouts — drag to move, drag an edge to retime, click to change")
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Camera layouts")
+        .accessibilityChildren {
+            ZStack(alignment: .topLeading) {
+                ForEach(items, id: \.id) { item in
+                    let frame = rect(item)
+                    Color.clear
+                        .frame(width: frame.width, height: frame.height)
+                        .offset(x: frame.minX)
+                        .accessibilityElement()
+                        .accessibilityLabel(model.accessibilityDescription(of: .cameraLayout(item.id)))
+                        .accessibilityAddTraits(selectedIDs.contains(item.id) ? [.isButton, .isSelected] : .isButton)
+                        .accessibilityAction {
+                            model.selectCameraLayout(item.id)
+                            model.inspectorTab = .camera
+                        }
+                        .accessibilityAction(named: "Delete") { model.deleteCameraLayout(item.id) }
+                }
+            }
+        }
     }
 }

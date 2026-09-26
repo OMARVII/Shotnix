@@ -46,7 +46,7 @@ final class VideoDemoEditorWindowController: NSWindowController, NSWindowDelegat
 
     /// The editor in the key window (menu items act on it only).
     static var keyModel: VideoEditorModel? {
-        (NSApp.keyWindow?.delegate as? VideoDemoEditorWindowController)?.model
+        (NSApplication.shared.keyWindow?.delegate as? VideoDemoEditorWindowController)?.model
     }
 
     static func exportActive() {

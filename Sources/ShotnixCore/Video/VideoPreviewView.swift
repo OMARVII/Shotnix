@@ -301,6 +301,11 @@ struct VideoStageInteractionLayer: View {
             Color.clear
                 .contentShape(Rectangle())
                 .gesture(pictureGesture)
+                .accessibilityElement()
+                .accessibilityLabel("Video preview")
+                .accessibilityHint("Plays or pauses. Use Option-arrow keys to select what's on the timeline.")
+                .accessibilityAddTraits(.isButton)
+                .accessibilityAction { model.togglePlay() }
                 .onContinuousHover(coordinateSpace: .named(Self.space)) { phase in
                     guard pressedOverlay == nil else { return }
                     if case .active(let point) = phase, annotation(at: point) != nil {

@@ -106,6 +106,91 @@ extension VideoEditorModel {
         }
     }
 
+    // MARK: Stepping through the timeline
+
+    /// Everything on the timeline in time order (what ⌥← / ⌥→ step
+    /// through): zooms, annotations, captions, camera layouts, shortcuts,
+    /// clicks, and clips.
+    var timelineItems: [(item: Selection, start: Double)] {
+        var items: [(item: Selection, start: Double)] = []
+        for region in project.zoomRegions { if let range = zoomTimelineRange(region) { items.append((.zoom(region.id), range.lowerBound)) } }
+        for overlay in plan.overlays { items.append((.overlay(overlay.effect.id), overlay.start)) }
+        for caption in plan.captions { items.append((.caption(caption.id), caption.start)) }
+        for span in cameraLayoutSpans { items.append((.cameraLayout(span.region.id), span.start)) }
+        for event in project.keystrokes { if let time = timelineTime(forSource: event.time) { items.append((.keystroke(event.id), time)) } }
+        for click in project.clickEvents { if let time = timelineTime(forSource: click.time) { items.append((.click(click.id), time)) } }
+        for segment in segments { items.append((.clip(segment.id), segment.timelineStart)) }
+        return items.sorted { $0.start < $1.start }
+    }
+
+    /// ⌥→ (⌥←): selects the next (previous) thing on the timeline after
+    /// the selected one — or after the playhead — and moves the playhead
+    /// to it. No mouse needed to reach an annotation.
+    func selectAdjacentItem(forward: Bool) {
+        let items = timelineItems
+        guard !items.isEmpty else { return }
+        var index: Int?
+        if let current = items.firstIndex(where: { $0.item == selection }) {
+            let next = current + (forward ? 1 : -1)
+            index = items.indices.contains(next) ? next : nil
+        } else {
+            let time = clock.time
+            index = forward ? items.firstIndex { $0.start > time + 0.001 } : items.lastIndex { $0.start < time - 0.001 }
+        }
+        guard let index else {
+            NSSound.beep()
+            return
+        }
+        let target = items[index]
+        selection = target.item
+        seek(to: target.start)
+        // VoiceOver says what was picked.
+        if let window = NSApplication.shared.keyWindow {
+            NSAccessibility.post(element: window, notification: .announcementRequested, userInfo: [
+                .announcement: accessibilityDescription(of: target.item),
+                .priority: NSAccessibilityPriorityLevel.high.rawValue,
+            ])
+        }
+    }
+
+    /// Spoken (and shown to VoiceOver) for an item: what it is and where.
+    func accessibilityDescription(of item: Selection) -> String {
+        func at(_ span: (start: Double, end: Double)?) -> String {
+            guard let span else { return "" }
+            return span.end - span.start > 0.05
+                ? ", \(Self.timecode(span.start)) to \(Self.timecode(span.end))"
+                : ", at \(Self.timecode(span.start))"
+        }
+        let span = timelineSpan(of: item)
+        switch item {
+        case .zoom(let id):
+            let region = project.zoomRegions.first { $0.id == id }
+            return "Zoom \(region.map { Self.formatScale($0.scale) } ?? "")\(region?.followsCursor == true ? ", follows the cursor" : "")\(at(span))"
+        case .overlay(let id):
+            guard let effect = project.overlayEffects.first(where: { $0.id == id }) else { return "Annotation" }
+            return (effect.kind == .text ? "Text “\(effect.text)”" : effect.kind.title) + at(span)
+        case .caption(let id):
+            return "Caption “\(plan.captions.first { $0.id == id }?.text ?? "")”\(at(span))"
+        case .cameraLayout(let id):
+            return "Camera layout: \(project.cameraLayouts.first { $0.id == id }?.layout.title ?? "")\(at(span))"
+        case .keystroke(let id):
+            return "Shortcut \(project.keystrokes.first { $0.id == id }?.keys.joined() ?? "")\(at(span))"
+        case .click:
+            return "Click\(at(span))"
+        case .clip(let id):
+            guard let index = segments.firstIndex(where: { $0.id == id }) else { return "Clip" }
+            let clip = segments[index].clip
+            var parts = ["Clip \(index + 1)", "\(Self.format(segments[index].duration)) long"]
+            if abs(clip.normalizedSpeed - 1) > 0.01 { parts.append("\(Self.formatScale(clip.normalizedSpeed)) speed") }
+            if clip.muted { parts.append("muted") }
+            return parts.joined(separator: ", ") + at(span)
+        case .range(let range):
+            return "Selected part\(at((range.normalized.start, range.normalized.end)))"
+        case .none:
+            return ""
+        }
+    }
+
     // MARK: Moving together
 
     /// Whether dragging `item` moves the whole selection.

@@ -120,9 +120,14 @@ struct VideoInspectorView: View {
                 }
                 .buttonStyle(.plain)
                 .help(tab == .captions && model.suggestsTranscript ? "Your narration can become captions — transcribe it here" : tab.help)
+                .accessibilityLabel(tab.title)
+                .accessibilityHint(tab.help)
+                .accessibilityAddTraits(selected ? [.isSelected, .isButton] : .isButton)
             }
         }
         .padding(8)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Inspector tabs")
     }
 }
 

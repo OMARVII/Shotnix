@@ -526,6 +526,20 @@ struct VideoTimelineSurface: View {
         .contextMenu { zoomMenu(region) }
         .offset(x: x(shown.lowerBound), y: 2)
         .help("Zoom — drag to move, drag an edge to resize, click to edit")
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(model.accessibilityDescription(of: .zoom(region.id)))
+        .accessibilityHint("Adjust to move it half a second")
+        .accessibilityAddTraits(selected ? [.isButton, .isSelected] : .isButton)
+        .accessibilityAction {
+            model.selection = .zoom(region.id)
+            model.inspectorTab = .zoom
+        }
+        .accessibilityAction(named: "Delete") { model.deleteZoom(region.id) }
+        .accessibilityAdjustableAction { direction in
+            let step = direction == .increment ? 0.5 : -0.5
+            model.setZoomWindow(region.id, start: range.lowerBound + step, end: range.upperBound + step, coalesce: "zoom-nudge")
+            model.endGesture()
+        }
     }
 
     private var edgeHandle: some View {
@@ -807,6 +821,17 @@ struct VideoTimelineSurface: View {
             Button("Delete", role: .destructive) { model.deleteOverlay(effect.id) }
         }
         .offset(x: x(shown.0), y: laneY(effect.layer, in: layers))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(model.accessibilityDescription(of: .overlay(effect.id)))
+        .accessibilityHint("Adjust to move it half a second")
+        .accessibilityAddTraits(selected ? [.isButton, .isSelected] : .isButton)
+        .accessibilityAction { model.selection = .overlay(effect.id) }
+        .accessibilityAction(named: "Delete") { model.deleteOverlay(effect.id) }
+        .accessibilityAdjustableAction { direction in
+            let step = direction == .increment ? 0.5 : -0.5
+            model.setOverlayWindow(effect.id, start: start + step, end: end + step, coalesce: "overlay-nudge")
+            model.endGesture()
+        }
     }
 
     private func overlayMoveGesture(_ effect: VideoDemoOverlayEffect, start: Double, end: Double, layers: [Int]) -> some Gesture {
@@ -971,6 +996,14 @@ struct VideoTimelineClipView: View, Equatable {
         .onHover { hovered = $0 }
         .gesture(scrubGesture)
         .contextMenu { clipMenu }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(model.accessibilityDescription(of: .clip(segment.id)))
+        .accessibilityAddTraits(selected ? [.isButton, .isSelected] : .isButton)
+        .accessibilityAction { model.selectClip(segment.id) }
+        .accessibilityAction(named: "Split at Playhead") { model.splitAtPlayhead() }
+        .accessibilityAction(named: "Move Earlier") { model.moveClip(segment.id, toIndex: index - 1) }
+        .accessibilityAction(named: "Move Later") { model.moveClip(segment.id, toIndex: index + 1) }
+        .accessibilityAction(named: "Delete") { model.deleteClip(segment.id) }
         .offset(x: reorderOffset ?? 0)
         .opacity(reorderOffset == nil ? 1 : 0.85)
         .shadow(color: .black.opacity(reorderOffset == nil ? 0 : 0.6), radius: 10, y: 4)

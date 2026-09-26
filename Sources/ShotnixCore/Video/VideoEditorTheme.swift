@@ -279,8 +279,11 @@ struct VideoSegmented<Value: Hashable>: View {
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                // VoiceOver says which option is on.
+                .accessibilityAddTraits(selected ? .isSelected : [])
             }
         }
+        .accessibilityElement(children: .contain)
         .padding(2)
         .background(
             RoundedRectangle(cornerRadius: 8, style: .continuous)

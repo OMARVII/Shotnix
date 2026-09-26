@@ -71,21 +71,28 @@ struct VideoEditorRootView: View {
                 VideoTimelineView(model: model).equatable()
                     .frame(height: timelineHeight(windowHeight: height))
             }
+            // Behind a sheet or the palette, VoiceOver stays in front.
+            .accessibilityHidden(model.hasOverlayOpen || !model.isReady)
 
             if model.isExportPresented {
                 VideoExportSheet(model: model)
                     .transition(.opacity)
+                    .accessibilityAddTraits(.isModal)
             }
             if model.isCommandPalettePresented {
                 VideoCommandPalette(model: model)
                     .transition(.opacity)
+                    .accessibilityAddTraits(.isModal)
+                    .accessibilityLabel("Commands")
             }
             if model.isShortcutsPresented {
                 VideoShortcutsSheet(model: model)
                     .transition(.opacity)
+                    .accessibilityAddTraits(.isModal)
             }
             if !model.isReady {
                 loadingOverlay
+                    .accessibilityAddTraits(.isModal)
             }
         }
     }
@@ -483,10 +490,10 @@ extension VideoEditorModel {
         // Arrows / Home / End.
         switch code {
         case 123: // ←
-            if modifiers == [.command] { seek(to: 0) } else if modifiers == [.shift] { jump(by: -1) } else if modifiers.isEmpty { step(frames: -1) } else { return false }
+            if modifiers == [.command] { seek(to: 0) } else if modifiers == [.shift] { jump(by: -1) } else if modifiers == [.option] { selectAdjacentItem(forward: false) } else if modifiers.isEmpty { step(frames: -1) } else { return false }
             return true
         case 124: // →
-            if modifiers == [.command] { seek(to: timelineDuration) } else if modifiers == [.shift] { jump(by: 1) } else if modifiers.isEmpty { step(frames: 1) } else { return false }
+            if modifiers == [.command] { seek(to: timelineDuration) } else if modifiers == [.shift] { jump(by: 1) } else if modifiers == [.option] { selectAdjacentItem(forward: true) } else if modifiers.isEmpty { step(frames: 1) } else { return false }
             return true
         case 115: seek(to: 0); return true
         case 119: seek(to: timelineDuration); return true
