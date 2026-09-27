@@ -461,7 +461,7 @@
   "Blur": {
     "comment": "How blurred the background is; also an annotation kind",
     "de": "Weichzeichnen",
-    "fr": "Flouter",
+    "fr": "Flou",
     "zh-Hans": "模糊"
   },
   "Blurs fast camera moves the way a real camera does.": {
@@ -657,7 +657,7 @@
   "Crop": {
     "comment": "Toolbar button: crop the recording",
     "de": "Beschneiden",
-    "fr": "Rogner",
+    "fr": "Rognage",
     "zh-Hans": "裁剪"
   },
   "Crop the Recording…": {

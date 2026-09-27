@@ -109,7 +109,7 @@
 	<key>%lld links</key>
 	<string>%lld 个链接</string>
 	<key>%lld of %lld captures</key>
-	<string>%2$lld 张截屏中的 %1$lld 张</string>
+	<string>%1$lld 张截屏（共 %2$lld 张）</string>
 	<key>%lld parts</key>
 	<string>%lld 个部分</string>
 	<key>%lld pressed — select one on the timeline and press ⌫ to hide it</key>
@@ -267,7 +267,7 @@
 	<key>Amber Fold</key>
 	<string>琥珀褶皱</string>
 	<key>Annotate Last Screenshot</key>
-	<string>标注最近的截屏</string>
+	<string>标注上一张截屏</string>
 	<key>Annotation</key>
 	<string>标注</string>
 	<key>Annotation text</key>
@@ -423,7 +423,7 @@
 	<key>Camera disconnected.</key>
 	<string>摄像头已断开连接。</string>
 	<key>Camera disconnected. The recording continues without it.</key>
-	<string>摄像头已断开连接。录制将在没有摄像头的情况下继续。</string>
+	<string>摄像头已断开连接。录制将继续，但不含摄像头画面。</string>
 	<key>Camera follows your cursor</key>
 	<string>镜头跟随你的指针</string>
 	<key>Camera footage is missing</key>
@@ -525,7 +525,7 @@
 	<key>Captures</key>
 	<string>截屏</string>
 	<key>Captures stay in History until you delete them, unless you pick a limit here. Clean Up empties History's trash (deleted captures you could still undo) and removes files no capture uses anymore.</key>
-	<string>截屏会一直保留在历史记录中，直到你将其删除，除非你在此处设定期限。“清理”会清空历史记录的废纸篓（其中是仍可撤销删除的截屏），并移除不再被任何截屏使用的文件。</string>
+	<string>除非你在此处设定保留限制，否则截屏会一直保留在历史记录中，直到你将其删除。“清理”会清空历史记录的废纸篓（其中是仍可撤销删除的截屏），并移除不再被任何截屏使用的文件。</string>
 	<key>Carbon Arc</key>
 	<string>碳弧</string>
 	<key>Cards use your background, and the timeline grows to fit them. The “Made with Shotnix” end card is separate — it's in the export options.</key>
@@ -577,7 +577,7 @@
 	<key>Clean Up History?</key>
 	<string>要清理历史记录吗？</string>
 	<key>Clean Up lists what it would remove — the data of recordings Shotnix can't find, camera footage and pictures nothing uses, and clipboard exports older than a day — and asks first. On its own, Shotnix only removes clipboard exports older than a day; the data of your recordings stays until you clean it up here.</key>
-	<string>“清理”会先列出将移除的内容 — Shotnix 找不到的录制内容的数据、未被使用的摄像头画面和图片，以及超过一天的剪贴板导出文件 — 并先征得你的同意。Shotnix 自身只会移除超过一天的剪贴板导出文件；你的录制内容的数据会一直保留，直到你在这里清理。</string>
+	<string>“清理”会列出将移除的内容 — Shotnix 找不到的录制内容的数据、未被使用的摄像头画面和图片，以及超过一天的剪贴板导出文件 — 并在移除前征得你的同意。平时 Shotnix 只会自动移除超过一天的剪贴板导出文件；你的录制内容的数据会一直保留，直到你在这里清理。</string>
 	<key>Clean Up…</key>
 	<string>清理…</string>
 	<key>Cleaning Up…</key>
@@ -849,7 +849,7 @@
 	<key>Delete selection (⌫)</key>
 	<string>删除所选内容（⌫）</string>
 	<key>Deleted captures waiting in History's trash and files no capture uses are removed for good, along with %lld captures past your History limit. The rest of your history stays.</key>
-	<string>历史记录废纸篓中已删除的截屏、不再被任何截屏使用的文件，以及超出历史记录期限的 %lld 张截屏将被永久移除。其余历史记录会保留。</string>
+	<string>历史记录废纸篓中已删除的截屏、不再被任何截屏使用的文件，以及超出历史记录保留限制的 %lld 张截屏将被永久移除。其余历史记录会保留。</string>
 	<key>Deleted captures waiting in History's trash and files no capture uses are removed for good. The captures in your history stay.</key>
 	<string>历史记录废纸篓中已删除的截屏以及不再被任何截屏使用的文件将被永久移除。历史记录中的截屏会保留。</string>
 	<key>Deselect / close</key>
@@ -967,7 +967,7 @@
 	<key>Edit</key>
 	<string>编辑</string>
 	<key>Edit Last Recording</key>
-	<string>编辑最近的录制内容</string>
+	<string>编辑上一段录制内容</string>
 	<key>Edit Video</key>
 	<string>编辑视频</string>
 	<key>Edit by text</key>
@@ -977,7 +977,7 @@
 	<key>Editable cursor</key>
 	<string>可编辑指针</string>
 	<key>Editable cursor records the pointer separately so the editor can smooth it, resize it, and keep it crisp when zoomed — the video editor adds it back on export (the raw recording file has no pointer). Auto-zoom makes a fresh recording open already produced: the camera zooms to follow your clicks. Keyboard shortcuts records only ⌘, ⌃ and ⌥ combos (plus Esc and F-keys) so the editor can show them as keycaps — plain typing is never recorded; macOS asks for Accessibility access. High quality is the default; Max keeps more detail but creates larger files. The countdown gives you a moment after pressing Record; Esc cancels it. Stop a recording with %@ from any app — plain Esc stays with the app you're recording.</key>
-	<string>“可编辑指针”会单独记录指针，以便编辑器将其平滑、调整大小，并在缩放时保持清晰 — 视频编辑器会在导出时将指针加回（原始录制文件中不含指针）。开启自动缩放后，新录制内容打开时就已制作完成：镜头会跟随你的点按。“显示快捷键”只记录含 ⌘、⌃ 和 ⌥ 的组合键（以及 Esc 键和功能键），以便编辑器将其显示为按键 — 普通输入绝不会被记录；macOS 会请求辅助功能权限。默认使用“高”质量；“最高”保留更多细节，但文件更大。倒计时让你在开始录制后有片刻准备；按 Esc 键可取消。在任何 App 中按 %@ 都能停止录制 — 单独按 Esc 键仍会传给你正在录制的 App。</string>
+	<string>“可编辑指针”会单独记录指针，以便编辑器平滑指针、调整其大小，并在缩放时保持清晰 — 视频编辑器会在导出时将指针加回（原始录制文件中不含指针）。开启自动缩放后，新录制内容打开时就已制作完成：镜头会跟随你的点按进行缩放。“显示快捷键”只记录含 ⌘、⌃ 和 ⌥ 的组合键（以及 Esc 键和功能键），以便编辑器将其显示为按键 — 普通输入绝不会被记录；macOS 会请求辅助功能权限。默认使用“高”质量；“最高”保留更多细节，但文件更大。按下“录制”后，倒计时会给你片刻准备时间；按 Esc 键可取消。在任何 App 中按 %@ 都能停止录制 — 单独按 Esc 键仍会传给你正在录制的 App。</string>
 	<key>Editing</key>
 	<string>编辑</string>
 	<key>Ellipse</key>
@@ -999,7 +999,7 @@
 	<key>Enable Shotnix in System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording, then quit and reopen Shotnix so macOS applies the permission.</key>
 	<string>请在“系统设置”→“隐私与安全性”→“录屏与系统录音”中启用 Shotnix，然后退出并重新打开 Shotnix，以便 macOS 应用该权限。</string>
 	<key>Enable Shotnix in System Settings, then relaunch so macOS applies it.</key>
-	<string>在“系统设置”中启用 Shotnix，然后重新启动，以便 macOS 应用更改。</string>
+	<string>在“系统设置”中启用 Shotnix，然后退出并重新打开，以便 macOS 应用更改。</string>
 	<key>Enabled</key>
 	<string>已启用</string>
 	<key>Encoding</key>
@@ -1025,7 +1025,7 @@
 	<key>Esc or Done finishes</key>
 	<string>按 Esc 键或点按“完成”结束</string>
 	<key>Estimated file size. Still screens take less.</key>
-	<string>预估的文件大小。静止画面占用更少。</string>
+	<string>预估文件大小。画面静止时占用空间更少。</string>
 	<key>Estimated size %@</key>
 	<string>预估大小：%@</string>
 	<key>Estimating…</key>
@@ -1125,7 +1125,7 @@
 	<key>Finish and Quit</key>
 	<string>完成后退出</string>
 	<key>Finish or cancel the current recording setup</key>
-	<string>请先完成或取消当前的录制设置</string>
+	<string>请先完成或取消当前的录制准备</string>
 	<key>Fix</key>
 	<string>修复</string>
 	<key>Flamingo</key>
@@ -1218,6 +1218,8 @@
 	<string>状态</string>
 	<key>Hidden</key>
 	<string>隐藏</string>
+	<key>Hidden network</key>
+	<string>隐藏网络</string>
 	<key>Hide</key>
 	<string>隐藏</string>
 	<key>Hide Desktop Icons</key>
@@ -1319,7 +1321,7 @@
 	<key>Keep Working</key>
 	<string>继续工作</string>
 	<key>Keep captures</key>
-	<string>截屏保留时长</string>
+	<string>保留截屏</string>
 	<key>Keep editing — the words appear here when Shotnix is done listening.</key>
 	<string>你可以继续编辑 — Shotnix 听完后，字词会显示在这里。</string>
 	<key>Keeping 30 days removes %lld older captures from History now. This can't be undone.</key>
@@ -1399,7 +1401,7 @@
 	<key>Links</key>
 	<string>链接</string>
 	<key>Links (%lld of %lld)</key>
-	<string>链接（%2$lld 个中的 %1$lld 个）</string>
+	<string>链接（前 %1$lld 个，共 %2$lld 个）</string>
 	<key>Listening…</key>
 	<string>正在聆听…</string>
 	<key>Listens on this Mac — nothing is uploaded</key>
@@ -1449,13 +1451,13 @@
 	<key>Microphone</key>
 	<string>麦克风</string>
 	<key>Microphone access is off, so this recording has no mic.</key>
-	<string>麦克风访问权限已关闭，因此此录制内容没有麦克风声音。</string>
+	<string>麦克风访问权限已关闭，因此本次录制不含麦克风声音。</string>
 	<key>Microphone access is off. Allow Shotnix in System Settings → Privacy &amp; Security → Microphone.</key>
 	<string>麦克风访问权限已关闭。请在“系统设置”→“隐私与安全性”→“麦克风”中允许 Shotnix。</string>
 	<key>Microphone disconnected. Now recording from %@.</key>
 	<string>麦克风已断开连接。现在使用“%@”录音。</string>
 	<key>Microphone disconnected. The recording continues without it.</key>
-	<string>麦克风已断开连接。录制将在没有麦克风的情况下继续。</string>
+	<string>麦克风已断开连接。录制将继续，但不含麦克风声音。</string>
 	<key>Microphone level</key>
 	<string>麦克风电平</string>
 	<key>Microphone recording requires macOS microphone permission. System audio excludes Shotnix sounds to avoid feedback.</key>
@@ -1560,6 +1562,8 @@
 	<string>截得漂亮！一切就绪。</string>
 	<key>Night Current</key>
 	<string>夜之流</string>
+	<key>No</key>
+	<string>否</string>
 	<key>No Exports Yet</key>
 	<string>尚无导出内容</string>
 	<key>No background</key>
@@ -1601,7 +1605,7 @@
 	<key>No microphone connected</key>
 	<string>未连接麦克风</string>
 	<key>No microphone is connected, so this recording has no mic.</key>
-	<string>未连接麦克风，因此此录制内容没有麦克风声音。</string>
+	<string>未连接麦克风，因此本次录制不含麦克风声音。</string>
 	<key>No music</key>
 	<string>没有音乐</string>
 	<key>No pauses to shorten</key>
@@ -1923,9 +1927,9 @@
 	<key>Recording discarded</key>
 	<string>已丢弃录制内容</string>
 	<key>Recording failed before saving.</key>
-	<string>录制在存储前失败。</string>
+	<string>录制失败，未能存储。</string>
 	<key>Recording keyboard shortcuts</key>
-	<string>正在录制快捷键</string>
+	<string>正在记录快捷键</string>
 	<key>Recording paused — click to stop (%@)</key>
 	<string>录制已暂停 — 点按即可停止（%@）</string>
 	<key>Recording removed — ⌘Z to undo</key>
@@ -1941,7 +1945,7 @@
 	<key>Recording time</key>
 	<string>录制时长</string>
 	<key>Recording without the camera.</key>
-	<string>将在没有摄像头的情况下录制。</string>
+	<string>本次录制将不含摄像头画面。</string>
 	<key>Recording — click to stop (%@)</key>
 	<string>正在录制 — 点按即可停止（%@）</string>
 	<key>Recordings</key>
@@ -1955,7 +1959,7 @@
 	<key>Records the pointer separately, so the editor can smooth it, resize it, and keep it crisp when zoomed.</key>
 	<string>单独录制指针，以便编辑器平滑指针、调整其大小，并在缩放时保持清晰。</string>
 	<key>Recovered your interrupted recording “%@”. Click to open it.</key>
-	<string>已恢复你中断的录制内容“%@”。点按即可打开。</string>
+	<string>已恢复中断的录制内容“%@”。点按即可打开。</string>
 	<key>Rectangle</key>
 	<string>矩形</string>
 	<key>Red</key>
@@ -2533,7 +2537,7 @@
 	<string>Shotnix 无法将文件写入：
 %@</string>
 	<key>Shotnix is ready to use!</key>
-	<string>Shotnix 已可以使用！</string>
+	<string>Shotnix 已准备就绪！</string>
 	<key>Shotnix is still cleaning up the voice</key>
 	<string>Shotnix 仍在清理人声</string>
 	<key>Shotnix is still transcribing</key>
@@ -2599,7 +2603,7 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<key>Show more of the timeline</key>
 	<string>显示更多时间线</string>
 	<key>Show one kind of capture</key>
-	<string>只显示一种截屏</string>
+	<string>只显示某类截屏</string>
 	<key>Show shortcuts</key>
 	<string>显示快捷键</string>
 	<key>Show the timeline in more detail</key>
@@ -2765,7 +2769,7 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<key>System audio</key>
 	<string>电脑声音</string>
 	<key>System audio couldn't be recorded. Try again without system audio.</key>
-	<string>无法录制电脑声音。请关闭电脑声音后重试。</string>
+	<string>无法录制电脑声音。请关闭“电脑声音”后重试。</string>
 	<key>Table copied — paste it into a spreadsheet</key>
 	<string>已拷贝表格 — 可粘贴到电子表格中</string>
 	<key>Tag</key>
@@ -2823,7 +2827,7 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<key>The camera keeps your cursor in view and glides after it.</key>
 	<string>镜头会让指针保持在画面中，并平滑地跟随它。</string>
 	<key>The camera stopped. The recording continues without it.</key>
-	<string>摄像头已停止。录制将在没有摄像头的情况下继续。</string>
+	<string>摄像头已停止。录制将继续，但不含摄像头画面。</string>
 	<key>The cursor is part of this video</key>
 	<string>指针已录入此视频</string>
 	<key>The export carries on in the background (Esc)</key>
@@ -2833,9 +2837,9 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<key>The menu bar icon is Shotnix's main entry point. While it is hidden, open Shotnix again from Finder, Launchpad, or Spotlight to bring these Preferences back.</key>
 	<string>菜单栏图标是 Shotnix 的主要入口。隐藏后，可从“访达”、“启动台”或“聚焦”再次打开 Shotnix 来重新显示这些设置。</string>
 	<key>The microphone couldn't start, so this recording has no mic.</key>
-	<string>麦克风无法启动，因此此录制内容没有麦克风声音。</string>
+	<string>麦克风无法启动，因此本次录制不含麦克风声音。</string>
 	<key>The microphone stopped working. The recording continues without it.</key>
-	<string>麦克风已停止工作。录制将在没有麦克风的情况下继续。</string>
+	<string>麦克风已停止工作。录制将继续，但不含麦克风声音。</string>
 	<key>The picture's file is gone — choose it again with Replace.</key>
 	<string>图片文件已不存在 — 请使用“替换”重新选择。</string>
 	<key>The recording couldn't be finished — saved the first %@.</key>
@@ -3330,6 +3334,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>可写入</string>
 	<key>Yellow</key>
 	<string>黄色</string>
+	<key>Yes</key>
+	<string>是</string>
 	<key>Yesterday</key>
 	<string>昨天</string>
 	<key>You have unsaved edits in %lld screenshots.</key>
@@ -3339,7 +3345,7 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<key>YouTube, presentations</key>
 	<string>YouTube、演示文稿</string>
 	<key>Your Mac can't keep up with this recording and is skipping frames. Balanced quality or 30 fps will help.</key>
-	<string>你的 Mac 跟不上此录制，正在丢帧。选择“均衡”质量或 30 fps 会有帮助。</string>
+	<string>你的 Mac 性能跟不上当前录制，正在丢帧。选择“均衡”质量或 30 fps 会有帮助。</string>
 	<key>Your Mac ran low on memory. Close some apps or pick a lower resolution, then export again.</key>
 	<string>你的 Mac 内存不足。请关闭一些 App 或选择更低的分辨率，然后重新导出。</string>
 	<key>Your camera is recorded as its own layer: a live bubble shows while you record (it never appears in the screen capture), and the editor lets you move, resize, and restyle it — or hide it — afterwards.</key>
@@ -3497,7 +3503,7 @@ You can re-enable Apple's shortcuts anytime in System Settings → Keyboard → 
 	<key>“%@” can't be read — it may be damaged, still being saved, or in a format this Mac can't play. Remove it from this video (Style → Recordings), or put a working copy in its place, then export again.</key>
 	<string>无法读取“%@” — 它可能已损坏、仍在存储中，或采用了这台 Mac 无法播放的格式。请将其从此视频中移除（“样式”→“录制内容”），或用可正常使用的副本替换，然后重新导出。</string>
 	<key>“%@” found in %lld of %lld captures</key>
-	<string>在 %3$lld 张截屏中的 %2$lld 张里找到“%1$@”</string>
+	<string>在 %2$lld 张截屏中找到“%1$@”（共 %3$lld 张）</string>
 	<key>“Made with Shotnix” end card (2s)</key>
 	<string>“Made with Shotnix”结尾画面（2 秒）</string>
 	<key>• %lld small notes about recordings that are gone</key>

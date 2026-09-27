@@ -51,7 +51,7 @@ final class CaptureLocalizationTests: XCTestCase {
         XCTAssertTrue(RecordingDiskSpace.lowSpaceWarning(secondsLeft: 45).contains("environ 40 secondes"))
 
         L10n.use("zh-Hans")
-        XCTAssertEqual(L("Links (\(4) of \(9))"), "链接（9 个中的 4 个）", "reordered placeholders")
+        XCTAssertEqual(L("Links (\(4) of \(9))"), "链接（前 4 个，共 9 个）", "numbered placeholders")
         XCTAssertEqual(QRCodePayload.parse("WIFI:S:Home;T:WPA;P:secret;;").displayText, "网络：Home\n安全性：WPA\n密码：secret")
         XCTAssertEqual(QRCodePayload.parse("https://shotnix.com").kind, "链接")
     }
@@ -61,7 +61,7 @@ final class CaptureLocalizationTests: XCTestCase {
         L10n.use("zh-Hans")
         XCTAssertEqual(OCRResultWindow.extrasSummary(for: result), "1 个链接、1 个电子邮件地址", "Chinese lists use 、")
         let chinese = [L("No camera found."), L("Recording without the camera.")]
-        XCTAssertEqual(RecordingEngine.sentences(chinese), "未找到摄像头。将在没有摄像头的情况下录制。", "no space after full-width punctuation")
+        XCTAssertEqual(RecordingEngine.sentences(chinese), "未找到摄像头。本次录制将不含摄像头画面。", "no space after full-width punctuation")
         L10n.use("de")
         XCTAssertEqual(OCRResultWindow.extrasSummary(for: result), "1 Link, 1 E-Mail-Adresse")
         XCTAssertEqual(RecordingEngine.sentences([L("No camera found."), L("Recording without the camera.")]), "Keine Kamera gefunden. Aufzeichnung ohne Kamera.")

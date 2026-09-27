@@ -1,7 +1,7 @@
 {
   "NSCameraUsageDescription": {
     "en": "Shotnix records your camera alongside the screen when you turn the camera on for a recording.",
-    "de": "Shotnix nimmt deine Kamera zusammen mit dem Bildschirm auf, wenn du die Kamera für eine Aufnahme einschaltest.",
+    "de": "Shotnix zeichnet deine Kamera zusammen mit dem Bildschirm auf, wenn du die Kamera für eine Aufnahme einschaltest.",
     "fr": "Shotnix enregistre votre caméra en même temps que l’écran lorsque vous activez la caméra pour un enregistrement.",
     "zh-Hans": "当你为录制打开摄像头时，Shotnix 会同时录制摄像头和屏幕。"
   },

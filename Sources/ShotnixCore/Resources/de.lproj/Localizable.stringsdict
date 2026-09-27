@@ -365,9 +365,9 @@
 			<key>NSStringFormatValueTypeKey</key>
 			<string>lld</string>
 			<key>one</key>
-			<string>Bildschirmfoto gelöscht – klicken oder ⌘Z drücken zum Widerrufen</string>
+			<string>Bildschirmfoto gelöscht – zum Widerrufen klicken oder ⌘Z drücken</string>
 			<key>other</key>
-			<string>%lld Bildschirmfotos gelöscht – klicken oder ⌘Z drücken zum Widerrufen</string>
+			<string>%lld Bildschirmfotos gelöscht – zum Widerrufen klicken oder ⌘Z drücken</string>
 		</dict>
 	</dict>
 	<key>%lld seconds</key>

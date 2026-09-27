@@ -18,8 +18,8 @@
   },
   "%lld of %lld captures": {
     "de": "%lld von %lld Bildschirmfotos",
-    "fr": "%lld captures sur %lld",
-    "zh-Hans": "%2$lld 张截屏中的 %1$lld 张"
+    "fr": "%lld sur %lld captures",
+    "zh-Hans": "%1$lld 张截屏（共 %2$lld 张）"
   },
   "%lld saved captures · drag any card to Finder · right-click for more actions": {
     "de": {
@@ -38,8 +38,8 @@
   },
   "%lld screenshots deleted — click or press ⌘Z to undo": {
     "de": {
-      "one": "Bildschirmfoto gelöscht – klicken oder ⌘Z drücken zum Widerrufen",
-      "other": "%lld Bildschirmfotos gelöscht – klicken oder ⌘Z drücken zum Widerrufen"
+      "one": "Bildschirmfoto gelöscht – zum Widerrufen klicken oder ⌘Z drücken",
+      "other": "%lld Bildschirmfotos gelöscht – zum Widerrufen klicken oder ⌘Z drücken"
     },
     "en": {
       "one": "Screenshot deleted — click or press ⌘Z to undo",
@@ -149,16 +149,16 @@
   },
   "Enjoying Shotnix? Star it on GitHub so more people find it.": {
     "de": "Gefällt dir Shotnix? Gib ihm einen Stern auf GitHub, damit mehr Leute es finden.",
-    "fr": "Vous aimez Shotnix ? Ajoutez une étoile sur GitHub pour que plus de monde le découvre.",
+    "fr": "Vous aimez Shotnix ? Donnez-lui une étoile sur GitHub pour que d’autres le découvrent.",
     "zh-Hans": "喜欢 Shotnix 吗？在 GitHub 上加个星标，让更多人发现它。"
   },
   "Forever": {
     "de": "Für immer",
-    "fr": "Pour toujours",
+    "fr": "Indéfiniment",
     "zh-Hans": "永久"
   },
   "History cleared — click or press ⌘Z to undo": {
-    "de": "Verlauf gelöscht – klicken oder ⌘Z drücken zum Widerrufen",
+    "de": "Verlauf gelöscht – zum Widerrufen klicken oder ⌘Z drücken",
     "fr": "Historique effacé — cliquez ou appuyez sur ⌘Z pour annuler",
     "zh-Hans": "历史记录已清除 — 点按或按下 ⌘Z 撤销"
   },
@@ -245,7 +245,7 @@
   },
   "Saving captures to History": {
     "de": "Bildschirmfotos werden im Verlauf gesichert",
-    "fr": "Enregistrement des captures dans l’historique",
+    "fr": "Ajout des captures à l’historique",
     "zh-Hans": "正在将截屏存储到历史记录"
   },
   "Scrolling": {
@@ -272,11 +272,11 @@
   "Show one kind of capture": {
     "de": "Nur eine Art von Bildschirmfotos zeigen",
     "fr": "Afficher un seul type de capture",
-    "zh-Hans": "只显示一种截屏"
+    "zh-Hans": "只显示某类截屏"
   },
   "Star on GitHub": {
-    "de": "Stern auf GitHub",
-    "fr": "Mettre une étoile sur GitHub",
+    "de": "Stern vergeben",
+    "fr": "Donner une étoile sur GitHub",
     "zh-Hans": "在 GitHub 上加星标"
   },
   "This Week": {
@@ -296,7 +296,7 @@
   },
   "“%@” found in %lld of %lld captures": {
     "de": "„%1$@“ in %2$lld von %3$lld Bildschirmfotos gefunden",
-    "fr": "« %1$@ » trouvé dans %2$lld captures sur %3$lld",
-    "zh-Hans": "在 %3$lld 张截屏中的 %2$lld 张里找到“%1$@”"
+    "fr": "« %1$@ » trouvé dans %2$lld sur %3$lld captures",
+    "zh-Hans": "在 %2$lld 张截屏中找到“%1$@”（共 %3$lld 张）"
   }
 }

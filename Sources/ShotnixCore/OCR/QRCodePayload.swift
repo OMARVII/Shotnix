@@ -178,7 +178,14 @@ struct QRCodePayload: Hashable {
         if !ssid.isEmpty { fields.append(QRCodePayloadField(label: L("Network"), value: ssid)) }
         if !security.isEmpty { fields.append(QRCodePayloadField(label: L("Security"), value: security)) }
         if !password.isEmpty, security.lowercased() != "nopass" { fields.append(QRCodePayloadField(label: L("Password"), value: password)) }
-        if !hidden.isEmpty { fields.append(QRCodePayloadField(label: L("Hidden"), value: hidden)) }
+        if !hidden.isEmpty {
+            let shown = switch hidden.lowercased() {
+            case "true": L("Yes")
+            case "false": L("No")
+            default: hidden
+            }
+            fields.append(QRCodePayloadField(label: L("Hidden network"), value: shown))
+        }
 
         return QRCodePayload(
             rawValue: rawValue,

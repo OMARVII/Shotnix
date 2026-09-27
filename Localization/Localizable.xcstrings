@@ -1965,13 +1965,13 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld captures sur %lld"
+            "value" : "%lld sur %lld captures"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$lld 张截屏中的 %1$lld 张"
+            "value" : "%1$lld 张截屏（共 %2$lld 张）"
           }
         }
       }
@@ -2333,13 +2333,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Bildschirmfoto gelöscht – klicken oder ⌘Z drücken zum Widerrufen"
+                  "value" : "Bildschirmfoto gelöscht – zum Widerrufen klicken oder ⌘Z drücken"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld Bildschirmfotos gelöscht – klicken oder ⌘Z drücken zum Widerrufen"
+                  "value" : "%lld Bildschirmfotos gelöscht – zum Widerrufen klicken oder ⌘Z drücken"
                 }
               }
             }
@@ -4094,7 +4094,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "标注最近的截屏"
+            "value" : "标注上一张截屏"
           }
         }
       }
@@ -5052,13 +5052,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "„Automatisch“ erkennt die Sprache jedes Bildschirmfotos; wähle Sprachen aus, wenn es falsch liegt. „Genau“ liest kleinen Text am besten – „Schnell“ antwortet früher, kennt aber weniger Sprachen. Wird von „Text erfassen“, „Text kopieren“ und der Suche im Verlauf verwendet."
+            "value" : "„Automatisch“ erkennt die Sprache jedes Bildschirmfotos; wähle Sprachen aus, wenn es falsch liegt. „Genau“ liest kleinen Text am besten – „Schnell“ liefert früher ein Ergebnis, kennt aber weniger Sprachen. Wird von „Text erfassen“, „Text kopieren“ und der Suche im Verlauf verwendet."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "« Automatique » détecte la langue de chaque capture ; choisissez des langues s’il se trompe. « Précise » lit mieux les petits textes — « Rapide » répond plus vite mais connaît moins de langues. Utilisé par Capturer du texte, Copier le texte et la recherche dans l’historique."
+            "value" : "« Automatique » détecte la langue de chaque capture ; choisissez des langues s’il se trompe. « Précise » lit mieux les petits textes — « Rapide » répond plus vite mais connaît moins de langues. Ces réglages s’appliquent à « Capturer du texte », à « Copier le texte » et à la recherche dans l’historique."
           }
         },
         "zh-Hans" : {
@@ -5459,7 +5459,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Flouter"
+            "value" : "Flou"
           }
         },
         "zh-Hans" : {
@@ -5807,7 +5807,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Der Kamerazugriff ist deaktiviert – erlaube Shotnix in „Systemeinstellungen“ → „Datenschutz & Sicherheit“ → „Kamera“."
+            "value" : "Der Kamerazugriff ist deaktiviert – erlaube Shotnix unter „Systemeinstellungen“ → „Datenschutz & Sicherheit“ → „Kamera“."
           }
         },
         "fr" : {
@@ -5858,7 +5858,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Caméra débranchée"
+            "value" : "Caméra déconnectée"
           }
         },
         "zh-Hans" : {
@@ -5908,7 +5908,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "摄像头已断开连接。录制将在没有摄像头的情况下继续。"
+            "value" : "摄像头已断开连接。录制将继续，但不含摄像头画面。"
           }
         }
       }
@@ -6765,7 +6765,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Capturer le plein écran (autre)"
+            "value" : "Capturer le plein écran (autre raccourci)"
           }
         },
         "zh-Hans" : {
@@ -6847,7 +6847,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "„Text erfassen“ und „Scroll-Aufnahme“ haben keine Kurzbefehle, damit ⌘⇧O und ⌘⇧S in deinen anderen Apps weiter „Öffnen“ und „Sichern unter“ bedeuten – klicke in ein Feld, um eigene festzulegen. Drückst du den Kurzbefehl der Scroll-Aufnahme erneut, wird sie beendet."
+            "value" : "„Text erfassen“ und „Scroll-Aufnahme“ haben anfangs keine Kurzbefehle, damit ⌘⇧O und ⌘⇧S in deinen anderen Apps weiter „Öffnen“ und „Sichern unter“ bedeuten – klicke in ein Feld, um eigene festzulegen. Drückst du den Kurzbefehl der Scroll-Aufnahme erneut, wird sie beendet."
           }
         },
         "fr" : {
@@ -7080,7 +7080,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "截屏会一直保留在历史记录中，直到你将其删除，除非你在此处设定期限。“清理”会清空历史记录的废纸篓（其中是仍可撤销删除的截屏），并移除不再被任何截屏使用的文件。"
+            "value" : "除非你在此处设定保留限制，否则截屏会一直保留在历史记录中，直到你将其删除。“清理”会清空历史记录的废纸篓（其中是仍可撤销删除的截屏），并移除不再被任何截屏使用的文件。"
           }
         }
       }
@@ -7654,7 +7654,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "“清理”会先列出将移除的内容 — Shotnix 找不到的录制内容的数据、未被使用的摄像头画面和图片，以及超过一天的剪贴板导出文件 — 并先征得你的同意。Shotnix 自身只会移除超过一天的剪贴板导出文件；你的录制内容的数据会一直保留，直到你在这里清理。"
+            "value" : "“清理”会列出将移除的内容 — Shotnix 找不到的录制内容的数据、未被使用的摄像头画面和图片，以及超过一天的剪贴板导出文件 — 并在移除前征得你的同意。平时 Shotnix 只会自动移除超过一天的剪贴板导出文件；你的录制内容的数据会一直保留，直到你在这里清理。"
           }
         }
       }
@@ -9924,7 +9924,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rogner"
+            "value" : "Rognage"
           }
         },
         "zh-Hans" : {
@@ -10788,7 +10788,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "历史记录废纸篓中已删除的截屏、不再被任何截屏使用的文件，以及超出历史记录期限的 %lld 张截屏将被永久移除。其余历史记录会保留。"
+            "value" : "历史记录废纸篓中已删除的截屏、不再被任何截屏使用的文件，以及超出历史记录保留限制的 %lld 张截屏将被永久移除。其余历史记录会保留。"
           }
         }
       }
@@ -11072,7 +11072,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Disque bientôt plein"
+            "value" : "Disque presque plein"
           }
         },
         "zh-Hans" : {
@@ -11488,7 +11488,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Größe an Kanten oder Ecken ändern  ·  Pfeiltasten verschieben (⇧ ×10)  ·  Return nimmt auf  ·  Esc bricht ab"
+            "value" : "Größe an Kanten oder Ecken ändern  ·  Pfeiltasten verschieben (⇧ ×10)  ·  Zeilenschalter nimmt auf  ·  Esc bricht ab"
           }
         },
         "fr" : {
@@ -11892,7 +11892,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dessinez avec l’outil sélectionné. Raccourcis des outils : V sélectionner, A flèche, R rectangle, T texte, O bulle, H surligneur, B flouter, P pixéliser, S projecteur, C rogner."
+            "value" : "Dessinez avec l’outil sélectionné. Raccourcis des outils : V sélection, A flèche, R rectangle, T texte, O bulle, H surligneur, B flou, P pixélisation, S projecteur, C rognage."
           }
         },
         "zh-Hans" : {
@@ -12096,7 +12096,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "编辑最近的录制内容"
+            "value" : "编辑上一段录制内容"
           }
         }
       }
@@ -12200,13 +12200,13 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "« Pointeur modifiable » enregistre le pointeur séparément pour que l’éditeur puisse le lisser, le redimensionner et le garder net lors des zooms — l’éditeur vidéo le réintègre à l’exportation (le fichier brut de l’enregistrement ne contient pas de pointeur). Avec le zoom automatique, un nouvel enregistrement s’ouvre déjà monté : la caméra suit vos clics. « Afficher les raccourcis clavier » n’enregistre que les combinaisons avec ⌘, ⌃ et ⌥ (plus Échap et les touches de fonction) pour que l’éditeur puisse les afficher sous forme de touches — la frappe normale n’est jamais enregistrée ; macOS demande l’accès à l’accessibilité. La qualité élevée est utilisée par défaut ; la qualité maximale conserve plus de détails mais produit des fichiers plus volumineux. Le compte à rebours vous laisse un instant après avoir lancé l’enregistrement ; Échap l’annule. Arrêtez un enregistrement depuis n’importe quelle app avec %@ — un simple Échap reste destiné à l’app que vous enregistrez."
+            "value" : "« Pointeur modifiable » enregistre le pointeur séparément pour que l’éditeur puisse le lisser, le redimensionner et le garder net lors des zooms — l’éditeur vidéo le réintègre à l’exportation (le fichier brut de l’enregistrement ne contient pas de pointeur). Avec le zoom automatique, un nouvel enregistrement s’ouvre déjà monté : la caméra suit vos clics. « Afficher les raccourcis clavier » n’enregistre que les combinaisons avec ⌘, ⌃ et ⌥ (plus Échap et les touches de fonction) pour que l’éditeur puisse les afficher sous forme de touches — la frappe normale n’est jamais enregistrée ; macOS demande l’autorisation Accessibilité. La qualité élevée est utilisée par défaut ; la qualité maximale conserve plus de détails mais produit des fichiers plus volumineux. Le compte à rebours vous laisse un instant après avoir lancé l’enregistrement ; Échap l’annule. Arrêtez un enregistrement depuis n’importe quelle app avec %@ — un simple Échap reste destiné à l’app que vous enregistrez."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "“可编辑指针”会单独记录指针，以便编辑器将其平滑、调整大小，并在缩放时保持清晰 — 视频编辑器会在导出时将指针加回（原始录制文件中不含指针）。开启自动缩放后，新录制内容打开时就已制作完成：镜头会跟随你的点按。“显示快捷键”只记录含 ⌘、⌃ 和 ⌥ 的组合键（以及 Esc 键和功能键），以便编辑器将其显示为按键 — 普通输入绝不会被记录；macOS 会请求辅助功能权限。默认使用“高”质量；“最高”保留更多细节，但文件更大。倒计时让你在开始录制后有片刻准备；按 Esc 键可取消。在任何 App 中按 %@ 都能停止录制 — 单独按 Esc 键仍会传给你正在录制的 App。"
+            "value" : "“可编辑指针”会单独记录指针，以便编辑器平滑指针、调整其大小，并在缩放时保持清晰 — 视频编辑器会在导出时将指针加回（原始录制文件中不含指针）。开启自动缩放后，新录制内容打开时就已制作完成：镜头会跟随你的点按进行缩放。“显示快捷键”只记录含 ⌘、⌃ 和 ⌥ 的组合键（以及 Esc 键和功能键），以便编辑器将其显示为按键 — 普通输入绝不会被记录；macOS 会请求辅助功能权限。默认使用“高”质量；“最高”保留更多细节，但文件更大。按下“录制”后，倒计时会给你片刻准备时间；按 Esc 键可取消。在任何 App 中按 %@ 都能停止录制 — 单独按 Esc 键仍会传给你正在录制的 App。"
           }
         }
       }
@@ -12438,7 +12438,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aktiviere Shotnix in den Systemeinstellungen und starte es dann neu, damit macOS es übernimmt."
+            "value" : "Aktiviere Shotnix in den Systemeinstellungen und starte es dann neu, damit macOS die Berechtigung übernimmt."
           }
         },
         "fr" : {
@@ -12450,7 +12450,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在“系统设置”中启用 Shotnix，然后重新启动，以便 macOS 应用更改。"
+            "value" : "在“系统设置”中启用 Shotnix，然后退出并重新打开，以便 macOS 应用更改。"
           }
         }
       }
@@ -12665,7 +12665,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vous aimez Shotnix ? Ajoutez une étoile sur GitHub pour que plus de monde le découvre."
+            "value" : "Vous aimez Shotnix ? Donnez-lui une étoile sur GitHub pour que d’autres le découvrent."
           }
         },
         "zh-Hans" : {
@@ -12738,7 +12738,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "预估的文件大小。静止画面占用更少。"
+            "value" : "预估文件大小。画面静止时占用空间更少。"
           }
         }
       }
@@ -13829,19 +13829,19 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Schließe die Einrichtung der aktuellen Aufzeichnung ab oder brich sie ab"
+            "value" : "Schließe die Vorbereitung der aktuellen Aufzeichnung ab oder brich sie ab"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Terminez ou annulez d’abord la configuration de l’enregistrement en cours"
+            "value" : "Terminez ou annulez d’abord la préparation de l’enregistrement en cours"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "请先完成或取消当前的录制设置"
+            "value" : "请先完成或取消当前的录制准备"
           }
         }
       }
@@ -13990,7 +13990,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pour toujours"
+            "value" : "Indéfiniment"
           }
         },
         "zh-Hans" : {
@@ -14169,7 +14169,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ libérés"
+            "value" : "Espace libéré : %@"
           }
         },
         "zh-Hans" : {
@@ -14762,7 +14762,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Autorisé — captures, enregistrements et OCR sont prêts."
+            "value" : "Autorisé — les captures, les enregistrements et l’OCR sont prêts."
           }
         },
         "zh-Hans" : {
@@ -14904,6 +14904,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "隐藏"
+          }
+        }
+      }
+    },
+    "Hidden network" : {
+      "comment" : "Whether a Wi-Fi network is hidden (its value is Yes or No)",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verborgenes Netzwerk"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réseau masqué"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隐藏网络"
           }
         }
       }
@@ -15245,7 +15268,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verlauf gelöscht – klicken oder ⌘Z drücken zum Widerrufen"
+            "value" : "Verlauf gelöscht – zum Widerrufen klicken oder ⌘Z drücken"
           }
         },
         "fr" : {
@@ -15442,7 +15465,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kurzbefehle gelten systemweit, solange Shotnix läuft. Der Standard ⌘⇧3 funktioniert am besten, wenn Apples Bildschirmfoto-Kurzbefehl deaktiviert ist."
+            "value" : "Kurzbefehle gelten systemweit, solange Shotnix läuft. Der Standardkurzbefehl ⌘⇧3 funktioniert am besten, wenn Apples Bildschirmfoto-Kurzbefehl deaktiviert ist."
           }
         },
         "fr" : {
@@ -16091,7 +16114,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Continuer"
+            "value" : "Ne pas quitter"
           }
         },
         "zh-Hans" : {
@@ -16119,7 +16142,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "截屏保留时长"
+            "value" : "保留截屏"
           }
         }
       }
@@ -17299,7 +17322,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "链接（%2$lld 个中的 %1$lld 个）"
+            "value" : "链接（前 %1$lld 个，共 %2$lld 个）"
           }
         }
       }
@@ -17856,7 +17879,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "麦克风访问权限已关闭，因此此录制内容没有麦克风声音。"
+            "value" : "麦克风访问权限已关闭，因此本次录制不含麦克风声音。"
           }
         }
       }
@@ -17866,7 +17889,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Der Mikrofonzugriff ist deaktiviert. Erlaube Shotnix in „Systemeinstellungen“ → „Datenschutz & Sicherheit“ → „Mikrofon“."
+            "value" : "Der Mikrofonzugriff ist deaktiviert. Erlaube Shotnix unter „Systemeinstellungen“ → „Datenschutz & Sicherheit“ → „Mikrofon“."
           }
         },
         "fr" : {
@@ -17923,7 +17946,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "麦克风已断开连接。录制将在没有麦克风的情况下继续。"
+            "value" : "麦克风已断开连接。录制将继续，但不含麦克风声音。"
           }
         }
       }
@@ -18225,7 +18248,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mousse"
+            "value" : "Vert mousse"
           }
         },
         "zh-Hans" : {
@@ -19075,6 +19098,29 @@
         }
       }
     },
+    "No" : {
+      "comment" : "A yes/no value, like whether a Wi-Fi network is hidden",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nein"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "否"
+          }
+        }
+      }
+    },
     "No Exports Yet" : {
       "localizations" : {
         "de" : {
@@ -19532,7 +19578,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "未连接麦克风，因此此录制内容没有麦克风声音。"
+            "value" : "未连接麦克风，因此本次录制不含麦克风声音。"
           }
         }
       }
@@ -19586,7 +19632,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Keine aufzeichenbaren Fenster gefunden"
+            "value" : "Keine Fenster zum Aufzeichnen gefunden"
           }
         },
         "fr" : {
@@ -20474,7 +20520,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Einstellungen öffnen"
+            "value" : "Systemeinstellungen öffnen"
           }
         },
         "fr" : {
@@ -21546,7 +21592,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pixéliser"
+            "value" : "Pixélisation"
           }
         },
         "zh-Hans" : {
@@ -22441,7 +22487,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Violett"
+            "value" : "Lila"
           }
         },
         "fr" : {
@@ -22867,7 +22913,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aufzeichnen (Return)"
+            "value" : "Aufzeichnen (Zeilenschalter)"
           }
         },
         "fr" : {
@@ -23166,7 +23212,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "录制在存储前失败。"
+            "value" : "录制失败，未能存储。"
           }
         }
       }
@@ -23188,7 +23234,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "正在录制快捷键"
+            "value" : "正在记录快捷键"
           }
         }
       }
@@ -23292,7 +23338,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L’enregistrement s’est arrêté plus tôt — ce qui a été capturé est sauvegardé."
+            "value" : "L’enregistrement s’est arrêté prématurément — ce qui a été capturé est sauvegardé."
           }
         },
         "zh-Hans" : {
@@ -23365,7 +23411,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "将在没有摄像头的情况下录制。"
+            "value" : "本次录制将不含摄像头画面。"
           }
         }
       }
@@ -23519,7 +23565,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已恢复你中断的录制内容“%@”。点按即可打开。"
+            "value" : "已恢复中断的录制内容“%@”。点按即可打开。"
           }
         }
       }
@@ -26300,7 +26346,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Loslassen der Maus löst die Aufnahme aus. Halte beim Loslassen ⇧ gedrückt, um die Auswahl erst anzupassen – ziehe an den Rändern, verschiebe sie mit den Pfeiltasten und drücke dann den Zeilenschalter."
+            "value" : "Das Loslassen der Maustaste löst die Aufnahme aus. Halte beim Loslassen ⇧ gedrückt, um die Auswahl erst anzupassen – ziehe an den Rändern, verschiebe sie mit den Pfeiltasten und drücke dann den Zeilenschalter."
           }
         },
         "fr" : {
@@ -27997,7 +28043,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vérifiez le numéro de téléphone avant de l’ouvrir."
+            "value" : "Vérifiez le numéro de téléphone avant d’appeler."
           }
         },
         "zh-Hans" : {
@@ -28749,7 +28795,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enregistrement des captures dans l’historique"
+            "value" : "Ajout des captures à l’historique"
           }
         },
         "zh-Hans" : {
@@ -28793,7 +28839,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enregistrement de la vidéo en cours"
+            "value" : "Finalisation de l’enregistrement"
           }
         },
         "zh-Hans" : {
@@ -29099,7 +29145,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nach unten scrollen zum Aufnehmen"
+            "value" : "Zum Aufnehmen nach unten scrollen"
           }
         },
         "fr" : {
@@ -29478,7 +29524,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sélectionner"
+            "value" : "Sélection"
           }
         },
         "zh-Hans" : {
@@ -29761,7 +29807,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auswahl: %@ mal %@ Punkte. Pfeiltasten verschieben sie, Return nimmt auf, Escape bricht ab."
+            "value" : "Auswahl: %@ mal %@ Punkte. Pfeiltasten verschieben sie, Zeilenschalter nimmt auf, Escape bricht ab."
           }
         },
         "fr" : {
@@ -30375,7 +30421,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Shotnix kann nicht in den Speicherordner schreiben. Wähle einen anderen in „Einstellungen“ → „Bildschirmfotos“."
+            "value" : "Shotnix kann nicht in den Zielordner schreiben. Wähle einen anderen unter „Einstellungen“ → „Bildschirmfotos“."
           }
         },
         "fr" : {
@@ -30431,7 +30477,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Shotnix 已可以使用！"
+            "value" : "Shotnix 已准备就绪！"
           }
         }
       }
@@ -30486,7 +30532,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Shotnix darf den Bildschirm nicht aufzeichnen. Aktiviere es in „Systemeinstellungen“ → „Datenschutz & Sicherheit“ → „Aufnahme von Bildschirm & Systemaudio“."
+            "value" : "Shotnix darf den Bildschirm nicht aufzeichnen. Aktiviere es unter „Systemeinstellungen“ → „Datenschutz & Sicherheit“ → „Aufnahme von Bildschirm & Systemaudio“."
           }
         },
         "fr" : {
@@ -31118,7 +31164,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "只显示一种截屏"
+            "value" : "只显示某类截屏"
           }
         }
       }
@@ -32297,13 +32343,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stern auf GitHub"
+            "value" : "Stern vergeben"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mettre une étoile sur GitHub"
+            "value" : "Donner une étoile sur GitHub"
           }
         },
         "zh-Hans" : {
@@ -33042,7 +33088,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "无法录制电脑声音。请关闭电脑声音后重试。"
+            "value" : "无法录制电脑声音。请关闭“电脑声音”后重试。"
           }
         }
       }
@@ -33683,7 +33729,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "摄像头已停止。录制将在没有摄像头的情况下继续。"
+            "value" : "摄像头已停止。录制将继续，但不含摄像头画面。"
           }
         }
       }
@@ -33793,7 +33839,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "麦克风无法启动，因此此录制内容没有麦克风声音。"
+            "value" : "麦克风无法启动，因此本次录制不含麦克风声音。"
           }
         }
       }
@@ -33815,7 +33861,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "麦克风已停止工作。录制将在没有麦克风的情况下继续。"
+            "value" : "麦克风已停止工作。录制将继续，但不含麦克风声音。"
           }
         }
       }
@@ -34118,7 +34164,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La fenêtre enregistrée a été fermée. Arrêtez quand vous voulez — l’enregistrement continue."
+            "value" : "La fenêtre que vous enregistrez a été fermée. Arrêtez quand vous voulez — l’enregistrement continue."
           }
         },
         "zh-Hans" : {
@@ -34623,7 +34669,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trois étapes rapides et vous voilà prêt à capturer."
+            "value" : "Trois étapes rapides et vous pourrez commencer à capturer."
           }
         },
         "zh-Hans" : {
@@ -34706,7 +34752,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bei der Aufnahme mit Timer wählst du zuerst den Bereich, dann läuft ein Countdown bis zur Aufnahme – Zeit, um Menüs oder Hover-Zustände zu öffnen. Esc bricht ab."
+            "value" : "Bei der Aufnahme mit Timer wählst du zuerst den Bereich, dann läuft ein Countdown bis zur Aufnahme – Zeit, um Menüs zu öffnen oder Hover-Effekte auszulösen. Esc bricht ab."
           }
         },
         "fr" : {
@@ -39397,6 +39443,29 @@
         }
       }
     },
+    "Yes" : {
+      "comment" : "A yes/no value, like whether a Wi-Fi network is hidden",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ja"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oui"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "是"
+          }
+        }
+      }
+    },
     "Yesterday" : {
       "localizations" : {
         "de" : {
@@ -39538,13 +39607,13 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Votre Mac n’arrive pas à suivre cet enregistrement et saute des images. La qualité Équilibrée ou 30 fps vous aideront."
+            "value" : "Votre Mac n’arrive pas à suivre cet enregistrement et saute des images. Essayez la qualité Équilibrée ou 30 fps."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的 Mac 跟不上此录制，正在丢帧。选择“均衡”质量或 30 fps 会有帮助。"
+            "value" : "你的 Mac 性能跟不上当前录制，正在丢帧。选择“均衡”质量或 30 fps 会有帮助。"
           }
         }
       }
@@ -39599,7 +39668,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dein Speicherplatz ist voll – die ersten %@ sind gesichert."
+            "value" : "Dein Speicher ist voll – die ersten %@ sind gesichert."
           }
         },
         "fr" : {
@@ -39771,7 +39840,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dein Speicherplatz ist voll, daher konnte die Aufnahme nicht gesichert werden."
+            "value" : "Dein Speicher ist voll, daher konnte die Aufnahme nicht gesichert werden."
           }
         },
         "fr" : {
@@ -41288,13 +41357,13 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "« %1$@ » trouvé dans %2$lld captures sur %3$lld"
+            "value" : "« %1$@ » trouvé dans %2$lld sur %3$lld captures"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在 %3$lld 张截屏中的 %2$lld 张里找到“%1$@”"
+            "value" : "在 %2$lld 张截屏中找到“%1$@”（共 %3$lld 张）"
           }
         }
       }

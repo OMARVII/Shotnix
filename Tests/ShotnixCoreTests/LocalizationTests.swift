@@ -125,8 +125,8 @@ final class LocalizationTests: XCTestCase {
 
     func testTranslationsCanReorderPlaceholders() {
         L10n.use("zh-Hans")
-        XCTAssertEqual(HistoryPanelController.headerText(shown: 3, total: 10, query: "invoice", filtered: false), "在 10 张截屏中的 3 张里找到“invoice”")
-        XCTAssertEqual(HistoryPanelController.headerText(shown: 3, total: 10, query: "", filtered: true), "10 张截屏中的 3 张")
+        XCTAssertEqual(HistoryPanelController.headerText(shown: 3, total: 10, query: "invoice", filtered: false), "在 3 张截屏中找到“invoice”（共 10 张）", "the query moves after the count")
+        XCTAssertEqual(HistoryPanelController.headerText(shown: 3, total: 10, query: "", filtered: true), "3 张截屏（共 10 张）")
         L10n.use("de")
         XCTAssertEqual(HistoryPanelController.headerText(shown: 3, total: 10, query: "invoice", filtered: false), "„invoice“ in 3 von 10 Bildschirmfotos gefunden")
         XCTAssertEqual(HistoryPanelController.headerText(shown: 1, total: 1, query: "", filtered: false), "1 gesichertes Bildschirmfoto · Karten in den Finder ziehen · Rechtsklick für mehr")

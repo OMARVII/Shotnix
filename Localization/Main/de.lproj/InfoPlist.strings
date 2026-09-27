@@ -1,4 +1,4 @@
-"NSCameraUsageDescription" = "Shotnix nimmt deine Kamera zusammen mit dem Bildschirm auf, wenn du die Kamera für eine Aufnahme einschaltest.";
+"NSCameraUsageDescription" = "Shotnix zeichnet deine Kamera zusammen mit dem Bildschirm auf, wenn du die Kamera für eine Aufnahme einschaltest.";
 "NSHumanReadableCopyright" = "Copyright © 2026 Shotnix Contributors. MIT-Lizenz.";
 "NSMicrophoneUsageDescription" = "Shotnix benötigt Zugriff auf das Mikrofon, wenn du den Mikrofonton für Bildschirmaufnahmen einschaltest.";
 "NSScreenCaptureUsageDescription" = "Shotnix benötigt die Berechtigung zur Bildschirmaufnahme, um Bildschirmfotos und Bildschirmaufnahmen zu erstellen.";

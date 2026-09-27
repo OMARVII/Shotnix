@@ -71,7 +71,7 @@
 	<key>%@–%@ only</key>
 	<string>%@–%@ uniquement</string>
 	<key>%lld of %lld captures</key>
-	<string>%lld captures sur %lld</string>
+	<string>%lld sur %lld captures</string>
 	<key>%lld px · Esc or Done finishes</key>
 	<string>%lld px · Échap ou « Terminé » pour finir</string>
 	<key>%lld s</key>
@@ -285,7 +285,7 @@
 	<key>Automatic</key>
 	<string>Automatique</string>
 	<key>Automatic detects each capture's language; pick languages when it guesses wrong. Accurate reads small text best — Fast answers sooner but knows fewer languages. Used by Capture Text, Copy Text, and History search.</key>
-	<string>« Automatique » détecte la langue de chaque capture ; choisissez des langues s’il se trompe. « Précise » lit mieux les petits textes — « Rapide » répond plus vite mais connaît moins de langues. Utilisé par Capturer du texte, Copier le texte et la recherche dans l’historique.</string>
+	<string>« Automatique » détecte la langue de chaque capture ; choisissez des langues s’il se trompe. « Précise » lit mieux les petits textes — « Rapide » répond plus vite mais connaît moins de langues. Ces réglages s’appliquent à « Capturer du texte », à « Copier le texte » et à la recherche dans l’historique.</string>
 	<key>Back</key>
 	<string>Retour</string>
 	<key>Back to the Shotnix look</key>
@@ -321,7 +321,7 @@
 	<key>Blue</key>
 	<string>Bleu</string>
 	<key>Blur</key>
-	<string>Flouter</string>
+	<string>Flou</string>
 	<key>Blurred area</key>
 	<string>Zone floutée</string>
 	<key>Blurs fast camera moves the way a real camera does.</key>
@@ -357,7 +357,7 @@
 	<key>Camera bubble</key>
 	<string>Bulle de caméra</string>
 	<key>Camera disconnected</key>
-	<string>Caméra débranchée</string>
+	<string>Caméra déconnectée</string>
 	<key>Camera disconnected.</key>
 	<string>Caméra déconnectée.</string>
 	<key>Camera disconnected. The recording continues without it.</key>
@@ -433,7 +433,7 @@
 	<key>Capture Fullscreen</key>
 	<string>Capturer le plein écran</string>
 	<key>Capture Fullscreen Alt</key>
-	<string>Capturer le plein écran (autre)</string>
+	<string>Capturer le plein écran (autre raccourci)</string>
 	<key>Capture History</key>
 	<string>Historique des captures</string>
 	<key>Capture Previous Area</key>
@@ -719,7 +719,7 @@
 	<key>Crisp and compact — the best default</key>
 	<string>Net et compact — le meilleur choix par défaut</string>
 	<key>Crop</key>
-	<string>Rogner</string>
+	<string>Rognage</string>
 	<key>Crop the Recording…</key>
 	<string>Rogner l’enregistrement…</string>
 	<key>Crop the recording — trim away toolbars or empty space</key>
@@ -805,7 +805,7 @@
 	<key>Discard this recording?</key>
 	<string>Supprimer cette vidéo ?</string>
 	<key>Disk almost full</key>
-	<string>Disque bientôt plein</string>
+	<string>Disque presque plein</string>
 	<key>Dismiss</key>
 	<string>Ignorer</string>
 	<key>Dismiss tips</key>
@@ -879,7 +879,7 @@
 	<key>Drag to select, then adjust  ·  Hold ⇧ as you let go to capture right away  ·  Esc cancels</key>
 	<string>Faites glisser pour sélectionner, puis ajustez  ·  Maintenez ⇧ en relâchant pour capturer aussitôt  ·  Échap pour annuler</string>
 	<key>Draw with the selected tool. Tool shortcuts: V select, A arrow, R rectangle, T text, O callout, H highlighter, B blur, P pixelate, S spotlight, C crop.</key>
-	<string>Dessinez avec l’outil sélectionné. Raccourcis des outils : V sélectionner, A flèche, R rectangle, T texte, O bulle, H surligneur, B flouter, P pixéliser, S projecteur, C rogner.</string>
+	<string>Dessinez avec l’outil sélectionné. Raccourcis des outils : V sélection, A flèche, R rectangle, T texte, O bulle, H surligneur, B flou, P pixélisation, S projecteur, C rognage.</string>
 	<key>Drawing</key>
 	<string>Dessin</string>
 	<key>Duplicate</key>
@@ -907,7 +907,7 @@
 	<key>Editable cursor</key>
 	<string>Pointeur modifiable</string>
 	<key>Editable cursor records the pointer separately so the editor can smooth it, resize it, and keep it crisp when zoomed — the video editor adds it back on export (the raw recording file has no pointer). Auto-zoom makes a fresh recording open already produced: the camera zooms to follow your clicks. Keyboard shortcuts records only ⌘, ⌃ and ⌥ combos (plus Esc and F-keys) so the editor can show them as keycaps — plain typing is never recorded; macOS asks for Accessibility access. High quality is the default; Max keeps more detail but creates larger files. The countdown gives you a moment after pressing Record; Esc cancels it. Stop a recording with %@ from any app — plain Esc stays with the app you're recording.</key>
-	<string>« Pointeur modifiable » enregistre le pointeur séparément pour que l’éditeur puisse le lisser, le redimensionner et le garder net lors des zooms — l’éditeur vidéo le réintègre à l’exportation (le fichier brut de l’enregistrement ne contient pas de pointeur). Avec le zoom automatique, un nouvel enregistrement s’ouvre déjà monté : la caméra suit vos clics. « Afficher les raccourcis clavier » n’enregistre que les combinaisons avec ⌘, ⌃ et ⌥ (plus Échap et les touches de fonction) pour que l’éditeur puisse les afficher sous forme de touches — la frappe normale n’est jamais enregistrée ; macOS demande l’accès à l’accessibilité. La qualité élevée est utilisée par défaut ; la qualité maximale conserve plus de détails mais produit des fichiers plus volumineux. Le compte à rebours vous laisse un instant après avoir lancé l’enregistrement ; Échap l’annule. Arrêtez un enregistrement depuis n’importe quelle app avec %@ — un simple Échap reste destiné à l’app que vous enregistrez.</string>
+	<string>« Pointeur modifiable » enregistre le pointeur séparément pour que l’éditeur puisse le lisser, le redimensionner et le garder net lors des zooms — l’éditeur vidéo le réintègre à l’exportation (le fichier brut de l’enregistrement ne contient pas de pointeur). Avec le zoom automatique, un nouvel enregistrement s’ouvre déjà monté : la caméra suit vos clics. « Afficher les raccourcis clavier » n’enregistre que les combinaisons avec ⌘, ⌃ et ⌥ (plus Échap et les touches de fonction) pour que l’éditeur puisse les afficher sous forme de touches — la frappe normale n’est jamais enregistrée ; macOS demande l’autorisation Accessibilité. La qualité élevée est utilisée par défaut ; la qualité maximale conserve plus de détails mais produit des fichiers plus volumineux. Le compte à rebours vous laisse un instant après avoir lancé l’enregistrement ; Échap l’annule. Arrêtez un enregistrement depuis n’importe quelle app avec %@ — un simple Échap reste destiné à l’app que vous enregistrez.</string>
 	<key>Editing</key>
 	<string>Montage</string>
 	<key>Ellipse</key>
@@ -949,7 +949,7 @@
 	<key>Enjoying Shotnix? Click to star it on GitHub ★</key>
 	<string>Vous aimez Shotnix ? Cliquez pour lui donner une étoile sur GitHub ★</string>
 	<key>Enjoying Shotnix? Star it on GitHub so more people find it.</key>
-	<string>Vous aimez Shotnix ? Ajoutez une étoile sur GitHub pour que plus de monde le découvre.</string>
+	<string>Vous aimez Shotnix ? Donnez-lui une étoile sur GitHub pour que d’autres le découvrent.</string>
 	<key>Esc</key>
 	<string>Échap</string>
 	<key>Esc or Done finishes</key>
@@ -1055,7 +1055,7 @@
 	<key>Finish and Quit</key>
 	<string>Terminer et quitter</string>
 	<key>Finish or cancel the current recording setup</key>
-	<string>Terminez ou annulez d’abord la configuration de l’enregistrement en cours</string>
+	<string>Terminez ou annulez d’abord la préparation de l’enregistrement en cours</string>
 	<key>Fix</key>
 	<string>Corriger</string>
 	<key>Flamingo</key>
@@ -1069,7 +1069,7 @@
 	<key>Follows cursor</key>
 	<string>Suit le pointeur</string>
 	<key>Forever</key>
-	<string>Pour toujours</string>
+	<string>Indéfiniment</string>
 	<key>Format</key>
 	<string>Format</string>
 	<key>Frame</key>
@@ -1085,7 +1085,7 @@
 	<key>Free up ⌘⇧ shortcuts · optional</key>
 	<string>Libérer les raccourcis ⌘⇧ · facultatif</string>
 	<key>Freed %@</key>
-	<string>%@ libérés</string>
+	<string>Espace libéré : %@</string>
 	<key>Freehand Draw</key>
 	<string>Dessin à main levée</string>
 	<key>Freehand Highlighter</key>
@@ -1133,7 +1133,7 @@
 	<key>Grant Screen Recording first, then try it here.</key>
 	<string>Autorisez d’abord l’enregistrement de l’écran, puis essayez ici.</string>
 	<key>Granted — captures, recordings, and OCR are ready.</key>
-	<string>Autorisé — captures, enregistrements et OCR sont prêts.</string>
+	<string>Autorisé — les captures, les enregistrements et l’OCR sont prêts.</string>
 	<key>Graphite</key>
 	<string>Graphite</string>
 	<key>Green</key>
@@ -1146,6 +1146,8 @@
 	<string>État</string>
 	<key>Hidden</key>
 	<string>Masqué</string>
+	<key>Hidden network</key>
+	<string>Réseau masqué</string>
 	<key>Hide</key>
 	<string>Masquer</string>
 	<key>Hide Desktop Icons</key>
@@ -1241,7 +1243,7 @@
 	<key>Keep Editing</key>
 	<string>Continuer l’édition</string>
 	<key>Keep Working</key>
-	<string>Continuer</string>
+	<string>Ne pas quitter</string>
 	<key>Keep captures</key>
 	<string>Conserver les captures</string>
 	<key>Keep editing — the words appear here when Shotnix is done listening.</key>
@@ -1393,7 +1395,7 @@
 	<key>More tips</key>
 	<string>Plus d’astuces</string>
 	<key>Moss</key>
-	<string>Mousse</string>
+	<string>Vert mousse</string>
 	<key>Moss Glow</key>
 	<string>Lueur de mousse</string>
 	<key>Motion</key>
@@ -1470,6 +1472,8 @@
 	<string>Belle capture ! Tout est prêt.</string>
 	<key>Night Current</key>
 	<string>Courant nocturne</string>
+	<key>No</key>
+	<string>Non</string>
 	<key>No Exports Yet</key>
 	<string>Aucune exportation</string>
 	<key>No background</key>
@@ -1693,7 +1697,7 @@
 	<key>Pinned screenshot</key>
 	<string>Capture épinglée</string>
 	<key>Pixelate</key>
-	<string>Pixéliser</string>
+	<string>Pixélisation</string>
 	<key>Pixelated area</key>
 	<string>Zone pixélisée</string>
 	<key>Placement</key>
@@ -1841,7 +1845,7 @@
 	<key>Recording shortcuts are unassigned by default — click a field to set one. Stop Recording also cancels recording setup. While recording, %@ always stops it, from any app.</key>
 	<string>Les raccourcis d’enregistrement ne sont pas attribués par défaut — cliquez sur un champ pour en définir un. « Arrêter l’enregistrement » annule aussi la préparation. Pendant un enregistrement, %@ l’arrête toujours, depuis n’importe quelle app.</string>
 	<key>Recording stopped early — saved what was captured.</key>
-	<string>L’enregistrement s’est arrêté plus tôt — ce qui a été capturé est sauvegardé.</string>
+	<string>L’enregistrement s’est arrêté prématurément — ce qui a été capturé est sauvegardé.</string>
 	<key>Recording the camera</key>
 	<string>Enregistrement de la caméra</string>
 	<key>Recording time</key>
@@ -2215,7 +2219,7 @@
 	<key>Review the network details before copying.</key>
 	<string>Vérifiez les détails du réseau avant de les copier.</string>
 	<key>Review the phone number before opening.</key>
-	<string>Vérifiez le numéro de téléphone avant de l’ouvrir.</string>
+	<string>Vérifiez le numéro de téléphone avant d’appeler.</string>
 	<key>Right</key>
 	<string>Droite</string>
 	<key>Ripple</key>
@@ -2283,11 +2287,11 @@
 	<key>Save…</key>
 	<string>Enregistrer…</string>
 	<key>Saving captures to History</key>
-	<string>Enregistrement des captures dans l’historique</string>
+	<string>Ajout des captures à l’historique</string>
 	<key>Saving the last recording…</key>
 	<string>Finalisation du dernier enregistrement…</string>
 	<key>Saving the recording</key>
-	<string>Enregistrement de la vidéo en cours</string>
+	<string>Finalisation de l’enregistrement</string>
 	<key>Saving the recording…</key>
 	<string>Finalisation de l’enregistrement…</string>
 	<key>Saving the screen recording</key>
@@ -2337,7 +2341,7 @@
 	<key>Security</key>
 	<string>Sécurité</string>
 	<key>Select</key>
-	<string>Sélectionner</string>
+	<string>Sélection</string>
 	<key>Select All</key>
 	<string>Tout sélectionner</string>
 	<key>Select a clip on the timeline to mute it or fade it in and out.</key>
@@ -2575,7 +2579,7 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<key>Spotlight shape</key>
 	<string>Forme du projecteur</string>
 	<key>Star on GitHub</key>
-	<string>Mettre une étoile sur GitHub</string>
+	<string>Donner une étoile sur GitHub</string>
 	<key>Start / end</key>
 	<string>Début/fin</string>
 	<key>Start Over</key>
@@ -2739,7 +2743,7 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<key>The voice track is empty, so there's nothing to clean up. Turn off Enhance voice to keep the original sound.</key>
 	<string>La piste vocale est vide : il n’y a rien à nettoyer. Désactivez Améliorer la voix pour garder le son d’origine.</string>
 	<key>The window you're recording closed. Stop when you're ready — the recording keeps going.</key>
-	<string>La fenêtre enregistrée a été fermée. Arrêtez quand vous voulez — l’enregistrement continue.</string>
+	<string>La fenêtre que vous enregistrez a été fermée. Arrêtez quand vous voulez — l’enregistrement continue.</string>
 	<key>There are no captions to translate yet. Transcribe or add captions first.</key>
 	<string>Il n’y a pas encore de sous-titres à traduire. Transcrivez ou ajoutez d’abord des sous-titres.</string>
 	<key>There isn't enough free space on this disk: this export needs about %@ and %@ is free. Free up some space (empty the Trash, delete old recordings) or export to another drive.</key>
@@ -2779,7 +2783,7 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<key>This video was recorded with your camera, but “%@” isn't in %@ anymore. Put it back there and open the video again to get the camera bubble back.</key>
 	<string>Cette vidéo a été enregistrée avec votre caméra, mais « %@ » ne se trouve plus dans %@. Remettez-le à cet endroit et rouvrez la vidéo pour retrouver la bulle de caméra.</string>
 	<key>Three quick steps and you're capturing.</key>
-	<string>Trois étapes rapides et vous voilà prêt à capturer.</string>
+	<string>Trois étapes rapides et vous pourrez commencer à capturer.</string>
 	<key>Tide Glass</key>
 	<string>Verre de marée</string>
 	<key>Timed Capture</key>
@@ -3200,6 +3204,8 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Accessible en écriture</string>
 	<key>Yellow</key>
 	<string>Jaune</string>
+	<key>Yes</key>
+	<string>Oui</string>
 	<key>Yesterday</key>
 	<string>Hier</string>
 	<key>You're all set — Shotnix lives here</key>
@@ -3207,7 +3213,7 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<key>YouTube, presentations</key>
 	<string>YouTube, présentations</string>
 	<key>Your Mac can't keep up with this recording and is skipping frames. Balanced quality or 30 fps will help.</key>
-	<string>Votre Mac n’arrive pas à suivre cet enregistrement et saute des images. La qualité Équilibrée ou 30 fps vous aideront.</string>
+	<string>Votre Mac n’arrive pas à suivre cet enregistrement et saute des images. Essayez la qualité Équilibrée ou 30 fps.</string>
 	<key>Your Mac ran low on memory. Close some apps or pick a lower resolution, then export again.</key>
 	<string>Votre Mac manque de mémoire. Fermez quelques apps ou choisissez une résolution plus basse, puis exportez à nouveau.</string>
 	<key>Your camera is recorded as its own layer: a live bubble shows while you record (it never appears in the screen capture), and the editor lets you move, resize, and restyle it — or hide it — afterwards.</key>
@@ -3361,7 +3367,7 @@ Vous pouvez réactiver les raccourcis d’Apple à tout moment dans Réglages Sy
 	<key>“%@” can't be read — it may be damaged, still being saved, or in a format this Mac can't play. Remove it from this video (Style → Recordings), or put a working copy in its place, then export again.</key>
 	<string>« %@ » ne peut pas être lu — il est peut-être endommagé, encore en cours d’enregistrement, ou dans un format que ce Mac ne peut pas lire. Retirez-le de cette vidéo (Style → Enregistrements), ou remplacez-le par une copie qui fonctionne, puis exportez à nouveau.</string>
 	<key>“%@” found in %lld of %lld captures</key>
-	<string>« %1$@ » trouvé dans %2$lld captures sur %3$lld</string>
+	<string>« %1$@ » trouvé dans %2$lld sur %3$lld captures</string>
 	<key>“Made with Shotnix” end card (2s)</key>
 	<string>écran de fin « Made with Shotnix » (2 s)</string>
 	<key>⇧-drag</key>

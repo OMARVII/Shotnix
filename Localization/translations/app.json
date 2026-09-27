@@ -179,7 +179,7 @@
   "Annotate Last Screenshot" : {
     "de" : "Letztes Bildschirmfoto beschriften",
     "fr" : "Annoter la dernière capture",
-    "zh-Hans" : "标注最近的截屏"
+    "zh-Hans" : "标注上一张截屏"
   },
   "Annotation" : {
     "de" : "Beschriftung",
@@ -289,8 +289,8 @@
     "zh-Hans" : "自动"
   },
   "Automatic detects each capture's language; pick languages when it guesses wrong. Accurate reads small text best — Fast answers sooner but knows fewer languages. Used by Capture Text, Copy Text, and History search." : {
-    "de" : "„Automatisch“ erkennt die Sprache jedes Bildschirmfotos; wähle Sprachen aus, wenn es falsch liegt. „Genau“ liest kleinen Text am besten – „Schnell“ antwortet früher, kennt aber weniger Sprachen. Wird von „Text erfassen“, „Text kopieren“ und der Suche im Verlauf verwendet.",
-    "fr" : "« Automatique » détecte la langue de chaque capture ; choisissez des langues s’il se trompe. « Précise » lit mieux les petits textes — « Rapide » répond plus vite mais connaît moins de langues. Utilisé par Capturer du texte, Copier le texte et la recherche dans l’historique.",
+    "de" : "„Automatisch“ erkennt die Sprache jedes Bildschirmfotos; wähle Sprachen aus, wenn es falsch liegt. „Genau“ liest kleinen Text am besten – „Schnell“ liefert früher ein Ergebnis, kennt aber weniger Sprachen. Wird von „Text erfassen“, „Text kopieren“ und der Suche im Verlauf verwendet.",
+    "fr" : "« Automatique » détecte la langue de chaque capture ; choisissez des langues s’il se trompe. « Précise » lit mieux les petits textes — « Rapide » répond plus vite mais connaît moins de langues. Ces réglages s’appliquent à « Capturer du texte », à « Copier le texte » et à la recherche dans l’historique.",
     "zh-Hans" : "“自动”会检测每张截屏的语言；识别有误时可手动选择语言。“精确”最适合识别小字 — “快速”响应更快，但支持的语言更少。用于“提取文字”、“拷贝文字”和历史记录搜索。"
   },
   "Background" : {
@@ -318,7 +318,7 @@
   "Blur" : {
     "comment" : "Editor tool",
     "de" : "Weichzeichnen",
-    "fr" : "Flouter",
+    "fr" : "Flou",
     "zh-Hans" : "模糊"
   },
   "Blurred area" : {
@@ -367,7 +367,7 @@
     "zh-Hans" : "提取文字"
   },
   "Capture Text and Scrolling Capture come without shortcuts, so ⌘⇧O and ⌘⇧S keep meaning Open and Save As in your other apps — click a field to set your own. Pressing the Scrolling Capture shortcut again finishes a scrolling capture." : {
-    "de" : "„Text erfassen“ und „Scroll-Aufnahme“ haben keine Kurzbefehle, damit ⌘⇧O und ⌘⇧S in deinen anderen Apps weiter „Öffnen“ und „Sichern unter“ bedeuten – klicke in ein Feld, um eigene festzulegen. Drückst du den Kurzbefehl der Scroll-Aufnahme erneut, wird sie beendet.",
+    "de" : "„Text erfassen“ und „Scroll-Aufnahme“ haben anfangs keine Kurzbefehle, damit ⌘⇧O und ⌘⇧S in deinen anderen Apps weiter „Öffnen“ und „Sichern unter“ bedeuten – klicke in ein Feld, um eigene festzulegen. Drückst du den Kurzbefehl der Scroll-Aufnahme erneut, wird sie beendet.",
     "fr" : "« Capturer du texte » et « Capture défilante » n’ont pas de raccourci, pour que ⌘⇧O et ⌘⇧S gardent leur sens (Ouvrir et Enregistrer sous) dans vos autres apps — cliquez sur un champ pour définir les vôtres. Appuyer de nouveau sur le raccourci de la capture défilante la termine.",
     "zh-Hans" : "“提取文字”和“滚动截屏”默认没有快捷键，这样 ⌘⇧O 和 ⌘⇧S 在其他 App 中仍表示“打开”和“存储为” — 点按字段即可自定义。再次按下滚动截屏快捷键即可结束滚动截屏。"
   },
@@ -385,7 +385,7 @@
   "Captures stay in History until you delete them, unless you pick a limit here. Clean Up empties History's trash (deleted captures you could still undo) and removes files no capture uses anymore." : {
     "de" : "Bildschirmfotos bleiben im Verlauf, bis du sie löschst – außer du legst hier eine Grenze fest. „Aufräumen“ leert den Papierkorb des Verlaufs (gelöschte Bildschirmfotos, die du noch wiederherstellen könntest) und entfernt Dateien, die kein Bildschirmfoto mehr verwendet.",
     "fr" : "Les captures restent dans l’historique jusqu’à ce que vous les supprimiez, sauf si vous choisissez une limite ici. « Nettoyer » vide la corbeille de l’historique (les captures supprimées que vous pourriez encore récupérer) et supprime les fichiers qu’aucune capture n’utilise plus.",
-    "zh-Hans" : "截屏会一直保留在历史记录中，直到你将其删除，除非你在此处设定期限。“清理”会清空历史记录的废纸篓（其中是仍可撤销删除的截屏），并移除不再被任何截屏使用的文件。"
+    "zh-Hans" : "除非你在此处设定保留限制，否则截屏会一直保留在历史记录中，直到你将其删除。“清理”会清空历史记录的废纸篓（其中是仍可撤销删除的截屏），并移除不再被任何截屏使用的文件。"
   },
   "Carbon Arc" : {
     "de" : "Kohlebogen",
@@ -446,7 +446,7 @@
   "Clean Up lists what it would remove — the data of recordings Shotnix can't find, camera footage and pictures nothing uses, and clipboard exports older than a day — and asks first. On its own, Shotnix only removes clipboard exports older than a day; the data of your recordings stays until you clean it up here." : {
     "de" : "„Aufräumen“ listet auf, was entfernt würde – die Daten von Aufnahmen, die Shotnix nicht finden kann, ungenutzte Kameraaufnahmen und Bilder sowie Zwischenablage-Exporte, die älter als einen Tag sind – und fragt vorher nach. Von sich aus entfernt Shotnix nur Zwischenablage-Exporte, die älter als einen Tag sind; die Daten deiner Aufnahmen bleiben, bis du sie hier aufräumst.",
     "fr" : "« Nettoyer » liste ce qui serait supprimé — les données des enregistrements que Shotnix ne trouve plus, les séquences de caméra et les images inutilisées, et les exportations vers le presse-papiers de plus d’un jour — et demande d’abord confirmation. De lui-même, Shotnix ne supprime que les exportations vers le presse-papiers de plus d’un jour ; les données de vos enregistrements restent jusqu’à ce que vous les nettoyiez ici.",
-    "zh-Hans" : "“清理”会先列出将移除的内容 — Shotnix 找不到的录制内容的数据、未被使用的摄像头画面和图片，以及超过一天的剪贴板导出文件 — 并先征得你的同意。Shotnix 自身只会移除超过一天的剪贴板导出文件；你的录制内容的数据会一直保留，直到你在这里清理。"
+    "zh-Hans" : "“清理”会列出将移除的内容 — Shotnix 找不到的录制内容的数据、未被使用的摄像头画面和图片，以及超过一天的剪贴板导出文件 — 并在移除前征得你的同意。平时 Shotnix 只会自动移除超过一天的剪贴板导出文件；你的录制内容的数据会一直保留，直到你在这里清理。"
   },
   "Clean Up…" : {
     "de" : "Aufräumen …",
@@ -582,7 +582,7 @@
   "Crop" : {
     "comment" : "Editor tool",
     "de" : "Beschneiden",
-    "fr" : "Rogner",
+    "fr" : "Rognage",
     "zh-Hans" : "裁剪"
   },
   "Custom color" : {
@@ -651,7 +651,7 @@
       "one" : "Les captures supprimées en attente dans la corbeille de l’historique et les fichiers qu’aucune capture n’utilise sont définitivement supprimés, ainsi que %lld capture au-delà de la limite de votre historique. Le reste de votre historique est conservé.",
       "other" : "Les captures supprimées en attente dans la corbeille de l’historique et les fichiers qu’aucune capture n’utilise sont définitivement supprimés, ainsi que %lld captures au-delà de la limite de votre historique. Le reste de votre historique est conservé."
     },
-    "zh-Hans" : "历史记录废纸篓中已删除的截屏、不再被任何截屏使用的文件，以及超出历史记录期限的 %lld 张截屏将被永久移除。其余历史记录会保留。"
+    "zh-Hans" : "历史记录废纸篓中已删除的截屏、不再被任何截屏使用的文件，以及超出历史记录保留限制的 %lld 张截屏将被永久移除。其余历史记录会保留。"
   },
   "Deleted captures waiting in History's trash and files no capture uses are removed for good. The captures in your history stay." : {
     "de" : "Gelöschte Bildschirmfotos im Papierkorb des Verlaufs und Dateien, die kein Bildschirmfoto verwendet, werden endgültig entfernt. Die Bildschirmfotos in deinem Verlauf bleiben erhalten.",
@@ -707,7 +707,7 @@
   },
   "Draw with the selected tool. Tool shortcuts: V select, A arrow, R rectangle, T text, O callout, H highlighter, B blur, P pixelate, S spotlight, C crop." : {
     "de" : "Mit dem ausgewählten Werkzeug zeichnen. Kurzbefehle: V Auswählen, A Pfeil, R Rechteck, T Text, O Sprechblase, H Textmarker, B Weichzeichnen, P Verpixeln, S Fokus, C Beschneiden.",
-    "fr" : "Dessinez avec l’outil sélectionné. Raccourcis des outils : V sélectionner, A flèche, R rectangle, T texte, O bulle, H surligneur, B flouter, P pixéliser, S projecteur, C rogner.",
+    "fr" : "Dessinez avec l’outil sélectionné. Raccourcis des outils : V sélection, A flèche, R rectangle, T texte, O bulle, H surligneur, B flou, P pixélisation, S projecteur, C rognage.",
     "zh-Hans" : "使用所选工具绘制。工具快捷键：V 选择、A 箭头、R 矩形、T 文字、O 标注气泡、H 荧光笔、B 模糊、P 像素化、S 聚光灯、C 裁剪。"
   },
   "Drawing" : {
@@ -718,7 +718,7 @@
   "Edit Last Recording" : {
     "de" : "Letzte Aufnahme bearbeiten",
     "fr" : "Modifier le dernier enregistrement",
-    "zh-Hans" : "编辑最近的录制内容"
+    "zh-Hans" : "编辑上一段录制内容"
   },
   "Editable cursor" : {
     "de" : "Bearbeitbarer Zeiger",
@@ -727,8 +727,8 @@
   },
   "Editable cursor records the pointer separately so the editor can smooth it, resize it, and keep it crisp when zoomed — the video editor adds it back on export (the raw recording file has no pointer). Auto-zoom makes a fresh recording open already produced: the camera zooms to follow your clicks. Keyboard shortcuts records only ⌘, ⌃ and ⌥ combos (plus Esc and F-keys) so the editor can show them as keycaps — plain typing is never recorded; macOS asks for Accessibility access. High quality is the default; Max keeps more detail but creates larger files. The countdown gives you a moment after pressing Record; Esc cancels it. Stop a recording with %@ from any app — plain Esc stays with the app you're recording." : {
     "de" : "„Bearbeitbarer Zeiger“ zeichnet den Zeiger separat auf, damit der Editor ihn glätten, skalieren und beim Zoomen scharf halten kann – der Video-Editor fügt ihn beim Exportieren wieder ein (die Rohdatei der Aufnahme enthält keinen Zeiger). Mit automatischem Zoom öffnet sich eine neue Aufnahme schon fertig produziert: Die Kamera folgt deinen Klicks. „Tastaturkurzbefehle anzeigen“ zeichnet nur Kombinationen mit ⌘, ⌃ und ⌥ auf (dazu Esc und die F-Tasten), damit der Editor sie als Tasten zeigen kann – normales Tippen wird nie aufgezeichnet; macOS fragt nach Zugriff auf die Bedienungshilfen. „Hoch“ ist die Standardqualität; „Maximal“ bewahrt mehr Details, erzeugt aber größere Dateien. Der Countdown gibt dir nach dem Start einen Moment Zeit; Esc bricht ihn ab. Stoppe eine Aufzeichnung aus jeder App mit %@ – ein einfaches Esc bleibt bei der App, die du aufzeichnest.",
-    "fr" : "« Pointeur modifiable » enregistre le pointeur séparément pour que l’éditeur puisse le lisser, le redimensionner et le garder net lors des zooms — l’éditeur vidéo le réintègre à l’exportation (le fichier brut de l’enregistrement ne contient pas de pointeur). Avec le zoom automatique, un nouvel enregistrement s’ouvre déjà monté : la caméra suit vos clics. « Afficher les raccourcis clavier » n’enregistre que les combinaisons avec ⌘, ⌃ et ⌥ (plus Échap et les touches de fonction) pour que l’éditeur puisse les afficher sous forme de touches — la frappe normale n’est jamais enregistrée ; macOS demande l’accès à l’accessibilité. La qualité élevée est utilisée par défaut ; la qualité maximale conserve plus de détails mais produit des fichiers plus volumineux. Le compte à rebours vous laisse un instant après avoir lancé l’enregistrement ; Échap l’annule. Arrêtez un enregistrement depuis n’importe quelle app avec %@ — un simple Échap reste destiné à l’app que vous enregistrez.",
-    "zh-Hans" : "“可编辑指针”会单独记录指针，以便编辑器将其平滑、调整大小，并在缩放时保持清晰 — 视频编辑器会在导出时将指针加回（原始录制文件中不含指针）。开启自动缩放后，新录制内容打开时就已制作完成：镜头会跟随你的点按。“显示快捷键”只记录含 ⌘、⌃ 和 ⌥ 的组合键（以及 Esc 键和功能键），以便编辑器将其显示为按键 — 普通输入绝不会被记录；macOS 会请求辅助功能权限。默认使用“高”质量；“最高”保留更多细节，但文件更大。倒计时让你在开始录制后有片刻准备；按 Esc 键可取消。在任何 App 中按 %@ 都能停止录制 — 单独按 Esc 键仍会传给你正在录制的 App。"
+    "fr" : "« Pointeur modifiable » enregistre le pointeur séparément pour que l’éditeur puisse le lisser, le redimensionner et le garder net lors des zooms — l’éditeur vidéo le réintègre à l’exportation (le fichier brut de l’enregistrement ne contient pas de pointeur). Avec le zoom automatique, un nouvel enregistrement s’ouvre déjà monté : la caméra suit vos clics. « Afficher les raccourcis clavier » n’enregistre que les combinaisons avec ⌘, ⌃ et ⌥ (plus Échap et les touches de fonction) pour que l’éditeur puisse les afficher sous forme de touches — la frappe normale n’est jamais enregistrée ; macOS demande l’autorisation Accessibilité. La qualité élevée est utilisée par défaut ; la qualité maximale conserve plus de détails mais produit des fichiers plus volumineux. Le compte à rebours vous laisse un instant après avoir lancé l’enregistrement ; Échap l’annule. Arrêtez un enregistrement depuis n’importe quelle app avec %@ — un simple Échap reste destiné à l’app que vous enregistrez.",
+    "zh-Hans" : "“可编辑指针”会单独记录指针，以便编辑器平滑指针、调整其大小，并在缩放时保持清晰 — 视频编辑器会在导出时将指针加回（原始录制文件中不含指针）。开启自动缩放后，新录制内容打开时就已制作完成：镜头会跟随你的点按进行缩放。“显示快捷键”只记录含 ⌘、⌃ 和 ⌥ 的组合键（以及 Esc 键和功能键），以便编辑器将其显示为按键 — 普通输入绝不会被记录；macOS 会请求辅助功能权限。默认使用“高”质量；“最高”保留更多细节，但文件更大。按下“录制”后，倒计时会给你片刻准备时间；按 Esc 键可取消。在任何 App 中按 %@ 都能停止录制 — 单独按 Esc 键仍会传给你正在录制的 App。"
   },
   "Ellipse" : {
     "de" : "Ellipse",
@@ -746,9 +746,9 @@
     "zh-Hans" : "请在“系统设置”→“隐私与安全性”→“录屏与系统录音”中启用 Shotnix，然后退出并重新打开 Shotnix，以便 macOS 应用该权限。"
   },
   "Enable Shotnix in System Settings, then relaunch so macOS applies it." : {
-    "de" : "Aktiviere Shotnix in den Systemeinstellungen und starte es dann neu, damit macOS es übernimmt.",
+    "de" : "Aktiviere Shotnix in den Systemeinstellungen und starte es dann neu, damit macOS die Berechtigung übernimmt.",
     "fr" : "Activez Shotnix dans Réglages Système, puis relancez-le pour que macOS en tienne compte.",
-    "zh-Hans" : "在“系统设置”中启用 Shotnix，然后重新启动，以便 macOS 应用更改。"
+    "zh-Hans" : "在“系统设置”中启用 Shotnix，然后退出并重新打开，以便 macOS 应用更改。"
   },
   "Enabled" : {
     "comment" : "Health: state of the Updates row",
@@ -832,7 +832,7 @@
   "Freed %@" : {
     "comment" : "Toast: disk space freed by Clean Up",
     "de" : "%@ freigegeben",
-    "fr" : "%@ libérés",
+    "fr" : "Espace libéré : %@",
     "zh-Hans" : "已释放 %@"
   },
   "Freehand Draw" : {
@@ -873,7 +873,7 @@
   },
   "Granted — captures, recordings, and OCR are ready." : {
     "de" : "Erlaubt – Bildschirmfotos, Aufnahmen und OCR sind bereit.",
-    "fr" : "Autorisé — captures, enregistrements et OCR sont prêts.",
+    "fr" : "Autorisé — les captures, les enregistrements et l’OCR sont prêts.",
     "zh-Hans" : "已授权 — 截屏、录制和 OCR 均已就绪。"
   },
   "Graphite" : {
@@ -972,7 +972,7 @@
     "zh-Hans" : "历史记录已经很整洁"
   },
   "Hotkeys are system-wide and active while Shotnix is running. The ⌘⇧3 default works best after Apple's screenshot shortcut is disabled." : {
-    "de" : "Kurzbefehle gelten systemweit, solange Shotnix läuft. Der Standard ⌘⇧3 funktioniert am besten, wenn Apples Bildschirmfoto-Kurzbefehl deaktiviert ist.",
+    "de" : "Kurzbefehle gelten systemweit, solange Shotnix läuft. Der Standardkurzbefehl ⌘⇧3 funktioniert am besten, wenn Apples Bildschirmfoto-Kurzbefehl deaktiviert ist.",
     "fr" : "Les raccourcis fonctionnent dans tout le système tant que Shotnix est ouvert. Le raccourci ⌘⇧3 par défaut fonctionne mieux une fois le raccourci de capture d’Apple désactivé.",
     "zh-Hans" : "快捷键在 Shotnix 运行时全局有效。停用 Apple 的截屏快捷键后，默认的 ⌘⇧3 效果最佳。"
   },
@@ -993,13 +993,13 @@
   },
   "Keep Working" : {
     "de" : "Weiterarbeiten",
-    "fr" : "Continuer",
+    "fr" : "Ne pas quitter",
     "zh-Hans" : "继续工作"
   },
   "Keep captures" : {
     "de" : "Bildschirmfotos behalten",
     "fr" : "Conserver les captures",
-    "zh-Hans" : "截屏保留时长"
+    "zh-Hans" : "保留截屏"
   },
   "Keeping 30 days removes %lld older captures from History now. This can't be undone." : {
     "de" : {
@@ -1180,7 +1180,7 @@
   },
   "Moss" : {
     "de" : "Moos",
-    "fr" : "Mousse",
+    "fr" : "Vert mousse",
     "zh-Hans" : "苔绿"
   },
   "Moss Glow" : {
@@ -1256,7 +1256,7 @@
   },
   "Open Settings" : {
     "comment" : "Opens System Settings at Screen Recording",
-    "de" : "Einstellungen öffnen",
+    "de" : "Systemeinstellungen öffnen",
     "fr" : "Ouvrir les réglages",
     "zh-Hans" : "打开设置"
   },
@@ -1324,7 +1324,7 @@
   },
   "Pixelate" : {
     "de" : "Verpixeln",
-    "fr" : "Pixéliser",
+    "fr" : "Pixélisation",
     "zh-Hans" : "像素化"
   },
   "Pixelated area" : {
@@ -1378,7 +1378,7 @@
     "zh-Hans" : "隐私政策"
   },
   "Purple" : {
-    "de" : "Violett",
+    "de" : "Lila",
     "fr" : "Violet",
     "zh-Hans" : "紫色"
   },
@@ -1475,7 +1475,7 @@
   "Recovered your interrupted recording “%@”. Click to open it." : {
     "de" : "Deine unterbrochene Aufnahme „%@“ wurde wiederhergestellt. Klicke, um sie zu öffnen.",
     "fr" : "Votre enregistrement interrompu « %@ » a été récupéré. Cliquez pour l’ouvrir.",
-    "zh-Hans" : "已恢复你中断的录制内容“%@”。点按即可打开。"
+    "zh-Hans" : "已恢复中断的录制内容“%@”。点按即可打开。"
   },
   "Rectangle" : {
     "de" : "Rechteck",
@@ -1503,7 +1503,7 @@
     "zh-Hans" : "重做时间线编辑"
   },
   "Releasing the mouse takes the shot. Hold ⇧ as you release to adjust the selection first — drag its edges, nudge it with the arrow keys, then press Return." : {
-    "de" : "Loslassen der Maus löst die Aufnahme aus. Halte beim Loslassen ⇧ gedrückt, um die Auswahl erst anzupassen – ziehe an den Rändern, verschiebe sie mit den Pfeiltasten und drücke dann den Zeilenschalter.",
+    "de" : "Das Loslassen der Maustaste löst die Aufnahme aus. Halte beim Loslassen ⇧ gedrückt, um die Auswahl erst anzupassen – ziehe an den Rändern, verschiebe sie mit den Pfeiltasten und drücke dann den Zeilenschalter.",
     "fr" : "Relâcher la souris déclenche la capture. Maintenez ⇧ en relâchant pour ajuster d’abord la sélection — faites glisser ses bords, déplacez-la avec les touches fléchées, puis appuyez sur Retour.",
     "zh-Hans" : "松开鼠标即可截屏。松开时按住 ⇧ 可先调整选区 — 拖移边缘、用方向键微调，然后按下 Return 键。"
   },
@@ -1616,7 +1616,7 @@
   },
   "Saving the recording" : {
     "de" : "Aufnahme wird gesichert",
-    "fr" : "Enregistrement de la vidéo en cours",
+    "fr" : "Finalisation de l’enregistrement",
     "zh-Hans" : "正在存储录制内容"
   },
   "Saving…" : {
@@ -1658,7 +1658,7 @@
   "Select" : {
     "comment" : "Editor tool",
     "de" : "Auswählen",
-    "fr" : "Sélectionner",
+    "fr" : "Sélection",
     "zh-Hans" : "选择"
   },
   "Select All" : {
@@ -1729,7 +1729,7 @@
   "Shotnix is ready to use!" : {
     "de" : "Shotnix ist startklar!",
     "fr" : "Shotnix est prêt à l’emploi !",
-    "zh-Hans" : "Shotnix 已可以使用！"
+    "zh-Hans" : "Shotnix 已准备就绪！"
   },
   "Shotnix lives here — setup continues next launch" : {
     "de" : "Hier findest du Shotnix – die Einrichtung geht beim nächsten Start weiter",
@@ -1943,7 +1943,7 @@
   },
   "Three quick steps and you're capturing." : {
     "de" : "Drei kurze Schritte, dann kann es losgehen.",
-    "fr" : "Trois étapes rapides et vous voilà prêt à capturer.",
+    "fr" : "Trois étapes rapides et vous pourrez commencer à capturer.",
     "zh-Hans" : "只需三个简单步骤即可开始截屏。"
   },
   "Tide Glass" : {
@@ -1958,7 +1958,7 @@
     "zh-Hans" : "定时截屏（%lld 秒）"
   },
   "Timed Capture selects the area first, then counts down before the shot — time to open menus or hover states. Esc cancels." : {
-    "de" : "Bei der Aufnahme mit Timer wählst du zuerst den Bereich, dann läuft ein Countdown bis zur Aufnahme – Zeit, um Menüs oder Hover-Zustände zu öffnen. Esc bricht ab.",
+    "de" : "Bei der Aufnahme mit Timer wählst du zuerst den Bereich, dann läuft ein Countdown bis zur Aufnahme – Zeit, um Menüs zu öffnen oder Hover-Effekte auszulösen. Esc bricht ab.",
     "fr" : "La capture avec minuteur sélectionne d’abord la zone, puis lance un compte à rebours avant la capture — le temps d’ouvrir des menus ou d’afficher des états de survol. Échap annule.",
     "zh-Hans" : "定时截屏会先选择区域，再倒计时截屏 — 让你有时间打开菜单或显示悬停状态。按 Esc 键可取消。"
   },

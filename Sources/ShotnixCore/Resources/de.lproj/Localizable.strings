@@ -291,7 +291,7 @@
 	<key>Automatic</key>
 	<string>Automatisch</string>
 	<key>Automatic detects each capture's language; pick languages when it guesses wrong. Accurate reads small text best — Fast answers sooner but knows fewer languages. Used by Capture Text, Copy Text, and History search.</key>
-	<string>„Automatisch“ erkennt die Sprache jedes Bildschirmfotos; wähle Sprachen aus, wenn es falsch liegt. „Genau“ liest kleinen Text am besten – „Schnell“ antwortet früher, kennt aber weniger Sprachen. Wird von „Text erfassen“, „Text kopieren“ und der Suche im Verlauf verwendet.</string>
+	<string>„Automatisch“ erkennt die Sprache jedes Bildschirmfotos; wähle Sprachen aus, wenn es falsch liegt. „Genau“ liest kleinen Text am besten – „Schnell“ liefert früher ein Ergebnis, kennt aber weniger Sprachen. Wird von „Text erfassen“, „Text kopieren“ und der Suche im Verlauf verwendet.</string>
 	<key>Back</key>
 	<string>Zurück</string>
 	<key>Back to the Shotnix look</key>
@@ -359,7 +359,7 @@
 	<key>Camera Side by Side at Playhead</key>
 	<string>Kamera nebeneinander an der Abspielposition</string>
 	<key>Camera access is off — allow Shotnix in System Settings → Privacy &amp; Security → Camera.</key>
-	<string>Der Kamerazugriff ist deaktiviert – erlaube Shotnix in „Systemeinstellungen“ → „Datenschutz &amp; Sicherheit“ → „Kamera“.</string>
+	<string>Der Kamerazugriff ist deaktiviert – erlaube Shotnix unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherheit“ → „Kamera“.</string>
 	<key>Camera bubble</key>
 	<string>Kamerablase</string>
 	<key>Camera disconnected</key>
@@ -447,7 +447,7 @@
 	<key>Capture Text</key>
 	<string>Text erfassen</string>
 	<key>Capture Text and Scrolling Capture come without shortcuts, so ⌘⇧O and ⌘⇧S keep meaning Open and Save As in your other apps — click a field to set your own. Pressing the Scrolling Capture shortcut again finishes a scrolling capture.</key>
-	<string>„Text erfassen“ und „Scroll-Aufnahme“ haben keine Kurzbefehle, damit ⌘⇧O und ⌘⇧S in deinen anderen Apps weiter „Öffnen“ und „Sichern unter“ bedeuten – klicke in ein Feld, um eigene festzulegen. Drückst du den Kurzbefehl der Scroll-Aufnahme erneut, wird sie beendet.</string>
+	<string>„Text erfassen“ und „Scroll-Aufnahme“ haben anfangs keine Kurzbefehle, damit ⌘⇧O und ⌘⇧S in deinen anderen Apps weiter „Öffnen“ und „Sichern unter“ bedeuten – klicke in ein Feld, um eigene festzulegen. Drückst du den Kurzbefehl der Scroll-Aufnahme erneut, wird sie beendet.</string>
 	<key>Capture Window</key>
 	<string>Fenster aufnehmen</string>
 	<key>Capture failed</key>
@@ -849,7 +849,7 @@
 	<key>Downloading the language model…</key>
 	<string>Sprachmodell wird geladen …</string>
 	<key>Drag edges or corners to resize  ·  Arrow keys nudge (⇧ ×10)  ·  Return captures  ·  Esc cancels</key>
-	<string>Größe an Kanten oder Ecken ändern  ·  Pfeiltasten verschieben (⇧ ×10)  ·  Return nimmt auf  ·  Esc bricht ab</string>
+	<string>Größe an Kanten oder Ecken ändern  ·  Pfeiltasten verschieben (⇧ ×10)  ·  Zeilenschalter nimmt auf  ·  Esc bricht ab</string>
 	<key>Drag it on the preview to move it; drag a corner to resize. Its bar on the timeline sets when it shows.</key>
 	<string>Ziehe das Element in der Vorschau, um es zu bewegen; ziehe an einer Ecke, um die Größe zu ändern. Sein Balken in der Zeitleiste bestimmt, wann es erscheint.</string>
 	<key>Drag it on the preview to move it; drag a corner to resize; double-click it to type. Its bar on the timeline sets when it shows.</key>
@@ -935,7 +935,7 @@
 	<key>Enable Shotnix in System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording, then quit and reopen Shotnix so macOS applies the permission.</key>
 	<string>Aktiviere Shotnix unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherheit“ → „Aufnahme von Bildschirm &amp; Systemaudio“. Beende und öffne Shotnix danach erneut, damit macOS die Berechtigung übernimmt.</string>
 	<key>Enable Shotnix in System Settings, then relaunch so macOS applies it.</key>
-	<string>Aktiviere Shotnix in den Systemeinstellungen und starte es dann neu, damit macOS es übernimmt.</string>
+	<string>Aktiviere Shotnix in den Systemeinstellungen und starte es dann neu, damit macOS die Berechtigung übernimmt.</string>
 	<key>Enabled</key>
 	<string>Aktiviert</string>
 	<key>Encoding</key>
@@ -1061,7 +1061,7 @@
 	<key>Finish and Quit</key>
 	<string>Abschließen und beenden</string>
 	<key>Finish or cancel the current recording setup</key>
-	<string>Schließe die Einrichtung der aktuellen Aufzeichnung ab oder brich sie ab</string>
+	<string>Schließe die Vorbereitung der aktuellen Aufzeichnung ab oder brich sie ab</string>
 	<key>Fix</key>
 	<string>Beheben</string>
 	<key>Flamingo</key>
@@ -1152,6 +1152,8 @@
 	<string>Status</string>
 	<key>Hidden</key>
 	<string>Verborgen</string>
+	<key>Hidden network</key>
+	<string>Verborgenes Netzwerk</string>
 	<key>Hide</key>
 	<string>Ausblenden</string>
 	<key>Hide Desktop Icons</key>
@@ -1183,13 +1185,13 @@
 	<key>History</key>
 	<string>Verlauf</string>
 	<key>History cleared — click or press ⌘Z to undo</key>
-	<string>Verlauf gelöscht – klicken oder ⌘Z drücken zum Widerrufen</string>
+	<string>Verlauf gelöscht – zum Widerrufen klicken oder ⌘Z drücken</string>
 	<key>History was already tidy</key>
 	<string>Der Verlauf war schon aufgeräumt</string>
 	<key>Home  End</key>
 	<string>Pos1  Ende</string>
 	<key>Hotkeys are system-wide and active while Shotnix is running. The ⌘⇧3 default works best after Apple's screenshot shortcut is disabled.</key>
-	<string>Kurzbefehle gelten systemweit, solange Shotnix läuft. Der Standard ⌘⇧3 funktioniert am besten, wenn Apples Bildschirmfoto-Kurzbefehl deaktiviert ist.</string>
+	<string>Kurzbefehle gelten systemweit, solange Shotnix läuft. Der Standardkurzbefehl ⌘⇧3 funktioniert am besten, wenn Apples Bildschirmfoto-Kurzbefehl deaktiviert ist.</string>
 	<key>Hover the Zoom track</key>
 	<string>Auf die Zoomspur zeigen</string>
 	<key>Hover the zoom track and click to add a zoom, or press Z at the playhead. Drag a zoom to move it; drag its edges to change how long it lasts.</key>
@@ -1367,7 +1369,7 @@
 	<key>Microphone access is off, so this recording has no mic.</key>
 	<string>Der Mikrofonzugriff ist deaktiviert, daher hat diese Aufnahme keinen Mikrofonton.</string>
 	<key>Microphone access is off. Allow Shotnix in System Settings → Privacy &amp; Security → Microphone.</key>
-	<string>Der Mikrofonzugriff ist deaktiviert. Erlaube Shotnix in „Systemeinstellungen“ → „Datenschutz &amp; Sicherheit“ → „Mikrofon“.</string>
+	<string>Der Mikrofonzugriff ist deaktiviert. Erlaube Shotnix unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherheit“ → „Mikrofon“.</string>
 	<key>Microphone disconnected. Now recording from %@.</key>
 	<string>Mikrofon getrennt. Die Aufzeichnung läuft jetzt über „%@“.</string>
 	<key>Microphone disconnected. The recording continues without it.</key>
@@ -1476,6 +1478,8 @@
 	<string>Schönes Bild! Alles ist bereit.</string>
 	<key>Night Current</key>
 	<string>Nachtströmung</string>
+	<key>No</key>
+	<string>Nein</string>
 	<key>No Exports Yet</key>
 	<string>Noch keine Exporte</string>
 	<key>No background</key>
@@ -1523,7 +1527,7 @@
 	<key>No pauses to shorten</key>
 	<string>Keine Pausen zum Kürzen</string>
 	<key>No recordable windows found</key>
-	<string>Keine aufzeichenbaren Fenster gefunden</string>
+	<string>Keine Fenster zum Aufzeichnen gefunden</string>
 	<key>No recording in progress</key>
 	<string>Es läuft keine Aufzeichnung</string>
 	<key>No room after this zoom</key>
@@ -1603,7 +1607,7 @@
 	<key>Open Recording Settings…</key>
 	<string>Aufzeichnungseinstellungen öffnen …</string>
 	<key>Open Settings</key>
-	<string>Einstellungen öffnen</string>
+	<string>Systemeinstellungen öffnen</string>
 	<key>Open System Settings</key>
 	<string>Systemeinstellungen öffnen</string>
 	<key>Open System Settings → Keyboard → Keyboard Shortcuts → Screenshots and turn off the screenshot shortcuts manually.</key>
@@ -1775,7 +1779,7 @@
 	<key>Pure</key>
 	<string>Rein</string>
 	<key>Purple</key>
-	<string>Violett</string>
+	<string>Lila</string>
 	<key>QR Code</key>
 	<string>QR-Code</string>
 	<key>QR Codes</key>
@@ -1809,7 +1813,7 @@
 	<key>Record</key>
 	<string>Aufzeichnen</string>
 	<key>Record (Return)</key>
-	<string>Aufzeichnen (Return)</string>
+	<string>Aufzeichnen (Zeilenschalter)</string>
 	<key>Record Area</key>
 	<string>Bereich aufzeichnen</string>
 	<key>Record Fullscreen</key>
@@ -2109,7 +2113,7 @@
 	<key>Regular</key>
 	<string>Normal</string>
 	<key>Releasing the mouse takes the shot. Hold ⇧ as you release to adjust the selection first — drag its edges, nudge it with the arrow keys, then press Return.</key>
-	<string>Loslassen der Maus löst die Aufnahme aus. Halte beim Loslassen ⇧ gedrückt, um die Auswahl erst anzupassen – ziehe an den Rändern, verschiebe sie mit den Pfeiltasten und drücke dann den Zeilenschalter.</string>
+	<string>Das Loslassen der Maustaste löst die Aufnahme aus. Halte beim Loslassen ⇧ gedrückt, um die Auswahl erst anzupassen – ziehe an den Rändern, verschiebe sie mit den Pfeiltasten und drücke dann den Zeilenschalter.</string>
 	<key>Remove</key>
 	<string>Entfernen</string>
 	<key>Remove %@</key>
@@ -2321,7 +2325,7 @@
 	<key>Screenshots</key>
 	<string>Bildschirmfotos</string>
 	<key>Scroll down to capture</key>
-	<string>Nach unten scrollen zum Aufnehmen</string>
+	<string>Zum Aufnehmen nach unten scrollen</string>
 	<key>Scroll down to capture more</key>
 	<string>Weiter nach unten scrollen</string>
 	<key>Scrolled too fast — scroll back up a little</key>
@@ -2369,7 +2373,7 @@
 	<key>Selection %@ by %@ points</key>
 	<string>Auswahl: %@ mal %@ Punkte</string>
 	<key>Selection %@ by %@ points. Arrow keys move it, Return captures, Escape cancels.</key>
-	<string>Auswahl: %@ mal %@ Punkte. Pfeiltasten verschieben sie, Return nimmt auf, Escape bricht ab.</string>
+	<string>Auswahl: %@ mal %@ Punkte. Pfeiltasten verschieben sie, Zeilenschalter nimmt auf, Escape bricht ab.</string>
 	<key>Set In to Playhead</key>
 	<string>Startpunkt an Abspielposition setzen</string>
 	<key>Set Out to Playhead</key>
@@ -2413,7 +2417,7 @@
 	<key>Shotnix can't save to that folder. Pick another place, like Desktop or Movies, and export again.</key>
 	<string>Shotnix kann nicht in diesem Ordner sichern. Wähle einen anderen Ort, etwa „Schreibtisch“ oder „Filme“, und exportiere erneut.</string>
 	<key>Shotnix can't write to the save folder. Choose another one in Settings → Screenshots.</key>
-	<string>Shotnix kann nicht in den Speicherordner schreiben. Wähle einen anderen in „Einstellungen“ → „Bildschirmfotos“.</string>
+	<string>Shotnix kann nicht in den Zielordner schreiben. Wähle einen anderen unter „Einstellungen“ → „Bildschirmfotos“.</string>
 	<key>Shotnix could not write the file to:
 %@</key>
 	<string>Shotnix konnte die Datei nicht hier sichern:
@@ -2425,7 +2429,7 @@
 	<key>Shotnix is still transcribing</key>
 	<string>Shotnix transkribiert noch</string>
 	<key>Shotnix isn't allowed to record the screen. Turn it on in System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording.</key>
-	<string>Shotnix darf den Bildschirm nicht aufzeichnen. Aktiviere es in „Systemeinstellungen“ → „Datenschutz &amp; Sicherheit“ → „Aufnahme von Bildschirm &amp; Systemaudio“.</string>
+	<string>Shotnix darf den Bildschirm nicht aufzeichnen. Aktiviere es unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherheit“ → „Aufnahme von Bildschirm &amp; Systemaudio“.</string>
 	<key>Shotnix listens to the recording right on this Mac — nothing is uploaded. Then cut the video by deleting words, remove ums and long pauses in one click, and add captions.</key>
 	<string>Shotnix hört sich die Aufnahme direkt auf diesem Mac an – nichts wird hochgeladen. Danach schneidest du das Video, indem du Wörter löschst, entfernst Füllwörter und lange Pausen mit einem Klick und fügst Untertitel hinzu.</string>
 	<key>Shotnix lives here — setup continues next launch</key>
@@ -2581,7 +2585,7 @@ Aktiviere sie unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherhei
 	<key>Spotlight shape</key>
 	<string>Form des Fokus</string>
 	<key>Star on GitHub</key>
-	<string>Stern auf GitHub</string>
+	<string>Stern vergeben</string>
 	<key>Start / end</key>
 	<string>Anfang/Ende</string>
 	<key>Start Over</key>
@@ -2793,7 +2797,7 @@ Aktiviere sie unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherhei
 	<key>Timed Capture (%llds)</key>
 	<string>Aufnahme mit Timer (%lld s)</string>
 	<key>Timed Capture selects the area first, then counts down before the shot — time to open menus or hover states. Esc cancels.</key>
-	<string>Bei der Aufnahme mit Timer wählst du zuerst den Bereich, dann läuft ein Countdown bis zur Aufnahme – Zeit, um Menüs oder Hover-Zustände zu öffnen. Esc bricht ab.</string>
+	<string>Bei der Aufnahme mit Timer wählst du zuerst den Bereich, dann läuft ein Countdown bis zur Aufnahme – Zeit, um Menüs zu öffnen oder Hover-Effekte auszulösen. Esc bricht ab.</string>
 	<key>Timeline</key>
 	<string>Zeitleiste</string>
 	<key>Timeline scale</key>
@@ -3206,6 +3210,8 @@ Aktiviere sie unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherhei
 	<string>Beschreibbar</string>
 	<key>Yellow</key>
 	<string>Gelb</string>
+	<key>Yes</key>
+	<string>Ja</string>
 	<key>Yesterday</key>
 	<string>Gestern</string>
 	<key>You're all set — Shotnix lives here</key>
@@ -3219,11 +3225,11 @@ Aktiviere sie unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherhei
 	<key>Your camera is recorded as its own layer: a live bubble shows while you record (it never appears in the screen capture), and the editor lets you move, resize, and restyle it — or hide it — afterwards.</key>
 	<string>Deine Kamera wird als eigene Ebene aufgezeichnet: Während der Aufzeichnung siehst du eine Live-Blase (sie erscheint nie in der Bildschirmaufnahme), und im Editor kannst du sie danach verschieben, skalieren und neu gestalten – oder ausblenden.</string>
 	<key>Your disk filled up — saved the first %@.</key>
-	<string>Dein Speicherplatz ist voll – die ersten %@ sind gesichert.</string>
+	<string>Dein Speicher ist voll – die ersten %@ sind gesichert.</string>
 	<key>Your disk is almost full, so the recording stopped. It's saved.</key>
 	<string>Dein Speicherplatz ist fast aufgebraucht, daher wurde die Aufzeichnung beendet. Die Aufnahme ist gesichert.</string>
 	<key>Your disk is full, so the recording couldn't be saved.</key>
-	<string>Dein Speicherplatz ist voll, daher konnte die Aufnahme nicht gesichert werden.</string>
+	<string>Dein Speicher ist voll, daher konnte die Aufnahme nicht gesichert werden.</string>
 	<key>Your disk is full. Free up some space (empty the Trash, delete old recordings) or export to another drive, then try again.</key>
 	<string>Deine Festplatte ist voll. Gib Speicherplatz frei (Papierkorb leeren, alte Aufnahmen löschen) oder exportiere auf ein anderes Laufwerk und versuche es erneut.</string>
 	<key>Your edits will be lost if you close without saving or copying them.</key>

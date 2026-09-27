@@ -223,14 +223,14 @@
     "zh-Hans": "摄像头"
   },
   "Camera access is off — allow Shotnix in System Settings → Privacy & Security → Camera.": {
-    "de": "Der Kamerazugriff ist deaktiviert – erlaube Shotnix in „Systemeinstellungen“ → „Datenschutz & Sicherheit“ → „Kamera“.",
+    "de": "Der Kamerazugriff ist deaktiviert – erlaube Shotnix unter „Systemeinstellungen“ → „Datenschutz & Sicherheit“ → „Kamera“.",
     "fr": "L’accès à la caméra est désactivé — autorisez Shotnix dans Réglages Système → Confidentialité et sécurité → Caméra.",
     "zh-Hans": "摄像头访问权限已关闭 — 请在“系统设置”→“隐私与安全性”→“摄像头”中允许 Shotnix。"
   },
   "Camera disconnected": {
     "comment": "Short note in the recording HUD",
     "de": "Kamera getrennt",
-    "fr": "Caméra débranchée",
+    "fr": "Caméra déconnectée",
     "zh-Hans": "摄像头已断开"
   },
   "Camera disconnected.": {
@@ -241,7 +241,7 @@
   "Camera disconnected. The recording continues without it.": {
     "de": "Kamera getrennt. Die Aufzeichnung läuft ohne Kamera weiter.",
     "fr": "Caméra déconnectée. L’enregistrement continue sans elle.",
-    "zh-Hans": "摄像头已断开连接。录制将在没有摄像头的情况下继续。"
+    "zh-Hans": "摄像头已断开连接。录制将继续，但不含摄像头画面。"
   },
   "Camera preview": {
     "de": "Kameravorschau",
@@ -412,7 +412,7 @@
   "Disk almost full": {
     "comment": "Short note in the recording HUD",
     "de": "Speicher fast voll",
-    "fr": "Disque bientôt plein",
+    "fr": "Disque presque plein",
     "zh-Hans": "磁盘将满"
   },
   "Display": {
@@ -443,7 +443,7 @@
   },
   "Drag edges or corners to resize  ·  Arrow keys nudge (⇧ ×10)  ·  Return captures  ·  Esc cancels": {
     "comment": "Hint bar while a selection can still be adjusted",
-    "de": "Größe an Kanten oder Ecken ändern  ·  Pfeiltasten verschieben (⇧ ×10)  ·  Return nimmt auf  ·  Esc bricht ab",
+    "de": "Größe an Kanten oder Ecken ändern  ·  Pfeiltasten verschieben (⇧ ×10)  ·  Zeilenschalter nimmt auf  ·  Esc bricht ab",
     "fr": "Redimensionnez par les bords ou les coins  ·  Flèches pour déplacer (⇧ ×10)  ·  Retour pour capturer  ·  Échap pour annuler",
     "zh-Hans": "拖移边缘或角落以调整大小  ·  方向键微调位置（⇧ ×10）  ·  按 Return 键捕捉  ·  按 Esc 键取消"
   },
@@ -499,7 +499,7 @@
   "Estimated file size. Still screens take less.": {
     "de": "Geschätzte Dateigröße. Ruhige Bildschirminhalte brauchen weniger.",
     "fr": "Taille de fichier estimée. Un écran immobile prend moins de place.",
-    "zh-Hans": "预估的文件大小。静止画面占用更少。"
+    "zh-Hans": "预估文件大小。画面静止时占用空间更少。"
   },
   "Estimated size %@": {
     "de": "Geschätzte Größe: %@",
@@ -507,20 +507,32 @@
     "zh-Hans": "预估大小：%@"
   },
   "Finish or cancel the current recording setup": {
-    "de": "Schließe die Einrichtung der aktuellen Aufzeichnung ab oder brich sie ab",
-    "fr": "Terminez ou annulez d’abord la configuration de l’enregistrement en cours",
-    "zh-Hans": "请先完成或取消当前的录制设置"
+    "de": "Schließe die Vorbereitung der aktuellen Aufzeichnung ab oder brich sie ab",
+    "fr": "Terminez ou annulez d’abord la préparation de l’enregistrement en cours",
+    "zh-Hans": "请先完成或取消当前的录制准备"
   },
   "Frame rate": {
     "de": "Bildrate",
     "fr": "Fréquence d’images",
     "zh-Hans": "帧速率"
   },
-  "Hidden": {
-    "comment": "Whether a Wi-Fi network is hidden",
-    "de": "Verborgen",
-    "fr": "Masqué",
-    "zh-Hans": "隐藏"
+  "Hidden network": {
+    "comment": "Whether a Wi-Fi network is hidden (its value is Yes or No)",
+    "de": "Verborgenes Netzwerk",
+    "fr": "Réseau masqué",
+    "zh-Hans": "隐藏网络"
+  },
+  "Yes": {
+    "comment": "A yes/no value, like whether a Wi-Fi network is hidden",
+    "de": "Ja",
+    "fr": "Oui",
+    "zh-Hans": "是"
+  },
+  "No": {
+    "comment": "A yes/no value, like whether a Wi-Fi network is hidden",
+    "de": "Nein",
+    "fr": "Non",
+    "zh-Hans": "否"
   },
   "High": {
     "comment": "Recording quality",
@@ -564,7 +576,7 @@
     "comment": "Links shown, then all links found",
     "de": "Links (%lld von %lld)",
     "fr": "Liens (%lld sur %lld)",
-    "zh-Hans": "链接（%2$lld 个中的 %1$lld 个）"
+    "zh-Hans": "链接（前 %1$lld 个，共 %2$lld 个）"
   },
   "Max": {
     "comment": "Recording quality",
@@ -614,10 +626,10 @@
   "Microphone access is off, so this recording has no mic.": {
     "de": "Der Mikrofonzugriff ist deaktiviert, daher hat diese Aufnahme keinen Mikrofonton.",
     "fr": "L’accès au micro est désactivé : cet enregistrement n’aura pas de son du micro.",
-    "zh-Hans": "麦克风访问权限已关闭，因此此录制内容没有麦克风声音。"
+    "zh-Hans": "麦克风访问权限已关闭，因此本次录制不含麦克风声音。"
   },
   "Microphone access is off. Allow Shotnix in System Settings → Privacy & Security → Microphone.": {
-    "de": "Der Mikrofonzugriff ist deaktiviert. Erlaube Shotnix in „Systemeinstellungen“ → „Datenschutz & Sicherheit“ → „Mikrofon“.",
+    "de": "Der Mikrofonzugriff ist deaktiviert. Erlaube Shotnix unter „Systemeinstellungen“ → „Datenschutz & Sicherheit“ → „Mikrofon“.",
     "fr": "L’accès au micro est désactivé. Autorisez Shotnix dans Réglages Système → Confidentialité et sécurité → Micro.",
     "zh-Hans": "麦克风访问权限已关闭。请在“系统设置”→“隐私与安全性”→“麦克风”中允许 Shotnix。"
   },
@@ -630,7 +642,7 @@
   "Microphone disconnected. The recording continues without it.": {
     "de": "Mikrofon getrennt. Die Aufzeichnung läuft ohne Mikrofon weiter.",
     "fr": "Micro déconnecté. L’enregistrement continue sans lui.",
-    "zh-Hans": "麦克风已断开连接。录制将在没有麦克风的情况下继续。"
+    "zh-Hans": "麦克风已断开连接。录制将继续，但不含麦克风声音。"
   },
   "Microphone level": {
     "de": "Mikrofonpegel",
@@ -670,10 +682,10 @@
   "No microphone is connected, so this recording has no mic.": {
     "de": "Es ist kein Mikrofon angeschlossen, daher hat diese Aufnahme keinen Mikrofonton.",
     "fr": "Aucun micro n’est connecté : cet enregistrement n’aura pas de son du micro.",
-    "zh-Hans": "未连接麦克风，因此此录制内容没有麦克风声音。"
+    "zh-Hans": "未连接麦克风，因此本次录制不含麦克风声音。"
   },
   "No recordable windows found": {
-    "de": "Keine aufzeichenbaren Fenster gefunden",
+    "de": "Keine Fenster zum Aufzeichnen gefunden",
     "fr": "Aucune fenêtre à enregistrer",
     "zh-Hans": "未找到可录制的窗口"
   },
@@ -842,7 +854,7 @@
     "zh-Hans": "录制"
   },
   "Record (Return)": {
-    "de": "Aufzeichnen (Return)",
+    "de": "Aufzeichnen (Zeilenschalter)",
     "fr": "Enregistrer (Retour)",
     "zh-Hans": "录制（Return 键）"
   },
@@ -875,16 +887,16 @@
   "Recording failed before saving.": {
     "de": "Die Aufzeichnung ist vor dem Sichern fehlgeschlagen.",
     "fr": "L’enregistrement a échoué avant d’être sauvegardé.",
-    "zh-Hans": "录制在存储前失败。"
+    "zh-Hans": "录制失败，未能存储。"
   },
   "Recording keyboard shortcuts": {
     "de": "Tastaturkurzbefehle werden aufgezeichnet",
     "fr": "Enregistrement des raccourcis clavier",
-    "zh-Hans": "正在录制快捷键"
+    "zh-Hans": "正在记录快捷键"
   },
   "Recording stopped early — saved what was captured.": {
     "de": "Die Aufzeichnung wurde vorzeitig beendet – das bisher Aufgezeichnete ist gesichert.",
-    "fr": "L’enregistrement s’est arrêté plus tôt — ce qui a été capturé est sauvegardé.",
+    "fr": "L’enregistrement s’est arrêté prématurément — ce qui a été capturé est sauvegardé.",
     "zh-Hans": "录制提前停止 — 已存储录到的内容。"
   },
   "Recording the camera": {
@@ -901,7 +913,7 @@
     "comment": "Follows the reason the camera couldn't start",
     "de": "Aufzeichnung ohne Kamera.",
     "fr": "Enregistrement sans la caméra.",
-    "zh-Hans": "将在没有摄像头的情况下录制。"
+    "zh-Hans": "本次录制将不含摄像头画面。"
   },
   "Records %@ × %@ pixels (%@ × %@ points)": {
     "de": "Zeichnet %@ × %@ Pixel auf (%@ × %@ Punkte)",
@@ -972,7 +984,7 @@
   },
   "Review the phone number before opening.": {
     "de": "Prüfe die Telefonnummer vor dem Öffnen.",
-    "fr": "Vérifiez le numéro de téléphone avant de l’ouvrir.",
+    "fr": "Vérifiez le numéro de téléphone avant d’appeler.",
     "zh-Hans": "打开前请检查电话号码。"
   },
   "Save": {
@@ -1042,7 +1054,7 @@
     "zh-Hans": "截屏缩略图"
   },
   "Scroll down to capture": {
-    "de": "Nach unten scrollen zum Aufnehmen",
+    "de": "Zum Aufnehmen nach unten scrollen",
     "fr": "Faites défiler vers le bas pour capturer",
     "zh-Hans": "向下滚动以捕捉"
   },
@@ -1126,19 +1138,19 @@
   },
   "Selection %@ by %@ points. Arrow keys move it, Return captures, Escape cancels.": {
     "comment": "VoiceOver announcement when a selection becomes adjustable",
-    "de": "Auswahl: %@ mal %@ Punkte. Pfeiltasten verschieben sie, Return nimmt auf, Escape bricht ab.",
+    "de": "Auswahl: %@ mal %@ Punkte. Pfeiltasten verschieben sie, Zeilenschalter nimmt auf, Escape bricht ab.",
     "fr": "Sélection de %@ sur %@ points. Les flèches la déplacent, Retour capture, Échap annule.",
     "zh-Hans": "选区宽 %@ 点、高 %@ 点。方向键可移动选区，按 Return 键捕捉，按 Esc 键取消。"
   },
   "Shotnix can't write to the save folder. Choose another one in Settings → Screenshots.": {
     "comment": "Names Shotnix's Settings pane where the save folder is chosen",
-    "de": "Shotnix kann nicht in den Speicherordner schreiben. Wähle einen anderen in „Einstellungen“ → „Bildschirmfotos“.",
+    "de": "Shotnix kann nicht in den Zielordner schreiben. Wähle einen anderen unter „Einstellungen“ → „Bildschirmfotos“.",
     "fr": "Shotnix ne peut pas écrire dans le dossier d’enregistrement. Choisissez-en un autre dans Réglages → Captures.",
     "zh-Hans": "Shotnix 无法写入存储文件夹。请在“设置”→“截屏”中选择其他文件夹。"
   },
   "Shotnix isn't allowed to record the screen. Turn it on in System Settings → Privacy & Security → Screen & System Audio Recording.": {
     "comment": "Names the System Settings pane as macOS 15 and later call it",
-    "de": "Shotnix darf den Bildschirm nicht aufzeichnen. Aktiviere es in „Systemeinstellungen“ → „Datenschutz & Sicherheit“ → „Aufnahme von Bildschirm & Systemaudio“.",
+    "de": "Shotnix darf den Bildschirm nicht aufzeichnen. Aktiviere es unter „Systemeinstellungen“ → „Datenschutz & Sicherheit“ → „Aufnahme von Bildschirm & Systemaudio“.",
     "fr": "Shotnix n’est pas autorisé à enregistrer l’écran. Activez-le dans Réglages Système → Confidentialité et sécurité → Enregistrement de l’écran et des sons du système.",
     "zh-Hans": "Shotnix 无权录制屏幕。请在“系统设置”→“隐私与安全性”→“录屏与系统录音”中开启。"
   },
@@ -1200,7 +1212,7 @@
   "System audio couldn't be recorded. Try again without system audio.": {
     "de": "Der Systemton konnte nicht aufgezeichnet werden. Versuche es ohne Systemton erneut.",
     "fr": "Le son de l’ordinateur n’a pas pu être enregistré. Réessayez sans le son de l’ordinateur.",
-    "zh-Hans": "无法录制电脑声音。请关闭电脑声音后重试。"
+    "zh-Hans": "无法录制电脑声音。请关闭“电脑声音”后重试。"
   },
   "Table copied — paste it into a spreadsheet": {
     "de": "Tabelle kopiert – setze sie in eine Tabellenkalkulation ein",
@@ -1250,17 +1262,17 @@
   "The camera stopped. The recording continues without it.": {
     "de": "Die Kamera wurde gestoppt. Die Aufzeichnung läuft ohne Kamera weiter.",
     "fr": "La caméra s’est arrêtée. L’enregistrement continue sans elle.",
-    "zh-Hans": "摄像头已停止。录制将在没有摄像头的情况下继续。"
+    "zh-Hans": "摄像头已停止。录制将继续，但不含摄像头画面。"
   },
   "The microphone couldn't start, so this recording has no mic.": {
     "de": "Das Mikrofon konnte nicht gestartet werden, daher hat diese Aufnahme keinen Mikrofonton.",
     "fr": "Le micro n’a pas pu démarrer : cet enregistrement n’aura pas de son du micro.",
-    "zh-Hans": "麦克风无法启动，因此此录制内容没有麦克风声音。"
+    "zh-Hans": "麦克风无法启动，因此本次录制不含麦克风声音。"
   },
   "The microphone stopped working. The recording continues without it.": {
     "de": "Das Mikrofon funktioniert nicht mehr. Die Aufzeichnung läuft ohne Mikrofon weiter.",
     "fr": "Le micro a cessé de fonctionner. L’enregistrement continue sans lui.",
-    "zh-Hans": "麦克风已停止工作。录制将在没有麦克风的情况下继续。"
+    "zh-Hans": "麦克风已停止工作。录制将继续，但不含麦克风声音。"
   },
   "The recording couldn't be finished — saved the first %@.": {
     "comment": "How much of the recording was kept, like “42 s” or “2:05”",
@@ -1270,7 +1282,7 @@
   },
   "The window you're recording closed. Stop when you're ready — the recording keeps going.": {
     "de": "Das aufgezeichnete Fenster wurde geschlossen. Stoppe, wenn du so weit bist – die Aufzeichnung läuft weiter.",
-    "fr": "La fenêtre enregistrée a été fermée. Arrêtez quand vous voulez — l’enregistrement continue.",
+    "fr": "La fenêtre que vous enregistrez a été fermée. Arrêtez quand vous voulez — l’enregistrement continue.",
     "zh-Hans": "正在录制的窗口已关闭。准备好后再停止 — 录制仍在继续。"
   },
   "To": {
@@ -1313,12 +1325,12 @@
   },
   "Your Mac can't keep up with this recording and is skipping frames. Balanced quality or 30 fps will help.": {
     "de": "Dein Mac kommt bei dieser Aufzeichnung nicht mit und lässt Bilder aus. Die Qualität „Ausgewogen“ oder 30 fps helfen.",
-    "fr": "Votre Mac n’arrive pas à suivre cet enregistrement et saute des images. La qualité Équilibrée ou 30 fps vous aideront.",
-    "zh-Hans": "你的 Mac 跟不上此录制，正在丢帧。选择“均衡”质量或 30 fps 会有帮助。"
+    "fr": "Votre Mac n’arrive pas à suivre cet enregistrement et saute des images. Essayez la qualité Équilibrée ou 30 fps.",
+    "zh-Hans": "你的 Mac 性能跟不上当前录制，正在丢帧。选择“均衡”质量或 30 fps 会有帮助。"
   },
   "Your disk filled up — saved the first %@.": {
     "comment": "How much of the recording was kept, like “42 s” or “2:05”",
-    "de": "Dein Speicherplatz ist voll – die ersten %@ sind gesichert.",
+    "de": "Dein Speicher ist voll – die ersten %@ sind gesichert.",
     "fr": "Votre disque est plein — le début (%@) a été sauvegardé.",
     "zh-Hans": "磁盘已满 — 已存储前 %@。"
   },
@@ -1358,7 +1370,7 @@
     "zh-Hans": "磁盘空间即将用完。大约 %lld 秒后，录制将停止并自动存储。"
   },
   "Your disk is full, so the recording couldn't be saved.": {
-    "de": "Dein Speicherplatz ist voll, daher konnte die Aufnahme nicht gesichert werden.",
+    "de": "Dein Speicher ist voll, daher konnte die Aufnahme nicht gesichert werden.",
     "fr": "Votre disque est plein : l’enregistrement n’a pas pu être sauvegardé.",
     "zh-Hans": "磁盘已满，无法存储录制内容。"
   },
