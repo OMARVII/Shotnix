@@ -492,6 +492,27 @@ final class MarketingAssetsTests: XCTestCase {
         }
     }
 
+    /// The homepage's record → edit → export section plays on one frame:
+    /// the demo's first, through the real renderer at 4K, from the dashboard
+    /// drawn at twice the recording's size and without the pointer (the page
+    /// draws its own). It zooms in 2.1×, so it needs every pixel.
+    func testRenderWorkflowStill() async throws {
+        let recording = work.appendingPathComponent("Northwind demo.mp4")
+        _ = try await writeRecording(to: recording)
+        let model = try await model(for: recording)
+        model.mutate { $0.cursor.visible = false }
+        let source = CIImage(cgImage: dashboard(size: CGSize(width: size.width * 2, height: size.height * 2), state: state(at: 0)))
+        var options = VideoFrameRenderer.Options(frameRate: 60)
+        options.cameraOverride = .rest
+        let pixels = CGSize(width: 3840, height: 2160)
+        let image = VideoFrameRenderer().render(source: source, timelineTime: 0, plan: model.plan, outputSize: pixels, options: options)
+        let rendered = try XCTUnwrap(VideoRenderContext.makeContext().createCGImage(image, from: CGRect(origin: .zero, size: pixels), format: .RGBA8, colorSpace: CGColorSpace(name: CGColorSpace.sRGB)))
+        let url = output.appendingPathComponent("shotnix-take.png")
+        try XCTUnwrap(NSBitmapImageRep(cgImage: rendered).representation(using: .png, properties: [:])).write(to: url)
+        print("MARKETING: \(url.path)")
+        VideoDemoDraftStore.delete(for: recording)
+    }
+
     func testRenderWebsiteVisuals() async throws {
         let recording = work.appendingPathComponent("Northwind demo.mp4")
         let metadata = try await writeRecording(to: recording)
