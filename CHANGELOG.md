@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.26.2-beta] - 2026-09-27
+
+### Changed
+- **Recordings are up to 10 times smaller, with the same picture.** Shotnix now lets the encoder decide how much each frame needs instead of spending a fixed bitrate: a still screen costs almost nothing, text stays sharp, and a playing video gets what it needs. A minute of scrolling text on a Retina screen went from 392 MB to 48 MB, dragged windows are about 40% smaller, and videos playing on screen keep their size and look. Balanced, High, and Max still choose how close to the screen it stays.
+- **The “Made with Shotnix” end card is off unless you switch it on.** It used to be on for every export, and its only switch was in the Export window. Switch it on there if you'd like it.
+
 ## [0.26.1-beta] - 2026-09-27
 
 ### Fixed

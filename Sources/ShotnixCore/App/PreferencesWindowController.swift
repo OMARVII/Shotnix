@@ -1065,7 +1065,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.26.1"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.26.2"
     
     var body: some View {
         PreferencesPane {
@@ -1109,6 +1109,10 @@ struct AboutSettingsView: View {
                 ScrollView {
                     // The release notes stay in English (l10n-ignore); everything around them is localized.
                     Text(verbatim: """
+                    Version 0.26.2
+                    • Recordings are up to 10 times smaller with the same picture: a still screen costs almost nothing, and text stays sharp
+                    • The “Made with Shotnix” end card is off unless you switch it on in the Export window
+
                     Version 0.26.1
                     • Exporting a long recording no longer fills your Mac's memory: an export uses about the same memory from start to finish
                     • Automatic updates install on their own once Shotnix is idle, instead of waiting for you to quit
