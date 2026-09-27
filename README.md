@@ -1,37 +1,66 @@
-<p align="center">
-  <img src="Branding/Shotnix_Icon_Transparent.png" width="128" alt="Shotnix Logo" />
-  <h1 align="center">Shotnix</h1>
-  <p align="center">
-    A fast, focused screenshot and screen recording utility for macOS.<br/>
-    Capture, record, annotate, pin, and extract text — all from your menu bar.
-  </p>
-  <p align="center">
-    <a href="https://shotnix.com/"><img alt="Website" src="https://img.shields.io/badge/website-shotnix.com-79F2FF?style=flat-square"/></a>
-    <a href="https://github.com/OMARVII/Shotnix/releases/latest"><img alt="Download" src="https://img.shields.io/github/v/release/OMARVII/Shotnix?label=Download&style=flat-square&color=6C3FE8"/></a>
-    <img alt="Platform" src="https://img.shields.io/badge/platform-macOS%2013%2B-blue?style=flat-square"/>
-    <a href="LICENSE"><img alt="License" src="https://img.shields.io/github/license/OMARVII/Shotnix?style=flat-square"/></a>
-    <img alt="Swift" src="https://img.shields.io/badge/swift-5.9-orange?style=flat-square"/>
-  </p>
-</p>
+<div align="center">
 
----
+<img src="Branding/Shotnix_Icon_Transparent.png" width="112" alt="Shotnix icon" />
 
-> [!NOTE]
-> **Shotnix is in beta (v0.24.0-beta).** Official downloads are signed and notarized with Apple Developer ID. The source code is available here for review and local builds.
+# Shotnix
 
-<p align="center">
-  <img src="assets/screenshots/shotnix-annotation-editor-demo.png" width="720" alt="Shotnix annotation editor demo" />
-</p>
+**Screenshots, screen recordings, and a video editor for your Mac.**<br/>
+Free and open source. Native, about 11 MB, and your captures never leave your Mac.
 
-## Why Shotnix?
+[![Download for Mac](https://img.shields.io/github/v/release/OMARVII/Shotnix?label=Download%20for%20Mac&style=for-the-badge&color=6C3FE8&logo=apple&logoColor=white)](https://github.com/OMARVII/Shotnix/releases/latest)
+[![GitHub stars](https://img.shields.io/github/stars/OMARVII/Shotnix?style=for-the-badge&color=F5B400&logo=github&label=Stars)](https://github.com/OMARVII/Shotnix/stargazers)
+[![macOS 13 or later](https://img.shields.io/badge/macOS-13%2B-1f2328?style=for-the-badge)](#install)
+[![MIT License](https://img.shields.io/github/license/OMARVII/Shotnix?style=for-the-badge&color=2EA043)](LICENSE)
 
-macOS has built-in screenshot tools, but they stop at capture. Shotnix picks up where they leave off — annotate with arrows, blur sensitive info, pin screenshots to your desktop, extract text with OCR, and access everything from a lightweight menu bar app. No subscription. No account. Just a fast tool that stays out of your way.
+[Website](https://shotnix.com) · [Download](https://github.com/OMARVII/Shotnix/releases/latest) · [What’s new](CHANGELOG.md) · [Roadmap](ROADMAP.md)
 
-Visit **[shotnix.com](https://shotnix.com/)** for the latest download and project overview.
+<a href="https://shotnix.com/media/shotnix-editor-playback.mp4"><img src="assets/readme/hero.avif" width="100%" alt="The Shotnix video editor playing a demo: the preview zooms in on each click, captions light up word by word, a keyboard shortcut appears, and the playhead moves along a timeline of captions, zooms, and clips." /></a>
 
-## Features
+<sub>The Shotnix video editor, playing a demo made from one plain screen recording: zooms on the clicks, a smooth cursor, captions from the narration, and the shortcut on screen.</sub>
 
-**Capture anything**
+<a href="https://shotnix.com/media/shotnix-editor-playback.mp4"><b>▶ Watch it in full quality (Retina, 60 fps)</b></a><br/>
+<sub>The animation above is compressed so this page loads fast. Shotnix exports up to 4K at 60 fps.</sub>
+
+</div>
+
+<img src="assets/screenshots/shotnix-annotation-editor-demo.png" width="100%" alt="Shotnix at a glance: the screenshot editor with arrows, text and backdrops, recording controls, window recording, backgrounds, and one-click export." />
+
+## Why Shotnix
+
+<table>
+<tr>
+<td width="50%"><b>One app for all of it</b><br/>Screenshots, text recognition, pins, History, screen recording, and a full video editor.</td>
+<td width="50%"><b>Native and light</b><br/>Written in Swift for macOS. A small download that opens instantly and stays out of your way.</td>
+</tr>
+<tr>
+<td width="50%"><b>Private by design</b><br/>No account, no cloud, no analytics. Captions and text recognition run on your Mac.</td>
+<td width="50%"><b>Free, for real</b><br/>MIT licensed. No watermark, no subscription. Signed, notarized, and it updates itself.</td>
+</tr>
+</table>
+
+## Screenshots
+
+<img src="assets/readme/screenshot-editor.jpg" width="100%" alt="The Shotnix screenshot editor: a dashboard screenshot on a gradient backdrop with a spotlight on the chart, a callout, numbered steps, blurred customer names, and an arrow." />
+
+- **Capture anything:** an area, a window, the full screen, every display at once, or a long page you scroll, stitched into one image.
+- **Get the frame right:** hold ⇧ as you let go to fine-tune the selection before the shot.
+- **Annotate:** arrows, shapes, text, callouts, numbered steps, a spotlight, highlighters, and blur or pixelate that always covers.
+- **Keep going:** copy text from anything (tables and links included), pin shots on screen, and find any capture again by the text inside it.
+
+## Screen recording and video editing
+
+- **Record** an area, a window, or a display at 60 fps, with your voice, the computer’s sound, and your camera. Pause, resume, and never lose a take, even after a crash.
+- **It opens already edited:** zooms on your clicks, the real macOS cursor redrawn smoothly, and your saved look.
+- **Finish it on your Mac:** captions and edit-by-text from your narration (with translation on macOS 15+), music that dips under your voice, title cards, transitions, and your logo.
+- **Export** MP4 up to 4K at 60 fps or GIF, in the background, or straight to the clipboard.
+
+<img src="assets/readme/recording-bar.png" width="100%" alt="The Shotnix recording bar: area, audio, microphone, pointer, camera and shortcut toggles, quality and frame rate, and the record button." />
+
+<details>
+<summary><b>Every feature</b></summary>
+
+**Capture**
+
 - **Area** — drag to select any region
 - **Window** — click any window to capture it in isolation, with optional drop shadow and transparent padding
 - **Fullscreen** — grab the entire screen instantly
@@ -46,6 +75,7 @@ Visit **[shotnix.com](https://shotnix.com/)** for the latest download and projec
 - **QR and barcode scanning** — decode QR, Code 128, EAN, UPC, Aztec, Data Matrix, PDF417 and more from a selected screen area
 
 **Annotate and edit**
+
 - Arrows, rectangles (square or rounded corners), ellipses, lines, freehand drawing
 - Text and callout bubbles: any size from 10 to 96 pt, bold or regular, several lines; double-click to edit again
 - Highlighter and freehand highlighter for emphasizing content
@@ -57,6 +87,7 @@ Visit **[shotnix.com](https://shotnix.com/)** for the latest download and projec
 - Saves at the capture's full resolution, whichever display the editor is on, and asks before closing or quitting with unsaved edits
 
 **Stay in flow**
+
 - Quick access overlay after every capture — hover to reveal controls (copy, save, edit, pin, close)
 - Drag-and-drop from overlay directly into Finder, Slack, or any app
 - Swipe-to-dismiss overlay with trackpad gesture
@@ -71,6 +102,7 @@ Visit **[shotnix.com](https://shotnix.com/)** for the latest download and projec
 - Global hotkeys that work from anywhere
 
 **Configurable**
+
 - Tabbed settings window (General, Shortcuts, Screenshots, Recording, About)
 - Customizable global hotkeys with one-click default reset
 - Sparkle-powered in-app update checks for official builds
@@ -82,6 +114,8 @@ Visit **[shotnix.com](https://shotnix.com/)** for the latest download and projec
 - Hide desktop icons during capture (without restarting Finder)
 - Launch at login
 - What's New changelog in the About tab
+
+</details>
 
 ## Install
 
@@ -129,6 +163,17 @@ Scrolling capture, text capture (OCR), all displays, timed capture, and the reco
 |---|---|
 | `Ctrl + Cmd + Esc` | Stop recording (from any app) |
 | `Esc` | Stop recording while Shotnix is in front |
+
+## Privacy
+
+Shotnix has no account, no analytics, and no cloud. Everything happens on your Mac. macOS asks before Shotnix can use:
+
+- **Screen Recording:** to take screenshots and recordings.
+- **Microphone and Camera:** only when you turn them on for a recording.
+- **Speech Recognition:** to make captions, on this Mac.
+- **Accessibility** (optional): to show the keyboard shortcuts you press in a recording.
+
+The app talks to the internet only to check for updates.
 
 ## Architecture
 
@@ -187,7 +232,9 @@ The app still keeps dependencies intentionally narrow.
 
 ## Contributing
 
-Contributions are welcome. Open an issue first to discuss what you'd like to change.
+Contributions are welcome. Open an issue first to discuss what you’d like to change.
+
+If Shotnix saves you time, a ⭐ on GitHub helps other people find it.
 
 ## License
 

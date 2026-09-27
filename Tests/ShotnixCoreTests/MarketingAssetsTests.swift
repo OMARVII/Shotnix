@@ -8,6 +8,11 @@ import XCTest
 /// exported by the real exporter and editor screenshots drawn by the real
 /// UI and renderer. Opt-in:
 /// SHOTNIX_MARKETING_DIR=/path swift test --filter MarketingAssetsTests
+///
+/// The README's images (assets/readme) come from the same run: the screenshot
+/// editor snapshot as a JPEG, and scripts/readme-hero.sh turns the editor
+/// frame and the demo into the animated hero. The recording bar is
+/// RecordingBarTests' snapshot.
 @MainActor
 final class MarketingAssetsTests: XCTestCase {
     override class func setUp() {
@@ -616,5 +621,64 @@ final class MarketingAssetsTests: XCTestCase {
         let url = output.appendingPathComponent("shotnix-editor-demo.json")
         try encoder.encode(manifest).write(to: url)
         print("MARKETING: \(url.path)")
+    }
+
+    // MARK: README visuals
+
+    /// The screenshot editor, rendered from the real app on the demo
+    /// dashboard (a 2520 × 1580 Retina screenshot, 1260 × 790 points).
+    func testRenderReadmeVisuals() throws {
+        let screenshot = NSImage(cgImage: dashboard(size: size, state: ScreenState(selectedCard: 0)), size: NSSize(width: size.width / 2, height: size.height / 2))
+
+        // Image points, top-left origin (Layout minus the window's origin).
+        func local(_ rect: CGRect) -> CGRect { rect.offsetBy(dx: -Layout.window.minX, dy: -Layout.window.minY) }
+        func local(_ point: CGPoint) -> CGPoint { CGPoint(x: point.x - Layout.window.minX, y: point.y - Layout.window.minY) }
+        let accent = NSColor(srgbRed: 0.93, green: 0.2, blue: 0.47, alpha: 1)
+
+        let controller = AnnotationWindowController(image: screenshot, historyItem: nil, historyManager: nil)
+        controller.showToast = { _, _ in }
+        let window = try XCTUnwrap(controller.window)
+        window.appearance = NSAppearance(named: .darkAqua)
+        let canvas = controller.canvas
+
+        let spotlight = SpotlightAnnotation(rect: local(Layout.chart).insetBy(dx: -6, dy: -6))
+        let peak = local(Layout.point(3))
+        let callout = CalloutAnnotation(origin: CGPoint(x: peak.x + 70, y: peak.y - 96), tail: CGPoint(x: peak.x + 6, y: peak.y - 8))
+        callout.text = "Best day this week"
+        callout.color = accent
+        callout.fontSize = 20
+        let content = local(Layout.content)
+        let search = CGRect(x: content.maxX - 132 - 256, y: content.minY - 2, width: 240, height: 34)
+        let pill = CGRect(x: content.maxX - 132, y: content.minY - 2, width: 132, height: 34)
+        let stepOne = NumberedStepAnnotation(center: CGPoint(x: search.minX - 24, y: search.midY), number: 1)
+        let stepTwo = NumberedStepAnnotation(center: CGPoint(x: pill.minX - 20, y: pill.midY), number: 2)
+        stepOne.color = accent
+        stepTwo.color = accent
+        let table = local(Layout.table)
+        let names = BlurAnnotation(rect: CGRect(x: table.minX + 12, y: table.minY + 42, width: 132, height: 112))
+        let pending = CGPoint(x: table.maxX - 68, y: table.minY + 52 + 72 + 12)
+        let arrow = ArrowAnnotation(start: CGPoint(x: pending.x + 96, y: pending.y - 120), end: CGPoint(x: pending.x + 40, y: pending.y - 6))
+        arrow.color = accent
+        arrow.lineWidth = 5
+        canvas.objects = [spotlight, names, callout, stepOne, stepTwo, arrow]
+        var backdrop = ScreenshotBackgroundOptions.editorDefault
+        backdrop.isEnabled = true
+        canvas.setBackgroundOptions(backdrop)
+        canvas.onLayoutChanged?(true) // fit the larger canvas, as opening does
+        canvas.activeTool = .arrow
+        canvas.selectedObjects = []
+        try snapshot(of: try XCTUnwrap(window.contentView), name: "shotnix-screenshot-editor")
+        window.close()
+    }
+
+    private func snapshot(of view: NSView, name: String) throws {
+        view.layoutSubtreeIfNeeded()
+        let rep = try XCTUnwrap(NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: Int(view.bounds.width * 2), pixelsHigh: Int(view.bounds.height * 2),
+                                                 bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true, isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0))
+        rep.size = view.bounds.size
+        view.cacheDisplay(in: view.bounds, to: rep)
+        let url = output.appendingPathComponent("\(name).png")
+        try XCTUnwrap(rep.representation(using: .png, properties: [:])).write(to: url)
+        print("README VISUAL: \(url.path)")
     }
 }
