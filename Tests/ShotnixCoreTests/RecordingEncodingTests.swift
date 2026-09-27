@@ -220,24 +220,27 @@ final class RecordingEncodingTests: XCTestCase {
     }
 
     /// A Retina area records in the plain High profile that every player
-    /// opens, not High 4:4:4 Predictive (what the encoder wrote when it was
-    /// asked for top quality instead of a bitrate).
+    /// opens, at every quality, never High 4:4:4 Predictive (what the
+    /// encoder writes when asked for top quality).
     func testH264RecordingsUseTheHighProfile() async throws {
-        let url = FileManager.default.temporaryDirectory.appendingPathComponent("h264-\(UUID().uuidString).mp4")
-        defer { try? FileManager.default.removeItem(at: url) }
-        let format = RecordingVideoFormat.plan(width: 3010, height: 1716, fps: 60, hevcAvailable: true)
-        XCTAssertEqual(format.codec, .h264)
-        let track = try await encodeFrames(format: format, to: url)
-        let formats = try await track.load(.formatDescriptions)
-        let description = try XCTUnwrap(formats.first)
-        let atoms = CMFormatDescriptionGetExtension(description, extensionKey: kCMFormatDescriptionExtension_SampleDescriptionExtensionAtoms) as? [String: Any]
-        let avcC = try XCTUnwrap(atoms?["avcC"] as? Data)
-        XCTAssertEqual(avcC[avcC.startIndex + 1], 100, "profile_idc 100 is High; 244 is High 4:4:4 Predictive")
+        for quality in [RecordingQuality.balanced, .high, .max] {
+            XCTAssertLessThan(quality.encoderQuality, 0.9)
+            let url = FileManager.default.temporaryDirectory.appendingPathComponent("h264-\(UUID().uuidString).mp4")
+            defer { try? FileManager.default.removeItem(at: url) }
+            let format = RecordingVideoFormat.plan(width: 3010, height: 1716, fps: 60, hevcAvailable: true)
+            XCTAssertEqual(format.codec, .h264)
+            let track = try await encodeFrames(format: format, quality: quality, to: url)
+            let formats = try await track.load(.formatDescriptions)
+            let description = try XCTUnwrap(formats.first)
+            let atoms = CMFormatDescriptionGetExtension(description, extensionKey: kCMFormatDescriptionExtension_SampleDescriptionExtensionAtoms) as? [String: Any]
+            let avcC = try XCTUnwrap(atoms?["avcC"] as? Data)
+            XCTAssertEqual(avcC[avcC.startIndex + 1], 100, "\(quality): profile_idc 100 is High; 244 is High 4:4:4 Predictive")
+        }
     }
 
     /// Six frames through the engine's own writer; the video track it made.
-    private func encodeFrames(format: RecordingVideoFormat, to url: URL) async throws -> AVAssetTrack {
-        let handles = try RecordingEngine.makeWriter(url: url, format: format, fps: 60, quality: .high, microphone: false, systemAudio: false)
+    private func encodeFrames(format: RecordingVideoFormat, quality: RecordingQuality = .high, to url: URL) async throws -> AVAssetTrack {
+        let handles = try RecordingEngine.makeWriter(url: url, format: format, fps: 60, quality: quality, microphone: false, systemAudio: false)
         handles.writer.startSession(atSourceTime: .zero)
         for frame in 0..<6 {
             var buffer: CVPixelBuffer?

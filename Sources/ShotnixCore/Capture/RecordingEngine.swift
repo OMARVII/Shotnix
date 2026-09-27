@@ -1404,13 +1404,16 @@ final class RecordingEngine: NSObject {
         videoSettings(format: RecordingVideoFormat.plan(width: width, height: height, fps: fps), fps: fps, quality: quality)
     }
 
-    /// The bitrate sets the quality. No AVVideoQualityKey: at 1.0 the H.264
-    /// encoder goes near-lossless, ignores the bitrate (several times the
-    /// plan) and writes the High 4:4:4 Predictive profile, which many
-    /// players and sites can't open.
+    /// The encoder's quality decides how many bits each frame gets: a still
+    /// screen costs almost nothing, text stays sharp, and a playing video
+    /// gets what it needs. Against a fixed bitrate that's 2 to 10 times
+    /// smaller for typical screens with the same picture. Kept below 0.9: at
+    /// 1.0 the H.264 encoder goes near-lossless in the High 4:4:4 Predictive
+    /// profile, which many players and sites can't open.
     nonisolated static func videoSettings(format: RecordingVideoFormat, fps: Int, quality: RecordingQuality) -> [String: Any] {
         var compression: [String: Any] = [
             AVVideoAverageBitRateKey: quality.bitrate(width: format.width, height: format.height, fps: fps, codec: format.codec),
+            AVVideoQualityKey: quality.encoderQuality,
             AVVideoExpectedSourceFrameRateKey: fps,
             AVVideoMaxKeyFrameIntervalKey: fps,
             AVVideoAllowFrameReorderingKey: false,
@@ -1806,6 +1809,18 @@ enum RecordingQuality: String {
         case .balanced: L("Balanced")
         case .high: L("High")
         case .max: L("Max")
+        }
+    }
+
+    /// The encoder's quality (see `RecordingEngine.videoSettings`), measured
+    /// on text, video, gradients, dragged windows and typing: 0.8 looks the
+    /// same as the old fixed bitrate even zoomed in; 0.7 starts to soften a
+    /// playing video; 0.88 is as close to the screen as the High profile gets.
+    var encoderQuality: Double {
+        switch self {
+        case .balanced: 0.70
+        case .high: 0.80
+        case .max: 0.88
         }
     }
 
