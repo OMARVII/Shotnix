@@ -1404,12 +1404,15 @@ final class RecordingEngine: NSObject {
         videoSettings(format: RecordingVideoFormat.plan(width: width, height: height, fps: fps), fps: fps, quality: quality)
     }
 
+    /// The bitrate sets the quality. No AVVideoQualityKey: at 1.0 the H.264
+    /// encoder goes near-lossless, ignores the bitrate (several times the
+    /// plan) and writes the High 4:4:4 Predictive profile, which many
+    /// players and sites can't open.
     nonisolated static func videoSettings(format: RecordingVideoFormat, fps: Int, quality: RecordingQuality) -> [String: Any] {
         var compression: [String: Any] = [
             AVVideoAverageBitRateKey: quality.bitrate(width: format.width, height: format.height, fps: fps, codec: format.codec),
             AVVideoExpectedSourceFrameRateKey: fps,
             AVVideoMaxKeyFrameIntervalKey: fps,
-            AVVideoQualityKey: 1.0,
             AVVideoAllowFrameReorderingKey: false,
         ]
         switch format.codec {

@@ -212,6 +212,31 @@ final class RecordingEncodingTests: XCTestCase {
         defer { try? FileManager.default.removeItem(at: url) }
         let format = RecordingVideoFormat.plan(width: 5120, height: 2880, fps: 60, hevcAvailable: true)
         XCTAssertEqual(format.codec, .hevc)
+        let track = try await encodeFrames(format: format, to: url)
+        let size = try await track.load(.naturalSize)
+        XCTAssertEqual(size, CGSize(width: 5120, height: 2880))
+        let formats = try await track.load(.formatDescriptions)
+        XCTAssertEqual(formats.first.map { CMFormatDescriptionGetMediaSubType($0) }, kCMVideoCodecType_HEVC)
+    }
+
+    /// A Retina area records in the plain High profile that every player
+    /// opens, not High 4:4:4 Predictive (what the encoder wrote when it was
+    /// asked for top quality instead of a bitrate).
+    func testH264RecordingsUseTheHighProfile() async throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("h264-\(UUID().uuidString).mp4")
+        defer { try? FileManager.default.removeItem(at: url) }
+        let format = RecordingVideoFormat.plan(width: 3010, height: 1716, fps: 60, hevcAvailable: true)
+        XCTAssertEqual(format.codec, .h264)
+        let track = try await encodeFrames(format: format, to: url)
+        let formats = try await track.load(.formatDescriptions)
+        let description = try XCTUnwrap(formats.first)
+        let atoms = CMFormatDescriptionGetExtension(description, extensionKey: kCMFormatDescriptionExtension_SampleDescriptionExtensionAtoms) as? [String: Any]
+        let avcC = try XCTUnwrap(atoms?["avcC"] as? Data)
+        XCTAssertEqual(avcC[avcC.startIndex + 1], 100, "profile_idc 100 is High; 244 is High 4:4:4 Predictive")
+    }
+
+    /// Six frames through the engine's own writer; the video track it made.
+    private func encodeFrames(format: RecordingVideoFormat, to url: URL) async throws -> AVAssetTrack {
         let handles = try RecordingEngine.makeWriter(url: url, format: format, fps: 60, quality: .high, microphone: false, systemAudio: false)
         handles.writer.startSession(atSourceTime: .zero)
         for frame in 0..<6 {
@@ -230,10 +255,6 @@ final class RecordingEncodingTests: XCTestCase {
         await handles.writer.finishWriting()
         XCTAssertEqual(handles.writer.status, .completed, "\(String(describing: handles.writer.error))")
         let tracks = try await AVURLAsset(url: url).loadTracks(withMediaType: .video)
-        let track = try XCTUnwrap(tracks.first)
-        let size = try await track.load(.naturalSize)
-        XCTAssertEqual(size, CGSize(width: 5120, height: 2880))
-        let formats = try await track.load(.formatDescriptions)
-        XCTAssertEqual(formats.first.map { CMFormatDescriptionGetMediaSubType($0) }, kCMVideoCodecType_HEVC)
+        return try XCTUnwrap(tracks.first)
     }
 }
