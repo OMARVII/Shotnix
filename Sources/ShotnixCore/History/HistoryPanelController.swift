@@ -907,7 +907,10 @@ final class HistoryCollectionItem: NSCollectionViewItem {
         detailLabel.frame = NSRect(x: 14, y: 33, width: 162, height: 13)
         container.addSubview(detailLabel)
 
-        let (copyWidth, editWidth) = Self.buttonWidths(copy: copyBtn.title, edit: editBtn.title)
+        let layout = Self.buttonLayout(copy: copyBtn.title, edit: editBtn.title)
+        let (copyWidth, editWidth) = (layout.copy, layout.edit)
+        copyBtn.font = .systemFont(ofSize: layout.fontSize, weight: .semibold)
+        editBtn.font = .systemFont(ofSize: layout.fontSize, weight: .semibold)
         copyBtn.frame = NSRect(x: 14, y: 7, width: copyWidth, height: 24)
         copyBtn.target = self
         copyBtn.action = #selector(copyImage)
@@ -924,14 +927,22 @@ final class HistoryCollectionItem: NSCollectionViewItem {
     }
 
     /// Copy and Edit share the card's 148 pt: 74 each as designed, split by
-    /// need when a title wants more than that (Скопировать).
-    nonisolated static func buttonWidths(copy: String, edit: String) -> (CGFloat, CGFloat) {
-        let font = NSFont.systemFont(ofSize: 12, weight: .semibold)
-        let copyNeeds = TextFitting.width(of: copy, font: font) + 10
-        let editNeeds = TextFitting.width(of: edit, font: font) + 10
-        guard copyNeeds > 74 || editNeeds > 74 else { return (74, 74) }
-        let spare = max(0, 148 - copyNeeds - editNeeds)
-        return (floor(copyNeeds + spare / 2), ceil(editNeeds + spare / 2))
+    /// need when a title wants more than that (Скопировать), and a little
+    /// smaller when both words together still don't fit (Скопіювати ·
+    /// Редагувати).
+    nonisolated static func buttonLayout(copy: String, edit: String) -> (copy: CGFloat, edit: CGFloat, fontSize: CGFloat) {
+        let sizes: [CGFloat] = [12, 11.5, 11, 10.5]
+        for size in sizes {
+            let font = NSFont.systemFont(ofSize: size, weight: .semibold)
+            let copyNeeds = TextFitting.width(of: copy, font: font) + 10
+            let editNeeds = TextFitting.width(of: edit, font: font) + 10
+            if size == 12, copyNeeds <= 74, editNeeds <= 74 { return (74, 74, 12) }
+            if copyNeeds + editNeeds <= 148 || size == sizes.last {
+                let spare = max(0, 148 - copyNeeds - editNeeds)
+                return (floor(copyNeeds + spare / 2), ceil(editNeeds + spare / 2), size)
+            }
+        }
+        return (74, 74, 12)
     }
 
     override var isSelected: Bool {

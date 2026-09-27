@@ -153,12 +153,14 @@ final class LocalizedLayoutTests: XCTestCase {
     }
 
     func testHistoryCardButtonsFitEveryLanguage() {
-        let font = NSFont.systemFont(ofSize: 12, weight: .semibold)
         L10n.use("en")
-        XCTAssertTrue(HistoryCollectionItem.buttonWidths(copy: L("Copy"), edit: L("Edit")) == (74, 74), "English looks exactly as designed")
+        let english = HistoryCollectionItem.buttonLayout(copy: L("Copy"), edit: L("Edit"))
+        XCTAssertTrue(english == (74, 74, 12), "English looks exactly as designed")
         for language in Self.languages {
             L10n.use(language)
-            let (copy, edit) = HistoryCollectionItem.buttonWidths(copy: L("Copy"), edit: L("Edit"))
+            let (copy, edit, size) = HistoryCollectionItem.buttonLayout(copy: L("Copy"), edit: L("Edit"))
+            let font = NSFont.systemFont(ofSize: size, weight: .semibold)
+            XCTAssertGreaterThanOrEqual(size, 10.5, "\(language): still readable")
             XCTAssertLessThanOrEqual(copy + edit, 148.5, "\(language): both stay on the card, 14 pt apart")
             XCTAssertLessThanOrEqual(TextFitting.width(of: L("Copy"), font: font) + 8, copy, "\(language): “\(L("Copy"))” fits")
             XCTAssertLessThanOrEqual(TextFitting.width(of: L("Edit"), font: font) + 8, edit, "\(language): “\(L("Edit"))” fits")
