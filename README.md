@@ -117,6 +117,10 @@ Free and open source. Native, about 11 MB, and your captures never leave your Ma
 
 </details>
 
+## Languages
+
+Shotnix speaks **English, Deutsch, Français, and 简体中文**, from the menu bar to the video editor. It follows your Mac’s language; to use another one, pick it in Shotnix’s Settings → General → Language. The translations live in [`Localization/`](Localization/), and corrections from native speakers are welcome.
+
 ## Install
 
 ### Download (recommended)
@@ -192,6 +196,7 @@ Sources/
     ├── Overlay/       Quick access thumbnail, pinned windows, toasts
     ├── Video/         Video editor: timeline, zooms, cursor, camera, captions, sound, export
     └── Utilities/     Image export, permissions, desktop icon toggle
+Localization/          String Catalog, translations, and glossary (scripts/localize.py)
 ```
 
 ## Dependencies
@@ -228,11 +233,11 @@ The app still keeps dependencies intentionally narrow.
 - [x] History retention, cleanup, and type filters
 - [x] Pause/resume, discard, and crash-safe recordings
 - [x] Video editor: music, image overlays, title cards, transitions, multi-recording projects, caption looks and translation
-- [ ] Localization
+- [x] Localization: German, French, and Simplified Chinese
 
 ## Contributing
 
-Contributions are welcome. Open an issue first to discuss what you’d like to change.
+Contributions are welcome. Open an issue first to discuss what you’d like to change. Translation fixes are especially welcome: see [`Localization/GLOSSARY.md`](Localization/GLOSSARY.md).
 
 If Shotnix saves you time, a ⭐ on GitHub helps other people find it.
 
