@@ -17,4 +17,13 @@ final class AppUpdateConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.feedURL.absoluteString, "https://shotnix.com/downloads/appcast.xml")
         XCTAssertEqual(configuration.publicEDKey, "abcdefghijklmnopqrstuvwxyz")
     }
+
+    /// A downloaded update installs by itself only when nothing would notice
+    /// Shotnix quitting and reopening.
+    func testDownloadedUpdateWaitsForAQuietMoment() {
+        XCTAssertTrue(QuietUpdateInstaller.isQuiet(busy: false, openWindows: 0, idleSeconds: 60))
+        XCTAssertFalse(QuietUpdateInstaller.isQuiet(busy: true, openWindows: 0, idleSeconds: 600), "a recording or export is running")
+        XCTAssertFalse(QuietUpdateInstaller.isQuiet(busy: false, openWindows: 1, idleSeconds: 600), "an editor, Settings or a pin is open")
+        XCTAssertFalse(QuietUpdateInstaller.isQuiet(busy: false, openWindows: 0, idleSeconds: 20), "someone is typing or pointing")
+    }
 }

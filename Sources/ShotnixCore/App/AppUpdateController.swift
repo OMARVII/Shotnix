@@ -1,4 +1,4 @@
-import Foundation
+import AppKit
 import Sparkle
 
 @MainActor
@@ -30,12 +30,71 @@ final class AppUpdateController: NSObject, SPUUpdaterDelegate {
         }
     }
 
+    /// With automatic updates on, Sparkle downloads an update in the
+    /// background and installs it when the app quits. A menu bar app is
+    /// rarely quit, so the update could wait for days: Shotnix installs it
+    /// itself as soon as it's quiet (it quits and reopens in a moment).
+    nonisolated func updater(_ updater: SPUUpdater, willInstallUpdateOnQuit item: SUAppcastItem, immediateInstallationBlock immediateInstallHandler: @escaping () -> Void) -> Bool {
+        MainActor.assumeIsolated {
+            quietInstaller.schedule(immediateInstallHandler)
+            return true
+        }
+    }
+
+    private let quietInstaller = QuietUpdateInstaller()
+
     var canCheckForUpdates: Bool {
         updaterController?.updater.canCheckForUpdates ?? false
     }
 
     func checkForUpdates(_ sender: Any?) {
         updaterController?.checkForUpdates(sender)
+    }
+}
+
+/// Holds a downloaded update until nothing would notice Shotnix quitting and
+/// reopening: no recording or export running, no window open (an editor,
+/// Settings, a pin, the capture overlay), and a minute without typing or
+/// pointing, so the next shortcut isn't the one that lands mid-relaunch.
+@MainActor
+final class QuietUpdateInstaller {
+    static let idleSeconds: Double = 60
+    private var install: (() -> Void)?
+    private var timer: Timer?
+
+    func schedule(_ install: @escaping () -> Void) {
+        self.install = install
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(withTimeInterval: 30, repeats: true) { [weak self] _ in
+            MainActor.assumeIsolated { self?.installIfQuiet() }
+        }
+        installIfQuiet()
+    }
+
+    private func installIfQuiet() {
+        guard let install, Self.isQuiet(busy: AppTermination.isBusy, openWindows: Self.openWindowCount, idleSeconds: Self.systemIdleSeconds) else { return }
+        self.install = nil
+        timer?.invalidate()
+        timer = nil
+        install()
+    }
+
+    nonisolated static func isQuiet(busy: Bool, openWindows: Int, idleSeconds: Double) -> Bool {
+        !busy && openWindows == 0 && idleSeconds >= Self.idleSeconds
+    }
+
+    /// Windows someone could be looking at; the menu bar icon's own window
+    /// doesn't count.
+    private static var openWindowCount: Int {
+        NSApp.windows.filter {
+            $0.isVisible && $0.alphaValue > 0 && $0.frame.width > 1 && $0.frame.height > 1
+                && !String(describing: type(of: $0)).contains("StatusBar")
+        }.count
+    }
+
+    /// Seconds since the last key press, click or pointer move, anywhere.
+    private static var systemIdleSeconds: Double {
+        CGEventSource.secondsSinceLastEventType(.combinedSessionState, eventType: CGEventType(rawValue: ~0)!)
     }
 }
 
