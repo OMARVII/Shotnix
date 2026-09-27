@@ -692,7 +692,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         return [
             ShotnixMenuSection(id: "capture", title: L("Capture"), actions: captureActions),
-            ShotnixMenuSection(id: "record", title: L("Record"), actions: {
+            ShotnixMenuSection(id: "record", title: L("Recording"), actions: {
                 var recordActions = [
                     action(id: "record.area", title: L("Record Area"), symbol: "record.circle", shortcut: .shotnixRecordArea, isEnabled: captureEngine?.recordingActionsEnabled ?? false) { [weak self] in self?.recordArea() },
                     action(id: "record.window", title: L("Record Window"), symbol: "macwindow.badge.plus", shortcut: .shotnixRecordWindow, isEnabled: captureEngine?.recordingActionsEnabled ?? false) { [weak self] in self?.recordWindow() },

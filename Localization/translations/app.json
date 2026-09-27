@@ -1431,7 +1431,7 @@
     "zh-Hans" : "就绪 · %lld 个可选快捷键未设置"
   },
   "Record" : {
-    "comment" : "Starts a screen recording (verb); also the menu section with the recording actions",
+    "comment" : "Starts a screen recording (verb)",
     "de" : "Aufzeichnen",
     "fr" : "Enregistrer",
     "zh-Hans" : "录制"
@@ -1452,7 +1452,7 @@
     "zh-Hans" : "录制电脑声音"
   },
   "Recording" : {
-    "comment" : "Settings tab and Shortcuts section for screen recording",
+    "comment" : "Settings tab, Shortcuts section and menu section for screen recording",
     "de" : "Aufzeichnung",
     "fr" : "Enregistrement",
     "zh-Hans" : "录制"

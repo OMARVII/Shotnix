@@ -127,6 +127,11 @@ final class HistoryPanelController: NSObject {
             typeFilter.addItem(withTitle: type.title)
             typeFilter.lastItem?.representedObject = type.rawValue
         }
+        // Grows to the left when a language's longest kind needs more room
+        // than English, so no choice is cut off.
+        typeFilter.sizeToFit()
+        let filterWidth = max(120, ceil(typeFilter.frame.width))
+        typeFilter.frame = NSRect(x: 512 - filterWidth, y: 44, width: filterWidth, height: 30)
         typeFilter.target = self
         typeFilter.action = #selector(typeFilterChanged(_:))
         typeFilter.toolTip = L("Show one kind of capture")
