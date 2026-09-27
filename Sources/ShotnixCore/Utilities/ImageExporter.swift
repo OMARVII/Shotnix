@@ -20,11 +20,11 @@ enum ImageExporter {
         var errorDescription: String? {
             switch self {
             case .pngEncodingFailed:
-                "Could not encode screenshot as PNG."
+                L("Could not encode screenshot as PNG.")
             case .encodingFailed:
-                "Could not encode the screenshot."
+                L("Could not encode the screenshot.")
             case .noImageData:
-                "The screenshot has no image data."
+                L("The screenshot has no image data.")
             }
         }
     }
@@ -172,15 +172,15 @@ enum ImageExporter {
         let folderName = FileManager.default.displayName(atPath: directory.path)
         let folder = folderName.isEmpty ? directory.lastPathComponent : folderName
         if isOutOfSpace(error) {
-            return "Couldn't save the screenshot: the disk is full. Free up space or pick another save folder."
+            return L("Couldn't save the screenshot: the disk is full. Free up space or pick another save folder.")
         }
         if isPermissionDenied(error) {
-            return "Couldn't save the screenshot: Shotnix can't write to \(folder). Click to choose another save folder."
+            return L("Couldn't save the screenshot: Shotnix can't write to \(folder). Click to choose another save folder.")
         }
         if error is ExportError {
-            return "Couldn't save the screenshot: it could not be encoded as \(Settings.screenshotFormat.uppercased())."
+            return L("Couldn't save the screenshot: it could not be encoded as \(Settings.screenshotFormat.uppercased()).")
         }
-        return "Couldn't save the screenshot to \(folder). Click to check the save folder."
+        return L("Couldn't save the screenshot to \(folder). Click to check the save folder.")
     }
 
     private static func posixCodes(in error: Error) -> [Int] {
@@ -347,13 +347,13 @@ enum ImageExporter {
     private static func showSaveFailedAlert(for url: URL?, presentingWindow: NSWindow?) {
         let alert = NSAlert()
         alert.alertStyle = .warning
-        alert.messageText = "Could Not Save Screenshot"
+        alert.messageText = L("Could Not Save Screenshot")
         if let url {
-            alert.informativeText = "Shotnix could not write the file to:\n\(url.path)"
+            alert.informativeText = L("Shotnix could not write the file to:\n\(url.path)")
         } else {
-            alert.informativeText = "The save panel did not return a destination. Please try saving again."
+            alert.informativeText = L("The save panel did not return a destination. Please try saving again.")
         }
-        alert.addButton(withTitle: "OK")
+        alert.addButton(withTitle: L("OK"))
 
         if let presentingWindow, presentingWindow.isVisible {
             alert.beginSheetModal(for: presentingWindow)

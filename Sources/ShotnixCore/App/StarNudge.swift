@@ -54,7 +54,7 @@ extension StarNudge {
         let screen = NSScreen.screenContaining(rect: rect) ?? NSScreen.main
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
             ToastWindow.show(
-                message: "Enjoying Shotnix? Click to star it on GitHub ★",
+                message: L("Enjoying Shotnix? Click to star it on GitHub ★"),
                 duration: 6,
                 on: screen
             ) {

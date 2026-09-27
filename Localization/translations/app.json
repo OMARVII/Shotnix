@@ -1,0 +1,2125 @@
+{
+  "%@ (%@)" : {
+    "comment" : "Tool tooltip: its name, then its key",
+    "de" : "%@ (%@)",
+    "fr" : "%@ (%@)",
+    "zh-Hans" : "%@（%@）"
+  },
+  "%@ area" : {
+    "comment" : "Welcome hint: a shortcut, then what it captures",
+    "de" : "%@ Bereich",
+    "fr" : "%@ zone",
+    "zh-Hans" : "%@ 区域"
+  },
+  "%@ fullscreen" : {
+    "comment" : "Welcome hint: a shortcut, then what it captures",
+    "de" : "%@ Vollbild",
+    "fr" : "%@ plein écran",
+    "zh-Hans" : "%@ 全屏"
+  },
+  "%@ pt" : {
+    "comment" : "A text size in points",
+    "de" : "%@ pt",
+    "fr" : "%@ pt",
+    "zh-Hans" : "%@ 磅"
+  },
+  "%@ window" : {
+    "comment" : "Welcome hint: a shortcut, then what it captures",
+    "de" : "%@ Fenster",
+    "fr" : "%@ fenêtre",
+    "zh-Hans" : "%@ 窗口"
+  },
+  "%@ — Shotnix lives in your menu bar" : {
+    "comment" : "Welcome hint: the list of shortcuts, then where Shotnix lives",
+    "de" : "%@ – Shotnix findest du in der Menüleiste",
+    "fr" : "%@ — Shotnix est dans la barre des menus",
+    "zh-Hans" : "%@ — Shotnix 位于菜单栏中"
+  },
+  "%lld annotations" : {
+    "de" : {
+      "one" : "%lld Beschriftung",
+      "other" : "%lld Beschriftungen"
+    },
+    "en" : {
+      "one" : "%lld annotation",
+      "other" : "%lld annotations"
+    },
+    "fr" : {
+      "one" : "%lld annotation",
+      "other" : "%lld annotations"
+    },
+    "zh-Hans" : "%lld 个标注"
+  },
+  "%lld annotations, %@ selected" : {
+    "comment" : "VoiceOver: the number of annotations, then the selected one's name",
+    "de" : {
+      "one" : "%lld Beschriftung, %@ ausgewählt",
+      "other" : "%lld Beschriftungen, %@ ausgewählt"
+    },
+    "en" : {
+      "one" : "%lld annotation, %@ selected",
+      "other" : "%lld annotations, %@ selected"
+    },
+    "fr" : {
+      "one" : "%lld annotation, sélection : %@",
+      "other" : "%lld annotations, sélection : %@"
+    },
+    "zh-Hans" : "%lld 个标注，已选中%@"
+  },
+  "%lld annotations, %@ selected, cropping" : {
+    "comment" : "VoiceOver: the number of annotations, then the selected one's name",
+    "de" : {
+      "one" : "%lld Beschriftung, %@ ausgewählt, Beschneiden aktiv",
+      "other" : "%lld Beschriftungen, %@ ausgewählt, Beschneiden aktiv"
+    },
+    "en" : {
+      "one" : "%lld annotation, %@ selected, cropping",
+      "other" : "%lld annotations, %@ selected, cropping"
+    },
+    "fr" : {
+      "one" : "%lld annotation, sélection : %@, rognage en cours",
+      "other" : "%lld annotations, sélection : %@, rognage en cours"
+    },
+    "zh-Hans" : "%lld 个标注，已选中%@，正在裁剪"
+  },
+  "%lld annotations, cropping" : {
+    "de" : {
+      "one" : "%lld Beschriftung, Beschneiden aktiv",
+      "other" : "%lld Beschriftungen, Beschneiden aktiv"
+    },
+    "en" : {
+      "one" : "%lld annotation, cropping",
+      "other" : "%lld annotations, cropping"
+    },
+    "fr" : {
+      "one" : "%lld annotation, rognage en cours",
+      "other" : "%lld annotations, rognage en cours"
+    },
+    "zh-Hans" : "%lld 个标注，正在裁剪"
+  },
+  "%lld seconds" : {
+    "de" : {
+      "one" : "%lld Sekunde",
+      "other" : "%lld Sekunden"
+    },
+    "en" : {
+      "one" : "%lld second",
+      "other" : "%lld seconds"
+    },
+    "fr" : {
+      "one" : "%lld seconde",
+      "other" : "%lld secondes"
+    },
+    "zh-Hans" : "%lld 秒"
+  },
+  "%lld%%" : {
+    "comment" : "A percentage",
+    "de" : "%lld %%",
+    "fr" : "%lld %%",
+    "zh-Hans" : "%lld%%"
+  },
+  "%lld/%lld configured" : {
+    "comment" : "Health: shortcuts set out of those expected",
+    "de" : "%lld/%lld eingerichtet",
+    "fr" : "Configurés : %lld/%lld",
+    "zh-Hans" : "已设置 %lld/%lld"
+  },
+  "About" : {
+    "comment" : "Settings tab",
+    "de" : "Info",
+    "fr" : "À propos",
+    "zh-Hans" : "关于"
+  },
+  "About Shotnix" : {
+    "de" : "Über Shotnix",
+    "fr" : "À propos de Shotnix",
+    "zh-Hans" : "关于 Shotnix"
+  },
+  "Accuracy" : {
+    "de" : "Genauigkeit",
+    "fr" : "Précision",
+    "zh-Hans" : "准确度"
+  },
+  "Accurate" : {
+    "comment" : "Text recognition accuracy setting",
+    "de" : "Genau",
+    "fr" : "Précise",
+    "zh-Hans" : "精确"
+  },
+  "Advanced Tools" : {
+    "de" : "Erweiterte Werkzeuge",
+    "fr" : "Outils avancés",
+    "zh-Hans" : "高级工具"
+  },
+  "After Capture" : {
+    "de" : "Nach der Aufnahme",
+    "fr" : "Après la capture",
+    "zh-Hans" : "截屏后"
+  },
+  "All configured" : {
+    "de" : "Alle eingerichtet",
+    "fr" : "Tous configurés",
+    "zh-Hans" : "全部已设置"
+  },
+  "Allow Access…" : {
+    "de" : "Zugriff erlauben …",
+    "fr" : "Autoriser l’accès…",
+    "zh-Hans" : "允许访问…"
+  },
+  "Allow Screen Recording" : {
+    "de" : "Bildschirmaufnahme erlauben",
+    "fr" : "Autoriser l’enregistrement de l’écran",
+    "zh-Hans" : "允许屏幕录制"
+  },
+  "Amber Fold" : {
+    "de" : "Bernsteinfalte",
+    "fr" : "Pli d’ambre",
+    "zh-Hans" : "琥珀褶皱"
+  },
+  "Annotate Last Screenshot" : {
+    "de" : "Letztes Bildschirmfoto beschriften",
+    "fr" : "Annoter la dernière capture",
+    "zh-Hans" : "标注最近的截屏"
+  },
+  "Annotation" : {
+    "de" : "Beschriftung",
+    "fr" : "Annotation",
+    "zh-Hans" : "标注"
+  },
+  "Annotation text" : {
+    "de" : "Beschriftungstext",
+    "fr" : "Texte de l’annotation",
+    "zh-Hans" : "标注文字"
+  },
+  "Annotation tools" : {
+    "de" : "Beschriftungswerkzeuge",
+    "fr" : "Outils d’annotation",
+    "zh-Hans" : "标注工具"
+  },
+  "Apple Shortcuts" : {
+    "comment" : "Health: Apple's own screenshot shortcuts",
+    "de" : "Apple-Kurzbefehle",
+    "fr" : "Raccourcis Apple",
+    "zh-Hans" : "Apple 快捷键"
+  },
+  "Apple screenshot shortcuts disabled." : {
+    "de" : "Apples Bildschirmfoto-Kurzbefehle deaktiviert.",
+    "fr" : "Raccourcis de capture d’Apple désactivés.",
+    "zh-Hans" : "已停用 Apple 截屏快捷键。"
+  },
+  "Apple screenshot shortcuts disabled. Shotnix shortcuts are now active." : {
+    "de" : "Apples Bildschirmfoto-Kurzbefehle deaktiviert. Die Kurzbefehle von Shotnix sind jetzt aktiv.",
+    "fr" : "Raccourcis de capture d’Apple désactivés. Les raccourcis de Shotnix sont maintenant actifs.",
+    "zh-Hans" : "已停用 Apple 截屏快捷键。Shotnix 快捷键现已生效。"
+  },
+  "Apple screenshot shortcuts restored." : {
+    "de" : "Apples Bildschirmfoto-Kurzbefehle wiederhergestellt.",
+    "fr" : "Raccourcis de capture d’Apple restaurés.",
+    "zh-Hans" : "已恢复 Apple 截屏快捷键。"
+  },
+  "Apple's screenshot shortcuts still own ⌘⇧3/4/5 — captures can double-trigger." : {
+    "de" : "Apples Bildschirmfoto-Kurzbefehle belegen noch ⌘⇧3/4/5 – Bildschirmfotos können doppelt ausgelöst werden.",
+    "fr" : "Les raccourcis de capture d’Apple utilisent encore ⌘⇧3/4/5 — les captures peuvent se déclencher deux fois.",
+    "zh-Hans" : "Apple 的截屏快捷键仍占用 ⌘⇧3/4/5 — 可能会重复截屏。"
+  },
+  "Apple's shortcuts are out of the way." : {
+    "de" : "Apples Kurzbefehle stören nicht mehr.",
+    "fr" : "Les raccourcis d’Apple ne gênent plus.",
+    "zh-Hans" : "Apple 的快捷键已不再冲突。"
+  },
+  "Apply" : {
+    "comment" : "Editor: apply the crop",
+    "de" : "Anwenden",
+    "fr" : "Appliquer",
+    "zh-Hans" : "应用"
+  },
+  "Apply background to this image" : {
+    "de" : "Hintergrund auf dieses Bild anwenden",
+    "fr" : "Appliquer un arrière-plan à cette image",
+    "zh-Hans" : "为此图像应用背景"
+  },
+  "Apply crop" : {
+    "de" : "Zuschnitt anwenden",
+    "fr" : "Appliquer le rognage",
+    "zh-Hans" : "应用裁剪"
+  },
+  "Apply the crop (Return)" : {
+    "de" : "Zuschnitt anwenden (Zeilenschalter)",
+    "fr" : "Appliquer le rognage (Retour)",
+    "zh-Hans" : "应用裁剪（Return 键）"
+  },
+  "Aqua Marble" : {
+    "de" : "Aquamarmor",
+    "fr" : "Marbre aqua",
+    "zh-Hans" : "水色大理石"
+  },
+  "Arrow" : {
+    "de" : "Pfeil",
+    "fr" : "Flèche",
+    "zh-Hans" : "箭头"
+  },
+  "Audio" : {
+    "de" : "Audio",
+    "fr" : "Audio",
+    "zh-Hans" : "音频"
+  },
+  "Aurora Blue" : {
+    "de" : "Polarlichtblau",
+    "fr" : "Bleu aurore",
+    "zh-Hans" : "极光蓝"
+  },
+  "Auto-dismiss overlay" : {
+    "de" : "Miniatur automatisch ausblenden",
+    "fr" : "Masquer la vignette automatiquement",
+    "zh-Hans" : "自动隐藏缩略图"
+  },
+  "Auto-save folder" : {
+    "de" : "Ordner für automatisches Sichern",
+    "fr" : "Dossier d’enregistrement automatique",
+    "zh-Hans" : "自动存储文件夹"
+  },
+  "Auto-zoom new recordings" : {
+    "de" : "Neue Aufnahmen automatisch zoomen",
+    "fr" : "Zoom automatique des nouveaux enregistrements",
+    "zh-Hans" : "自动缩放新录制内容"
+  },
+  "Automatic" : {
+    "de" : "Automatisch",
+    "fr" : "Automatique",
+    "zh-Hans" : "自动"
+  },
+  "Automatic detects each capture's language; pick languages when it guesses wrong. Accurate reads small text best — Fast answers sooner but knows fewer languages. Used by Capture Text, Copy Text, and History search." : {
+    "de" : "„Automatisch“ erkennt die Sprache jedes Bildschirmfotos; wähle Sprachen aus, wenn es falsch liegt. „Genau“ liest kleinen Text am besten – „Schnell“ antwortet früher, kennt aber weniger Sprachen. Wird von „Text erfassen“, „Text kopieren“ und der Suche im Verlauf verwendet.",
+    "fr" : "« Automatique » détecte la langue de chaque capture ; choisissez des langues s’il se trompe. « Précise » lit mieux les petits textes — « Rapide » répond plus vite mais connaît moins de langues. Utilisé par Capturer du texte, Copier le texte et la recherche dans l’historique.",
+    "zh-Hans" : "“自动”会检测每张截屏的语言；识别有误时可手动选择语言。“精确”最适合识别小字 — “快速”响应更快，但支持的语言更少。用于“提取文字”、“拷贝文字”和历史记录搜索。"
+  },
+  "Background" : {
+    "comment" : "Editor: the backdrop around the screenshot",
+    "de" : "Hintergrund",
+    "fr" : "Arrière-plan",
+    "zh-Hans" : "背景"
+  },
+  "Balanced" : {
+    "comment" : "Recording quality",
+    "de" : "Ausgewogen",
+    "fr" : "Équilibrée",
+    "zh-Hans" : "均衡"
+  },
+  "Black" : {
+    "de" : "Schwarz",
+    "fr" : "Noir",
+    "zh-Hans" : "黑色"
+  },
+  "Blue" : {
+    "de" : "Blau",
+    "fr" : "Bleu",
+    "zh-Hans" : "蓝色"
+  },
+  "Blur" : {
+    "comment" : "Editor tool",
+    "de" : "Weichzeichnen",
+    "fr" : "Flouter",
+    "zh-Hans" : "模糊"
+  },
+  "Blurred area" : {
+    "de" : "Weichgezeichneter Bereich",
+    "fr" : "Zone floutée",
+    "zh-Hans" : "模糊区域"
+  },
+  "Bold" : {
+    "de" : "Fett",
+    "fr" : "Gras",
+    "zh-Hans" : "粗体"
+  },
+  "Bone" : {
+    "de" : "Knochenweiß",
+    "fr" : "Blanc cassé",
+    "zh-Hans" : "骨白"
+  },
+  "Bring All to Front" : {
+    "de" : "Alle nach vorne bringen",
+    "fr" : "Tout ramener au premier plan",
+    "zh-Hans" : "前置全部窗口"
+  },
+  "Callout" : {
+    "de" : "Sprechblase",
+    "fr" : "Bulle",
+    "zh-Hans" : "标注气泡"
+  },
+  "Callout: %@" : {
+    "de" : "Sprechblase: %@",
+    "fr" : "Bulle : %@",
+    "zh-Hans" : "标注气泡：%@"
+  },
+  "Camera" : {
+    "de" : "Kamera",
+    "fr" : "Caméra",
+    "zh-Hans" : "摄像头"
+  },
+  "Canyon Silk" : {
+    "de" : "Canyonseide",
+    "fr" : "Soie de canyon",
+    "zh-Hans" : "峡谷丝绸"
+  },
+  "Capture Text" : {
+    "de" : "Text erfassen",
+    "fr" : "Capturer du texte",
+    "zh-Hans" : "提取文字"
+  },
+  "Capture Text and Scrolling Capture come without shortcuts, so ⌘⇧O and ⌘⇧S keep meaning Open and Save As in your other apps — click a field to set your own. Pressing the Scrolling Capture shortcut again finishes a scrolling capture." : {
+    "de" : "„Text erfassen“ und „Scroll-Aufnahme“ haben keine Kurzbefehle, damit ⌘⇧O und ⌘⇧S in deinen anderen Apps weiter „Öffnen“ und „Sichern unter“ bedeuten – klicke in ein Feld, um eigene festzulegen. Drückst du den Kurzbefehl der Scroll-Aufnahme erneut, wird sie beendet.",
+    "fr" : "« Capturer du texte » et « Capture défilante » n’ont pas de raccourci, pour que ⌘⇧O et ⌘⇧S gardent leur sens (Ouvrir et Enregistrer sous) dans vos autres apps — cliquez sur un champ pour définir les vôtres. Appuyer de nouveau sur le raccourci de la capture défilante la termine.",
+    "zh-Hans" : "“提取文字”和“滚动截屏”默认没有快捷键，这样 ⌘⇧O 和 ⌘⇧S 在其他 App 中仍表示“打开”和“存储为” — 点按字段即可自定义。再次按下滚动截屏快捷键即可结束滚动截屏。"
+  },
+  "Capture immediately after selecting" : {
+    "de" : "Direkt nach dem Auswählen aufnehmen",
+    "fr" : "Capturer dès la fin de la sélection",
+    "zh-Hans" : "选择后立即截屏"
+  },
+  "Capture · Record · Updates" : {
+    "comment" : "Command center: what the all-clear health line covers",
+    "de" : "Aufnahme · Aufzeichnung · Updates",
+    "fr" : "Capture · Enregistrement · Mises à jour",
+    "zh-Hans" : "截屏 · 录制 · 更新"
+  },
+  "Captures stay in History until you delete them, unless you pick a limit here. Clean Up empties History's trash (deleted captures you could still undo) and removes files no capture uses anymore." : {
+    "de" : "Bildschirmfotos bleiben im Verlauf, bis du sie löschst – außer du legst hier eine Grenze fest. „Aufräumen“ leert den Papierkorb des Verlaufs (gelöschte Bildschirmfotos, die du noch wiederherstellen könntest) und entfernt Dateien, die kein Bildschirmfoto mehr verwendet.",
+    "fr" : "Les captures restent dans l’historique jusqu’à ce que vous les supprimiez, sauf si vous choisissez une limite ici. « Nettoyer » vide la corbeille de l’historique (les captures supprimées que vous pourriez encore récupérer) et supprime les fichiers qu’aucune capture n’utilise plus.",
+    "zh-Hans" : "截屏会一直保留在历史记录中，直到你将其删除，除非你在此处设定期限。“清理”会清空历史记录的废纸篓（其中是仍可撤销删除的截屏），并移除不再被任何截屏使用的文件。"
+  },
+  "Carbon Arc" : {
+    "de" : "Kohlebogen",
+    "fr" : "Arc de carbone",
+    "zh-Hans" : "碳弧"
+  },
+  "Check" : {
+    "comment" : "Health: button that checks for updates",
+    "de" : "Prüfen",
+    "fr" : "Vérifier",
+    "zh-Hans" : "检查"
+  },
+  "Check for Updates" : {
+    "de" : "Nach Updates suchen",
+    "fr" : "Rechercher des mises à jour",
+    "zh-Hans" : "检查更新"
+  },
+  "Choose a writable folder for auto-save." : {
+    "de" : "Wähle einen beschreibbaren Ordner zum automatischen Sichern.",
+    "fr" : "Choisissez un dossier accessible en écriture pour l’enregistrement automatique.",
+    "zh-Hans" : "请为自动存储选择一个可写入的文件夹。"
+  },
+  "Choose a writable folder." : {
+    "de" : "Wähle einen beschreibbaren Ordner.",
+    "fr" : "Choisissez un dossier accessible en écriture.",
+    "zh-Hans" : "请选择一个可写入的文件夹。"
+  },
+  "Choose folder" : {
+    "de" : "Ordner wählen",
+    "fr" : "Choisir un dossier",
+    "zh-Hans" : "选择文件夹"
+  },
+  "Choose what happens immediately after taking a screenshot." : {
+    "de" : "Lege fest, was direkt nach einem Bildschirmfoto passiert.",
+    "fr" : "Choisissez ce qui se passe juste après une capture d’écran.",
+    "zh-Hans" : "选择截屏后立即执行的操作。"
+  },
+  "Choose..." : {
+    "de" : "Auswählen …",
+    "fr" : "Choisir…",
+    "zh-Hans" : "选取…"
+  },
+  "Clay" : {
+    "de" : "Terrakotta",
+    "fr" : "Argile",
+    "zh-Hans" : "陶土"
+  },
+  "Clean Up" : {
+    "de" : "Aufräumen",
+    "fr" : "Nettoyer",
+    "zh-Hans" : "清理"
+  },
+  "Clean Up History?" : {
+    "de" : "Verlauf aufräumen?",
+    "fr" : "Nettoyer l’historique ?",
+    "zh-Hans" : "要清理历史记录吗？"
+  },
+  "Clean Up lists what it would remove — the data of recordings Shotnix can't find, camera footage and pictures nothing uses, and clipboard exports older than a day — and asks first. On its own, Shotnix only removes clipboard exports older than a day; the data of your recordings stays until you clean it up here." : {
+    "de" : "„Aufräumen“ listet auf, was entfernt würde – die Daten von Aufnahmen, die Shotnix nicht finden kann, ungenutzte Kameraaufnahmen und Bilder sowie Zwischenablage-Exporte, die älter als einen Tag sind – und fragt vorher nach. Von sich aus entfernt Shotnix nur Zwischenablage-Exporte, die älter als einen Tag sind; die Daten deiner Aufnahmen bleiben, bis du sie hier aufräumst.",
+    "fr" : "« Nettoyer » liste ce qui serait supprimé — les données des enregistrements que Shotnix ne trouve plus, les séquences de caméra et les images inutilisées, et les exportations vers le presse-papiers de plus d’un jour — et demande d’abord confirmation. De lui-même, Shotnix ne supprime que les exportations vers le presse-papiers de plus d’un jour ; les données de vos enregistrements restent jusqu’à ce que vous les nettoyiez ici.",
+    "zh-Hans" : "“清理”会先列出将移除的内容 — Shotnix 找不到的录制内容的数据、未被使用的摄像头画面和图片，以及超过一天的剪贴板导出文件 — 并先征得你的同意。Shotnix 自身只会移除超过一天的剪贴板导出文件；你的录制内容的数据会一直保留，直到你在这里清理。"
+  },
+  "Clean Up…" : {
+    "de" : "Aufräumen …",
+    "fr" : "Nettoyer…",
+    "zh-Hans" : "清理…"
+  },
+  "Cleaning Up…" : {
+    "de" : "Wird aufgeräumt …",
+    "fr" : "Nettoyage…",
+    "zh-Hans" : "正在清理…"
+  },
+  "Click an annotation to edit it" : {
+    "de" : "Klicke auf eine Beschriftung, um sie zu bearbeiten",
+    "fr" : "Cliquez sur une annotation pour la modifier",
+    "zh-Hans" : "点按标注即可编辑"
+  },
+  "Click to add the next step" : {
+    "de" : "Klicke, um den nächsten Schritt hinzuzufügen",
+    "fr" : "Cliquez pour ajouter l’étape suivante",
+    "zh-Hans" : "点按以添加下一步"
+  },
+  "Clipboard" : {
+    "de" : "Zwischenablage",
+    "fr" : "Presse-papiers",
+    "zh-Hans" : "剪贴板"
+  },
+  "Close Window" : {
+    "de" : "Fenster schließen",
+    "fr" : "Fermer la fenêtre",
+    "zh-Hans" : "关闭窗口"
+  },
+  "Coastal Haze" : {
+    "de" : "Küstendunst",
+    "fr" : "Brume côtière",
+    "zh-Hans" : "海岸薄雾"
+  },
+  "Cobalt Drapes" : {
+    "de" : "Kobaltvorhang",
+    "fr" : "Drapé cobalt",
+    "zh-Hans" : "钴蓝帷幕"
+  },
+  "Color" : {
+    "de" : "Farbe",
+    "fr" : "Couleur",
+    "zh-Hans" : "颜色"
+  },
+  "Command Center" : {
+    "de" : "Kommandozentrale",
+    "fr" : "Centre de commande",
+    "zh-Hans" : "命令中心"
+  },
+  "Conflict detected" : {
+    "de" : "Konflikt erkannt",
+    "fr" : "Conflit détecté",
+    "zh-Hans" : "检测到冲突"
+  },
+  "Copied to clipboard" : {
+    "de" : "In die Zwischenablage kopiert",
+    "fr" : "Copié dans le presse-papiers",
+    "zh-Hans" : "已拷贝到剪贴板"
+  },
+  "Copy (⌘C)" : {
+    "de" : "Kopieren (⌘C)",
+    "fr" : "Copier (⌘C)",
+    "zh-Hans" : "拷贝（⌘C）"
+  },
+  "Copy screenshots to clipboard" : {
+    "de" : "Bildschirmfotos in die Zwischenablage kopieren",
+    "fr" : "Copier les captures dans le presse-papiers",
+    "zh-Hans" : "将截屏拷贝到剪贴板"
+  },
+  "Could Not Disable Apple Shortcuts" : {
+    "de" : "Apple-Kurzbefehle konnten nicht deaktiviert werden",
+    "fr" : "Impossible de désactiver les raccourcis Apple",
+    "zh-Hans" : "无法停用 Apple 快捷键"
+  },
+  "Could Not Save Screenshot" : {
+    "de" : "Bildschirmfoto konnte nicht gesichert werden",
+    "fr" : "Impossible d’enregistrer la capture",
+    "zh-Hans" : "无法存储截屏"
+  },
+  "Could not encode screenshot as PNG." : {
+    "de" : "Das Bildschirmfoto konnte nicht als PNG codiert werden.",
+    "fr" : "Impossible d’encoder la capture en PNG.",
+    "zh-Hans" : "无法将截屏编码为 PNG。"
+  },
+  "Could not encode the screenshot." : {
+    "de" : "Das Bildschirmfoto konnte nicht codiert werden.",
+    "fr" : "Impossible d’encoder la capture.",
+    "zh-Hans" : "无法编码截屏。"
+  },
+  "Could not restore Apple shortcuts." : {
+    "de" : "Apples Kurzbefehle konnten nicht wiederhergestellt werden.",
+    "fr" : "Impossible de restaurer les raccourcis Apple.",
+    "zh-Hans" : "无法恢复 Apple 快捷键。"
+  },
+  "Couldn't copy the screenshot. Try again, or save it instead." : {
+    "de" : "Das Bildschirmfoto konnte nicht kopiert werden. Versuche es erneut oder sichere es stattdessen.",
+    "fr" : "Impossible de copier la capture. Réessayez ou enregistrez-la plutôt.",
+    "zh-Hans" : "无法拷贝截屏。请重试，或改为存储。"
+  },
+  "Couldn't save the screenshot to %@. Click to check the save folder." : {
+    "de" : "Das Bildschirmfoto konnte nicht in „%@“ gesichert werden. Klicke, um den Zielordner zu prüfen.",
+    "fr" : "Impossible d’enregistrer la capture dans « %@ ». Cliquez pour vérifier le dossier d’enregistrement.",
+    "zh-Hans" : "无法将截屏存储到“%@”。点按以检查存储文件夹。"
+  },
+  "Couldn't save the screenshot: Shotnix can't write to %@. Click to choose another save folder." : {
+    "de" : "Das Bildschirmfoto konnte nicht gesichert werden: Shotnix kann nicht in „%@“ schreiben. Klicke, um einen anderen Zielordner zu wählen.",
+    "fr" : "Impossible d’enregistrer la capture : Shotnix ne peut pas écrire dans « %@ ». Cliquez pour choisir un autre dossier d’enregistrement.",
+    "zh-Hans" : "无法存储截屏：Shotnix 无法写入“%@”。点按以选择其他存储文件夹。"
+  },
+  "Couldn't save the screenshot: it could not be encoded as %@." : {
+    "comment" : "The placeholder is an image format (PNG, JPEG, WEBP)",
+    "de" : "Das Bildschirmfoto konnte nicht gesichert werden: Es ließ sich nicht als %@ codieren.",
+    "fr" : "Impossible d’enregistrer la capture : elle n’a pas pu être encodée en %@.",
+    "zh-Hans" : "无法存储截屏：无法编码为 %@。"
+  },
+  "Couldn't save the screenshot: the disk is full. Free up space or pick another save folder." : {
+    "de" : "Das Bildschirmfoto konnte nicht gesichert werden: Der Speicher ist voll. Gib Speicherplatz frei oder wähle einen anderen Zielordner.",
+    "fr" : "Impossible d’enregistrer la capture : le disque est plein. Libérez de l’espace ou choisissez un autre dossier d’enregistrement.",
+    "zh-Hans" : "无法存储截屏：磁盘已满。请释放空间或选择其他存储文件夹。"
+  },
+  "Countdown" : {
+    "de" : "Countdown",
+    "fr" : "Compte à rebours",
+    "zh-Hans" : "倒计时"
+  },
+  "Crimson Ridge" : {
+    "de" : "Purpurgrat",
+    "fr" : "Crête pourpre",
+    "zh-Hans" : "绯红山脊"
+  },
+  "Crop" : {
+    "comment" : "Editor tool",
+    "de" : "Beschneiden",
+    "fr" : "Rogner",
+    "zh-Hans" : "裁剪"
+  },
+  "Custom color" : {
+    "de" : "Eigene Farbe",
+    "fr" : "Couleur personnalisée",
+    "zh-Hans" : "自定颜色"
+  },
+  "Custom color #%@" : {
+    "comment" : "VoiceOver: a custom color and its hex code",
+    "de" : "Eigene Farbe #%@",
+    "fr" : "Couleur personnalisée #%@",
+    "zh-Hans" : "自定颜色 #%@"
+  },
+  "Custom: %@" : {
+    "comment" : "Background popover: the chosen image's file name",
+    "de" : "Eigenes Bild: %@",
+    "fr" : "Image personnalisée : %@",
+    "zh-Hans" : "自定图像：%@"
+  },
+  "Custom…" : {
+    "comment" : "Color popover: opens the Colors window",
+    "de" : "Eigene Farbe …",
+    "fr" : "Personnaliser…",
+    "zh-Hans" : "自定颜色…"
+  },
+  "Cut" : {
+    "de" : "Ausschneiden",
+    "fr" : "Couper",
+    "zh-Hans" : "剪切"
+  },
+  "Delete %lld Captures?" : {
+    "de" : {
+      "one" : "%lld Bildschirmfoto löschen?",
+      "other" : "%lld Bildschirmfotos löschen?"
+    },
+    "en" : {
+      "one" : "Delete %lld Capture?",
+      "other" : "Delete %lld Captures?"
+    },
+    "fr" : {
+      "one" : "Supprimer %lld capture ?",
+      "other" : "Supprimer %lld captures ?"
+    },
+    "zh-Hans" : "要删除 %lld 张截屏吗？"
+  },
+  "Delete Captures" : {
+    "de" : "Bildschirmfotos löschen",
+    "fr" : "Supprimer les captures",
+    "zh-Hans" : "删除截屏"
+  },
+  "Delete Selection" : {
+    "de" : "Auswahl löschen",
+    "fr" : "Supprimer la sélection",
+    "zh-Hans" : "删除所选内容"
+  },
+  "Deleted captures waiting in History's trash and files no capture uses are removed for good, along with %lld captures past your History limit. The rest of your history stays." : {
+    "de" : {
+      "one" : "Gelöschte Bildschirmfotos im Papierkorb des Verlaufs und Dateien, die kein Bildschirmfoto verwendet, werden endgültig entfernt – ebenso %lld Bildschirmfoto, das die Grenze deines Verlaufs überschreitet. Der Rest deines Verlaufs bleibt erhalten.",
+      "other" : "Gelöschte Bildschirmfotos im Papierkorb des Verlaufs und Dateien, die kein Bildschirmfoto verwendet, werden endgültig entfernt – ebenso %lld Bildschirmfotos, die die Grenze deines Verlaufs überschreiten. Der Rest deines Verlaufs bleibt erhalten."
+    },
+    "en" : {
+      "one" : "Deleted captures waiting in History's trash and files no capture uses are removed for good, along with %lld capture past your History limit. The rest of your history stays.",
+      "other" : "Deleted captures waiting in History's trash and files no capture uses are removed for good, along with %lld captures past your History limit. The rest of your history stays."
+    },
+    "fr" : {
+      "one" : "Les captures supprimées en attente dans la corbeille de l’historique et les fichiers qu’aucune capture n’utilise sont définitivement supprimés, ainsi que %lld capture au-delà de la limite de votre historique. Le reste de votre historique est conservé.",
+      "other" : "Les captures supprimées en attente dans la corbeille de l’historique et les fichiers qu’aucune capture n’utilise sont définitivement supprimés, ainsi que %lld captures au-delà de la limite de votre historique. Le reste de votre historique est conservé."
+    },
+    "zh-Hans" : "历史记录废纸篓中已删除的截屏、不再被任何截屏使用的文件，以及超出历史记录期限的 %lld 张截屏将被永久移除。其余历史记录会保留。"
+  },
+  "Deleted captures waiting in History's trash and files no capture uses are removed for good. The captures in your history stay." : {
+    "de" : "Gelöschte Bildschirmfotos im Papierkorb des Verlaufs und Dateien, die kein Bildschirmfoto verwendet, werden endgültig entfernt. Die Bildschirmfotos in deinem Verlauf bleiben erhalten.",
+    "fr" : "Les captures supprimées en attente dans la corbeille de l’historique et les fichiers qu’aucune capture n’utilise sont définitivement supprimés. Les captures de votre historique sont conservées.",
+    "zh-Hans" : "历史记录废纸篓中已删除的截屏以及不再被任何截屏使用的文件将被永久移除。历史记录中的截屏会保留。"
+  },
+  "Desert Violet" : {
+    "de" : "Wüstenviolett",
+    "fr" : "Violet du désert",
+    "zh-Hans" : "沙漠紫罗兰"
+  },
+  "Directory where screenshots are saved if Auto-Save is enabled." : {
+    "de" : "Ordner, in dem Bildschirmfotos gesichert werden, wenn automatisches Sichern aktiviert ist.",
+    "fr" : "Dossier où les captures sont enregistrées si l’enregistrement automatique est activé.",
+    "zh-Hans" : "启用自动存储时，截屏会存储在此文件夹中。"
+  },
+  "Disable Apple Shortcuts" : {
+    "de" : "Apple-Kurzbefehle deaktivieren",
+    "fr" : "Désactiver les raccourcis Apple",
+    "zh-Hans" : "停用 Apple 快捷键"
+  },
+  "Disabled" : {
+    "comment" : "Health: state of the Updates row",
+    "de" : "Deaktiviert",
+    "fr" : "Désactivées",
+    "zh-Hans" : "已停用"
+  },
+  "Discard Changes" : {
+    "de" : "Änderungen verwerfen",
+    "fr" : "Ignorer les modifications",
+    "zh-Hans" : "放弃更改"
+  },
+  "Do you want to review them before quitting?" : {
+    "de" : "Möchtest du sie vor dem Beenden durchsehen?",
+    "fr" : "Voulez-vous les passer en revue avant de quitter ?",
+    "zh-Hans" : "要在退出前逐一检查吗？"
+  },
+  "Don't Ask Again" : {
+    "de" : "Nicht mehr fragen",
+    "fr" : "Ne plus demander",
+    "zh-Hans" : "不再询问"
+  },
+  "Don't Save" : {
+    "de" : "Nicht sichern",
+    "fr" : "Ne pas enregistrer",
+    "zh-Hans" : "不存储"
+  },
+  "Done" : {
+    "comment" : "VoiceOver: a finished setup step",
+    "de" : "Fertig",
+    "fr" : "Terminé",
+    "zh-Hans" : "完成"
+  },
+  "Draw with the selected tool. Tool shortcuts: V select, A arrow, R rectangle, T text, O callout, H highlighter, B blur, P pixelate, S spotlight, C crop." : {
+    "de" : "Mit dem ausgewählten Werkzeug zeichnen. Kurzbefehle: V Auswählen, A Pfeil, R Rechteck, T Text, O Sprechblase, H Textmarker, B Weichzeichnen, P Verpixeln, S Fokus, C Beschneiden.",
+    "fr" : "Dessinez avec l’outil sélectionné. Raccourcis des outils : V sélectionner, A flèche, R rectangle, T texte, O bulle, H surligneur, B flouter, P pixéliser, S projecteur, C rogner.",
+    "zh-Hans" : "使用所选工具绘制。工具快捷键：V 选择、A 箭头、R 矩形、T 文字、O 标注气泡、H 荧光笔、B 模糊、P 像素化、S 聚光灯、C 裁剪。"
+  },
+  "Drawing" : {
+    "de" : "Zeichnung",
+    "fr" : "Dessin",
+    "zh-Hans" : "手绘"
+  },
+  "Edit Last Recording" : {
+    "de" : "Letzte Aufnahme bearbeiten",
+    "fr" : "Modifier le dernier enregistrement",
+    "zh-Hans" : "编辑最近的录制内容"
+  },
+  "Editable cursor" : {
+    "de" : "Bearbeitbarer Zeiger",
+    "fr" : "Pointeur modifiable",
+    "zh-Hans" : "可编辑指针"
+  },
+  "Editable cursor records the pointer separately so the editor can smooth it, resize it, and keep it crisp when zoomed — the video editor adds it back on export (the raw recording file has no pointer). Auto-zoom makes a fresh recording open already produced: the camera zooms to follow your clicks. Keyboard shortcuts records only ⌘, ⌃ and ⌥ combos (plus Esc and F-keys) so the editor can show them as keycaps — plain typing is never recorded; macOS asks for Accessibility access. High quality is the default; Max keeps more detail but creates larger files. The countdown gives you a moment after pressing Record; Esc cancels it. Stop a recording with %@ from any app — plain Esc stays with the app you're recording." : {
+    "de" : "„Bearbeitbarer Zeiger“ zeichnet den Zeiger separat auf, damit der Editor ihn glätten, skalieren und beim Zoomen scharf halten kann – der Video-Editor fügt ihn beim Exportieren wieder ein (die Rohdatei der Aufnahme enthält keinen Zeiger). Mit automatischem Zoom öffnet sich eine neue Aufnahme schon fertig produziert: Die Kamera folgt deinen Klicks. „Tastaturkurzbefehle anzeigen“ zeichnet nur Kombinationen mit ⌘, ⌃ und ⌥ auf (dazu Esc und die F-Tasten), damit der Editor sie als Tasten zeigen kann – normales Tippen wird nie aufgezeichnet; macOS fragt nach Zugriff auf die Bedienungshilfen. „Hoch“ ist die Standardqualität; „Maximal“ bewahrt mehr Details, erzeugt aber größere Dateien. Der Countdown gibt dir nach dem Start einen Moment Zeit; Esc bricht ihn ab. Stoppe eine Aufzeichnung aus jeder App mit %@ – ein einfaches Esc bleibt bei der App, die du aufzeichnest.",
+    "fr" : "« Pointeur modifiable » enregistre le pointeur séparément pour que l’éditeur puisse le lisser, le redimensionner et le garder net lors des zooms — l’éditeur vidéo le réintègre à l’exportation (le fichier brut de l’enregistrement ne contient pas de pointeur). Avec le zoom automatique, un nouvel enregistrement s’ouvre déjà monté : la caméra suit vos clics. « Afficher les raccourcis clavier » n’enregistre que les combinaisons avec ⌘, ⌃ et ⌥ (plus Échap et les touches de fonction) pour que l’éditeur puisse les afficher sous forme de touches — la frappe normale n’est jamais enregistrée ; macOS demande l’accès à l’accessibilité. La qualité élevée est utilisée par défaut ; la qualité maximale conserve plus de détails mais produit des fichiers plus volumineux. Le compte à rebours vous laisse un instant après avoir lancé l’enregistrement ; Échap l’annule. Arrêtez un enregistrement depuis n’importe quelle app avec %@ — un simple Échap reste destiné à l’app que vous enregistrez.",
+    "zh-Hans" : "“可编辑指针”会单独记录指针，以便编辑器将其平滑、调整大小，并在缩放时保持清晰 — 视频编辑器会在导出时将指针加回（原始录制文件中不含指针）。开启自动缩放后，新录制内容打开时就已制作完成：镜头会跟随你的点按。“显示快捷键”只记录含 ⌘、⌃ 和 ⌥ 的组合键（以及 Esc 键和功能键），以便编辑器将其显示为按键 — 普通输入绝不会被记录；macOS 会请求辅助功能权限。默认使用“高”质量；“最高”保留更多细节，但文件更大。倒计时让你在开始录制后有片刻准备；按 Esc 键可取消。在任何 App 中按 %@ 都能停止录制 — 单独按 Esc 键仍会传给你正在录制的 App。"
+  },
+  "Ellipse" : {
+    "de" : "Ellipse",
+    "fr" : "Ellipse",
+    "zh-Hans" : "椭圆"
+  },
+  "Ember Fog" : {
+    "de" : "Glutnebel",
+    "fr" : "Brume de braise",
+    "zh-Hans" : "余烬薄雾"
+  },
+  "Enable Shotnix in System Settings → Privacy & Security → Screen & System Audio Recording, then quit and reopen Shotnix so macOS applies the permission." : {
+    "de" : "Aktiviere Shotnix unter „Systemeinstellungen“ → „Datenschutz & Sicherheit“ → „Bildschirm- & Systemaudioaufnahme“. Beende und öffne Shotnix danach erneut, damit macOS die Berechtigung übernimmt.",
+    "fr" : "Activez Shotnix dans Réglages Système → Confidentialité et sécurité → Enregistrement de l’écran et de l’audio du système, puis quittez et rouvrez Shotnix pour que macOS applique l’autorisation.",
+    "zh-Hans" : "请在“系统设置”→“隐私与安全性”→“录屏与系统录音”中启用 Shotnix，然后退出并重新打开 Shotnix，以便 macOS 应用该权限。"
+  },
+  "Enable Shotnix in System Settings, then relaunch so macOS applies it." : {
+    "de" : "Aktiviere Shotnix in den Systemeinstellungen und starte es dann neu, damit macOS es übernimmt.",
+    "fr" : "Activez Shotnix dans Réglages Système, puis relancez-le pour que macOS en tienne compte.",
+    "zh-Hans" : "在“系统设置”中启用 Shotnix，然后重新启动，以便 macOS 应用更改。"
+  },
+  "Enabled" : {
+    "comment" : "Health: state of the Updates row",
+    "de" : "Aktiviert",
+    "fr" : "Activées",
+    "zh-Hans" : "已启用"
+  },
+  "Enjoying Shotnix? Click to star it on GitHub ★" : {
+    "de" : "Gefällt dir Shotnix? Klicke, um ihm auf GitHub einen Stern zu geben ★",
+    "fr" : "Vous aimez Shotnix ? Cliquez pour lui donner une étoile sur GitHub ★",
+    "zh-Hans" : "喜欢 Shotnix 吗？点按即可在 GitHub 上为它加星标 ★"
+  },
+  "Everything is ready" : {
+    "de" : "Alles bereit",
+    "fr" : "Tout est prêt",
+    "zh-Hans" : "一切就绪"
+  },
+  "Export Format" : {
+    "de" : "Exportformat",
+    "fr" : "Format d’exportation",
+    "zh-Hans" : "导出格式"
+  },
+  "Fast" : {
+    "comment" : "Text recognition accuracy setting",
+    "de" : "Schnell",
+    "fr" : "Rapide",
+    "zh-Hans" : "快速"
+  },
+  "File" : {
+    "comment" : "The File menu",
+    "de" : "Ablage",
+    "fr" : "Fichier",
+    "zh-Hans" : "文件"
+  },
+  "File Name" : {
+    "de" : "Dateiname",
+    "fr" : "Nom de fichier",
+    "zh-Hans" : "文件名"
+  },
+  "Filled Rectangle" : {
+    "de" : "Gefülltes Rechteck",
+    "fr" : "Rectangle plein",
+    "zh-Hans" : "实心矩形"
+  },
+  "Filled rectangle" : {
+    "de" : "Gefülltes Rechteck",
+    "fr" : "Rectangle plein",
+    "zh-Hans" : "实心矩形"
+  },
+  "Filled rounded rectangle" : {
+    "de" : "Gefülltes abgerundetes Rechteck",
+    "fr" : "Rectangle arrondi plein",
+    "zh-Hans" : "实心圆角矩形"
+  },
+  "Finish and Quit" : {
+    "de" : "Abschließen und beenden",
+    "fr" : "Terminer et quitter",
+    "zh-Hans" : "完成后退出"
+  },
+  "Fix" : {
+    "comment" : "Health: button that fixes a problem",
+    "de" : "Beheben",
+    "fr" : "Corriger",
+    "zh-Hans" : "修复"
+  },
+  "Format" : {
+    "de" : "Format",
+    "fr" : "Format",
+    "zh-Hans" : "格式"
+  },
+  "Frame rate" : {
+    "de" : "Bildrate",
+    "fr" : "Fréquence d’images",
+    "zh-Hans" : "帧率"
+  },
+  "Free up ⌘⇧ shortcuts · optional" : {
+    "de" : "⌘⇧-Kurzbefehle freigeben · optional",
+    "fr" : "Libérer les raccourcis ⌘⇧ · facultatif",
+    "zh-Hans" : "释放 ⌘⇧ 快捷键 · 可选"
+  },
+  "Freed %@" : {
+    "comment" : "Toast: disk space freed by Clean Up",
+    "de" : "%@ freigegeben",
+    "fr" : "%@ libérés",
+    "zh-Hans" : "已释放 %@"
+  },
+  "Freehand Draw" : {
+    "de" : "Freihand zeichnen",
+    "fr" : "Dessin à main levée",
+    "zh-Hans" : "手绘"
+  },
+  "Freehand Highlighter" : {
+    "de" : "Freihand-Textmarker",
+    "fr" : "Surligneur à main levée",
+    "zh-Hans" : "手绘荧光笔"
+  },
+  "Freehand highlight" : {
+    "de" : "Freihand-Markierung",
+    "fr" : "Surlignage à main levée",
+    "zh-Hans" : "手绘高亮"
+  },
+  "Full screen: %@" : {
+    "comment" : "Settings: estimated size of a full-screen recording",
+    "de" : "Vollbild: %@",
+    "fr" : "Plein écran : %@",
+    "zh-Hans" : "全屏：%@"
+  },
+  "General" : {
+    "de" : "Allgemein",
+    "fr" : "Général",
+    "zh-Hans" : "通用"
+  },
+  "Gradient" : {
+    "de" : "Farbverlauf",
+    "fr" : "Dégradé",
+    "zh-Hans" : "渐变"
+  },
+  "Grant Screen Recording first, then try it here." : {
+    "de" : "Erlaube zuerst die Bildschirmaufnahme und probier es dann hier aus.",
+    "fr" : "Autorisez d’abord l’enregistrement de l’écran, puis essayez ici.",
+    "zh-Hans" : "请先授予屏幕录制权限，然后在这里试试。"
+  },
+  "Granted — captures, recordings, and OCR are ready." : {
+    "de" : "Erlaubt – Bildschirmfotos, Aufnahmen und OCR sind bereit.",
+    "fr" : "Autorisé — captures, enregistrements et OCR sont prêts.",
+    "zh-Hans" : "已授权 — 截屏、录制和 OCR 均已就绪。"
+  },
+  "Graphite" : {
+    "de" : "Graphit",
+    "fr" : "Graphite",
+    "zh-Hans" : "石墨"
+  },
+  "Green" : {
+    "de" : "Grün",
+    "fr" : "Vert",
+    "zh-Hans" : "绿色"
+  },
+  "Health" : {
+    "comment" : "Command center section: permissions, shortcuts, updates",
+    "de" : "Status",
+    "fr" : "État",
+    "zh-Hans" : "状态"
+  },
+  "Hide Desktop Icons" : {
+    "de" : "Schreibtischsymbole ausblenden",
+    "fr" : "Masquer les icônes du bureau",
+    "zh-Hans" : "隐藏桌面图标"
+  },
+  "Hide Icon" : {
+    "de" : "Symbol ausblenden",
+    "fr" : "Masquer l’icône",
+    "zh-Hans" : "隐藏图标"
+  },
+  "Hide desktop icons while capturing" : {
+    "de" : "Schreibtischsymbole beim Aufnehmen ausblenden",
+    "fr" : "Masquer les icônes du bureau pendant la capture",
+    "zh-Hans" : "截屏时隐藏桌面图标"
+  },
+  "Hide the Menu Bar Icon?" : {
+    "de" : "Symbol in der Menüleiste ausblenden?",
+    "fr" : "Masquer l’icône de la barre des menus ?",
+    "zh-Hans" : "要隐藏菜单栏图标吗？"
+  },
+  "High" : {
+    "comment" : "Recording quality",
+    "de" : "Hoch",
+    "fr" : "Élevée",
+    "zh-Hans" : "高"
+  },
+  "Highlight" : {
+    "comment" : "VoiceOver: a highlighter mark",
+    "de" : "Markierung",
+    "fr" : "Surlignage",
+    "zh-Hans" : "高亮"
+  },
+  "Highlighter" : {
+    "de" : "Textmarker",
+    "fr" : "Surligneur",
+    "zh-Hans" : "荧光笔"
+  },
+  "History" : {
+    "de" : "Verlauf",
+    "fr" : "Historique",
+    "zh-Hans" : "历史记录"
+  },
+  "History uses %@ (%lld captures)" : {
+    "comment" : "Settings: History's size on disk, then its number of captures",
+    "de" : {
+      "one" : "Verlauf belegt %@ (%lld Bildschirmfoto)",
+      "other" : "Verlauf belegt %@ (%lld Bildschirmfotos)"
+    },
+    "en" : {
+      "one" : "History uses %@ (%lld capture)",
+      "other" : "History uses %@ (%lld captures)"
+    },
+    "fr" : {
+      "one" : "L’historique occupe %@ (%lld capture)",
+      "other" : "L’historique occupe %@ (%lld captures)"
+    },
+    "zh-Hans" : "历史记录占用 %@（%lld 张截屏）"
+  },
+  "History uses … (%lld captures)" : {
+    "comment" : "Settings: History's size is still being measured",
+    "de" : {
+      "one" : "Verlauf belegt … (%lld Bildschirmfoto)",
+      "other" : "Verlauf belegt … (%lld Bildschirmfotos)"
+    },
+    "en" : {
+      "one" : "History uses … (%lld capture)",
+      "other" : "History uses … (%lld captures)"
+    },
+    "fr" : {
+      "one" : "L’historique occupe … (%lld capture)",
+      "other" : "L’historique occupe … (%lld captures)"
+    },
+    "zh-Hans" : "历史记录占用 …（%lld 张截屏）"
+  },
+  "History was already tidy" : {
+    "de" : "Der Verlauf war schon aufgeräumt",
+    "fr" : "L’historique était déjà propre",
+    "zh-Hans" : "历史记录已经很整洁"
+  },
+  "Hotkeys are system-wide and active while Shotnix is running. The ⌘⇧3 default works best after Apple's screenshot shortcut is disabled." : {
+    "de" : "Kurzbefehle gelten systemweit, solange Shotnix läuft. Der Standard ⌘⇧3 funktioniert am besten, wenn Apples Bildschirmfoto-Kurzbefehl deaktiviert ist.",
+    "fr" : "Les raccourcis fonctionnent dans tout le système tant que Shotnix est ouvert. Le raccourci ⌘⇧3 par défaut fonctionne mieux une fois le raccourci de capture d’Apple désactivé.",
+    "zh-Hans" : "快捷键在 Shotnix 运行时全局有效。停用 Apple 的截屏快捷键后，默认的 ⌘⇧3 效果最佳。"
+  },
+  "How strongly blur and pixelate hide what's under them" : {
+    "de" : "Wie stark Weichzeichnen und Verpixeln den Inhalt darunter verbergen",
+    "fr" : "Degré de masquage du flou et de la pixélisation",
+    "zh-Hans" : "模糊和像素化遮盖下方内容的程度"
+  },
+  "Image" : {
+    "de" : "Bild",
+    "fr" : "Image",
+    "zh-Hans" : "图像"
+  },
+  "JPEG Quality" : {
+    "de" : "JPEG-Qualität",
+    "fr" : "Qualité JPEG",
+    "zh-Hans" : "JPEG 质量"
+  },
+  "Keep Working" : {
+    "de" : "Weiterarbeiten",
+    "fr" : "Continuer",
+    "zh-Hans" : "继续工作"
+  },
+  "Keep captures" : {
+    "de" : "Bildschirmfotos behalten",
+    "fr" : "Conserver les captures",
+    "zh-Hans" : "截屏保留时长"
+  },
+  "Keeping 30 days removes %lld older captures from History now. This can't be undone." : {
+    "de" : {
+      "one" : "Mit „30 Tage“ wird jetzt %lld älteres Bildschirmfoto aus dem Verlauf entfernt. Dies kann nicht widerrufen werden.",
+      "other" : "Mit „30 Tage“ werden jetzt %lld ältere Bildschirmfotos aus dem Verlauf entfernt. Dies kann nicht widerrufen werden."
+    },
+    "en" : {
+      "one" : "Keeping 30 days removes %lld older capture from History now. This can't be undone.",
+      "other" : "Keeping 30 days removes %lld older captures from History now. This can't be undone."
+    },
+    "fr" : {
+      "one" : "Avec « 30 jours », %lld capture plus ancienne sera supprimée de l’historique dès maintenant. Cette action est irréversible.",
+      "other" : "Avec « 30 jours », %lld captures plus anciennes seront supprimées de l’historique dès maintenant. Cette action est irréversible."
+    },
+    "zh-Hans" : "选择“30 天”将立即从历史记录中移除 %lld 张较早的截屏。此操作无法撤销。"
+  },
+  "Keeping 7 days removes %lld older captures from History now. This can't be undone." : {
+    "de" : {
+      "one" : "Mit „7 Tage“ wird jetzt %lld älteres Bildschirmfoto aus dem Verlauf entfernt. Dies kann nicht widerrufen werden.",
+      "other" : "Mit „7 Tage“ werden jetzt %lld ältere Bildschirmfotos aus dem Verlauf entfernt. Dies kann nicht widerrufen werden."
+    },
+    "en" : {
+      "one" : "Keeping 7 days removes %lld older capture from History now. This can't be undone.",
+      "other" : "Keeping 7 days removes %lld older captures from History now. This can't be undone."
+    },
+    "fr" : {
+      "one" : "Avec « 7 jours », %lld capture plus ancienne sera supprimée de l’historique dès maintenant. Cette action est irréversible.",
+      "other" : "Avec « 7 jours », %lld captures plus anciennes seront supprimées de l’historique dès maintenant. Cette action est irréversible."
+    },
+    "zh-Hans" : "选择“7 天”将立即从历史记录中移除 %lld 张较早的截屏。此操作无法撤销。"
+  },
+  "Keeping 90 days removes %lld older captures from History now. This can't be undone." : {
+    "de" : {
+      "one" : "Mit „90 Tage“ wird jetzt %lld älteres Bildschirmfoto aus dem Verlauf entfernt. Dies kann nicht widerrufen werden.",
+      "other" : "Mit „90 Tage“ werden jetzt %lld ältere Bildschirmfotos aus dem Verlauf entfernt. Dies kann nicht widerrufen werden."
+    },
+    "en" : {
+      "one" : "Keeping 90 days removes %lld older capture from History now. This can't be undone.",
+      "other" : "Keeping 90 days removes %lld older captures from History now. This can't be undone."
+    },
+    "fr" : {
+      "one" : "Avec « 90 jours », %lld capture plus ancienne sera supprimée de l’historique dès maintenant. Cette action est irréversible.",
+      "other" : "Avec « 90 jours », %lld captures plus anciennes seront supprimées de l’historique dès maintenant. Cette action est irréversible."
+    },
+    "zh-Hans" : "选择“90 天”将立即从历史记录中移除 %lld 张较早的截屏。此操作无法撤销。"
+  },
+  "Keeping last 1,000 captures removes %lld older captures from History now. This can't be undone." : {
+    "de" : {
+      "one" : "Mit „Letzte 1.000 Bildschirmfotos“ wird jetzt %lld älteres Bildschirmfoto aus dem Verlauf entfernt. Dies kann nicht widerrufen werden.",
+      "other" : "Mit „Letzte 1.000 Bildschirmfotos“ werden jetzt %lld ältere Bildschirmfotos aus dem Verlauf entfernt. Dies kann nicht widerrufen werden."
+    },
+    "en" : {
+      "one" : "Keeping last 1,000 captures removes %lld older capture from History now. This can't be undone.",
+      "other" : "Keeping last 1,000 captures removes %lld older captures from History now. This can't be undone."
+    },
+    "fr" : {
+      "one" : "Avec « 1 000 dernières captures », %lld capture plus ancienne sera supprimée de l’historique dès maintenant. Cette action est irréversible.",
+      "other" : "Avec « 1 000 dernières captures », %lld captures plus anciennes seront supprimées de l’historique dès maintenant. Cette action est irréversible."
+    },
+    "zh-Hans" : "选择“最近 1,000 张截屏”将立即从历史记录中移除 %lld 张较早的截屏。此操作无法撤销。"
+  },
+  "Keeping last 100 captures removes %lld older captures from History now. This can't be undone." : {
+    "de" : {
+      "one" : "Mit „Letzte 100 Bildschirmfotos“ wird jetzt %lld älteres Bildschirmfoto aus dem Verlauf entfernt. Dies kann nicht widerrufen werden.",
+      "other" : "Mit „Letzte 100 Bildschirmfotos“ werden jetzt %lld ältere Bildschirmfotos aus dem Verlauf entfernt. Dies kann nicht widerrufen werden."
+    },
+    "en" : {
+      "one" : "Keeping last 100 captures removes %lld older capture from History now. This can't be undone.",
+      "other" : "Keeping last 100 captures removes %lld older captures from History now. This can't be undone."
+    },
+    "fr" : {
+      "one" : "Avec « 100 dernières captures », %lld capture plus ancienne sera supprimée de l’historique dès maintenant. Cette action est irréversible.",
+      "other" : "Avec « 100 dernières captures », %lld captures plus anciennes seront supprimées de l’historique dès maintenant. Cette action est irréversible."
+    },
+    "zh-Hans" : "选择“最近 100 张截屏”将立即从历史记录中移除 %lld 张较早的截屏。此操作无法撤销。"
+  },
+  "Keeping last 500 captures removes %lld older captures from History now. This can't be undone." : {
+    "de" : {
+      "one" : "Mit „Letzte 500 Bildschirmfotos“ wird jetzt %lld älteres Bildschirmfoto aus dem Verlauf entfernt. Dies kann nicht widerrufen werden.",
+      "other" : "Mit „Letzte 500 Bildschirmfotos“ werden jetzt %lld ältere Bildschirmfotos aus dem Verlauf entfernt. Dies kann nicht widerrufen werden."
+    },
+    "en" : {
+      "one" : "Keeping last 500 captures removes %lld older capture from History now. This can't be undone.",
+      "other" : "Keeping last 500 captures removes %lld older captures from History now. This can't be undone."
+    },
+    "fr" : {
+      "one" : "Avec « 500 dernières captures », %lld capture plus ancienne sera supprimée de l’historique dès maintenant. Cette action est irréversible.",
+      "other" : "Avec « 500 dernières captures », %lld captures plus anciennes seront supprimées de l’historique dès maintenant. Cette action est irréversible."
+    },
+    "zh-Hans" : "选择“最近 500 张截屏”将立即从历史记录中移除 %lld 张较早的截屏。此操作无法撤销。"
+  },
+  "Keyboard" : {
+    "comment" : "VoiceOver: the conflict alert's icon",
+    "de" : "Tastatur",
+    "fr" : "Clavier",
+    "zh-Hans" : "键盘"
+  },
+  "Languages" : {
+    "de" : "Sprachen",
+    "fr" : "Langues",
+    "zh-Hans" : "语言"
+  },
+  "Launch Shotnix at login" : {
+    "de" : "Shotnix bei der Anmeldung öffnen",
+    "fr" : "Ouvrir Shotnix à l’ouverture de session",
+    "zh-Hans" : "登录时打开 Shotnix"
+  },
+  "Lavender Glass" : {
+    "de" : "Lavendelglas",
+    "fr" : "Verre lavande",
+    "zh-Hans" : "薰衣草玻璃"
+  },
+  "Left" : {
+    "de" : "Links",
+    "fr" : "Gauche",
+    "zh-Hans" : "左侧"
+  },
+  "Lime Signal" : {
+    "de" : "Limettensignal",
+    "fr" : "Signal citron vert",
+    "zh-Hans" : "青柠信号"
+  },
+  "Line" : {
+    "de" : "Linie",
+    "fr" : "Ligne",
+    "zh-Hans" : "直线"
+  },
+  "Line width" : {
+    "de" : "Linienstärke",
+    "fr" : "Épaisseur du trait",
+    "zh-Hans" : "线条粗细"
+  },
+  "MIT License — Free and open source" : {
+    "de" : "MIT-Lizenz – kostenlos und Open Source",
+    "fr" : "Licence MIT — libre et open source",
+    "zh-Hans" : "MIT 许可证 — 免费开源"
+  },
+  "Max" : {
+    "comment" : "Recording quality",
+    "de" : "Maximal",
+    "fr" : "Maximale",
+    "zh-Hans" : "最高"
+  },
+  "Menu Bar" : {
+    "de" : "Menüleiste",
+    "fr" : "Barre des menus",
+    "zh-Hans" : "菜单栏"
+  },
+  "Menu bar is full, so macOS hid the Shotnix icon — %@ still captures. Click here for the menu." : {
+    "de" : "Die Menüleiste ist voll, deshalb hat macOS das Shotnix-Symbol ausgeblendet – %@ nimmt trotzdem auf. Klicke hier für das Menü.",
+    "fr" : "La barre des menus est pleine : macOS a masqué l’icône de Shotnix — %@ capture toujours. Cliquez ici pour ouvrir le menu.",
+    "zh-Hans" : "菜单栏已满，macOS 隐藏了 Shotnix 图标 — 按 %@ 仍可截屏。点按此处打开菜单。"
+  },
+  "Menu bar is full, so macOS hid the Shotnix icon — your shortcuts still work. Click here for the menu." : {
+    "de" : "Die Menüleiste ist voll, deshalb hat macOS das Shotnix-Symbol ausgeblendet – deine Kurzbefehle funktionieren weiterhin. Klicke hier für das Menü.",
+    "fr" : "La barre des menus est pleine : macOS a masqué l’icône de Shotnix — vos raccourcis fonctionnent toujours. Cliquez ici pour ouvrir le menu.",
+    "zh-Hans" : "菜单栏已满，macOS 隐藏了 Shotnix 图标 — 你的快捷键仍然有效。点按此处打开菜单。"
+  },
+  "Microphone" : {
+    "de" : "Mikrofon",
+    "fr" : "Micro",
+    "zh-Hans" : "麦克风"
+  },
+  "Microphone recording requires macOS microphone permission. System audio excludes Shotnix sounds to avoid feedback." : {
+    "de" : "Für Mikrofonaufzeichnungen braucht Shotnix die Mikrofonberechtigung von macOS. Der Systemton enthält keine Töne von Shotnix, um Rückkopplungen zu vermeiden.",
+    "fr" : "L’enregistrement du micro nécessite l’autorisation d’accès au micro de macOS. Le son de l’ordinateur exclut les sons de Shotnix pour éviter l’effet Larsen.",
+    "zh-Hans" : "录制麦克风需要 macOS 的麦克风权限。电脑声音不包含 Shotnix 的提示音，以免产生回声。"
+  },
+  "Midnight Graphite" : {
+    "de" : "Mitternachtsgraphit",
+    "fr" : "Graphite minuit",
+    "zh-Hans" : "午夜石墨"
+  },
+  "Minimize" : {
+    "de" : "Im Dock ablegen",
+    "fr" : "Placer dans le Dock",
+    "zh-Hans" : "最小化"
+  },
+  "Moss" : {
+    "de" : "Moos",
+    "fr" : "Mousse",
+    "zh-Hans" : "苔绿"
+  },
+  "Moss Glow" : {
+    "de" : "Moosschimmer",
+    "fr" : "Lueur de mousse",
+    "zh-Hans" : "苔藓微光"
+  },
+  "Mute Clip" : {
+    "de" : "Clip stummschalten",
+    "fr" : "Couper le son du clip",
+    "zh-Hans" : "将片段静音"
+  },
+  "Needed to capture the screen. macOS will ask once." : {
+    "de" : "Nötig, um den Bildschirm aufzunehmen. macOS fragt einmal nach.",
+    "fr" : "Nécessaire pour capturer l’écran. macOS vous le demandera une fois.",
+    "zh-Hans" : "截取屏幕需要此权限。macOS 只会询问一次。"
+  },
+  "Neo Pop" : {
+    "de" : "Neo-Pop",
+    "fr" : "Néo-pop",
+    "zh-Hans" : "新波普"
+  },
+  "Never" : {
+    "de" : "Nie",
+    "fr" : "Jamais",
+    "zh-Hans" : "永不"
+  },
+  "New screenshots are copied automatically. Turn this off if you only want to use the overlay or history actions." : {
+    "de" : "Neue Bildschirmfotos werden automatisch kopiert. Schalte dies aus, wenn du nur die Miniatur oder den Verlauf nutzen möchtest.",
+    "fr" : "Les nouvelles captures sont copiées automatiquement. Désactivez cette option si vous préférez passer par la vignette ou l’historique.",
+    "zh-Hans" : "新截屏会自动拷贝。如果只想使用缩略图或历史记录中的操作，请关闭此选项。"
+  },
+  "Nice shot. You're all set." : {
+    "de" : "Schönes Bild! Alles ist bereit.",
+    "fr" : "Belle capture ! Tout est prêt.",
+    "zh-Hans" : "截得漂亮！一切就绪。"
+  },
+  "Night Current" : {
+    "de" : "Nachtströmung",
+    "fr" : "Courant nocturne",
+    "zh-Hans" : "夜之流"
+  },
+  "No conflict" : {
+    "de" : "Kein Konflikt",
+    "fr" : "Aucun conflit",
+    "zh-Hans" : "无冲突"
+  },
+  "Numbered Steps" : {
+    "de" : "Nummerierte Schritte",
+    "fr" : "Étapes numérotées",
+    "zh-Hans" : "编号步骤"
+  },
+  "OK" : {
+    "de" : "OK",
+    "fr" : "OK",
+    "zh-Hans" : "好"
+  },
+  "Off" : {
+    "comment" : "Recording countdown: none",
+    "de" : "Aus",
+    "fr" : "Désactivé",
+    "zh-Hans" : "关闭"
+  },
+  "Open History" : {
+    "de" : "Verlauf öffnen",
+    "fr" : "Ouvrir l’historique",
+    "zh-Hans" : "打开历史记录"
+  },
+  "Open Keyboard Settings" : {
+    "de" : "Tastatureinstellungen öffnen",
+    "fr" : "Ouvrir les réglages Clavier",
+    "zh-Hans" : "打开键盘设置"
+  },
+  "Open Settings" : {
+    "comment" : "Opens System Settings at Screen Recording",
+    "de" : "Einstellungen öffnen",
+    "fr" : "Ouvrir les réglages",
+    "zh-Hans" : "打开设置"
+  },
+  "Open System Settings" : {
+    "de" : "Systemeinstellungen öffnen",
+    "fr" : "Ouvrir Réglages Système",
+    "zh-Hans" : "打开系统设置"
+  },
+  "Open System Settings → Keyboard → Keyboard Shortcuts → Screenshots and turn off the screenshot shortcuts manually." : {
+    "de" : "Öffne „Systemeinstellungen“ → „Tastatur“ → „Tastaturkurzbefehle“ → „Bildschirmfotos“ und deaktiviere die Kurzbefehle für Bildschirmfotos dort von Hand.",
+    "fr" : "Ouvrez Réglages Système → Clavier → Raccourcis clavier → Captures d’écran et désactivez manuellement les raccourcis de capture.",
+    "zh-Hans" : "请打开“系统设置”→“键盘”→“键盘快捷键”→“截屏”，然后手动关闭截屏快捷键。"
+  },
+  "Open Video Editor" : {
+    "de" : "Video-Editor öffnen",
+    "fr" : "Ouvrir l’éditeur vidéo",
+    "zh-Hans" : "打开视频编辑器"
+  },
+  "Open editor after recording" : {
+    "de" : "Editor nach der Aufzeichnung öffnen",
+    "fr" : "Ouvrir l’éditeur après l’enregistrement",
+    "zh-Hans" : "录制后打开编辑器"
+  },
+  "Orange" : {
+    "de" : "Orange",
+    "fr" : "Orange",
+    "zh-Hans" : "橙色"
+  },
+  "Overlay position" : {
+    "de" : "Position der Miniatur",
+    "fr" : "Position de la vignette",
+    "zh-Hans" : "缩略图位置"
+  },
+  "Padding" : {
+    "comment" : "Background: space around the screenshot",
+    "de" : "Rand",
+    "fr" : "Marge",
+    "zh-Hans" : "边距"
+  },
+  "Paste" : {
+    "de" : "Einsetzen",
+    "fr" : "Coller",
+    "zh-Hans" : "粘贴"
+  },
+  "Pause Recording" : {
+    "de" : "Aufzeichnung pausieren",
+    "fr" : "Suspendre l’enregistrement",
+    "zh-Hans" : "暂停录制"
+  },
+  "Pending" : {
+    "comment" : "VoiceOver: a setup step still to do",
+    "de" : "Ausstehend",
+    "fr" : "En attente",
+    "zh-Hans" : "待完成"
+  },
+  "Permission needed" : {
+    "de" : "Berechtigung erforderlich",
+    "fr" : "Autorisation requise",
+    "zh-Hans" : "需要权限"
+  },
+  "Pine Dusk" : {
+    "de" : "Kieferndämmerung",
+    "fr" : "Crépuscule des pins",
+    "zh-Hans" : "松林暮色"
+  },
+  "Pixelate" : {
+    "de" : "Verpixeln",
+    "fr" : "Pixéliser",
+    "zh-Hans" : "像素化"
+  },
+  "Pixelated area" : {
+    "de" : "Verpixelter Bereich",
+    "fr" : "Zone pixélisée",
+    "zh-Hans" : "像素化区域"
+  },
+  "Play capture sound" : {
+    "de" : "Ton beim Aufnehmen abspielen",
+    "fr" : "Émettre un son lors de la capture",
+    "zh-Hans" : "截屏时播放声音"
+  },
+  "Polar Dawn" : {
+    "de" : "Polarmorgen",
+    "fr" : "Aube polaire",
+    "zh-Hans" : "极地晨光"
+  },
+  "Porcelain" : {
+    "de" : "Porzellan",
+    "fr" : "Porcelaine",
+    "zh-Hans" : "瓷白"
+  },
+  "Preferences" : {
+    "de" : "Einstellungen",
+    "fr" : "Réglages",
+    "zh-Hans" : "设置"
+  },
+  "Preset" : {
+    "de" : "Vorgabe",
+    "fr" : "Préréglage",
+    "zh-Hans" : "预设"
+  },
+  "Press %@ anytime — or try it right now." : {
+    "de" : "Drücke jederzeit %@ – oder probier es gleich aus.",
+    "fr" : "Appuyez sur %@ à tout moment — ou essayez dès maintenant.",
+    "zh-Hans" : "随时按下 %@ — 也可以现在就试试。"
+  },
+  "Preview" : {
+    "de" : "Vorschau",
+    "fr" : "Aperçu",
+    "zh-Hans" : "预览"
+  },
+  "Prism Sweep" : {
+    "de" : "Prismenschwung",
+    "fr" : "Balayage prismatique",
+    "zh-Hans" : "棱镜流光"
+  },
+  "Privacy Policy" : {
+    "de" : "Datenschutzerklärung",
+    "fr" : "Politique de confidentialité",
+    "zh-Hans" : "隐私政策"
+  },
+  "Purple" : {
+    "de" : "Violett",
+    "fr" : "Violet",
+    "zh-Hans" : "紫色"
+  },
+  "Quality" : {
+    "de" : "Qualität",
+    "fr" : "Qualité",
+    "zh-Hans" : "质量"
+  },
+  "Quit & Reopen" : {
+    "de" : "Beenden & neu öffnen",
+    "fr" : "Quitter et rouvrir",
+    "zh-Hans" : "退出并重新打开"
+  },
+  "Quit Shotnix" : {
+    "de" : "Shotnix beenden",
+    "fr" : "Quitter Shotnix",
+    "zh-Hans" : "退出 Shotnix"
+  },
+  "Quit Shotnix?" : {
+    "de" : "Shotnix beenden?",
+    "fr" : "Quitter Shotnix ?",
+    "zh-Hans" : "要退出 Shotnix 吗？"
+  },
+  "Radius" : {
+    "comment" : "Background: the screenshot's corner radius",
+    "de" : "Radius",
+    "fr" : "Rayon",
+    "zh-Hans" : "圆角"
+  },
+  "Re-enable Apple's ⌘⇧3/4/5 screenshot shortcuts" : {
+    "de" : "Apples Bildschirmfoto-Kurzbefehle ⌘⇧3/4/5 wieder aktivieren",
+    "fr" : "Réactiver les raccourcis de capture ⌘⇧3/4/5 d’Apple",
+    "zh-Hans" : "重新启用 Apple 的 ⌘⇧3/4/5 截屏快捷键"
+  },
+  "Ready" : {
+    "de" : "Bereit",
+    "fr" : "Prêt",
+    "zh-Hans" : "就绪"
+  },
+  "Ready · %lld optional off" : {
+    "comment" : "Health: all default shortcuts set; the number of optional ones left unassigned",
+    "de" : {
+      "one" : "Bereit · %lld optionaler Kurzbefehl aus",
+      "other" : "Bereit · %lld optionale Kurzbefehle aus"
+    },
+    "fr" : {
+      "one" : "Prêt · %lld raccourci facultatif désactivé",
+      "other" : "Prêt · %lld raccourcis facultatifs désactivés"
+    },
+    "zh-Hans" : "就绪 · %lld 个可选快捷键未设置"
+  },
+  "Record" : {
+    "comment" : "Command center section with the screen recording actions",
+    "de" : "Aufzeichnung",
+    "fr" : "Enregistrement",
+    "zh-Hans" : "录制"
+  },
+  "Record camera" : {
+    "de" : "Kamera aufzeichnen",
+    "fr" : "Enregistrer la caméra",
+    "zh-Hans" : "录制摄像头"
+  },
+  "Record microphone" : {
+    "de" : "Mikrofon aufzeichnen",
+    "fr" : "Enregistrer le micro",
+    "zh-Hans" : "录制麦克风"
+  },
+  "Record system audio" : {
+    "de" : "Systemton aufzeichnen",
+    "fr" : "Enregistrer le son de l’ordinateur",
+    "zh-Hans" : "录制电脑声音"
+  },
+  "Recording" : {
+    "comment" : "Settings tab and Shortcuts section for screen recording",
+    "de" : "Aufzeichnung",
+    "fr" : "Enregistrement",
+    "zh-Hans" : "录制"
+  },
+  "Recording paused — click to stop (%@)" : {
+    "de" : "Aufzeichnung pausiert – zum Stoppen klicken (%@)",
+    "fr" : "Enregistrement suspendu — cliquez pour l’arrêter (%@)",
+    "zh-Hans" : "录制已暂停 — 点按即可停止（%@）"
+  },
+  "Recording shortcuts are unassigned by default — click a field to set one. Stop Recording also cancels recording setup. While recording, %@ always stops it, from any app." : {
+    "de" : "Aufzeichnungs-Kurzbefehle sind anfangs nicht belegt – klicke in ein Feld, um einen festzulegen. „Aufzeichnung stoppen“ bricht auch die Vorbereitung ab. Während einer Aufzeichnung stoppt %@ sie immer, in jeder App.",
+    "fr" : "Les raccourcis d’enregistrement ne sont pas attribués par défaut — cliquez sur un champ pour en définir un. « Arrêter l’enregistrement » annule aussi la préparation. Pendant un enregistrement, %@ l’arrête toujours, depuis n’importe quelle app.",
+    "zh-Hans" : "录制快捷键默认未设置 — 点按字段即可设置。“停止录制”也会取消录制准备。录制时，在任何 App 中按 %@ 都能停止录制。"
+  },
+  "Recording — click to stop (%@)" : {
+    "de" : "Aufzeichnung läuft – zum Stoppen klicken (%@)",
+    "fr" : "Enregistrement en cours — cliquez pour l’arrêter (%@)",
+    "zh-Hans" : "正在录制 — 点按即可停止（%@）"
+  },
+  "Recovered your interrupted recording “%@”. Click to open it." : {
+    "de" : "Deine unterbrochene Aufnahme „%@“ wurde wiederhergestellt. Klicke, um sie zu öffnen.",
+    "fr" : "Votre enregistrement interrompu « %@ » a été récupéré. Cliquez pour l’ouvrir.",
+    "zh-Hans" : "已恢复你中断的录制内容“%@”。点按即可打开。"
+  },
+  "Rectangle" : {
+    "de" : "Rechteck",
+    "fr" : "Rectangle",
+    "zh-Hans" : "矩形"
+  },
+  "Red" : {
+    "de" : "Rot",
+    "fr" : "Rouge",
+    "zh-Hans" : "红色"
+  },
+  "Redaction strength" : {
+    "de" : "Stärke der Unkenntlichmachung",
+    "fr" : "Intensité du masquage",
+    "zh-Hans" : "遮盖强度"
+  },
+  "Redo" : {
+    "de" : "Wiederholen",
+    "fr" : "Rétablir",
+    "zh-Hans" : "重做"
+  },
+  "Redo Timeline Edit" : {
+    "de" : "Änderung an der Zeitleiste wiederholen",
+    "fr" : "Rétablir la modification de la timeline",
+    "zh-Hans" : "重做时间线编辑"
+  },
+  "Releasing the mouse takes the shot. Hold ⇧ as you release to adjust the selection first — drag its edges, nudge it with the arrow keys, then press Return." : {
+    "de" : "Loslassen der Maus löst die Aufnahme aus. Halte beim Loslassen ⇧ gedrückt, um die Auswahl erst anzupassen – ziehe an den Rändern, verschiebe sie mit den Pfeiltasten und drücke dann den Zeilenschalter.",
+    "fr" : "Relâcher la souris déclenche la capture. Maintenez ⇧ en relâchant pour ajuster d’abord la sélection — faites glisser ses bords, déplacez-la avec les touches fléchées, puis appuyez sur Retour.",
+    "zh-Hans" : "松开鼠标即可截屏。松开时按住 ⇧ 可先调整选区 — 拖移边缘、用方向键微调，然后按下 Return 键。"
+  },
+  "Report Issue" : {
+    "de" : "Problem melden",
+    "fr" : "Signaler un problème",
+    "zh-Hans" : "报告问题"
+  },
+  "Reset" : {
+    "comment" : "Editor: undo the crop",
+    "de" : "Zurücksetzen",
+    "fr" : "Réinitialiser",
+    "zh-Hans" : "重置"
+  },
+  "Reset Defaults" : {
+    "de" : "Standards wiederherstellen",
+    "fr" : "Rétablir les valeurs par défaut",
+    "zh-Hans" : "恢复默认设置"
+  },
+  "Reset crop" : {
+    "de" : "Zuschnitt zurücksetzen",
+    "fr" : "Réinitialiser le rognage",
+    "zh-Hans" : "重置裁剪"
+  },
+  "Restore Apple Shortcuts" : {
+    "de" : "Apple-Kurzbefehle wiederherstellen",
+    "fr" : "Restaurer les raccourcis Apple",
+    "zh-Hans" : "恢复 Apple 快捷键"
+  },
+  "Resume Recording" : {
+    "de" : "Aufzeichnung fortsetzen",
+    "fr" : "Reprendre l’enregistrement",
+    "zh-Hans" : "继续录制"
+  },
+  "Review Changes…" : {
+    "de" : "Änderungen prüfen …",
+    "fr" : "Vérifier les modifications…",
+    "zh-Hans" : "检查更改…"
+  },
+  "Right" : {
+    "de" : "Rechts",
+    "fr" : "Droite",
+    "zh-Hans" : "右侧"
+  },
+  "Rose Smoke" : {
+    "de" : "Rosenrauch",
+    "fr" : "Fumée rose",
+    "zh-Hans" : "玫瑰烟雾"
+  },
+  "Rounded Corners (⌥R)" : {
+    "de" : "Abgerundete Ecken (⌥R)",
+    "fr" : "Coins arrondis (⌥R)",
+    "zh-Hans" : "圆角（⌥R）"
+  },
+  "Rounded corners" : {
+    "de" : "Abgerundete Ecken",
+    "fr" : "Coins arrondis",
+    "zh-Hans" : "圆角"
+  },
+  "Rounded rectangle" : {
+    "de" : "Abgerundetes Rechteck",
+    "fr" : "Rectangle arrondi",
+    "zh-Hans" : "圆角矩形"
+  },
+  "Save" : {
+    "de" : "Sichern",
+    "fr" : "Enregistrer",
+    "zh-Hans" : "存储"
+  },
+  "Save (⌘S)" : {
+    "de" : "Sichern (⌘S)",
+    "fr" : "Enregistrer (⌘S)",
+    "zh-Hans" : "存储（⌘S）"
+  },
+  "Save Folder" : {
+    "de" : "Zielordner",
+    "fr" : "Dossier d’enregistrement",
+    "zh-Hans" : "存储文件夹"
+  },
+  "Save Location" : {
+    "de" : "Speicherort",
+    "fr" : "Emplacement d’enregistrement",
+    "zh-Hans" : "存储位置"
+  },
+  "Save automatically" : {
+    "de" : "Automatisch sichern",
+    "fr" : "Enregistrer automatiquement",
+    "zh-Hans" : "自动存储"
+  },
+  "Save changes to this screenshot?" : {
+    "de" : "Änderungen an diesem Bildschirmfoto sichern?",
+    "fr" : "Enregistrer les modifications de cette capture ?",
+    "zh-Hans" : "要存储对此截屏的更改吗？"
+  },
+  "Save folder updated." : {
+    "de" : "Zielordner aktualisiert.",
+    "fr" : "Dossier d’enregistrement mis à jour.",
+    "zh-Hans" : "存储文件夹已更新。"
+  },
+  "Saved to %@: %@" : {
+    "comment" : "Toast: the folder, then the file name",
+    "de" : "Gesichert in „%@“: %@",
+    "fr" : "Enregistré dans « %@ » : %@",
+    "zh-Hans" : "已存储到“%@”：%@"
+  },
+  "Save…" : {
+    "de" : "Sichern …",
+    "fr" : "Enregistrer…",
+    "zh-Hans" : "存储…"
+  },
+  "Saving the recording" : {
+    "de" : "Aufnahme wird gesichert",
+    "fr" : "Enregistrement de la vidéo en cours",
+    "zh-Hans" : "正在存储录制内容"
+  },
+  "Saving…" : {
+    "comment" : "Menu bar status while a finished recording is being written",
+    "de" : "Wird gesichert …",
+    "fr" : "Enregistrement…",
+    "zh-Hans" : "正在存储…"
+  },
+  "Scan QR Code" : {
+    "de" : "QR-Code scannen",
+    "fr" : "Scanner un code QR",
+    "zh-Hans" : "扫描二维码"
+  },
+  "Screen Recording" : {
+    "de" : "Bildschirmaufnahme",
+    "fr" : "Enregistrement de l’écran",
+    "zh-Hans" : "屏幕录制"
+  },
+  "Screen Recording Permission Required" : {
+    "de" : "Berechtigung für Bildschirmaufnahme erforderlich",
+    "fr" : "Autorisation d’enregistrement de l’écran requise",
+    "zh-Hans" : "需要屏幕录制权限"
+  },
+  "Screenshot Editor" : {
+    "de" : "Bildschirmfoto-Editor",
+    "fr" : "Éditeur de captures",
+    "zh-Hans" : "截屏编辑器"
+  },
+  "Screenshot canvas" : {
+    "de" : "Bildschirmfoto-Arbeitsfläche",
+    "fr" : "Zone de travail de la capture",
+    "zh-Hans" : "截屏画布"
+  },
+  "Screenshots" : {
+    "de" : "Bildschirmfotos",
+    "fr" : "Captures",
+    "zh-Hans" : "截屏"
+  },
+  "Select" : {
+    "comment" : "Editor tool",
+    "de" : "Auswählen",
+    "fr" : "Sélectionner",
+    "zh-Hans" : "选择"
+  },
+  "Select All" : {
+    "de" : "Alles auswählen",
+    "fr" : "Tout sélectionner",
+    "zh-Hans" : "全选"
+  },
+  "Selection" : {
+    "de" : "Auswahl",
+    "fr" : "Sélection",
+    "zh-Hans" : "选区"
+  },
+  "Set In to Playhead" : {
+    "de" : "Startpunkt an Abspielposition setzen",
+    "fr" : "Placer le point d’entrée sur la tête de lecture",
+    "zh-Hans" : "将入点设为播放头位置"
+  },
+  "Set Out to Playhead" : {
+    "de" : "Endpunkt an Abspielposition setzen",
+    "fr" : "Placer le point de sortie sur la tête de lecture",
+    "zh-Hans" : "将出点设为播放头位置"
+  },
+  "Settings" : {
+    "de" : "Einstellungen",
+    "fr" : "Réglages",
+    "zh-Hans" : "设置"
+  },
+  "Settings…" : {
+    "de" : "Einstellungen …",
+    "fr" : "Réglages…",
+    "zh-Hans" : "设置…"
+  },
+  "Shadow" : {
+    "de" : "Schatten",
+    "fr" : "Ombre",
+    "zh-Hans" : "阴影"
+  },
+  "Shadow and transparent padding" : {
+    "de" : "Schatten und transparenter Rand",
+    "fr" : "Ombre et marge transparente",
+    "zh-Hans" : "阴影和透明边距"
+  },
+  "Shape" : {
+    "de" : "Form",
+    "fr" : "Forme",
+    "zh-Hans" : "形状"
+  },
+  "Shortcut Conflict Detected" : {
+    "de" : "Konflikt bei Kurzbefehlen erkannt",
+    "fr" : "Conflit de raccourcis détecté",
+    "zh-Hans" : "检测到快捷键冲突"
+  },
+  "Shortcuts" : {
+    "de" : "Kurzbefehle",
+    "fr" : "Raccourcis",
+    "zh-Hans" : "快捷键"
+  },
+  "Shotnix Preferences" : {
+    "de" : "Shotnix-Einstellungen",
+    "fr" : "Réglages de Shotnix",
+    "zh-Hans" : "Shotnix 设置"
+  },
+  "Shotnix could not write the file to:\n%@" : {
+    "de" : "Shotnix konnte die Datei nicht hier sichern:\n%@",
+    "fr" : "Shotnix n’a pas pu écrire le fichier à cet emplacement :\n%@",
+    "zh-Hans" : "Shotnix 无法将文件写入：\n%@"
+  },
+  "Shotnix is ready to use!" : {
+    "de" : "Shotnix ist startklar!",
+    "fr" : "Shotnix est prêt à l’emploi !",
+    "zh-Hans" : "Shotnix 已可以使用！"
+  },
+  "Shotnix lives here — setup continues next launch" : {
+    "de" : "Hier findest du Shotnix – die Einrichtung geht beim nächsten Start weiter",
+    "fr" : "Shotnix se trouve ici — la configuration reprendra au prochain lancement",
+    "zh-Hans" : "Shotnix 就在这里 — 下次启动时将继续设置"
+  },
+  "Shotnix lives in your menu bar" : {
+    "de" : "Shotnix findest du in der Menüleiste",
+    "fr" : "Shotnix est dans la barre des menus",
+    "zh-Hans" : "Shotnix 位于菜单栏中"
+  },
+  "Shotnix needs Screen Recording permission to capture your screen.\n\nPlease enable it in System Settings → Privacy & Security → Screen & System Audio Recording." : {
+    "de" : "Shotnix braucht die Berechtigung für Bildschirmaufnahmen, um deinen Bildschirm aufzunehmen.\n\nAktiviere sie unter „Systemeinstellungen“ → „Datenschutz & Sicherheit“ → „Bildschirm- & Systemaudioaufnahme“.",
+    "fr" : "Shotnix a besoin de l’autorisation d’enregistrement de l’écran pour capturer votre écran.\n\nActivez-la dans Réglages Système → Confidentialité et sécurité → Enregistrement de l’écran et de l’audio du système.",
+    "zh-Hans" : "Shotnix 需要屏幕录制权限才能截取你的屏幕。\n\n请在“系统设置”→“隐私与安全性”→“录屏与系统录音”中启用。"
+  },
+  "Shotnix will wrap these up before it quits." : {
+    "de" : "Shotnix schließt diese Vorgänge vor dem Beenden ab.",
+    "fr" : "Shotnix terminera ces tâches avant de quitter.",
+    "zh-Hans" : "Shotnix 会在退出前完成这些任务。"
+  },
+  "Show Desktop Icons" : {
+    "de" : "Schreibtischsymbole einblenden",
+    "fr" : "Afficher les icônes du bureau",
+    "zh-Hans" : "显示桌面图标"
+  },
+  "Show Editor" : {
+    "de" : "Editor zeigen",
+    "fr" : "Afficher l’éditeur",
+    "zh-Hans" : "显示编辑器"
+  },
+  "Show Quick Access Overlay" : {
+    "comment" : "The thumbnail with actions that appears after a capture",
+    "de" : "Schnellzugriff-Miniatur anzeigen",
+    "fr" : "Afficher la vignette d’accès rapide",
+    "zh-Hans" : "显示快速访问缩略图"
+  },
+  "Show Video Editor" : {
+    "de" : "Video-Editor zeigen",
+    "fr" : "Afficher l’éditeur vidéo",
+    "zh-Hans" : "显示视频编辑器"
+  },
+  "Show cursor" : {
+    "de" : "Zeiger anzeigen",
+    "fr" : "Afficher le pointeur",
+    "zh-Hans" : "显示指针"
+  },
+  "Show keyboard shortcuts" : {
+    "de" : "Tastaturkurzbefehle anzeigen",
+    "fr" : "Afficher les raccourcis clavier",
+    "zh-Hans" : "显示快捷键"
+  },
+  "Show menu bar icon" : {
+    "de" : "Symbol in der Menüleiste anzeigen",
+    "fr" : "Afficher l’icône dans la barre des menus",
+    "zh-Hans" : "在菜单栏中显示图标"
+  },
+  "Show the whole screenshot again" : {
+    "de" : "Wieder das ganze Bildschirmfoto zeigen",
+    "fr" : "Afficher de nouveau toute la capture",
+    "zh-Hans" : "重新显示整个截屏"
+  },
+  "Silver" : {
+    "de" : "Silber",
+    "fr" : "Argent",
+    "zh-Hans" : "银色"
+  },
+  "Size" : {
+    "comment" : "Editor: stroke size",
+    "de" : "Größe",
+    "fr" : "Taille",
+    "zh-Hans" : "大小"
+  },
+  "Skip Setup" : {
+    "de" : "Einrichtung überspringen",
+    "fr" : "Ignorer la configuration",
+    "zh-Hans" : "跳过设置"
+  },
+  "Sky Wash" : {
+    "de" : "Himmelsschleier",
+    "fr" : "Lavis de ciel",
+    "zh-Hans" : "天空水彩"
+  },
+  "Solid Color" : {
+    "de" : "Einfarbig",
+    "fr" : "Couleur unie",
+    "zh-Hans" : "纯色"
+  },
+  "Sounds" : {
+    "de" : "Töne",
+    "fr" : "Sons",
+    "zh-Hans" : "声音"
+  },
+  "Space Gray" : {
+    "de" : "Space Grau",
+    "fr" : "Gris sidéral",
+    "zh-Hans" : "深空灰色"
+  },
+  "Split at Playhead" : {
+    "de" : "An der Abspielposition teilen",
+    "fr" : "Scinder à la tête de lecture",
+    "zh-Hans" : "在播放头处分割"
+  },
+  "Spotlight" : {
+    "comment" : "Editor tool that dims everything but an area",
+    "de" : "Fokus",
+    "fr" : "Projecteur",
+    "zh-Hans" : "聚光灯"
+  },
+  "Spotlight shape" : {
+    "de" : "Form des Fokus",
+    "fr" : "Forme du projecteur",
+    "zh-Hans" : "聚光灯形状"
+  },
+  "Startup" : {
+    "de" : "Start",
+    "fr" : "Démarrage",
+    "zh-Hans" : "启动"
+  },
+  "Step %lld" : {
+    "comment" : "VoiceOver: a numbered step and its number",
+    "de" : "Schritt %lld",
+    "fr" : "Étape %lld",
+    "zh-Hans" : "步骤 %lld"
+  },
+  "Storage" : {
+    "de" : "Speicher",
+    "fr" : "Stockage",
+    "zh-Hans" : "存储空间"
+  },
+  "Strength" : {
+    "comment" : "Editor: how strongly blur and pixelate hide",
+    "de" : "Stärke",
+    "fr" : "Intensité",
+    "zh-Hans" : "强度"
+  },
+  "Style" : {
+    "de" : "Stil",
+    "fr" : "Style",
+    "zh-Hans" : "样式"
+  },
+  "Sunset Coral" : {
+    "de" : "Abendkoralle",
+    "fr" : "Corail couchant",
+    "zh-Hans" : "日落珊瑚"
+  },
+  "Support" : {
+    "de" : "Support",
+    "fr" : "Assistance",
+    "zh-Hans" : "支持"
+  },
+  "System Default" : {
+    "de" : "Systemstandard",
+    "fr" : "Par défaut du système",
+    "zh-Hans" : "系统默认"
+  },
+  "Tahoe Ice" : {
+    "de" : "Tahoe-Eis",
+    "fr" : "Glace de Tahoe",
+    "zh-Hans" : "太浩冰蓝"
+  },
+  "Take a Test Screenshot" : {
+    "de" : "Test-Bildschirmfoto aufnehmen",
+    "fr" : "Faire une capture d’essai",
+    "zh-Hans" : "进行测试截屏"
+  },
+  "Take your first screenshot" : {
+    "de" : "Dein erstes Bildschirmfoto aufnehmen",
+    "fr" : "Faire votre première capture",
+    "zh-Hans" : "截取你的第一张截屏"
+  },
+  "Template" : {
+    "de" : "Vorlage",
+    "fr" : "Modèle",
+    "zh-Hans" : "模板"
+  },
+  "Text Recognition" : {
+    "de" : "Texterkennung",
+    "fr" : "Reconnaissance de texte",
+    "zh-Hans" : "文字识别"
+  },
+  "Text size" : {
+    "de" : "Textgröße",
+    "fr" : "Taille du texte",
+    "zh-Hans" : "文字大小"
+  },
+  "Text: %@" : {
+    "de" : "Text: %@",
+    "fr" : "Texte : %@",
+    "zh-Hans" : "文字：%@"
+  },
+  "The menu bar icon is Shotnix's main entry point. While it is hidden, open Shotnix again from Finder, Launchpad, or Spotlight to bring these Preferences back." : {
+    "de" : "Über das Symbol in der Menüleiste erreichst du Shotnix. Solange es ausgeblendet ist, öffne Shotnix erneut über den Finder, das Launchpad oder Spotlight, um diese Einstellungen wieder aufzurufen.",
+    "fr" : "L’icône de la barre des menus est le principal point d’accès à Shotnix. Tant qu’elle est masquée, ouvrez de nouveau Shotnix depuis le Finder, le Launchpad ou Spotlight pour retrouver ces réglages.",
+    "zh-Hans" : "菜单栏图标是 Shotnix 的主要入口。隐藏后，可从“访达”、“启动台”或“聚焦”再次打开 Shotnix 来重新显示这些设置。"
+  },
+  "The save panel did not return a destination. Please try saving again." : {
+    "de" : "Das Sichern-Fenster hat keinen Speicherort zurückgegeben. Bitte versuche es erneut.",
+    "fr" : "La zone de dialogue d’enregistrement n’a renvoyé aucune destination. Veuillez réessayer.",
+    "zh-Hans" : "存储面板未返回存储位置。请再次尝试存储。"
+  },
+  "The screenshot has no image data." : {
+    "de" : "Das Bildschirmfoto enthält keine Bilddaten.",
+    "fr" : "La capture ne contient aucune donnée d’image.",
+    "zh-Hans" : "截屏不含图像数据。"
+  },
+  "The selection stays on screen to adjust — drag its edges, nudge it with the arrow keys, then press Return. Hold ⇧ as you release to capture right away." : {
+    "de" : "Die Auswahl bleibt zum Anpassen auf dem Bildschirm – ziehe an den Rändern, verschiebe sie mit den Pfeiltasten und drücke dann den Zeilenschalter. Halte beim Loslassen ⇧ gedrückt, um sofort aufzunehmen.",
+    "fr" : "La sélection reste à l’écran pour être ajustée — faites glisser ses bords, déplacez-la avec les touches fléchées, puis appuyez sur Retour. Maintenez ⇧ en relâchant pour capturer immédiatement.",
+    "zh-Hans" : "选区会留在屏幕上供你调整 — 拖移边缘、用方向键微调，然后按下 Return 键。松开时按住 ⇧ 可立即截屏。"
+  },
+  "Three quick steps and you're capturing." : {
+    "de" : "Drei kurze Schritte, dann kann es losgehen.",
+    "fr" : "Trois étapes rapides et vous voilà prêt à capturer.",
+    "zh-Hans" : "只需三个简单步骤即可开始截屏。"
+  },
+  "Tide Glass" : {
+    "de" : "Gezeitenglas",
+    "fr" : "Verre de marée",
+    "zh-Hans" : "潮汐玻璃"
+  },
+  "Timed Capture (%llds)" : {
+    "comment" : "Menu item; the number is the countdown in seconds",
+    "de" : "Aufnahme mit Timer (%lld s)",
+    "fr" : "Capture avec minuteur (%lld s)",
+    "zh-Hans" : "定时截屏（%lld 秒）"
+  },
+  "Timed Capture selects the area first, then counts down before the shot — time to open menus or hover states. Esc cancels." : {
+    "de" : "Bei der Aufnahme mit Timer wählst du zuerst den Bereich, dann läuft ein Countdown bis zur Aufnahme – Zeit, um Menüs oder Hover-Zustände zu öffnen. Esc bricht ab.",
+    "fr" : "La capture avec minuteur sélectionne d’abord la zone, puis lance un compte à rebours avant la capture — le temps d’ouvrir des menus ou d’afficher des états de survol. Échap annule.",
+    "zh-Hans" : "定时截屏会先选择区域，再倒计时截屏 — 让你有时间打开菜单或显示悬停状态。按 Esc 键可取消。"
+  },
+  "Timeline" : {
+    "comment" : "The video editor's Timeline menu",
+    "de" : "Zeitleiste",
+    "fr" : "Timeline",
+    "zh-Hans" : "时间线"
+  },
+  "Tools" : {
+    "de" : "Werkzeuge",
+    "fr" : "Outils",
+    "zh-Hans" : "工具"
+  },
+  "Try it right now — Capture Area is also in the menu bar." : {
+    "de" : "Probier es gleich aus – „Bereich aufnehmen“ findest du auch in der Menüleiste.",
+    "fr" : "Essayez dès maintenant — « Capturer une zone » se trouve aussi dans la barre des menus.",
+    "zh-Hans" : "现在就试试 — “捕捉区域”也在菜单栏中。"
+  },
+  "Type here…" : {
+    "de" : "Hier tippen …",
+    "fr" : "Saisissez du texte…",
+    "zh-Hans" : "在此输入…"
+  },
+  "Undo" : {
+    "de" : "Widerrufen",
+    "fr" : "Annuler",
+    "zh-Hans" : "撤销"
+  },
+  "Undo Timeline Edit" : {
+    "de" : "Änderung an der Zeitleiste widerrufen",
+    "fr" : "Annuler la modification de la timeline",
+    "zh-Hans" : "撤销时间线编辑"
+  },
+  "Updates" : {
+    "de" : "Updates",
+    "fr" : "Mises à jour",
+    "zh-Hans" : "更新"
+  },
+  "Upload Custom Image" : {
+    "de" : "Eigenes Bild auswählen",
+    "fr" : "Choisir une image personnalisée",
+    "zh-Hans" : "选取自定图像"
+  },
+  "Used for screenshots and recordings. Tokens: %y year, %m month, %d day, %H hour, %M minute, %S second. Leave empty to restore the default." : {
+    "comment" : "The %y, %m, %d, %H, %M and %S tokens are typed by the user: keep them exactly",
+    "de" : "Gilt für Bildschirmfotos und Aufnahmen. Platzhalter: %y Jahr, %m Monat, %d Tag, %H Stunde, %M Minute, %S Sekunde. Leer lassen, um die Standardvorlage wiederherzustellen.",
+    "fr" : "Utilisé pour les captures et les enregistrements. Balises : %y année, %m mois, %d jour, %H heure, %M minute, %S seconde. Laissez vide pour rétablir le modèle par défaut.",
+    "zh-Hans" : "用于截屏和录制内容。标记：%y 年、%m 月、%d 日、%H 时、%M 分、%S 秒。留空即可恢复默认设置。"
+  },
+  "Utility" : {
+    "comment" : "Command center section: History, open editors, desktop icons",
+    "de" : "Extras",
+    "fr" : "Utilitaires",
+    "zh-Hans" : "实用工具"
+  },
+  "Version" : {
+    "de" : "Version",
+    "fr" : "Version",
+    "zh-Hans" : "版本"
+  },
+  "Version %@" : {
+    "de" : "Version %@",
+    "fr" : "Version %@",
+    "zh-Hans" : "版本 %@"
+  },
+  "Video" : {
+    "de" : "Video",
+    "fr" : "Vidéo",
+    "zh-Hans" : "视频"
+  },
+  "Violet Bloom" : {
+    "de" : "Veilchenblüte",
+    "fr" : "Éclosion violette",
+    "zh-Hans" : "紫罗兰绽放"
+  },
+  "Website" : {
+    "de" : "Website",
+    "fr" : "Site web",
+    "zh-Hans" : "网站"
+  },
+  "Welcome to Shotnix" : {
+    "de" : "Willkommen bei Shotnix",
+    "fr" : "Bienvenue dans Shotnix",
+    "zh-Hans" : "欢迎使用 Shotnix"
+  },
+  "What's New" : {
+    "comment" : "Heading above the release notes (which stay in English)",
+    "de" : "Neuigkeiten",
+    "fr" : "Nouveautés",
+    "zh-Hans" : "新功能"
+  },
+  "White" : {
+    "de" : "Weiß",
+    "fr" : "Blanc",
+    "zh-Hans" : "白色"
+  },
+  "Window Capture" : {
+    "de" : "Fensteraufnahme",
+    "fr" : "Capture de fenêtre",
+    "zh-Hans" : "窗口截屏"
+  },
+  "Window captures are isolated — nothing overlapping shows through. With this on they get transparent padding and a soft drop shadow." : {
+    "de" : "Fensteraufnahmen sind freigestellt – nichts Überlappendes scheint durch. Ist dies aktiviert, erhalten sie einen transparenten Rand und einen weichen Schlagschatten.",
+    "fr" : "Les captures de fenêtre sont isolées : rien de ce qui les recouvre n’apparaît. Avec cette option, elles reçoivent une marge transparente et une ombre portée douce.",
+    "zh-Hans" : "窗口截屏只包含窗口本身，不会带入任何遮挡的内容。开启后，截屏会带有透明边距和柔和的投影。"
+  },
+  "Writable" : {
+    "de" : "Beschreibbar",
+    "fr" : "Accessible en écriture",
+    "zh-Hans" : "可写入"
+  },
+  "Yellow" : {
+    "de" : "Gelb",
+    "fr" : "Jaune",
+    "zh-Hans" : "黄色"
+  },
+  "You have unsaved edits in %lld screenshots." : {
+    "de" : {
+      "one" : "Du hast ungesicherte Änderungen in %lld Bildschirmfoto.",
+      "other" : "Du hast ungesicherte Änderungen in %lld Bildschirmfotos."
+    },
+    "en" : {
+      "one" : "You have unsaved edits in %lld screenshot.",
+      "other" : "You have unsaved edits in %lld screenshots."
+    },
+    "fr" : {
+      "one" : "Vous avez des modifications non enregistrées dans %lld capture.",
+      "other" : "Vous avez des modifications non enregistrées dans %lld captures."
+    },
+    "zh-Hans" : "你有 %lld 张截屏的编辑尚未存储。"
+  },
+  "You're all set — Shotnix lives here" : {
+    "de" : "Alles bereit – Shotnix findest du hier",
+    "fr" : "Tout est prêt — Shotnix se trouve ici",
+    "zh-Hans" : "一切就绪 — Shotnix 就在这里"
+  },
+  "Your camera is recorded as its own layer: a live bubble shows while you record (it never appears in the screen capture), and the editor lets you move, resize, and restyle it — or hide it — afterwards." : {
+    "de" : "Deine Kamera wird als eigene Ebene aufgezeichnet: Während der Aufzeichnung siehst du eine Live-Blase (sie erscheint nie in der Bildschirmaufnahme), und im Editor kannst du sie danach verschieben, skalieren und neu gestalten – oder ausblenden.",
+    "fr" : "Votre caméra est enregistrée sur son propre calque : une bulle en direct s’affiche pendant l’enregistrement (elle n’apparaît jamais dans la capture de l’écran), et l’éditeur vous permet ensuite de la déplacer, de la redimensionner et de changer son style — ou de la masquer.",
+    "zh-Hans" : "摄像头画面会录制为单独的图层：录制时会显示实时气泡（它不会出现在屏幕录制中），之后你可以在编辑器中移动它、调整大小和更改样式，也可以将其隐藏。"
+  },
+  "Your edits will be lost if you close without saving or copying them." : {
+    "de" : "Deine Änderungen gehen verloren, wenn du schließt, ohne sie zu sichern oder zu kopieren.",
+    "fr" : "Vos modifications seront perdues si vous fermez sans les enregistrer ni les copier.",
+    "zh-Hans" : "如果关闭前不存储或拷贝，你的编辑将会丢失。"
+  },
+  "Zoom" : {
+    "comment" : "Window menu command (also the video editor's zoom, a noun)",
+    "de" : "Zoom",
+    "fr" : "Zoom",
+    "zh-Hans" : "缩放"
+  },
+  "macOS screenshot shortcuts (⌘⇧3, ⌘⇧4, ⌘⇧5) conflict with Shotnix.\n\nDisable them so Shotnix owns the capture shortcuts and screenshots do not double-trigger.\n\nYou can re-enable Apple's shortcuts anytime in System Settings → Keyboard → Keyboard Shortcuts → Screenshots." : {
+    "de" : "Die Bildschirmfoto-Kurzbefehle von macOS (⌘⇧3, ⌘⇧4, ⌘⇧5) kollidieren mit Shotnix.\n\nDeaktiviere sie, damit Shotnix die Aufnahme-Kurzbefehle übernimmt und Bildschirmfotos nicht doppelt ausgelöst werden.\n\nDu kannst Apples Kurzbefehle jederzeit unter „Systemeinstellungen“ → „Tastatur“ → „Tastaturkurzbefehle“ → „Bildschirmfotos“ wieder aktivieren.",
+    "fr" : "Les raccourcis de capture d’écran de macOS (⌘⇧3, ⌘⇧4, ⌘⇧5) entrent en conflit avec Shotnix.\n\nDésactivez-les pour que Shotnix gère les raccourcis de capture et que les captures ne se déclenchent pas deux fois.\n\nVous pouvez réactiver les raccourcis d’Apple à tout moment dans Réglages Système → Clavier → Raccourcis clavier → Captures d’écran.",
+    "zh-Hans" : "macOS 截屏快捷键（⌘⇧3、⌘⇧4、⌘⇧5）与 Shotnix 冲突。\n\n停用它们，让 Shotnix 接管截屏快捷键，避免重复截屏。\n\n你可以随时在“系统设置”→“键盘”→“键盘快捷键”→“截屏”中重新启用 Apple 的快捷键。"
+  },
+  "© 2026 Shotnix Contributors" : {
+    "de" : "© 2026 Shotnix-Mitwirkende",
+    "fr" : "© 2026 Contributeurs de Shotnix",
+    "zh-Hans" : "© 2026 Shotnix 贡献者"
+  }
+}

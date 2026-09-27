@@ -55,10 +55,33 @@ struct ScreenshotBackgroundOptions: Equatable {
 }
 
 struct ScreenshotBackgroundImagePreset: Equatable {
+    /// Identifies the preset; stored as `ScreenshotBackgroundOptions.presetName`.
     let name: String
     let startHex: String
     let endHex: String
     let accentHexes: [String]
+
+    /// The name shown in the editor.
+    var title: String {
+        switch name {
+        case "Amber Fold": return L("Amber Fold")
+        case "Cobalt Drapes": return L("Cobalt Drapes")
+        case "Crimson Ridge": return L("Crimson Ridge")
+        case "Night Current": return L("Night Current")
+        case "Tide Glass": return L("Tide Glass")
+        case "Desert Violet": return L("Desert Violet")
+        case "Rose Smoke": return L("Rose Smoke")
+        case "Lime Signal": return L("Lime Signal")
+        case "Violet Bloom": return L("Violet Bloom")
+        case "Canyon Silk": return L("Canyon Silk")
+        case "Pine Dusk": return L("Pine Dusk")
+        case "Aqua Marble": return L("Aqua Marble")
+        case "Sky Wash": return L("Sky Wash")
+        case "Carbon Arc": return L("Carbon Arc")
+        case "Prism Sweep": return L("Prism Sweep")
+        default: return name
+        }
+    }
 }
 
 enum ScreenshotBackgroundComposer {

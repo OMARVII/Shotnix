@@ -5,7 +5,7 @@ import AppKit
 final class AnnotationWindowController: NSWindowController {
 
     private static let trafficLightReservedWidth: CGFloat = 92
-    private static let minimumEditorWidth = trafficLightReservedWidth + AnnotationToolbar.requiredWidth + 20
+    private static var minimumEditorWidth: CGFloat { trafficLightReservedWidth + AnnotationToolbar.requiredWidth + 20 }
     private static let initialScreenWidthFraction: CGFloat = 0.96
     private static let initialScreenHeightFraction: CGFloat = 0.92
     private static let initialScreenEdgeInset: CGFloat = 24
@@ -95,11 +95,11 @@ final class AnnotationWindowController: NSWindowController {
         if let quitReviewPrompt { return quitReviewPrompt(unsavedCount) }
         let alert = NSAlert()
         alert.alertStyle = .warning
-        alert.messageText = "You have unsaved edits in \(unsavedCount) screenshots."
-        alert.informativeText = "Do you want to review them before quitting?"
-        alert.addButton(withTitle: "Review Changes\u{2026}")
-        alert.addButton(withTitle: "Cancel")
-        let discard = alert.addButton(withTitle: "Discard Changes")
+        alert.messageText = L("You have unsaved edits in \(unsavedCount) screenshots.")
+        alert.informativeText = L("Do you want to review them before quitting?")
+        alert.addButton(withTitle: L("Review Changes\u{2026}"))
+        alert.addButton(withTitle: L("Cancel"))
+        let discard = alert.addButton(withTitle: L("Discard Changes"))
         discard.hasDestructiveAction = true
         NSApp.activate(ignoringOtherApps: true)
         switch alert.runModal() {
@@ -174,7 +174,7 @@ final class AnnotationWindowController: NSWindowController {
         win.titleVisibility = .hidden
         win.titlebarAppearsTransparent = true
         win.isReleasedWhenClosed = false
-        win.title = "Screenshot Editor"
+        win.title = L("Screenshot Editor")
         win.minSize = NSSize(width: effectiveMinimumWidth, height: effectiveMinimumHeight)
         win.center()
 
@@ -339,11 +339,11 @@ final class AnnotationWindowController: NSWindowController {
         canvas.commitPendingEdits()
         let flat = canvas.flatten()
         guard copyImage(flat) else {
-            showToast("Couldn't copy the screenshot. Try again, or save it instead.", 3.0)
+            showToast(L("Couldn't copy the screenshot. Try again, or save it instead."), 3.0)
             return
         }
         didExport(flat, revision: canvas.documentRevision)
-        showToast("Copied to clipboard", 2.0)
+        showToast(L("Copied to clipboard"), 2.0)
     }
 
     /// A save or copy succeeded: nothing is unsaved any more, and history
@@ -359,7 +359,7 @@ final class AnnotationWindowController: NSWindowController {
         let folder = url.deletingLastPathComponent()
         let folderName = FileManager.default.displayName(atPath: folder.path)
         let destination = folderName.isEmpty ? folder.lastPathComponent : folderName
-        return "Saved to \(destination): \(url.lastPathComponent)"
+        return L("Saved to \(destination): \(url.lastPathComponent)")
     }
 
     /// `closed` reports whether the editor ended up closed (saved or
@@ -388,11 +388,11 @@ final class AnnotationWindowController: NSWindowController {
 
         let alert = NSAlert()
         alert.alertStyle = .warning
-        alert.messageText = "Save changes to this screenshot?"
-        alert.informativeText = "Your edits will be lost if you close without saving or copying them."
-        alert.addButton(withTitle: "Save\u{2026}")
-        alert.addButton(withTitle: "Cancel")
-        let discard = alert.addButton(withTitle: "Don't Save")
+        alert.messageText = L("Save changes to this screenshot?")
+        alert.informativeText = L("Your edits will be lost if you close without saving or copying them.")
+        alert.addButton(withTitle: L("Save\u{2026}"))
+        alert.addButton(withTitle: L("Cancel"))
+        let discard = alert.addButton(withTitle: L("Don't Save"))
         discard.hasDestructiveAction = true
         alert.beginSheetModal(for: window) { response in
             // The save panel is a sheet too; let this one finish closing first.

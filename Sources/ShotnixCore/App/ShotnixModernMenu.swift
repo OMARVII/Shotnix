@@ -296,9 +296,9 @@ struct ShotnixCommandCenterView: View {
                 .background(.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
 
             VStack(alignment: .leading, spacing: 1) {
-                Text("Shotnix")
+                Text(verbatim: "Shotnix")
                     .font(.system(size: 14, weight: .semibold))
-                Text("Command Center")
+                Text(L("Command Center"))
                     .font(.system(size: 11, weight: .medium))
                     .foregroundStyle(.secondary)
             }
@@ -319,18 +319,18 @@ struct ShotnixCommandCenterView: View {
     /// tiles appear only for the rows that actually need attention.
     private var healthSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            ShotnixMenuSectionLabel("Health")
+            ShotnixMenuSectionLabel(L("Health"))
 
             if attentionRows.isEmpty {
                 HStack(spacing: 8) {
                     Image(systemName: "checkmark.seal.fill")
                         .font(.system(size: 11, weight: .bold))
                         .foregroundStyle(Color(NSColor.systemGreen))
-                    Text("Everything is ready")
+                    Text(L("Everything is ready"))
                         .font(.system(size: 11.5, weight: .semibold))
                         .foregroundStyle(Color.primary.opacity(0.85))
                     Spacer(minLength: 4)
-                    Text("Capture · Record · Updates")
+                    Text(L("Capture · Record · Updates"))
                         .font(.system(size: 9.5, weight: .semibold))
                         .foregroundStyle(.secondary)
                         .lineLimit(1)

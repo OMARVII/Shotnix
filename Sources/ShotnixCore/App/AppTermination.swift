@@ -75,10 +75,10 @@ enum AppTermination {
     static func confirmQuit() -> Bool {
         guard isBusy, asksBeforeQuit else { return true }
         let alert = NSAlert()
-        alert.messageText = "Quit Shotnix?"
-        alert.informativeText = (descriptions + ["Shotnix will wrap these up before it quits."]).joined(separator: "\n")
-        alert.addButton(withTitle: "Finish and Quit")
-        alert.addButton(withTitle: "Keep Working")
+        alert.messageText = L("Quit Shotnix?")
+        alert.informativeText = (descriptions + [L("Shotnix will wrap these up before it quits.")]).joined(separator: "\n")
+        alert.addButton(withTitle: L("Finish and Quit"))
+        alert.addButton(withTitle: L("Keep Working"))
         NSApp.activate(ignoringOtherApps: true)
         return alert.runModal() == .alertFirstButtonReturn
     }

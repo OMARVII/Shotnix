@@ -33,8 +33,30 @@ final class AnnotationToolbar: NSView {
     private static let optionsWidth: CGFloat = 164
     /// Controls in the options area end this far before its right side.
     private static let optionsTrailing: CGFloat = 10
-    private static let backgroundButtonWidth: CGFloat = 110
-    private static let actionButtonWidth: CGFloat = 54
+    private static let actionFont = NSFont.systemFont(ofSize: 11)
+    private static let prominentActionFont = NSFont.systemFont(ofSize: 11, weight: .semibold)
+    /// The least room between a button's title and its edges when a
+    /// translation needs more than the design width.
+    private static let titleInset: CGFloat = 8
+
+    /// 110 pt, or wider when the title needs it (English always fits).
+    private static var backgroundButtonWidth: CGFloat {
+        fittedWidth(L("Background"), font: prominentActionFont, atLeast: 110)
+    }
+
+    /// Copy and Save share one width: 54 pt, or what the longer title needs.
+    private static var actionButtonWidth: CGFloat {
+        max(fittedWidth(L("Copy"), font: actionFont, atLeast: 54),
+            fittedWidth(L("Save"), font: prominentActionFont, atLeast: 54))
+    }
+
+    private static func textWidth(_ text: String, font: NSFont) -> CGFloat {
+        ceil((text as NSString).size(withAttributes: [.font: font]).width)
+    }
+
+    private static func fittedWidth(_ title: String, font: NSFont, atLeast minimum: CGFloat) -> CGFloat {
+        max(minimum, textWidth(title, font: font) + 2 * titleInset)
+    }
 
     private static func toolGroupWidth(_ count: Int) -> CGFloat {
         2 * groupPadding + CGFloat(count) * buttonSize + CGFloat(count - 1) * (toolPitch - buttonSize)
@@ -43,12 +65,13 @@ final class AnnotationToolbar: NSView {
     private static let optionsGroupWidth: CGFloat =
         colorInset + controlHeight + 10 + (optionsWidth - optionsTrailing) + colorInset
 
-    static let requiredWidth: CGFloat = {
+    /// Grows with the action buttons' titles in the user's language.
+    static var requiredWidth: CGFloat {
         let tools = toolGroups.reduce(0) { $0 + toolGroupWidth($1.count) + groupSpacing }
         // Background, gap, Copy, gap, Save
         let actions = backgroundButtonWidth + 8 + actionButtonWidth + 4 + actionButtonWidth
         return edgeInset + tools + optionsGroupWidth + groupSpacing + actions + edgeInset
-    }()
+    }
 
     var onToolChanged: ((AnnotationTool) -> Void)?
     var onColorChanged: ((NSColor) -> Void)?
@@ -80,22 +103,22 @@ final class AnnotationToolbar: NSView {
 
     // Contextual options
     private let optionsContainer = NSView()
-    private let sizeLabel = NSTextField(labelWithString: "Size")
+    private let sizeLabel = NSTextField(labelWithString: L("Size"))
     private let lineWidthSlider = NSSlider(value: 3, minValue: 1, maxValue: 20, target: nil, action: nil)
-    private let roundedCornersButton = ToolbarToggleButton(symbol: "app", label: "Rounded corners", toolTip: "Rounded Corners (\u{2325}R)")
+    private let roundedCornersButton = ToolbarToggleButton(symbol: "app", label: L("Rounded corners"), toolTip: L("Rounded Corners (\u{2325}R)"))
     private let fontSizePopUp = NSPopUpButton(frame: .zero, pullsDown: false)
-    private let boldButton = ToolbarToggleButton(symbol: "bold", label: "Bold", toolTip: "Bold")
-    private let strengthLabel = NSTextField(labelWithString: "Strength")
+    private let boldButton = ToolbarToggleButton(symbol: "bold", label: L("Bold"), toolTip: L("Bold"))
+    private let strengthLabel = NSTextField(labelWithString: L("Strength"))
     private let strengthSlider = NSSlider(
         value: Double(AnnotationRedaction.defaultStrength),
         minValue: Double(AnnotationRedaction.strengthRange.lowerBound),
         maxValue: Double(AnnotationRedaction.strengthRange.upperBound),
         target: nil, action: nil
     )
-    private let shapeLabel = NSTextField(labelWithString: "Shape")
+    private let shapeLabel = NSTextField(labelWithString: L("Shape"))
     private let spotlightShapeControl = NSSegmentedControl()
-    private let applyCropButton = PremiumToolbarActionButton(title: "Apply", target: nil, action: nil)
-    private let resetCropButton = PremiumToolbarActionButton(title: "Reset", target: nil, action: nil)
+    private let applyCropButton = PremiumToolbarActionButton(title: L("Apply"), target: nil, action: nil)
+    private let resetCropButton = PremiumToolbarActionButton(title: L("Reset"), target: nil, action: nil)
     private let hintLabel = NSTextField(labelWithString: "")
 
     static let fontSizes: [Int] = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 64, 80, 96]
@@ -119,7 +142,7 @@ final class AnnotationToolbar: NSView {
         layer?.shadowRadius = 22
         layer?.shadowOffset = CGSize(width: 0, height: -10)
         setAccessibilityRole(.toolbar)
-        setAccessibilityLabel("Annotation tools")
+        setAccessibilityLabel(L("Annotation tools"))
 
         let blur = NSVisualEffectView(frame: bounds)
         blur.material = .hudWindow
@@ -177,8 +200,8 @@ final class AnnotationToolbar: NSView {
         colorBtn.layer?.borderColor = NSColor.white.withAlphaComponent(0.3).cgColor
         colorBtn.isBordered = false
         colorBtn.bezelStyle = .regularSquare
-        colorBtn.toolTip = "Color"
-        colorBtn.setAccessibilityLabel("Color")
+        colorBtn.toolTip = L("Color")
+        colorBtn.setAccessibilityLabel(L("Color"))
         colorBtn.setAccessibilityValue(Self.colorName(currentColor))
         addSubview(colorBtn)
         colorButton = colorBtn
@@ -189,26 +212,32 @@ final class AnnotationToolbar: NSView {
         buildOptionControls()
         x += Self.optionsWidth - Self.optionsTrailing + Self.colorInset + Self.groupSpacing
 
-        let backgroundBtn = PremiumToolbarActionButton(title: "Background", target: self, action: #selector(backgroundTapped(_:)))
+        let backgroundWidth = Self.backgroundButtonWidth
+        let backgroundBtn = PremiumToolbarActionButton(title: L("Background"), target: self, action: #selector(backgroundTapped(_:)))
         backgroundBtn.bezelStyle = .regularSquare
-        backgroundBtn.font = .systemFont(ofSize: 11, weight: .semibold)
+        backgroundBtn.font = Self.prominentActionFont
         backgroundBtn.imagePosition = .noImage
-        backgroundBtn.toolTip = "Background"
-        backgroundBtn.frame = NSRect(x: x, y: controlY, width: Self.backgroundButtonWidth, height: Self.controlHeight)
+        backgroundBtn.toolTip = L("Background")
+        backgroundBtn.frame = NSRect(x: x, y: controlY, width: backgroundWidth, height: Self.controlHeight)
         addSubview(backgroundBtn)
         backgroundButton = backgroundBtn
-        x += Self.backgroundButtonWidth + 8
+        x += backgroundWidth + 8
 
         // Action buttons
-        for (title, sel, help) in [("Copy", #selector(copyTapped), "Copy (\u{2318}C)"), ("Save", #selector(saveTapped), "Save (\u{2318}S)")] {
-            let btn = PremiumToolbarActionButton(title: title, target: self, action: sel)
+        let actionWidth = Self.actionButtonWidth
+        let actions: [(title: String, action: Selector, help: String, font: NSFont)] = [
+            (L("Copy"), #selector(copyTapped), L("Copy (\u{2318}C)"), Self.actionFont),
+            (L("Save"), #selector(saveTapped), L("Save (\u{2318}S)"), Self.prominentActionFont),
+        ]
+        for item in actions {
+            let btn = PremiumToolbarActionButton(title: item.title, target: self, action: item.action)
             btn.bezelStyle = .regularSquare
-            btn.font = .systemFont(ofSize: 11, weight: title == "Save" ? .semibold : .regular)
-            btn.frame = NSRect(x: x, y: controlY, width: Self.actionButtonWidth, height: Self.controlHeight)
-            btn.toolTip = help
+            btn.font = item.font
+            btn.frame = NSRect(x: x, y: controlY, width: actionWidth, height: Self.controlHeight)
+            btn.toolTip = item.help
             addSubview(btn)
             trailingControlMaxX = btn.frame.maxX
-            x += Self.actionButtonWidth + 4
+            x += actionWidth + 4
         }
 
         selectTool(.arrow)
@@ -223,8 +252,8 @@ final class AnnotationToolbar: NSView {
 
         lineWidthSlider.target = self
         lineWidthSlider.action = #selector(lineWidthChanged(_:))
-        lineWidthSlider.toolTip = "Line width"
-        lineWidthSlider.setAccessibilityLabel("Line width")
+        lineWidthSlider.toolTip = L("Line width")
+        lineWidthSlider.setAccessibilityLabel(L("Line width"))
         optionsContainer.addSubview(lineWidthSlider)
 
         roundedCornersButton.target = self
@@ -234,8 +263,8 @@ final class AnnotationToolbar: NSView {
         fontSizePopUp.font = .systemFont(ofSize: 11)
         fontSizePopUp.target = self
         fontSizePopUp.action = #selector(fontSizeChanged(_:))
-        fontSizePopUp.toolTip = "Text size"
-        fontSizePopUp.setAccessibilityLabel("Text size")
+        fontSizePopUp.toolTip = L("Text size")
+        fontSizePopUp.setAccessibilityLabel(L("Text size"))
         rebuildFontSizeItems(selecting: options.fontSize)
         optionsContainer.addSubview(fontSizePopUp)
 
@@ -245,34 +274,34 @@ final class AnnotationToolbar: NSView {
 
         strengthSlider.target = self
         strengthSlider.action = #selector(strengthChanged(_:))
-        strengthSlider.toolTip = "How strongly blur and pixelate hide what's under them"
-        strengthSlider.setAccessibilityLabel("Redaction strength")
+        strengthSlider.toolTip = L("How strongly blur and pixelate hide what's under them")
+        strengthSlider.setAccessibilityLabel(L("Redaction strength"))
         optionsContainer.addSubview(strengthSlider)
 
         spotlightShapeControl.segmentCount = 2
         spotlightShapeControl.trackingMode = .selectOne
-        spotlightShapeControl.setImage(NSImage(systemSymbolName: "rectangle", accessibilityDescription: "Rectangle"), forSegment: 0)
-        spotlightShapeControl.setImage(NSImage(systemSymbolName: "circle", accessibilityDescription: "Ellipse"), forSegment: 1)
-        spotlightShapeControl.setToolTip("Rectangle", forSegment: 0)
-        spotlightShapeControl.setToolTip("Ellipse", forSegment: 1)
+        spotlightShapeControl.setImage(NSImage(systemSymbolName: "rectangle", accessibilityDescription: L("Rectangle")), forSegment: 0)
+        spotlightShapeControl.setImage(NSImage(systemSymbolName: "circle", accessibilityDescription: L("Ellipse")), forSegment: 1)
+        spotlightShapeControl.setToolTip(L("Rectangle"), forSegment: 0)
+        spotlightShapeControl.setToolTip(L("Ellipse"), forSegment: 1)
         spotlightShapeControl.selectedSegment = 0
         spotlightShapeControl.target = self
         spotlightShapeControl.action = #selector(spotlightShapeChanged(_:))
-        spotlightShapeControl.setAccessibilityLabel("Spotlight shape")
+        spotlightShapeControl.setAccessibilityLabel(L("Spotlight shape"))
         optionsContainer.addSubview(spotlightShapeControl)
 
         applyCropButton.target = self
         applyCropButton.action = #selector(applyCropTapped)
-        applyCropButton.font = .systemFont(ofSize: 11, weight: .semibold)
-        applyCropButton.toolTip = "Apply the crop (Return)"
-        applyCropButton.setAccessibilityLabel("Apply crop")
+        applyCropButton.font = Self.prominentActionFont
+        applyCropButton.toolTip = L("Apply the crop (Return)")
+        applyCropButton.setAccessibilityLabel(L("Apply crop"))
         optionsContainer.addSubview(applyCropButton)
 
         resetCropButton.target = self
         resetCropButton.action = #selector(resetCropTapped)
-        resetCropButton.font = .systemFont(ofSize: 11)
-        resetCropButton.toolTip = "Show the whole screenshot again"
-        resetCropButton.setAccessibilityLabel("Reset crop")
+        resetCropButton.font = Self.actionFont
+        resetCropButton.toolTip = L("Show the whole screenshot again")
+        resetCropButton.setAccessibilityLabel(L("Reset crop"))
         optionsContainer.addSubview(resetCropButton)
 
         hintLabel.font = .systemFont(ofSize: 11)
@@ -292,14 +321,19 @@ final class AnnotationToolbar: NSView {
         options = newOptions
         let visible: [NSView]
         // Controls end 10 pt before the group's edge, matching the color button's inset.
+        // A label keeps its design width unless its translation needs more;
+        // the control beside it then gives up that room.
+        let end = Self.optionsWidth - Self.optionsTrailing
         switch newOptions.context {
         case .stroke:
-            sizeLabel.frame = NSRect(x: 0, y: 17, width: 30, height: 16)
-            lineWidthSlider.frame = NSRect(x: 32, y: 11, width: 122, height: 28)
+            let label = Self.labelWidth(sizeLabel, atLeast: 30)
+            sizeLabel.frame = NSRect(x: 0, y: 17, width: label, height: 16)
+            lineWidthSlider.frame = NSRect(x: label + 2, y: 11, width: end - label - 2, height: 28)
             visible = [sizeLabel, lineWidthSlider]
         case .rectangle:
-            sizeLabel.frame = NSRect(x: 0, y: 17, width: 30, height: 16)
-            lineWidthSlider.frame = NSRect(x: 32, y: 11, width: 84, height: 28)
+            let label = Self.labelWidth(sizeLabel, atLeast: 30)
+            sizeLabel.frame = NSRect(x: 0, y: 17, width: label, height: 16)
+            lineWidthSlider.frame = NSRect(x: label + 2, y: 11, width: 116 - label - 2, height: 28)
             roundedCornersButton.frame = NSRect(x: 124, y: 10, width: 30, height: 30)
             visible = [sizeLabel, lineWidthSlider, roundedCornersButton]
         case .text:
@@ -307,20 +341,22 @@ final class AnnotationToolbar: NSView {
             boldButton.frame = NSRect(x: 98, y: 10, width: 30, height: 30)
             visible = [fontSizePopUp, boldButton]
         case .redaction:
-            strengthLabel.frame = NSRect(x: 0, y: 17, width: 50, height: 16)
-            strengthSlider.frame = NSRect(x: 52, y: 11, width: 102, height: 28)
+            let label = Self.labelWidth(strengthLabel, atLeast: 50)
+            strengthLabel.frame = NSRect(x: 0, y: 17, width: label, height: 16)
+            strengthSlider.frame = NSRect(x: label + 2, y: 11, width: end - label - 2, height: 28)
             visible = [strengthLabel, strengthSlider]
         case .spotlight:
-            shapeLabel.frame = NSRect(x: 0, y: 17, width: 38, height: 16)
-            spotlightShapeControl.frame = NSRect(x: 42, y: 13, width: 84, height: 24)
+            let label = Self.labelWidth(shapeLabel, atLeast: 38)
+            shapeLabel.frame = NSRect(x: 0, y: 17, width: label, height: 16)
+            spotlightShapeControl.frame = NSRect(x: label + 4, y: 13, width: 84, height: 24)
             visible = [shapeLabel, spotlightShapeControl]
         case .crop:
-            applyCropButton.frame = NSRect(x: 0, y: 10, width: 74, height: 30)
-            resetCropButton.frame = NSRect(x: 80, y: 10, width: 74, height: 30)
+            let (apply, reset) = Self.cropButtonWidths(apply: applyCropButton.title, reset: resetCropButton.title)
+            applyCropButton.frame = NSRect(x: 0, y: 10, width: apply, height: 30)
+            resetCropButton.frame = NSRect(x: end - reset, y: 10, width: reset, height: 30)
             visible = [applyCropButton, resetCropButton]
         case .none:
-            hintLabel.frame = NSRect(x: 0, y: 17, width: Self.optionsWidth - Self.optionsTrailing, height: 16)
-            hintLabel.stringValue = selectedTool == .numberedStep ? "Click to add the next step" : "Click an annotation to edit it"
+            showHint(selectedTool == .numberedStep ? L("Click to add the next step") : L("Click an annotation to edit it"), width: end)
             visible = [hintLabel]
         }
         for control in optionControls {
@@ -339,6 +375,38 @@ final class AnnotationToolbar: NSView {
         resetCropButton.alphaValue = newOptions.canResetCrop ? 1 : 0.45
     }
 
+    /// A label's design width, or the width its translation needs plus a
+    /// small gap before the control beside it.
+    private static func labelWidth(_ label: NSTextField, atLeast minimum: CGFloat) -> CGFloat {
+        max(minimum, ceil(label.intrinsicContentSize.width) + 4)
+    }
+
+    /// Apply and Reset share the crop row: 74 pt each, or, when a
+    /// translation needs more, each its title plus an even share of the rest.
+    private static func cropButtonWidths(apply: String, reset: String) -> (apply: CGFloat, reset: CGFloat) {
+        let applyText = textWidth(apply, font: prominentActionFont)
+        let resetText = textWidth(reset, font: actionFont)
+        let inset: CGFloat = 6
+        if applyText + 2 * inset <= 74, resetText + 2 * inset <= 74 { return (74, 74) }
+        let row = optionsWidth - optionsTrailing - 6
+        let spare = max(0, row - applyText - resetText) / 2
+        return (applyText + spare, resetText + spare)
+    }
+
+    /// One line where the hint fits, as it always does in English; a longer
+    /// translation wraps to two lines, centered the same way.
+    private func showHint(_ text: String, width: CGFloat) {
+        hintLabel.stringValue = text
+        let fits = Self.textWidth(text, font: hintLabel.font ?? Self.actionFont) + 1 <= width
+        hintLabel.cell?.wraps = !fits
+        hintLabel.cell?.truncatesLastVisibleLine = !fits
+        hintLabel.maximumNumberOfLines = fits ? 0 : 2
+        hintLabel.lineBreakMode = fits ? .byTruncatingTail : .byWordWrapping
+        hintLabel.frame = fits
+            ? NSRect(x: 0, y: 17, width: width, height: 16)
+            : NSRect(x: 0, y: 11, width: width, height: 28)
+    }
+
     /// Standard sizes, plus the exact size of the selection when a resize
     /// left it between them.
     private func rebuildFontSizeItems(selecting size: CGFloat) {
@@ -351,7 +419,8 @@ final class AnnotationToolbar: NSView {
         if fontSizePopUp.itemArray.map(\.tag) != sizes {
             fontSizePopUp.removeAllItems()
             for value in sizes {
-                fontSizePopUp.addItem(withTitle: "\(value) pt")
+                // Point sizes as plain digits.
+                fontSizePopUp.addItem(withTitle: L("\(String(value)) pt"))
                 fontSizePopUp.lastItem?.tag = value
             }
         }
@@ -439,15 +508,16 @@ final class AnnotationToolbar: NSView {
 
     static func colorName(_ color: NSColor) -> String {
         let names: [(NSColor, String)] = [
-            (.systemRed, "Red"), (.systemOrange, "Orange"), (.systemYellow, "Yellow"), (.systemGreen, "Green"),
-            (.systemBlue, "Blue"), (.systemPurple, "Purple"), (.white, "White"), (.black, "Black"),
+            (.systemRed, L("Red")), (.systemOrange, L("Orange")), (.systemYellow, L("Yellow")), (.systemGreen, L("Green")),
+            (.systemBlue, L("Blue")), (.systemPurple, L("Purple")), (.white, L("White")), (.black, L("Black")),
         ]
         if let match = names.first(where: { $0.0 == color }) { return match.1 }
-        guard let rgb = color.usingColorSpace(.sRGB) else { return "Custom color" }
-        return String(format: "Custom color #%02X%02X%02X",
-                      Int((rgb.redComponent * 255).rounded()),
-                      Int((rgb.greenComponent * 255).rounded()),
-                      Int((rgb.blueComponent * 255).rounded()))
+        guard let rgb = color.usingColorSpace(.sRGB) else { return L("Custom color") }
+        let hex = String(format: "%02X%02X%02X",
+                         Int((rgb.redComponent * 255).rounded()),
+                         Int((rgb.greenComponent * 255).rounded()),
+                         Int((rgb.blueComponent * 255).rounded()))
+        return L("Custom color #\(hex)")
     }
 
     // MARK: Color
@@ -582,15 +652,15 @@ final class ToolbarToggleButton: NSButton {
 // MARK: - Per-image background popover
 
 @MainActor
-private final class BackgroundPopoverController: NSViewController {
+final class BackgroundPopoverController: NSViewController {
     var onChange: ((ScreenshotBackgroundOptions) -> Void)?
     weak var popover: NSPopover?
 
     private var options: ScreenshotBackgroundOptions
-    private let enabledButton = NSButton(checkboxWithTitle: "Apply background to this image", target: nil, action: nil)
+    private let enabledButton = NSButton(checkboxWithTitle: L("Apply background to this image"), target: nil, action: nil)
     private let stylePopup = NSPopUpButton()
     private let presetPopup = NSPopUpButton()
-    private let uploadImageButton = NSButton(title: "Upload Custom Image", target: nil, action: nil)
+    private let uploadImageButton = NSButton(title: L("Upload Custom Image"), target: nil, action: nil)
     private let paddingSlider = NSSlider()
     private let radiusSlider = NSSlider()
     private let shadowSlider = NSSlider()
@@ -607,26 +677,27 @@ private final class BackgroundPopoverController: NSViewController {
     private let compactPopoverHeight: CGFloat = 250
     private let imagePopoverHeight: CGFloat = 452
 
-    private let solidPresets: [(String, String)] = [
-        ("Porcelain", "#f4eadb"),
-        ("Graphite", "#111827"),
-        ("Bone", "#eee7d6"),
-        ("Silver", "#d8dde7"),
-        ("Space Gray", "#2b3038"),
-        ("Moss", "#243528"),
-        ("Clay", "#7c3f2d")
+    // `name` identifies a preset (it's stored in the options); `title` is shown.
+    private let solidPresets: [(name: String, title: String, hex: String)] = [
+        ("Porcelain", L("Porcelain"), "#f4eadb"),
+        ("Graphite", L("Graphite"), "#111827"),
+        ("Bone", L("Bone"), "#eee7d6"),
+        ("Silver", L("Silver"), "#d8dde7"),
+        ("Space Gray", L("Space Gray"), "#2b3038"),
+        ("Moss", L("Moss"), "#243528"),
+        ("Clay", L("Clay"), "#7c3f2d")
     ]
-    private let gradientPresets: [(name: String, start: String, end: String, accents: [String])] = [
-        ("Neo Pop", "#6a2cff", "#ffd36a", ["#ff7ac8", "#6af7ff", "#fff6b0"]),
-        ("Polar Dawn", "#07131e", "#6db8ff", ["#e9f6ff", "#173c63", "#a8d8ff"]),
-        ("Aurora Blue", "#050816", "#67d7ff", ["#7c3aed", "#38f8d4", "#d8f7ff"]),
-        ("Tahoe Ice", "#eaf4ff", "#1b6fe0", ["#ffffff", "#8dd7ff", "#3155d4"]),
-        ("Lavender Glass", "#f7f2ff", "#5b56f5", ["#ffb7e8", "#a3e8ff", "#ffffff"]),
-        ("Sunset Coral", "#fff0d8", "#ea4e79", ["#ffb86b", "#ffd1df", "#7c2d12"]),
-        ("Coastal Haze", "#071722", "#89e8f2", ["#0e5a78", "#e8fbff", "#2dd4bf"]),
-        ("Midnight Graphite", "#090b10", "#404c67", ["#99a4c7", "#1f2937", "#dbe4ff"]),
-        ("Ember Fog", "#160c0a", "#f4b06a", ["#6c2d1e", "#ffe7c8", "#ff6b3d"]),
-        ("Moss Glow", "#0e1b16", "#7fd3a0", ["#235543", "#eaf9f0", "#d4a95a"])
+    private let gradientPresets: [(name: String, title: String, start: String, end: String, accents: [String])] = [
+        ("Neo Pop", L("Neo Pop"), "#6a2cff", "#ffd36a", ["#ff7ac8", "#6af7ff", "#fff6b0"]),
+        ("Polar Dawn", L("Polar Dawn"), "#07131e", "#6db8ff", ["#e9f6ff", "#173c63", "#a8d8ff"]),
+        ("Aurora Blue", L("Aurora Blue"), "#050816", "#67d7ff", ["#7c3aed", "#38f8d4", "#d8f7ff"]),
+        ("Tahoe Ice", L("Tahoe Ice"), "#eaf4ff", "#1b6fe0", ["#ffffff", "#8dd7ff", "#3155d4"]),
+        ("Lavender Glass", L("Lavender Glass"), "#f7f2ff", "#5b56f5", ["#ffb7e8", "#a3e8ff", "#ffffff"]),
+        ("Sunset Coral", L("Sunset Coral"), "#fff0d8", "#ea4e79", ["#ffb86b", "#ffd1df", "#7c2d12"]),
+        ("Coastal Haze", L("Coastal Haze"), "#071722", "#89e8f2", ["#0e5a78", "#e8fbff", "#2dd4bf"]),
+        ("Midnight Graphite", L("Midnight Graphite"), "#090b10", "#404c67", ["#99a4c7", "#1f2937", "#dbe4ff"]),
+        ("Ember Fog", L("Ember Fog"), "#160c0a", "#f4b06a", ["#6c2d1e", "#ffe7c8", "#ff6b3d"]),
+        ("Moss Glow", L("Moss Glow"), "#0e1b16", "#7fd3a0", ["#235543", "#eaf9f0", "#d4a95a"])
     ]
 
     init(options: ScreenshotBackgroundOptions) {
@@ -640,21 +711,21 @@ private final class BackgroundPopoverController: NSViewController {
         let container = NSView(frame: NSRect(x: 0, y: 0, width: popoverWidth, height: imagePopoverHeight))
         var y: CGFloat = 416
 
-        enabledButton.frame = NSRect(x: 16, y: y, width: 260, height: 22)
+        enabledButton.frame = NSRect(x: 16, y: y, width: 268, height: 22)
         enabledButton.target = self
         enabledButton.action = #selector(enabledChanged)
         container.addSubview(enabledButton)
 
         y -= 38
-        styleLabel = addLabel("Style", x: 16, y: y + 4, to: container)
+        styleLabel = addLabel(L("Style"), x: 16, y: y + 4, to: container)
         stylePopup.frame = NSRect(x: 106, y: y, width: 170, height: 26)
-        stylePopup.addItems(withTitles: ["Gradient", "Solid Color", "Image"])
+        stylePopup.addItems(withTitles: [L("Gradient"), L("Solid Color"), L("Image")])
         stylePopup.target = self
         stylePopup.action = #selector(styleChanged)
         container.addSubview(stylePopup)
 
         y -= 36
-        presetLabel = addLabel("Preset", x: 16, y: y + 4, to: container)
+        presetLabel = addLabel(L("Preset"), x: 16, y: y + 4, to: container)
         presetPopup.frame = NSRect(x: 106, y: y, width: 170, height: 26)
         presetPopup.target = self
         presetPopup.action = #selector(presetChanged)
@@ -672,11 +743,11 @@ private final class BackgroundPopoverController: NSViewController {
         addImagePresetGrid(to: container)
 
         y = 124
-        paddingLabel = addSliderRow("Padding", slider: paddingSlider, valueLabel: paddingValue, y: y, min: 0, max: 240, to: container)
+        paddingLabel = addSliderRow(L("Padding"), slider: paddingSlider, valueLabel: paddingValue, y: y, min: 0, max: 240, to: container)
         y -= 38
-        radiusLabel = addSliderRow("Radius", slider: radiusSlider, valueLabel: radiusValue, y: y, min: 0, max: 36, to: container)
+        radiusLabel = addSliderRow(L("Radius"), slider: radiusSlider, valueLabel: radiusValue, y: y, min: 0, max: 36, to: container)
         y -= 38
-        shadowLabel = addSliderRow("Shadow", slider: shadowSlider, valueLabel: shadowValue, y: y, min: 0, max: 1, to: container)
+        shadowLabel = addSliderRow(L("Shadow"), slider: shadowSlider, valueLabel: shadowValue, y: y, min: 0, max: 1, to: container)
 
         view = container
         syncControls()
@@ -711,7 +782,7 @@ private final class BackgroundPopoverController: NSViewController {
             button.imageScaling = .scaleAxesIndependently
             button.isBordered = false
             button.bezelStyle = .regularSquare
-            button.toolTip = preset.name
+            button.toolTip = preset.title
             button.tag = index
             button.target = self
             button.action = #selector(imagePresetTapped(_:))
@@ -756,7 +827,7 @@ private final class BackgroundPopoverController: NSViewController {
         let imageGridStartY = uploadY - 46
         let sliderY = isImageStyle ? CGFloat(124) : presetY - 48
 
-        enabledButton.frame = NSRect(x: 16, y: enabledY, width: 260, height: 22)
+        enabledButton.frame = NSRect(x: 16, y: enabledY, width: 268, height: 22)
         styleLabel?.frame = NSRect(x: 16, y: styleY + 4, width: 80, height: 16)
         stylePopup.frame = NSRect(x: 106, y: styleY, width: 170, height: 26)
         presetLabel?.frame = NSRect(x: 16, y: presetY + 4, width: 80, height: 16)
@@ -813,17 +884,17 @@ private final class BackgroundPopoverController: NSViewController {
         presetPopup.removeAllItems()
         switch options.style {
         case .solid:
-            presetPopup.addItems(withTitles: solidPresets.map(\.0))
-            if let index = solidPresets.firstIndex(where: { $0.0 == options.presetName }) {
+            presetPopup.addItems(withTitles: solidPresets.map(\.title))
+            if let index = solidPresets.firstIndex(where: { $0.name == options.presetName }) {
                 presetPopup.selectItem(at: index)
             }
         case .gradient:
-            presetPopup.addItems(withTitles: gradientPresets.map(\.name))
+            presetPopup.addItems(withTitles: gradientPresets.map(\.title))
             if let index = gradientPresets.firstIndex(where: { $0.name == options.presetName }) {
                 presetPopup.selectItem(at: index)
             }
         case .image:
-            presetPopup.addItems(withTitles: ScreenshotBackgroundOptions.imagePresets.map(\.name))
+            presetPopup.addItems(withTitles: ScreenshotBackgroundOptions.imagePresets.map(\.title))
             if let index = ScreenshotBackgroundOptions.imagePresets.firstIndex(where: { $0.name == options.presetName }) {
                 presetPopup.selectItem(at: index)
             }
@@ -837,7 +908,7 @@ private final class BackgroundPopoverController: NSViewController {
         presetPopup.isHidden = isImageStyle
         uploadImageButton.isHidden = !isImageStyle
         imagePresetButtons.forEach { $0.isHidden = !isImageStyle }
-        uploadImageButton.title = options.customImageName.map { "Custom: \($0)" } ?? "Upload Custom Image"
+        uploadImageButton.title = options.customImageName.map { L("Custom: \($0)") } ?? L("Upload Custom Image")
     }
 
     private func updateImagePresetSelection() {
@@ -850,9 +921,10 @@ private final class BackgroundPopoverController: NSViewController {
     }
 
     private func updateValueLabels() {
-        paddingValue.stringValue = "\(Int(options.padding))"
-        radiusValue.stringValue = "\(Int(options.cornerRadius))"
-        shadowValue.stringValue = "\(Int(options.shadow * 100))%"
+        // Point sizes as plain digits.
+        paddingValue.stringValue = String(Int(options.padding))
+        radiusValue.stringValue = String(Int(options.cornerRadius))
+        shadowValue.stringValue = L("\(Int(options.shadow * 100))%")
     }
 
     private func emitChange() {
@@ -898,8 +970,8 @@ private final class BackgroundPopoverController: NSViewController {
         switch options.style {
         case .solid:
             let preset = solidPresets[min(index, solidPresets.count - 1)]
-            options.presetName = preset.0
-            options.colorHex = preset.1
+            options.presetName = preset.name
+            options.colorHex = preset.hex
             options.accentHexes = []
         case .gradient:
             let preset = gradientPresets[min(index, gradientPresets.count - 1)]
@@ -1180,11 +1252,11 @@ final class ColorPopoverController: NSViewController {
         }
 
         y -= 2
-        let customBtn = NSButton(title: "Custom\u{2026}", target: self, action: #selector(customTapped))
+        let customBtn = NSButton(title: L("Custom\u{2026}"), target: self, action: #selector(customTapped))
         customBtn.bezelStyle = .inline
         customBtn.font = .systemFont(ofSize: 11)
         customBtn.frame = NSRect(x: padding, y: y - 20, width: width - padding * 2, height: 20)
-        customBtn.setAccessibilityLabel("Custom color")
+        customBtn.setAccessibilityLabel(L("Custom color"))
         container.addSubview(customBtn)
 
         self.view = container

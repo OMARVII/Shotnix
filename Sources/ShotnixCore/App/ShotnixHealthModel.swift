@@ -95,44 +95,44 @@ enum ShotnixHealthModel {
     private static func screenRecordingRow(_ snapshot: ShotnixHealthSnapshot) -> ShotnixHealthRow {
         ShotnixHealthRow(
             kind: .screenRecording,
-            title: "Screen Recording",
-            detail: snapshot.screenRecordingGranted ? "Ready" : "Permission needed",
+            title: L("Screen Recording"),
+            detail: snapshot.screenRecordingGranted ? L("Ready") : L("Permission needed"),
             symbolName: snapshot.screenRecordingGranted ? "checkmark.shield" : "exclamationmark.triangle",
             state: snapshot.screenRecordingGranted ? .ok : .issue,
-            actionTitle: snapshot.screenRecordingGranted ? nil : "Fix"
+            actionTitle: snapshot.screenRecordingGranted ? nil : L("Fix")
         )
     }
 
     private static func nativeShortcutsRow(_ snapshot: ShotnixHealthSnapshot) -> ShotnixHealthRow {
         ShotnixHealthRow(
             kind: .nativeShortcuts,
-            title: "Apple Shortcuts",
-            detail: snapshot.nativeShortcutsEnabled ? "Conflict detected" : "No conflict",
+            title: L("Apple Shortcuts"),
+            detail: snapshot.nativeShortcutsEnabled ? L("Conflict detected") : L("No conflict"),
             symbolName: snapshot.nativeShortcutsEnabled ? "keyboard.badge.exclamationmark" : "keyboard",
             state: snapshot.nativeShortcutsEnabled ? .warning : .ok,
-            actionTitle: snapshot.nativeShortcutsEnabled ? "Fix" : nil
+            actionTitle: snapshot.nativeShortcutsEnabled ? L("Fix") : nil
         )
     }
 
     private static func updatesRow(_ snapshot: ShotnixHealthSnapshot) -> ShotnixHealthRow {
         ShotnixHealthRow(
             kind: .updates,
-            title: "Updates",
-            detail: snapshot.updatesConfigured ? "Enabled" : "Disabled",
+            title: L("Updates"),
+            detail: snapshot.updatesConfigured ? L("Enabled") : L("Disabled"),
             symbolName: snapshot.updatesConfigured ? "arrow.triangle.2.circlepath.circle" : "arrow.triangle.2.circlepath.circle.fill",
             state: snapshot.updatesConfigured ? .ok : .warning,
-            actionTitle: snapshot.updatesConfigured ? "Check" : nil
+            actionTitle: snapshot.updatesConfigured ? L("Check") : nil
         )
     }
 
     private static func autoSaveRow(_ snapshot: ShotnixHealthSnapshot) -> ShotnixHealthRow {
         ShotnixHealthRow(
             kind: .autoSave,
-            title: "Save Folder",
-            detail: snapshot.autoSaveWritable ? "Writable" : "Choose folder",
+            title: L("Save Folder"),
+            detail: snapshot.autoSaveWritable ? L("Writable") : L("Choose folder"),
             symbolName: snapshot.autoSaveWritable ? "folder.badge.gearshape" : "folder.badge.questionmark",
             state: snapshot.autoSaveWritable ? .ok : .issue,
-            actionTitle: snapshot.autoSaveWritable ? nil : "Fix"
+            actionTitle: snapshot.autoSaveWritable ? nil : L("Fix")
         )
     }
 
@@ -144,25 +144,25 @@ enum ShotnixHealthModel {
         let detail: String
         if ready {
             detail = snapshot.optionalUnassignedShortcutCount > 0
-                ? "Ready · \(snapshot.optionalUnassignedShortcutCount) optional off"
-                : "All configured"
+                ? L("Ready · \(snapshot.optionalUnassignedShortcutCount) optional off")
+                : L("All configured")
         } else {
-            detail = "\(snapshot.configuredShortcutCount)/\(snapshot.expectedShortcutCount) configured"
+            detail = L("\(snapshot.configuredShortcutCount)/\(snapshot.expectedShortcutCount) configured")
         }
         return ShotnixHealthRow(
             kind: .shortcuts,
-            title: "Shortcuts",
+            title: L("Shortcuts"),
             detail: detail,
             symbolName: ready ? "command.circle" : "command.circle.fill",
             state: ready ? .ok : .warning,
-            actionTitle: ready ? nil : "Fix"
+            actionTitle: ready ? nil : L("Fix")
         )
     }
 
     private static func versionRow(_ snapshot: ShotnixHealthSnapshot) -> ShotnixHealthRow {
         ShotnixHealthRow(
             kind: .version,
-            title: "Version",
+            title: L("Version"),
             detail: "\(snapshot.version) (\(snapshot.build))",
             symbolName: "info.circle",
             state: .info,

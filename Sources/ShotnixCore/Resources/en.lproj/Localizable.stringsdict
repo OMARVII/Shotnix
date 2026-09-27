@@ -2,6 +2,70 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>%lld annotations</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld annotation</string>
+			<key>other</key>
+			<string>%lld annotations</string>
+		</dict>
+	</dict>
+	<key>%lld annotations, %@ selected</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld annotation, %@ selected</string>
+			<key>other</key>
+			<string>%lld annotations, %@ selected</string>
+		</dict>
+	</dict>
+	<key>%lld annotations, %@ selected, cropping</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld annotation, %@ selected, cropping</string>
+			<key>other</key>
+			<string>%lld annotations, %@ selected, cropping</string>
+		</dict>
+	</dict>
+	<key>%lld annotations, cropping</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld annotation, cropping</string>
+			<key>other</key>
+			<string>%lld annotations, cropping</string>
+		</dict>
+	</dict>
 	<key>%lld days</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -50,6 +114,182 @@
 			<string>%lld screenshots deleted — click or press ⌘Z to undo</string>
 		</dict>
 	</dict>
+	<key>%lld seconds</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld second</string>
+			<key>other</key>
+			<string>%lld seconds</string>
+		</dict>
+	</dict>
+	<key>Delete %lld Captures?</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Delete %lld Capture?</string>
+			<key>other</key>
+			<string>Delete %lld Captures?</string>
+		</dict>
+	</dict>
+	<key>Deleted captures waiting in History's trash and files no capture uses are removed for good, along with %lld captures past your History limit. The rest of your history stays.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Deleted captures waiting in History's trash and files no capture uses are removed for good, along with %lld capture past your History limit. The rest of your history stays.</string>
+			<key>other</key>
+			<string>Deleted captures waiting in History's trash and files no capture uses are removed for good, along with %lld captures past your History limit. The rest of your history stays.</string>
+		</dict>
+	</dict>
+	<key>History uses %@ (%lld captures)</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%2$#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>History uses %1$@ (%2$lld capture)</string>
+			<key>other</key>
+			<string>History uses %1$@ (%2$lld captures)</string>
+		</dict>
+	</dict>
+	<key>History uses … (%lld captures)</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>History uses … (%lld capture)</string>
+			<key>other</key>
+			<string>History uses … (%lld captures)</string>
+		</dict>
+	</dict>
+	<key>Keeping 30 days removes %lld older captures from History now. This can't be undone.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Keeping 30 days removes %lld older capture from History now. This can't be undone.</string>
+			<key>other</key>
+			<string>Keeping 30 days removes %lld older captures from History now. This can't be undone.</string>
+		</dict>
+	</dict>
+	<key>Keeping 7 days removes %lld older captures from History now. This can't be undone.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Keeping 7 days removes %lld older capture from History now. This can't be undone.</string>
+			<key>other</key>
+			<string>Keeping 7 days removes %lld older captures from History now. This can't be undone.</string>
+		</dict>
+	</dict>
+	<key>Keeping 90 days removes %lld older captures from History now. This can't be undone.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Keeping 90 days removes %lld older capture from History now. This can't be undone.</string>
+			<key>other</key>
+			<string>Keeping 90 days removes %lld older captures from History now. This can't be undone.</string>
+		</dict>
+	</dict>
+	<key>Keeping last 1,000 captures removes %lld older captures from History now. This can't be undone.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Keeping last 1,000 captures removes %lld older capture from History now. This can't be undone.</string>
+			<key>other</key>
+			<string>Keeping last 1,000 captures removes %lld older captures from History now. This can't be undone.</string>
+		</dict>
+	</dict>
+	<key>Keeping last 100 captures removes %lld older captures from History now. This can't be undone.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Keeping last 100 captures removes %lld older capture from History now. This can't be undone.</string>
+			<key>other</key>
+			<string>Keeping last 100 captures removes %lld older captures from History now. This can't be undone.</string>
+		</dict>
+	</dict>
+	<key>Keeping last 500 captures removes %lld older captures from History now. This can't be undone.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Keeping last 500 captures removes %lld older capture from History now. This can't be undone.</string>
+			<key>other</key>
+			<string>Keeping last 500 captures removes %lld older captures from History now. This can't be undone.</string>
+		</dict>
+	</dict>
 	<key>Last %lld captures</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -64,6 +304,22 @@
 			<string>Last capture</string>
 			<key>other</key>
 			<string>Last %lld captures</string>
+		</dict>
+	</dict>
+	<key>You have unsaved edits in %lld screenshots.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>You have unsaved edits in %lld screenshot.</string>
+			<key>other</key>
+			<string>You have unsaved edits in %lld screenshots.</string>
 		</dict>
 	</dict>
 </dict>

@@ -2,6 +2,70 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>%lld annotations</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld Beschriftung</string>
+			<key>other</key>
+			<string>%lld Beschriftungen</string>
+		</dict>
+	</dict>
+	<key>%lld annotations, %@ selected</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld Beschriftung, %@ ausgewählt</string>
+			<key>other</key>
+			<string>%lld Beschriftungen, %@ ausgewählt</string>
+		</dict>
+	</dict>
+	<key>%lld annotations, %@ selected, cropping</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld Beschriftung, %@ ausgewählt, Beschneiden aktiv</string>
+			<key>other</key>
+			<string>%lld Beschriftungen, %@ ausgewählt, Beschneiden aktiv</string>
+		</dict>
+	</dict>
+	<key>%lld annotations, cropping</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld Beschriftung, Beschneiden aktiv</string>
+			<key>other</key>
+			<string>%lld Beschriftungen, Beschneiden aktiv</string>
+		</dict>
+	</dict>
 	<key>%lld days</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -50,6 +114,182 @@
 			<string>%lld Bildschirmfotos gelöscht – klicken oder ⌘Z drücken zum Widerrufen</string>
 		</dict>
 	</dict>
+	<key>%lld seconds</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld Sekunde</string>
+			<key>other</key>
+			<string>%lld Sekunden</string>
+		</dict>
+	</dict>
+	<key>Delete %lld Captures?</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld Bildschirmfoto löschen?</string>
+			<key>other</key>
+			<string>%lld Bildschirmfotos löschen?</string>
+		</dict>
+	</dict>
+	<key>Deleted captures waiting in History's trash and files no capture uses are removed for good, along with %lld captures past your History limit. The rest of your history stays.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Gelöschte Bildschirmfotos im Papierkorb des Verlaufs und Dateien, die kein Bildschirmfoto verwendet, werden endgültig entfernt – ebenso %lld Bildschirmfoto, das die Grenze deines Verlaufs überschreitet. Der Rest deines Verlaufs bleibt erhalten.</string>
+			<key>other</key>
+			<string>Gelöschte Bildschirmfotos im Papierkorb des Verlaufs und Dateien, die kein Bildschirmfoto verwendet, werden endgültig entfernt – ebenso %lld Bildschirmfotos, die die Grenze deines Verlaufs überschreiten. Der Rest deines Verlaufs bleibt erhalten.</string>
+		</dict>
+	</dict>
+	<key>History uses %@ (%lld captures)</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%2$#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Verlauf belegt %1$@ (%2$lld Bildschirmfoto)</string>
+			<key>other</key>
+			<string>Verlauf belegt %1$@ (%2$lld Bildschirmfotos)</string>
+		</dict>
+	</dict>
+	<key>History uses … (%lld captures)</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Verlauf belegt … (%lld Bildschirmfoto)</string>
+			<key>other</key>
+			<string>Verlauf belegt … (%lld Bildschirmfotos)</string>
+		</dict>
+	</dict>
+	<key>Keeping 30 days removes %lld older captures from History now. This can't be undone.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Mit „30 Tage“ wird jetzt %lld älteres Bildschirmfoto aus dem Verlauf entfernt. Dies kann nicht widerrufen werden.</string>
+			<key>other</key>
+			<string>Mit „30 Tage“ werden jetzt %lld ältere Bildschirmfotos aus dem Verlauf entfernt. Dies kann nicht widerrufen werden.</string>
+		</dict>
+	</dict>
+	<key>Keeping 7 days removes %lld older captures from History now. This can't be undone.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Mit „7 Tage“ wird jetzt %lld älteres Bildschirmfoto aus dem Verlauf entfernt. Dies kann nicht widerrufen werden.</string>
+			<key>other</key>
+			<string>Mit „7 Tage“ werden jetzt %lld ältere Bildschirmfotos aus dem Verlauf entfernt. Dies kann nicht widerrufen werden.</string>
+		</dict>
+	</dict>
+	<key>Keeping 90 days removes %lld older captures from History now. This can't be undone.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Mit „90 Tage“ wird jetzt %lld älteres Bildschirmfoto aus dem Verlauf entfernt. Dies kann nicht widerrufen werden.</string>
+			<key>other</key>
+			<string>Mit „90 Tage“ werden jetzt %lld ältere Bildschirmfotos aus dem Verlauf entfernt. Dies kann nicht widerrufen werden.</string>
+		</dict>
+	</dict>
+	<key>Keeping last 1,000 captures removes %lld older captures from History now. This can't be undone.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Mit „Letzte 1.000 Bildschirmfotos“ wird jetzt %lld älteres Bildschirmfoto aus dem Verlauf entfernt. Dies kann nicht widerrufen werden.</string>
+			<key>other</key>
+			<string>Mit „Letzte 1.000 Bildschirmfotos“ werden jetzt %lld ältere Bildschirmfotos aus dem Verlauf entfernt. Dies kann nicht widerrufen werden.</string>
+		</dict>
+	</dict>
+	<key>Keeping last 100 captures removes %lld older captures from History now. This can't be undone.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Mit „Letzte 100 Bildschirmfotos“ wird jetzt %lld älteres Bildschirmfoto aus dem Verlauf entfernt. Dies kann nicht widerrufen werden.</string>
+			<key>other</key>
+			<string>Mit „Letzte 100 Bildschirmfotos“ werden jetzt %lld ältere Bildschirmfotos aus dem Verlauf entfernt. Dies kann nicht widerrufen werden.</string>
+		</dict>
+	</dict>
+	<key>Keeping last 500 captures removes %lld older captures from History now. This can't be undone.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Mit „Letzte 500 Bildschirmfotos“ wird jetzt %lld älteres Bildschirmfoto aus dem Verlauf entfernt. Dies kann nicht widerrufen werden.</string>
+			<key>other</key>
+			<string>Mit „Letzte 500 Bildschirmfotos“ werden jetzt %lld ältere Bildschirmfotos aus dem Verlauf entfernt. Dies kann nicht widerrufen werden.</string>
+		</dict>
+	</dict>
 	<key>Last %lld captures</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -64,6 +304,38 @@
 			<string>Letztes Bildschirmfoto</string>
 			<key>other</key>
 			<string>Letzte %lld Bildschirmfotos</string>
+		</dict>
+	</dict>
+	<key>Ready · %lld optional off</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Bereit · %lld optionaler Kurzbefehl aus</string>
+			<key>other</key>
+			<string>Bereit · %lld optionale Kurzbefehle aus</string>
+		</dict>
+	</dict>
+	<key>You have unsaved edits in %lld screenshots.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Du hast ungesicherte Änderungen in %lld Bildschirmfoto.</string>
+			<key>other</key>
+			<string>Du hast ungesicherte Änderungen in %lld Bildschirmfotos.</string>
 		</dict>
 	</dict>
 </dict>

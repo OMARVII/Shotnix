@@ -1837,21 +1837,22 @@ final class AnnotationCanvas: NSView {
 
     override func isAccessibilityElement() -> Bool { true }
     override func accessibilityRole() -> NSAccessibility.Role? { .layoutArea }
-    override func accessibilityLabel() -> String? { "Screenshot canvas" }
+    override func accessibilityLabel() -> String? { L("Screenshot canvas") }
 
+    /// "2 annotations, Arrow selected": one whole sentence per state.
     override func accessibilityValue() -> Any? {
         let count = objects.count
-        var value = count == 1 ? "1 annotation" : "\(count) annotations"
-        if let selected = selectedObjects.first {
-            value += ", \(Self.accessibilityName(for: selected)) selected"
+        let selected = selectedObjects.first.map { Self.accessibilityName(for: $0) }
+        switch (selected, isEditingCrop) {
+        case (let name?, true): return L("\(count) annotations, \(name) selected, cropping")
+        case (let name?, false): return L("\(count) annotations, \(name) selected")
+        case (nil, true): return L("\(count) annotations, cropping")
+        case (nil, false): return L("\(count) annotations")
         }
-        if isEditingCrop { value += ", cropping" }
-        return value
     }
 
     override func accessibilityHelp() -> String? {
-        "Draw with the selected tool. Tool shortcuts: V select, A arrow, R rectangle, T text, O callout, "
-            + "H highlighter, B blur, P pixelate, S spotlight, C crop."
+        L("Draw with the selected tool. Tool shortcuts: V select, A arrow, R rectangle, T text, O callout, H highlighter, B blur, P pixelate, S spotlight, C crop.")
     }
 
     override func accessibilityChildren() -> [Any]? {
@@ -1870,21 +1871,25 @@ final class AnnotationCanvas: NSView {
 
     static func accessibilityName(for object: any AnnotationObject) -> String {
         switch object {
-        case let text as TextAnnotation:            return "Text: \(text.text)"
-        case let callout as CalloutAnnotation:      return "Callout: \(callout.text)"
-        case let step as NumberedStepAnnotation:    return "Step \(step.number)"
-        case is ArrowAnnotation:                    return "Arrow"
+        case let text as TextAnnotation:            return L("Text: \(text.text)")
+        case let callout as CalloutAnnotation:      return L("Callout: \(callout.text)")
+        case let step as NumberedStepAnnotation:    return L("Step \(step.number)")
+        case is ArrowAnnotation:                    return L("Arrow")
         case let rectangle as RectangleAnnotation:
-            let shape = rectangle.cornerRadius > 0 ? "rounded rectangle" : "rectangle"
-            return rectangle.filled ? "Filled \(shape)" : (rectangle.cornerRadius > 0 ? "Rounded rectangle" : "Rectangle")
-        case is EllipseAnnotation:                  return "Ellipse"
-        case is LineAnnotation:                     return "Line"
-        case let freehand as FreehandAnnotation:    return freehand.isHighlighter ? "Freehand highlight" : "Drawing"
-        case is HighlighterAnnotation:              return "Highlight"
-        case is BlurAnnotation:                     return "Blurred area"
-        case is PixelateAnnotation:                 return "Pixelated area"
-        case is SpotlightAnnotation:                return "Spotlight"
-        default:                                    return "Annotation"
+            switch (rectangle.filled, rectangle.cornerRadius > 0) {
+            case (true, true):   return L("Filled rounded rectangle")
+            case (true, false):  return L("Filled rectangle")
+            case (false, true):  return L("Rounded rectangle")
+            case (false, false): return L("Rectangle")
+            }
+        case is EllipseAnnotation:                  return L("Ellipse")
+        case is LineAnnotation:                     return L("Line")
+        case let freehand as FreehandAnnotation:    return freehand.isHighlighter ? L("Freehand highlight") : L("Drawing")
+        case is HighlighterAnnotation:              return L("Highlight")
+        case is BlurAnnotation:                     return L("Blurred area")
+        case is PixelateAnnotation:                 return L("Pixelated area")
+        case is SpotlightAnnotation:                return L("Spotlight")
+        default:                                    return L("Annotation")
         }
     }
 }

@@ -104,19 +104,19 @@ enum NativeShortcutManager {
         NSApp.activate(ignoringOtherApps: true)
 
         let alert = NSAlert()
-        alert.messageText = "Shortcut Conflict Detected"
-        alert.informativeText = """
+        alert.messageText = L("Shortcut Conflict Detected")
+        alert.informativeText = L("""
         macOS screenshot shortcuts (⌘⇧3, ⌘⇧4, ⌘⇧5) conflict with Shotnix.
 
         Disable them so Shotnix owns the capture shortcuts and screenshots do not double-trigger.
 
         You can re-enable Apple's shortcuts anytime in System Settings → Keyboard → Keyboard Shortcuts → Screenshots.
-        """
+        """)
         alert.alertStyle = .informational
-        alert.icon = NSImage(systemSymbolName: "keyboard", accessibilityDescription: "Keyboard")
-        alert.addButton(withTitle: "Disable Apple Shortcuts")
-        alert.addButton(withTitle: "Open Keyboard Settings")
-        alert.addButton(withTitle: "Don't Ask Again")
+        alert.icon = NSImage(systemSymbolName: "keyboard", accessibilityDescription: L("Keyboard"))
+        alert.addButton(withTitle: L("Disable Apple Shortcuts"))
+        alert.addButton(withTitle: L("Open Keyboard Settings"))
+        alert.addButton(withTitle: L("Don't Ask Again"))
 
         let response = alert.runModal()
 
@@ -210,17 +210,17 @@ enum NativeShortcutManager {
 
     @MainActor
     private static func showSuccessToast() {
-        ToastWindow.show(message: "Apple screenshot shortcuts disabled. Shotnix shortcuts are now active.")
+        ToastWindow.show(message: L("Apple screenshot shortcuts disabled. Shotnix shortcuts are now active."))
     }
 
     @MainActor
     private static func showManualInstructionsAlert() {
         let alert = NSAlert()
-        alert.messageText = "Could Not Disable Apple Shortcuts"
-        alert.informativeText = "Open System Settings → Keyboard → Keyboard Shortcuts → Screenshots and turn off the screenshot shortcuts manually."
+        alert.messageText = L("Could Not Disable Apple Shortcuts")
+        alert.informativeText = L("Open System Settings → Keyboard → Keyboard Shortcuts → Screenshots and turn off the screenshot shortcuts manually.")
         alert.alertStyle = .warning
-        alert.addButton(withTitle: "Open Keyboard Settings")
-        alert.addButton(withTitle: "OK")
+        alert.addButton(withTitle: L("Open Keyboard Settings"))
+        alert.addButton(withTitle: L("OK"))
 
         if alert.runModal() == .alertFirstButtonReturn {
             openKeyboardSettings()

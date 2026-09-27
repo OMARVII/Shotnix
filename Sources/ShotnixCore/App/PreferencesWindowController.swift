@@ -13,11 +13,11 @@ enum PreferencesTab: Int, CaseIterable {
 
     var title: String {
         switch self {
-        case .general: return "General"
-        case .shortcuts: return "Shortcuts"
-        case .screenshots: return "Screenshots"
-        case .recording: return "Recording"
-        case .about: return "About"
+        case .general: return L("General")
+        case .shortcuts: return L("Shortcuts")
+        case .screenshots: return L("Screenshots")
+        case .recording: return L("Recording")
+        case .about: return L("About")
         }
     }
 
@@ -33,7 +33,7 @@ enum PreferencesTab: Int, CaseIterable {
 }
 
 @MainActor
-private final class PreferencesSelectionModel: ObservableObject {
+final class PreferencesSelectionModel: ObservableObject {
     @Published var selectedTab: PreferencesTab = .general
 }
 
@@ -47,7 +47,7 @@ final class PreferencesWindowController: NSWindowController, NSWindowDelegate {
     private init() {
         let hostingController = NSHostingController(rootView: PreferencesRootView(selection: selection))
         let window = NSWindow(contentViewController: hostingController)
-        window.title = "Shotnix Preferences"
+        window.title = L("Shotnix Preferences")
         window.styleMask = [.titled, .closable, .resizable, .fullSizeContentView]
         window.titleVisibility = .hidden
         window.titlebarAppearsTransparent = true
@@ -82,7 +82,7 @@ final class PreferencesWindowController: NSWindowController, NSWindowDelegate {
 
 // MARK: - SwiftUI Views
 
-private struct PreferencesRootView: View {
+struct PreferencesRootView: View {
     @ObservedObject var selection: PreferencesSelectionModel
 
     var body: some View {
@@ -118,30 +118,47 @@ private struct PreferencesRootView: View {
     }
 }
 
-private struct PreferencesTabStrip: View {
+struct PreferencesTabStrip: View {
     @Binding var selectedTab: PreferencesTab
 
     var body: some View {
         GeometryReader { proxy in
+            let available = max(320, proxy.size.width - 118)
+            let tabWidth = Self.tabWidth(fitting: available)
+            let count = CGFloat(PreferencesTab.allCases.count)
             HStack(spacing: 8) {
                 ForEach(PreferencesTab.allCases, id: \.self) { tab in
                     PreferencesTabButton(
                         tab: tab,
+                        width: tabWidth,
                         isSelected: selectedTab == tab,
                         action: { selectedTab = tab }
                     )
                 }
             }
-            .frame(width: min(402, max(320, proxy.size.width - 118)))
+            .frame(width: min(count * tabWidth + (count - 1) * 8, available))
             .position(x: proxy.size.width / 2, y: 46)
         }
         .frame(height: 86)
         .background(Color.black.opacity(0.12))
     }
+
+    /// 74 pt per tab as designed. When a translated title needs more, every
+    /// tab widens as far as the window allows (titles still shrink to fit).
+    static func tabWidth(fitting available: CGFloat) -> CGFloat {
+        let font = NSFont.systemFont(ofSize: 11, weight: .semibold)
+        let widest = PreferencesTab.allCases
+            .map { ceil(($0.title as NSString).size(withAttributes: [.font: font]).width) }
+            .max() ?? 0
+        let count = CGFloat(PreferencesTab.allCases.count)
+        let room = (available - 8 * (count - 1)) / count
+        return max(74, min(widest + 4, room))
+    }
 }
 
 private struct PreferencesTabButton: View {
     let tab: PreferencesTab
+    let width: CGFloat
     let isSelected: Bool
     let action: () -> Void
 
@@ -158,7 +175,7 @@ private struct PreferencesTabButton: View {
                     .minimumScaleFactor(0.8)
             }
             .foregroundStyle(isSelected ? Color.accentColor : Color.white.opacity(0.62))
-            .frame(width: 74, height: 56)
+            .frame(width: width, height: 56)
             .background(
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
                     .fill(isSelected ? Color.white.opacity(0.08) : Color.clear)
@@ -415,8 +432,8 @@ struct GeneralSettingsView: View {
 
     var body: some View {
         PreferencesPane {
-            PreferenceSection("Startup") {
-                PreferenceRow("Launch Shotnix at login") {
+            PreferenceSection(L("Startup")) {
+                PreferenceRow(L("Launch Shotnix at login")) {
                     Toggle("", isOn: $launchAtLogin)
                         .labelsHidden()
                         .toggleStyle(.switch)
@@ -431,16 +448,16 @@ struct GeneralSettingsView: View {
                 }
             }
 
-            PreferenceSection("Sounds") {
-                PreferenceRow("Play capture sound") {
+            PreferenceSection(L("Sounds")) {
+                PreferenceRow(L("Play capture sound")) {
                     Toggle("", isOn: $playSounds)
                         .labelsHidden()
                         .toggleStyle(.switch)
                 }
             }
 
-            PreferenceSection("Menu Bar") {
-                PreferenceRow("Show menu bar icon") {
+            PreferenceSection(L("Menu Bar")) {
+                PreferenceRow(L("Show menu bar icon")) {
                     Toggle("", isOn: $showMenuBarIcon)
                         .labelsHidden()
                         .toggleStyle(.switch)
@@ -454,15 +471,15 @@ struct GeneralSettingsView: View {
 
                 PreferenceDivider()
 
-                PreferenceRow("Hide desktop icons while capturing") {
+                PreferenceRow(L("Hide desktop icons while capturing")) {
                     Toggle("", isOn: $hideDesktopIcons)
                         .labelsHidden()
                         .toggleStyle(.switch)
                 }
             }
 
-            PreferenceSection("After Capture") {
-                PreferenceRow("Show Quick Access Overlay") {
+            PreferenceSection(L("After Capture")) {
+                PreferenceRow(L("Show Quick Access Overlay")) {
                     Toggle("", isOn: $showOverlay)
                         .labelsHidden()
                         .toggleStyle(.switch)
@@ -470,7 +487,7 @@ struct GeneralSettingsView: View {
 
                 PreferenceDivider()
 
-                PreferenceRow("Save automatically") {
+                PreferenceRow(L("Save automatically")) {
                     Toggle("", isOn: $saveAutomatically)
                         .labelsHidden()
                         .toggleStyle(.switch)
@@ -478,33 +495,33 @@ struct GeneralSettingsView: View {
 
                 PreferenceDivider()
 
-                PreferenceRow("Overlay position") {
+                PreferenceRow(L("Overlay position")) {
                     PreferenceSegmentedSelector(
                         selection: $overlayOnLeft,
                         options: [
-                            PreferenceOption(value: true, title: "Left"),
-                            PreferenceOption(value: false, title: "Right")
+                            PreferenceOption(value: true, title: L("Left")),
+                            PreferenceOption(value: false, title: L("Right"))
                         ]
                     )
                 }
 
                 PreferenceDivider()
 
-                PreferenceRow("Auto-dismiss overlay") {
+                PreferenceRow(L("Auto-dismiss overlay")) {
                     PreferenceMenuSelector(
                         selection: $overlayTimeout,
                         options: [
-                            PreferenceOption(value: 3.0, title: "3 seconds"),
-                            PreferenceOption(value: 6.0, title: "6 seconds"),
-                            PreferenceOption(value: 10.0, title: "10 seconds"),
-                            PreferenceOption(value: 30.0, title: "30 seconds"),
-                            PreferenceOption(value: -1.0, title: "Never")
+                            PreferenceOption(value: 3.0, title: L("\(3) seconds")),
+                            PreferenceOption(value: 6.0, title: L("\(6) seconds")),
+                            PreferenceOption(value: 10.0, title: L("\(10) seconds")),
+                            PreferenceOption(value: 30.0, title: L("\(30) seconds")),
+                            PreferenceOption(value: -1.0, title: L("Never"))
                         ]
                     )
                 }
             }
 
-            PreferenceFootnote(text: "Choose what happens immediately after taking a screenshot.")
+            PreferenceFootnote(text: L("Choose what happens immediately after taking a screenshot."))
         }
     }
 
@@ -513,10 +530,10 @@ struct GeneralSettingsView: View {
     private func confirmHideMenuBarIcon() {
         let alert = NSAlert()
         alert.alertStyle = .warning
-        alert.messageText = "Hide the Menu Bar Icon?"
-        alert.informativeText = "The menu bar icon is Shotnix's main entry point. While it is hidden, open Shotnix again from Finder, Launchpad, or Spotlight to bring these Preferences back."
-        alert.addButton(withTitle: "Hide Icon")
-        alert.addButton(withTitle: "Cancel")
+        alert.messageText = L("Hide the Menu Bar Icon?")
+        alert.informativeText = L("The menu bar icon is Shotnix's main entry point. While it is hidden, open Shotnix again from Finder, Launchpad, or Spotlight to bring these Preferences back.")
+        alert.addButton(withTitle: L("Hide Icon"))
+        alert.addButton(withTitle: L("Cancel"))
 
         if alert.runModal() != .alertFirstButtonReturn {
             showMenuBarIcon = true
@@ -538,36 +555,36 @@ struct ShortcutsSettingsView: View {
 
     var body: some View {
         PreferencesPaneWithFooter {
-            ShortcutSection(title: "Screenshots", shortcuts: screenshotShortcuts)
+            ShortcutSection(title: L("Screenshots"), shortcuts: screenshotShortcuts)
 
-            PreferenceFootnote(text: "Hotkeys are system-wide and active while Shotnix is running. The ⌘⇧3 default works best after Apple's screenshot shortcut is disabled.")
+            PreferenceFootnote(text: L("Hotkeys are system-wide and active while Shotnix is running. The ⌘⇧3 default works best after Apple's screenshot shortcut is disabled."))
 
-            ShortcutSection(title: "Recording", shortcuts: recordingShortcuts)
+            ShortcutSection(title: L("Recording"), shortcuts: recordingShortcuts)
 
-            PreferenceFootnote(text: "Recording shortcuts are unassigned by default — click a field to set one. Stop Recording also cancels recording setup. While recording, \(RecordingStopHotkey.displayText) always stops it, from any app.")
+            PreferenceFootnote(text: L("Recording shortcuts are unassigned by default — click a field to set one. Stop Recording also cancels recording setup. While recording, \(RecordingStopHotkey.displayText) always stops it, from any app."))
 
-            ShortcutSection(title: "Advanced Tools", shortcuts: toolShortcuts)
+            ShortcutSection(title: L("Advanced Tools"), shortcuts: toolShortcuts)
 
-            PreferenceFootnote(text: "Capture Text and Scrolling Capture come without shortcuts, so ⌘⇧O and ⌘⇧S keep meaning Open and Save As in your other apps — click a field to set your own. Pressing the Scrolling Capture shortcut again finishes a scrolling capture.")
+            PreferenceFootnote(text: L("Capture Text and Scrolling Capture come without shortcuts, so ⌘⇧O and ⌘⇧S keep meaning Open and Save As in your other apps — click a field to set your own. Pressing the Scrolling Capture shortcut again finishes a scrolling capture."))
         } footer: {
             HStack {
-                Button("Reset Defaults") {
+                Button(L("Reset Defaults")) {
                     HotkeyManager.resetDefaults()
                 }
                 .buttonStyle(.bordered)
 
                 Spacer()
 
-                Button("Restore Apple Shortcuts") {
+                Button(L("Restore Apple Shortcuts")) {
                     if NativeShortcutManager.restoreNativeShortcuts() {
-                        ToastWindow.show(message: "Apple screenshot shortcuts restored.")
+                        ToastWindow.show(message: L("Apple screenshot shortcuts restored."))
                     } else {
-                        ToastWindow.show(message: "Could not restore Apple shortcuts.")
+                        ToastWindow.show(message: L("Could not restore Apple shortcuts."))
                         NativeShortcutManager.openKeyboardSettings()
                     }
                 }
                 .buttonStyle(.bordered)
-                .help("Re-enable Apple's ⌘⇧3/4/5 screenshot shortcuts")
+                .help(L("Re-enable Apple's ⌘⇧3/4/5 screenshot shortcuts"))
             }
         }
     }
@@ -645,8 +662,8 @@ struct ScreenshotsSettingsView: View {
 
     var body: some View {
         PreferencesPane {
-            PreferenceSection("Export Format") {
-                PreferenceRow("Format") {
+            PreferenceSection(L("Export Format")) {
+                PreferenceRow(L("Format")) {
                     // WebP is only offered where macOS can actually write it.
                     PreferenceMenuSelector(
                         selection: $screenshotFormat,
@@ -659,12 +676,12 @@ struct ScreenshotsSettingsView: View {
                 if screenshotFormat == "jpeg" {
                     PreferenceDivider()
 
-                    PreferenceRow("JPEG Quality") {
+                    PreferenceRow(L("JPEG Quality")) {
                         HStack(spacing: 8) {
                             Slider(value: $jpegQuality, in: 0.1...1.0)
                                 .frame(width: 140)
 
-                            Text("\(Int(jpegQuality * 100))%")
+                            Text(L("\(Int(jpegQuality * 100))%"))
                                 .font(.system(size: 12, weight: .semibold, design: .monospaced))
                                 .foregroundStyle(Color.white.opacity(0.56))
                                 .frame(width: 38, alignment: .trailing)
@@ -673,48 +690,44 @@ struct ScreenshotsSettingsView: View {
                 }
             }
 
-            PreferenceSection("Clipboard") {
-                PreferenceRow("Copy screenshots to clipboard") {
+            PreferenceSection(L("Clipboard")) {
+                PreferenceRow(L("Copy screenshots to clipboard")) {
                     Toggle("", isOn: $copyToClipboard)
                         .labelsHidden()
                         .toggleStyle(.switch)
                 }
             }
 
-            PreferenceFootnote(text: "New screenshots are copied automatically. Turn this off if you only want to use the overlay or history actions.")
+            PreferenceFootnote(text: L("New screenshots are copied automatically. Turn this off if you only want to use the overlay or history actions."))
 
             CaptureSelectionPreferences()
 
-            PreferenceSection("Window Capture") {
-                PreferenceRow("Shadow and transparent padding") {
+            PreferenceSection(L("Window Capture")) {
+                PreferenceRow(L("Shadow and transparent padding")) {
                     Toggle("", isOn: $windowCaptureShadow)
                         .labelsHidden()
                         .toggleStyle(.switch)
                 }
             }
 
-            PreferenceFootnote(text: "Window captures are isolated — nothing overlapping shows through. With this on they get transparent padding and a soft drop shadow.")
+            PreferenceFootnote(text: L("Window captures are isolated — nothing overlapping shows through. With this on they get transparent padding and a soft drop shadow."))
 
-            PreferenceSection("Timed Capture") {
-                PreferenceRow("Countdown") {
+            PreferenceSection(L("Timed Capture")) {
+                PreferenceRow(L("Countdown")) {
                     PreferenceMenuSelector(
                         selection: $timedCaptureDelay,
-                        options: [
-                            PreferenceOption(value: 3, title: "3 seconds"),
-                            PreferenceOption(value: 5, title: "5 seconds"),
-                            PreferenceOption(value: 10, title: "10 seconds")
-                        ]
+                        options: [3, 5, 10].map { PreferenceOption(value: $0, title: L("\($0) seconds")) }
                     )
                 }
             }
 
-            PreferenceFootnote(text: "Timed Capture selects the area first, then counts down before the shot — time to open menus or hover states. Esc cancels.")
+            PreferenceFootnote(text: L("Timed Capture selects the area first, then counts down before the shot — time to open menus or hover states. Esc cancels."))
 
             TextRecognitionPreferences()
 
-            PreferenceSection("Save Location") {
-                PreferenceRow("Auto-save folder", detail: displayLocation) {
-                    Button("Choose...") {
+            PreferenceSection(L("Save Location")) {
+                PreferenceRow(L("Auto-save folder"), detail: displayLocation) {
+                    Button(L("Choose...")) {
                         let panel = NSOpenPanel()
                         panel.canChooseFiles = false
                         panel.canChooseDirectories = true
@@ -725,7 +738,7 @@ struct ScreenshotsSettingsView: View {
                             if Settings.setAutoSaveLocation(url.path) {
                                 autoSaveLocation = Settings.autoSaveLocation
                             } else {
-                                ToastWindow.show(message: "Choose a writable folder for auto-save.")
+                                ToastWindow.show(message: L("Choose a writable folder for auto-save."))
                             }
                         }
                     }
@@ -733,10 +746,10 @@ struct ScreenshotsSettingsView: View {
                 }
             }
 
-            PreferenceFootnote(text: "Directory where screenshots are saved if Auto-Save is enabled.")
+            PreferenceFootnote(text: L("Directory where screenshots are saved if Auto-Save is enabled."))
 
-            PreferenceSection("File Name") {
-                PreferenceRow("Template") {
+            PreferenceSection(L("File Name")) {
+                PreferenceRow(L("Template")) {
                     TextField("", text: $filenameTemplate, prompt: Text(Settings.defaultFilenameTemplate))
                         .textFieldStyle(.plain)
                         .font(.system(size: 12, weight: .semibold))
@@ -755,7 +768,7 @@ struct ScreenshotsSettingsView: View {
 
                 PreferenceDivider()
 
-                PreferenceRow("Preview") {
+                PreferenceRow(L("Preview")) {
                     Text(filenamePreview)
                         .font(.system(size: 11, weight: .semibold, design: .monospaced))
                         .foregroundStyle(Color.white.opacity(0.56))
@@ -764,7 +777,7 @@ struct ScreenshotsSettingsView: View {
                 }
             }
 
-            PreferenceFootnote(text: "Used for screenshots and recordings. Tokens: %y year, %m month, %d day, %H hour, %M minute, %S second. Leave empty to restore the default.")
+            PreferenceFootnote(text: L("Used for screenshots and recordings. Tokens: %y year, %m month, %d day, %H hour, %M minute, %S second. Leave empty to restore the default."))
 
             HistoryPreferences()
         }
@@ -827,49 +840,49 @@ struct RecordingSettingsView: View {
             systemAudio: systemAudio,
             microphone: microphone
         )
-        return "Full screen: \(RecordingSizeEstimate.label(bytesPerMinute: bytes))"
+        return L("Full screen: \(RecordingSizeEstimate.label(bytesPerMinute: bytes))")
     }
 
     var body: some View {
         PreferencesPane {
-            PreferenceSection("Video") {
-                PreferenceRow("Quality", detail: sizeEstimate) {
+            PreferenceSection(L("Video")) {
+                PreferenceRow(L("Quality"), detail: sizeEstimate) {
                     PreferenceMenuSelector(
                         selection: $quality,
                         options: [
-                            PreferenceOption(value: "balanced", title: "Balanced"),
-                            PreferenceOption(value: "high", title: "High"),
-                            PreferenceOption(value: "max", title: "Max")
+                            PreferenceOption(value: "balanced", title: L("Balanced")),
+                            PreferenceOption(value: "high", title: L("High")),
+                            PreferenceOption(value: "max", title: L("Max"))
                         ]
                     )
                 }
 
                 PreferenceDivider()
 
-                PreferenceRow("Frame rate") {
+                PreferenceRow(L("Frame rate")) {
                     PreferenceSegmentedSelector(
                         selection: $fps,
                         options: [
-                            PreferenceOption(value: 30, title: "30 fps"),
-                            PreferenceOption(value: 60, title: "60 fps")
+                            PreferenceOption(value: 30, title: "30 fps"), // l10n-ignore: fps is never translated
+                            PreferenceOption(value: 60, title: "60 fps") // l10n-ignore
                         ]
                     )
                 }
 
                 PreferenceDivider()
 
-                PreferenceRow("Countdown") {
+                PreferenceRow(L("Countdown")) {
                     PreferenceMenuSelector(
                         selection: $countdown,
                         options: Settings.recordingCountdownChoices.map {
-                            PreferenceOption(value: $0, title: $0 == 0 ? "Off" : "\($0) seconds")
+                            PreferenceOption(value: $0, title: $0 == 0 ? L("Off") : L("\($0) seconds"))
                         }
                     )
                 }
 
                 PreferenceDivider()
 
-                PreferenceRow("Show cursor") {
+                PreferenceRow(L("Show cursor")) {
                     Toggle("", isOn: $showsCursor)
                         .labelsHidden()
                         .toggleStyle(.switch)
@@ -877,7 +890,7 @@ struct RecordingSettingsView: View {
 
                 PreferenceDivider()
 
-                PreferenceRow("Editable cursor") {
+                PreferenceRow(L("Editable cursor")) {
                     Toggle("", isOn: $editableCursor)
                         .labelsHidden()
                         .toggleStyle(.switch)
@@ -886,7 +899,7 @@ struct RecordingSettingsView: View {
 
                 PreferenceDivider()
 
-                PreferenceRow("Open editor after recording") {
+                PreferenceRow(L("Open editor after recording")) {
                     Toggle("", isOn: $openVideoEditorAfterRecording)
                         .labelsHidden()
                         .toggleStyle(.switch)
@@ -894,7 +907,7 @@ struct RecordingSettingsView: View {
 
                 PreferenceDivider()
 
-                PreferenceRow("Auto-zoom new recordings") {
+                PreferenceRow(L("Auto-zoom new recordings")) {
                     Toggle("", isOn: $autoZoomNewRecordings)
                         .labelsHidden()
                         .toggleStyle(.switch)
@@ -902,10 +915,10 @@ struct RecordingSettingsView: View {
 
                 PreferenceDivider()
 
-                PreferenceRow("Show keyboard shortcuts") {
+                PreferenceRow(L("Show keyboard shortcuts")) {
                     HStack(spacing: 8) {
                         if keystrokes && !keystrokeAccess {
-                            Button("Allow Access…") {
+                            Button(L("Allow Access…")) {
                                 VideoKeystrokeFormatter.requestAccess()
                                 NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")!)
                             }
@@ -930,10 +943,10 @@ struct RecordingSettingsView: View {
                 keystrokeAccess = VideoKeystrokeFormatter.isAllowed
             }
 
-            PreferenceFootnote(text: "Editable cursor records the pointer separately so the editor can smooth it, resize it, and keep it crisp when zoomed — the video editor adds it back on export (the raw recording file has no pointer). Auto-zoom makes a fresh recording open already produced: the camera zooms to follow your clicks. Keyboard shortcuts records only ⌘, ⌃ and ⌥ combos (plus Esc and F-keys) so the editor can show them as keycaps — plain typing is never recorded; macOS asks for Accessibility access. High quality is the default; Max keeps more detail but creates larger files. The countdown gives you a moment after pressing Record; Esc cancels it. Stop a recording with \(RecordingStopHotkey.displayText) from any app — plain Esc stays with the app you're recording.")
+            PreferenceFootnote(text: L("Editable cursor records the pointer separately so the editor can smooth it, resize it, and keep it crisp when zoomed — the video editor adds it back on export (the raw recording file has no pointer). Auto-zoom makes a fresh recording open already produced: the camera zooms to follow your clicks. Keyboard shortcuts records only ⌘, ⌃ and ⌥ combos (plus Esc and F-keys) so the editor can show them as keycaps — plain typing is never recorded; macOS asks for Accessibility access. High quality is the default; Max keeps more detail but creates larger files. The countdown gives you a moment after pressing Record; Esc cancels it. Stop a recording with \(RecordingStopHotkey.displayText) from any app — plain Esc stays with the app you're recording."))
 
-            PreferenceSection("Audio") {
-                PreferenceRow("Record system audio") {
+            PreferenceSection(L("Audio")) {
+                PreferenceRow(L("Record system audio")) {
                     Toggle("", isOn: $systemAudio)
                         .labelsHidden()
                         .toggleStyle(.switch)
@@ -941,7 +954,7 @@ struct RecordingSettingsView: View {
 
                 PreferenceDivider()
 
-                PreferenceRow("Record microphone") {
+                PreferenceRow(L("Record microphone")) {
                     Toggle("", isOn: $microphone)
                         .labelsHidden()
                         .toggleStyle(.switch)
@@ -949,10 +962,10 @@ struct RecordingSettingsView: View {
 
                 PreferenceDivider()
 
-                PreferenceRow("Microphone") {
+                PreferenceRow(L("Microphone")) {
                     PreferenceMenuSelector(
                         selection: $microphoneDeviceID,
-                        options: [PreferenceOption(value: "", title: "System Default")]
+                        options: [PreferenceOption(value: "", title: L("System Default"))]
                             + microphones.map { PreferenceOption(value: $0.id, title: $0.name) },
                         width: 190,
                         isEnabled: microphone
@@ -960,10 +973,10 @@ struct RecordingSettingsView: View {
                 }
             }
 
-            PreferenceFootnote(text: "Microphone recording requires macOS microphone permission. System audio excludes Shotnix sounds to avoid feedback.")
+            PreferenceFootnote(text: L("Microphone recording requires macOS microphone permission. System audio excludes Shotnix sounds to avoid feedback."))
 
-            PreferenceSection("Camera") {
-                PreferenceRow("Record camera") {
+            PreferenceSection(L("Camera")) {
+                PreferenceRow(L("Record camera")) {
                     Toggle("", isOn: $camera)
                         .labelsHidden()
                         .toggleStyle(.switch)
@@ -971,10 +984,10 @@ struct RecordingSettingsView: View {
 
                 PreferenceDivider()
 
-                PreferenceRow("Camera") {
+                PreferenceRow(L("Camera")) {
                     PreferenceMenuSelector(
                         selection: $cameraDeviceID,
-                        options: [PreferenceOption(value: "", title: "System Default")]
+                        options: [PreferenceOption(value: "", title: L("System Default"))]
                             + CameraCapture.devices.map { PreferenceOption(value: $0.uniqueID, title: $0.localizedName) },
                         width: 190,
                         isEnabled: camera
@@ -982,14 +995,14 @@ struct RecordingSettingsView: View {
                 }
             }
 
-            PreferenceFootnote(text: "Your camera is recorded as its own layer: a live bubble shows while you record (it never appears in the screen capture), and the editor lets you move, resize, and restyle it — or hide it — afterwards.")
+            PreferenceFootnote(text: L("Your camera is recorded as its own layer: a live bubble shows while you record (it never appears in the screen capture), and the editor lets you move, resize, and restyle it — or hide it — afterwards."))
 
             // Leftover video data (VideoDataCleanup.swift).
-            PreferenceSection("Storage") {
+            PreferenceSection(L("Storage")) {
                 VideoDataSettingsRow()
             }
 
-            PreferenceFootnote(text: "Clean Up lists what it would remove — the data of recordings Shotnix can't find, camera footage and pictures nothing uses, and clipboard exports older than a day — and asks first. On its own, Shotnix only removes clipboard exports older than a day; the data of your recordings stays until you clean it up here.")
+            PreferenceFootnote(text: L("Clean Up lists what it would remove — the data of recordings Shotnix can't find, camera footage and pictures nothing uses, and clipboard exports older than a day — and asks first. On its own, Shotnix only removes clipboard exports older than a day; the data of your recordings stays until you clean it up here."))
         }
     }
 }
@@ -1007,17 +1020,17 @@ struct AboutSettingsView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 13, style: .continuous))
 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Shotnix")
+                    Text(verbatim: "Shotnix")
                         .font(.system(size: 22, weight: .bold))
                         .foregroundStyle(Color.white.opacity(0.94))
-                    Text("Version \(version)")
+                    Text(L("Version \(version)"))
                         .font(.system(size: 12, weight: .semibold))
                         .foregroundStyle(Color.white.opacity(0.48))
                 }
 
                 Spacer(minLength: 12)
 
-                Button("Check for Updates") {
+                Button(L("Check for Updates")) {
                     (NSApp.delegate as? AppDelegate)?.checkForUpdates(nil)
                 }
                 .buttonStyle(.borderedProminent)
@@ -1032,12 +1045,13 @@ struct AboutSettingsView: View {
             )
             
             VStack(alignment: .leading, spacing: 8) {
-                Text("What's New")
+                Text(L("What's New"))
                     .font(.system(size: 13, weight: .bold))
                     .foregroundStyle(Color.white.opacity(0.86))
                 
                 ScrollView {
-                    Text("""
+                    // The release notes stay in English (l10n-ignore); everything around them is localized.
+                    Text(verbatim: """
                     Version 0.24.1
                     • The screenshot editor's toolbar sits straight: a clicked tool no longer stays shrunk toward a corner, every tool has even room on all sides, and hover matches the selection's rounded shape
                     • Buttons on History cards and the capture thumbnail spring back after a click, and toasts, badges, and the countdown grow from their center
@@ -1293,34 +1307,34 @@ struct AboutSettingsView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             
             VStack(spacing: 8) {
-                Text("© 2026 Shotnix Contributors")
+                Text(L("© 2026 Shotnix Contributors"))
                     .font(.system(size: 11, weight: .medium))
                     .foregroundStyle(Color.white.opacity(0.42))
-                Text("MIT License — Free and open source")
+                Text(L("MIT License — Free and open source"))
                     .font(.system(size: 10, weight: .medium))
                     .foregroundStyle(Color.white.opacity(0.36))
 
                 VStack(spacing: 8) {
                     HStack(spacing: 8) {
-                        AboutLinkButton(title: "Website") {
+                        AboutLinkButton(title: L("Website")) {
                             openURL("https://shotnix.com/")
                         }
 
-                        AboutLinkButton(title: "Support") {
+                        AboutLinkButton(title: L("Support")) {
                             openURL("https://shotnix.com/support")
                         }
 
-                        AboutLinkButton(title: "GitHub") {
+                        AboutLinkButton(title: "GitHub") { // l10n-ignore: a name
                             openURL("https://github.com/OMARVII/Shotnix")
                         }
                     }
 
                     HStack(spacing: 8) {
-                        AboutLinkButton(title: "Privacy Policy") {
+                        AboutLinkButton(title: L("Privacy Policy")) {
                             openURL("https://shotnix.com/privacy")
                         }
 
-                        AboutLinkButton(title: "Report Issue") {
+                        AboutLinkButton(title: L("Report Issue")) {
                             openURL("https://github.com/OMARVII/Shotnix/issues/new")
                         }
                     }

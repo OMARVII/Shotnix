@@ -50,12 +50,12 @@ enum PermissionsManager {
         if requestScreenRecordingPermission() { return }
 
         let alert = NSAlert()
-        alert.messageText = "Screen Recording Permission Required"
+        alert.messageText = L("Screen Recording Permission Required")
         if Settings.didRequestScreenRecordingPermission || Settings.didConfirmScreenRecordingPermission {
-            alert.informativeText = "Enable Shotnix in System Settings → Privacy & Security → Screen & System Audio Recording, then quit and reopen Shotnix so macOS applies the permission."
-            alert.addButton(withTitle: "Open System Settings")
-            alert.addButton(withTitle: "Quit & Reopen")
-            alert.addButton(withTitle: "Cancel")
+            alert.informativeText = L("Enable Shotnix in System Settings → Privacy & Security → Screen & System Audio Recording, then quit and reopen Shotnix so macOS applies the permission.")
+            alert.addButton(withTitle: L("Open System Settings"))
+            alert.addButton(withTitle: L("Quit & Reopen"))
+            alert.addButton(withTitle: L("Cancel"))
             switch alert.runModal() {
             case .alertFirstButtonReturn:
                 openScreenRecordingSettings()
@@ -65,9 +65,9 @@ enum PermissionsManager {
                 break
             }
         } else {
-            alert.informativeText = "Shotnix needs Screen Recording permission to capture your screen.\n\nPlease enable it in System Settings → Privacy & Security → Screen & System Audio Recording."
-            alert.addButton(withTitle: "Open System Settings")
-            alert.addButton(withTitle: "Cancel")
+            alert.informativeText = L("Shotnix needs Screen Recording permission to capture your screen.\n\nPlease enable it in System Settings → Privacy & Security → Screen & System Audio Recording.")
+            alert.addButton(withTitle: L("Open System Settings"))
+            alert.addButton(withTitle: L("Cancel"))
             if alert.runModal() == .alertFirstButtonReturn {
                 openScreenRecordingSettings()
             }

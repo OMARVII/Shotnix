@@ -12,7 +12,7 @@ final class AnnotationTextEditor: NSTextView {
     static let inset = CGSize(width: 3, height: 2)
 
     var onCommit: (() -> Void)?
-    var placeholder = "Type here\u{2026}"
+    var placeholder = L("Type here\u{2026}")
 
     convenience init(font: NSFont, color: NSColor) {
         // TextKit 1: its layout matches how committed text is drawn, and it
@@ -38,7 +38,7 @@ final class AnnotationTextEditor: NSTextView {
         textContainer?.containerSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: .greatestFiniteMagnitude)
         maxSize = NSSize(width: 100_000, height: 100_000)
         setStyle(font: font, color: color)
-        setAccessibilityLabel("Annotation text")
+        setAccessibilityLabel(L("Annotation text"))
     }
 
     func setStyle(font: NSFont, color: NSColor) {

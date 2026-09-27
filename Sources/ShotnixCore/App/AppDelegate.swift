@@ -146,8 +146,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             // dock icon is otherwise invisible after the welcome window closes.
             if let button = self?.statusItem.button {
                 let message = Settings.onboardingCompleted
-                    ? "You're all set — Shotnix lives here"
-                    : "Shotnix lives here — setup continues next launch"
+                    ? L("You're all set — Shotnix lives here")
+                    : L("Shotnix lives here — setup continues next launch")
                 ToastWindow.show(message: message, duration: 4.0, anchorView: button)
             }
         }
@@ -171,7 +171,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             guard let url = await RecordingRecovery.recoverInterruptedRecording() else { return }
             Settings.lastRecordingPath = url.path
             ToastWindow.show(
-                message: "Recovered your interrupted recording “\(url.lastPathComponent)”. Click to open it.",
+                message: L("Recovered your interrupted recording “\(url.lastPathComponent)”. Click to open it."),
                 duration: 7,
                 action: { VideoDemoEditorWindowController.open(videoURL: url) }
             )
@@ -204,11 +204,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             if captureEngine.recordingIsSaving {
                 statusItem.length = NSStatusItem.variableLength
                 button.image = nil
-                button.attributedTitle = NSAttributedString(string: "Saving…", attributes: [
+                button.attributedTitle = NSAttributedString(string: L("Saving…"), attributes: [
                     .font: NSFont.systemFont(ofSize: 12, weight: .semibold),
                     .foregroundColor: NSColor.secondaryLabelColor,
                 ])
-                button.toolTip = "Saving the recording"
+                button.toolTip = L("Saving the recording")
             } else {
                 restoreIdleStatusItem()
             }
@@ -235,7 +235,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             ]
         ))
         button.attributedTitle = title
-        button.toolTip = "\(paused ? "Recording paused" : "Recording") — click to stop (\(RecordingStopHotkey.displayText))"
+        let stopKey = RecordingStopHotkey.displayText
+        button.toolTip = paused
+            ? L("Recording paused — click to stop (\(stopKey))")
+            : L("Recording — click to stop (\(stopKey))")
     }
 
     private func restoreIdleStatusItem() {
@@ -309,8 +312,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     /// Names the user's real Capture Area shortcut — or none, if unassigned.
     static func hiddenIconMessage(captureAreaShortcut: String?) -> String {
-        let stillWorks = captureAreaShortcut.map { "\($0) still captures" } ?? "your shortcuts still work"
-        return "Menu bar is full, so macOS hid the Shotnix icon — \(stillWorks). Click here for the menu."
+        if let captureAreaShortcut {
+            return L("Menu bar is full, so macOS hid the Shotnix icon — \(captureAreaShortcut) still captures. Click here for the menu.")
+        }
+        return L("Menu bar is full, so macOS hid the Shotnix icon — your shortcuts still work. Click here for the menu.")
     }
 
     private func showReadyToastIfNeeded(delay: TimeInterval = 0) {
@@ -321,7 +326,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                   !NativeShortcutManager.nativeShortcutsEnabled else { return }
 
             Settings.didShowReadyToast = true
-            ToastWindow.show(message: "Shotnix is ready to use!", duration: 3.0, anchorView: self.statusItem.button)
+            ToastWindow.show(message: L("Shotnix is ready to use!"), duration: 3.0, anchorView: self.statusItem.button)
         }
 
         if delay > 0 {
@@ -336,23 +341,24 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: – Status bar
 
     private func setupMainMenu() {
-        let mainMenu = NSMenu(title: "Shotnix")
+        // The app menu's title is always the app's name.
+        let mainMenu = NSMenu(title: "Shotnix") // l10n-ignore
 
         let appMenuItem = NSMenuItem()
-        let appMenu = NSMenu(title: "Shotnix")
-        let preferencesItem = NSMenuItem(title: "Settings…", action: #selector(openPreferences), keyEquivalent: ",")
+        let appMenu = NSMenu(title: "Shotnix") // l10n-ignore
+        let preferencesItem = NSMenuItem(title: L("Settings…"), action: #selector(openPreferences), keyEquivalent: ",")
         preferencesItem.target = self
         appMenu.addItem(preferencesItem)
         appMenu.addItem(NSMenuItem.separator())
-        appMenu.addItem(NSMenuItem(title: "Quit Shotnix", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+        appMenu.addItem(NSMenuItem(title: L("Quit Shotnix"), action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
         appMenuItem.submenu = appMenu
         mainMenu.addItem(appMenuItem)
 
         // File menu: Close Window (⌘W) first, then the video editor's own
         // section (Export, Save Subtitles, Recent Exports).
         let fileMenuItem = NSMenuItem()
-        let fileMenu = NSMenu(title: "File")
-        fileMenu.addItem(menuItem("Close Window", action: #selector(closeKeyWindow(_:)), key: "w", modifiers: [.command]))
+        let fileMenu = NSMenu(title: L("File"))
+        fileMenu.addItem(menuItem(L("Close Window"), action: #selector(closeKeyWindow(_:)), key: "w", modifiers: [.command]))
         VideoEditorFileMenu.shared.addItems(to: fileMenu)
         fileMenuItem.submenu = fileMenu
         mainMenu.addItem(fileMenuItem)
@@ -366,39 +372,39 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // custom windows (annotation canvas ⌘Z/⌘C, quick access overlay ⌘C)
         // and shadow the Timeline menu's ⌘Z. See the Edit menu routing section.
         let editMenuItem = NSMenuItem()
-        let editMenu = NSMenu(title: "Edit")
-        editMenu.addItem(menuItem("Undo", action: #selector(editUndo(_:)), key: "z", modifiers: [.command]))
-        editMenu.addItem(menuItem("Redo", action: #selector(editRedo(_:)), key: "Z", modifiers: [.command, .shift]))
+        let editMenu = NSMenu(title: L("Edit"))
+        editMenu.addItem(menuItem(L("Undo"), action: #selector(editUndo(_:)), key: "z", modifiers: [.command]))
+        editMenu.addItem(menuItem(L("Redo"), action: #selector(editRedo(_:)), key: "Z", modifiers: [.command, .shift]))
         editMenu.addItem(NSMenuItem.separator())
-        editMenu.addItem(menuItem("Cut", action: #selector(editCut(_:)), key: "x", modifiers: [.command]))
-        editMenu.addItem(menuItem("Copy", action: #selector(editCopy(_:)), key: "c", modifiers: [.command]))
-        editMenu.addItem(menuItem("Paste", action: #selector(editPaste(_:)), key: "v", modifiers: [.command]))
+        editMenu.addItem(menuItem(L("Cut"), action: #selector(editCut(_:)), key: "x", modifiers: [.command]))
+        editMenu.addItem(menuItem(L("Copy"), action: #selector(editCopy(_:)), key: "c", modifiers: [.command]))
+        editMenu.addItem(menuItem(L("Paste"), action: #selector(editPaste(_:)), key: "v", modifiers: [.command]))
         editMenu.addItem(NSMenuItem.separator())
-        editMenu.addItem(menuItem("Select All", action: #selector(editSelectAll(_:)), key: "a", modifiers: [.command]))
+        editMenu.addItem(menuItem(L("Select All"), action: #selector(editSelectAll(_:)), key: "a", modifiers: [.command]))
         editMenuItem.submenu = editMenu
         mainMenu.addItem(editMenuItem)
 
         let timelineMenuItem = NSMenuItem()
-        let timelineMenu = NSMenu(title: "Timeline")
-        timelineMenu.addItem(menuItem("Split at Playhead", action: #selector(timelineSplit(_:)), key: "s", modifiers: []))
-        timelineMenu.addItem(menuItem("Delete Selection", action: #selector(timelineDeleteSelection(_:)), key: "\u{8}", modifiers: []))
+        let timelineMenu = NSMenu(title: L("Timeline"))
+        timelineMenu.addItem(menuItem(L("Split at Playhead"), action: #selector(timelineSplit(_:)), key: "s", modifiers: []))
+        timelineMenu.addItem(menuItem(L("Delete Selection"), action: #selector(timelineDeleteSelection(_:)), key: "\u{8}", modifiers: []))
         timelineMenu.addItem(NSMenuItem.separator())
-        timelineMenu.addItem(menuItem("Set In to Playhead", action: #selector(timelineTrimIn(_:)), key: "i", modifiers: []))
-        timelineMenu.addItem(menuItem("Set Out to Playhead", action: #selector(timelineTrimOut(_:)), key: "o", modifiers: []))
-        timelineMenu.addItem(menuItem("Mute Clip", action: #selector(timelineMuteClip(_:)), key: "m", modifiers: []))
+        timelineMenu.addItem(menuItem(L("Set In to Playhead"), action: #selector(timelineTrimIn(_:)), key: "i", modifiers: []))
+        timelineMenu.addItem(menuItem(L("Set Out to Playhead"), action: #selector(timelineTrimOut(_:)), key: "o", modifiers: []))
+        timelineMenu.addItem(menuItem(L("Mute Clip"), action: #selector(timelineMuteClip(_:)), key: "m", modifiers: []))
         timelineMenu.addItem(NSMenuItem.separator())
-        timelineMenu.addItem(menuItem("Undo Timeline Edit", action: #selector(timelineUndo(_:)), key: "z", modifiers: [.command]))
-        timelineMenu.addItem(menuItem("Redo Timeline Edit", action: #selector(timelineRedo(_:)), key: "Z", modifiers: [.command, .shift]))
+        timelineMenu.addItem(menuItem(L("Undo Timeline Edit"), action: #selector(timelineUndo(_:)), key: "z", modifiers: [.command]))
+        timelineMenu.addItem(menuItem(L("Redo Timeline Edit"), action: #selector(timelineRedo(_:)), key: "Z", modifiers: [.command, .shift]))
         timelineMenuItem.submenu = timelineMenu
         mainMenu.addItem(timelineMenuItem)
 
         // Minimal Window menu with the standard window-management commands.
         let windowMenuItem = NSMenuItem()
-        let windowMenu = NSMenu(title: "Window")
-        windowMenu.addItem(responderMenuItem("Minimize", action: #selector(NSWindow.performMiniaturize(_:)), key: "m"))
-        windowMenu.addItem(responderMenuItem("Zoom", action: #selector(NSWindow.performZoom(_:)), key: ""))
+        let windowMenu = NSMenu(title: L("Window"))
+        windowMenu.addItem(responderMenuItem(L("Minimize"), action: #selector(NSWindow.performMiniaturize(_:)), key: "m"))
+        windowMenu.addItem(responderMenuItem(L("Zoom"), action: #selector(NSWindow.performZoom(_:)), key: ""))
         windowMenu.addItem(NSMenuItem.separator())
-        windowMenu.addItem(responderMenuItem("Bring All to Front", action: #selector(NSApplication.arrangeInFront(_:)), key: ""))
+        windowMenu.addItem(responderMenuItem(L("Bring All to Front"), action: #selector(NSApplication.arrangeInFront(_:)), key: ""))
         windowMenuItem.submenu = windowMenu
         mainMenu.addItem(windowMenuItem)
         NSApp.windowsMenu = windowMenu
@@ -671,32 +677,32 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // Capture Fullscreen shoots the display you're on; "Capture All
         // Displays" gets its own row only when there's more than one.
         var captureActions = [
-            action(id: "capture.area", title: "Capture Area", symbol: "rectangle.dashed", shortcut: .shotnixCaptureArea, role: .primary) { [weak self] in self?.captureArea() },
-            action(id: "capture.window", title: "Capture Window", symbol: "macwindow", shortcut: .shotnixCaptureWindow) { [weak self] in self?.captureWindow() },
-            action(id: "capture.fullscreen", title: "Capture Fullscreen", symbol: "rectangle.on.rectangle", shortcut: .shotnixCaptureFullscreenNative) { [weak self] in self?.captureFullscreen() },
+            action(id: "capture.area", title: L("Capture Area"), symbol: "rectangle.dashed", shortcut: .shotnixCaptureArea, role: .primary) { [weak self] in self?.captureArea() },
+            action(id: "capture.window", title: L("Capture Window"), symbol: "macwindow", shortcut: .shotnixCaptureWindow) { [weak self] in self?.captureWindow() },
+            action(id: "capture.fullscreen", title: L("Capture Fullscreen"), symbol: "rectangle.on.rectangle", shortcut: .shotnixCaptureFullscreenNative) { [weak self] in self?.captureFullscreen() },
         ]
         if screenCount > 1 {
-            captureActions.append(action(id: "capture.all-displays", title: "Capture All Displays", symbol: "rectangle.3.group", shortcut: .shotnixCaptureAllDisplays) { [weak self] in self?.captureAllDisplays() })
+            captureActions.append(action(id: "capture.all-displays", title: L("Capture All Displays"), symbol: "rectangle.3.group", shortcut: .shotnixCaptureAllDisplays) { [weak self] in self?.captureAllDisplays() })
         }
         captureActions.append(contentsOf: [
-            action(id: "capture.previous", title: "Capture Previous Area", symbol: "arrow.counterclockwise.circle", shortcut: .shotnixCapturePreviousArea) { [weak self] in self?.capturePrevious() },
-                action(id: "capture.timed", title: "Timed Capture (\(Settings.timedCaptureDelaySeconds)s)", symbol: "timer", shortcut: .shotnixCaptureTimed) { [weak self] in self?.captureTimed() },
-                action(id: "capture.scrolling", title: "Scrolling Capture", symbol: "scroll", shortcut: .shotnixCaptureScrolling) { [weak self] in self?.captureScrolling() },
+            action(id: "capture.previous", title: L("Capture Previous Area"), symbol: "arrow.counterclockwise.circle", shortcut: .shotnixCapturePreviousArea) { [weak self] in self?.capturePrevious() },
+                action(id: "capture.timed", title: L("Timed Capture (\(Settings.timedCaptureDelaySeconds)s)"), symbol: "timer", shortcut: .shotnixCaptureTimed) { [weak self] in self?.captureTimed() },
+                action(id: "capture.scrolling", title: L("Scrolling Capture"), symbol: "scroll", shortcut: .shotnixCaptureScrolling) { [weak self] in self?.captureScrolling() },
         ])
 
         return [
-            ShotnixMenuSection(id: "capture", title: "Capture", actions: captureActions),
-            ShotnixMenuSection(id: "record", title: "Record", actions: {
+            ShotnixMenuSection(id: "capture", title: L("Capture"), actions: captureActions),
+            ShotnixMenuSection(id: "record", title: L("Record"), actions: {
                 var recordActions = [
-                    action(id: "record.area", title: "Record Area", symbol: "record.circle", shortcut: .shotnixRecordArea, isEnabled: captureEngine?.recordingActionsEnabled ?? false) { [weak self] in self?.recordArea() },
-                    action(id: "record.window", title: "Record Window", symbol: "macwindow.badge.plus", shortcut: .shotnixRecordWindow, isEnabled: captureEngine?.recordingActionsEnabled ?? false) { [weak self] in self?.recordWindow() },
-                    action(id: "record.fullscreen", title: "Record Fullscreen", symbol: "rectangle.fill.on.rectangle.fill", shortcut: .shotnixRecordFullscreen, isEnabled: captureEngine?.recordingActionsEnabled ?? false) { [weak self] in self?.recordFullscreen() },
+                    action(id: "record.area", title: L("Record Area"), symbol: "record.circle", shortcut: .shotnixRecordArea, isEnabled: captureEngine?.recordingActionsEnabled ?? false) { [weak self] in self?.recordArea() },
+                    action(id: "record.window", title: L("Record Window"), symbol: "macwindow.badge.plus", shortcut: .shotnixRecordWindow, isEnabled: captureEngine?.recordingActionsEnabled ?? false) { [weak self] in self?.recordWindow() },
+                    action(id: "record.fullscreen", title: L("Record Fullscreen"), symbol: "rectangle.fill.on.rectangle.fill", shortcut: .shotnixRecordFullscreen, isEnabled: captureEngine?.recordingActionsEnabled ?? false) { [weak self] in self?.recordFullscreen() },
                 ]
                 if captureEngine?.recordingElapsedSeconds != nil {
                     let paused = captureEngine?.recordingIsPaused == true
                     recordActions.append(action(
                         id: "record.pause",
-                        title: paused ? "Resume Recording" : "Pause Recording",
+                        title: paused ? L("Resume Recording") : L("Pause Recording"),
                         symbol: paused ? "play.circle" : "pause.circle",
                         shortcut: .shotnixPauseRecording
                     ) { [weak self] in self?.captureEngine.togglePauseRecording() })
@@ -706,7 +712,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 if captureEngine?.recordingStopEnabled == true {
                     recordActions.append(action(
                         id: "record.stop",
-                        title: captureEngine?.recordingStopTitle ?? "Stop Recording",
+                        title: captureEngine?.recordingStopTitle ?? L("Stop Recording"),
                         symbol: "stop.circle",
                         shortcut: .shotnixStopRecording,
                         role: .destructive
@@ -714,33 +720,33 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 }
                 return recordActions
             }()),
-            ShotnixMenuSection(id: "tools", title: "Tools", actions: [
-                action(id: "tools.ocr", title: "Capture Text", symbol: "text.viewfinder", shortcut: .shotnixCaptureText) { [weak self] in self?.captureText() },
-                action(id: "tools.qr", title: "Scan QR Code", symbol: "qrcode.viewfinder") { [weak self] in self?.scanQRCode() },
-                action(id: "tools.video-editor", title: "Open Video Editor", symbol: "film.stack", role: .primary) { [weak self] in self?.openVideoEditor() },
-                action(id: "tools.last-recording", title: "Edit Last Recording", symbol: "play.rectangle.on.rectangle") { [weak self] in self?.editLastRecording() },
-                action(id: "tools.annotate-last", title: "Annotate Last Screenshot", symbol: "pencil.tip.crop.circle", isEnabled: !(historyManager?.items.isEmpty ?? true)) { [weak self] in self?.annotateLastScreenshot() },
+            ShotnixMenuSection(id: "tools", title: L("Tools"), actions: [
+                action(id: "tools.ocr", title: L("Capture Text"), symbol: "text.viewfinder", shortcut: .shotnixCaptureText) { [weak self] in self?.captureText() },
+                action(id: "tools.qr", title: L("Scan QR Code"), symbol: "qrcode.viewfinder") { [weak self] in self?.scanQRCode() },
+                action(id: "tools.video-editor", title: L("Open Video Editor"), symbol: "film.stack", role: .primary) { [weak self] in self?.openVideoEditor() },
+                action(id: "tools.last-recording", title: L("Edit Last Recording"), symbol: "play.rectangle.on.rectangle") { [weak self] in self?.editLastRecording() },
+                action(id: "tools.annotate-last", title: L("Annotate Last Screenshot"), symbol: "pencil.tip.crop.circle", isEnabled: !(historyManager?.items.isEmpty ?? true)) { [weak self] in self?.annotateLastScreenshot() },
             ]),
-            ShotnixMenuSection(id: "utility", title: "Utility", actions: {
+            ShotnixMenuSection(id: "utility", title: L("Utility"), actions: {
                 var utilityActions = [
-                    action(id: "utility.history", title: "Open History", symbol: "clock.arrow.circlepath") { [weak self] in self?.openHistory() },
+                    action(id: "utility.history", title: L("Open History"), symbol: "clock.arrow.circlepath") { [weak self] in self?.openHistory() },
                 ]
                 // Editor-window rows only exist while an editor is open —
                 // disabled rows earn no space.
                 if AnnotationWindowController.hasOpenEditors {
-                    utilityActions.append(action(id: "utility.editor", title: "Show Editor", symbol: "pencil.and.outline") { [weak self] in self?.showEditor() })
+                    utilityActions.append(action(id: "utility.editor", title: L("Show Editor"), symbol: "pencil.and.outline") { [weak self] in self?.showEditor() })
                 }
                 if VideoDemoEditorWindowController.hasOpenEditors {
-                    utilityActions.append(action(id: "utility.video-editor", title: "Show Video Editor", symbol: "film") { [weak self] in self?.showVideoEditor() })
+                    utilityActions.append(action(id: "utility.video-editor", title: L("Show Video Editor"), symbol: "film") { [weak self] in self?.showVideoEditor() })
                 }
-                utilityActions.append(action(id: "utility.desktop-icons", title: DesktopIconsManager.desktopIconsVisible ? "Hide Desktop Icons" : "Show Desktop Icons", symbol: DesktopIconsManager.desktopIconsVisible ? "eye.slash" : "eye") { [weak self] in self?.toggleDesktopIcons() })
+                utilityActions.append(action(id: "utility.desktop-icons", title: DesktopIconsManager.desktopIconsVisible ? L("Hide Desktop Icons") : L("Show Desktop Icons"), symbol: DesktopIconsManager.desktopIconsVisible ? "eye.slash" : "eye") { [weak self] in self?.toggleDesktopIcons() })
                 return utilityActions
             }()),
-            ShotnixMenuSection(id: "settings", title: "Settings", actions: [
-                action(id: "settings.preferences", title: "Preferences", symbol: "gearshape", shortcutText: "⌘,") { [weak self] in self?.openPreferences() },
-                action(id: "settings.about", title: "About Shotnix", symbol: "info.circle") { [weak self] in self?.openAbout() },
-                action(id: "settings.update", title: "Check for Updates", symbol: "arrow.triangle.2.circlepath", isEnabled: updateController?.canCheckForUpdates ?? false) { [weak self] in self?.checkForUpdates(nil) },
-                action(id: "settings.quit", title: "Quit Shotnix", symbol: "power", shortcutText: "⌘Q", role: .destructive) { NSApp.terminate(nil) },
+            ShotnixMenuSection(id: "settings", title: L("Settings"), actions: [
+                action(id: "settings.preferences", title: L("Preferences"), symbol: "gearshape", shortcutText: "⌘,") { [weak self] in self?.openPreferences() },
+                action(id: "settings.about", title: L("About Shotnix"), symbol: "info.circle") { [weak self] in self?.openAbout() },
+                action(id: "settings.update", title: L("Check for Updates"), symbol: "arrow.triangle.2.circlepath", isEnabled: updateController?.canCheckForUpdates ?? false) { [weak self] in self?.checkForUpdates(nil) },
+                action(id: "settings.quit", title: L("Quit Shotnix"), symbol: "power", shortcutText: "⌘Q", role: .destructive) { NSApp.terminate(nil) },
             ]),
         ]
     }
@@ -750,7 +756,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .screenRecording: { PermissionsManager.openScreenRecordingSettings() },
             .nativeShortcuts: {
                 if NativeShortcutManager.disableNativeShortcuts() {
-                    ToastWindow.show(message: "Apple screenshot shortcuts disabled.")
+                    ToastWindow.show(message: L("Apple screenshot shortcuts disabled."))
                 } else {
                     NativeShortcutManager.openKeyboardSettings()
                 }
@@ -770,9 +776,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         guard panel.runModal() == .OK, let url = panel.url else { return }
         if Settings.setAutoSaveLocation(url.path) {
-            ToastWindow.show(message: "Save folder updated.")
+            ToastWindow.show(message: L("Save folder updated."))
         } else {
-            ToastWindow.show(message: "Choose a writable folder.")
+            ToastWindow.show(message: L("Choose a writable folder."))
         }
     }
 

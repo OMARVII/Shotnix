@@ -2,12 +2,32 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>%@ (%@)</key>
+	<string>%@（%@）</string>
+	<key>%@ area</key>
+	<string>%@ 区域</string>
 	<key>%@ capture from %@</key>
 	<string>%2$@ 的%1$@截屏</string>
 	<key>%@ capture, %@</key>
 	<string>%1$@截屏，%2$@</string>
+	<key>%@ fullscreen</key>
+	<string>%@ 全屏</string>
+	<key>%@ pt</key>
+	<string>%@ 磅</string>
+	<key>%@ window</key>
+	<string>%@ 窗口</string>
 	<key>%@ · %@ × %@ image</key>
 	<string>%@ · %@ × %@ 图像</string>
+	<key>%@ — Shotnix lives in your menu bar</key>
+	<string>%@ — Shotnix 位于菜单栏中</string>
+	<key>%lld annotations</key>
+	<string>%lld 个标注</string>
+	<key>%lld annotations, %@ selected</key>
+	<string>%lld 个标注，已选中%@</string>
+	<key>%lld annotations, %@ selected, cropping</key>
+	<string>%lld 个标注，已选中%@，正在裁剪</string>
+	<key>%lld annotations, cropping</key>
+	<string>%lld 个标注，正在裁剪</string>
 	<key>%lld days</key>
 	<string>%lld 天</string>
 	<key>%lld of %lld captures</key>
@@ -16,14 +36,112 @@
 	<string>已存储 %lld 张截屏 · 可将卡片拖到“访达” · 右键点按查看更多操作</string>
 	<key>%lld screenshots deleted — click or press ⌘Z to undo</key>
 	<string>已删除 %lld 张截屏 — 点按或按下 ⌘Z 撤销</string>
+	<key>%lld seconds</key>
+	<string>%lld 秒</string>
+	<key>%lld%%</key>
+	<string>%lld%%</string>
+	<key>%lld/%lld configured</key>
+	<string>已设置 %lld/%lld</string>
+	<key>About</key>
+	<string>关于</string>
+	<key>About Shotnix</key>
+	<string>关于 Shotnix</string>
+	<key>Accuracy</key>
+	<string>准确度</string>
+	<key>Accurate</key>
+	<string>精确</string>
+	<key>Advanced Tools</key>
+	<string>高级工具</string>
+	<key>After Capture</key>
+	<string>截屏后</string>
 	<key>All Captures</key>
 	<string>所有截屏</string>
 	<key>All captures are moved to Shotnix’s trash and permanently deleted after %lld days.</key>
 	<string>所有截屏都会移到 Shotnix 的废纸篓，并在 %lld 天后永久删除。</string>
+	<key>All configured</key>
+	<string>全部已设置</string>
+	<key>Allow Access…</key>
+	<string>允许访问…</string>
+	<key>Allow Screen Recording</key>
+	<string>允许屏幕录制</string>
+	<key>Amber Fold</key>
+	<string>琥珀褶皱</string>
+	<key>Annotate Last Screenshot</key>
+	<string>标注最近的截屏</string>
+	<key>Annotation</key>
+	<string>标注</string>
+	<key>Annotation text</key>
+	<string>标注文字</string>
+	<key>Annotation tools</key>
+	<string>标注工具</string>
+	<key>Apple Shortcuts</key>
+	<string>Apple 快捷键</string>
+	<key>Apple screenshot shortcuts disabled.</key>
+	<string>已停用 Apple 截屏快捷键。</string>
+	<key>Apple screenshot shortcuts disabled. Shotnix shortcuts are now active.</key>
+	<string>已停用 Apple 截屏快捷键。Shotnix 快捷键现已生效。</string>
+	<key>Apple screenshot shortcuts restored.</key>
+	<string>已恢复 Apple 截屏快捷键。</string>
+	<key>Apple's screenshot shortcuts still own ⌘⇧3/4/5 — captures can double-trigger.</key>
+	<string>Apple 的截屏快捷键仍占用 ⌘⇧3/4/5 — 可能会重复截屏。</string>
+	<key>Apple's shortcuts are out of the way.</key>
+	<string>Apple 的快捷键已不再冲突。</string>
+	<key>Apply</key>
+	<string>应用</string>
+	<key>Apply background to this image</key>
+	<string>为此图像应用背景</string>
+	<key>Apply crop</key>
+	<string>应用裁剪</string>
+	<key>Apply the crop (Return)</key>
+	<string>应用裁剪（Return 键）</string>
+	<key>Aqua Marble</key>
+	<string>水色大理石</string>
 	<key>Area</key>
 	<string>区域</string>
+	<key>Arrow</key>
+	<string>箭头</string>
+	<key>Audio</key>
+	<string>音频</string>
+	<key>Aurora Blue</key>
+	<string>极光蓝</string>
+	<key>Auto-dismiss overlay</key>
+	<string>自动隐藏缩略图</string>
+	<key>Auto-save folder</key>
+	<string>自动存储文件夹</string>
+	<key>Auto-zoom new recordings</key>
+	<string>自动缩放新录制内容</string>
+	<key>Automatic</key>
+	<string>自动</string>
+	<key>Automatic detects each capture's language; pick languages when it guesses wrong. Accurate reads small text best — Fast answers sooner but knows fewer languages. Used by Capture Text, Copy Text, and History search.</key>
+	<string>“自动”会检测每张截屏的语言；识别有误时可手动选择语言。“精确”最适合识别小字 — “快速”响应更快，但支持的语言更少。用于“提取文字”、“拷贝文字”和历史记录搜索。</string>
+	<key>Background</key>
+	<string>背景</string>
+	<key>Balanced</key>
+	<string>均衡</string>
+	<key>Black</key>
+	<string>黑色</string>
+	<key>Blue</key>
+	<string>蓝色</string>
+	<key>Blur</key>
+	<string>模糊</string>
+	<key>Blurred area</key>
+	<string>模糊区域</string>
+	<key>Bold</key>
+	<string>粗体</string>
+	<key>Bone</key>
+	<string>骨白</string>
+	<key>Bring All to Front</key>
+	<string>前置全部窗口</string>
+	<key>Callout</key>
+	<string>标注气泡</string>
+	<key>Callout: %@</key>
+	<string>标注气泡：%@</string>
+	<key>Camera</key>
+	<string>摄像头</string>
 	<key>Cancel</key>
 	<string>取消</string>
+	<key>Canyon Silk</key>
+	<string>峡谷丝绸</string>
 	<key>Capture</key>
 	<string>截屏</string>
 	<key>Capture All Displays</key>
@@ -38,96 +156,558 @@
 	<string>截屏历史记录</string>
 	<key>Capture Previous Area</key>
 	<string>捕捉上一个区域</string>
+	<key>Capture Text</key>
+	<string>提取文字</string>
+	<key>Capture Text and Scrolling Capture come without shortcuts, so ⌘⇧O and ⌘⇧S keep meaning Open and Save As in your other apps — click a field to set your own. Pressing the Scrolling Capture shortcut again finishes a scrolling capture.</key>
+	<string>“提取文字”和“滚动截屏”默认没有快捷键，这样 ⌘⇧O 和 ⌘⇧S 在其他 App 中仍表示“打开”和“存储为” — 点按字段即可自定义。再次按下滚动截屏快捷键即可结束滚动截屏。</string>
 	<key>Capture Window</key>
 	<string>捕捉窗口</string>
 	<key>Capture from %@</key>
 	<string>%@ 的截屏</string>
+	<key>Capture immediately after selecting</key>
+	<string>选择后立即截屏</string>
 	<key>Capture type</key>
 	<string>截屏类型</string>
+	<key>Capture · Record · Updates</key>
+	<string>截屏 · 录制 · 更新</string>
 	<key>Capture, %@</key>
 	<string>截屏，%@</string>
 	<key>Captured screenshots will appear here instantly</key>
 	<string>新的截屏会立即显示在这里</string>
 	<key>Captures</key>
 	<string>截屏</string>
+	<key>Captures stay in History until you delete them, unless you pick a limit here. Clean Up empties History's trash (deleted captures you could still undo) and removes files no capture uses anymore.</key>
+	<string>截屏会一直保留在历史记录中，直到你将其删除，除非你在此处设定期限。“清理”会清空历史记录的废纸篓（其中是仍可撤销删除的截屏），并移除不再被任何截屏使用的文件。</string>
+	<key>Carbon Arc</key>
+	<string>碳弧</string>
+	<key>Check</key>
+	<string>检查</string>
+	<key>Check for Updates</key>
+	<string>检查更新</string>
 	<key>Choose Capture Area in the Shotnix menu to start</key>
 	<string>在 Shotnix 菜单中选择“捕捉区域”即可开始</string>
+	<key>Choose a writable folder for auto-save.</key>
+	<string>请为自动存储选择一个可写入的文件夹。</string>
+	<key>Choose a writable folder.</key>
+	<string>请选择一个可写入的文件夹。</string>
+	<key>Choose folder</key>
+	<string>选择文件夹</string>
+	<key>Choose what happens immediately after taking a screenshot.</key>
+	<string>选择截屏后立即执行的操作。</string>
+	<key>Choose...</key>
+	<string>选取…</string>
+	<key>Clay</key>
+	<string>陶土</string>
+	<key>Clean Up</key>
+	<string>清理</string>
+	<key>Clean Up History?</key>
+	<string>要清理历史记录吗？</string>
+	<key>Clean Up lists what it would remove — the data of recordings Shotnix can't find, camera footage and pictures nothing uses, and clipboard exports older than a day — and asks first. On its own, Shotnix only removes clipboard exports older than a day; the data of your recordings stays until you clean it up here.</key>
+	<string>“清理”会先列出将移除的内容 — Shotnix 找不到的录制内容的数据、未被使用的摄像头画面和图片，以及超过一天的剪贴板导出文件 — 并先征得你的同意。Shotnix 自身只会移除超过一天的剪贴板导出文件；你的录制内容的数据会一直保留，直到你在这里清理。</string>
+	<key>Clean Up…</key>
+	<string>清理…</string>
+	<key>Cleaning Up…</key>
+	<string>正在清理…</string>
 	<key>Clear All</key>
 	<string>全部清除</string>
 	<key>Clear History</key>
 	<string>清除历史记录</string>
 	<key>Clear History?</key>
 	<string>要清除历史记录吗？</string>
+	<key>Click an annotation to edit it</key>
+	<string>点按标注即可编辑</string>
+	<key>Click to add the next step</key>
+	<string>点按以添加下一步</string>
+	<key>Clipboard</key>
+	<string>剪贴板</string>
+	<key>Close Window</key>
+	<string>关闭窗口</string>
+	<key>Coastal Haze</key>
+	<string>海岸薄雾</string>
+	<key>Cobalt Drapes</key>
+	<string>钴蓝帷幕</string>
+	<key>Color</key>
+	<string>颜色</string>
+	<key>Command Center</key>
+	<string>命令中心</string>
+	<key>Conflict detected</key>
+	<string>检测到冲突</string>
+	<key>Copied to clipboard</key>
+	<string>已拷贝到剪贴板</string>
 	<key>Copy</key>
 	<string>拷贝</string>
+	<key>Copy (⌘C)</key>
+	<string>拷贝（⌘C）</string>
 	<key>Copy capture to clipboard</key>
 	<string>将截屏拷贝到剪贴板</string>
+	<key>Copy screenshots to clipboard</key>
+	<string>将截屏拷贝到剪贴板</string>
+	<key>Could Not Disable Apple Shortcuts</key>
+	<string>无法停用 Apple 快捷键</string>
+	<key>Could Not Save Screenshot</key>
+	<string>无法存储截屏</string>
 	<key>Could not copy this capture</key>
 	<string>无法拷贝此截屏</string>
+	<key>Could not encode screenshot as PNG.</key>
+	<string>无法将截屏编码为 PNG。</string>
+	<key>Could not encode the screenshot.</key>
+	<string>无法编码截屏。</string>
+	<key>Could not restore Apple shortcuts.</key>
+	<string>无法恢复 Apple 快捷键。</string>
+	<key>Couldn't copy the screenshot. Try again, or save it instead.</key>
+	<string>无法拷贝截屏。请重试，或改为存储。</string>
+	<key>Couldn't save the screenshot to %@. Click to check the save folder.</key>
+	<string>无法将截屏存储到“%@”。点按以检查存储文件夹。</string>
+	<key>Couldn't save the screenshot: Shotnix can't write to %@. Click to choose another save folder.</key>
+	<string>无法存储截屏：Shotnix 无法写入“%@”。点按以选择其他存储文件夹。</string>
+	<key>Couldn't save the screenshot: it could not be encoded as %@.</key>
+	<string>无法存储截屏：无法编码为 %@。</string>
+	<key>Couldn't save the screenshot: the disk is full. Free up space or pick another save folder.</key>
+	<string>无法存储截屏：磁盘已满。请释放空间或选择其他存储文件夹。</string>
+	<key>Countdown</key>
+	<string>倒计时</string>
+	<key>Crimson Ridge</key>
+	<string>绯红山脊</string>
+	<key>Crop</key>
+	<string>裁剪</string>
+	<key>Custom color</key>
+	<string>自定颜色</string>
+	<key>Custom color #%@</key>
+	<string>自定颜色 #%@</string>
+	<key>Custom: %@</key>
+	<string>自定图像：%@</string>
+	<key>Custom…</key>
+	<string>自定颜色…</string>
+	<key>Cut</key>
+	<string>剪切</string>
 	<key>Delete</key>
 	<string>删除</string>
+	<key>Delete %lld Captures?</key>
+	<string>要删除 %lld 张截屏吗？</string>
 	<key>Delete All</key>
 	<string>全部删除</string>
+	<key>Delete Captures</key>
+	<string>删除截屏</string>
 	<key>Delete Screenshot</key>
 	<string>删除截屏</string>
 	<key>Delete Screenshots</key>
 	<string>删除截屏</string>
+	<key>Delete Selection</key>
+	<string>删除所选内容</string>
 	<key>Delete every saved capture</key>
 	<string>删除所有已存储的截屏</string>
+	<key>Deleted captures waiting in History's trash and files no capture uses are removed for good, along with %lld captures past your History limit. The rest of your history stays.</key>
+	<string>历史记录废纸篓中已删除的截屏、不再被任何截屏使用的文件，以及超出历史记录期限的 %lld 张截屏将被永久移除。其余历史记录会保留。</string>
+	<key>Deleted captures waiting in History's trash and files no capture uses are removed for good. The captures in your history stay.</key>
+	<string>历史记录废纸篓中已删除的截屏以及不再被任何截屏使用的文件将被永久移除。历史记录中的截屏会保留。</string>
+	<key>Desert Violet</key>
+	<string>沙漠紫罗兰</string>
+	<key>Directory where screenshots are saved if Auto-Save is enabled.</key>
+	<string>启用自动存储时，截屏会存储在此文件夹中。</string>
+	<key>Disable Apple Shortcuts</key>
+	<string>停用 Apple 快捷键</string>
+	<key>Disabled</key>
+	<string>已停用</string>
+	<key>Discard Changes</key>
+	<string>放弃更改</string>
+	<key>Do you want to review them before quitting?</key>
+	<string>要在退出前逐一检查吗？</string>
+	<key>Don't Ask Again</key>
+	<string>不再询问</string>
+	<key>Don't Save</key>
+	<string>不存储</string>
+	<key>Done</key>
+	<string>完成</string>
+	<key>Draw with the selected tool. Tool shortcuts: V select, A arrow, R rectangle, T text, O callout, H highlighter, B blur, P pixelate, S spotlight, C crop.</key>
+	<string>使用所选工具绘制。工具快捷键：V 选择、A 箭头、R 矩形、T 文字、O 标注气泡、H 荧光笔、B 模糊、P 像素化、S 聚光灯、C 裁剪。</string>
+	<key>Drawing</key>
+	<string>手绘</string>
 	<key>Edit</key>
 	<string>编辑</string>
+	<key>Edit Last Recording</key>
+	<string>编辑最近的录制内容</string>
+	<key>Editable cursor</key>
+	<string>可编辑指针</string>
+	<key>Editable cursor records the pointer separately so the editor can smooth it, resize it, and keep it crisp when zoomed — the video editor adds it back on export (the raw recording file has no pointer). Auto-zoom makes a fresh recording open already produced: the camera zooms to follow your clicks. Keyboard shortcuts records only ⌘, ⌃ and ⌥ combos (plus Esc and F-keys) so the editor can show them as keycaps — plain typing is never recorded; macOS asks for Accessibility access. High quality is the default; Max keeps more detail but creates larger files. The countdown gives you a moment after pressing Record; Esc cancels it. Stop a recording with %@ from any app — plain Esc stays with the app you're recording.</key>
+	<string>“可编辑指针”会单独记录指针，以便编辑器将其平滑、调整大小，并在缩放时保持清晰 — 视频编辑器会在导出时将指针加回（原始录制文件中不含指针）。开启自动缩放后，新录制内容打开时就已制作完成：镜头会跟随你的点按。“显示快捷键”只记录含 ⌘、⌃ 和 ⌥ 的组合键（以及 Esc 键和功能键），以便编辑器将其显示为按键 — 普通输入绝不会被记录；macOS 会请求辅助功能权限。默认使用“高”质量；“最高”保留更多细节，但文件更大。倒计时让你在开始录制后有片刻准备；按 Esc 键可取消。在任何 App 中按 %@ 都能停止录制 — 单独按 Esc 键仍会传给你正在录制的 App。</string>
+	<key>Ellipse</key>
+	<string>椭圆</string>
+	<key>Ember Fog</key>
+	<string>余烬薄雾</string>
+	<key>Enable Shotnix in System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording, then quit and reopen Shotnix so macOS applies the permission.</key>
+	<string>请在“系统设置”→“隐私与安全性”→“录屏与系统录音”中启用 Shotnix，然后退出并重新打开 Shotnix，以便 macOS 应用该权限。</string>
+	<key>Enable Shotnix in System Settings, then relaunch so macOS applies it.</key>
+	<string>在“系统设置”中启用 Shotnix，然后重新启动，以便 macOS 应用更改。</string>
+	<key>Enabled</key>
+	<string>已启用</string>
+	<key>Enjoying Shotnix? Click to star it on GitHub ★</key>
+	<string>喜欢 Shotnix 吗？点按即可在 GitHub 上为它加星标 ★</string>
 	<key>Enjoying Shotnix? Star it on GitHub so more people find it.</key>
 	<string>喜欢 Shotnix 吗？在 GitHub 上加个星标，让更多人发现它。</string>
+	<key>Everything is ready</key>
+	<string>一切就绪</string>
+	<key>Export Format</key>
+	<string>导出格式</string>
+	<key>Fast</key>
+	<string>快速</string>
+	<key>File</key>
+	<string>文件</string>
+	<key>File Name</key>
+	<string>文件名</string>
+	<key>Filled Rectangle</key>
+	<string>实心矩形</string>
+	<key>Filled rectangle</key>
+	<string>实心矩形</string>
+	<key>Filled rounded rectangle</key>
+	<string>实心圆角矩形</string>
+	<key>Finish and Quit</key>
+	<string>完成后退出</string>
+	<key>Fix</key>
+	<string>修复</string>
 	<key>Forever</key>
 	<string>永久</string>
+	<key>Format</key>
+	<string>格式</string>
+	<key>Frame rate</key>
+	<string>帧率</string>
+	<key>Free up ⌘⇧ shortcuts · optional</key>
+	<string>释放 ⌘⇧ 快捷键 · 可选</string>
+	<key>Freed %@</key>
+	<string>已释放 %@</string>
+	<key>Freehand Draw</key>
+	<string>手绘</string>
+	<key>Freehand Highlighter</key>
+	<string>手绘荧光笔</string>
+	<key>Freehand highlight</key>
+	<string>手绘高亮</string>
+	<key>Full screen: %@</key>
+	<string>全屏：%@</string>
 	<key>Fullscreen</key>
 	<string>全屏</string>
+	<key>General</key>
+	<string>通用</string>
+	<key>Gradient</key>
+	<string>渐变</string>
+	<key>Grant Screen Recording first, then try it here.</key>
+	<string>请先授予屏幕录制权限，然后在这里试试。</string>
+	<key>Granted — captures, recordings, and OCR are ready.</key>
+	<string>已授权 — 截屏、录制和 OCR 均已就绪。</string>
+	<key>Graphite</key>
+	<string>石墨</string>
+	<key>Green</key>
+	<string>绿色</string>
+	<key>Health</key>
+	<string>状态</string>
+	<key>Hide Desktop Icons</key>
+	<string>隐藏桌面图标</string>
+	<key>Hide Icon</key>
+	<string>隐藏图标</string>
+	<key>Hide desktop icons while capturing</key>
+	<string>截屏时隐藏桌面图标</string>
+	<key>Hide the Menu Bar Icon?</key>
+	<string>要隐藏菜单栏图标吗？</string>
+	<key>High</key>
+	<string>高</string>
+	<key>Highlight</key>
+	<string>高亮</string>
+	<key>Highlighter</key>
+	<string>荧光笔</string>
+	<key>History</key>
+	<string>历史记录</string>
 	<key>History cleared — click or press ⌘Z to undo</key>
 	<string>历史记录已清除 — 点按或按下 ⌘Z 撤销</string>
+	<key>History uses %@ (%lld captures)</key>
+	<string>历史记录占用 %@（%lld 张截屏）</string>
+	<key>History uses … (%lld captures)</key>
+	<string>历史记录占用 …（%lld 张截屏）</string>
+	<key>History was already tidy</key>
+	<string>历史记录已经很整洁</string>
+	<key>Hotkeys are system-wide and active while Shotnix is running. The ⌘⇧3 default works best after Apple's screenshot shortcut is disabled.</key>
+	<string>快捷键在 Shotnix 运行时全局有效。停用 Apple 的截屏快捷键后，默认的 ⌘⇧3 效果最佳。</string>
+	<key>How strongly blur and pixelate hide what's under them</key>
+	<string>模糊和像素化遮盖下方内容的程度</string>
+	<key>Image</key>
+	<string>图像</string>
+	<key>JPEG Quality</key>
+	<string>JPEG 质量</string>
+	<key>Keep Working</key>
+	<string>继续工作</string>
+	<key>Keep captures</key>
+	<string>截屏保留时长</string>
+	<key>Keeping 30 days removes %lld older captures from History now. This can't be undone.</key>
+	<string>选择“30 天”将立即从历史记录中移除 %lld 张较早的截屏。此操作无法撤销。</string>
+	<key>Keeping 7 days removes %lld older captures from History now. This can't be undone.</key>
+	<string>选择“7 天”将立即从历史记录中移除 %lld 张较早的截屏。此操作无法撤销。</string>
+	<key>Keeping 90 days removes %lld older captures from History now. This can't be undone.</key>
+	<string>选择“90 天”将立即从历史记录中移除 %lld 张较早的截屏。此操作无法撤销。</string>
+	<key>Keeping last 1,000 captures removes %lld older captures from History now. This can't be undone.</key>
+	<string>选择“最近 1,000 张截屏”将立即从历史记录中移除 %lld 张较早的截屏。此操作无法撤销。</string>
+	<key>Keeping last 100 captures removes %lld older captures from History now. This can't be undone.</key>
+	<string>选择“最近 100 张截屏”将立即从历史记录中移除 %lld 张较早的截屏。此操作无法撤销。</string>
+	<key>Keeping last 500 captures removes %lld older captures from History now. This can't be undone.</key>
+	<string>选择“最近 500 张截屏”将立即从历史记录中移除 %lld 张较早的截屏。此操作无法撤销。</string>
+	<key>Keyboard</key>
+	<string>键盘</string>
+	<key>Languages</key>
+	<string>语言</string>
 	<key>Last %lld captures</key>
 	<string>最近 %lld 张截屏</string>
+	<key>Launch Shotnix at login</key>
+	<string>登录时打开 Shotnix</string>
+	<key>Lavender Glass</key>
+	<string>薰衣草玻璃</string>
+	<key>Left</key>
+	<string>左侧</string>
+	<key>Lime Signal</key>
+	<string>青柠信号</string>
+	<key>Line</key>
+	<string>直线</string>
+	<key>Line width</key>
+	<string>线条粗细</string>
+	<key>MIT License — Free and open source</key>
+	<string>MIT 许可证 — 免费开源</string>
 	<key>Manage</key>
 	<string>管理</string>
+	<key>Max</key>
+	<string>最高</string>
+	<key>Menu Bar</key>
+	<string>菜单栏</string>
+	<key>Menu bar is full, so macOS hid the Shotnix icon — %@ still captures. Click here for the menu.</key>
+	<string>菜单栏已满，macOS 隐藏了 Shotnix 图标 — 按 %@ 仍可截屏。点按此处打开菜单。</string>
+	<key>Menu bar is full, so macOS hid the Shotnix icon — your shortcuts still work. Click here for the menu.</key>
+	<string>菜单栏已满，macOS 隐藏了 Shotnix 图标 — 你的快捷键仍然有效。点按此处打开菜单。</string>
+	<key>Microphone</key>
+	<string>麦克风</string>
+	<key>Microphone recording requires macOS microphone permission. System audio excludes Shotnix sounds to avoid feedback.</key>
+	<string>录制麦克风需要 macOS 的麦克风权限。电脑声音不包含 Shotnix 的提示音，以免产生回声。</string>
+	<key>Midnight Graphite</key>
+	<string>午夜石墨</string>
+	<key>Minimize</key>
+	<string>最小化</string>
+	<key>Moss</key>
+	<string>苔绿</string>
+	<key>Moss Glow</key>
+	<string>苔藓微光</string>
+	<key>Mute Clip</key>
+	<string>将片段静音</string>
+	<key>Needed to capture the screen. macOS will ask once.</key>
+	<string>截取屏幕需要此权限。macOS 只会询问一次。</string>
+	<key>Neo Pop</key>
+	<string>新波普</string>
+	<key>Never</key>
+	<string>永不</string>
+	<key>New screenshots are copied automatically. Turn this off if you only want to use the overlay or history actions.</key>
+	<string>新截屏会自动拷贝。如果只想使用缩略图或历史记录中的操作，请关闭此选项。</string>
+	<key>Nice shot. You're all set.</key>
+	<string>截得漂亮！一切就绪。</string>
+	<key>Night Current</key>
+	<string>夜之流</string>
 	<key>No captures contain “%@”</key>
 	<string>没有截屏包含“%@”</string>
 	<key>No captures of this type</key>
 	<string>没有此类截屏</string>
 	<key>No captures yet</key>
 	<string>还没有截屏</string>
+	<key>No conflict</key>
+	<string>无冲突</string>
 	<key>No saved captures yet</key>
 	<string>还没有已存储的截屏</string>
 	<key>Not now</key>
 	<string>以后再说</string>
+	<key>Numbered Steps</key>
+	<string>编号步骤</string>
 	<key>OCR / Capture Text</key>
 	<string>提取文字（OCR）</string>
+	<key>OK</key>
+	<string>好</string>
+	<key>Off</key>
+	<string>关闭</string>
 	<key>Older</key>
 	<string>更早</string>
 	<key>Open Command Center</key>
 	<string>打开命令中心</string>
+	<key>Open History</key>
+	<string>打开历史记录</string>
+	<key>Open Keyboard Settings</key>
+	<string>打开键盘设置</string>
+	<key>Open Settings</key>
+	<string>打开设置</string>
+	<key>Open System Settings</key>
+	<string>打开系统设置</string>
+	<key>Open System Settings → Keyboard → Keyboard Shortcuts → Screenshots and turn off the screenshot shortcuts manually.</key>
+	<string>请打开“系统设置”→“键盘”→“键盘快捷键”→“截屏”，然后手动关闭截屏快捷键。</string>
+	<key>Open Video Editor</key>
+	<string>打开视频编辑器</string>
+	<key>Open editor after recording</key>
+	<string>录制后打开编辑器</string>
 	<key>Open in annotation editor</key>
 	<string>在截屏编辑器中打开</string>
+	<key>Orange</key>
+	<string>橙色</string>
+	<key>Overlay position</key>
+	<string>缩略图位置</string>
+	<key>Padding</key>
+	<string>边距</string>
+	<key>Paste</key>
+	<string>粘贴</string>
 	<key>Pause / Resume Recording</key>
 	<string>暂停/继续录制</string>
+	<key>Pause Recording</key>
+	<string>暂停录制</string>
+	<key>Pending</key>
+	<string>待完成</string>
+	<key>Permission needed</key>
+	<string>需要权限</string>
 	<key>Pin to Screen</key>
 	<string>贴到屏幕</string>
+	<key>Pine Dusk</key>
+	<string>松林暮色</string>
+	<key>Pixelate</key>
+	<string>像素化</string>
+	<key>Pixelated area</key>
+	<string>像素化区域</string>
+	<key>Play capture sound</key>
+	<string>截屏时播放声音</string>
+	<key>Polar Dawn</key>
+	<string>极地晨光</string>
+	<key>Porcelain</key>
+	<string>瓷白</string>
+	<key>Preferences</key>
+	<string>设置</string>
+	<key>Preset</key>
+	<string>预设</string>
+	<key>Press %@ anytime — or try it right now.</key>
+	<string>随时按下 %@ — 也可以现在就试试。</string>
 	<key>Press %@ to take your first screenshot</key>
 	<string>按下 %@ 截取你的第一张截屏</string>
+	<key>Preview</key>
+	<string>预览</string>
+	<key>Prism Sweep</key>
+	<string>棱镜流光</string>
+	<key>Privacy Policy</key>
+	<string>隐私政策</string>
+	<key>Purple</key>
+	<string>紫色</string>
+	<key>Quality</key>
+	<string>质量</string>
+	<key>Quit &amp; Reopen</key>
+	<string>退出并重新打开</string>
+	<key>Quit Shotnix</key>
+	<string>退出 Shotnix</string>
+	<key>Quit Shotnix?</key>
+	<string>要退出 Shotnix 吗？</string>
+	<key>Radius</key>
+	<string>圆角</string>
+	<key>Re-enable Apple's ⌘⇧3/4/5 screenshot shortcuts</key>
+	<string>重新启用 Apple 的 ⌘⇧3/4/5 截屏快捷键</string>
+	<key>Ready</key>
+	<string>就绪</string>
+	<key>Ready · %lld optional off</key>
+	<string>就绪 · %lld 个可选快捷键未设置</string>
+	<key>Record</key>
+	<string>录制</string>
 	<key>Record Area</key>
 	<string>录制区域</string>
 	<key>Record Fullscreen</key>
 	<string>录制全屏</string>
 	<key>Record Window</key>
 	<string>录制窗口</string>
+	<key>Record camera</key>
+	<string>录制摄像头</string>
+	<key>Record microphone</key>
+	<string>录制麦克风</string>
+	<key>Record system audio</key>
+	<string>录制电脑声音</string>
+	<key>Recording</key>
+	<string>录制</string>
+	<key>Recording paused — click to stop (%@)</key>
+	<string>录制已暂停 — 点按即可停止（%@）</string>
+	<key>Recording shortcuts are unassigned by default — click a field to set one. Stop Recording also cancels recording setup. While recording, %@ always stops it, from any app.</key>
+	<string>录制快捷键默认未设置 — 点按字段即可设置。“停止录制”也会取消录制准备。录制时，在任何 App 中按 %@ 都能停止录制。</string>
+	<key>Recording — click to stop (%@)</key>
+	<string>正在录制 — 点按即可停止（%@）</string>
+	<key>Recovered your interrupted recording “%@”. Click to open it.</key>
+	<string>已恢复你中断的录制内容“%@”。点按即可打开。</string>
+	<key>Rectangle</key>
+	<string>矩形</string>
+	<key>Red</key>
+	<string>红色</string>
+	<key>Redaction strength</key>
+	<string>遮盖强度</string>
+	<key>Redo</key>
+	<string>重做</string>
+	<key>Redo Timeline Edit</key>
+	<string>重做时间线编辑</string>
+	<key>Releasing the mouse takes the shot. Hold ⇧ as you release to adjust the selection first — drag its edges, nudge it with the arrow keys, then press Return.</key>
+	<string>松开鼠标即可截屏。松开时按住 ⇧ 可先调整选区 — 拖移边缘、用方向键微调，然后按下 Return 键。</string>
+	<key>Report Issue</key>
+	<string>报告问题</string>
+	<key>Reset</key>
+	<string>重置</string>
+	<key>Reset Defaults</key>
+	<string>恢复默认设置</string>
+	<key>Reset crop</key>
+	<string>重置裁剪</string>
+	<key>Restore Apple Shortcuts</key>
+	<string>恢复 Apple 快捷键</string>
+	<key>Resume Recording</key>
+	<string>继续录制</string>
+	<key>Review Changes…</key>
+	<string>检查更改…</string>
+	<key>Right</key>
+	<string>右侧</string>
+	<key>Rose Smoke</key>
+	<string>玫瑰烟雾</string>
+	<key>Rounded Corners (⌥R)</key>
+	<string>圆角（⌥R）</string>
+	<key>Rounded corners</key>
+	<string>圆角</string>
+	<key>Rounded rectangle</key>
+	<string>圆角矩形</string>
 	<key>SHOTNIX LIBRARY</key>
 	<string>SHOTNIX 资源库</string>
+	<key>Save</key>
+	<string>存储</string>
+	<key>Save (⌘S)</key>
+	<string>存储（⌘S）</string>
 	<key>Save As…</key>
 	<string>存储为…</string>
+	<key>Save Folder</key>
+	<string>存储文件夹</string>
+	<key>Save Location</key>
+	<string>存储位置</string>
+	<key>Save automatically</key>
+	<string>自动存储</string>
+	<key>Save changes to this screenshot?</key>
+	<string>要存储对此截屏的更改吗？</string>
+	<key>Save folder updated.</key>
+	<string>存储文件夹已更新。</string>
 	<key>Saved</key>
 	<string>已存储</string>
 	<key>Saved capture</key>
 	<string>已存储的截屏</string>
+	<key>Saved to %@: %@</key>
+	<string>已存储到“%@”：%@</string>
+	<key>Save…</key>
+	<string>存储…</string>
 	<key>Saving captures to History</key>
 	<string>正在将截屏存储到历史记录</string>
+	<key>Saving the recording</key>
+	<string>正在存储录制内容</string>
+	<key>Saving…</key>
+	<string>正在存储…</string>
+	<key>Scan QR Code</key>
+	<string>扫描二维码</string>
+	<key>Screen Recording</key>
+	<string>屏幕录制</string>
+	<key>Screen Recording Permission Required</key>
+	<string>需要屏幕录制权限</string>
+	<key>Screenshot Editor</key>
+	<string>截屏编辑器</string>
+	<key>Screenshot canvas</key>
+	<string>截屏画布</string>
+	<key>Screenshots</key>
+	<string>截屏</string>
 	<key>Scrolling</key>
 	<string>滚动</string>
 	<key>Scrolling Capture</key>
@@ -136,26 +716,218 @@
 	<string>滚动截屏</string>
 	<key>Search text in captures</key>
 	<string>搜索截屏中的文字</string>
+	<key>Select</key>
+	<string>选择</string>
+	<key>Select All</key>
+	<string>全选</string>
+	<key>Selection</key>
+	<string>选区</string>
+	<key>Set In to Playhead</key>
+	<string>将入点设为播放头位置</string>
+	<key>Set Out to Playhead</key>
+	<string>将出点设为播放头位置</string>
+	<key>Settings</key>
+	<string>设置</string>
+	<key>Settings…</key>
+	<string>设置…</string>
+	<key>Shadow</key>
+	<string>阴影</string>
+	<key>Shadow and transparent padding</key>
+	<string>阴影和透明边距</string>
+	<key>Shape</key>
+	<string>形状</string>
+	<key>Shortcut Conflict Detected</key>
+	<string>检测到快捷键冲突</string>
+	<key>Shortcuts</key>
+	<string>快捷键</string>
+	<key>Shotnix Preferences</key>
+	<string>Shotnix 设置</string>
+	<key>Shotnix could not write the file to:
+%@</key>
+	<string>Shotnix 无法将文件写入：
+%@</string>
+	<key>Shotnix is ready to use!</key>
+	<string>Shotnix 已可以使用！</string>
+	<key>Shotnix lives here — setup continues next launch</key>
+	<string>Shotnix 就在这里 — 下次启动时将继续设置</string>
+	<key>Shotnix lives in your menu bar</key>
+	<string>Shotnix 位于菜单栏中</string>
+	<key>Shotnix needs Screen Recording permission to capture your screen.
+
+Please enable it in System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording.</key>
+	<string>Shotnix 需要屏幕录制权限才能截取你的屏幕。
+
+请在“系统设置”→“隐私与安全性”→“录屏与系统录音”中启用。</string>
+	<key>Shotnix will wrap these up before it quits.</key>
+	<string>Shotnix 会在退出前完成这些任务。</string>
 	<key>Shotnix – Capture History</key>
 	<string>Shotnix – 截屏历史记录</string>
+	<key>Show Desktop Icons</key>
+	<string>显示桌面图标</string>
+	<key>Show Editor</key>
+	<string>显示编辑器</string>
+	<key>Show Quick Access Overlay</key>
+	<string>显示快速访问缩略图</string>
+	<key>Show Video Editor</key>
+	<string>显示视频编辑器</string>
+	<key>Show cursor</key>
+	<string>显示指针</string>
+	<key>Show keyboard shortcuts</key>
+	<string>显示快捷键</string>
+	<key>Show menu bar icon</key>
+	<string>在菜单栏中显示图标</string>
 	<key>Show one kind of capture</key>
 	<string>只显示一种截屏</string>
+	<key>Show the whole screenshot again</key>
+	<string>重新显示整个截屏</string>
+	<key>Silver</key>
+	<string>银色</string>
+	<key>Size</key>
+	<string>大小</string>
+	<key>Skip Setup</key>
+	<string>跳过设置</string>
+	<key>Sky Wash</key>
+	<string>天空水彩</string>
+	<key>Solid Color</key>
+	<string>纯色</string>
+	<key>Sounds</key>
+	<string>声音</string>
+	<key>Space Gray</key>
+	<string>深空灰色</string>
+	<key>Split at Playhead</key>
+	<string>在播放头处分割</string>
+	<key>Spotlight</key>
+	<string>聚光灯</string>
+	<key>Spotlight shape</key>
+	<string>聚光灯形状</string>
 	<key>Star on GitHub</key>
 	<string>在 GitHub 上加星标</string>
+	<key>Startup</key>
+	<string>启动</string>
+	<key>Step %lld</key>
+	<string>步骤 %lld</string>
 	<key>Stop Recording</key>
 	<string>停止录制</string>
+	<key>Storage</key>
+	<string>存储空间</string>
+	<key>Strength</key>
+	<string>强度</string>
+	<key>Style</key>
+	<string>样式</string>
+	<key>Sunset Coral</key>
+	<string>日落珊瑚</string>
+	<key>Support</key>
+	<string>支持</string>
+	<key>System Default</key>
+	<string>系统默认</string>
+	<key>Tahoe Ice</key>
+	<string>太浩冰蓝</string>
+	<key>Take a Test Screenshot</key>
+	<string>进行测试截屏</string>
+	<key>Take your first screenshot</key>
+	<string>截取你的第一张截屏</string>
+	<key>Template</key>
+	<string>模板</string>
 	<key>Text</key>
 	<string>文字</string>
+	<key>Text Recognition</key>
+	<string>文字识别</string>
+	<key>Text size</key>
+	<string>文字大小</string>
+	<key>Text: %@</key>
+	<string>文字：%@</string>
+	<key>The menu bar icon is Shotnix's main entry point. While it is hidden, open Shotnix again from Finder, Launchpad, or Spotlight to bring these Preferences back.</key>
+	<string>菜单栏图标是 Shotnix 的主要入口。隐藏后，可从“访达”、“启动台”或“聚焦”再次打开 Shotnix 来重新显示这些设置。</string>
+	<key>The save panel did not return a destination. Please try saving again.</key>
+	<string>存储面板未返回存储位置。请再次尝试存储。</string>
+	<key>The screenshot has no image data.</key>
+	<string>截屏不含图像数据。</string>
+	<key>The selection stays on screen to adjust — drag its edges, nudge it with the arrow keys, then press Return. Hold ⇧ as you release to capture right away.</key>
+	<string>选区会留在屏幕上供你调整 — 拖移边缘、用方向键微调，然后按下 Return 键。松开时按住 ⇧ 可立即截屏。</string>
 	<key>This Week</key>
 	<string>本周</string>
+	<key>Three quick steps and you're capturing.</key>
+	<string>只需三个简单步骤即可开始截屏。</string>
+	<key>Tide Glass</key>
+	<string>潮汐玻璃</string>
 	<key>Timed Capture</key>
 	<string>定时截屏</string>
+	<key>Timed Capture (%llds)</key>
+	<string>定时截屏（%lld 秒）</string>
+	<key>Timed Capture selects the area first, then counts down before the shot — time to open menus or hover states. Esc cancels.</key>
+	<string>定时截屏会先选择区域，再倒计时截屏 — 让你有时间打开菜单或显示悬停状态。按 Esc 键可取消。</string>
+	<key>Timeline</key>
+	<string>时间线</string>
 	<key>Today</key>
 	<string>今天</string>
+	<key>Tools</key>
+	<string>工具</string>
+	<key>Try it right now — Capture Area is also in the menu bar.</key>
+	<string>现在就试试 — “捕捉区域”也在菜单栏中。</string>
+	<key>Type here…</key>
+	<string>在此输入…</string>
+	<key>Undo</key>
+	<string>撤销</string>
+	<key>Undo Timeline Edit</key>
+	<string>撤销时间线编辑</string>
+	<key>Updates</key>
+	<string>更新</string>
+	<key>Upload Custom Image</key>
+	<string>选取自定图像</string>
+	<key>Used for screenshots and recordings. Tokens: %y year, %m month, %d day, %H hour, %M minute, %S second. Leave empty to restore the default.</key>
+	<string>用于截屏和录制内容。标记：%y 年、%m 月、%d 日、%H 时、%M 分、%S 秒。留空即可恢复默认设置。</string>
+	<key>Utility</key>
+	<string>实用工具</string>
+	<key>Version</key>
+	<string>版本</string>
+	<key>Version %@</key>
+	<string>版本 %@</string>
+	<key>Video</key>
+	<string>视频</string>
+	<key>Violet Bloom</key>
+	<string>紫罗兰绽放</string>
+	<key>Website</key>
+	<string>网站</string>
+	<key>Welcome to Shotnix</key>
+	<string>欢迎使用 Shotnix</string>
+	<key>What's New</key>
+	<string>新功能</string>
+	<key>White</key>
+	<string>白色</string>
 	<key>Window</key>
 	<string>窗口</string>
+	<key>Window Capture</key>
+	<string>窗口截屏</string>
+	<key>Window captures are isolated — nothing overlapping shows through. With this on they get transparent padding and a soft drop shadow.</key>
+	<string>窗口截屏只包含窗口本身，不会带入任何遮挡的内容。开启后，截屏会带有透明边距和柔和的投影。</string>
+	<key>Writable</key>
+	<string>可写入</string>
+	<key>Yellow</key>
+	<string>黄色</string>
 	<key>Yesterday</key>
 	<string>昨天</string>
+	<key>You have unsaved edits in %lld screenshots.</key>
+	<string>你有 %lld 张截屏的编辑尚未存储。</string>
+	<key>You're all set — Shotnix lives here</key>
+	<string>一切就绪 — Shotnix 就在这里</string>
+	<key>Your camera is recorded as its own layer: a live bubble shows while you record (it never appears in the screen capture), and the editor lets you move, resize, and restyle it — or hide it — afterwards.</key>
+	<string>摄像头画面会录制为单独的图层：录制时会显示实时气泡（它不会出现在屏幕录制中），之后你可以在编辑器中移动它、调整大小和更改样式，也可以将其隐藏。</string>
+	<key>Your edits will be lost if you close without saving or copying them.</key>
+	<string>如果关闭前不存储或拷贝，你的编辑将会丢失。</string>
+	<key>Zoom</key>
+	<string>缩放</string>
+	<key>macOS screenshot shortcuts (⌘⇧3, ⌘⇧4, ⌘⇧5) conflict with Shotnix.
+
+Disable them so Shotnix owns the capture shortcuts and screenshots do not double-trigger.
+
+You can re-enable Apple's shortcuts anytime in System Settings → Keyboard → Keyboard Shortcuts → Screenshots.</key>
+	<string>macOS 截屏快捷键（⌘⇧3、⌘⇧4、⌘⇧5）与 Shotnix 冲突。
+
+停用它们，让 Shotnix 接管截屏快捷键，避免重复截屏。
+
+你可以随时在“系统设置”→“键盘”→“键盘快捷键”→“截屏”中重新启用 Apple 的快捷键。</string>
+	<key>© 2026 Shotnix Contributors</key>
+	<string>© 2026 Shotnix 贡献者</string>
 	<key>“%@” found in %lld of %lld captures</key>
 	<string>在 %3$lld 张截屏中的 %2$lld 张里找到“%1$@”</string>
 	<key>✓ Copied to clipboard</key>

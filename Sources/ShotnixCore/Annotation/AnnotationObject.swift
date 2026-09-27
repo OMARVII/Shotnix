@@ -31,22 +31,22 @@ enum AnnotationTool: String, CaseIterable {
     /// Name read by VoiceOver and shown in the tooltip.
     var name: String {
         switch self {
-        case .select:              return "Select"
-        case .arrow:               return "Arrow"
-        case .rectangle:           return "Rectangle"
-        case .filledRectangle:     return "Filled Rectangle"
-        case .ellipse:             return "Ellipse"
-        case .line:                return "Line"
-        case .freehand:            return "Freehand Draw"
-        case .text:                return "Text"
-        case .callout:             return "Callout"
-        case .numberedStep:        return "Numbered Steps"
-        case .highlighter:         return "Highlighter"
-        case .freehandHighlighter: return "Freehand Highlighter"
-        case .blur:                return "Blur"
-        case .pixelate:            return "Pixelate"
-        case .spotlight:           return "Spotlight"
-        case .crop:                return "Crop"
+        case .select:              return L("Select")
+        case .arrow:               return L("Arrow")
+        case .rectangle:           return L("Rectangle")
+        case .filledRectangle:     return L("Filled Rectangle")
+        case .ellipse:             return L("Ellipse")
+        case .line:                return L("Line")
+        case .freehand:            return L("Freehand Draw")
+        case .text:                return L("Text")
+        case .callout:             return L("Callout")
+        case .numberedStep:        return L("Numbered Steps")
+        case .highlighter:         return L("Highlighter")
+        case .freehandHighlighter: return L("Freehand Highlighter")
+        case .blur:                return L("Blur")
+        case .pixelate:            return L("Pixelate")
+        case .spotlight:           return L("Spotlight")
+        case .crop:                return L("Crop")
         }
     }
 
@@ -71,7 +71,8 @@ enum AnnotationTool: String, CaseIterable {
         }
     }
 
-    var tooltip: String { "\(name) (\(shortcutLabel))" }
+    /// "Arrow (A)"; each language sets its own parentheses.
+    var tooltip: String { L("\(name) (\(shortcutLabel))") }
 
     /// The tool a single-key shortcut selects. `key` is the lowercase Latin
     /// letter of the pressed key (see `AnnotationKeyboard.latinKey(for:)`).

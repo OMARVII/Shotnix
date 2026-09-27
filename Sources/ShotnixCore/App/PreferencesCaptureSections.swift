@@ -10,8 +10,8 @@ struct CaptureSelectionPreferences: View {
     @AppStorage("captureImmediatelyAfterSelecting") var captureImmediately = true
 
     var body: some View {
-        PreferenceSection("Selection") {
-            PreferenceRow("Capture immediately after selecting") {
+        PreferenceSection(L("Selection")) {
+            PreferenceRow(L("Capture immediately after selecting")) {
                 Toggle("", isOn: $captureImmediately)
                     .labelsHidden()
                     .toggleStyle(.switch)
@@ -19,8 +19,8 @@ struct CaptureSelectionPreferences: View {
         }
 
         PreferenceFootnote(text: captureImmediately
-            ? "Releasing the mouse takes the shot. Hold ⇧ as you release to adjust the selection first — drag its edges, nudge it with the arrow keys, then press Return."
-            : "The selection stays on screen to adjust — drag its edges, nudge it with the arrow keys, then press Return. Hold ⇧ as you release to capture right away.")
+            ? L("Releasing the mouse takes the shot. Hold ⇧ as you release to adjust the selection first — drag its edges, nudge it with the arrow keys, then press Return.")
+            : L("The selection stays on screen to adjust — drag its edges, nudge it with the arrow keys, then press Return. Hold ⇧ as you release to capture right away."))
     }
 }
 
@@ -39,32 +39,32 @@ struct TextRecognitionPreferences: View {
 
     private var languagesTitle: String {
         let names = chosen.map(Self.displayName(for:))
-        return names.isEmpty ? "Automatic" : names.joined(separator: ", ")
+        return names.isEmpty ? L("Automatic") : names.formatted(.list(type: .and, width: .narrow))
     }
 
     var body: some View {
-        PreferenceSection("Text Recognition") {
-            PreferenceRow("Accuracy") {
+        PreferenceSection(L("Text Recognition")) {
+            PreferenceRow(L("Accuracy")) {
                 PreferenceSegmentedSelector(
                     selection: $fast,
                     options: [
-                        PreferenceOption(value: false, title: "Accurate"),
-                        PreferenceOption(value: true, title: "Fast")
+                        PreferenceOption(value: false, title: L("Accurate")),
+                        PreferenceOption(value: true, title: L("Fast"))
                     ]
                 )
             }
 
             PreferenceDivider()
 
-            PreferenceRow("Languages") {
+            PreferenceRow(L("Languages")) {
                 Menu {
                     Button {
                         languagesRaw = ""
                     } label: {
                         if chosen.isEmpty {
-                            Label("Automatic", systemImage: "checkmark")
+                            Label(L("Automatic"), systemImage: "checkmark")
                         } else {
-                            Text("Automatic")
+                            Text(L("Automatic"))
                         }
                     }
                     Divider()
@@ -92,7 +92,7 @@ struct TextRecognitionPreferences: View {
             }
         }
 
-        PreferenceFootnote(text: "Automatic detects each capture's language; pick languages when it guesses wrong. Accurate reads small text best — Fast answers sooner but knows fewer languages. Used by Capture Text, Copy Text, and History search.")
+        PreferenceFootnote(text: L("Automatic detects each capture's language; pick languages when it guesses wrong. Accurate reads small text best — Fast answers sooner but knows fewer languages. Used by Capture Text, Copy Text, and History search."))
     }
 
     private func binding(for code: String) -> Binding<Bool> {
@@ -135,8 +135,8 @@ struct HistoryPreferences: View {
     }
 
     var body: some View {
-        PreferenceSection("History") {
-            PreferenceRow("Keep captures") {
+        PreferenceSection(L("History")) {
+            PreferenceRow(L("Keep captures")) {
                 PreferenceMenuSelector(
                     selection: retention,
                     options: HistoryRetention.allCases.map { PreferenceOption(value: $0.rawValue, title: $0.title) },
@@ -146,8 +146,8 @@ struct HistoryPreferences: View {
 
             PreferenceDivider()
 
-            PreferenceRow("Storage", detail: usageDetail) {
-                Button(isCleaning ? "Cleaning Up…" : "Clean Up…") {
+            PreferenceRow(L("Storage"), detail: usageDetail) {
+                Button(isCleaning ? L("Cleaning Up…") : L("Clean Up…")) {
                     cleanUp()
                 }
                 .buttonStyle(.bordered)
@@ -156,14 +156,13 @@ struct HistoryPreferences: View {
         }
         .onAppear(perform: refreshUsage)
 
-        PreferenceFootnote(text: "Captures stay in History until you delete them, unless you pick a limit here. Clean Up empties History's trash (deleted captures you could still undo) and removes files no capture uses anymore.")
+        PreferenceFootnote(text: L("Captures stay in History until you delete them, unless you pick a limit here. Clean Up empties History's trash (deleted captures you could still undo) and removes files no capture uses anymore."))
     }
 
     private var usageDetail: String {
         let count = historyManager?.items.count ?? 0
-        let captures = count == 1 ? "1 capture" : "\(count.formatted()) captures"
-        guard let usageBytes else { return "History uses … (\(captures))" }
-        return "History uses \(Self.formatted(bytes: usageBytes)) (\(captures))"
+        guard let usageBytes else { return L("History uses … (\(count) captures)") }
+        return L("History uses \(Self.formatted(bytes: usageBytes)) (\(count) captures)")
     }
 
     static func formatted(bytes: Int64) -> String {
@@ -180,33 +179,47 @@ struct HistoryPreferences: View {
     private func cleanUp() {
         guard let historyManager else { return }
         let alert = NSAlert()
-        alert.messageText = "Clean Up History?"
+        alert.messageText = L("Clean Up History?")
         let expiring = historyManager.itemsExceedingRetention(Settings.historyRetention).count
         alert.informativeText = expiring == 0
-            ? "Deleted captures waiting in History's trash and files no capture uses are removed for good. The captures in your history stay."
-            : "Deleted captures waiting in History's trash and files no capture uses are removed for good, along with \(expiring == 1 ? "1 capture" : "\(expiring.formatted()) captures") past your History limit. The rest of your history stays."
-        alert.addButton(withTitle: "Clean Up")
-        alert.addButton(withTitle: "Cancel")
+            ? L("Deleted captures waiting in History's trash and files no capture uses are removed for good. The captures in your history stay.")
+            : L("Deleted captures waiting in History's trash and files no capture uses are removed for good, along with \(expiring) captures past your History limit. The rest of your history stays.")
+        alert.addButton(withTitle: L("Clean Up"))
+        alert.addButton(withTitle: L("Cancel"))
         guard alert.runModal() == .alertFirstButtonReturn else { return }
         isCleaning = true
         Task { @MainActor in
             let freed = await historyManager.cleanUp()
             usageBytes = await historyManager.diskUsage()
             isCleaning = false
-            ToastWindow.show(message: freed > 0 ? "Freed \(Self.formatted(bytes: freed))" : "History was already tidy")
+            ToastWindow.show(message: freed > 0 ? L("Freed \(Self.formatted(bytes: freed))") : L("History was already tidy"))
         }
     }
 
     /// A newly picked limit that would delete captures right away asks first.
     static func confirmRetentionChange(to policy: HistoryRetention, manager: HistoryManager?) -> Bool {
         let doomed = manager?.itemsExceedingRetention(policy).count ?? 0
-        guard doomed > 0 else { return true }
+        guard doomed > 0, let warning = retentionWarning(for: policy, removing: doomed) else { return true }
         let alert = NSAlert()
         alert.alertStyle = .warning
-        alert.messageText = doomed == 1 ? "Delete 1 Capture?" : "Delete \(doomed.formatted()) Captures?"
-        alert.informativeText = "Keeping \(policy.title.lowercased()) removes \(doomed == 1 ? "1 older capture" : "\(doomed.formatted()) older captures") from History now. This can't be undone."
-        alert.addButton(withTitle: "Delete Captures")
-        alert.addButton(withTitle: "Cancel")
+        alert.messageText = L("Delete \(doomed) Captures?")
+        alert.informativeText = warning
+        alert.addButton(withTitle: L("Delete Captures"))
+        alert.addButton(withTitle: L("Cancel"))
         return alert.runModal() == .alertFirstButtonReturn
+    }
+
+    /// What picking `policy` removes right away: one whole sentence per limit,
+    /// so every language can word it (nil for Forever, which removes nothing).
+    static func retentionWarning(for policy: HistoryRetention, removing count: Int) -> String? {
+        switch policy {
+        case .forever: return nil
+        case .days7: return L("Keeping 7 days removes \(count) older captures from History now. This can't be undone.")
+        case .days30: return L("Keeping 30 days removes \(count) older captures from History now. This can't be undone.")
+        case .days90: return L("Keeping 90 days removes \(count) older captures from History now. This can't be undone.")
+        case .items100: return L("Keeping last 100 captures removes \(count) older captures from History now. This can't be undone.")
+        case .items500: return L("Keeping last 500 captures removes \(count) older captures from History now. This can't be undone.")
+        case .items1000: return L("Keeping last 1,000 captures removes \(count) older captures from History now. This can't be undone.")
+        }
     }
 }
