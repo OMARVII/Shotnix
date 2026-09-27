@@ -8,6 +8,8 @@ import XCTest
 /// exported by the real exporter and editor screenshots drawn by the real
 /// UI and renderer. Opt-in:
 /// SHOTNIX_MARKETING_DIR=/path swift test --filter MarketingAssetsTests
+/// Add SHOTNIX_MARKETING_LANGUAGE=de (fr, zh-Hans…) to render the interface in
+/// that language, for the translated pages and posts.
 ///
 /// The README's images (assets/readme) come from the same run: the screenshot
 /// editor snapshot as a JPEG, and scripts/readme-hero.sh turns the editor
@@ -15,10 +17,15 @@ import XCTest
 /// RecordingBarTests' snapshot.
 @MainActor
 final class MarketingAssetsTests: XCTestCase {
+    /// The interface language to render, English unless SHOTNIX_MARKETING_LANGUAGE says otherwise.
+    nonisolated static var language: String? { ProcessInfo.processInfo.environment["SHOTNIX_MARKETING_LANGUAGE"] }
+
     override class func setUp() {
         super.setUp()
         // The website is in English: "14.6 MB", not the Mac's own locale.
-        UserDefaults.standard.setVolatileDomain(["AppleLocale": "en_US", "AppleLanguages": ["en-US"]], forName: UserDefaults.argumentDomain)
+        let regions = ["de": "de_DE", "fr": "fr_FR", "zh-Hans": "zh_CN", "ru": "ru_RU", "uk": "uk_UA"]
+        let locale = language.flatMap { regions[$0] } ?? "en_US"
+        UserDefaults.standard.setVolatileDomain(["AppleLocale": locale, "AppleLanguages": [language ?? "en-US"]], forName: UserDefaults.argumentDomain)
         VideoTestStorage.isolate()
         VideoStageView.drawsStills = true
     }
@@ -39,12 +46,14 @@ final class MarketingAssetsTests: XCTestCase {
         try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
         work = FileManager.default.temporaryDirectory.appendingPathComponent("shotnix-marketing-\(UUID().uuidString)", isDirectory: true)
         try FileManager.default.createDirectory(at: work, withIntermediateDirectories: true)
+        L10n.use(Self.language)
         UserDefaults.standard.set(true, forKey: "videoEditorTipsDismissed")
         // Never publish this Mac's own desktop pictures (or its wallpaper).
         VideoSwatchCache.shared.systemWallpapers = []
     }
 
     override func tearDown() async throws {
+        L10n.use(nil)
         if let work { try? FileManager.default.removeItem(at: work) }
     }
 
