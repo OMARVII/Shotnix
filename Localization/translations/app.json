@@ -741,8 +741,8 @@
     "zh-Hans" : "余烬薄雾"
   },
   "Enable Shotnix in System Settings → Privacy & Security → Screen & System Audio Recording, then quit and reopen Shotnix so macOS applies the permission." : {
-    "de" : "Aktiviere Shotnix unter „Systemeinstellungen“ → „Datenschutz & Sicherheit“ → „Bildschirm- & Systemaudioaufnahme“. Beende und öffne Shotnix danach erneut, damit macOS die Berechtigung übernimmt.",
-    "fr" : "Activez Shotnix dans Réglages Système → Confidentialité et sécurité → Enregistrement de l’écran et de l’audio du système, puis quittez et rouvrez Shotnix pour que macOS applique l’autorisation.",
+    "de" : "Aktiviere Shotnix unter „Systemeinstellungen“ → „Datenschutz & Sicherheit“ → „Aufnahme von Bildschirm & Systemaudio“. Beende und öffne Shotnix danach erneut, damit macOS die Berechtigung übernimmt.",
+    "fr" : "Activez Shotnix dans Réglages Système → Confidentialité et sécurité → Enregistrement de l’écran et des sons du système, puis quittez et rouvrez Shotnix pour que macOS applique l’autorisation.",
     "zh-Hans" : "请在“系统设置”→“隐私与安全性”→“录屏与系统录音”中启用 Shotnix，然后退出并重新打开 Shotnix，以便 macOS 应用该权限。"
   },
   "Enable Shotnix in System Settings, then relaunch so macOS applies it." : {
@@ -1742,8 +1742,8 @@
     "zh-Hans" : "Shotnix 位于菜单栏中"
   },
   "Shotnix needs Screen Recording permission to capture your screen.\n\nPlease enable it in System Settings → Privacy & Security → Screen & System Audio Recording." : {
-    "de" : "Shotnix braucht die Berechtigung für Bildschirmaufnahmen, um deinen Bildschirm aufzunehmen.\n\nAktiviere sie unter „Systemeinstellungen“ → „Datenschutz & Sicherheit“ → „Bildschirm- & Systemaudioaufnahme“.",
-    "fr" : "Shotnix a besoin de l’autorisation d’enregistrement de l’écran pour capturer votre écran.\n\nActivez-la dans Réglages Système → Confidentialité et sécurité → Enregistrement de l’écran et de l’audio du système.",
+    "de" : "Shotnix braucht die Berechtigung für Bildschirmaufnahmen, um deinen Bildschirm aufzunehmen.\n\nAktiviere sie unter „Systemeinstellungen“ → „Datenschutz & Sicherheit“ → „Aufnahme von Bildschirm & Systemaudio“.",
+    "fr" : "Shotnix a besoin de l’autorisation d’enregistrement de l’écran pour capturer votre écran.\n\nActivez-la dans Réglages Système → Confidentialité et sécurité → Enregistrement de l’écran et des sons du système.",
     "zh-Hans" : "Shotnix 需要屏幕录制权限才能截取你的屏幕。\n\n请在“系统设置”→“隐私与安全性”→“录屏与系统录音”中启用。"
   },
   "Shotnix will wrap these up before it quits." : {

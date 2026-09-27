@@ -26,8 +26,9 @@ system. When a term isn't here, look at how Apple's own apps say it.
 - A string that changes with a count gets plural forms, and holds exactly one
   integer (`%lld`), which decides the form; other placeholders are fine
   (`Saved %@ in %lld files`). Two counts: split it into two strings.
-- Numbers interpolated as `Int` get the language's separators (1.000 in
-  German). Pixel sizes and other codes: pass `String(value)` to keep digits plain.
+- Numbers interpolated as `Int` follow the user's locale (1.000 on a German
+  Mac; tests use the language they switch to). Pixel sizes and other codes:
+  pass `String(value)` to keep digits plain.
 - Dates: `formatted(date:time:)` and `Date.FormatStyle` follow the language;
   never a fixed `DateFormatter.dateFormat` in the UI.
 
@@ -122,3 +123,20 @@ QR, fps, keyboard symbols (⌘ ⇧ ⌥ ⌃ ⎋ ↩), and file names.
 | drag | ziehen | faire glisser | 拖移 |
 | permission (privacy) | Berechtigung | autorisation | 权限 |
 | update | Update | mise à jour | 更新 |
+
+## macOS names
+
+Copy these exactly when a string sends people somewhere in macOS (they come
+from System Settings itself). German puts each name in „…“, Chinese in “…”.
+
+| English | German | French | Simplified Chinese |
+|---|---|---|---|
+| System Settings | Systemeinstellungen | Réglages Système | 系统设置 |
+| Privacy & Security | Datenschutz & Sicherheit | Confidentialité et sécurité | 隐私与安全性 |
+| Screen & System Audio Recording | Aufnahme von Bildschirm & Systemaudio | Enregistrement de l’écran et des sons du système | 录屏与系统录音 |
+| Screen Recording (macOS 14 and earlier) | Bildschirmaufnahme | Enregistrement de l’écran | 录屏 |
+| Microphone / Camera | Mikrofon / Kamera | Micro / Caméra | 麦克风 / 摄像头 |
+| Accessibility | Bedienungshilfen | Accessibilité | 辅助功能 |
+| Speech Recognition | Spracherkennung | Reconnaissance vocale | 语音识别 |
+| Keyboard → Keyboard Shortcuts → Screenshots | Tastatur → Tastaturkurzbefehle → Bildschirmfotos | Clavier → Raccourcis clavier → Captures d’écran | 键盘 → 键盘快捷键 → 截屏 |
+| General → Language & Region → Applications | Allgemein → Sprache & Region → Apps | Général → Langue et région → Applications | 通用 → 语言与地区 → 应用程序 |

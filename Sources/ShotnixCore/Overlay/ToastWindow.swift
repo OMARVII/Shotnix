@@ -65,7 +65,7 @@ final class ToastWindow: NSWindow {
         let font = NSFont.systemFont(ofSize: 13, weight: .semibold)
         let paragraph = NSMutableParagraphStyle()
         paragraph.alignment = .center
-        paragraph.lineBreakMode = .byCharWrapping
+        paragraph.lineBreakMode = .byWordWrapping
         let attrs: [NSAttributedString.Key: Any] = [.font: font, .paragraphStyle: paragraph]
         let targetScreen = screen ?? NSScreen.main
         let screenFrame = targetScreen?.visibleFrame ?? NSRect(x: 0, y: 0, width: 900, height: 700)
@@ -139,7 +139,7 @@ final class ToastWindow: NSWindow {
         label.attributedStringValue = NSAttributedString(string: message, attributes: attrs)
         label.textColor = .white
         label.alignment = .center
-        label.lineBreakMode = .byCharWrapping
+        label.lineBreakMode = .byWordWrapping
         label.frame = NSRect(x: paddingX, y: (bubbleHeight - labelHeight) / 2, width: labelWidth, height: labelHeight)
         clipView.addSubview(label)
 

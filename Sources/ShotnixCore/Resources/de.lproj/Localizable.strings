@@ -155,7 +155,7 @@
 	<key>Camera</key>
 	<string>Kamera</string>
 	<key>Camera access is off — allow Shotnix in System Settings → Privacy &amp; Security → Camera.</key>
-	<string>Der Kamerazugriff ist deaktiviert – erlaube Shotnix in Systemeinstellungen → Datenschutz &amp; Sicherheit → Kamera.</string>
+	<string>Der Kamerazugriff ist deaktiviert – erlaube Shotnix in „Systemeinstellungen“ → „Datenschutz &amp; Sicherheit“ → „Kamera“.</string>
 	<key>Camera disconnected</key>
 	<string>Kamera getrennt</string>
 	<key>Camera disconnected.</key>
@@ -445,7 +445,7 @@
 	<key>Ember Fog</key>
 	<string>Glutnebel</string>
 	<key>Enable Shotnix in System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording, then quit and reopen Shotnix so macOS applies the permission.</key>
-	<string>Aktiviere Shotnix unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherheit“ → „Bildschirm- &amp; Systemaudioaufnahme“. Beende und öffne Shotnix danach erneut, damit macOS die Berechtigung übernimmt.</string>
+	<string>Aktiviere Shotnix unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherheit“ → „Aufnahme von Bildschirm &amp; Systemaudio“. Beende und öffne Shotnix danach erneut, damit macOS die Berechtigung übernimmt.</string>
 	<key>Enable Shotnix in System Settings, then relaunch so macOS applies it.</key>
 	<string>Aktiviere Shotnix in den Systemeinstellungen und starte es dann neu, damit macOS es übernimmt.</string>
 	<key>Enabled</key>
@@ -609,7 +609,7 @@
 	<key>Microphone access is off, so this recording has no mic.</key>
 	<string>Der Mikrofonzugriff ist deaktiviert, daher hat diese Aufnahme keinen Mikrofonton.</string>
 	<key>Microphone access is off. Allow Shotnix in System Settings → Privacy &amp; Security → Microphone.</key>
-	<string>Der Mikrofonzugriff ist deaktiviert. Erlaube Shotnix in Systemeinstellungen → Datenschutz &amp; Sicherheit → Mikrofon.</string>
+	<string>Der Mikrofonzugriff ist deaktiviert. Erlaube Shotnix in „Systemeinstellungen“ → „Datenschutz &amp; Sicherheit“ → „Mikrofon“.</string>
 	<key>Microphone disconnected. Now recording from %@.</key>
 	<string>Mikrofon getrennt. Die Aufzeichnung läuft jetzt über „%@“.</string>
 	<key>Microphone disconnected. The recording continues without it.</key>
@@ -1037,7 +1037,7 @@
 	<key>Shotnix Preferences</key>
 	<string>Shotnix-Einstellungen</string>
 	<key>Shotnix can't write to the save folder. Choose another one in Settings → Screenshots.</key>
-	<string>Shotnix kann nicht in den Speicherordner schreiben. Wähle einen anderen in Einstellungen → Bildschirmfotos.</string>
+	<string>Shotnix kann nicht in den Speicherordner schreiben. Wähle einen anderen in „Einstellungen“ → „Bildschirmfotos“.</string>
 	<key>Shotnix could not write the file to:
 %@</key>
 	<string>Shotnix konnte die Datei nicht hier sichern:
@@ -1045,7 +1045,7 @@
 	<key>Shotnix is ready to use!</key>
 	<string>Shotnix ist startklar!</string>
 	<key>Shotnix isn't allowed to record the screen. Turn it on in System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording.</key>
-	<string>Shotnix darf den Bildschirm nicht aufzeichnen. Aktiviere es in Systemeinstellungen → Datenschutz &amp; Sicherheit → Bildschirm- &amp; Systemaudioaufnahme.</string>
+	<string>Shotnix darf den Bildschirm nicht aufzeichnen. Aktiviere es in „Systemeinstellungen“ → „Datenschutz &amp; Sicherheit“ → „Aufnahme von Bildschirm &amp; Systemaudio“.</string>
 	<key>Shotnix lives here — setup continues next launch</key>
 	<string>Hier findest du Shotnix – die Einrichtung geht beim nächsten Start weiter</string>
 	<key>Shotnix lives in your menu bar</key>
@@ -1055,7 +1055,7 @@
 Please enable it in System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording.</key>
 	<string>Shotnix braucht die Berechtigung für Bildschirmaufnahmen, um deinen Bildschirm aufzunehmen.
 
-Aktiviere sie unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherheit“ → „Bildschirm- &amp; Systemaudioaufnahme“.</string>
+Aktiviere sie unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherheit“ → „Aufnahme von Bildschirm &amp; Systemaudio“.</string>
 	<key>Shotnix will wrap these up before it quits.</key>
 	<string>Shotnix schließt diese Vorgänge vor dem Beenden ab.</string>
 	<key>Shotnix – Capture History</key>

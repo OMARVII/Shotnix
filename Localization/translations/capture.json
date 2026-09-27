@@ -223,7 +223,7 @@
     "zh-Hans": "摄像头"
   },
   "Camera access is off — allow Shotnix in System Settings → Privacy & Security → Camera.": {
-    "de": "Der Kamerazugriff ist deaktiviert – erlaube Shotnix in Systemeinstellungen → Datenschutz & Sicherheit → Kamera.",
+    "de": "Der Kamerazugriff ist deaktiviert – erlaube Shotnix in „Systemeinstellungen“ → „Datenschutz & Sicherheit“ → „Kamera“.",
     "fr": "L’accès à la caméra est désactivé — autorisez Shotnix dans Réglages Système → Confidentialité et sécurité → Caméra.",
     "zh-Hans": "摄像头访问权限已关闭 — 请在“系统设置”→“隐私与安全性”→“摄像头”中允许 Shotnix。"
   },
@@ -617,7 +617,7 @@
     "zh-Hans": "麦克风访问权限已关闭，因此此录制内容没有麦克风声音。"
   },
   "Microphone access is off. Allow Shotnix in System Settings → Privacy & Security → Microphone.": {
-    "de": "Der Mikrofonzugriff ist deaktiviert. Erlaube Shotnix in Systemeinstellungen → Datenschutz & Sicherheit → Mikrofon.",
+    "de": "Der Mikrofonzugriff ist deaktiviert. Erlaube Shotnix in „Systemeinstellungen“ → „Datenschutz & Sicherheit“ → „Mikrofon“.",
     "fr": "L’accès au micro est désactivé. Autorisez Shotnix dans Réglages Système → Confidentialité et sécurité → Micro.",
     "zh-Hans": "麦克风访问权限已关闭。请在“系统设置”→“隐私与安全性”→“麦克风”中允许 Shotnix。"
   },
@@ -1132,14 +1132,14 @@
   },
   "Shotnix can't write to the save folder. Choose another one in Settings → Screenshots.": {
     "comment": "Names Shotnix's Settings pane where the save folder is chosen",
-    "de": "Shotnix kann nicht in den Speicherordner schreiben. Wähle einen anderen in Einstellungen → Bildschirmfotos.",
+    "de": "Shotnix kann nicht in den Speicherordner schreiben. Wähle einen anderen in „Einstellungen“ → „Bildschirmfotos“.",
     "fr": "Shotnix ne peut pas écrire dans le dossier d’enregistrement. Choisissez-en un autre dans Réglages → Captures.",
     "zh-Hans": "Shotnix 无法写入存储文件夹。请在“设置”→“截屏”中选择其他文件夹。"
   },
   "Shotnix isn't allowed to record the screen. Turn it on in System Settings → Privacy & Security → Screen & System Audio Recording.": {
     "comment": "Names the System Settings pane as macOS 15 and later call it",
-    "de": "Shotnix darf den Bildschirm nicht aufzeichnen. Aktiviere es in Systemeinstellungen → Datenschutz & Sicherheit → Bildschirm- & Systemaudioaufnahme.",
-    "fr": "Shotnix n’est pas autorisé à enregistrer l’écran. Activez-le dans Réglages Système → Confidentialité et sécurité → Enregistrement de l’écran et de l’audio du système.",
+    "de": "Shotnix darf den Bildschirm nicht aufzeichnen. Aktiviere es in „Systemeinstellungen“ → „Datenschutz & Sicherheit“ → „Aufnahme von Bildschirm & Systemaudio“.",
+    "fr": "Shotnix n’est pas autorisé à enregistrer l’écran. Activez-le dans Réglages Système → Confidentialité et sécurité → Enregistrement de l’écran et des sons du système.",
     "zh-Hans": "Shotnix 无权录制屏幕。请在“系统设置”→“隐私与安全性”→“录屏与系统录音”中开启。"
   },
   "Show keyboard shortcuts": {

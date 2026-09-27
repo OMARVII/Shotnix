@@ -13,6 +13,10 @@ enum L10n {
     /// The bundle strings are looked up in. Tests point it at one language.
     nonisolated(unsafe) static var bundle: Bundle = defaultBundle
 
+    /// The locale that formats numbers and picks plural forms: the user's,
+    /// or the language tests point `use(_:)` at, whatever the Mac's region.
+    nonisolated(unsafe) static var locale: Locale = .autoupdatingCurrent
+
     private static var defaultBundle: Bundle { ShotnixResources.bundle ?? .main }
 
     /// Looks every string up in one language (tests and snapshots), or the
@@ -25,9 +29,11 @@ enum L10n {
                 ?? defaultBundle.path(forResource: language.lowercased(), ofType: "lproj"),
               let lproj = Bundle(path: path) else {
             bundle = defaultBundle
+            locale = .autoupdatingCurrent
             return
         }
         bundle = lproj
+        locale = Locale(identifier: language)
     }
 }
 
@@ -36,5 +42,5 @@ enum L10n {
 /// (%lld, %@), so each language can place them where its grammar needs.
 /// The compiler extracts every call when scripts/localize.py runs.
 func L(_ value: String.LocalizationValue) -> String {
-    String(localized: value, table: nil, bundle: L10n.bundle)
+    String(localized: value, table: nil, bundle: L10n.bundle, locale: L10n.locale)
 }

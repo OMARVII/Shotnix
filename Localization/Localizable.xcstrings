@@ -2716,7 +2716,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Der Kamerazugriff ist deaktiviert – erlaube Shotnix in Systemeinstellungen → Datenschutz & Sicherheit → Kamera."
+            "value" : "Der Kamerazugriff ist deaktiviert – erlaube Shotnix in „Systemeinstellungen“ → „Datenschutz & Sicherheit“ → „Kamera“."
           }
         },
         "fr" : {
@@ -6112,13 +6112,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aktiviere Shotnix unter „Systemeinstellungen“ → „Datenschutz & Sicherheit“ → „Bildschirm- & Systemaudioaufnahme“. Beende und öffne Shotnix danach erneut, damit macOS die Berechtigung übernimmt."
+            "value" : "Aktiviere Shotnix unter „Systemeinstellungen“ → „Datenschutz & Sicherheit“ → „Aufnahme von Bildschirm & Systemaudio“. Beende und öffne Shotnix danach erneut, damit macOS die Berechtigung übernimmt."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Activez Shotnix dans Réglages Système → Confidentialité et sécurité → Enregistrement de l’écran et de l’audio du système, puis quittez et rouvrez Shotnix pour que macOS applique l’autorisation."
+            "value" : "Activez Shotnix dans Réglages Système → Confidentialité et sécurité → Enregistrement de l’écran et des sons du système, puis quittez et rouvrez Shotnix pour que macOS applique l’autorisation."
           }
         },
         "zh-Hans" : {
@@ -8544,7 +8544,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Der Mikrofonzugriff ist deaktiviert. Erlaube Shotnix in Systemeinstellungen → Datenschutz & Sicherheit → Mikrofon."
+            "value" : "Der Mikrofonzugriff ist deaktiviert. Erlaube Shotnix in „Systemeinstellungen“ → „Datenschutz & Sicherheit“ → „Mikrofon“."
           }
         },
         "fr" : {
@@ -13539,7 +13539,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Shotnix kann nicht in den Speicherordner schreiben. Wähle einen anderen in Einstellungen → Bildschirmfotos."
+            "value" : "Shotnix kann nicht in den Speicherordner schreiben. Wähle einen anderen in „Einstellungen“ → „Bildschirmfotos“."
           }
         },
         "fr" : {
@@ -13606,13 +13606,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Shotnix darf den Bildschirm nicht aufzeichnen. Aktiviere es in Systemeinstellungen → Datenschutz & Sicherheit → Bildschirm- & Systemaudioaufnahme."
+            "value" : "Shotnix darf den Bildschirm nicht aufzeichnen. Aktiviere es in „Systemeinstellungen“ → „Datenschutz & Sicherheit“ → „Aufnahme von Bildschirm & Systemaudio“."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Shotnix n’est pas autorisé à enregistrer l’écran. Activez-le dans Réglages Système → Confidentialité et sécurité → Enregistrement de l’écran et de l’audio du système."
+            "value" : "Shotnix n’est pas autorisé à enregistrer l’écran. Activez-le dans Réglages Système → Confidentialité et sécurité → Enregistrement de l’écran et des sons du système."
           }
         },
         "zh-Hans" : {
@@ -13673,13 +13673,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Shotnix braucht die Berechtigung für Bildschirmaufnahmen, um deinen Bildschirm aufzunehmen.\n\nAktiviere sie unter „Systemeinstellungen“ → „Datenschutz & Sicherheit“ → „Bildschirm- & Systemaudioaufnahme“."
+            "value" : "Shotnix braucht die Berechtigung für Bildschirmaufnahmen, um deinen Bildschirm aufzunehmen.\n\nAktiviere sie unter „Systemeinstellungen“ → „Datenschutz & Sicherheit“ → „Aufnahme von Bildschirm & Systemaudio“."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Shotnix a besoin de l’autorisation d’enregistrement de l’écran pour capturer votre écran.\n\nActivez-la dans Réglages Système → Confidentialité et sécurité → Enregistrement de l’écran et de l’audio du système."
+            "value" : "Shotnix a besoin de l’autorisation d’enregistrement de l’écran pour capturer votre écran.\n\nActivez-la dans Réglages Système → Confidentialité et sécurité → Enregistrement de l’écran et des sons du système."
           }
         },
         "zh-Hans" : {

@@ -445,7 +445,7 @@
 	<key>Ember Fog</key>
 	<string>Brume de braise</string>
 	<key>Enable Shotnix in System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording, then quit and reopen Shotnix so macOS applies the permission.</key>
-	<string>Activez Shotnix dans Réglages Système → Confidentialité et sécurité → Enregistrement de l’écran et de l’audio du système, puis quittez et rouvrez Shotnix pour que macOS applique l’autorisation.</string>
+	<string>Activez Shotnix dans Réglages Système → Confidentialité et sécurité → Enregistrement de l’écran et des sons du système, puis quittez et rouvrez Shotnix pour que macOS applique l’autorisation.</string>
 	<key>Enable Shotnix in System Settings, then relaunch so macOS applies it.</key>
 	<string>Activez Shotnix dans Réglages Système, puis relancez-le pour que macOS en tienne compte.</string>
 	<key>Enabled</key>
@@ -1045,7 +1045,7 @@
 	<key>Shotnix is ready to use!</key>
 	<string>Shotnix est prêt à l’emploi !</string>
 	<key>Shotnix isn't allowed to record the screen. Turn it on in System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording.</key>
-	<string>Shotnix n’est pas autorisé à enregistrer l’écran. Activez-le dans Réglages Système → Confidentialité et sécurité → Enregistrement de l’écran et de l’audio du système.</string>
+	<string>Shotnix n’est pas autorisé à enregistrer l’écran. Activez-le dans Réglages Système → Confidentialité et sécurité → Enregistrement de l’écran et des sons du système.</string>
 	<key>Shotnix lives here — setup continues next launch</key>
 	<string>Shotnix se trouve ici — la configuration reprendra au prochain lancement</string>
 	<key>Shotnix lives in your menu bar</key>
@@ -1055,7 +1055,7 @@
 Please enable it in System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording.</key>
 	<string>Shotnix a besoin de l’autorisation d’enregistrement de l’écran pour capturer votre écran.
 
-Activez-la dans Réglages Système → Confidentialité et sécurité → Enregistrement de l’écran et de l’audio du système.</string>
+Activez-la dans Réglages Système → Confidentialité et sécurité → Enregistrement de l’écran et des sons du système.</string>
 	<key>Shotnix will wrap these up before it quits.</key>
 	<string>Shotnix terminera ces tâches avant de quitter.</string>
 	<key>Shotnix – Capture History</key>
