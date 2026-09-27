@@ -14,6 +14,8 @@ Free and open source. Native, about 11 MB, and your captures never leave your Ma
 
 [Website](https://shotnix.com) · [Download](https://github.com/OMARVII/Shotnix/releases/latest) · [What’s new](CHANGELOG.md) · [Roadmap](ROADMAP.md)
 
+**English** · [Deutsch](README.de.md) · [Français](README.fr.md) · [简体中文](README.zh-CN.md)
+
 <a href="https://shotnix.com/media/shotnix-editor-playback.mp4"><img src="assets/readme/hero.avif" width="100%" alt="The Shotnix video editor playing a demo: the preview zooms in on each click, captions light up word by word, a keyboard shortcut appears, and the playhead moves along a timeline of captions, zooms, and clips." /></a>
 
 <sub>The Shotnix video editor, playing a demo made from one plain screen recording: zooms on the clicks, a smooth cursor, captions from the narration, and the shortcut on screen.</sub>
