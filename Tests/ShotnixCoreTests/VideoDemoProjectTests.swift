@@ -147,6 +147,24 @@ final class VideoDemoProjectTests: XCTestCase {
 
     // MARK: Migration
 
+    /// A draft saved by 0.23.1 (a cut, zooms, a text, a caption and a
+    /// wallpaper) opens with every edit in this version.
+    func testDraftFrom0_23_1KeepsItsEdits() throws {
+        let json = #"""
+{"project":{"aspectPreset":"widescreen","audio":{"enhanceVoice":false,"muted":false,"normalizeLoudness":true,"systemVolume":1,"voiceVolume":1,"volume":1},"background":{"wallpaper":{"_0":"citrus"}},"backgroundBlur":0,"cameraLayouts":[],"captionStyle":{"highlightWords":true,"position":"bottom","size":"medium","visible":true},"captions":[{"end":8,"id":"2B60B8F2-EEC7-409B-B2F4-D91EF1E7B1BF","start":5,"text":"Made in 0.23.1","words":[]}],"clickEvents":[],"cornerRadius":18,"createdAt":812217881.043738,"crop":{"height":1,"width":1,"x":0,"y":0},"cursor":{"alwaysArrow":false,"clickEffect":"ripple","hideWhenIdle":true,"motionBlur":true,"size":1.6,"smoothing":"smooth","tidyEnding":true,"visible":true},"cursorSamples":[],"defaultZoomScale":2,"id":"9FC1AC69-9764-47D6-A9CB-9458E7DF3B50","keystrokeStyle":{"position":"bottom","size":"medium","visible":true},"keystrokes":[],"motionBlur":0.5,"nativeCursorVisible":true,"outline":true,"overlayEffects":[{"duration":3,"height":0.09,"id":"74C17956-48C5-4114-A506-FBB7757B62FE","kind":"text","layer":0,"text":"Your text","thickness":"regular","time":40,"width":0.5,"x":0.5,"y":0.14}],"padding":0.085,"reframe":false,"shadow":0.55,"sourceHeight":1716,"sourcePath":"/Users/you/Movies/Shotnix 2026-09-27 at 18.11.56.mp4","sourceWidth":3010,"timelineClips":[{"fadeIn":0,"fadeOut":0,"id":"39B84C79-6A09-4B45-BB49-BAA9969B19AB","muted":false,"sourceEnd":40,"sourceStart":0,"speed":1},{"fadeIn":0,"fadeOut":0,"id":"3FF86221-065E-44BE-9EC0-EB3616A8B9E9","muted":false,"sourceEnd":300.325,"sourceStart":40,"speed":1}],"trimEnd":280,"trimStart":0,"version":2,"webcam":{"anchor":"bottomRight","backdrop":"original","mirror":true,"shape":"circle","shrinkWhenZoomed":true,"size":0.26,"visible":true},"zoomRegions":[{"end":22.8,"focusX":0.5,"focusY":0.5,"followsCursor":false,"id":"C235CB6C-20B9-4F6E-A1BD-88753E7CB18E","isAuto":false,"scale":2,"start":19.8},{"end":92.8,"focusX":0.5,"focusY":0.5,"followsCursor":false,"id":"09C7E155-F9DE-4C5E-91AE-6A59E5AE3B80","isAuto":false,"scale":2,"start":89.8},{"end":202.8,"focusX":0.5,"focusY":0.5,"followsCursor":false,"id":"51162D27-6708-48DD-9E84-0E29AEDDC5C4","isAuto":false,"scale":2,"start":199.8}],"zoomSpeed":"smooth"},"savedAt":812217882.128756,"sourceModified":812217825.2704304,"sourcePath":"/Users/you/Movies/Shotnix 2026-09-27 at 18.11.56.mp4","sourceSize":561196976}
+"""#
+        let record = try JSONDecoder().decode(VideoDemoDraftRecord.self, from: Data(json.utf8))
+        let project = record.project
+        XCTAssertEqual(project.timelineClips.count, 2)
+        XCTAssertEqual(project.zoomRegions.count, 3)
+        XCTAssertEqual(project.overlayEffects.map(\.kind), [.text])
+        XCTAssertEqual(project.captions.map(\.text), ["Made in 0.23.1"])
+        XCTAssertEqual(project.background, .wallpaper("citrus"))
+        // The clips are the edit (0.23.1 left its old trim field aside too).
+        let segments = project.timelineSegments(totalDuration: 300.325)
+        XCTAssertEqual(segments.map { [$0.clip.sourceStart, $0.clip.sourceEnd] }, [[0, 40], [40, 300.325]])
+    }
+
     func testLegacyDraftMigratesToRegionsAndNewStyle() throws {
         let legacy: [String: Any] = [
             "id": UUID().uuidString,
