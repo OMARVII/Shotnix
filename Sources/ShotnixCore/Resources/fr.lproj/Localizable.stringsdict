@@ -2,6 +2,22 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>%lld QR codes found</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld code QR détecté</string>
+			<key>other</key>
+			<string>%lld codes QR détectés</string>
+		</dict>
+	</dict>
 	<key>%lld annotations</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -66,6 +82,22 @@
 			<string>%lld annotations, rognage en cours</string>
 		</dict>
 	</dict>
+	<key>%lld barcodes found</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld code-barres détecté</string>
+			<key>other</key>
+			<string>%lld codes-barres détectés</string>
+		</dict>
+	</dict>
 	<key>%lld days</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -82,6 +114,70 @@
 			<string>%lld jours</string>
 		</dict>
 	</dict>
+	<key>%lld email addresses</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld adresse e-mail</string>
+			<key>other</key>
+			<string>%lld adresses e-mail</string>
+		</dict>
+	</dict>
+	<key>%lld lines</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld ligne</string>
+			<key>other</key>
+			<string>%lld lignes</string>
+		</dict>
+	</dict>
+	<key>%lld lines · found %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld ligne · avec %@</string>
+			<key>other</key>
+			<string>%lld lignes · avec %@</string>
+		</dict>
+	</dict>
+	<key>%lld links</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld lien</string>
+			<key>other</key>
+			<string>%lld liens</string>
+		</dict>
+	</dict>
 	<key>%lld saved captures · drag any card to Finder · right-click for more actions</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -96,6 +192,22 @@
 			<string>%lld capture enregistrée · faites glisser une carte vers le Finder · clic droit pour plus d’actions</string>
 			<key>other</key>
 			<string>%lld captures enregistrées · faites glisser une carte vers le Finder · clic droit pour plus d’actions</string>
+		</dict>
+	</dict>
+	<key>%lld screens</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld écran</string>
+			<key>other</key>
+			<string>%lld écrans</string>
 		</dict>
 	</dict>
 	<key>%lld screenshots deleted — click or press ⌘Z to undo</key>
@@ -322,6 +434,38 @@
 			<string>Prêt · %lld raccourcis facultatifs désactivés</string>
 		</dict>
 	</dict>
+	<key>Scrolling capture reached its maximum length (%lld points) and finished.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>La capture défilante a atteint sa longueur maximale (%lld point) et s’est terminée.</string>
+			<key>other</key>
+			<string>La capture défilante a atteint sa longueur maximale (%lld points) et s’est terminée.</string>
+		</dict>
+	</dict>
+	<key>Scrolling capture stopped after %lld minutes.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>La capture défilante s’est arrêtée après %lld minute.</string>
+			<key>other</key>
+			<string>La capture défilante s’est arrêtée après %lld minutes.</string>
+		</dict>
+	</dict>
 	<key>You have unsaved edits in %lld screenshots.</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -336,6 +480,38 @@
 			<string>Vous avez des modifications non enregistrées dans %lld capture.</string>
 			<key>other</key>
 			<string>Vous avez des modifications non enregistrées dans %lld captures.</string>
+		</dict>
+	</dict>
+	<key>Your disk is almost full. In about %lld minutes the recording stops and saves itself.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Votre disque est presque plein. Dans environ %lld minute, l’enregistrement s’arrêtera et sera sauvegardé.</string>
+			<key>other</key>
+			<string>Votre disque est presque plein. Dans environ %lld minutes, l’enregistrement s’arrêtera et sera sauvegardé.</string>
+		</dict>
+	</dict>
+	<key>Your disk is almost full. In about %lld seconds the recording stops and saves itself.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Votre disque est presque plein. Dans environ %lld seconde, l’enregistrement s’arrêtera et sera sauvegardé.</string>
+			<key>other</key>
+			<string>Votre disque est presque plein. Dans environ %lld secondes, l’enregistrement s’arrêtera et sera sauvegardé.</string>
 		</dict>
 	</dict>
 </dict>

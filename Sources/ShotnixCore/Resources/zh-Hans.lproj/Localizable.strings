@@ -10,16 +10,32 @@
 	<string>%2$@ 的%1$@截屏</string>
 	<key>%@ capture, %@</key>
 	<string>%1$@截屏，%2$@</string>
+	<key>%@ found</key>
+	<string>已找到：%@</string>
 	<key>%@ fullscreen</key>
 	<string>%@ 全屏</string>
 	<key>%@ pt</key>
 	<string>%@ 磅</string>
+	<key>%@ quality · %@</key>
+	<string>%@质量 · %@</string>
 	<key>%@ window</key>
 	<string>%@ 窗口</string>
+	<key>%@ · %@ px</key>
+	<string>%@ · %@ 像素</string>
 	<key>%@ · %@ × %@ image</key>
 	<string>%@ · %@ × %@ 图像</string>
+	<key>%@ · %lld fps</key>
+	<string>%@ · %lld fps</string>
+	<key>%@ × %@ px</key>
+	<string>%@ × %@ 像素</string>
 	<key>%@ — Shotnix lives in your menu bar</key>
 	<string>%@ — Shotnix 位于菜单栏中</string>
+	<key>%@, %@</key>
+	<string>%@、%@</string>
+	<key>%@: %@</key>
+	<string>%@：%@</string>
+	<key>%lld QR codes found</key>
+	<string>找到 %lld 个二维码</string>
 	<key>%lld annotations</key>
 	<string>%lld 个标注</string>
 	<key>%lld annotations, %@ selected</key>
@@ -28,12 +44,28 @@
 	<string>%lld 个标注，已选中%@，正在裁剪</string>
 	<key>%lld annotations, cropping</key>
 	<string>%lld 个标注，正在裁剪</string>
+	<key>%lld barcodes found</key>
+	<string>找到 %lld 个条形码</string>
 	<key>%lld days</key>
 	<string>%lld 天</string>
+	<key>%lld email addresses</key>
+	<string>%lld 个电子邮件地址</string>
+	<key>%lld lines</key>
+	<string>%lld 行</string>
+	<key>%lld lines · found %@</key>
+	<string>%lld 行 · 找到 %@</string>
+	<key>%lld links</key>
+	<string>%lld 个链接</string>
 	<key>%lld of %lld captures</key>
 	<string>%2$lld 张截屏中的 %1$lld 张</string>
+	<key>%lld px · Esc or Done finishes</key>
+	<string>%lld 像素 · 按 Esc 键或点按“完成”结束</string>
+	<key>%lld s</key>
+	<string>%lld 秒</string>
 	<key>%lld saved captures · drag any card to Finder · right-click for more actions</key>
 	<string>已存储 %lld 张截屏 · 可将卡片拖到“访达” · 右键点按查看更多操作</string>
+	<key>%lld screens</key>
+	<string>%lld 个显示器</string>
 	<key>%lld screenshots deleted — click or press ⌘Z to undo</key>
 	<string>已删除 %lld 张截屏 — 点按或按下 ⌘Z 撤销</string>
 	<key>%lld seconds</key>
@@ -56,6 +88,8 @@
 	<string>截屏后</string>
 	<key>All Captures</key>
 	<string>所有截屏</string>
+	<key>All Displays</key>
+	<string>所有显示器</string>
 	<key>All captures are moved to Shotnix’s trash and permanently deleted after %lld days.</key>
 	<string>所有截屏都会移到 Shotnix 的废纸篓，并在 %lld 天后永久删除。</string>
 	<key>All configured</key>
@@ -64,6 +98,8 @@
 	<string>允许访问…</string>
 	<key>Allow Screen Recording</key>
 	<string>允许屏幕录制</string>
+	<key>Allow Shotnix in Accessibility — shortcuts turn on by themselves.</key>
+	<string>请在“辅助功能”中允许 Shotnix — 快捷键会自动开启。</string>
 	<key>Amber Fold</key>
 	<string>琥珀褶皱</string>
 	<key>Annotate Last Screenshot</key>
@@ -74,6 +110,8 @@
 	<string>标注文字</string>
 	<key>Annotation tools</key>
 	<string>标注工具</string>
+	<key>App</key>
+	<string>App</string>
 	<key>Apple Shortcuts</key>
 	<string>Apple 快捷键</string>
 	<key>Apple screenshot shortcuts disabled.</key>
@@ -118,6 +156,12 @@
 	<string>背景</string>
 	<key>Balanced</key>
 	<string>均衡</string>
+	<key>Barcode</key>
+	<string>条形码</string>
+	<key>Barcode copied to clipboard</key>
+	<string>已将条形码内容拷贝到剪贴板</string>
+	<key>Barcodes</key>
+	<string>条形码</string>
 	<key>Black</key>
 	<string>黑色</string>
 	<key>Blue</key>
@@ -132,18 +176,36 @@
 	<string>骨白</string>
 	<key>Bring All to Front</key>
 	<string>前置全部窗口</string>
+	<key>Call</key>
+	<string>呼叫</string>
 	<key>Callout</key>
 	<string>标注气泡</string>
 	<key>Callout: %@</key>
 	<string>标注气泡：%@</string>
 	<key>Camera</key>
 	<string>摄像头</string>
+	<key>Camera access is off — allow Shotnix in System Settings → Privacy &amp; Security → Camera.</key>
+	<string>摄像头访问权限已关闭 — 请在“系统设置”→“隐私与安全性”→“摄像头”中允许 Shotnix。</string>
+	<key>Camera disconnected</key>
+	<string>摄像头已断开</string>
+	<key>Camera disconnected.</key>
+	<string>摄像头已断开连接。</string>
+	<key>Camera disconnected. The recording continues without it.</key>
+	<string>摄像头已断开连接。录制将在没有摄像头的情况下继续。</string>
+	<key>Camera preview</key>
+	<string>摄像头预览</string>
+	<key>Camera stopped</key>
+	<string>摄像头已停止</string>
 	<key>Cancel</key>
 	<string>取消</string>
+	<key>Cancel Recording</key>
+	<string>取消录制</string>
 	<key>Canyon Silk</key>
 	<string>峡谷丝绸</string>
 	<key>Capture</key>
 	<string>截屏</string>
+	<key>Capture  ⏎</key>
+	<string>捕捉  ⏎</string>
 	<key>Capture All Displays</key>
 	<string>捕捉所有显示器</string>
 	<key>Capture Area</key>
@@ -162,6 +224,8 @@
 	<string>“提取文字”和“滚动截屏”默认没有快捷键，这样 ⌘⇧O 和 ⌘⇧S 在其他 App 中仍表示“打开”和“存储为” — 点按字段即可自定义。再次按下滚动截屏快捷键即可结束滚动截屏。</string>
 	<key>Capture Window</key>
 	<string>捕捉窗口</string>
+	<key>Capture failed</key>
+	<string>截屏失败</string>
 	<key>Capture from %@</key>
 	<string>%@ 的截屏</string>
 	<key>Capture immediately after selecting</key>
@@ -184,6 +248,8 @@
 	<string>检查</string>
 	<key>Check for Updates</key>
 	<string>检查更新</string>
+	<key>Choose</key>
+	<string>选择</string>
 	<key>Choose Capture Area in the Shotnix menu to start</key>
 	<string>在 Shotnix 菜单中选择“捕捉区域”即可开始</string>
 	<key>Choose a writable folder for auto-save.</key>
@@ -192,8 +258,12 @@
 	<string>请选择一个可写入的文件夹。</string>
 	<key>Choose folder</key>
 	<string>选择文件夹</string>
+	<key>Choose screen</key>
+	<string>选择显示器</string>
 	<key>Choose what happens immediately after taking a screenshot.</key>
 	<string>选择截屏后立即执行的操作。</string>
+	<key>Choose window</key>
+	<string>选择窗口</string>
 	<key>Choose...</key>
 	<string>选取…</string>
 	<key>Clay</key>
@@ -214,12 +284,22 @@
 	<string>清除历史记录</string>
 	<key>Clear History?</key>
 	<string>要清除历史记录吗？</string>
+	<key>Click a window to capture it  ·  Esc cancels</key>
+	<string>点按窗口以捕捉  ·  按 Esc 键取消</string>
 	<key>Click an annotation to edit it</key>
 	<string>点按标注即可编辑</string>
+	<key>Click or press Esc to cancel</key>
+	<string>点按或按下 Esc 键以取消</string>
 	<key>Click to add the next step</key>
 	<string>点按以添加下一步</string>
 	<key>Clipboard</key>
 	<string>剪贴板</string>
+	<key>Close</key>
+	<string>关闭</string>
+	<key>Close All Pins</key>
+	<string>关闭所有贴图</string>
+	<key>Close Pin</key>
+	<string>关闭贴图</string>
 	<key>Close Window</key>
 	<string>关闭窗口</string>
 	<key>Coastal Haze</key>
@@ -230,32 +310,58 @@
 	<string>颜色</string>
 	<key>Command Center</key>
 	<string>命令中心</string>
+	<key>Compose Email</key>
+	<string>撰写邮件</string>
 	<key>Conflict detected</key>
 	<string>检测到冲突</string>
 	<key>Copied to clipboard</key>
 	<string>已拷贝到剪贴板</string>
 	<key>Copy</key>
 	<string>拷贝</string>
+	<key>Copy %@</key>
+	<string>拷贝 %@</string>
 	<key>Copy (⌘C)</key>
 	<string>拷贝（⌘C）</string>
+	<key>Copy Text</key>
+	<string>拷贝文字</string>
+	<key>Copy as Table</key>
+	<string>拷贝为表格</string>
 	<key>Copy capture to clipboard</key>
 	<string>将截屏拷贝到剪贴板</string>
+	<key>Copy image to clipboard</key>
+	<string>将图像拷贝到剪贴板</string>
+	<key>Copy recognized text (OCR)</key>
+	<string>拷贝识别出的文字（OCR）</string>
 	<key>Copy screenshots to clipboard</key>
 	<string>将截屏拷贝到剪贴板</string>
+	<key>Copy the rows tab-separated, ready to paste into a spreadsheet</key>
+	<string>以制表符分隔的形式拷贝各行，可直接粘贴到电子表格中</string>
 	<key>Could Not Disable Apple Shortcuts</key>
 	<string>无法停用 Apple 快捷键</string>
 	<key>Could Not Save Screenshot</key>
 	<string>无法存储截屏</string>
+	<key>Could not copy the screenshot</key>
+	<string>无法拷贝截屏</string>
 	<key>Could not copy this capture</key>
 	<string>无法拷贝此截屏</string>
 	<key>Could not encode screenshot as PNG.</key>
 	<string>无法将截屏编码为 PNG。</string>
 	<key>Could not encode the screenshot.</key>
 	<string>无法编码截屏。</string>
+	<key>Could not list windows. Check permissions.</key>
+	<string>无法列出窗口。请检查权限。</string>
 	<key>Could not restore Apple shortcuts.</key>
 	<string>无法恢复 Apple 快捷键。</string>
+	<key>Could not save the recording (%@).</key>
+	<string>无法存储录制内容（%@）。</string>
+	<key>Could not save the recording.</key>
+	<string>无法存储录制内容。</string>
+	<key>Could not start recording (%@).</key>
+	<string>无法开始录制（%@）。</string>
 	<key>Couldn't copy the screenshot. Try again, or save it instead.</key>
 	<string>无法拷贝截屏。请重试，或改为存储。</string>
+	<key>Couldn't create the video file.</key>
+	<string>无法创建视频文件。</string>
 	<key>Couldn't save the screenshot to %@. Click to check the save folder.</key>
 	<string>无法将截屏存储到“%@”。点按以检查存储文件夹。</string>
 	<key>Couldn't save the screenshot: Shotnix can't write to %@. Click to choose another save folder.</key>
@@ -270,6 +376,8 @@
 	<string>绯红山脊</string>
 	<key>Crop</key>
 	<string>裁剪</string>
+	<key>Cursor</key>
+	<string>指针</string>
 	<key>Custom color</key>
 	<string>自定颜色</string>
 	<key>Custom color #%@</key>
@@ -280,6 +388,8 @@
 	<string>自定颜色…</string>
 	<key>Cut</key>
 	<string>剪切</string>
+	<key>Decoded details</key>
+	<string>解码详情</string>
 	<key>Delete</key>
 	<string>删除</string>
 	<key>Delete %lld Captures?</key>
@@ -308,8 +418,22 @@
 	<string>停用 Apple 快捷键</string>
 	<key>Disabled</key>
 	<string>已停用</string>
+	<key>Discard</key>
+	<string>丢弃</string>
 	<key>Discard Changes</key>
 	<string>放弃更改</string>
+	<key>Discard recording</key>
+	<string>丢弃录制内容</string>
+	<key>Discard this recording?</key>
+	<string>要丢弃此录制内容吗？</string>
+	<key>Disk almost full</key>
+	<string>磁盘将满</string>
+	<key>Display</key>
+	<string>显示器</string>
+	<key>Display %lld</key>
+	<string>显示器 %lld</string>
+	<key>Display %lld · Main</key>
+	<string>显示器 %lld · 主显示器</string>
 	<key>Do you want to review them before quitting?</key>
 	<string>要在退出前逐一检查吗？</string>
 	<key>Don't Ask Again</key>
@@ -318,6 +442,16 @@
 	<string>不存储</string>
 	<key>Done</key>
 	<string>完成</string>
+	<key>Double-click to edit, or drag into another app. Command-C copies, Command-S saves, Escape dismisses.</key>
+	<string>连按两次以编辑，或拖移到其他 App。Command-C 拷贝，Command-S 存储，Esc 键关闭。</string>
+	<key>Drag edges or corners to resize  ·  Arrow keys nudge (⇧ ×10)  ·  Return captures  ·  Esc cancels</key>
+	<string>拖移边缘或角落以调整大小  ·  方向键微调位置（⇧ ×10）  ·  按 Return 键捕捉  ·  按 Esc 键取消</string>
+	<key>Drag to capture  ·  Hold ⇧ as you let go to adjust first  ·  Space moves  ·  Esc cancels</key>
+	<string>拖移以捕捉  ·  松开时按住 ⇧ 可先调整  ·  空格键移动选区  ·  按 Esc 键取消</string>
+	<key>Drag to move. Press Command-C to copy, Escape to close.</key>
+	<string>拖移以移动。按下 Command-C 拷贝，按下 Esc 键关闭。</string>
+	<key>Drag to select, then adjust  ·  Hold ⇧ as you let go to capture right away  ·  Esc cancels</key>
+	<string>拖移以选择，然后调整  ·  松开时按住 ⇧ 可立即捕捉  ·  按 Esc 键取消</string>
 	<key>Draw with the selected tool. Tool shortcuts: V select, A arrow, R rectangle, T text, O callout, H highlighter, B blur, P pixelate, S spotlight, C crop.</key>
 	<string>使用所选工具绘制。工具快捷键：V 选择、A 箭头、R 矩形、T 文字、O 标注气泡、H 荧光笔、B 模糊、P 像素化、S 聚光灯、C 裁剪。</string>
 	<key>Drawing</key>
@@ -326,12 +460,22 @@
 	<string>编辑</string>
 	<key>Edit Last Recording</key>
 	<string>编辑最近的录制内容</string>
+	<key>Editable Cursor</key>
+	<string>可编辑指针</string>
 	<key>Editable cursor</key>
 	<string>可编辑指针</string>
 	<key>Editable cursor records the pointer separately so the editor can smooth it, resize it, and keep it crisp when zoomed — the video editor adds it back on export (the raw recording file has no pointer). Auto-zoom makes a fresh recording open already produced: the camera zooms to follow your clicks. Keyboard shortcuts records only ⌘, ⌃ and ⌥ combos (plus Esc and F-keys) so the editor can show them as keycaps — plain typing is never recorded; macOS asks for Accessibility access. High quality is the default; Max keeps more detail but creates larger files. The countdown gives you a moment after pressing Record; Esc cancels it. Stop a recording with %@ from any app — plain Esc stays with the app you're recording.</key>
 	<string>“可编辑指针”会单独记录指针，以便编辑器将其平滑、调整大小，并在缩放时保持清晰 — 视频编辑器会在导出时将指针加回（原始录制文件中不含指针）。开启自动缩放后，新录制内容打开时就已制作完成：镜头会跟随你的点按。“显示快捷键”只记录含 ⌘、⌃ 和 ⌥ 的组合键（以及 Esc 键和功能键），以便编辑器将其显示为按键 — 普通输入绝不会被记录；macOS 会请求辅助功能权限。默认使用“高”质量；“最高”保留更多细节，但文件更大。倒计时让你在开始录制后有片刻准备；按 Esc 键可取消。在任何 App 中按 %@ 都能停止录制 — 单独按 Esc 键仍会传给你正在录制的 App。</string>
 	<key>Ellipse</key>
 	<string>椭圆</string>
+	<key>Email</key>
+	<string>电子邮件</string>
+	<key>Email %@</key>
+	<string>给 %@ 发邮件</string>
+	<key>Email QR found</key>
+	<string>找到电子邮件二维码</string>
+	<key>Email address copied</key>
+	<string>已拷贝电子邮件地址</string>
 	<key>Ember Fog</key>
 	<string>余烬薄雾</string>
 	<key>Enable Shotnix in System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording, then quit and reopen Shotnix so macOS applies the permission.</key>
@@ -344,6 +488,12 @@
 	<string>喜欢 Shotnix 吗？点按即可在 GitHub 上为它加星标 ★</string>
 	<key>Enjoying Shotnix? Star it on GitHub so more people find it.</key>
 	<string>喜欢 Shotnix 吗？在 GitHub 上加个星标，让更多人发现它。</string>
+	<key>Esc or Done finishes</key>
+	<string>按 Esc 键或点按“完成”结束</string>
+	<key>Estimated file size. Still screens take less.</key>
+	<string>预估的文件大小。静止画面占用更少。</string>
+	<key>Estimated size %@</key>
+	<string>预估大小：%@</string>
 	<key>Everything is ready</key>
 	<string>一切就绪</string>
 	<key>Export Format</key>
@@ -362,6 +512,8 @@
 	<string>实心圆角矩形</string>
 	<key>Finish and Quit</key>
 	<string>完成后退出</string>
+	<key>Finish or cancel the current recording setup</key>
+	<string>请先完成或取消当前的录制设置</string>
 	<key>Fix</key>
 	<string>修复</string>
 	<key>Forever</key>
@@ -369,7 +521,7 @@
 	<key>Format</key>
 	<string>格式</string>
 	<key>Frame rate</key>
-	<string>帧率</string>
+	<string>帧速率</string>
 	<key>Free up ⌘⇧ shortcuts · optional</key>
 	<string>释放 ⌘⇧ 快捷键 · 可选</string>
 	<key>Freed %@</key>
@@ -398,6 +550,8 @@
 	<string>绿色</string>
 	<key>Health</key>
 	<string>状态</string>
+	<key>Hidden</key>
+	<string>隐藏</string>
 	<key>Hide Desktop Icons</key>
 	<string>隐藏桌面图标</string>
 	<key>Hide Icon</key>
@@ -430,6 +584,8 @@
 	<string>图像</string>
 	<key>JPEG Quality</key>
 	<string>JPEG 质量</string>
+	<key>Keep</key>
+	<string>保留</string>
 	<key>Keep Working</key>
 	<string>继续工作</string>
 	<key>Keep captures</key>
@@ -448,6 +604,8 @@
 	<string>选择“最近 500 张截屏”将立即从历史记录中移除 %lld 张较早的截屏。此操作无法撤销。</string>
 	<key>Keyboard</key>
 	<string>键盘</string>
+	<key>Keyboard shortcuts are on</key>
+	<string>快捷键已开启</string>
 	<key>Languages</key>
 	<string>语言</string>
 	<key>Last %lld captures</key>
@@ -464,26 +622,60 @@
 	<string>直线</string>
 	<key>Line width</key>
 	<string>线条粗细</string>
+	<key>Link</key>
+	<string>链接</string>
+	<key>Link QR found</key>
+	<string>找到链接二维码</string>
+	<key>Link copied</key>
+	<string>已拷贝链接</string>
+	<key>Links</key>
+	<string>链接</string>
+	<key>Links (%lld of %lld)</key>
+	<string>链接（%2$lld 个中的 %1$lld 个）</string>
 	<key>MIT License — Free and open source</key>
 	<string>MIT 许可证 — 免费开源</string>
 	<key>Manage</key>
 	<string>管理</string>
 	<key>Max</key>
 	<string>最高</string>
+	<key>Maximum length reached</key>
+	<string>已达到最大长度</string>
 	<key>Menu Bar</key>
 	<string>菜单栏</string>
 	<key>Menu bar is full, so macOS hid the Shotnix icon — %@ still captures. Click here for the menu.</key>
 	<string>菜单栏已满，macOS 隐藏了 Shotnix 图标 — 按 %@ 仍可截屏。点按此处打开菜单。</string>
 	<key>Menu bar is full, so macOS hid the Shotnix icon — your shortcuts still work. Click here for the menu.</key>
 	<string>菜单栏已满，macOS 隐藏了 Shotnix 图标 — 你的快捷键仍然有效。点按此处打开菜单。</string>
+	<key>Message</key>
+	<string>信息</string>
+	<key>Message QR found</key>
+	<string>找到信息二维码</string>
+	<key>Mic disconnected</key>
+	<string>麦克风已断开</string>
+	<key>Mic stopped</key>
+	<string>麦克风已停止</string>
+	<key>Mic switched</key>
+	<string>已切换麦克风</string>
 	<key>Microphone</key>
 	<string>麦克风</string>
+	<key>Microphone access is off, so this recording has no mic.</key>
+	<string>麦克风访问权限已关闭，因此此录制内容没有麦克风声音。</string>
+	<key>Microphone access is off. Allow Shotnix in System Settings → Privacy &amp; Security → Microphone.</key>
+	<string>麦克风访问权限已关闭。请在“系统设置”→“隐私与安全性”→“麦克风”中允许 Shotnix。</string>
+	<key>Microphone disconnected. Now recording from %@.</key>
+	<string>麦克风已断开连接。现在使用“%@”录音。</string>
+	<key>Microphone disconnected. The recording continues without it.</key>
+	<string>麦克风已断开连接。录制将在没有麦克风的情况下继续。</string>
+	<key>Microphone level</key>
+	<string>麦克风电平</string>
 	<key>Microphone recording requires macOS microphone permission. System audio excludes Shotnix sounds to avoid feedback.</key>
 	<string>录制麦克风需要 macOS 的麦克风权限。电脑声音不包含 Shotnix 的提示音，以免产生回声。</string>
 	<key>Midnight Graphite</key>
 	<string>午夜石墨</string>
 	<key>Minimize</key>
 	<string>最小化</string>
+	<key>More recording options</key>
+	<string>更多录制选项</string>
 	<key>Moss</key>
 	<string>苔绿</string>
 	<key>Moss Glow</key>
@@ -494,6 +686,8 @@
 	<string>截取屏幕需要此权限。macOS 只会询问一次。</string>
 	<key>Neo Pop</key>
 	<string>新波普</string>
+	<key>Network</key>
+	<string>网络</string>
 	<key>Never</key>
 	<string>永不</string>
 	<key>New screenshots are copied automatically. Turn this off if you only want to use the overlay or history actions.</key>
@@ -502,6 +696,12 @@
 	<string>截得漂亮！一切就绪。</string>
 	<key>Night Current</key>
 	<string>夜之流</string>
+	<key>No barcode found in this selection</key>
+	<string>此选区中未找到条形码</string>
+	<key>No camera connected</key>
+	<string>未连接摄像头</string>
+	<key>No camera found.</key>
+	<string>未找到摄像头。</string>
 	<key>No captures contain “%@”</key>
 	<string>没有截屏包含“%@”</string>
 	<key>No captures of this type</key>
@@ -510,10 +710,30 @@
 	<string>还没有截屏</string>
 	<key>No conflict</key>
 	<string>无冲突</string>
+	<key>No microphone connected</key>
+	<string>未连接麦克风</string>
+	<key>No microphone is connected, so this recording has no mic.</key>
+	<string>未连接麦克风，因此此录制内容没有麦克风声音。</string>
+	<key>No recordable windows found</key>
+	<string>未找到可录制的窗口</string>
+	<key>No recording in progress</key>
+	<string>当前没有进行中的录制</string>
 	<key>No saved captures yet</key>
 	<string>还没有已存储的截屏</string>
+	<key>No sound from the microphone</key>
+	<string>麦克风没有声音</string>
+	<key>No text found in this selection</key>
+	<string>此选区中未找到文字</string>
+	<key>Not enough disk space to record.</key>
+	<string>磁盘空间不足，无法录制。</string>
+	<key>Not enough free disk space for this recording: it needs about %@ free, and %@ is available. Free up some space and try again.</key>
+	<string>磁盘空间不足，无法进行此录制：大约需要 %@ 可用空间，当前可用 %@。请释放一些空间后重试。</string>
+	<key>Not enough free disk space for this recording: it needs about %@ free, and %@ is available. Free up space, or choose Balanced quality or 30 fps.</key>
+	<string>磁盘空间不足，无法进行此录制：大约需要 %@ 可用空间，当前可用 %@。请释放空间，或选择“均衡”质量或 30 fps。</string>
 	<key>Not now</key>
 	<string>以后再说</string>
+	<key>Nothing was recorded — the screen didn't send any picture. Try again.</key>
+	<string>未录制任何内容 — 屏幕没有传送画面。请重试。</string>
 	<key>Numbered Steps</key>
 	<string>编号步骤</string>
 	<key>OCR / Capture Text</key>
@@ -524,12 +744,22 @@
 	<string>关闭</string>
 	<key>Older</key>
 	<string>更早</string>
+	<key>Open</key>
+	<string>打开</string>
+	<key>Open %@</key>
+	<string>打开 %@</string>
 	<key>Open Command Center</key>
 	<string>打开命令中心</string>
+	<key>Open Editor After Recording</key>
+	<string>录制后打开编辑器</string>
 	<key>Open History</key>
 	<string>打开历史记录</string>
 	<key>Open Keyboard Settings</key>
 	<string>打开键盘设置</string>
+	<key>Open Link</key>
+	<string>打开链接</string>
+	<key>Open Messages</key>
+	<string>打开“信息”</string>
 	<key>Open Settings</key>
 	<string>打开设置</string>
 	<key>Open System Settings</key>
@@ -548,20 +778,38 @@
 	<string>缩略图位置</string>
 	<key>Padding</key>
 	<string>边距</string>
+	<key>Password</key>
+	<string>密码</string>
 	<key>Paste</key>
 	<string>粘贴</string>
 	<key>Pause / Resume Recording</key>
 	<string>暂停/继续录制</string>
 	<key>Pause Recording</key>
 	<string>暂停录制</string>
+	<key>Pause recording</key>
+	<string>暂停录制</string>
+	<key>Pause recording (%@)</key>
+	<string>暂停录制（%@）</string>
+	<key>Paused</key>
+	<string>已暂停</string>
 	<key>Pending</key>
 	<string>待完成</string>
 	<key>Permission needed</key>
 	<string>需要权限</string>
+	<key>Phone</key>
+	<string>电话</string>
+	<key>Phone QR found</key>
+	<string>找到电话二维码</string>
+	<key>Pin</key>
+	<string>贴到屏幕</string>
 	<key>Pin to Screen</key>
 	<string>贴到屏幕</string>
 	<key>Pine Dusk</key>
 	<string>松林暮色</string>
+	<key>Pinned Screenshot</key>
+	<string>贴图</string>
+	<key>Pinned screenshot</key>
+	<string>贴图</string>
 	<key>Pixelate</key>
 	<string>像素化</string>
 	<key>Pixelated area</key>
@@ -582,12 +830,20 @@
 	<string>按下 %@ 截取你的第一张截屏</string>
 	<key>Preview</key>
 	<string>预览</string>
+	<key>Preview the target, then continue to recording controls.</key>
+	<string>预览目标，然后继续设置录制。</string>
 	<key>Prism Sweep</key>
 	<string>棱镜流光</string>
 	<key>Privacy Policy</key>
 	<string>隐私政策</string>
 	<key>Purple</key>
 	<string>紫色</string>
+	<key>QR Code</key>
+	<string>二维码</string>
+	<key>QR Codes</key>
+	<string>二维码</string>
+	<key>QR copied to clipboard</key>
+	<string>已将二维码内容拷贝到剪贴板</string>
 	<key>Quality</key>
 	<string>质量</string>
 	<key>Quit &amp; Reopen</key>
@@ -604,8 +860,14 @@
 	<string>就绪</string>
 	<key>Ready · %lld optional off</key>
 	<string>就绪 · %lld 个可选快捷键未设置</string>
+	<key>Recognized Text</key>
+	<string>识别出的文字</string>
+	<key>Recognized text</key>
+	<string>识别出的文字</string>
 	<key>Record</key>
 	<string>录制</string>
+	<key>Record (Return)</key>
+	<string>录制（Return 键）</string>
 	<key>Record Area</key>
 	<string>录制区域</string>
 	<key>Record Fullscreen</key>
@@ -620,12 +882,36 @@
 	<string>录制电脑声音</string>
 	<key>Recording</key>
 	<string>录制</string>
+	<key>Recording already in progress</key>
+	<string>已在录制中</string>
+	<key>Recording canceled</key>
+	<string>已取消录制</string>
+	<key>Recording controls</key>
+	<string>录制控制</string>
+	<key>Recording discarded</key>
+	<string>已丢弃录制内容</string>
+	<key>Recording failed before saving.</key>
+	<string>录制在存储前失败。</string>
+	<key>Recording keyboard shortcuts</key>
+	<string>正在录制快捷键</string>
 	<key>Recording paused — click to stop (%@)</key>
 	<string>录制已暂停 — 点按即可停止（%@）</string>
 	<key>Recording shortcuts are unassigned by default — click a field to set one. Stop Recording also cancels recording setup. While recording, %@ always stops it, from any app.</key>
 	<string>录制快捷键默认未设置 — 点按字段即可设置。“停止录制”也会取消录制准备。录制时，在任何 App 中按 %@ 都能停止录制。</string>
+	<key>Recording stopped early — saved what was captured.</key>
+	<string>录制提前停止 — 已存储录到的内容。</string>
+	<key>Recording the camera</key>
+	<string>正在录制摄像头</string>
+	<key>Recording time</key>
+	<string>录制时长</string>
+	<key>Recording without the camera.</key>
+	<string>将在没有摄像头的情况下录制。</string>
 	<key>Recording — click to stop (%@)</key>
 	<string>正在录制 — 点按即可停止（%@）</string>
+	<key>Records %@ × %@ pixels (%@ × %@ points)</key>
+	<string>录制 %@ × %@ 像素（%@ × %@ 点）</string>
+	<key>Records the pointer separately, so the editor can smooth it, resize it, and keep it crisp when zoomed.</key>
+	<string>单独录制指针，以便编辑器平滑指针、调整其大小，并在缩放时保持清晰。</string>
 	<key>Recovered your interrupted recording “%@”. Click to open it.</key>
 	<string>已恢复你中断的录制内容“%@”。点按即可打开。</string>
 	<key>Rectangle</key>
@@ -648,12 +934,36 @@
 	<string>恢复默认设置</string>
 	<key>Reset crop</key>
 	<string>重置裁剪</string>
+	<key>Resize</key>
+	<string>调整大小</string>
 	<key>Restore Apple Shortcuts</key>
 	<string>恢复 Apple 快捷键</string>
 	<key>Resume Recording</key>
 	<string>继续录制</string>
+	<key>Resume recording</key>
+	<string>继续录制</string>
+	<key>Resume recording (%@)</key>
+	<string>继续录制（%@）</string>
 	<key>Review Changes…</key>
 	<string>检查更改…</string>
+	<key>Review the decoded email payload before copying.</key>
+	<string>拷贝前请检查解码出的电子邮件内容。</string>
+	<key>Review the decoded link before opening.</key>
+	<string>打开前请检查解码出的链接。</string>
+	<key>Review the decoded link before opening: %@</key>
+	<string>打开前请检查解码出的链接：%@</string>
+	<key>Review the decoded text before copying.</key>
+	<string>拷贝前请检查解码出的文字。</string>
+	<key>Review the decoded values before copying or opening.</key>
+	<string>拷贝或打开前，请检查解码后的值。</string>
+	<key>Review the email details before composing.</key>
+	<string>撰写前请检查电子邮件详情。</string>
+	<key>Review the message details before opening.</key>
+	<string>打开前请检查信息详情。</string>
+	<key>Review the network details before copying.</key>
+	<string>拷贝前请检查网络详情。</string>
+	<key>Review the phone number before opening.</key>
+	<string>打开前请检查电话号码。</string>
 	<key>Right</key>
 	<string>右侧</string>
 	<key>Rose Smoke</key>
@@ -682,8 +992,12 @@
 	<string>要存储对此截屏的更改吗？</string>
 	<key>Save folder updated.</key>
 	<string>存储文件夹已更新。</string>
+	<key>Save screenshot to disk</key>
+	<string>将截屏存储到磁盘</string>
 	<key>Saved</key>
 	<string>已存储</string>
+	<key>Saved %@ to %@ — click to reveal in Finder</key>
+	<string>已将“%1$@”存储到“%2$@” — 点按以在“访达”中显示</string>
 	<key>Saved capture</key>
 	<string>已存储的截屏</string>
 	<key>Saved to %@: %@</key>
@@ -692,8 +1006,14 @@
 	<string>存储…</string>
 	<key>Saving captures to History</key>
 	<string>正在将截屏存储到历史记录</string>
+	<key>Saving the last recording…</key>
+	<string>正在存储上一段录制内容…</string>
 	<key>Saving the recording</key>
 	<string>正在存储录制内容</string>
+	<key>Saving the recording…</key>
+	<string>正在存储录制内容…</string>
+	<key>Saving the screen recording</key>
+	<string>正在存储屏幕录制内容</string>
 	<key>Saving…</key>
 	<string>正在存储…</string>
 	<key>Scan QR Code</key>
@@ -702,26 +1022,58 @@
 	<string>屏幕录制</string>
 	<key>Screen Recording Permission Required</key>
 	<string>需要屏幕录制权限</string>
+	<key>Screen recording didn't start in time. Try again.</key>
+	<string>屏幕录制未能及时开始。请重试。</string>
 	<key>Screenshot Editor</key>
 	<string>截屏编辑器</string>
 	<key>Screenshot canvas</key>
 	<string>截屏画布</string>
+	<key>Screenshot captured</key>
+	<string>已截屏</string>
+	<key>Screenshot selection</key>
+	<string>截屏选区</string>
+	<key>Screenshot thumbnail</key>
+	<string>截屏缩略图</string>
 	<key>Screenshots</key>
 	<string>截屏</string>
+	<key>Scroll down to capture</key>
+	<string>向下滚动以捕捉</string>
+	<key>Scroll down to capture more</key>
+	<string>向下滚动以捕捉更多</string>
+	<key>Scrolled too fast — scroll back up a little</key>
+	<string>滚动太快 — 请往回滚动一点</string>
 	<key>Scrolling</key>
 	<string>滚动</string>
 	<key>Scrolling Capture</key>
 	<string>滚动截屏</string>
 	<key>Scrolling capture</key>
 	<string>滚动截屏</string>
+	<key>Scrolling capture controls</key>
+	<string>滚动截屏控制</string>
+	<key>Scrolling capture failed</key>
+	<string>滚动截屏失败</string>
+	<key>Scrolling capture reached its maximum length (%lld points) and finished.</key>
+	<string>滚动截屏已达到最大长度（%lld 点），已完成。</string>
+	<key>Scrolling capture stopped after %lld minutes.</key>
+	<string>滚动截屏已在 %lld 分钟后停止。</string>
 	<key>Search text in captures</key>
 	<string>搜索截屏中的文字</string>
+	<key>Security</key>
+	<string>安全性</string>
 	<key>Select</key>
 	<string>选择</string>
 	<key>Select All</key>
 	<string>全选</string>
+	<key>Select a window to record without blocking other apps</key>
+	<string>选择要录制的窗口，不影响其他 App 的使用</string>
+	<key>Select which display to record fullscreen</key>
+	<string>选择要全屏录制的显示器</string>
 	<key>Selection</key>
 	<string>选区</string>
+	<key>Selection %@ by %@ points</key>
+	<string>选区宽 %@ 点、高 %@ 点</string>
+	<key>Selection %@ by %@ points. Arrow keys move it, Return captures, Escape cancels.</key>
+	<string>选区宽 %@ 点、高 %@ 点。方向键可移动选区，按 Return 键捕捉，按 Esc 键取消。</string>
 	<key>Set In to Playhead</key>
 	<string>将入点设为播放头位置</string>
 	<key>Set Out to Playhead</key>
@@ -742,12 +1094,16 @@
 	<string>快捷键</string>
 	<key>Shotnix Preferences</key>
 	<string>Shotnix 设置</string>
+	<key>Shotnix can't write to the save folder. Choose another one in Settings → Screenshots.</key>
+	<string>Shotnix 无法写入存储文件夹。请在“设置”→“截屏”中选择其他文件夹。</string>
 	<key>Shotnix could not write the file to:
 %@</key>
 	<string>Shotnix 无法将文件写入：
 %@</string>
 	<key>Shotnix is ready to use!</key>
 	<string>Shotnix 已可以使用！</string>
+	<key>Shotnix isn't allowed to record the screen. Turn it on in System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording.</key>
+	<string>Shotnix 无权录制屏幕。请在“系统设置”→“隐私与安全性”→“录屏与系统录音”中开启。</string>
 	<key>Shotnix lives here — setup continues next launch</key>
 	<string>Shotnix 就在这里 — 下次启动时将继续设置</string>
 	<key>Shotnix lives in your menu bar</key>
@@ -786,6 +1142,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>大小</string>
 	<key>Skip Setup</key>
 	<string>跳过设置</string>
+	<key>Skipping frames</key>
+	<string>正在丢帧</string>
 	<key>Sky Wash</key>
 	<string>天空水彩</string>
 	<key>Solid Color</key>
@@ -806,20 +1164,38 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>启动</string>
 	<key>Step %lld</key>
 	<string>步骤 %lld</string>
+	<key>Still saving the last recording — try again in a moment.</key>
+	<string>仍在存储上一段录制内容 — 请稍后再试。</string>
+	<key>Still saving the recording…</key>
+	<string>仍在存储录制内容…</string>
+	<key>Stitching…</key>
+	<string>正在拼接…</string>
 	<key>Stop Recording</key>
 	<string>停止录制</string>
+	<key>Stop recording</key>
+	<string>停止录制</string>
+	<key>Stop recording (%@)</key>
+	<string>停止录制（%@）</string>
 	<key>Storage</key>
 	<string>存储空间</string>
 	<key>Strength</key>
 	<string>强度</string>
 	<key>Style</key>
 	<string>样式</string>
+	<key>Subject</key>
+	<string>主题</string>
 	<key>Sunset Coral</key>
 	<string>日落珊瑚</string>
 	<key>Support</key>
 	<string>支持</string>
 	<key>System Default</key>
 	<string>系统默认</string>
+	<key>System audio</key>
+	<string>电脑声音</string>
+	<key>System audio couldn't be recorded. Try again without system audio.</key>
+	<string>无法录制电脑声音。请关闭电脑声音后重试。</string>
+	<key>Table copied — paste it into a spreadsheet</key>
+	<string>已拷贝表格 — 可粘贴到电子表格中</string>
 	<key>Tahoe Ice</key>
 	<string>太浩冰蓝</string>
 	<key>Take a Test Screenshot</key>
@@ -830,20 +1206,46 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>模板</string>
 	<key>Text</key>
 	<string>文字</string>
+	<key>Text QR found</key>
+	<string>找到文字二维码</string>
 	<key>Text Recognition</key>
 	<string>文字识别</string>
+	<key>Text copied</key>
+	<string>已拷贝文字</string>
+	<key>Text copied to clipboard</key>
+	<string>已将文字拷贝到剪贴板</string>
+	<key>Text recognition failed</key>
+	<string>文字识别失败</string>
 	<key>Text size</key>
 	<string>文字大小</string>
 	<key>Text: %@</key>
 	<string>文字：%@</string>
+	<key>That display isn't available anymore.</key>
+	<string>该显示器已不可用。</string>
+	<key>That display or window isn't available anymore.</key>
+	<string>该显示器或窗口已不可用。</string>
+	<key>That window closed before recording could start.</key>
+	<string>窗口在录制开始前已关闭。</string>
+	<key>The camera couldn't start.</key>
+	<string>无法启动摄像头。</string>
+	<key>The camera stopped. The recording continues without it.</key>
+	<string>摄像头已停止。录制将在没有摄像头的情况下继续。</string>
 	<key>The menu bar icon is Shotnix's main entry point. While it is hidden, open Shotnix again from Finder, Launchpad, or Spotlight to bring these Preferences back.</key>
 	<string>菜单栏图标是 Shotnix 的主要入口。隐藏后，可从“访达”、“启动台”或“聚焦”再次打开 Shotnix 来重新显示这些设置。</string>
+	<key>The microphone couldn't start, so this recording has no mic.</key>
+	<string>麦克风无法启动，因此此录制内容没有麦克风声音。</string>
+	<key>The microphone stopped working. The recording continues without it.</key>
+	<string>麦克风已停止工作。录制将在没有麦克风的情况下继续。</string>
+	<key>The recording couldn't be finished — saved the first %@.</key>
+	<string>录制无法完成 — 已存储前 %@。</string>
 	<key>The save panel did not return a destination. Please try saving again.</key>
 	<string>存储面板未返回存储位置。请再次尝试存储。</string>
 	<key>The screenshot has no image data.</key>
 	<string>截屏不含图像数据。</string>
 	<key>The selection stays on screen to adjust — drag its edges, nudge it with the arrow keys, then press Return. Hold ⇧ as you release to capture right away.</key>
 	<string>选区会留在屏幕上供你调整 — 拖移边缘、用方向键微调，然后按下 Return 键。松开时按住 ⇧ 可立即截屏。</string>
+	<key>The window you're recording closed. Stop when you're ready — the recording keeps going.</key>
+	<string>正在录制的窗口已关闭。准备好后再停止 — 录制仍在继续。</string>
 	<key>This Week</key>
 	<string>本周</string>
 	<key>Three quick steps and you're capturing.</key>
@@ -858,6 +1260,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>定时截屏会先选择区域，再倒计时截屏 — 让你有时间打开菜单或显示悬停状态。按 Esc 键可取消。</string>
 	<key>Timeline</key>
 	<string>时间线</string>
+	<key>To</key>
+	<string>收件人</string>
 	<key>Today</key>
 	<string>今天</string>
 	<key>Tools</key>
@@ -866,6 +1270,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>现在就试试 — “捕捉区域”也在菜单栏中。</string>
 	<key>Type here…</key>
 	<string>在此输入…</string>
+	<key>URL</key>
+	<string>网址</string>
 	<key>Undo</key>
 	<string>撤销</string>
 	<key>Undo Timeline Edit</key>
@@ -886,6 +1292,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>视频</string>
 	<key>Violet Bloom</key>
 	<string>紫罗兰绽放</string>
+	<key>Warning</key>
+	<string>警告</string>
 	<key>Website</key>
 	<string>网站</string>
 	<key>Welcome to Shotnix</key>
@@ -894,12 +1302,20 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>新功能</string>
 	<key>White</key>
 	<string>白色</string>
+	<key>Wi-Fi</key>
+	<string>无线局域网</string>
+	<key>Wi-Fi QR found</key>
+	<string>找到无线局域网二维码</string>
 	<key>Window</key>
 	<string>窗口</string>
 	<key>Window Capture</key>
 	<string>窗口截屏</string>
+	<key>Window capture</key>
+	<string>窗口截屏</string>
 	<key>Window captures are isolated — nothing overlapping shows through. With this on they get transparent padding and a soft drop shadow.</key>
 	<string>窗口截屏只包含窗口本身，不会带入任何遮挡的内容。开启后，截屏会带有透明边距和柔和的投影。</string>
+	<key>Window closed</key>
+	<string>窗口已关闭</string>
 	<key>Writable</key>
 	<string>可写入</string>
 	<key>Yellow</key>
@@ -910,12 +1326,26 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>你有 %lld 张截屏的编辑尚未存储。</string>
 	<key>You're all set — Shotnix lives here</key>
 	<string>一切就绪 — Shotnix 就在这里</string>
+	<key>Your Mac can't keep up with this recording and is skipping frames. Balanced quality or 30 fps will help.</key>
+	<string>你的 Mac 跟不上此录制，正在丢帧。选择“均衡”质量或 30 fps 会有帮助。</string>
 	<key>Your camera is recorded as its own layer: a live bubble shows while you record (it never appears in the screen capture), and the editor lets you move, resize, and restyle it — or hide it — afterwards.</key>
 	<string>摄像头画面会录制为单独的图层：录制时会显示实时气泡（它不会出现在屏幕录制中），之后你可以在编辑器中移动它、调整大小和更改样式，也可以将其隐藏。</string>
+	<key>Your disk filled up — saved the first %@.</key>
+	<string>磁盘已满 — 已存储前 %@。</string>
+	<key>Your disk is almost full, so the recording stopped. It's saved.</key>
+	<string>磁盘空间即将用完，录制已停止。录制内容已存储。</string>
+	<key>Your disk is almost full. In about %lld minutes the recording stops and saves itself.</key>
+	<string>磁盘空间即将用完。大约 %lld 分钟后，录制将停止并自动存储。</string>
+	<key>Your disk is almost full. In about %lld seconds the recording stops and saves itself.</key>
+	<string>磁盘空间即将用完。大约 %lld 秒后，录制将停止并自动存储。</string>
+	<key>Your disk is full, so the recording couldn't be saved.</key>
+	<string>磁盘已满，无法存储录制内容。</string>
 	<key>Your edits will be lost if you close without saving or copying them.</key>
 	<string>如果关闭前不存储或拷贝，你的编辑将会丢失。</string>
 	<key>Zoom</key>
 	<string>缩放</string>
+	<key>a table</key>
+	<string>1 个表格</string>
 	<key>macOS screenshot shortcuts (⌘⇧3, ⌘⇧4, ⌘⇧5) conflict with Shotnix.
 
 Disable them so Shotnix owns the capture shortcuts and screenshots do not double-trigger.
@@ -926,11 +1356,29 @@ You can re-enable Apple's shortcuts anytime in System Settings → Keyboard → 
 停用它们，让 Shotnix 接管截屏快捷键，避免重复截屏。
 
 你可以随时在“系统设置”→“键盘”→“键盘快捷键”→“截屏”中重新启用 Apple 的快捷键。</string>
+	<key>mic</key>
+	<string>麦克风</string>
+	<key>no audio</key>
+	<string>无音频</string>
+	<key>sys+mic</key>
+	<string>系统+麦克风</string>
+	<key>system</key>
+	<string>系统</string>
+	<key>up to %@ GB/min</key>
+	<string>最多 %@ GB/分钟</string>
+	<key>up to %@ MB/min</key>
+	<string>最多 %@ MB/分钟</string>
 	<key>© 2026 Shotnix Contributors</key>
 	<string>© 2026 Shotnix 贡献者</string>
 	<key>“%@” found in %lld of %lld captures</key>
 	<string>在 %3$lld 张截屏中的 %2$lld 张里找到“%1$@”</string>
 	<key>✓ Copied to clipboard</key>
 	<string>✓ 已拷贝到剪贴板</string>
+	<key>✓ Saved screenshot</key>
+	<string>✓ 已存储截屏</string>
+	<key>✓ Text copied to clipboard</key>
+	<string>✓ 已将文字拷贝到剪贴板</string>
+	<key>✓ Text copied · %@ — click for options</key>
+	<string>✓ 已拷贝文字 · %@ — 点按查看选项</string>
 </dict>
 </plist>

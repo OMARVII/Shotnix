@@ -7,6 +7,8 @@ struct QRCodePayloadField: Hashable {
 
 struct QRCodePayload: Hashable {
     let rawValue: String
+    /// What the code holds, for a list of several ("Link", "Wi-Fi").
+    let kind: String
     let title: String
     let detail: String
     let fields: [QRCodePayloadField]
@@ -16,7 +18,12 @@ struct QRCodePayload: Hashable {
 
     var displayText: String {
         guard !fields.isEmpty else { return rawValue }
-        return fields.map { "\($0.label): \($0.value)" }.joined(separator: "\n")
+        return Self.lines(fields)
+    }
+
+    /// "Label: value" lines — shown, and copied, in the user's language.
+    static func lines(_ fields: [QRCodePayloadField]) -> String {
+        fields.map { field in L("\(field.label): \(field.value)") }.joined(separator: "\n")
     }
 
     static func parse(_ rawValue: String) -> QRCodePayload {
@@ -41,10 +48,11 @@ struct QRCodePayload: Hashable {
         if let url = webURL(from: trimmed) {
             return QRCodePayload(
                 rawValue: trimmed,
-                title: "Link QR found",
-                detail: url.host.map { "Review the decoded link before opening: \($0)" } ?? "Review the decoded link before opening.",
-                fields: [QRCodePayloadField(label: "URL", value: trimmed)],
-                actionTitle: "Open Link",
+                kind: L("Link"),
+                title: L("Link QR found"),
+                detail: url.host.map { host in L("Review the decoded link before opening: \(host)") } ?? L("Review the decoded link before opening."),
+                fields: [QRCodePayloadField(label: L("URL"), value: trimmed)],
+                actionTitle: L("Open Link"),
                 actionURL: url,
                 copyValue: trimmed
             )
@@ -52,9 +60,10 @@ struct QRCodePayload: Hashable {
 
         return QRCodePayload(
             rawValue: trimmed,
-            title: "Text QR found",
-            detail: "Review the decoded text before copying.",
-            fields: [QRCodePayloadField(label: "Text", value: trimmed)],
+            kind: L("Text"),
+            title: L("Text QR found"),
+            detail: L("Review the decoded text before copying."),
+            fields: [QRCodePayloadField(label: L("Text"), value: trimmed)],
             actionTitle: nil,
             actionURL: nil,
             copyValue: trimmed
@@ -68,18 +77,19 @@ struct QRCodePayload: Hashable {
         let subject = fieldsByKey["SUB"] ?? ""
         let message = fieldsByKey["BODY"] ?? ""
         var fields = [QRCodePayloadField]()
-        if !to.isEmpty { fields.append(QRCodePayloadField(label: "To", value: to)) }
-        if !subject.isEmpty { fields.append(QRCodePayloadField(label: "Subject", value: subject)) }
-        if !message.isEmpty { fields.append(QRCodePayloadField(label: "Message", value: message)) }
+        if !to.isEmpty { fields.append(QRCodePayloadField(label: L("To"), value: to)) }
+        if !subject.isEmpty { fields.append(QRCodePayloadField(label: L("Subject"), value: subject)) }
+        if !message.isEmpty { fields.append(QRCodePayloadField(label: L("Message"), value: message)) }
 
         return QRCodePayload(
             rawValue: rawValue,
-            title: "Email QR found",
-            detail: to.isEmpty ? "Review the decoded email payload before copying." : "Review the email details before composing.",
-            fields: fields.isEmpty ? [QRCodePayloadField(label: "Email", value: rawValue)] : fields,
-            actionTitle: to.isEmpty ? nil : "Compose Email",
+            kind: L("Email"),
+            title: L("Email QR found"),
+            detail: to.isEmpty ? L("Review the decoded email payload before copying.") : L("Review the email details before composing."),
+            fields: fields.isEmpty ? [QRCodePayloadField(label: L("Email"), value: rawValue)] : fields,
+            actionTitle: to.isEmpty ? nil : L("Compose Email"),
             actionURL: to.isEmpty ? nil : mailURL(to: to, subject: subject, body: message),
-            copyValue: fields.isEmpty ? rawValue : fields.map { "\($0.label): \($0.value)" }.joined(separator: "\n")
+            copyValue: fields.isEmpty ? rawValue : lines(fields)
         )
     }
 
@@ -91,18 +101,19 @@ struct QRCodePayload: Hashable {
         let body = queryItems.first(where: { $0.name.lowercased() == "body" })?.value ?? ""
 
         var fields = [QRCodePayloadField]()
-        if !recipients.isEmpty { fields.append(QRCodePayloadField(label: "To", value: recipients)) }
-        if !subject.isEmpty { fields.append(QRCodePayloadField(label: "Subject", value: subject)) }
-        if !body.isEmpty { fields.append(QRCodePayloadField(label: "Message", value: body)) }
+        if !recipients.isEmpty { fields.append(QRCodePayloadField(label: L("To"), value: recipients)) }
+        if !subject.isEmpty { fields.append(QRCodePayloadField(label: L("Subject"), value: subject)) }
+        if !body.isEmpty { fields.append(QRCodePayloadField(label: L("Message"), value: body)) }
 
         return QRCodePayload(
             rawValue: rawValue,
-            title: "Email QR found",
-            detail: recipients.isEmpty ? "Review the decoded email payload before copying." : "Review the email details before composing.",
-            fields: fields.isEmpty ? [QRCodePayloadField(label: "Email", value: rawValue)] : fields,
-            actionTitle: recipients.isEmpty ? nil : "Compose Email",
+            kind: L("Email"),
+            title: L("Email QR found"),
+            detail: recipients.isEmpty ? L("Review the decoded email payload before copying.") : L("Review the email details before composing."),
+            fields: fields.isEmpty ? [QRCodePayloadField(label: L("Email"), value: rawValue)] : fields,
+            actionTitle: recipients.isEmpty ? nil : L("Compose Email"),
             actionURL: URL(string: rawValue),
-            copyValue: fields.isEmpty ? rawValue : fields.map { "\($0.label): \($0.value)" }.joined(separator: "\n")
+            copyValue: fields.isEmpty ? rawValue : lines(fields)
         )
     }
 
@@ -110,10 +121,11 @@ struct QRCodePayload: Hashable {
         let number = String(rawValue.dropFirst("tel:".count))
         return QRCodePayload(
             rawValue: rawValue,
-            title: "Phone QR found",
-            detail: "Review the phone number before opening.",
-            fields: [QRCodePayloadField(label: "Phone", value: number)],
-            actionTitle: "Call",
+            kind: L("Phone"),
+            title: L("Phone QR found"),
+            detail: L("Review the phone number before opening."),
+            fields: [QRCodePayloadField(label: L("Phone"), value: number)],
+            actionTitle: L("Call"),
             actionURL: URL(string: rawValue),
             copyValue: number
         )
@@ -139,17 +151,18 @@ struct QRCodePayload: Hashable {
             actionURL = URL(string: "sms:\(number)")
         }
 
-        var fields = [QRCodePayloadField(label: "To", value: number)]
-        if !message.isEmpty { fields.append(QRCodePayloadField(label: "Message", value: message)) }
+        var fields = [QRCodePayloadField(label: L("To"), value: number)]
+        if !message.isEmpty { fields.append(QRCodePayloadField(label: L("Message"), value: message)) }
 
         return QRCodePayload(
             rawValue: rawValue,
-            title: "Message QR found",
-            detail: "Review the message details before opening.",
+            kind: L("Message"),
+            title: L("Message QR found"),
+            detail: L("Review the message details before opening."),
             fields: fields,
-            actionTitle: number.isEmpty ? nil : "Open Messages",
+            actionTitle: number.isEmpty ? nil : L("Open Messages"),
             actionURL: actionURL,
-            copyValue: fields.map { "\($0.label): \($0.value)" }.joined(separator: "\n")
+            copyValue: lines(fields)
         )
     }
 
@@ -162,19 +175,20 @@ struct QRCodePayload: Hashable {
         let hidden = fieldsByKey["H"] ?? ""
 
         var fields = [QRCodePayloadField]()
-        if !ssid.isEmpty { fields.append(QRCodePayloadField(label: "Network", value: ssid)) }
-        if !security.isEmpty { fields.append(QRCodePayloadField(label: "Security", value: security)) }
-        if !password.isEmpty, security.lowercased() != "nopass" { fields.append(QRCodePayloadField(label: "Password", value: password)) }
-        if !hidden.isEmpty { fields.append(QRCodePayloadField(label: "Hidden", value: hidden)) }
+        if !ssid.isEmpty { fields.append(QRCodePayloadField(label: L("Network"), value: ssid)) }
+        if !security.isEmpty { fields.append(QRCodePayloadField(label: L("Security"), value: security)) }
+        if !password.isEmpty, security.lowercased() != "nopass" { fields.append(QRCodePayloadField(label: L("Password"), value: password)) }
+        if !hidden.isEmpty { fields.append(QRCodePayloadField(label: L("Hidden"), value: hidden)) }
 
         return QRCodePayload(
             rawValue: rawValue,
-            title: "Wi-Fi QR found",
-            detail: "Review the network details before copying.",
-            fields: fields.isEmpty ? [QRCodePayloadField(label: "Wi-Fi", value: rawValue)] : fields,
+            kind: L("Wi-Fi"),
+            title: L("Wi-Fi QR found"),
+            detail: L("Review the network details before copying."),
+            fields: fields.isEmpty ? [QRCodePayloadField(label: L("Wi-Fi"), value: rawValue)] : fields,
             actionTitle: nil,
             actionURL: nil,
-            copyValue: fields.isEmpty ? rawValue : fields.map { "\($0.label): \($0.value)" }.joined(separator: "\n")
+            copyValue: fields.isEmpty ? rawValue : lines(fields)
         )
     }
 

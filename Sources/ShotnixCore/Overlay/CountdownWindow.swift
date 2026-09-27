@@ -16,9 +16,10 @@ final class CountdownWindow: NSWindow {
     private var didFinish = false
 
     private let circleSize: CGFloat = 150
+    private static let hintFont = NSFont.systemFont(ofSize: 11, weight: .semibold)
     private var circleView = NSView()
     private let numberField = NSTextField(labelWithString: "")
-    private let hintField = NSTextField(labelWithString: "Click or press Esc to cancel")
+    private let hintField = NSTextField(labelWithString: L("Click or press Esc to cancel"))
     private let progressRing = CAShapeLayer()
 
     /// - Parameter completion: called exactly once — `true` when the countdown
@@ -28,7 +29,9 @@ final class CountdownWindow: NSWindow {
         self.remaining = max(1, seconds)
         self.completion = completion
 
-        let size = NSSize(width: 220, height: 196)
+        // Wide enough for the circle, or for the cancel hint in a longer language.
+        let hintWidth = TextFitting.width(of: L("Click or press Esc to cancel"), font: Self.hintFont)
+        let size = NSSize(width: max(220, hintWidth + 4 + 22 + 16), height: 196)
         let origin = NSPoint(
             x: screen.frame.midX - size.width / 2,
             y: screen.frame.midY - size.height / 2
@@ -162,7 +165,7 @@ final class CountdownWindow: NSWindow {
 
         // Dark capsule behind the hint so it reads on any wallpaper — bare
         // text below the circle disappears over light content.
-        hintField.font = .systemFont(ofSize: 11, weight: .semibold)
+        hintField.font = Self.hintFont
         hintField.textColor = NSColor.white.withAlphaComponent(0.78)
         hintField.alignment = .center
         hintField.sizeToFit()
@@ -186,7 +189,7 @@ final class CountdownWindow: NSWindow {
     /// Sizes the label to its content and centers it optically in the circle
     /// (digits carry no descender, so pure frame-centering sits visibly low).
     private func updateNumber(animated: Bool) {
-        numberField.stringValue = "\(remaining)"
+        numberField.stringValue = "\(remaining)" // l10n-ignore: a digit
         numberField.sizeToFit()
         let bounds = circleView.bounds
         numberField.setFrameOrigin(NSPoint(

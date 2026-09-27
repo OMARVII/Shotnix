@@ -51,7 +51,7 @@ final class CaptureEngine {
     var recordingIsSaving: Bool { recordingEngine.isSaving }
     var recordingIsPaused: Bool { recordingEngine.isPaused }
     var recordingStopEnabled: Bool { recordingEngine.elapsedSeconds != nil || recordingSetupActive }
-    var recordingStopTitle: String { recordingEngine.elapsedSeconds != nil ? "Stop Recording" : "Cancel Recording" }
+    var recordingStopTitle: String { recordingEngine.elapsedSeconds != nil ? L("Stop Recording") : L("Cancel Recording") }
     /// Setting up the next recording is fine while the last one saves.
     var recordingActionsEnabled: Bool { recordingEngine.elapsedSeconds == nil && !recordingSetupActive }
     var recordingElapsedSeconds: TimeInterval? { recordingEngine.elapsedSeconds }
@@ -388,7 +388,7 @@ final class CaptureEngine {
             let content = try await SCShareableContent.excludingDesktopWindows(true, onScreenWindowsOnly: true)
             let choices = await recordingWindowChoices(from: content.windows)
             guard !choices.isEmpty else {
-                ToastWindow.show(message: "No recordable windows found")
+                ToastWindow.show(message: L("No recordable windows found"))
                 return
             }
 
@@ -412,7 +412,7 @@ final class CaptureEngine {
             chooser.show()
             CapturePerformance.mark("Record Window picker", since: started)
         } catch {
-            ToastWindow.show(message: "Could not list windows. Check permissions.")
+            ToastWindow.show(message: L("Could not list windows. Check permissions."))
             print("[Shotnix] Window picker failed: \(error)")
         }
     }
@@ -448,11 +448,11 @@ final class CaptureEngine {
 
     private func canBeginRecordingSetup() -> Bool {
         guard recordingEngine.elapsedSeconds == nil else {
-            ToastWindow.show(message: "Recording already in progress")
+            ToastWindow.show(message: L("Recording already in progress"))
             return false
         }
         guard !recordingSetupActive, !selectionInProgress else {
-            ToastWindow.show(message: "Finish or cancel the current recording setup")
+            ToastWindow.show(message: L("Finish or cancel the current recording setup"))
             return false
         }
         return true
@@ -464,9 +464,10 @@ final class CaptureEngine {
             guard Self.isRecordableWindowCandidate(window) else { return nil }
             if window.owningApplication?.processID == currentProcessID { return nil }
 
-            let appName = window.owningApplication?.applicationName.trimmingCharacters(in: .whitespacesAndNewlines) ?? "App"
+            let ownerName = window.owningApplication?.applicationName.trimmingCharacters(in: .whitespacesAndNewlines)
             let title = (window.title ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
-            guard !title.isEmpty || appName != "App" else { return nil }
+            guard !title.isEmpty || (ownerName != nil && ownerName != "App") else { return nil }
+            let appName = ownerName ?? L("App")
 
             let screen = screen(containingWindowFrame: window.frame) ?? NSScreen.main ?? NSScreen.screens.first
             guard let screen else { return nil }
@@ -583,7 +584,7 @@ final class CaptureEngine {
 
         let title = (window.title ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
         let appName = window.owningApplication?.applicationName.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        let searchText = "\(appName) \(title)".localizedLowercase
+        let searchText = "\(appName) \(title)".localizedLowercase // l10n-ignore: matched, never shown
         let blockedFragments = ["backstop", "underbelly"]
         return !blockedFragments.contains { searchText.contains($0) }
     }
@@ -661,16 +662,16 @@ final class CaptureEngine {
 
         if recordingSetupActive {
             cancelRecordingSetup()
-            ToastWindow.show(message: "Recording canceled")
+            ToastWindow.show(message: L("Recording canceled"))
             return
         }
 
-        ToastWindow.show(message: recordingEngine.isSaving ? "Saving the recording…" : "No recording in progress")
+        ToastWindow.show(message: recordingEngine.isSaving ? L("Saving the recording…") : L("No recording in progress"))
     }
 
     func togglePauseRecording() {
         guard recordingEngine.elapsedSeconds != nil else {
-            ToastWindow.show(message: "No recording in progress")
+            ToastWindow.show(message: L("No recording in progress"))
             return
         }
         recordingEngine.togglePause()
@@ -784,7 +785,7 @@ final class CaptureEngine {
             }
             Task {
                 guard let image = await self.captureRectToImage(rect, on: screen) else {
-                    ToastWindow.show(message: "Capture failed", on: screen)
+                    ToastWindow.show(message: L("Capture failed"), on: screen)
                     self.restoreDesktopIconsIfNeeded(hiddenByCapture)
                     return
                 }
@@ -794,7 +795,7 @@ final class CaptureEngine {
                         // Only touch the pasteboard when there is actual text —
                         // never clobber the user's clipboard for an empty result.
                         if result.isEmpty {
-                            ToastWindow.show(message: "No text found in this selection", on: screen)
+                            ToastWindow.show(message: L("No text found in this selection"), on: screen)
                         } else {
                             NSPasteboard.general.clearContents()
                             NSPasteboard.general.setString(result.text, forType: .string)
@@ -806,7 +807,7 @@ final class CaptureEngine {
                 } catch {
                     print("[Shotnix] OCR failed: \(error)")
                     await MainActor.run {
-                        ToastWindow.show(message: "Text recognition failed", on: screen)
+                        ToastWindow.show(message: L("Text recognition failed"), on: screen)
                     }
                 }
                 self.restoreDesktopIconsIfNeeded(hiddenByCapture)
@@ -832,14 +833,14 @@ final class CaptureEngine {
             }
             Task {
                 guard let image = await self.captureRectToImage(rect, on: screen) else {
-                    ToastWindow.show(message: "Capture failed", on: screen)
+                    ToastWindow.show(message: L("Capture failed"), on: screen)
                     self.restoreDesktopIconsIfNeeded(hiddenByCapture)
                     return
                 }
                 let results = await QRCodeEngine.detect(in: image)
                 await MainActor.run {
                     if results.isEmpty {
-                        ToastWindow.show(message: "No barcode found in this selection", on: screen)
+                        ToastWindow.show(message: L("No barcode found in this selection"), on: screen)
                     } else {
                         QRCodeResultWindow.show(results: results)
                     }
@@ -857,7 +858,7 @@ final class CaptureEngine {
         let rect = clamped.isNull ? rect : clamped
         guard let image = await captureRectToImage(rect, on: screen) else {
             print("[Shotnix] Capture failed for rect \(rect)")
-            ToastWindow.show(message: "Capture failed", on: screen)
+            ToastWindow.show(message: L("Capture failed"), on: screen)
             return
         }
         finishCapture(image: image, rect: rect, type: type, historyManager: historyManager, playSound: playSound, on: screen)
@@ -1294,7 +1295,7 @@ private struct RecordingWindowChoice {
     }
 
     var subtitle: String {
-        "\(appName) · \(pixelSizeText) px"
+        L("\(appName) · \(pixelSizeText) px")
     }
 }
 
@@ -1306,9 +1307,9 @@ enum RecordingTargetKind {
 
     var title: String {
         switch self {
-        case .area: return "Area"
-        case .window: return "Window"
-        case .fullscreen: return "Display"
+        case .area: return L("Area")
+        case .window: return L("Window")
+        case .fullscreen: return L("Display")
         }
     }
 
@@ -1405,12 +1406,13 @@ private final class RecordingWindowChooserWindow: NSWindow {
         panel.layer?.borderColor = NSColor.white.withAlphaComponent(0.16).cgColor
         root.addSubview(panel)
 
-        let title = label("Choose window", size: 16, weight: .bold, color: .white)
+        let title = label(L("Choose window"), size: 16, weight: .bold, color: .white)
         title.frame = NSRect(x: 24, y: frame.height - 42, width: 220, height: 20)
         panel.addSubview(title)
 
-        let subtitle = label("Select a window to record without blocking other apps", size: 10.5, weight: .semibold, color: NSColor.white.withAlphaComponent(0.48))
-        subtitle.frame = NSRect(x: 24, y: frame.height - 63, width: 360, height: 14)
+        // Runs under the close button's row, so it can take the panel's width.
+        let subtitle = label(L("Select a window to record without blocking other apps"), size: 10.5, weight: .semibold, color: NSColor.white.withAlphaComponent(0.48))
+        subtitle.frame = NSRect(x: 24, y: frame.height - 63, width: max(360, frame.width - 48), height: 14)
         panel.addSubview(subtitle)
 
         let closeButton = RecordingChooserCloseButton(frame: NSRect(x: frame.width - 44, y: frame.height - 44, width: 28, height: 28))
@@ -1537,7 +1539,7 @@ private final class RecordingWindowChoiceButton: NSButton {
         subtitleField.frame = NSRect(x: 244, y: frame.height - 62, width: frame.width - 390, height: 13)
         addSubview(subtitleField)
 
-        let description = NSTextField(labelWithString: "Preview the target, then continue to recording controls.")
+        let description = NSTextField(labelWithString: L("Preview the target, then continue to recording controls."))
         description.font = .systemFont(ofSize: 11, weight: .medium)
         description.textColor = NSColor.white.withAlphaComponent(0.42)
         description.lineBreakMode = .byTruncatingTail
@@ -1648,7 +1650,7 @@ private final class RecordingWindowSelectPill: NSView {
         path.lineWidth = 1
         path.stroke()
 
-        let text = "Select" as NSString
+        let text = L("Choose") as NSString
         let attributes: [NSAttributedString.Key: Any] = [
             .font: NSFont.systemFont(ofSize: 10.5, weight: .bold),
             .foregroundColor: NSColor.systemRed.withAlphaComponent(0.96)
@@ -1721,8 +1723,8 @@ private final class RecordingScreenChooserWindow: NSWindow {
 
     init(
         screens: [NSScreen],
-        subtitle: String = "Select which display to record fullscreen",
-        actionTitle: String = "Record",
+        subtitle: String = L("Select which display to record fullscreen"),
+        actionTitle: String = L("Record"),
         selectHandler: @escaping (NSScreen) -> Void,
         allDisplaysHandler: (() -> Void)? = nil,
         closeHandler: @escaping () -> Void
@@ -1807,12 +1809,13 @@ private final class RecordingScreenChooserWindow: NSWindow {
         panel.layer?.borderColor = NSColor.white.withAlphaComponent(0.16).cgColor
         root.addSubview(panel)
 
-        let title = label("Choose screen", size: 14, weight: .bold, color: .white)
+        let title = label(L("Choose screen"), size: 14, weight: .bold, color: .white)
         title.frame = NSRect(x: 20, y: frame.height - 38, width: 220, height: 18)
         panel.addSubview(title)
 
+        // Runs under the close button's row, so it can take the panel's width.
         let subtitle = label(subtitleText, size: 10.5, weight: .semibold, color: NSColor.white.withAlphaComponent(0.48))
-        subtitle.frame = NSRect(x: 20, y: frame.height - 59, width: 288, height: 14)
+        subtitle.frame = NSRect(x: 20, y: frame.height - 59, width: max(288, frame.width - 40), height: 14)
         panel.addSubview(subtitle)
 
         let closeButton = RecordingChooserCloseButton(frame: NSRect(x: frame.width - 42, y: frame.height - 42, width: 28, height: 28))
@@ -1838,8 +1841,8 @@ private final class RecordingScreenChooserWindow: NSWindow {
             let y = frame.height - Self.headerHeight - Self.rowHeight - CGFloat(screens.count) * Self.rowStride
             let button = RecordingScreenChoiceButton(
                 frame: NSRect(x: 14, y: y, width: frame.width - 28, height: Self.rowHeight),
-                title: "All Displays",
-                subtitle: "\(screens.count) screens",
+                title: L("All Displays"),
+                subtitle: L("\(screens.count) screens"),
                 symbol: "display.2",
                 actionTitle: actionTitle
             )
@@ -1858,14 +1861,17 @@ private final class RecordingScreenChooserWindow: NSWindow {
 
     private func screenTitle(for screen: NSScreen, index: Int) -> String {
         if let main = NSScreen.main, screen === main {
-            return "Display \(index + 1) · Main"
+            return L("Display \(index + 1) · Main")
         }
-        return "Display \(index + 1)"
+        return L("Display \(index + 1)")
     }
 
     private func screenSubtitle(for screen: NSScreen) -> String {
         let scale = screen.backingScaleFactor
-        return "\(Int(screen.frame.width * scale)) × \(Int(screen.frame.height * scale)) px"
+        // Pixel sizes as plain digits.
+        let width = String(Int(screen.frame.width * scale))
+        let height = String(Int(screen.frame.height * scale))
+        return L("\(width) × \(height) px")
     }
 
     private func positionChooser() {
@@ -1926,7 +1932,7 @@ private final class RecordingScreenChooserWindow: NSWindow {
 @MainActor
 private final class RecordingScreenChoiceButton: NSButton {
 
-    init(frame: NSRect, title: String, subtitle: String, symbol: String = "display", actionTitle: String = "Record") {
+    init(frame: NSRect, title: String, subtitle: String, symbol: String = "display", actionTitle: String = L("Record")) {
         super.init(frame: frame)
         isBordered = false
         self.title = ""
@@ -1943,23 +1949,28 @@ private final class RecordingScreenChoiceButton: NSButton {
         icon.contentTintColor = NSColor.white.withAlphaComponent(0.84)
         addSubview(icon)
 
+        // The action word keeps its right edge and grows leftward to fit
+        // (Aufzeichnen, Enregistrer); the title gives way to it.
+        let actionField = NSTextField(labelWithString: actionTitle)
+        actionField.font = .systemFont(ofSize: 10, weight: .bold)
+        actionField.textColor = NSColor.systemRed.withAlphaComponent(0.92)
+        actionField.alignment = .right
+        let actionWidth = max(56, ceil(actionField.intrinsicContentSize.width))
+        actionField.frame = NSRect(x: frame.width - 22 - actionWidth, y: 15, width: actionWidth, height: 13)
+
         let titleField = NSTextField(labelWithString: title)
         titleField.font = .systemFont(ofSize: 12, weight: .bold)
         titleField.textColor = .white
-        titleField.frame = NSRect(x: 42, y: 22, width: frame.width - 104, height: 15)
+        titleField.lineBreakMode = .byTruncatingTail
+        titleField.frame = NSRect(x: 42, y: 22, width: min(frame.width - 104, actionField.frame.minX - 48), height: 15)
         addSubview(titleField)
 
         let subtitleField = NSTextField(labelWithString: subtitle)
         subtitleField.font = .systemFont(ofSize: 10.5, weight: .semibold)
         subtitleField.textColor = NSColor.white.withAlphaComponent(0.46)
+        subtitleField.lineBreakMode = .byTruncatingTail
         subtitleField.frame = NSRect(x: 42, y: 8, width: 120, height: 13)
         addSubview(subtitleField)
-
-        let actionField = NSTextField(labelWithString: actionTitle)
-        actionField.font = .systemFont(ofSize: 10, weight: .bold)
-        actionField.textColor = NSColor.systemRed.withAlphaComponent(0.92)
-        actionField.alignment = .right
-        actionField.frame = NSRect(x: frame.width - 78, y: 15, width: 56, height: 13)
         addSubview(actionField)
     }
 
@@ -1990,8 +2001,8 @@ private final class RecordingChooserCloseButton: NSButton {
         layer?.backgroundColor = NSColor.white.withAlphaComponent(0.08).cgColor
         contentTintColor = NSColor.white.withAlphaComponent(0.58)
         let config = NSImage.SymbolConfiguration(pointSize: 12, weight: .bold)
-        image = NSImage(systemSymbolName: "xmark", accessibilityDescription: "Cancel")?.withSymbolConfiguration(config)
-        toolTip = "Cancel"
+        image = NSImage(systemSymbolName: "xmark", accessibilityDescription: L("Cancel"))?.withSymbolConfiguration(config)
+        toolTip = L("Cancel")
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
@@ -2007,9 +2018,24 @@ final class RecordingControlsWindow: NSWindow {
     private static let expandedHeight: CGFloat = 92
     private static let panelWidth: CGFloat = 808
     private static let chromeInset: CGFloat = 8
+    private static let qualityWidth: CGFloat = 72
+    private static let qualityFont = NSFont.systemFont(ofSize: 12, weight: .semibold)
     /// startRunning/stopRunning block for a noticeable moment: never on main.
     private static let microphoneMonitorQueue = DispatchQueue(label: "com.shotnix.recording.mic-meter-session", qos: .userInitiated)
 
+    /// The quality menu fits its longest title (Ausgewogen, Équilibrée):
+    /// what it needs past the design's 72 pt, the controls to its right move
+    /// over and the bar grows. English needs none.
+    private static var qualityExtra: CGFloat {
+        let widest = TextFitting.widest([RecordingQuality.balanced, .high, .max].map(\.displayName), font: qualityFont)
+        // 17 pt: the menu's arrows and margins beside "Balanced" (55 pt).
+        // A point either way is font rounding, not a longer word.
+        let extra = widest + 17 - qualityWidth
+        return extra > 1 ? extra : 0
+    }
+
+    /// The bar's width, 808 pt unless a longer quality name needs more.
+    private let barWidth: CGFloat
     private let captureRect: CGRect
     private let targetScreen: NSScreen
     private let target: RecordingTargetKind
@@ -2025,16 +2051,16 @@ final class RecordingControlsWindow: NSWindow {
     private var accessibilityPoll: Timer?
     private var accessibilityPollTicks = 0
 
-    private let systemAudioButton = RecordingToggleButton(symbol: "speaker.wave.2.fill", title: "System audio")
-    private let microphoneButton = RecordingToggleButton(symbol: "mic.fill", title: "Microphone", activeTint: .systemGreen)
-    private let cursorButton = RecordingToggleButton(symbol: "cursorarrow.rays", title: "Cursor")
-    private let cameraButton = RecordingToggleButton(symbol: "video.fill", title: "Camera", activeTint: .systemBlue)
-    private let keysButton = RecordingToggleButton(symbol: "command", title: "Show keyboard shortcuts")
+    private let systemAudioButton = RecordingToggleButton(symbol: "speaker.wave.2.fill", title: L("System audio"))
+    private let microphoneButton = RecordingToggleButton(symbol: "mic.fill", title: L("Microphone"), activeTint: .systemGreen)
+    private let cursorButton = RecordingToggleButton(symbol: "cursorarrow.rays", title: L("Cursor"))
+    private let cameraButton = RecordingToggleButton(symbol: "video.fill", title: L("Camera"), activeTint: .systemBlue)
+    private let keysButton = RecordingToggleButton(symbol: "command", title: L("Show keyboard shortcuts"))
     private let qualityPopup = NSPopUpButton(frame: .zero, pullsDown: false)
     private let fpsPopup = NSPopUpButton(frame: .zero, pullsDown: false)
     private let sizeLabel = NSTextField(labelWithString: "")
-    private let optionsButton = RecordingActionButton(symbol: "ellipsis.circle", title: "More recording options", tint: NSColor.white.withAlphaComponent(0.72))
-    private let recordButton = RecordingActionButton(symbol: "record.circle", title: "Record")
+    private let optionsButton = RecordingActionButton(symbol: "ellipsis.circle", title: L("More recording options"), tint: NSColor.white.withAlphaComponent(0.72))
+    private let recordButton = RecordingActionButton(symbol: "record.circle", title: L("Record"))
     private let microphonePopup = NSPopUpButton(frame: .zero, pullsDown: false)
     private let microphoneContainer = NSView()
     private let microphoneLevelMeter = RecordingAudioLevelMeter()
@@ -2051,9 +2077,10 @@ final class RecordingControlsWindow: NSWindow {
         self.selectedWindow = selectedWindow
         self.startHandler = startHandler
         self.closeHandler = closeHandler
+        self.barWidth = Self.panelWidth + Self.qualityExtra
 
         super.init(
-            contentRect: NSRect(x: 0, y: 0, width: Self.panelWidth + Self.chromeInset * 2, height: Self.windowHeight(microphone: Settings.recordingMicrophone)),
+            contentRect: NSRect(x: 0, y: 0, width: barWidth + Self.chromeInset * 2, height: Self.windowHeight(microphone: Settings.recordingMicrophone)),
             styleMask: [.borderless],
             backing: .buffered,
             defer: false
@@ -2133,7 +2160,7 @@ final class RecordingControlsWindow: NSWindow {
         CameraCapture.shared.stop()
         Settings.recordingCamera = false
         cameraButton.isOn = false
-        ToastWindow.show(message: "Camera disconnected.", on: targetScreen)
+        ToastWindow.show(message: L("Camera disconnected."), on: targetScreen)
     }
 
     private func buildContent() {
@@ -2159,11 +2186,11 @@ final class RecordingControlsWindow: NSWindow {
         microphonePopup.controlSize = .small
         microphonePopup.target = self
         microphonePopup.action = #selector(microphoneChanged)
-        microphonePopup.setAccessibilityLabel("Microphone")
+        microphonePopup.setAccessibilityLabel(L("Microphone"))
         microphoneContainer.addSubview(microphonePopup)
 
         let bar = RecordingRoundedRectView(
-            frame: NSRect(x: Self.chromeInset, y: Self.chromeInset, width: Self.panelWidth, height: Self.barHeight),
+            frame: NSRect(x: Self.chromeInset, y: Self.chromeInset, width: barWidth, height: Self.barHeight),
             cornerRadius: 19,
             fillColor: NSColor(calibratedWhite: 0.018, alpha: 0.995),
             strokeColor: NSColor.white.withAlphaComponent(0.18)
@@ -2171,7 +2198,7 @@ final class RecordingControlsWindow: NSWindow {
         bar.setRoundedShadow(opacity: 0.58, radius: 24, offset: CGSize(width: 0, height: -10))
         root.addSubview(bar)
 
-        let topGlow = NSView(frame: NSRect(x: 18, y: Self.barHeight - 1, width: Self.panelWidth - 36, height: 1))
+        let topGlow = NSView(frame: NSRect(x: 18, y: Self.barHeight - 1, width: barWidth - 36, height: 1))
         topGlow.wantsLayer = true
         topGlow.layer?.backgroundColor = NSColor.white.withAlphaComponent(0.16).cgColor
         bar.addSubview(topGlow)
@@ -2180,11 +2207,14 @@ final class RecordingControlsWindow: NSWindow {
         grip.frame = NSRect(x: 10, y: 18, width: 20, height: 20)
         bar.addSubview(grip)
 
-        // Recordings are measured in pixels, so the size shown is too.
+        // Recordings are measured in pixels, so the size shown is too, as
+        // plain digits.
         let pixels = outputPixelSize
-        let sourcePill = pillLabel("\(target.title) · \(pixels.width) × \(pixels.height)", symbol: target.symbol)
+        let pixelWidth = String(pixels.width), pixelHeight = String(pixels.height)
+        let pointWidth = String(Int(captureRect.width)), pointHeight = String(Int(captureRect.height))
+        let sourcePill = pillLabel(L("\(target.title) · \(pixelWidth) × \(pixelHeight)"), symbol: target.symbol)
         sourcePill.frame = NSRect(x: 32, y: 9, width: 190, height: 38)
-        sourcePill.toolTip = "Records \(pixels.width) × \(pixels.height) pixels (\(Int(captureRect.width)) × \(Int(captureRect.height)) points)"
+        sourcePill.toolTip = L("Records \(pixelWidth) × \(pixelHeight) pixels (\(pointWidth) × \(pointHeight) points)")
         bar.addSubview(sourcePill)
 
         let audioGroup = segmentContainer(frame: NSRect(x: 234, y: 8, width: 268, height: 40))
@@ -2209,52 +2239,56 @@ final class RecordingControlsWindow: NSWindow {
             bar.addSubview(button)
         }
 
-        let settingsGroup = segmentContainer(frame: NSRect(x: 510, y: 8, width: 166, height: 40))
+        // Right of the quality menu, everything moves over by what a longer
+        // quality name needs (none in English).
+        let extra = barWidth - Self.panelWidth
+        let settingsGroup = segmentContainer(frame: NSRect(x: 510, y: 8, width: 166 + extra, height: 40))
         bar.addSubview(settingsGroup)
-        bar.addSubview(divider(x: 594, height: 22))
+        bar.addSubview(divider(x: 594 + extra, height: 22))
 
-        configurePopup(qualityPopup, items: [("Balanced", "balanced"), ("High", "high"), ("Max", "max")])
-        qualityPopup.frame = NSRect(x: 516, y: 18, width: 72, height: 28)
+        let qualities: [RecordingQuality] = [.balanced, .high, .max]
+        configurePopup(qualityPopup, items: qualities.map { ($0.displayName, $0.rawValue) })
+        qualityPopup.frame = NSRect(x: 516, y: 18, width: Self.qualityWidth + extra, height: 28)
         qualityPopup.target = self
         qualityPopup.action = #selector(qualityChanged)
-        qualityPopup.setAccessibilityLabel("Quality")
+        qualityPopup.setAccessibilityLabel(L("Quality"))
         bar.addSubview(qualityPopup)
 
         configurePopup(fpsPopup, items: [("30 fps", "30"), ("60 fps", "60")])
-        fpsPopup.frame = NSRect(x: 602, y: 18, width: 68, height: 28)
+        fpsPopup.frame = NSRect(x: 602 + extra, y: 18, width: 68, height: 28)
         fpsPopup.target = self
         fpsPopup.action = #selector(fpsChanged)
-        fpsPopup.setAccessibilityLabel("Frame rate")
+        fpsPopup.setAccessibilityLabel(L("Frame rate"))
         bar.addSubview(fpsPopup)
 
         sizeLabel.font = .monospacedDigitSystemFont(ofSize: 8.5, weight: .semibold)
         sizeLabel.textColor = NSColor.white.withAlphaComponent(0.4)
         sizeLabel.alignment = .center
-        sizeLabel.frame = NSRect(x: 514, y: 11, width: 158, height: 11)
-        sizeLabel.toolTip = "Estimated file size. Still screens take less."
+        sizeLabel.frame = NSRect(x: 514, y: 11, width: 158 + extra, height: 11)
+        sizeLabel.toolTip = L("Estimated file size. Still screens take less.")
         bar.addSubview(sizeLabel)
 
-        optionsButton.frame = NSRect(x: 684, y: 9, width: 36, height: 38)
+        optionsButton.frame = NSRect(x: 684 + extra, y: 9, width: 36, height: 38)
         optionsButton.target = self
         optionsButton.action = #selector(optionsTapped)
         bar.addSubview(optionsButton)
 
-        recordButton.frame = NSRect(x: 728, y: 9, width: 38, height: 38)
+        recordButton.frame = NSRect(x: 728 + extra, y: 9, width: 38, height: 38)
         recordButton.target = self
         recordButton.action = #selector(recordTapped)
         // Return records, as the default button of the bar.
         recordButton.keyEquivalent = "\r"
-        recordButton.toolTip = "Record (Return)"
+        recordButton.toolTip = L("Record (Return)")
         bar.addSubview(recordButton)
 
-        let cancelButton = RecordingActionButton(symbol: "xmark", title: "Cancel", tint: .secondaryLabelColor)
-        cancelButton.frame = NSRect(x: 768, y: 9, width: 32, height: 38)
+        let cancelButton = RecordingActionButton(symbol: "xmark", title: L("Cancel"), tint: .secondaryLabelColor)
+        cancelButton.frame = NSRect(x: 768 + extra, y: 9, width: 32, height: 38)
         cancelButton.target = self
         cancelButton.action = #selector(cancelTapped)
         bar.addSubview(cancelButton)
 
         let escHint = keyHint("esc")
-        escHint.frame = NSRect(x: 772, y: 3, width: 24, height: 12)
+        escHint.frame = NSRect(x: 772 + extra, y: 3, width: 24, height: 12)
         bar.addSubview(escHint)
 
         syncFromSettings()
@@ -2279,7 +2313,7 @@ final class RecordingControlsWindow: NSWindow {
             microphone: Settings.recordingMicrophone && hasMicrophone
         )
         sizeLabel.stringValue = RecordingSizeEstimate.label(bytesPerMinute: bytes)
-        sizeLabel.setAccessibilityLabel("Estimated size \(sizeLabel.stringValue)")
+        sizeLabel.setAccessibilityLabel(L("Estimated size \(sizeLabel.stringValue)"))
     }
 
     private func syncFromSettings() {
@@ -2301,12 +2335,12 @@ final class RecordingControlsWindow: NSWindow {
         hasMicrophone = !options.isEmpty
         guard hasMicrophone else {
             // Recording still works; it just won't have a mic track.
-            microphonePopup.addItem(withTitle: "No microphone connected")
+            microphonePopup.addItem(withTitle: L("No microphone connected"))
             microphonePopup.isEnabled = false
             return
         }
         microphonePopup.isEnabled = true
-        microphonePopup.addItem(withTitle: "System Default")
+        microphonePopup.addItem(withTitle: L("System Default"))
         microphonePopup.lastItem?.representedObject = ""
         for device in options {
             microphonePopup.addItem(withTitle: device.name)
@@ -2366,7 +2400,7 @@ final class RecordingControlsWindow: NSWindow {
             Settings.recordingMicrophone = false
             microphoneButton.isOn = false
             updateMicrophoneVisibility()
-            ToastWindow.show(message: "Microphone access is off. Allow Shotnix in System Settings → Privacy & Security → Microphone.", duration: 3.5, on: targetScreen)
+            ToastWindow.show(message: L("Microphone access is off. Allow Shotnix in System Settings → Privacy & Security → Microphone."), duration: 3.5, on: targetScreen)
         @unknown default:
             break
         }
@@ -2472,7 +2506,7 @@ final class RecordingControlsWindow: NSWindow {
         view.addSubview(icon)
 
         let textField = label(text, size: 11, weight: .bold, color: NSColor.white.withAlphaComponent(0.86))
-        textField.frame = NSRect(x: 36, y: 11, width: 146, height: 16)
+        textField.frame = NSRect(x: 36, y: 11, width: 150, height: 16)
         textField.lineBreakMode = .byTruncatingTail
         view.addSubview(textField)
         return view
@@ -2513,10 +2547,10 @@ final class RecordingControlsWindow: NSWindow {
     private func positionPanel() {
         let visible = targetScreen.visibleFrame
         let visibleHeight = Settings.recordingMicrophone ? Self.expandedHeight : Self.barHeight
-        let x = visible.midX - Self.panelWidth / 2
+        let x = visible.midX - barWidth / 2
         let y = min(visible.maxY - visibleHeight - 28, captureRect.maxY - visibleHeight - 14)
         let visibleOrigin = NSPoint(
-            x: max(visible.minX + 16, min(x, visible.maxX - Self.panelWidth - 16)),
+            x: max(visible.minX + 16, min(x, visible.maxX - barWidth - 16)),
             y: max(visible.minY + 16, y)
         )
         setFrameOrigin(pixelAligned(NSPoint(x: visibleOrigin.x - Self.chromeInset, y: visibleOrigin.y - Self.chromeInset)))
@@ -2588,7 +2622,7 @@ final class RecordingControlsWindow: NSWindow {
                 sender.isOn = false
                 Settings.recordingKeystrokes = true
                 waitForAccessibility()
-                ToastWindow.show(message: "Allow Shotnix in Accessibility — shortcuts turn on by themselves.", duration: 3.2)
+                ToastWindow.show(message: L("Allow Shotnix in Accessibility — shortcuts turn on by themselves."), duration: 3.2)
             } else {
                 Settings.recordingKeystrokes = sender.isOn
                 if !sender.isOn { stopWaitingForAccessibility() }
@@ -2619,7 +2653,7 @@ final class RecordingControlsWindow: NSWindow {
         stopWaitingForAccessibility()
         guard Settings.recordingKeystrokes else { return }
         keysButton.isOn = true
-        ToastWindow.show(message: "Keyboard shortcuts are on")
+        ToastWindow.show(message: L("Keyboard shortcuts are on"))
     }
 
     private func stopWaitingForAccessibility() {
@@ -2652,20 +2686,25 @@ final class RecordingControlsWindow: NSWindow {
 
     /// The settings that don't earn a button in the bar.
     @objc private func optionsTapped() {
+        optionsMenu().popUp(positioning: nil, at: NSPoint(x: 0, y: -6), in: optionsButton)
+    }
+
+    /// The options button's menu, built fresh each time it opens.
+    func optionsMenu() -> NSMenu {
         let menu = NSMenu()
         menu.autoenablesItems = false
 
-        let cameraHeader = NSMenuItem(title: "Camera", action: nil, keyEquivalent: "")
+        let cameraHeader = NSMenuItem(title: L("Camera"), action: nil, keyEquivalent: "")
         cameraHeader.isEnabled = false
         menu.addItem(cameraHeader)
         let cameras = CameraCapture.devices
         if cameras.isEmpty {
-            let none = NSMenuItem(title: "No camera connected", action: nil, keyEquivalent: "")
+            let none = NSMenuItem(title: L("No camera connected"), action: nil, keyEquivalent: "")
             none.isEnabled = false
             none.indentationLevel = 1
             menu.addItem(none)
         } else {
-            for (title, id) in [("System Default", "")] + cameras.map({ ($0.localizedName, $0.uniqueID) }) {
+            for (title, id) in [(L("System Default"), "")] + cameras.map({ ($0.localizedName, $0.uniqueID) }) {
                 let item = NSMenuItem(title: title, action: #selector(cameraDeviceChosen(_:)), keyEquivalent: "")
                 item.target = self
                 item.representedObject = id
@@ -2676,22 +2715,22 @@ final class RecordingControlsWindow: NSWindow {
         }
 
         menu.addItem(.separator())
-        let editable = NSMenuItem(title: "Editable Cursor", action: #selector(editableCursorToggled), keyEquivalent: "")
+        let editable = NSMenuItem(title: L("Editable Cursor"), action: #selector(editableCursorToggled), keyEquivalent: "")
         editable.target = self
         editable.state = Settings.recordingEditableCursor ? .on : .off
         editable.isEnabled = cursorButton.isOn
-        editable.toolTip = "Records the pointer separately, so the editor can smooth it, resize it, and keep it crisp when zoomed."
+        editable.toolTip = L("Records the pointer separately, so the editor can smooth it, resize it, and keep it crisp when zoomed.")
         menu.addItem(editable)
-        let openEditor = NSMenuItem(title: "Open Editor After Recording", action: #selector(openEditorToggled), keyEquivalent: "")
+        let openEditor = NSMenuItem(title: L("Open Editor After Recording"), action: #selector(openEditorToggled), keyEquivalent: "")
         openEditor.target = self
         openEditor.state = Settings.openVideoEditorAfterRecording ? .on : .off
         menu.addItem(openEditor)
 
         menu.addItem(.separator())
-        let countdown = NSMenuItem(title: "Countdown", action: nil, keyEquivalent: "")
+        let countdown = NSMenuItem(title: L("Countdown"), action: nil, keyEquivalent: "")
         let countdownMenu = NSMenu()
         for seconds in Settings.recordingCountdownChoices {
-            let item = NSMenuItem(title: seconds == 0 ? "Off" : "\(seconds) seconds", action: #selector(countdownChosen(_:)), keyEquivalent: "")
+            let item = NSMenuItem(title: seconds == 0 ? L("Off") : L("\(seconds) seconds"), action: #selector(countdownChosen(_:)), keyEquivalent: "")
             item.target = self
             item.tag = seconds
             item.state = Settings.recordingCountdownSeconds == seconds ? .on : .off
@@ -2699,8 +2738,7 @@ final class RecordingControlsWindow: NSWindow {
         }
         countdown.submenu = countdownMenu
         menu.addItem(countdown)
-
-        menu.popUp(positioning: nil, at: NSPoint(x: 0, y: -6), in: optionsButton)
+        return menu
     }
 
     @objc private func cameraDeviceChosen(_ sender: NSMenuItem) {

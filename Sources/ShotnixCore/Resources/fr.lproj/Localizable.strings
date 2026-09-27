@@ -10,18 +10,36 @@
 	<string>Capture (%1$@) du %2$@</string>
 	<key>%@ capture, %@</key>
 	<string>Capture (%1$@), %2$@</string>
+	<key>%@ found</key>
+	<string>%@ détecté</string>
 	<key>%@ fullscreen</key>
 	<string>%@ plein écran</string>
 	<key>%@ pt</key>
 	<string>%@ pt</string>
+	<key>%@ quality · %@</key>
+	<string>Qualité : %@ · %@</string>
 	<key>%@ window</key>
 	<string>%@ fenêtre</string>
+	<key>%@ · %@ px</key>
+	<string>%@ · %@ px</string>
 	<key>%@ · %@ × %@ image</key>
 	<string>%@ · image %@ × %@</string>
+	<key>%@ · %lld fps</key>
+	<string>%@ · %lld fps</string>
+	<key>%@ × %@ px</key>
+	<string>%@ × %@ px</string>
 	<key>%@ — Shotnix lives in your menu bar</key>
 	<string>%@ — Shotnix est dans la barre des menus</string>
+	<key>%@, %@</key>
+	<string>%@, %@</string>
+	<key>%@: %@</key>
+	<string>%@ : %@</string>
 	<key>%lld of %lld captures</key>
 	<string>%lld captures sur %lld</string>
+	<key>%lld px · Esc or Done finishes</key>
+	<string>%lld px · Échap ou « Terminé » pour finir</string>
+	<key>%lld s</key>
+	<string>%lld s</string>
 	<key>%lld%%</key>
 	<string>%lld %%</string>
 	<key>%lld/%lld configured</key>
@@ -40,6 +58,8 @@
 	<string>Après la capture</string>
 	<key>All Captures</key>
 	<string>Toutes les captures</string>
+	<key>All Displays</key>
+	<string>Tous les écrans</string>
 	<key>All captures are moved to Shotnix’s trash and permanently deleted after %lld days.</key>
 	<string>Toutes les captures sont placées dans la corbeille de Shotnix et définitivement supprimées après %lld jours.</string>
 	<key>All configured</key>
@@ -48,6 +68,8 @@
 	<string>Autoriser l’accès…</string>
 	<key>Allow Screen Recording</key>
 	<string>Autoriser l’enregistrement de l’écran</string>
+	<key>Allow Shotnix in Accessibility — shortcuts turn on by themselves.</key>
+	<string>Autorisez Shotnix dans Accessibilité — les raccourcis s’activeront d’eux-mêmes.</string>
 	<key>Amber Fold</key>
 	<string>Pli d’ambre</string>
 	<key>Annotate Last Screenshot</key>
@@ -58,6 +80,8 @@
 	<string>Texte de l’annotation</string>
 	<key>Annotation tools</key>
 	<string>Outils d’annotation</string>
+	<key>App</key>
+	<string>App</string>
 	<key>Apple Shortcuts</key>
 	<string>Raccourcis Apple</string>
 	<key>Apple screenshot shortcuts disabled.</key>
@@ -102,6 +126,12 @@
 	<string>Arrière-plan</string>
 	<key>Balanced</key>
 	<string>Équilibrée</string>
+	<key>Barcode</key>
+	<string>Code-barres</string>
+	<key>Barcode copied to clipboard</key>
+	<string>Code-barres copié dans le presse-papiers</string>
+	<key>Barcodes</key>
+	<string>Codes-barres</string>
 	<key>Black</key>
 	<string>Noir</string>
 	<key>Blue</key>
@@ -116,18 +146,36 @@
 	<string>Blanc cassé</string>
 	<key>Bring All to Front</key>
 	<string>Tout ramener au premier plan</string>
+	<key>Call</key>
+	<string>Appeler</string>
 	<key>Callout</key>
 	<string>Bulle</string>
 	<key>Callout: %@</key>
 	<string>Bulle : %@</string>
 	<key>Camera</key>
 	<string>Caméra</string>
+	<key>Camera access is off — allow Shotnix in System Settings → Privacy &amp; Security → Camera.</key>
+	<string>L’accès à la caméra est désactivé — autorisez Shotnix dans Réglages Système → Confidentialité et sécurité → Caméra.</string>
+	<key>Camera disconnected</key>
+	<string>Caméra débranchée</string>
+	<key>Camera disconnected.</key>
+	<string>Caméra déconnectée.</string>
+	<key>Camera disconnected. The recording continues without it.</key>
+	<string>Caméra déconnectée. L’enregistrement continue sans elle.</string>
+	<key>Camera preview</key>
+	<string>Aperçu de la caméra</string>
+	<key>Camera stopped</key>
+	<string>Caméra arrêtée</string>
 	<key>Cancel</key>
 	<string>Annuler</string>
+	<key>Cancel Recording</key>
+	<string>Annuler l’enregistrement</string>
 	<key>Canyon Silk</key>
 	<string>Soie de canyon</string>
 	<key>Capture</key>
 	<string>Capture</string>
+	<key>Capture  ⏎</key>
+	<string>Capturer  ⏎</string>
 	<key>Capture All Displays</key>
 	<string>Capturer tous les écrans</string>
 	<key>Capture Area</key>
@@ -146,6 +194,8 @@
 	<string>« Capturer du texte » et « Capture défilante » n’ont pas de raccourci, pour que ⌘⇧O et ⌘⇧S gardent leur sens (Ouvrir et Enregistrer sous) dans vos autres apps — cliquez sur un champ pour définir les vôtres. Appuyer de nouveau sur le raccourci de la capture défilante la termine.</string>
 	<key>Capture Window</key>
 	<string>Capturer une fenêtre</string>
+	<key>Capture failed</key>
+	<string>Échec de la capture</string>
 	<key>Capture from %@</key>
 	<string>Capture du %@</string>
 	<key>Capture immediately after selecting</key>
@@ -168,6 +218,8 @@
 	<string>Vérifier</string>
 	<key>Check for Updates</key>
 	<string>Rechercher des mises à jour</string>
+	<key>Choose</key>
+	<string>Choisir</string>
 	<key>Choose Capture Area in the Shotnix menu to start</key>
 	<string>Choisissez « Capturer une zone » dans le menu Shotnix pour commencer</string>
 	<key>Choose a writable folder for auto-save.</key>
@@ -176,8 +228,12 @@
 	<string>Choisissez un dossier accessible en écriture.</string>
 	<key>Choose folder</key>
 	<string>Choisir un dossier</string>
+	<key>Choose screen</key>
+	<string>Choisir un écran</string>
 	<key>Choose what happens immediately after taking a screenshot.</key>
 	<string>Choisissez ce qui se passe juste après une capture d’écran.</string>
+	<key>Choose window</key>
+	<string>Choisir une fenêtre</string>
 	<key>Choose...</key>
 	<string>Choisir…</string>
 	<key>Clay</key>
@@ -198,12 +254,22 @@
 	<string>Effacer l’historique</string>
 	<key>Clear History?</key>
 	<string>Effacer l’historique ?</string>
+	<key>Click a window to capture it  ·  Esc cancels</key>
+	<string>Cliquez sur une fenêtre pour la capturer  ·  Échap pour annuler</string>
 	<key>Click an annotation to edit it</key>
 	<string>Cliquez sur une annotation pour la modifier</string>
+	<key>Click or press Esc to cancel</key>
+	<string>Cliquez ou appuyez sur Échap pour annuler</string>
 	<key>Click to add the next step</key>
 	<string>Cliquez pour ajouter l’étape suivante</string>
 	<key>Clipboard</key>
 	<string>Presse-papiers</string>
+	<key>Close</key>
+	<string>Fermer</string>
+	<key>Close All Pins</key>
+	<string>Tout fermer</string>
+	<key>Close Pin</key>
+	<string>Fermer</string>
 	<key>Close Window</key>
 	<string>Fermer la fenêtre</string>
 	<key>Coastal Haze</key>
@@ -214,32 +280,58 @@
 	<string>Couleur</string>
 	<key>Command Center</key>
 	<string>Centre de commande</string>
+	<key>Compose Email</key>
+	<string>Rédiger un e-mail</string>
 	<key>Conflict detected</key>
 	<string>Conflit détecté</string>
 	<key>Copied to clipboard</key>
 	<string>Copié dans le presse-papiers</string>
 	<key>Copy</key>
 	<string>Copier</string>
+	<key>Copy %@</key>
+	<string>Copier %@</string>
 	<key>Copy (⌘C)</key>
 	<string>Copier (⌘C)</string>
+	<key>Copy Text</key>
+	<string>Copier le texte</string>
+	<key>Copy as Table</key>
+	<string>Copier en tableau</string>
 	<key>Copy capture to clipboard</key>
 	<string>Copier la capture dans le presse-papiers</string>
+	<key>Copy image to clipboard</key>
+	<string>Copier l’image dans le presse-papiers</string>
+	<key>Copy recognized text (OCR)</key>
+	<string>Copier le texte reconnu (OCR)</string>
 	<key>Copy screenshots to clipboard</key>
 	<string>Copier les captures dans le presse-papiers</string>
+	<key>Copy the rows tab-separated, ready to paste into a spreadsheet</key>
+	<string>Copier les lignes séparées par des tabulations, prêtes à coller dans un tableur</string>
 	<key>Could Not Disable Apple Shortcuts</key>
 	<string>Impossible de désactiver les raccourcis Apple</string>
 	<key>Could Not Save Screenshot</key>
 	<string>Impossible d’enregistrer la capture</string>
+	<key>Could not copy the screenshot</key>
+	<string>Impossible de copier la capture d’écran</string>
 	<key>Could not copy this capture</key>
 	<string>Impossible de copier cette capture</string>
 	<key>Could not encode screenshot as PNG.</key>
 	<string>Impossible d’encoder la capture en PNG.</string>
 	<key>Could not encode the screenshot.</key>
 	<string>Impossible d’encoder la capture.</string>
+	<key>Could not list windows. Check permissions.</key>
+	<string>Impossible de lister les fenêtres. Vérifiez les autorisations.</string>
 	<key>Could not restore Apple shortcuts.</key>
 	<string>Impossible de restaurer les raccourcis Apple.</string>
+	<key>Could not save the recording (%@).</key>
+	<string>Impossible de sauvegarder l’enregistrement (%@).</string>
+	<key>Could not save the recording.</key>
+	<string>Impossible de sauvegarder l’enregistrement.</string>
+	<key>Could not start recording (%@).</key>
+	<string>Impossible de démarrer l’enregistrement (%@).</string>
 	<key>Couldn't copy the screenshot. Try again, or save it instead.</key>
 	<string>Impossible de copier la capture. Réessayez ou enregistrez-la plutôt.</string>
+	<key>Couldn't create the video file.</key>
+	<string>Impossible de créer le fichier vidéo.</string>
 	<key>Couldn't save the screenshot to %@. Click to check the save folder.</key>
 	<string>Impossible d’enregistrer la capture dans « %@ ». Cliquez pour vérifier le dossier d’enregistrement.</string>
 	<key>Couldn't save the screenshot: Shotnix can't write to %@. Click to choose another save folder.</key>
@@ -254,6 +346,8 @@
 	<string>Crête pourpre</string>
 	<key>Crop</key>
 	<string>Rogner</string>
+	<key>Cursor</key>
+	<string>Pointeur</string>
 	<key>Custom color</key>
 	<string>Couleur personnalisée</string>
 	<key>Custom color #%@</key>
@@ -264,6 +358,8 @@
 	<string>Personnaliser…</string>
 	<key>Cut</key>
 	<string>Couper</string>
+	<key>Decoded details</key>
+	<string>Détails décodés</string>
 	<key>Delete</key>
 	<string>Supprimer</string>
 	<key>Delete All</key>
@@ -288,8 +384,22 @@
 	<string>Désactiver les raccourcis Apple</string>
 	<key>Disabled</key>
 	<string>Désactivées</string>
+	<key>Discard</key>
+	<string>Supprimer</string>
 	<key>Discard Changes</key>
 	<string>Ignorer les modifications</string>
+	<key>Discard recording</key>
+	<string>Supprimer l’enregistrement</string>
+	<key>Discard this recording?</key>
+	<string>Supprimer cette vidéo ?</string>
+	<key>Disk almost full</key>
+	<string>Disque bientôt plein</string>
+	<key>Display</key>
+	<string>Écran</string>
+	<key>Display %lld</key>
+	<string>Écran %lld</string>
+	<key>Display %lld · Main</key>
+	<string>Écran %lld · principal</string>
 	<key>Do you want to review them before quitting?</key>
 	<string>Voulez-vous les passer en revue avant de quitter ?</string>
 	<key>Don't Ask Again</key>
@@ -298,6 +408,16 @@
 	<string>Ne pas enregistrer</string>
 	<key>Done</key>
 	<string>Terminé</string>
+	<key>Double-click to edit, or drag into another app. Command-C copies, Command-S saves, Escape dismisses.</key>
+	<string>Double-cliquez pour modifier, ou faites glisser vers une autre app. Commande + C copie, Commande + S enregistre, Échap ferme.</string>
+	<key>Drag edges or corners to resize  ·  Arrow keys nudge (⇧ ×10)  ·  Return captures  ·  Esc cancels</key>
+	<string>Redimensionnez par les bords ou les coins  ·  Flèches pour déplacer (⇧ ×10)  ·  Retour pour capturer  ·  Échap pour annuler</string>
+	<key>Drag to capture  ·  Hold ⇧ as you let go to adjust first  ·  Space moves  ·  Esc cancels</key>
+	<string>Faites glisser pour capturer  ·  Maintenez ⇧ en relâchant pour ajuster d’abord  ·  Espace pour déplacer  ·  Échap pour annuler</string>
+	<key>Drag to move. Press Command-C to copy, Escape to close.</key>
+	<string>Faites glisser pour déplacer. Appuyez sur Commande + C pour copier, sur Échap pour fermer.</string>
+	<key>Drag to select, then adjust  ·  Hold ⇧ as you let go to capture right away  ·  Esc cancels</key>
+	<string>Faites glisser pour sélectionner, puis ajustez  ·  Maintenez ⇧ en relâchant pour capturer aussitôt  ·  Échap pour annuler</string>
 	<key>Draw with the selected tool. Tool shortcuts: V select, A arrow, R rectangle, T text, O callout, H highlighter, B blur, P pixelate, S spotlight, C crop.</key>
 	<string>Dessinez avec l’outil sélectionné. Raccourcis des outils : V sélectionner, A flèche, R rectangle, T texte, O bulle, H surligneur, B flouter, P pixéliser, S projecteur, C rogner.</string>
 	<key>Drawing</key>
@@ -306,12 +426,22 @@
 	<string>Modifier</string>
 	<key>Edit Last Recording</key>
 	<string>Modifier le dernier enregistrement</string>
+	<key>Editable Cursor</key>
+	<string>Pointeur modifiable</string>
 	<key>Editable cursor</key>
 	<string>Pointeur modifiable</string>
 	<key>Editable cursor records the pointer separately so the editor can smooth it, resize it, and keep it crisp when zoomed — the video editor adds it back on export (the raw recording file has no pointer). Auto-zoom makes a fresh recording open already produced: the camera zooms to follow your clicks. Keyboard shortcuts records only ⌘, ⌃ and ⌥ combos (plus Esc and F-keys) so the editor can show them as keycaps — plain typing is never recorded; macOS asks for Accessibility access. High quality is the default; Max keeps more detail but creates larger files. The countdown gives you a moment after pressing Record; Esc cancels it. Stop a recording with %@ from any app — plain Esc stays with the app you're recording.</key>
 	<string>« Pointeur modifiable » enregistre le pointeur séparément pour que l’éditeur puisse le lisser, le redimensionner et le garder net lors des zooms — l’éditeur vidéo le réintègre à l’exportation (le fichier brut de l’enregistrement ne contient pas de pointeur). Avec le zoom automatique, un nouvel enregistrement s’ouvre déjà monté : la caméra suit vos clics. « Afficher les raccourcis clavier » n’enregistre que les combinaisons avec ⌘, ⌃ et ⌥ (plus Échap et les touches de fonction) pour que l’éditeur puisse les afficher sous forme de touches — la frappe normale n’est jamais enregistrée ; macOS demande l’accès à l’accessibilité. La qualité élevée est utilisée par défaut ; la qualité maximale conserve plus de détails mais produit des fichiers plus volumineux. Le compte à rebours vous laisse un instant après avoir lancé l’enregistrement ; Échap l’annule. Arrêtez un enregistrement depuis n’importe quelle app avec %@ — un simple Échap reste destiné à l’app que vous enregistrez.</string>
 	<key>Ellipse</key>
 	<string>Ellipse</string>
+	<key>Email</key>
+	<string>E-mail</string>
+	<key>Email %@</key>
+	<string>Écrire à %@</string>
+	<key>Email QR found</key>
+	<string>Code QR avec e-mail détecté</string>
+	<key>Email address copied</key>
+	<string>Adresse e-mail copiée</string>
 	<key>Ember Fog</key>
 	<string>Brume de braise</string>
 	<key>Enable Shotnix in System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording, then quit and reopen Shotnix so macOS applies the permission.</key>
@@ -324,6 +454,12 @@
 	<string>Vous aimez Shotnix ? Cliquez pour lui donner une étoile sur GitHub ★</string>
 	<key>Enjoying Shotnix? Star it on GitHub so more people find it.</key>
 	<string>Vous aimez Shotnix ? Ajoutez une étoile sur GitHub pour que plus de monde le découvre.</string>
+	<key>Esc or Done finishes</key>
+	<string>Échap ou « Terminé » pour finir</string>
+	<key>Estimated file size. Still screens take less.</key>
+	<string>Taille de fichier estimée. Un écran immobile prend moins de place.</string>
+	<key>Estimated size %@</key>
+	<string>Taille estimée : %@</string>
 	<key>Everything is ready</key>
 	<string>Tout est prêt</string>
 	<key>Export Format</key>
@@ -342,6 +478,8 @@
 	<string>Rectangle arrondi plein</string>
 	<key>Finish and Quit</key>
 	<string>Terminer et quitter</string>
+	<key>Finish or cancel the current recording setup</key>
+	<string>Terminez ou annulez d’abord la configuration de l’enregistrement en cours</string>
 	<key>Fix</key>
 	<string>Corriger</string>
 	<key>Forever</key>
@@ -378,6 +516,8 @@
 	<string>Vert</string>
 	<key>Health</key>
 	<string>État</string>
+	<key>Hidden</key>
+	<string>Masqué</string>
 	<key>Hide Desktop Icons</key>
 	<string>Masquer les icônes du bureau</string>
 	<key>Hide Icon</key>
@@ -406,12 +546,16 @@
 	<string>Image</string>
 	<key>JPEG Quality</key>
 	<string>Qualité JPEG</string>
+	<key>Keep</key>
+	<string>Garder</string>
 	<key>Keep Working</key>
 	<string>Continuer</string>
 	<key>Keep captures</key>
 	<string>Conserver les captures</string>
 	<key>Keyboard</key>
 	<string>Clavier</string>
+	<key>Keyboard shortcuts are on</key>
+	<string>Les raccourcis clavier sont activés</string>
 	<key>Languages</key>
 	<string>Langues</string>
 	<key>Launch Shotnix at login</key>
@@ -426,26 +570,60 @@
 	<string>Ligne</string>
 	<key>Line width</key>
 	<string>Épaisseur du trait</string>
+	<key>Link</key>
+	<string>Lien</string>
+	<key>Link QR found</key>
+	<string>Code QR avec lien détecté</string>
+	<key>Link copied</key>
+	<string>Lien copié</string>
+	<key>Links</key>
+	<string>Liens</string>
+	<key>Links (%lld of %lld)</key>
+	<string>Liens (%lld sur %lld)</string>
 	<key>MIT License — Free and open source</key>
 	<string>Licence MIT — libre et open source</string>
 	<key>Manage</key>
 	<string>Gérer</string>
 	<key>Max</key>
 	<string>Maximale</string>
+	<key>Maximum length reached</key>
+	<string>Longueur maximale atteinte</string>
 	<key>Menu Bar</key>
 	<string>Barre des menus</string>
 	<key>Menu bar is full, so macOS hid the Shotnix icon — %@ still captures. Click here for the menu.</key>
 	<string>La barre des menus est pleine : macOS a masqué l’icône de Shotnix — %@ capture toujours. Cliquez ici pour ouvrir le menu.</string>
 	<key>Menu bar is full, so macOS hid the Shotnix icon — your shortcuts still work. Click here for the menu.</key>
 	<string>La barre des menus est pleine : macOS a masqué l’icône de Shotnix — vos raccourcis fonctionnent toujours. Cliquez ici pour ouvrir le menu.</string>
+	<key>Message</key>
+	<string>Message</string>
+	<key>Message QR found</key>
+	<string>Code QR avec message détecté</string>
+	<key>Mic disconnected</key>
+	<string>Micro déconnecté</string>
+	<key>Mic stopped</key>
+	<string>Micro arrêté</string>
+	<key>Mic switched</key>
+	<string>Micro changé</string>
 	<key>Microphone</key>
 	<string>Micro</string>
+	<key>Microphone access is off, so this recording has no mic.</key>
+	<string>L’accès au micro est désactivé : cet enregistrement n’aura pas de son du micro.</string>
+	<key>Microphone access is off. Allow Shotnix in System Settings → Privacy &amp; Security → Microphone.</key>
+	<string>L’accès au micro est désactivé. Autorisez Shotnix dans Réglages Système → Confidentialité et sécurité → Micro.</string>
+	<key>Microphone disconnected. Now recording from %@.</key>
+	<string>Micro déconnecté. L’enregistrement utilise maintenant « %@ ».</string>
+	<key>Microphone disconnected. The recording continues without it.</key>
+	<string>Micro déconnecté. L’enregistrement continue sans lui.</string>
+	<key>Microphone level</key>
+	<string>Niveau du micro</string>
 	<key>Microphone recording requires macOS microphone permission. System audio excludes Shotnix sounds to avoid feedback.</key>
 	<string>L’enregistrement du micro nécessite l’autorisation d’accès au micro de macOS. Le son de l’ordinateur exclut les sons de Shotnix pour éviter l’effet Larsen.</string>
 	<key>Midnight Graphite</key>
 	<string>Graphite minuit</string>
 	<key>Minimize</key>
 	<string>Placer dans le Dock</string>
+	<key>More recording options</key>
+	<string>Autres options d’enregistrement</string>
 	<key>Moss</key>
 	<string>Mousse</string>
 	<key>Moss Glow</key>
@@ -456,6 +634,8 @@
 	<string>Nécessaire pour capturer l’écran. macOS vous le demandera une fois.</string>
 	<key>Neo Pop</key>
 	<string>Néo-pop</string>
+	<key>Network</key>
+	<string>Réseau</string>
 	<key>Never</key>
 	<string>Jamais</string>
 	<key>New screenshots are copied automatically. Turn this off if you only want to use the overlay or history actions.</key>
@@ -464,6 +644,12 @@
 	<string>Belle capture ! Tout est prêt.</string>
 	<key>Night Current</key>
 	<string>Courant nocturne</string>
+	<key>No barcode found in this selection</key>
+	<string>Aucun code-barres dans cette sélection</string>
+	<key>No camera connected</key>
+	<string>Aucune caméra connectée</string>
+	<key>No camera found.</key>
+	<string>Aucune caméra détectée.</string>
 	<key>No captures contain “%@”</key>
 	<string>Aucune capture ne contient « %@ »</string>
 	<key>No captures of this type</key>
@@ -472,10 +658,30 @@
 	<string>Aucune capture pour l’instant</string>
 	<key>No conflict</key>
 	<string>Aucun conflit</string>
+	<key>No microphone connected</key>
+	<string>Aucun micro connecté</string>
+	<key>No microphone is connected, so this recording has no mic.</key>
+	<string>Aucun micro n’est connecté : cet enregistrement n’aura pas de son du micro.</string>
+	<key>No recordable windows found</key>
+	<string>Aucune fenêtre à enregistrer</string>
+	<key>No recording in progress</key>
+	<string>Aucun enregistrement en cours</string>
 	<key>No saved captures yet</key>
 	<string>Aucune capture enregistrée pour l’instant</string>
+	<key>No sound from the microphone</key>
+	<string>Aucun son du micro</string>
+	<key>No text found in this selection</key>
+	<string>Aucun texte dans cette sélection</string>
+	<key>Not enough disk space to record.</key>
+	<string>Espace disque insuffisant pour enregistrer.</string>
+	<key>Not enough free disk space for this recording: it needs about %@ free, and %@ is available. Free up some space and try again.</key>
+	<string>Espace disque insuffisant pour cet enregistrement : il faut environ %@ d’espace libre, et il reste %@. Libérez de l’espace et réessayez.</string>
+	<key>Not enough free disk space for this recording: it needs about %@ free, and %@ is available. Free up space, or choose Balanced quality or 30 fps.</key>
+	<string>Espace disque insuffisant pour cet enregistrement : il faut environ %@ d’espace libre, et il reste %@. Libérez de l’espace, ou choisissez la qualité Équilibrée ou 30 fps.</string>
 	<key>Not now</key>
 	<string>Plus tard</string>
+	<key>Nothing was recorded — the screen didn't send any picture. Try again.</key>
+	<string>Rien n’a été enregistré — l’écran n’a envoyé aucune image. Réessayez.</string>
 	<key>Numbered Steps</key>
 	<string>Étapes numérotées</string>
 	<key>OCR / Capture Text</key>
@@ -486,12 +692,22 @@
 	<string>Désactivé</string>
 	<key>Older</key>
 	<string>Plus ancien</string>
+	<key>Open</key>
+	<string>Ouvrir</string>
+	<key>Open %@</key>
+	<string>Ouvrir %@</string>
 	<key>Open Command Center</key>
 	<string>Ouvrir le centre de commande</string>
+	<key>Open Editor After Recording</key>
+	<string>Ouvrir l’éditeur après l’enregistrement</string>
 	<key>Open History</key>
 	<string>Ouvrir l’historique</string>
 	<key>Open Keyboard Settings</key>
 	<string>Ouvrir les réglages Clavier</string>
+	<key>Open Link</key>
+	<string>Ouvrir le lien</string>
+	<key>Open Messages</key>
+	<string>Ouvrir Messages</string>
 	<key>Open Settings</key>
 	<string>Ouvrir les réglages</string>
 	<key>Open System Settings</key>
@@ -510,20 +726,38 @@
 	<string>Position de la vignette</string>
 	<key>Padding</key>
 	<string>Marge</string>
+	<key>Password</key>
+	<string>Mot de passe</string>
 	<key>Paste</key>
 	<string>Coller</string>
 	<key>Pause / Resume Recording</key>
 	<string>Suspendre/reprendre l’enregistrement</string>
 	<key>Pause Recording</key>
 	<string>Suspendre l’enregistrement</string>
+	<key>Pause recording</key>
+	<string>Suspendre l’enregistrement</string>
+	<key>Pause recording (%@)</key>
+	<string>Suspendre l’enregistrement (%@)</string>
+	<key>Paused</key>
+	<string>En pause</string>
 	<key>Pending</key>
 	<string>En attente</string>
 	<key>Permission needed</key>
 	<string>Autorisation requise</string>
+	<key>Phone</key>
+	<string>Téléphone</string>
+	<key>Phone QR found</key>
+	<string>Code QR avec téléphone détecté</string>
+	<key>Pin</key>
+	<string>Épingler</string>
 	<key>Pin to Screen</key>
 	<string>Épingler à l’écran</string>
 	<key>Pine Dusk</key>
 	<string>Crépuscule des pins</string>
+	<key>Pinned Screenshot</key>
+	<string>Capture épinglée</string>
+	<key>Pinned screenshot</key>
+	<string>Capture épinglée</string>
 	<key>Pixelate</key>
 	<string>Pixéliser</string>
 	<key>Pixelated area</key>
@@ -544,12 +778,20 @@
 	<string>Appuyez sur %@ pour faire votre première capture</string>
 	<key>Preview</key>
 	<string>Aperçu</string>
+	<key>Preview the target, then continue to recording controls.</key>
+	<string>Vérifiez l’aperçu, puis passez à l’enregistrement.</string>
 	<key>Prism Sweep</key>
 	<string>Balayage prismatique</string>
 	<key>Privacy Policy</key>
 	<string>Politique de confidentialité</string>
 	<key>Purple</key>
 	<string>Violet</string>
+	<key>QR Code</key>
+	<string>Code QR</string>
+	<key>QR Codes</key>
+	<string>Codes QR</string>
+	<key>QR copied to clipboard</key>
+	<string>Code QR copié dans le presse-papiers</string>
 	<key>Quality</key>
 	<string>Qualité</string>
 	<key>Quit &amp; Reopen</key>
@@ -564,8 +806,14 @@
 	<string>Réactiver les raccourcis de capture ⌘⇧3/4/5 d’Apple</string>
 	<key>Ready</key>
 	<string>Prêt</string>
+	<key>Recognized Text</key>
+	<string>Texte reconnu</string>
+	<key>Recognized text</key>
+	<string>Texte reconnu</string>
 	<key>Record</key>
-	<string>Enregistrement</string>
+	<string>Enregistrer</string>
+	<key>Record (Return)</key>
+	<string>Enregistrer (Retour)</string>
 	<key>Record Area</key>
 	<string>Enregistrer une zone</string>
 	<key>Record Fullscreen</key>
@@ -580,12 +828,36 @@
 	<string>Enregistrer le son de l’ordinateur</string>
 	<key>Recording</key>
 	<string>Enregistrement</string>
+	<key>Recording already in progress</key>
+	<string>Un enregistrement est déjà en cours</string>
+	<key>Recording canceled</key>
+	<string>Enregistrement annulé</string>
+	<key>Recording controls</key>
+	<string>Commandes d’enregistrement</string>
+	<key>Recording discarded</key>
+	<string>Enregistrement supprimé</string>
+	<key>Recording failed before saving.</key>
+	<string>L’enregistrement a échoué avant d’être sauvegardé.</string>
+	<key>Recording keyboard shortcuts</key>
+	<string>Enregistrement des raccourcis clavier</string>
 	<key>Recording paused — click to stop (%@)</key>
 	<string>Enregistrement suspendu — cliquez pour l’arrêter (%@)</string>
 	<key>Recording shortcuts are unassigned by default — click a field to set one. Stop Recording also cancels recording setup. While recording, %@ always stops it, from any app.</key>
 	<string>Les raccourcis d’enregistrement ne sont pas attribués par défaut — cliquez sur un champ pour en définir un. « Arrêter l’enregistrement » annule aussi la préparation. Pendant un enregistrement, %@ l’arrête toujours, depuis n’importe quelle app.</string>
+	<key>Recording stopped early — saved what was captured.</key>
+	<string>L’enregistrement s’est arrêté plus tôt — ce qui a été capturé est sauvegardé.</string>
+	<key>Recording the camera</key>
+	<string>Enregistrement de la caméra</string>
+	<key>Recording time</key>
+	<string>Durée d’enregistrement</string>
+	<key>Recording without the camera.</key>
+	<string>Enregistrement sans la caméra.</string>
 	<key>Recording — click to stop (%@)</key>
 	<string>Enregistrement en cours — cliquez pour l’arrêter (%@)</string>
+	<key>Records %@ × %@ pixels (%@ × %@ points)</key>
+	<string>Enregistre %@ × %@ pixels (%@ × %@ points)</string>
+	<key>Records the pointer separately, so the editor can smooth it, resize it, and keep it crisp when zoomed.</key>
+	<string>Enregistre le pointeur séparément, pour que l’éditeur puisse le lisser, le redimensionner et le garder net en cas de zoom.</string>
 	<key>Recovered your interrupted recording “%@”. Click to open it.</key>
 	<string>Votre enregistrement interrompu « %@ » a été récupéré. Cliquez pour l’ouvrir.</string>
 	<key>Rectangle</key>
@@ -608,12 +880,36 @@
 	<string>Rétablir les valeurs par défaut</string>
 	<key>Reset crop</key>
 	<string>Réinitialiser le rognage</string>
+	<key>Resize</key>
+	<string>Redimensionner</string>
 	<key>Restore Apple Shortcuts</key>
 	<string>Restaurer les raccourcis Apple</string>
 	<key>Resume Recording</key>
 	<string>Reprendre l’enregistrement</string>
+	<key>Resume recording</key>
+	<string>Reprendre l’enregistrement</string>
+	<key>Resume recording (%@)</key>
+	<string>Reprendre l’enregistrement (%@)</string>
 	<key>Review Changes…</key>
 	<string>Vérifier les modifications…</string>
+	<key>Review the decoded email payload before copying.</key>
+	<string>Vérifiez les données d’e-mail décodées avant de les copier.</string>
+	<key>Review the decoded link before opening.</key>
+	<string>Vérifiez le lien décodé avant de l’ouvrir.</string>
+	<key>Review the decoded link before opening: %@</key>
+	<string>Vérifiez le lien décodé avant de l’ouvrir : %@</string>
+	<key>Review the decoded text before copying.</key>
+	<string>Vérifiez le texte décodé avant de le copier.</string>
+	<key>Review the decoded values before copying or opening.</key>
+	<string>Vérifiez les valeurs décodées avant de les copier ou de les ouvrir.</string>
+	<key>Review the email details before composing.</key>
+	<string>Vérifiez les détails de l’e-mail avant de le rédiger.</string>
+	<key>Review the message details before opening.</key>
+	<string>Vérifiez les détails du message avant de l’ouvrir.</string>
+	<key>Review the network details before copying.</key>
+	<string>Vérifiez les détails du réseau avant de les copier.</string>
+	<key>Review the phone number before opening.</key>
+	<string>Vérifiez le numéro de téléphone avant de l’ouvrir.</string>
 	<key>Right</key>
 	<string>Droite</string>
 	<key>Rose Smoke</key>
@@ -642,8 +938,12 @@
 	<string>Enregistrer les modifications de cette capture ?</string>
 	<key>Save folder updated.</key>
 	<string>Dossier d’enregistrement mis à jour.</string>
+	<key>Save screenshot to disk</key>
+	<string>Enregistrer la capture d’écran sur le disque</string>
 	<key>Saved</key>
 	<string>Enregistrée</string>
+	<key>Saved %@ to %@ — click to reveal in Finder</key>
+	<string>%1$@ enregistré dans %2$@ — cliquez pour l’afficher dans le Finder</string>
 	<key>Saved capture</key>
 	<string>Capture enregistrée</string>
 	<key>Saved to %@: %@</key>
@@ -652,36 +952,70 @@
 	<string>Enregistrer…</string>
 	<key>Saving captures to History</key>
 	<string>Enregistrement des captures dans l’historique</string>
+	<key>Saving the last recording…</key>
+	<string>Finalisation du dernier enregistrement…</string>
 	<key>Saving the recording</key>
 	<string>Enregistrement de la vidéo en cours</string>
+	<key>Saving the recording…</key>
+	<string>Finalisation de l’enregistrement…</string>
+	<key>Saving the screen recording</key>
+	<string>Finalisation de l’enregistrement de l’écran</string>
 	<key>Saving…</key>
-	<string>Enregistrement…</string>
+	<string>Finalisation…</string>
 	<key>Scan QR Code</key>
 	<string>Scanner un code QR</string>
 	<key>Screen Recording</key>
 	<string>Enregistrement de l’écran</string>
 	<key>Screen Recording Permission Required</key>
 	<string>Autorisation d’enregistrement de l’écran requise</string>
+	<key>Screen recording didn't start in time. Try again.</key>
+	<string>L’enregistrement de l’écran n’a pas démarré à temps. Réessayez.</string>
 	<key>Screenshot Editor</key>
 	<string>Éditeur de captures</string>
 	<key>Screenshot canvas</key>
 	<string>Zone de travail de la capture</string>
+	<key>Screenshot captured</key>
+	<string>Capture d’écran effectuée</string>
+	<key>Screenshot selection</key>
+	<string>Sélection pour la capture d’écran</string>
+	<key>Screenshot thumbnail</key>
+	<string>Vignette de la capture d’écran</string>
 	<key>Screenshots</key>
 	<string>Captures</string>
+	<key>Scroll down to capture</key>
+	<string>Faites défiler vers le bas pour capturer</string>
+	<key>Scroll down to capture more</key>
+	<string>Continuez à défiler vers le bas</string>
+	<key>Scrolled too fast — scroll back up a little</key>
+	<string>Trop rapide — remontez un peu</string>
 	<key>Scrolling</key>
 	<string>Défilement</string>
 	<key>Scrolling Capture</key>
 	<string>Capture défilante</string>
 	<key>Scrolling capture</key>
 	<string>Capture défilante</string>
+	<key>Scrolling capture controls</key>
+	<string>Commandes de la capture défilante</string>
+	<key>Scrolling capture failed</key>
+	<string>Échec de la capture défilante</string>
 	<key>Search text in captures</key>
 	<string>Rechercher du texte dans les captures</string>
+	<key>Security</key>
+	<string>Sécurité</string>
 	<key>Select</key>
 	<string>Sélectionner</string>
 	<key>Select All</key>
 	<string>Tout sélectionner</string>
+	<key>Select a window to record without blocking other apps</key>
+	<string>Choisissez une fenêtre à enregistrer sans bloquer les autres apps</string>
+	<key>Select which display to record fullscreen</key>
+	<string>Choisissez l’écran à enregistrer en plein écran</string>
 	<key>Selection</key>
 	<string>Sélection</string>
+	<key>Selection %@ by %@ points</key>
+	<string>Sélection de %@ sur %@ points</string>
+	<key>Selection %@ by %@ points. Arrow keys move it, Return captures, Escape cancels.</key>
+	<string>Sélection de %@ sur %@ points. Les flèches la déplacent, Retour capture, Échap annule.</string>
 	<key>Set In to Playhead</key>
 	<string>Placer le point d’entrée sur la tête de lecture</string>
 	<key>Set Out to Playhead</key>
@@ -702,12 +1036,16 @@
 	<string>Raccourcis</string>
 	<key>Shotnix Preferences</key>
 	<string>Réglages de Shotnix</string>
+	<key>Shotnix can't write to the save folder. Choose another one in Settings → Screenshots.</key>
+	<string>Shotnix ne peut pas écrire dans le dossier d’enregistrement. Choisissez-en un autre dans Réglages → Captures.</string>
 	<key>Shotnix could not write the file to:
 %@</key>
 	<string>Shotnix n’a pas pu écrire le fichier à cet emplacement :
 %@</string>
 	<key>Shotnix is ready to use!</key>
 	<string>Shotnix est prêt à l’emploi !</string>
+	<key>Shotnix isn't allowed to record the screen. Turn it on in System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording.</key>
+	<string>Shotnix n’est pas autorisé à enregistrer l’écran. Activez-le dans Réglages Système → Confidentialité et sécurité → Enregistrement de l’écran et de l’audio du système.</string>
 	<key>Shotnix lives here — setup continues next launch</key>
 	<string>Shotnix se trouve ici — la configuration reprendra au prochain lancement</string>
 	<key>Shotnix lives in your menu bar</key>
@@ -746,6 +1084,8 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Taille</string>
 	<key>Skip Setup</key>
 	<string>Ignorer la configuration</string>
+	<key>Skipping frames</key>
+	<string>Images perdues</string>
 	<key>Sky Wash</key>
 	<string>Lavis de ciel</string>
 	<key>Solid Color</key>
@@ -766,20 +1106,38 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Démarrage</string>
 	<key>Step %lld</key>
 	<string>Étape %lld</string>
+	<key>Still saving the last recording — try again in a moment.</key>
+	<string>Le dernier enregistrement est encore en cours de finalisation — réessayez dans un instant.</string>
+	<key>Still saving the recording…</key>
+	<string>Finalisation de l’enregistrement en cours…</string>
+	<key>Stitching…</key>
+	<string>Assemblage…</string>
 	<key>Stop Recording</key>
 	<string>Arrêter l’enregistrement</string>
+	<key>Stop recording</key>
+	<string>Arrêter l’enregistrement</string>
+	<key>Stop recording (%@)</key>
+	<string>Arrêter l’enregistrement (%@)</string>
 	<key>Storage</key>
 	<string>Stockage</string>
 	<key>Strength</key>
 	<string>Intensité</string>
 	<key>Style</key>
 	<string>Style</string>
+	<key>Subject</key>
+	<string>Objet</string>
 	<key>Sunset Coral</key>
 	<string>Corail couchant</string>
 	<key>Support</key>
 	<string>Assistance</string>
 	<key>System Default</key>
 	<string>Par défaut du système</string>
+	<key>System audio</key>
+	<string>Son de l’ordinateur</string>
+	<key>System audio couldn't be recorded. Try again without system audio.</key>
+	<string>Le son de l’ordinateur n’a pas pu être enregistré. Réessayez sans le son de l’ordinateur.</string>
+	<key>Table copied — paste it into a spreadsheet</key>
+	<string>Tableau copié — collez-le dans un tableur</string>
 	<key>Tahoe Ice</key>
 	<string>Glace de Tahoe</string>
 	<key>Take a Test Screenshot</key>
@@ -790,20 +1148,46 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Modèle</string>
 	<key>Text</key>
 	<string>Texte</string>
+	<key>Text QR found</key>
+	<string>Code QR avec texte détecté</string>
 	<key>Text Recognition</key>
 	<string>Reconnaissance de texte</string>
+	<key>Text copied</key>
+	<string>Texte copié</string>
+	<key>Text copied to clipboard</key>
+	<string>Texte copié dans le presse-papiers</string>
+	<key>Text recognition failed</key>
+	<string>Échec de la reconnaissance de texte</string>
 	<key>Text size</key>
 	<string>Taille du texte</string>
 	<key>Text: %@</key>
 	<string>Texte : %@</string>
+	<key>That display isn't available anymore.</key>
+	<string>Cet écran n’est plus disponible.</string>
+	<key>That display or window isn't available anymore.</key>
+	<string>Cet écran ou cette fenêtre n’est plus disponible.</string>
+	<key>That window closed before recording could start.</key>
+	<string>La fenêtre s’est fermée avant le début de l’enregistrement.</string>
+	<key>The camera couldn't start.</key>
+	<string>Impossible de démarrer la caméra.</string>
+	<key>The camera stopped. The recording continues without it.</key>
+	<string>La caméra s’est arrêtée. L’enregistrement continue sans elle.</string>
 	<key>The menu bar icon is Shotnix's main entry point. While it is hidden, open Shotnix again from Finder, Launchpad, or Spotlight to bring these Preferences back.</key>
 	<string>L’icône de la barre des menus est le principal point d’accès à Shotnix. Tant qu’elle est masquée, ouvrez de nouveau Shotnix depuis le Finder, le Launchpad ou Spotlight pour retrouver ces réglages.</string>
+	<key>The microphone couldn't start, so this recording has no mic.</key>
+	<string>Le micro n’a pas pu démarrer : cet enregistrement n’aura pas de son du micro.</string>
+	<key>The microphone stopped working. The recording continues without it.</key>
+	<string>Le micro a cessé de fonctionner. L’enregistrement continue sans lui.</string>
+	<key>The recording couldn't be finished — saved the first %@.</key>
+	<string>L’enregistrement n’a pas pu être finalisé — le début (%@) a été sauvegardé.</string>
 	<key>The save panel did not return a destination. Please try saving again.</key>
 	<string>La zone de dialogue d’enregistrement n’a renvoyé aucune destination. Veuillez réessayer.</string>
 	<key>The screenshot has no image data.</key>
 	<string>La capture ne contient aucune donnée d’image.</string>
 	<key>The selection stays on screen to adjust — drag its edges, nudge it with the arrow keys, then press Return. Hold ⇧ as you release to capture right away.</key>
 	<string>La sélection reste à l’écran pour être ajustée — faites glisser ses bords, déplacez-la avec les touches fléchées, puis appuyez sur Retour. Maintenez ⇧ en relâchant pour capturer immédiatement.</string>
+	<key>The window you're recording closed. Stop when you're ready — the recording keeps going.</key>
+	<string>La fenêtre enregistrée a été fermée. Arrêtez quand vous voulez — l’enregistrement continue.</string>
 	<key>This Week</key>
 	<string>Cette semaine</string>
 	<key>Three quick steps and you're capturing.</key>
@@ -818,6 +1202,8 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>La capture avec minuteur sélectionne d’abord la zone, puis lance un compte à rebours avant la capture — le temps d’ouvrir des menus ou d’afficher des états de survol. Échap annule.</string>
 	<key>Timeline</key>
 	<string>Timeline</string>
+	<key>To</key>
+	<string>À</string>
 	<key>Today</key>
 	<string>Aujourd’hui</string>
 	<key>Tools</key>
@@ -826,6 +1212,8 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Essayez dès maintenant — « Capturer une zone » se trouve aussi dans la barre des menus.</string>
 	<key>Type here…</key>
 	<string>Saisissez du texte…</string>
+	<key>URL</key>
+	<string>URL</string>
 	<key>Undo</key>
 	<string>Annuler</string>
 	<key>Undo Timeline Edit</key>
@@ -846,6 +1234,8 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Vidéo</string>
 	<key>Violet Bloom</key>
 	<string>Éclosion violette</string>
+	<key>Warning</key>
+	<string>Avertissement</string>
 	<key>Website</key>
 	<string>Site web</string>
 	<key>Welcome to Shotnix</key>
@@ -854,12 +1244,20 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Nouveautés</string>
 	<key>White</key>
 	<string>Blanc</string>
+	<key>Wi-Fi</key>
+	<string>Wi-Fi</string>
+	<key>Wi-Fi QR found</key>
+	<string>Code QR Wi-Fi détecté</string>
 	<key>Window</key>
 	<string>Fenêtre</string>
 	<key>Window Capture</key>
 	<string>Capture de fenêtre</string>
+	<key>Window capture</key>
+	<string>Capture de fenêtre</string>
 	<key>Window captures are isolated — nothing overlapping shows through. With this on they get transparent padding and a soft drop shadow.</key>
 	<string>Les captures de fenêtre sont isolées : rien de ce qui les recouvre n’apparaît. Avec cette option, elles reçoivent une marge transparente et une ombre portée douce.</string>
+	<key>Window closed</key>
+	<string>Fenêtre fermée</string>
 	<key>Writable</key>
 	<string>Accessible en écriture</string>
 	<key>Yellow</key>
@@ -868,12 +1266,22 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Hier</string>
 	<key>You're all set — Shotnix lives here</key>
 	<string>Tout est prêt — Shotnix se trouve ici</string>
+	<key>Your Mac can't keep up with this recording and is skipping frames. Balanced quality or 30 fps will help.</key>
+	<string>Votre Mac n’arrive pas à suivre cet enregistrement et saute des images. La qualité Équilibrée ou 30 fps vous aideront.</string>
 	<key>Your camera is recorded as its own layer: a live bubble shows while you record (it never appears in the screen capture), and the editor lets you move, resize, and restyle it — or hide it — afterwards.</key>
 	<string>Votre caméra est enregistrée sur son propre calque : une bulle en direct s’affiche pendant l’enregistrement (elle n’apparaît jamais dans la capture de l’écran), et l’éditeur vous permet ensuite de la déplacer, de la redimensionner et de changer son style — ou de la masquer.</string>
+	<key>Your disk filled up — saved the first %@.</key>
+	<string>Votre disque est plein — le début (%@) a été sauvegardé.</string>
+	<key>Your disk is almost full, so the recording stopped. It's saved.</key>
+	<string>Votre disque est presque plein : l’enregistrement s’est arrêté. Il est sauvegardé.</string>
+	<key>Your disk is full, so the recording couldn't be saved.</key>
+	<string>Votre disque est plein : l’enregistrement n’a pas pu être sauvegardé.</string>
 	<key>Your edits will be lost if you close without saving or copying them.</key>
 	<string>Vos modifications seront perdues si vous fermez sans les enregistrer ni les copier.</string>
 	<key>Zoom</key>
 	<string>Zoom</string>
+	<key>a table</key>
+	<string>un tableau</string>
 	<key>macOS screenshot shortcuts (⌘⇧3, ⌘⇧4, ⌘⇧5) conflict with Shotnix.
 
 Disable them so Shotnix owns the capture shortcuts and screenshots do not double-trigger.
@@ -884,11 +1292,29 @@ You can re-enable Apple's shortcuts anytime in System Settings → Keyboard → 
 Désactivez-les pour que Shotnix gère les raccourcis de capture et que les captures ne se déclenchent pas deux fois.
 
 Vous pouvez réactiver les raccourcis d’Apple à tout moment dans Réglages Système → Clavier → Raccourcis clavier → Captures d’écran.</string>
+	<key>mic</key>
+	<string>micro</string>
+	<key>no audio</key>
+	<string>sans son</string>
+	<key>sys+mic</key>
+	<string>sys.+micro</string>
+	<key>system</key>
+	<string>système</string>
+	<key>up to %@ GB/min</key>
+	<string>jusqu’à %@ Go/min</string>
+	<key>up to %@ MB/min</key>
+	<string>jusqu’à %@ Mo/min</string>
 	<key>© 2026 Shotnix Contributors</key>
 	<string>© 2026 Contributeurs de Shotnix</string>
 	<key>“%@” found in %lld of %lld captures</key>
 	<string>« %1$@ » trouvé dans %2$lld captures sur %3$lld</string>
 	<key>✓ Copied to clipboard</key>
 	<string>✓ Copié dans le presse-papiers</string>
+	<key>✓ Saved screenshot</key>
+	<string>✓ Capture d’écran enregistrée</string>
+	<key>✓ Text copied to clipboard</key>
+	<string>✓ Texte copié dans le presse-papiers</string>
+	<key>✓ Text copied · %@ — click for options</key>
+	<string>✓ Texte copié · %@ — cliquez pour les options</string>
 </dict>
 </plist>

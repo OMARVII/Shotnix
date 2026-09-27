@@ -127,7 +127,7 @@ final class RecordingEngine: NSObject {
             // The next recording can be set up while the last one saves;
             // it starts as soon as that file is ready (without the last
             // one's editor opening over it).
-            ToastWindow.show(message: "Saving the last recording…", on: screen)
+            ToastWindow.show(message: L("Saving the last recording…"), on: screen)
             startIsWaitingForSave = true
             await waitUntilSaved(timeout: 30)
         }
@@ -135,7 +135,7 @@ final class RecordingEngine: NSObject {
         guard !active else {
             // The recording bar left the camera preview running for us.
             CameraCapture.shared.stop()
-            ToastWindow.show(message: isFinishing ? "Still saving the last recording — try again in a moment." : "Recording already in progress", on: screen)
+            ToastWindow.show(message: isFinishing ? L("Still saving the last recording — try again in a moment.") : L("Recording already in progress"), on: screen)
             return
         }
         isStarting = true
@@ -149,7 +149,7 @@ final class RecordingEngine: NSObject {
         if configuration.recordsMicrophone {
             if !(await requestMicrophonePermissionIfNeeded()) {
                 configuration.recordsMicrophone = false
-                notices.append("Microphone access is off, so this recording has no mic.")
+                notices.append(L("Microphone access is off, so this recording has no mic."))
             } else if let device = RecordingMicrophone.device(for: configuration.microphoneDeviceID) {
                 // Opened before the file exists: a microphone that won't
                 // start can't leave a broken recording behind.
@@ -159,12 +159,12 @@ final class RecordingEngine: NSObject {
                     microphone = candidate
                 } catch {
                     configuration.recordsMicrophone = false
-                    notices.append("The microphone couldn't start, so this recording has no mic.")
+                    notices.append(L("The microphone couldn't start, so this recording has no mic."))
                     print("[Shotnix] Microphone setup failed: \(error)")
                 }
             } else {
                 configuration.recordsMicrophone = false
-                notices.append("No microphone is connected, so this recording has no mic.")
+                notices.append(L("No microphone is connected, so this recording has no mic."))
             }
         }
 
@@ -204,7 +204,8 @@ final class RecordingEngine: NSObject {
                 let result = await CameraCapture.shared.start(deviceID: configuration.cameraDeviceID, around: source.initialRect, on: screen)
                 if let message = result.message {
                     configuration.recordsCamera = false
-                    notices.append("\(message) Recording without the camera.")
+                    notices.append(message)
+                    notices.append(L("Recording without the camera."))
                 }
             } else {
                 CameraCapture.shared.stop()
@@ -281,7 +282,7 @@ final class RecordingEngine: NSObject {
             }
             let onFramesDropping: () -> Void = { [weak self] in
                 Task { @MainActor in
-                    self?.warn(hud: "Skipping frames", toast: "Your Mac can't keep up with this recording and is skipping frames. Balanced quality or 30 fps will help.")
+                    self?.warn(hud: L("Skipping frames"), toast: L("Your Mac can't keep up with this recording and is skipping frames. Balanced quality or 30 fps will help."))
                 }
             }
             writerQueue.async {
@@ -389,7 +390,16 @@ final class RecordingEngine: NSObject {
         outline?.setPaused(timeline.isPaused)
 
         if !notices.isEmpty {
-            ToastWindow.show(message: notices.joined(separator: " "), duration: 4, on: screen)
+            ToastWindow.show(message: Self.sentences(notices), duration: 4, on: screen)
+        }
+    }
+
+    /// Whole sentences, one after another: a space between them, except
+    /// after full-width punctuation, which Chinese follows with none.
+    nonisolated static func sentences(_ sentences: [String]) -> String {
+        sentences.reduce("") { text, sentence in
+            guard let last = text.last else { return sentence }
+            return text + ("。！？".contains(last) ? "" : " ") + sentence
         }
     }
 
@@ -746,7 +756,7 @@ final class RecordingEngine: NSObject {
         } else if !didWarnLowDiskSpace, available < RecordingDiskSpace.warningThreshold(bytesPerSecond: bytesPerSecond) {
             didWarnLowDiskSpace = true
             let secondsLeft = RecordingDiskSpace.secondsLeft(available: available, bytesPerSecond: bytesPerSecond)
-            warn(hud: "Disk almost full", toast: RecordingDiskSpace.lowSpaceWarning(secondsLeft: secondsLeft))
+            warn(hud: L("Disk almost full"), toast: RecordingDiskSpace.lowSpaceWarning(secondsLeft: secondsLeft))
         }
     }
 
@@ -767,11 +777,11 @@ final class RecordingEngine: NSObject {
         guard isRecording else { return }
         switch event {
         case .switched(let name):
-            warn(hud: "Mic switched", toast: "Microphone disconnected. Now recording from \(name).")
+            warn(hud: L("Mic switched"), toast: L("Microphone disconnected. Now recording from \(name)."))
         case .lost:
-            warn(hud: "Mic disconnected", toast: "Microphone disconnected. The recording continues without it.")
+            warn(hud: L("Mic disconnected"), toast: L("Microphone disconnected. The recording continues without it."))
         case .failed:
-            warn(hud: "Mic stopped", toast: "The microphone stopped working. The recording continues without it.")
+            warn(hud: L("Mic stopped"), toast: L("The microphone stopped working. The recording continues without it."))
         }
     }
 
@@ -779,9 +789,9 @@ final class RecordingEngine: NSObject {
         guard isRecording, recordsCamera else { return }
         switch interruption {
         case .disconnected:
-            warn(hud: "Camera disconnected", toast: "Camera disconnected. The recording continues without it.")
+            warn(hud: L("Camera disconnected"), toast: L("Camera disconnected. The recording continues without it."))
         case .failed:
-            warn(hud: "Camera stopped", toast: "The camera stopped. The recording continues without it.")
+            warn(hud: L("Camera stopped"), toast: L("The camera stopped. The recording continues without it."))
         }
     }
 
@@ -873,7 +883,7 @@ final class RecordingEngine: NSObject {
         guard let frame = Self.onScreenFrame(of: window.windowID) else {
             if !didWarnWindowClosed, !Self.windowExists(window.windowID) {
                 didWarnWindowClosed = true
-                warn(hud: "Window closed", toast: "The window you're recording closed. Stop when you're ready — the recording keeps going.")
+                warn(hud: L("Window closed"), toast: L("The window you're recording closed. Stop when you're ready — the recording keeps going."))
             }
             return
         }
@@ -979,7 +989,7 @@ final class RecordingEngine: NSObject {
               let url = outputURL else {
             if let outputURL { RecordingRecovery.clear(ifFor: outputURL) }
             cleanup(releasingForeground: true)
-            ToastWindow.show(message: "Recording failed before saving.", on: screen)
+            ToastWindow.show(message: L("Recording failed before saving."), on: screen)
             finishCompleted()
             return
         }
@@ -991,7 +1001,7 @@ final class RecordingEngine: NSObject {
             try? FileManager.default.removeItem(at: url)
             RecordingRecovery.clear(ifFor: url)
             cleanup(releasingForeground: true)
-            ToastWindow.show(message: "Nothing was recorded — the screen didn't send any picture. Try again.", duration: 4, on: screen)
+            ToastWindow.show(message: L("Nothing was recorded — the screen didn't send any picture. Try again."), duration: 4, on: screen)
             finishCompleted()
             return
         }
@@ -1046,8 +1056,11 @@ final class RecordingEngine: NSObject {
                 self.discardUnplayableTake(url: url, camera: camera, writerError: writerError)
                 return
             }
-            let reason = Self.isDiskFull(writerError) ? "Your disk filled up" : "The recording couldn't be finished"
-            self.finalize(url: url, camera: camera, playable: playable, message: "\(reason) — saved the first \(Self.durationText(playable)).")
+            let saved = Self.durationText(playable)
+            let message = Self.isDiskFull(writerError)
+                ? L("Your disk filled up — saved the first \(saved).")
+                : L("The recording couldn't be finished — saved the first \(saved).")
+            self.finalize(url: url, camera: camera, playable: playable, message: message)
         }
     }
 
@@ -1131,7 +1144,7 @@ final class RecordingEngine: NSObject {
             RecordingRecovery.clear(ifFor: url)
         }
         cleanup(releasingForeground: true)
-        ToastWindow.show(message: "Recording discarded", on: screen)
+        ToastWindow.show(message: L("Recording discarded"), on: screen)
         finishCompleted()
     }
 
@@ -1181,7 +1194,7 @@ final class RecordingEngine: NSObject {
     /// saves it first.
     private func registerForTermination() {
         AppTermination.end(terminationToken)
-        terminationToken = AppTermination.begin("Saving the screen recording") { [weak self] done in
+        terminationToken = AppTermination.begin(L("Saving the screen recording")) { [weak self] done in
             guard let self else { return done() }
             self.terminationCallbacks.append(done)
             self.endsForTermination = true
@@ -1209,7 +1222,7 @@ final class RecordingEngine: NSObject {
         let screen = recordingScreen
         let notice = DispatchWorkItem { [weak self] in
             guard let self, self.finishSessionID == sessionID else { return }
-            ToastWindow.show(message: "Still saving the recording…", duration: 3, on: screen)
+            ToastWindow.show(message: L("Still saving the recording…"), duration: 3, on: screen)
         }
         let release = DispatchWorkItem { [weak self] in
             guard let self, self.finishSessionID == sessionID else { return }
@@ -1439,38 +1452,42 @@ final class RecordingEngine: NSObject {
         let nsError = error as NSError
         if let recordingError = error as? RecordingError {
             switch recordingError {
-            case .noDisplay: return "That display isn't available anymore."
-            case .windowGone: return "That window closed before recording could start."
-            case .cannotAddWriterInput, .cannotStartWriter: return "Couldn't create the video file."
-            case .timedOut: return "Screen recording didn't start in time. Try again."
+            case .noDisplay: return L("That display isn't available anymore.")
+            case .windowGone: return L("That window closed before recording could start.")
+            case .cannotAddWriterInput, .cannotStartWriter: return L("Couldn't create the video file.")
+            case .timedOut: return L("Screen recording didn't start in time. Try again.")
             case .notEnoughSpace(let required, let available): return RecordingDiskSpace.notEnoughSpaceMessage(required: required, available: available)
             }
         }
         if nsError.domain == SCStreamErrorDomain {
             switch nsError.code {
             case SCStreamError.userDeclined.rawValue:
-                return "Shotnix isn't allowed to record the screen. Turn it on in System Settings → Privacy & Security → Screen & System Audio Recording."
+                return L("Shotnix isn't allowed to record the screen. Turn it on in System Settings → Privacy & Security → Screen & System Audio Recording.")
             case SCStreamError.noDisplayList.rawValue, SCStreamError.noWindowList.rawValue, SCStreamError.noCaptureSource.rawValue:
-                return "That display or window isn't available anymore."
+                return L("That display or window isn't available anymore.")
             case SCStreamError.failedToStartAudioCapture.rawValue:
-                return "System audio couldn't be recorded. Try again without system audio."
+                return L("System audio couldn't be recorded. Try again without system audio.")
             default:
                 break
             }
         }
         if isDiskFull(error) {
-            return "Not enough disk space to record."
+            return L("Not enough disk space to record.")
         }
         if isWriteDenied(error) {
-            return "Shotnix can't write to the save folder. Choose another one in Settings → Screenshots."
+            return L("Shotnix can't write to the save folder. Choose another one in Settings → Screenshots.")
         }
-        return "Could not start recording (\(nsError.localizedDescription))."
+        let reason = nsError.localizedDescription
+        return L("Could not start recording (\(reason)).")
     }
 
     static func saveFailureMessage(for error: Error?) -> String {
-        if isDiskFull(error) { return "Your disk is full, so the recording couldn't be saved." }
-        if let error { return "Could not save the recording (\((error as NSError).localizedDescription))." }
-        return "Could not save the recording."
+        if isDiskFull(error) { return L("Your disk is full, so the recording couldn't be saved.") }
+        if let error {
+            let reason = (error as NSError).localizedDescription
+            return L("Could not save the recording (\(reason)).")
+        }
+        return L("Could not save the recording.")
     }
 
     static func finishedMessage(for url: URL, reason: StopReason) -> String {
@@ -1478,9 +1495,9 @@ final class RecordingEngine: NSObject {
         case .streamError:
             // Stream died (display disconnect, sleep, revoked permission) but
             // the writer finalized a playable file.
-            return "Recording stopped early — saved what was captured."
+            return L("Recording stopped early — saved what was captured.")
         case .diskFull:
-            return "Your disk is almost full, so the recording stopped. It's saved."
+            return L("Your disk is almost full, so the recording stopped. It's saved.")
         default:
             return savedRecordingMessage(for: url)
         }
@@ -1519,7 +1536,7 @@ final class RecordingEngine: NSObject {
 
     static func durationText(_ seconds: Double) -> String {
         let total = max(0, Int(seconds.rounded()))
-        return total < 60 ? "\(total) s" : String(format: "%d:%02d", total / 60, total % 60)
+        return total < 60 ? L("\(total) s") : String(format: "%d:%02d", total / 60, total % 60)
     }
 
     nonisolated private static func frameStatus(from rawValue: Any) -> SCFrameStatus? {
@@ -1626,7 +1643,8 @@ final class RecordingEngine: NSObject {
         let folder = url.deletingLastPathComponent()
         let folderName = FileManager.default.displayName(atPath: folder.path)
         let destination = folderName.isEmpty ? folder.lastPathComponent : folderName
-        return "Saved to \(destination): \(url.lastPathComponent)"
+        let file = url.lastPathComponent
+        return L("Saved to \(destination): \(file)")
     }
 
     enum StopReason {
@@ -1782,9 +1800,9 @@ enum RecordingQuality: String {
 
     var displayName: String {
         switch self {
-        case .balanced: "Balanced"
-        case .high: "High"
-        case .max: "Max"
+        case .balanced: L("Balanced")
+        case .high: L("High")
+        case .max: L("Max")
         }
     }
 

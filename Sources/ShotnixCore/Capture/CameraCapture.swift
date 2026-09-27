@@ -18,9 +18,9 @@ final class CameraCapture {
         var message: String? {
             switch self {
             case .started: nil
-            case .denied: "Camera access is off — allow Shotnix in System Settings → Privacy & Security → Camera."
-            case .noCamera: "No camera found."
-            case .failed: "The camera couldn't start."
+            case .denied: L("Camera access is off — allow Shotnix in System Settings → Privacy & Security → Camera.")
+            case .noCamera: L("No camera found.")
+            case .failed: L("The camera couldn't start.")
             }
         }
     }
@@ -391,7 +391,7 @@ final class CameraBubbleWindow: NSPanel {
         view.layer?.addSublayer(ring)
 
         contentView = view
-        setAccessibilityLabel("Camera preview")
+        setAccessibilityLabel(L("Camera preview"))
         // Compared against where `place` put it: programmatic moves may
         // report after the fact.
         moveObserver = NotificationCenter.default.addObserver(forName: NSWindow.didMoveNotification, object: self, queue: .main) { [weak self] _ in

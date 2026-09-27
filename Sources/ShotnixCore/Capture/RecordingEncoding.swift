@@ -126,7 +126,7 @@ enum RecordingSizeEstimate {
         formatter.maximumFractionDigits = gigabytes ? 1 : 0
         let value = Double(bytesPerMinute) / (gigabytes ? 1_000_000_000 : 1_000_000)
         let number = formatter.string(from: NSNumber(value: value)) ?? "\(Int(value.rounded()))"
-        return "up to \(number) \(gigabytes ? "GB" : "MB")/min"
+        return gigabytes ? L("up to \(number) GB/min") : L("up to \(number) MB/min")
     }
 }
 
@@ -163,15 +163,21 @@ enum RecordingDiskSpace {
     static func notEnoughSpaceMessage(required: Int64, available: Int64) -> String {
         let formatter = ByteCountFormatter()
         formatter.countStyle = .file
+        let needed = formatter.string(fromByteCount: required)
+        let free = formatter.string(fromByteCount: max(available, 0))
         // Lower settings only help while the recording's own rate sets the bar.
-        let advice = required > minimumToStart ? "Free up space, or choose Balanced quality or 30 fps." : "Free up some space and try again."
-        return "Not enough free disk space for this recording: it needs about \(formatter.string(fromByteCount: required)) free, "
-            + "and \(formatter.string(fromByteCount: max(available, 0))) is available. \(advice)"
+        return required > minimumToStart
+            ? L("Not enough free disk space for this recording: it needs about \(needed) free, and \(free) is available. Free up space, or choose Balanced quality or 30 fps.")
+            : L("Not enough free disk space for this recording: it needs about \(needed) free, and \(free) is available. Free up some space and try again.")
     }
 
     static func lowSpaceWarning(secondsLeft: Int) -> String {
-        let left = secondsLeft >= 90 ? "about \(Int((Double(secondsLeft) / 60).rounded())) minutes" : "about \(max(10, (secondsLeft / 10) * 10)) seconds"
-        return "Your disk is almost full. In \(left) the recording stops and saves itself."
+        if secondsLeft >= 90 {
+            let minutes = Int((Double(secondsLeft) / 60).rounded())
+            return L("Your disk is almost full. In about \(minutes) minutes the recording stops and saves itself.")
+        }
+        let seconds = max(10, (secondsLeft / 10) * 10)
+        return L("Your disk is almost full. In about \(seconds) seconds the recording stops and saves itself.")
     }
 
     /// Accurate — it counts space the system can purge on demand — but

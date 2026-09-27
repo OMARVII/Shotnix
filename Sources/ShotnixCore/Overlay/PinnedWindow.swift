@@ -71,8 +71,8 @@ final class PinnedWindow: NSPanel, ShotnixCommandClosable {
         imageView.layer?.borderWidth = 0.5
         imageView.layer?.borderColor = ShotnixColors.pinnedBorder.cgColor
         imageView.autoresizingMask = [.width, .height]
-        imageView.setAccessibilityLabel("Pinned screenshot")
-        imageView.setAccessibilityHelp("Drag to move. Press Command-C to copy, Escape to close.")
+        imageView.setAccessibilityLabel(L("Pinned screenshot"))
+        imageView.setAccessibilityHelp(L("Drag to move. Press Command-C to copy, Escape to close."))
 
         draggableImage.onHoverStateChanged = { [weak self] hovered in
             self?.isHovered = hovered
@@ -170,7 +170,7 @@ final class PinnedWindow: NSPanel, ShotnixCommandClosable {
     private func showCloseButton() {
         guard closeButton == nil, let content = contentView else { return }
         let btn = NSButton(frame: NSRect(x: content.bounds.width - 24, y: content.bounds.height - 24, width: 20, height: 20))
-        btn.image = NSImage(systemSymbolName: "xmark.circle.fill", accessibilityDescription: "Close")
+        btn.image = NSImage(systemSymbolName: "xmark.circle.fill", accessibilityDescription: L("Close"))
         btn.bezelStyle = .regularSquare
         btn.isBordered = false
         btn.target = self
@@ -182,7 +182,7 @@ final class PinnedWindow: NSPanel, ShotnixCommandClosable {
         closeButton = btn
 
         let grip = NSImageView(frame: NSRect(x: content.bounds.width - 20, y: 4, width: 16, height: 16))
-        grip.image = NSImage(systemSymbolName: "arrow.up.left.and.arrow.down.right", accessibilityDescription: "Resize")
+        grip.image = NSImage(systemSymbolName: "arrow.up.left.and.arrow.down.right", accessibilityDescription: L("Resize"))
         grip.contentTintColor = .white.withAlphaComponent(0.6)
         grip.alphaValue = 0
         // Stick to bottom-right corner during live window resize.
@@ -224,14 +224,15 @@ final class PinnedWindow: NSPanel, ShotnixCommandClosable {
         guard let view = contentView else { return }
         ShotnixContextMenu.show(
             sections: [
-                ShotnixMenuSection(id: "pin.capture", title: "Pinned Screenshot", actions: [
-                    ShotnixMenuAction(id: "pin.copy", title: "Copy", symbolName: "doc.on.doc", shortcut: "⌘C", role: .primary) { [weak self] in self?.copyPinnedImage() },
-                    ShotnixMenuAction(id: "pin.save", title: "Save As", symbolName: "square.and.arrow.down") { [weak self] in self?.savePinnedImage() },
-                    ShotnixMenuAction(id: "pin.edit", title: "Edit", symbolName: "pencil") { [weak self] in self?.editPinnedImage() },
+                ShotnixMenuSection(id: "pin.capture", title: L("Pinned Screenshot"), actions: [
+                    ShotnixMenuAction(id: "pin.copy", title: L("Copy"), symbolName: "doc.on.doc", shortcut: "⌘C", role: .primary) { [weak self] in self?.copyPinnedImage() },
+                    ShotnixMenuAction(id: "pin.save", title: L("Save As…"), symbolName: "square.and.arrow.down") { [weak self] in self?.savePinnedImage() },
+                    ShotnixMenuAction(id: "pin.edit", title: L("Edit"), symbolName: "pencil") { [weak self] in self?.editPinnedImage() },
                 ]),
-                ShotnixMenuSection(id: "pin.manage", title: "Manage", actions: [
-                    ShotnixMenuAction(id: "pin.close", title: "Close Pin", symbolName: "xmark", shortcut: "Esc") { [weak self] in self?.closeTapped() },
-                    ShotnixMenuAction(id: "pin.close-all", title: "Close All Pins", symbolName: "rectangle.stack.badge.minus", role: .destructive) { [weak self] in self?.closeAllPins() },
+                ShotnixMenuSection(id: "pin.manage", title: L("Manage"), actions: [
+                    // The Esc keycap is the same on every Mac keyboard.
+                    ShotnixMenuAction(id: "pin.close", title: L("Close Pin"), symbolName: "xmark", shortcut: "Esc") { [weak self] in self?.closeTapped() },
+                    ShotnixMenuAction(id: "pin.close-all", title: L("Close All Pins"), symbolName: "rectangle.stack.badge.minus", role: .destructive) { [weak self] in self?.closeAllPins() },
                 ])
             ],
             at: event,
@@ -243,7 +244,7 @@ final class PinnedWindow: NSPanel, ShotnixCommandClosable {
         guard let image = imageView.image else { return }
         // Encode off the main thread; confirm only once the clipboard has it.
         ImageExporter.copyToClipboardAsync(image: image) { [weak self] copied in
-            ToastWindow.show(message: copied ? "✓ Copied to clipboard" : "Could not copy the screenshot", on: self?.screen)
+            ToastWindow.show(message: copied ? L("✓ Copied to clipboard") : L("Could not copy the screenshot"), on: self?.screen)
         }
     }
 
@@ -251,7 +252,7 @@ final class PinnedWindow: NSPanel, ShotnixCommandClosable {
         guard let image = imageView.image else { return }
         ImageExporter.saveWithPanel(image: image, suggestedName: ImageExporter.timestampedName, presentingWindow: self) { [weak self] result in
             if result.didSave {
-                ToastWindow.show(message: "✓ Saved screenshot", on: self?.screen)
+                ToastWindow.show(message: L("✓ Saved screenshot"), on: self?.screen)
             }
         }
     }

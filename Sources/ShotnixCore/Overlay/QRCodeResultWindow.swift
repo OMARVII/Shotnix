@@ -34,7 +34,7 @@ final class QRCodeResultWindow: NSWindow, NSWindowDelegate {
             defer: false
         )
 
-        title = results.count == 1 ? results[0].symbologyName : (allQRCodes ? "QR Codes" : "Barcodes")
+        title = results.count == 1 ? results[0].symbologyName : (allQRCodes ? L("QR Codes") : L("Barcodes"))
         titleVisibility = .hidden
         titlebarAppearsTransparent = true
         isReleasedWhenClosed = false
@@ -68,12 +68,14 @@ final class QRCodeResultWindow: NSWindow, NSWindowDelegate {
 
         let titleText: String
         if payloads.count == 1 {
-            titleText = allQRCodes ? payloads[0].title : "\(results[0].symbologyName) found"
+            let symbology = results[0].symbologyName
+            titleText = allQRCodes ? payloads[0].title : L("\(symbology) found")
         } else {
-            titleText = allQRCodes ? "\(payloads.count) QR codes found" : "\(payloads.count) barcodes found"
+            titleText = allQRCodes ? L("\(payloads.count) QR codes found") : L("\(payloads.count) barcodes found")
         }
         let titleLabel = NSTextField(labelWithString: titleText)
         titleLabel.font = .boldSystemFont(ofSize: 19)
+        titleLabel.lineBreakMode = .byTruncatingTail
         titleLabel.frame = NSRect(x: 78, y: height - 68, width: width - 102, height: 24)
         background.addSubview(titleLabel)
 
@@ -95,7 +97,7 @@ final class QRCodeResultWindow: NSWindow, NSWindowDelegate {
         card.layer?.borderColor = NSColor.separatorColor.cgColor
         background.addSubview(card)
 
-        let badge = NSTextField(labelWithString: payloads.count == 1 ? "Decoded details" : "Decoded details")
+        let badge = NSTextField(labelWithString: L("Decoded details"))
         badge.font = .systemFont(ofSize: 10, weight: .semibold)
         badge.textColor = .tertiaryLabelColor
         badge.frame = NSRect(x: 14, y: cardHeight - 28, width: card.bounds.width - 28, height: 14)
@@ -122,31 +124,38 @@ final class QRCodeResultWindow: NSWindow, NSWindowDelegate {
         scroll.documentView = textView
         card.addSubview(scroll)
 
+        // The rightmost button ends 24 pt in and fits its title; Copy sits
+        // left of it and moves over only when that button grows.
         let buttonY: CGFloat = 18
-        let copyButton = NSButton(title: "Copy", target: self, action: #selector(copyPayload))
-        copyButton.bezelStyle = .rounded
-        copyButton.keyEquivalent = "\r"
-        copyButton.frame = NSRect(x: width - 224, y: buttonY, width: 86, height: 32)
-        background.addSubview(copyButton)
-
+        let trailing: NSButton
         if let primaryPayload, primaryPayload.actionURL != nil, let actionTitle = primaryPayload.actionTitle {
             let openButton = NSButton(title: actionTitle, target: self, action: #selector(openPrimaryAction))
             openButton.bezelStyle = .rounded
-            openButton.frame = NSRect(x: width - 128, y: buttonY, width: 104, height: 32)
-            background.addSubview(openButton)
+            let openWidth = TextFitting.buttonWidth(openButton, minimum: 104)
+            openButton.frame = NSRect(x: width - 24 - openWidth, y: buttonY, width: openWidth, height: 32)
+            trailing = openButton
         } else {
-            let closeButton = NSButton(title: "Close", target: self, action: #selector(closeWindow))
+            let closeButton = NSButton(title: L("Close"), target: self, action: #selector(closeWindow))
             closeButton.bezelStyle = .rounded
-            closeButton.frame = NSRect(x: width - 110, y: buttonY, width: 86, height: 32)
-            background.addSubview(closeButton)
+            let closeWidth = TextFitting.buttonWidth(closeButton, minimum: 86)
+            closeButton.frame = NSRect(x: width - 24 - closeWidth, y: buttonY, width: closeWidth, height: 32)
+            trailing = closeButton
         }
+
+        let copyButton = NSButton(title: L("Copy"), target: self, action: #selector(copyPayload))
+        copyButton.bezelStyle = .rounded
+        copyButton.keyEquivalent = "\r"
+        let copyWidth = TextFitting.buttonWidth(copyButton, minimum: 86)
+        copyButton.frame = NSRect(x: min(width - 224, trailing.frame.minX - 10 - copyWidth), y: buttonY, width: copyWidth, height: 32)
+        background.addSubview(copyButton)
+        background.addSubview(trailing)
     }
 
     private var detailText: String {
         if payloads.count == 1 {
             return payloads[0].detail
         }
-        return "Review the decoded values before copying or opening."
+        return L("Review the decoded values before copying or opening.")
     }
 
     private func showWindow() {
@@ -158,7 +167,7 @@ final class QRCodeResultWindow: NSWindow, NSWindowDelegate {
     @objc private func copyPayload() {
         NSPasteboard.general.clearContents()
         NSPasteboard.general.setString(payloads.map(\.copyValue).joined(separator: "\n\n"), forType: .string)
-        ToastWindow.show(message: allQRCodes ? "QR copied to clipboard" : "Barcode copied to clipboard")
+        ToastWindow.show(message: allQRCodes ? L("QR copied to clipboard") : L("Barcode copied to clipboard"))
     }
 
     @objc private func openPrimaryAction() {
@@ -184,10 +193,7 @@ final class QRCodeResultWindow: NSWindow, NSWindowDelegate {
         }
         return zip(results, payloads).enumerated().map { index, pair in
             let (result, payload) = pair
-            let kind = payload.title
-                .replacingOccurrences(of: " QR found", with: "")
-                .replacingOccurrences(of: " found", with: "")
-            return "\(index + 1). \(result.symbologyName) — \(kind)\n\(payload.displayText)"
+            return "\(index + 1). \(result.symbologyName) — \(payload.kind)\n\(payload.displayText)"
         }.joined(separator: "\n\n")
     }
 }

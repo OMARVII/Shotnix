@@ -98,6 +98,29 @@
     },
     "%@ card — click to edit it in Style" : {},
     "%@ earlier" : {},
+    "%@ found" : {
+      "comment" : "A barcode type, like “Code 128”",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ gefunden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ détecté"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已找到：%@"
+          }
+        }
+      }
+    },
     "%@ fullscreen" : {
       "comment" : "Welcome hint: a shortcut, then what it captures",
       "localizations" : {
@@ -146,6 +169,29 @@
         }
       }
     },
+    "%@ quality · %@" : {
+      "comment" : "Tooltip: recording quality, then the audio",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Qualität: %@ · %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Qualité : %@ · %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@质量 · %@"
+          }
+        }
+      }
+    },
     "%@ speed" : {},
     "%@ transition" : {},
     "%@ window" : {
@@ -171,6 +217,29 @@
         }
       }
     },
+    "%@ · %@ px" : {
+      "comment" : "App name · a window's pixel size",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · %@ px"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · %@ px"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · %@ 像素"
+          }
+        }
+      }
+    },
     "%@ · %@ × %@" : {},
     "%@ · %@ × %@ image" : {
       "localizations" : {
@@ -190,6 +259,52 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ · %@ × %@ 图像"
+          }
+        }
+      }
+    },
+    "%@ · %lld fps" : {
+      "comment" : "Recording HUD: the audio, then frames per second",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · %lld fps"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · %lld fps"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · %lld fps"
+          }
+        }
+      }
+    },
+    "%@ × %@ px" : {
+      "comment" : "A display's size in pixels",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ × %@ px"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ × %@ px"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ × %@ 像素"
           }
         }
       }
@@ -222,7 +337,117 @@
     "%@ — click to change" : {},
     "%@ → %@" : {},
     "%@%@%@" : {},
+    "%@, %@" : {
+      "comment" : "Joins items of a list (“a table, 2 links”)",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@、%@"
+          }
+        }
+      }
+    },
+    "%@: %@" : {
+      "comment" : "A decoded field: its label, then its value",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ : %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@：%@"
+          }
+        }
+      }
+    },
     "%lld" : {},
+    "%lld QR codes found" : {
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld QR-Code gefunden"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld QR-Codes gefunden"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld QR code found"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld QR codes found"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld code QR détecté"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld codes QR détectés"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "找到 %lld 个二维码"
+          }
+        }
+      }
+    },
     "%lld annotations" : {
       "localizations" : {
         "de" : {
@@ -481,6 +706,70 @@
         }
       }
     },
+    "%lld barcodes found" : {
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Strichcode gefunden"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Strichcodes gefunden"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld barcode found"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld barcodes found"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld code-barres détecté"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld codes-barres détectés"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "找到 %lld 个条形码"
+          }
+        }
+      }
+    },
     "%lld cuts here (%@ removed) — click to restore some or all" : {},
     "%lld cuts, %@ removed" : {},
     "%lld days" : {
@@ -547,7 +836,264 @@
         }
       }
     },
+    "%lld email addresses" : {
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld E-Mail-Adresse"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld E-Mail-Adressen"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld email address"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld email addresses"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld adresse e-mail"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld adresses e-mail"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 个电子邮件地址"
+          }
+        }
+      }
+    },
     "%lld line%@ changed since translating" : {},
+    "%lld lines" : {
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Zeile"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Zeilen"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld line"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld lines"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ligne"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld lignes"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 行"
+          }
+        }
+      }
+    },
+    "%lld lines · found %@" : {
+      "comment" : "Line count, then what else the text holds, like “a table, 2 links”",
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Zeile · gefunden: %@"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Zeilen · gefunden: %@"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld line · found %@"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld lines · found %@"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ligne · avec %@"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld lignes · avec %@"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 行 · 找到 %@"
+          }
+        }
+      }
+    },
+    "%lld links" : {
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Link"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Links"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld link"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld links"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld lien"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld liens"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 个链接"
+          }
+        }
+      }
+    },
     "%lld of %lld captures" : {
       "localizations" : {
         "de" : {
@@ -566,6 +1112,52 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%2$lld 张截屏中的 %1$lld 张"
+          }
+        }
+      }
+    },
+    "%lld px · Esc or Done finishes" : {
+      "comment" : "The capture's height so far, in pixels",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld px · Esc oder „Fertig“ zum Beenden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld px · Échap ou « Terminé » pour finir"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 像素 · 按 Esc 键或点按“完成”结束"
+          }
+        }
+      }
+    },
+    "%lld s" : {
+      "comment" : "A short duration in seconds",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld s"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld s"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 秒"
           }
         }
       }
@@ -630,6 +1222,70 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已存储 %lld 张截屏 · 可将卡片拖到“访达” · 右键点按查看更多操作"
+          }
+        }
+      }
+    },
+    "%lld screens" : {
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Bildschirm"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Bildschirme"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld screen"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld screens"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld écran"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld écrans"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 个显示器"
           }
         }
       }
@@ -978,6 +1634,28 @@
         }
       }
     },
+    "All Displays" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Bildschirme"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tous les écrans"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "所有显示器"
+          }
+        }
+      }
+    },
     "All captures are moved to Shotnix’s trash and permanently deleted after %lld days." : {
       "localizations" : {
         "de" : {
@@ -1063,6 +1741,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "允许屏幕录制"
+          }
+        }
+      }
+    },
+    "Allow Shotnix in Accessibility — shortcuts turn on by themselves." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erlaube Shotnix unter „Bedienungshilfen“ – die Kurzbefehle schalten sich dann selbst ein."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorisez Shotnix dans Accessibilité — les raccourcis s’activeront d’eux-mêmes."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请在“辅助功能”中允许 Shotnix — 快捷键会自动开启。"
           }
         }
       }
@@ -1178,6 +1878,29 @@
       }
     },
     "Any color…" : {},
+    "App" : {
+      "comment" : "Stands in for an app that has no name, in the window chooser",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App"
+          }
+        }
+      }
+    },
     "Append Video…" : {},
     "Apple Shortcuts" : {
       "comment" : "Health: Apple's own screenshot shortcuts",
@@ -1675,6 +2398,73 @@
         }
       }
     },
+    "Barcode" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Strichcode"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Code-barres"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "条形码"
+          }
+        }
+      }
+    },
+    "Barcode copied to clipboard" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Strichcode in die Zwischenablage kopiert"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Code-barres copié dans le presse-papiers"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已将条形码内容拷贝到剪贴板"
+          }
+        }
+      }
+    },
+    "Barcodes" : {
+      "comment" : "Window title for several barcodes",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Strichcodes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codes-barres"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "条形码"
+          }
+        }
+      }
+    },
     "Behind you" : {},
     "Between clips" : {},
     "Black" : {
@@ -1833,6 +2623,28 @@
       }
     },
     "Burn captions into the video" : {},
+    "Call" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anrufen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appeler"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "呼叫"
+          }
+        }
+      }
+    },
     "Callout" : {
       "localizations" : {
         "de" : {
@@ -1899,10 +2711,144 @@
         }
       }
     },
+    "Camera access is off — allow Shotnix in System Settings → Privacy & Security → Camera." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Kamerazugriff ist deaktiviert – erlaube Shotnix in Systemeinstellungen → Datenschutz & Sicherheit → Kamera."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’accès à la caméra est désactivé — autorisez Shotnix dans Réglages Système → Confidentialité et sécurité → Caméra."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "摄像头访问权限已关闭 — 请在“系统设置”→“隐私与安全性”→“摄像头”中允许 Shotnix。"
+          }
+        }
+      }
+    },
+    "Camera disconnected" : {
+      "comment" : "Short note in the recording HUD",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamera getrennt"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caméra débranchée"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "摄像头已断开"
+          }
+        }
+      }
+    },
+    "Camera disconnected." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamera getrennt."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caméra déconnectée."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "摄像头已断开连接。"
+          }
+        }
+      }
+    },
+    "Camera disconnected. The recording continues without it." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamera getrennt. Die Aufzeichnung läuft ohne Kamera weiter."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caméra déconnectée. L’enregistrement continue sans elle."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "摄像头已断开连接。录制将在没有摄像头的情况下继续。"
+          }
+        }
+      }
+    },
     "Camera follows your cursor" : {},
     "Camera footage is missing" : {},
     "Camera layouts" : {},
     "Camera layouts — drag to move, drag an edge to retime, click to change" : {},
+    "Camera preview" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kameravorschau"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aperçu de la caméra"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "摄像头预览"
+          }
+        }
+      }
+    },
+    "Camera stopped" : {
+      "comment" : "Short note in the recording HUD",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamera gestoppt"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caméra arrêtée"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "摄像头已停止"
+          }
+        }
+      }
+    },
     "Camera — drag to move it, click for options" : {},
     "Cancel" : {
       "localizations" : {
@@ -1922,6 +2868,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "取消"
+          }
+        }
+      }
+    },
+    "Cancel Recording" : {
+      "comment" : "Menu item while a recording is being set up (area selection, the recording bar, the countdown)",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufzeichnung abbrechen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annuler l’enregistrement"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消录制"
           }
         }
       }
@@ -1972,6 +2941,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "截屏"
+          }
+        }
+      }
+    },
+    "Capture  ⏎" : {
+      "comment" : "Button under an adjustable selection (verb); keep the two spaces and the Return symbol",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufnehmen  ⏎"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capturer  ⏎"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "捕捉  ⏎"
           }
         }
       }
@@ -2170,6 +3162,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "捕捉窗口"
+          }
+        }
+      }
+    },
+    "Capture failed" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufnahme fehlgeschlagen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Échec de la capture"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截屏失败"
           }
         }
       }
@@ -2420,6 +3434,29 @@
         }
       }
     },
+    "Choose" : {
+      "comment" : "Label on a window in the window chooser: picks it for the recording",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auswählen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisir"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择"
+          }
+        }
+      }
+    },
     "Choose Capture Area in the Shotnix menu to start" : {
       "localizations" : {
         "de" : {
@@ -2509,6 +3546,28 @@
         }
       }
     },
+    "Choose screen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildschirm wählen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisir un écran"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择显示器"
+          }
+        }
+      }
+    },
     "Choose what happens immediately after taking a screenshot." : {
       "localizations" : {
         "de" : {
@@ -2527,6 +3586,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "选择截屏后立即执行的操作。"
+          }
+        }
+      }
+    },
+    "Choose window" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fenster wählen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisir une fenêtre"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择窗口"
           }
         }
       }
@@ -2753,6 +3834,29 @@
         }
       }
     },
+    "Click a window to capture it  ·  Esc cancels" : {
+      "comment" : "Hint bar at the bottom of the screen; keep the double spaces around the dots",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicke auf ein Fenster, um es aufzunehmen  ·  Esc bricht ab"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cliquez sur une fenêtre pour la capturer  ·  Échap pour annuler"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点按窗口以捕捉  ·  按 Esc 键取消"
+          }
+        }
+      }
+    },
     "Click an annotation to edit it" : {
       "localizations" : {
         "de" : {
@@ -2771,6 +3875,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "点按标注即可编辑"
+          }
+        }
+      }
+    },
+    "Click or press Esc to cancel" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zum Abbrechen klicken oder Esc drücken"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cliquez ou appuyez sur Échap pour annuler"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点按或按下 Esc 键以取消"
           }
         }
       }
@@ -2823,8 +3949,75 @@
         }
       }
     },
-    "Close" : {},
+    "Close" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schließen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fermer"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭"
+          }
+        }
+      }
+    },
     "Close (Esc)" : {},
+    "Close All Pins" : {
+      "comment" : "Closes every pinned screenshot (context menu)",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle schließen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tout fermer"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭所有贴图"
+          }
+        }
+      }
+    },
+    "Close Pin" : {
+      "comment" : "Closes this pinned screenshot (context menu)",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schließen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fermer"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭贴图"
+          }
+        }
+      }
+    },
     "Close Window" : {
       "localizations" : {
         "de" : {
@@ -2936,6 +4129,28 @@
       }
     },
     "Commands" : {},
+    "Compose Email" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E-Mail verfassen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rédiger un e-mail"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "撰写邮件"
+          }
+        }
+      }
+    },
     "Conflict detected" : {
       "localizations" : {
         "de" : {
@@ -3002,6 +4217,29 @@
         }
       }
     },
+    "Copy %@" : {
+      "comment" : "VoiceOver: the link or email address",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kopieren"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copier %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拷贝 %@"
+          }
+        }
+      }
+    },
     "Copy (⌘C)" : {
       "localizations" : {
         "de" : {
@@ -3020,6 +4258,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "拷贝（⌘C）"
+          }
+        }
+      }
+    },
+    "Copy Text" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text kopieren"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copier le texte"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拷贝文字"
+          }
+        }
+      }
+    },
+    "Copy as Table" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Als Tabelle kopieren"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copier en tableau"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拷贝为表格"
           }
         }
       }
@@ -3046,6 +4328,50 @@
         }
       }
     },
+    "Copy image to clipboard" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bild in die Zwischenablage kopieren"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copier l’image dans le presse-papiers"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将图像拷贝到剪贴板"
+          }
+        }
+      }
+    },
+    "Copy recognized text (OCR)" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erkannten Text kopieren (OCR)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copier le texte reconnu (OCR)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拷贝识别出的文字（OCR）"
+          }
+        }
+      }
+    },
     "Copy screenshots to clipboard" : {
       "localizations" : {
         "de" : {
@@ -3064,6 +4390,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "将截屏拷贝到剪贴板"
+          }
+        }
+      }
+    },
+    "Copy the rows tab-separated, ready to paste into a spreadsheet" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeilen mit Tabulatoren getrennt kopieren – bereit zum Einsetzen in eine Tabellenkalkulation"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copier les lignes séparées par des tabulations, prêtes à coller dans un tableur"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以制表符分隔的形式拷贝各行，可直接粘贴到电子表格中"
           }
         }
       }
@@ -3109,6 +4457,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "无法存储截屏"
+          }
+        }
+      }
+    },
+    "Could not copy the screenshot" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Bildschirmfoto konnte nicht kopiert werden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de copier la capture d’écran"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法拷贝截屏"
           }
         }
       }
@@ -3179,6 +4549,28 @@
         }
       }
     },
+    "Could not list windows. Check permissions." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fenster konnten nicht aufgelistet werden. Prüfe die Berechtigungen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de lister les fenêtres. Vérifiez les autorisations."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法列出窗口。请检查权限。"
+          }
+        }
+      }
+    },
     "Could not restore Apple shortcuts." : {
       "localizations" : {
         "de" : {
@@ -3201,6 +4593,74 @@
         }
       }
     },
+    "Could not save the recording (%@)." : {
+      "comment" : "The system's reason",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Aufnahme konnte nicht gesichert werden (%@)."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de sauvegarder l’enregistrement (%@)."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法存储录制内容（%@）。"
+          }
+        }
+      }
+    },
+    "Could not save the recording." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Aufnahme konnte nicht gesichert werden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de sauvegarder l’enregistrement."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法存储录制内容。"
+          }
+        }
+      }
+    },
+    "Could not start recording (%@)." : {
+      "comment" : "The system's reason",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Aufzeichnung konnte nicht gestartet werden (%@)."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de démarrer l’enregistrement (%@)."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法开始录制（%@）。"
+          }
+        }
+      }
+    },
     "Couldn't copy the screenshot. Try again, or save it instead." : {
       "localizations" : {
         "de" : {
@@ -3219,6 +4679,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "无法拷贝截屏。请重试，或改为存储。"
+          }
+        }
+      }
+    },
+    "Couldn't create the video file." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Videodatei konnte nicht erstellt werden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de créer le fichier vidéo."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法创建视频文件。"
           }
         }
       }
@@ -3382,6 +4864,28 @@
     },
     "Crop the recording — trim away toolbars or empty space" : {},
     "Cropped" : {},
+    "Cursor" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeiger"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pointeur"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "指针"
+          }
+        }
+      }
+    },
     "Custom" : {},
     "Custom color" : {
       "localizations" : {
@@ -3498,6 +5002,28 @@
     },
     "Cut this part" : {},
     "Cut, no transition" : {},
+    "Decoded details" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Decodierte Details"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Détails décodés"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "解码详情"
+          }
+        }
+      }
+    },
     "Delete" : {
       "localizations" : {
         "de" : {
@@ -3896,6 +5422,29 @@
         }
       }
     },
+    "Discard" : {
+      "comment" : "Confirms throwing away the recording",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verwerfen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "丢弃"
+          }
+        }
+      }
+    },
     "Discard Changes" : {
       "localizations" : {
         "de" : {
@@ -3918,8 +5467,143 @@
         }
       }
     },
+    "Discard recording" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufnahme verwerfen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer l’enregistrement"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "丢弃录制内容"
+          }
+        }
+      }
+    },
+    "Discard this recording?" : {
+      "comment" : "Inline question in the small recording HUD; keep it short",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufnahme verwerfen?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer cette vidéo ?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "要丢弃此录制内容吗？"
+          }
+        }
+      }
+    },
+    "Disk almost full" : {
+      "comment" : "Short note in the recording HUD",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speicher fast voll"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disque bientôt plein"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "磁盘将满"
+          }
+        }
+      }
+    },
     "Dismiss" : {},
     "Dismiss tips" : {},
+    "Display" : {
+      "comment" : "What a fullscreen recording records, in the recording bar",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildschirm"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Écran"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示器"
+          }
+        }
+      }
+    },
+    "Display %lld" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildschirm %lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Écran %lld"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示器 %lld"
+          }
+        }
+      }
+    },
+    "Display %lld · Main" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildschirm %lld · Hauptbildschirm"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Écran %lld · principal"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示器 %lld · 主显示器"
+          }
+        }
+      }
+    },
     "Do you want to review them before quitting?" : {
       "localizations" : {
         "de" : {
@@ -4010,16 +5694,129 @@
       }
     },
     "Done (Esc)" : {},
+    "Double-click to edit, or drag into another app. Command-C copies, Command-S saves, Escape dismisses." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zum Bearbeiten doppelklicken oder in eine andere App ziehen. Befehl-C kopiert, Befehl-S sichert, Escape schließt."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Double-cliquez pour modifier, ou faites glisser vers une autre app. Commande + C copie, Commande + S enregistre, Échap ferme."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "连按两次以编辑，或拖移到其他 App。Command-C 拷贝，Command-S 存储，Esc 键关闭。"
+          }
+        }
+      }
+    },
     "Double-click to show the recording in Finder" : {},
+    "Drag edges or corners to resize  ·  Arrow keys nudge (⇧ ×10)  ·  Return captures  ·  Esc cancels" : {
+      "comment" : "Hint bar while a selection can still be adjusted",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Größe an Kanten oder Ecken ändern  ·  Pfeiltasten verschieben (⇧ ×10)  ·  Return nimmt auf  ·  Esc bricht ab"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Redimensionnez par les bords ou les coins  ·  Flèches pour déplacer (⇧ ×10)  ·  Retour pour capturer  ·  Échap pour annuler"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拖移边缘或角落以调整大小  ·  方向键微调位置（⇧ ×10）  ·  按 Return 键捕捉  ·  按 Esc 键取消"
+          }
+        }
+      }
+    },
     "Drag one of them on the timeline to move them all together; ⌫ removes them all. ⇧- or ⌘-click adds or takes one out." : {},
     "Drag the block on the Camera lane to move it, or its edges to change how long it lasts. Each change eases in and out." : {},
     "Drag the frame on the preview to aim; drag its corners to zoom in or out." : {},
+    "Drag to capture  ·  Hold ⇧ as you let go to adjust first  ·  Space moves  ·  Esc cancels" : {
+      "comment" : "Hint bar before dragging, when a release captures right away",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ziehen zum Aufnehmen  ·  Beim Loslassen ⇧ halten, um erst anzupassen  ·  Leertaste verschiebt  ·  Esc bricht ab"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Faites glisser pour capturer  ·  Maintenez ⇧ en relâchant pour ajuster d’abord  ·  Espace pour déplacer  ·  Échap pour annuler"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拖移以捕捉  ·  松开时按住 ⇧ 可先调整  ·  空格键移动选区  ·  按 Esc 键取消"
+          }
+        }
+      }
+    },
     "Drag to change where this clip ends" : {},
     "Drag to change where this clip starts" : {},
     "Drag to move this clip to another place in the video" : {},
     "Drag to move where the arrow starts" : {},
+    "Drag to move. Press Command-C to copy, Escape to close." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ziehen zum Bewegen. Drücke Befehl-C zum Kopieren und Escape zum Schließen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Faites glisser pour déplacer. Appuyez sur Commande + C pour copier, sur Échap pour fermer."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拖移以移动。按下 Command-C 拷贝，按下 Esc 键关闭。"
+          }
+        }
+      }
+    },
     "Drag to move; drag a corner to resize" : {},
     "Drag to point the arrow" : {},
+    "Drag to select, then adjust  ·  Hold ⇧ as you let go to capture right away  ·  Esc cancels" : {
+      "comment" : "Hint bar before dragging, when a release keeps the selection adjustable",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ziehen zum Auswählen, dann anpassen  ·  Beim Loslassen ⇧ halten, um sofort aufzunehmen  ·  Esc bricht ab"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Faites glisser pour sélectionner, puis ajustez  ·  Maintenez ⇧ en relâchant pour capturer aussitôt  ·  Échap pour annuler"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拖移以选择，然后调整  ·  松开时按住 ⇧ 可立即捕捉  ·  按 Esc 键取消"
+          }
+        }
+      }
+    },
     "Draw with the selected tool. Tool shortcuts: V select, A arrow, R rectangle, T text, O callout, H highlighter, B blur, P pixelate, S spotlight, C crop." : {
       "localizations" : {
         "de" : {
@@ -4110,6 +5907,28 @@
         }
       }
     },
+    "Editable Cursor" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bearbeitbarer Zeiger"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pointeur modifiable"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "可编辑指针"
+          }
+        }
+      }
+    },
     "Editable cursor" : {
       "localizations" : {
         "de" : {
@@ -4172,6 +5991,96 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "椭圆"
+          }
+        }
+      }
+    },
+    "Email" : {
+      "comment" : "A field of a QR code, and the button that writes to an address found in text",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E-Mail"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E-mail"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "电子邮件"
+          }
+        }
+      }
+    },
+    "Email %@" : {
+      "comment" : "VoiceOver: the email address",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E-Mail an %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Écrire à %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "给 %@ 发邮件"
+          }
+        }
+      }
+    },
+    "Email QR found" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "QR-Code mit E-Mail gefunden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Code QR avec e-mail détecté"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "找到电子邮件二维码"
+          }
+        }
+      }
+    },
+    "Email address copied" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E-Mail-Adresse kopiert"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adresse e-mail copiée"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已拷贝电子邮件地址"
           }
         }
       }
@@ -4306,6 +6215,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "喜欢 Shotnix 吗？在 GitHub 上加个星标，让更多人发现它。"
+          }
+        }
+      }
+    },
+    "Esc or Done finishes" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esc oder „Fertig“ zum Beenden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Échap ou « Terminé » pour finir"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按 Esc 键或点按“完成”结束"
+          }
+        }
+      }
+    },
+    "Estimated file size. Still screens take less." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geschätzte Dateigröße. Ruhige Bildschirminhalte brauchen weniger."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Taille de fichier estimée. Un écran immobile prend moins de place."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "预估的文件大小。静止画面占用更少。"
+          }
+        }
+      }
+    },
+    "Estimated size %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geschätzte Größe: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Taille estimée : %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "预估大小：%@"
           }
         }
       }
@@ -4518,6 +6493,28 @@
         }
       }
     },
+    "Finish or cancel the current recording setup" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schließe die Einrichtung der aktuellen Aufzeichnung ab oder brich sie ab"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminez ou annulez d’abord la configuration de l’enregistrement en cours"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请先完成或取消当前的录制设置"
+          }
+        }
+      }
+    },
     "Fix" : {
       "comment" : "Health: button that fixes a problem",
       "localizations" : {
@@ -4604,7 +6601,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "帧率"
+            "value" : "帧速率"
           }
         }
       }
@@ -4919,6 +6916,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "状态"
+          }
+        }
+      }
+    },
+    "Hidden" : {
+      "comment" : "Whether a Wi-Fi network is hidden",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verborgen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masqué"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隐藏"
           }
         }
       }
@@ -5371,6 +7391,29 @@
       }
     },
     "Jump here" : {},
+    "Keep" : {
+      "comment" : "Keeps the recording going instead of discarding it",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Behalten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Garder"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保留"
+          }
+        }
+      }
+    },
     "Keep Editing" : {},
     "Keep Working" : {
       "localizations" : {
@@ -5827,6 +7870,28 @@
     "Keyboard Shortcuts" : {},
     "Keyboard shortcuts" : {},
     "Keyboard shortcuts (?)" : {},
+    "Keyboard shortcuts are on" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tastaturkurzbefehle sind aktiviert"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les raccourcis clavier sont activés"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "快捷键已开启"
+          }
+        }
+      }
+    },
     "Keyboard shortcuts — click one to select it, ⌫ hides it" : {},
     "Language" : {},
     "Languages" : {
@@ -6047,6 +8112,118 @@
         }
       }
     },
+    "Link" : {
+      "comment" : "What a QR code holds",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Link"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lien"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "链接"
+          }
+        }
+      }
+    },
+    "Link QR found" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "QR-Code mit Link gefunden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Code QR avec lien détecté"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "找到链接二维码"
+          }
+        }
+      }
+    },
+    "Link copied" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Link kopiert"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lien copié"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已拷贝链接"
+          }
+        }
+      }
+    },
+    "Links" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Links"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liens"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "链接"
+          }
+        }
+      }
+    },
+    "Links (%lld of %lld)" : {
+      "comment" : "Links shown, then all links found",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Links (%lld von %lld)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liens (%lld sur %lld)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "链接（%2$lld 个中的 %1$lld 个）"
+          }
+        }
+      }
+    },
     "Listens on this Mac — nothing is uploaded" : {},
     "MIT License — Free and open source" : {
       "localizations" : {
@@ -6112,6 +8289,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "最高"
+          }
+        }
+      }
+    },
+    "Maximum length reached" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maximale Länge erreicht"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Longueur maximale atteinte"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已达到最大长度"
           }
         }
       }
@@ -6182,6 +8381,120 @@
         }
       }
     },
+    "Message" : {
+      "comment" : "What a QR code holds, and a message's text",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nachricht"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Message"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "信息"
+          }
+        }
+      }
+    },
+    "Message QR found" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "QR-Code mit Nachricht gefunden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Code QR avec message détecté"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "找到信息二维码"
+          }
+        }
+      }
+    },
+    "Mic disconnected" : {
+      "comment" : "Short note in the recording HUD",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mikro getrennt"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Micro déconnecté"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "麦克风已断开"
+          }
+        }
+      }
+    },
+    "Mic stopped" : {
+      "comment" : "Short note in the recording HUD",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mikro gestoppt"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Micro arrêté"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "麦克风已停止"
+          }
+        }
+      }
+    },
+    "Mic switched" : {
+      "comment" : "Short note in the recording HUD",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mikro gewechselt"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Micro changé"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已切换麦克风"
+          }
+        }
+      }
+    },
     "Microphone" : {
       "localizations" : {
         "de" : {
@@ -6200,6 +8513,117 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "麦克风"
+          }
+        }
+      }
+    },
+    "Microphone access is off, so this recording has no mic." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Mikrofonzugriff ist deaktiviert, daher hat diese Aufnahme keinen Mikrofonton."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’accès au micro est désactivé : cet enregistrement n’aura pas de son du micro."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "麦克风访问权限已关闭，因此此录制内容没有麦克风声音。"
+          }
+        }
+      }
+    },
+    "Microphone access is off. Allow Shotnix in System Settings → Privacy & Security → Microphone." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Mikrofonzugriff ist deaktiviert. Erlaube Shotnix in Systemeinstellungen → Datenschutz & Sicherheit → Mikrofon."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’accès au micro est désactivé. Autorisez Shotnix dans Réglages Système → Confidentialité et sécurité → Micro."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "麦克风访问权限已关闭。请在“系统设置”→“隐私与安全性”→“麦克风”中允许 Shotnix。"
+          }
+        }
+      }
+    },
+    "Microphone disconnected. Now recording from %@." : {
+      "comment" : "The microphone now used",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mikrofon getrennt. Die Aufzeichnung läuft jetzt über „%@“."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Micro déconnecté. L’enregistrement utilise maintenant « %@ »."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "麦克风已断开连接。现在使用“%@”录音。"
+          }
+        }
+      }
+    },
+    "Microphone disconnected. The recording continues without it." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mikrofon getrennt. Die Aufzeichnung läuft ohne Mikrofon weiter."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Micro déconnecté. L’enregistrement continue sans lui."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "麦克风已断开连接。录制将在没有麦克风的情况下继续。"
+          }
+        }
+      }
+    },
+    "Microphone level" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mikrofonpegel"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Niveau du micro"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "麦克风电平"
           }
         }
       }
@@ -6272,6 +8696,28 @@
     },
     "More" : {},
     "More caption options" : {},
+    "More recording options" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weitere Aufzeichnungsoptionen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autres options d’enregistrement"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更多录制选项"
+          }
+        }
+      }
+    },
     "More tips" : {},
     "Moss" : {
       "localizations" : {
@@ -6393,6 +8839,28 @@
         }
       }
     },
+    "Network" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Netzwerk"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réseau"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "网络"
+          }
+        }
+      }
+    },
     "Never" : {
       "localizations" : {
         "de" : {
@@ -6484,6 +8952,72 @@
     },
     "No background" : {},
     "No background — text only" : {},
+    "No barcode found in this selection" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In dieser Auswahl wurde kein Strichcode gefunden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun code-barres dans cette sélection"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此选区中未找到条形码"
+          }
+        }
+      }
+    },
+    "No camera connected" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Kamera angeschlossen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune caméra connectée"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未连接摄像头"
+          }
+        }
+      }
+    },
+    "No camera found." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Kamera gefunden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune caméra détectée."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未找到摄像头。"
+          }
+        }
+      }
+    },
     "No camera in this recording" : {},
     "No captures contain “%@”" : {
       "localizations" : {
@@ -6575,6 +9109,94 @@
       }
     },
     "No cursor data in this video" : {},
+    "No microphone connected" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Mikrofon angeschlossen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun micro connecté"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未连接麦克风"
+          }
+        }
+      }
+    },
+    "No microphone is connected, so this recording has no mic." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Es ist kein Mikrofon angeschlossen, daher hat diese Aufnahme keinen Mikrofonton."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun micro n’est connecté : cet enregistrement n’aura pas de son du micro."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未连接麦克风，因此此录制内容没有麦克风声音。"
+          }
+        }
+      }
+    },
+    "No recordable windows found" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine aufzeichenbaren Fenster gefunden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune fenêtre à enregistrer"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未找到可录制的窗口"
+          }
+        }
+      }
+    },
+    "No recording in progress" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Es läuft keine Aufzeichnung"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun enregistrement en cours"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前没有进行中的录制"
+          }
+        }
+      }
+    },
     "No saved captures yet" : {
       "localizations" : {
         "de" : {
@@ -6597,7 +9219,119 @@
         }
       }
     },
+    "No sound from the microphone" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Ton vom Mikrofon"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun son du micro"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "麦克风没有声音"
+          }
+        }
+      }
+    },
+    "No text found in this selection" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In dieser Auswahl wurde kein Text gefunden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun texte dans cette sélection"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此选区中未找到文字"
+          }
+        }
+      }
+    },
     "None in this recording. Turn on “Show keyboard shortcuts” in Settings → Recording and every ⌘ shortcut you press appears as keycaps. Plain typing is never recorded." : {},
+    "Not enough disk space to record." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht genug Speicherplatz für die Aufzeichnung."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espace disque insuffisant pour enregistrer."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "磁盘空间不足，无法录制。"
+          }
+        }
+      }
+    },
+    "Not enough free disk space for this recording: it needs about %@ free, and %@ is available. Free up some space and try again." : {
+      "comment" : "Space needed, then space available",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht genug Speicherplatz für diese Aufzeichnung: Benötigt werden etwa %@, frei sind %@. Gib etwas Speicherplatz frei und versuche es erneut."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espace disque insuffisant pour cet enregistrement : il faut environ %@ d’espace libre, et il reste %@. Libérez de l’espace et réessayez."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "磁盘空间不足，无法进行此录制：大约需要 %@ 可用空间，当前可用 %@。请释放一些空间后重试。"
+          }
+        }
+      }
+    },
+    "Not enough free disk space for this recording: it needs about %@ free, and %@ is available. Free up space, or choose Balanced quality or 30 fps." : {
+      "comment" : "Space needed, then space available",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht genug Speicherplatz für diese Aufzeichnung: Benötigt werden etwa %@, frei sind %@. Gib Speicherplatz frei oder wähle die Qualität „Ausgewogen“ oder 30 fps."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espace disque insuffisant pour cet enregistrement : il faut environ %@ d’espace libre, et il reste %@. Libérez de l’espace, ou choisissez la qualité Équilibrée ou 30 fps."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "磁盘空间不足，无法进行此录制：大约需要 %@ 可用空间，当前可用 %@。请释放空间，或选择“均衡”质量或 30 fps。"
+          }
+        }
+      }
+    },
     "Not for this video" : {},
     "Not now" : {
       "localizations" : {
@@ -6617,6 +9351,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "以后再说"
+          }
+        }
+      }
+    },
+    "Nothing was recorded — the screen didn't send any picture. Try again." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Es wurde nichts aufgezeichnet – der Bildschirm hat kein Bild geliefert. Versuche es erneut."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rien n’a été enregistré — l’écran n’a envoyé aucune image. Réessayez."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未录制任何内容 — 屏幕没有传送画面。请重试。"
           }
         }
       }
@@ -6688,7 +9444,7 @@
       }
     },
     "Off" : {
-      "comment" : "Recording countdown: none",
+      "comment" : "No countdown",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -6732,6 +9488,52 @@
         }
       }
     },
+    "Open" : {
+      "comment" : "Opens a link found in text",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffnen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开"
+          }
+        }
+      }
+    },
+    "Open %@" : {
+      "comment" : "VoiceOver: the link",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ öffnen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开 %@"
+          }
+        }
+      }
+    },
     "Open Another Video…" : {},
     "Open Command Center" : {
       "localizations" : {
@@ -6751,6 +9553,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "打开命令中心"
+          }
+        }
+      }
+    },
+    "Open Editor After Recording" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editor nach der Aufzeichnung öffnen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir l’éditeur après l’enregistrement"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "录制后打开编辑器"
           }
         }
       }
@@ -6795,6 +9619,51 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "打开键盘设置"
+          }
+        }
+      }
+    },
+    "Open Link" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Link öffnen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir le lien"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开链接"
+          }
+        }
+      }
+    },
+    "Open Messages" : {
+      "comment" : "Opens the Messages app",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nachrichten öffnen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir Messages"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开“信息”"
           }
         }
       }
@@ -7007,6 +9876,28 @@
         }
       }
     },
+    "Password" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passwort"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mot de passe"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "密码"
+          }
+        }
+      }
+    },
     "Paste" : {
       "localizations" : {
         "de" : {
@@ -7075,6 +9966,73 @@
         }
       }
     },
+    "Pause recording" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufzeichnung pausieren"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suspendre l’enregistrement"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暂停录制"
+          }
+        }
+      }
+    },
+    "Pause recording (%@)" : {
+      "comment" : "Keyboard shortcut",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufzeichnung pausieren (%@)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suspendre l’enregistrement (%@)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暂停录制（%@）"
+          }
+        }
+      }
+    },
+    "Paused" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pausiert"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En pause"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已暂停"
+          }
+        }
+      }
+    },
     "Pending" : {
       "comment" : "VoiceOver: a setup step still to do",
       "localizations" : {
@@ -7120,6 +10078,73 @@
         }
       }
     },
+    "Phone" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Telefon"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Téléphone"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "电话"
+          }
+        }
+      }
+    },
+    "Phone QR found" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "QR-Code mit Telefonnummer gefunden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Code QR avec téléphone détecté"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "找到电话二维码"
+          }
+        }
+      }
+    },
+    "Pin" : {
+      "comment" : "Pins the screenshot to the screen",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anheften"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Épingler"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "贴到屏幕"
+          }
+        }
+      }
+    },
     "Pin to Screen" : {
       "localizations" : {
         "de" : {
@@ -7160,6 +10185,52 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "松林暮色"
+          }
+        }
+      }
+    },
+    "Pinned Screenshot" : {
+      "comment" : "Context menu section of a pinned screenshot",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Angeheftetes Bildschirmfoto"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capture épinglée"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "贴图"
+          }
+        }
+      }
+    },
+    "Pinned screenshot" : {
+      "comment" : "VoiceOver: a screenshot pinned to the screen",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Angeheftetes Bildschirmfoto"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capture épinglée"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "贴图"
           }
         }
       }
@@ -7391,6 +10462,28 @@
         }
       }
     },
+    "Preview the target, then continue to recording controls." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorschau prüfen, dann weiter zur Aufzeichnung."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérifiez l’aperçu, puis passez à l’enregistrement."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "预览目标，然后继续设置录制。"
+          }
+        }
+      }
+    },
     "Prism Sweep" : {
       "localizations" : {
         "de" : {
@@ -7453,6 +10546,73 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "紫色"
+          }
+        }
+      }
+    },
+    "QR Code" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "QR-Code"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Code QR"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "二维码"
+          }
+        }
+      }
+    },
+    "QR Codes" : {
+      "comment" : "Window title for several QR codes",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "QR-Codes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codes QR"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "二维码"
+          }
+        }
+      }
+    },
+    "QR copied to clipboard" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "QR-Code in die Zwischenablage kopiert"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Code QR copié dans le presse-papiers"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已将二维码内容拷贝到剪贴板"
           }
         }
       }
@@ -7659,25 +10819,93 @@
         }
       }
     },
-    "Record" : {
-      "comment" : "Command center section with the screen recording actions",
+    "Recognized Text" : {
+      "comment" : "Window title",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aufzeichnung"
+            "value" : "Erkannter Text"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enregistrement"
+            "value" : "Texte reconnu"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "识别出的文字"
+          }
+        }
+      }
+    },
+    "Recognized text" : {
+      "comment" : "VoiceOver: the text view",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erkannter Text"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Texte reconnu"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "识别出的文字"
+          }
+        }
+      }
+    },
+    "Record" : {
+      "comment" : "Starts a screen recording (verb)",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufzeichnen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrer"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "录制"
+          }
+        }
+      }
+    },
+    "Record (Return)" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufzeichnen (Return)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrer (Retour)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "录制（Return 键）"
           }
         }
       }
@@ -7816,7 +11044,7 @@
     },
     "Recorded at %@. Drag its dot on the timeline to retime it; ripples and Auto Zoom follow." : {},
     "Recording" : {
-      "comment" : "Settings tab and Shortcuts section for screen recording",
+      "comment" : "The recording HUD's status, before its details load",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7834,6 +11062,138 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "录制"
+          }
+        }
+      }
+    },
+    "Recording already in progress" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Es läuft bereits eine Aufzeichnung"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un enregistrement est déjà en cours"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已在录制中"
+          }
+        }
+      }
+    },
+    "Recording canceled" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufzeichnung abgebrochen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrement annulé"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已取消录制"
+          }
+        }
+      }
+    },
+    "Recording controls" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufzeichnungssteuerung"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Commandes d’enregistrement"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "录制控制"
+          }
+        }
+      }
+    },
+    "Recording discarded" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufnahme verworfen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrement supprimé"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已丢弃录制内容"
+          }
+        }
+      }
+    },
+    "Recording failed before saving." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Aufzeichnung ist vor dem Sichern fehlgeschlagen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’enregistrement a échoué avant d’être sauvegardé."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "录制在存储前失败。"
+          }
+        }
+      }
+    },
+    "Recording keyboard shortcuts" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tastaturkurzbefehle werden aufgezeichnet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrement des raccourcis clavier"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在录制快捷键"
           }
         }
       }
@@ -7882,6 +11242,95 @@
         }
       }
     },
+    "Recording stopped early — saved what was captured." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Aufzeichnung wurde vorzeitig beendet – das bisher Aufgezeichnete ist gesichert."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’enregistrement s’est arrêté plus tôt — ce qui a été capturé est sauvegardé."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "录制提前停止 — 已存储录到的内容。"
+          }
+        }
+      }
+    },
+    "Recording the camera" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamera wird aufgezeichnet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrement de la caméra"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在录制摄像头"
+          }
+        }
+      }
+    },
+    "Recording time" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufzeichnungsdauer"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Durée d’enregistrement"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "录制时长"
+          }
+        }
+      }
+    },
+    "Recording without the camera." : {
+      "comment" : "Follows the reason the camera couldn't start",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufzeichnung ohne Kamera."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrement sans la caméra."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将在没有摄像头的情况下录制。"
+          }
+        }
+      }
+    },
     "Recording — click to stop (%@)" : {
       "localizations" : {
         "de" : {
@@ -7905,6 +11354,50 @@
       }
     },
     "Recordings made with Shotnix capture the pointer so it can be smoothed, resized, and hidden." : {},
+    "Records %@ × %@ pixels (%@ × %@ points)" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeichnet %@ × %@ Pixel auf (%@ × %@ Punkte)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistre %@ × %@ pixels (%@ × %@ points)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "录制 %@ × %@ 像素（%@ × %@ 点）"
+          }
+        }
+      }
+    },
+    "Records the pointer separately, so the editor can smooth it, resize it, and keep it crisp when zoomed." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeichnet den Zeiger separat auf, damit der Editor ihn glätten, skalieren und beim Zoomen scharf halten kann."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistre le pointeur séparément, pour que l’éditeur puisse le lisser, le redimensionner et le garder net en cas de zoom."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "单独录制指针，以便编辑器平滑指针、调整其大小，并在缩放时保持清晰。"
+          }
+        }
+      }
+    },
     "Recovered your interrupted recording “%@”. Click to open it." : {
       "localizations" : {
         "de" : {
@@ -8167,6 +11660,28 @@
       }
     },
     "Reset to the Shotnix look" : {},
+    "Resize" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Größe ändern"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Redimensionner"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "调整大小"
+          }
+        }
+      }
+    },
     "Restore %@ at %@" : {},
     "Restore %@ cut at %@" : {},
     "Restore All %lld" : {},
@@ -8214,6 +11729,51 @@
         }
       }
     },
+    "Resume recording" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufzeichnung fortsetzen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reprendre l’enregistrement"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "继续录制"
+          }
+        }
+      }
+    },
+    "Resume recording (%@)" : {
+      "comment" : "Keyboard shortcut",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufzeichnung fortsetzen (%@)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reprendre l’enregistrement (%@)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "继续录制（%@）"
+          }
+        }
+      }
+    },
     "Reveal" : {},
     "Reveal in Finder" : {},
     "Review Changes…" : {
@@ -8234,6 +11794,205 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "检查更改…"
+          }
+        }
+      }
+    },
+    "Review the decoded email payload before copying." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüfe die decodierten E-Mail-Daten vor dem Kopieren."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérifiez les données d’e-mail décodées avant de les copier."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拷贝前请检查解码出的电子邮件内容。"
+          }
+        }
+      }
+    },
+    "Review the decoded link before opening." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüfe den decodierten Link vor dem Öffnen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérifiez le lien décodé avant de l’ouvrir."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开前请检查解码出的链接。"
+          }
+        }
+      }
+    },
+    "Review the decoded link before opening: %@" : {
+      "comment" : "The link's host",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüfe den decodierten Link vor dem Öffnen: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérifiez le lien décodé avant de l’ouvrir : %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开前请检查解码出的链接：%@"
+          }
+        }
+      }
+    },
+    "Review the decoded text before copying." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüfe den decodierten Text vor dem Kopieren."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérifiez le texte décodé avant de le copier."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拷贝前请检查解码出的文字。"
+          }
+        }
+      }
+    },
+    "Review the decoded values before copying or opening." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüfe die decodierten Werte vor dem Kopieren oder Öffnen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérifiez les valeurs décodées avant de les copier ou de les ouvrir."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拷贝或打开前，请检查解码后的值。"
+          }
+        }
+      }
+    },
+    "Review the email details before composing." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüfe die E-Mail-Details vor dem Verfassen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérifiez les détails de l’e-mail avant de le rédiger."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "撰写前请检查电子邮件详情。"
+          }
+        }
+      }
+    },
+    "Review the message details before opening." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüfe die Nachrichtendetails vor dem Öffnen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérifiez les détails du message avant de l’ouvrir."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开前请检查信息详情。"
+          }
+        }
+      }
+    },
+    "Review the network details before copying." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüfe die Netzwerkdetails vor dem Kopieren."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérifiez les détails du réseau avant de les copier."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拷贝前请检查网络详情。"
+          }
+        }
+      }
+    },
+    "Review the phone number before opening." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüfe die Telefonnummer vor dem Öffnen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérifiez le numéro de téléphone avant de l’ouvrir."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开前请检查电话号码。"
           }
         }
       }
@@ -8548,6 +12307,28 @@
         }
       }
     },
+    "Save screenshot to disk" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildschirmfoto als Datei sichern"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrer la capture d’écran sur le disque"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将截屏存储到磁盘"
+          }
+        }
+      }
+    },
     "Saved" : {
       "comment" : "A History card's kind when its capture type is unknown",
       "localizations" : {
@@ -8567,6 +12348,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已存储"
+          }
+        }
+      }
+    },
+    "Saved %@ to %@ — click to reveal in Finder" : {
+      "comment" : "The file name, then its folder",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%1$@“ in „%2$@“ gesichert – zum Anzeigen im Finder klicken"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ enregistré dans %2$@ — cliquez pour l’afficher dans le Finder"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已将“%1$@”存储到“%2$@” — 点按以在“访达”中显示"
           }
         }
       }
@@ -8594,7 +12398,7 @@
       }
     },
     "Saved to %@: %@" : {
-      "comment" : "Toast: the folder, then the file name",
+      "comment" : "The folder, then the file name",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -8661,6 +12465,28 @@
         }
       }
     },
+    "Saving the last recording…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Letzte Aufnahme wird gesichert …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finalisation du dernier enregistrement…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在存储上一段录制内容…"
+          }
+        }
+      }
+    },
     "Saving the recording" : {
       "localizations" : {
         "de" : {
@@ -8683,8 +12509,53 @@
         }
       }
     },
+    "Saving the recording…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufnahme wird gesichert …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finalisation de l’enregistrement…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在存储录制内容…"
+          }
+        }
+      }
+    },
+    "Saving the screen recording" : {
+      "comment" : "Shown while quitting waits for a recording to be saved",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildschirmaufnahme wird gesichert"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finalisation de l’enregistrement de l’écran"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在存储屏幕录制内容"
+          }
+        }
+      }
+    },
     "Saving…" : {
-      "comment" : "Menu bar status while a finished recording is being written",
+      "comment" : "Recording HUD and menu bar after Stop, while the file is written",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -8695,7 +12566,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enregistrement…"
+            "value" : "Finalisation…"
           }
         },
         "zh-Hans" : {
@@ -8772,6 +12643,28 @@
         }
       }
     },
+    "Screen recording didn't start in time. Try again." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Bildschirmaufnahme hat nicht rechtzeitig begonnen. Versuche es erneut."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’enregistrement de l’écran n’a pas démarré à temps. Réessayez."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "屏幕录制未能及时开始。请重试。"
+          }
+        }
+      }
+    },
     "Screenshot Editor" : {
       "localizations" : {
         "de" : {
@@ -8816,6 +12709,74 @@
         }
       }
     },
+    "Screenshot captured" : {
+      "comment" : "VoiceOver announcement",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildschirmfoto aufgenommen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capture d’écran effectuée"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已截屏"
+          }
+        }
+      }
+    },
+    "Screenshot selection" : {
+      "comment" : "VoiceOver: the overlay while dragging out an area",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auswahl für Bildschirmfoto"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sélection pour la capture d’écran"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截屏选区"
+          }
+        }
+      }
+    },
+    "Screenshot thumbnail" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miniatur des Bildschirmfotos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vignette de la capture d’écran"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截屏缩略图"
+          }
+        }
+      }
+    },
     "Screenshots" : {
       "localizations" : {
         "de" : {
@@ -8834,6 +12795,73 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "截屏"
+          }
+        }
+      }
+    },
+    "Scroll down to capture" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach unten scrollen zum Aufnehmen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Faites défiler vers le bas pour capturer"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "向下滚动以捕捉"
+          }
+        }
+      }
+    },
+    "Scroll down to capture more" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weiter nach unten scrollen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuez à défiler vers le bas"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "向下滚动以捕捉更多"
+          }
+        }
+      }
+    },
+    "Scrolled too fast — scroll back up a little" : {
+      "comment" : "Scrolling capture HUD; keep it short",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zu schnell – scrolle ein Stück zurück"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trop rapide — remontez un peu"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "滚动太快 — 请往回滚动一点"
           }
         }
       }
@@ -8905,6 +12933,178 @@
         }
       }
     },
+    "Scrolling capture controls" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Steuerung für Scroll-Aufnahme"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Commandes de la capture défilante"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "滚动截屏控制"
+          }
+        }
+      }
+    },
+    "Scrolling capture failed" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scroll-Aufnahme fehlgeschlagen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Échec de la capture défilante"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "滚动截屏失败"
+          }
+        }
+      }
+    },
+    "Scrolling capture reached its maximum length (%lld points) and finished." : {
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Die Scroll-Aufnahme hat ihre maximale Länge (%lld Punkt) erreicht und ist beendet."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Die Scroll-Aufnahme hat ihre maximale Länge (%lld Punkte) erreicht und ist beendet."
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Scrolling capture reached its maximum length (%lld point) and finished."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Scrolling capture reached its maximum length (%lld points) and finished."
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "La capture défilante a atteint sa longueur maximale (%lld point) et s’est terminée."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "La capture défilante a atteint sa longueur maximale (%lld points) et s’est terminée."
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "滚动截屏已达到最大长度（%lld 点），已完成。"
+          }
+        }
+      }
+    },
+    "Scrolling capture stopped after %lld minutes." : {
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Die Scroll-Aufnahme wurde nach %lld Minute beendet."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Die Scroll-Aufnahme wurde nach %lld Minuten beendet."
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Scrolling capture stopped after %lld minute."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Scrolling capture stopped after %lld minutes."
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "La capture défilante s’est arrêtée après %lld minute."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "La capture défilante s’est arrêtée après %lld minutes."
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "滚动截屏已在 %lld 分钟后停止。"
+          }
+        }
+      }
+    },
     "Search commands" : {},
     "Search text in captures" : {
       "localizations" : {
@@ -8924,6 +13124,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "搜索截屏中的文字"
+          }
+        }
+      }
+    },
+    "Security" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sicherheit"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sécurité"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安全性"
           }
         }
       }
@@ -8974,6 +13196,50 @@
       }
     },
     "Select a clip on the timeline to mute it or fade it in and out." : {},
+    "Select a window to record without blocking other apps" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle ein Fenster zum Aufzeichnen, ohne andere Apps zu blockieren"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisissez une fenêtre à enregistrer sans bloquer les autres apps"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择要录制的窗口，不影响其他 App 的使用"
+          }
+        }
+      }
+    },
+    "Select which display to record fullscreen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle den Bildschirm für die Vollbildaufzeichnung"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisissez l’écran à enregistrer en plein écran"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择要全屏录制的显示器"
+          }
+        }
+      }
+    },
     "Select words and press ⌫ to cut them from the video — ⌫ again on crossed-out words puts them back. Click a word to jump there; ⌘F finds." : {},
     "Selected %@" : {},
     "Selection" : {
@@ -8994,6 +13260,52 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "选区"
+          }
+        }
+      }
+    },
+    "Selection %@ by %@ points" : {
+      "comment" : "VoiceOver: the selection's width and height",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auswahl: %@ mal %@ Punkte"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sélection de %@ sur %@ points"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选区宽 %@ 点、高 %@ 点"
+          }
+        }
+      }
+    },
+    "Selection %@ by %@ points. Arrow keys move it, Return captures, Escape cancels." : {
+      "comment" : "VoiceOver announcement when a selection becomes adjustable",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auswahl: %@ mal %@ Punkte. Pfeiltasten verschieben sie, Return nimmt auf, Escape bricht ab."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sélection de %@ sur %@ points. Les flèches la déplacent, Retour capture, Échap annule."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选区宽 %@ 点、高 %@ 点。方向键可移动选区，按 Return 键捕捉，按 Esc 键取消。"
           }
         }
       }
@@ -9221,6 +13533,29 @@
         }
       }
     },
+    "Shotnix can't write to the save folder. Choose another one in Settings → Screenshots." : {
+      "comment" : "Names Shotnix's Settings pane where the save folder is chosen",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shotnix kann nicht in den Speicherordner schreiben. Wähle einen anderen in Einstellungen → Bildschirmfotos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shotnix ne peut pas écrire dans le dossier d’enregistrement. Choisissez-en un autre dans Réglages → Captures."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shotnix 无法写入存储文件夹。请在“设置”→“截屏”中选择其他文件夹。"
+          }
+        }
+      }
+    },
     "Shotnix could not write the file to:\n%@" : {
       "localizations" : {
         "de" : {
@@ -9261,6 +13596,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Shotnix 已可以使用！"
+          }
+        }
+      }
+    },
+    "Shotnix isn't allowed to record the screen. Turn it on in System Settings → Privacy & Security → Screen & System Audio Recording." : {
+      "comment" : "Names the System Settings pane as macOS 15 and later call it",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shotnix darf den Bildschirm nicht aufzeichnen. Aktiviere es in Systemeinstellungen → Datenschutz & Sicherheit → Bildschirm- & Systemaudioaufnahme."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shotnix n’est pas autorisé à enregistrer l’écran. Activez-le dans Réglages Système → Confidentialité et sécurité → Enregistrement de l’écran et de l’audio du système."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shotnix 无权录制屏幕。请在“系统设置”→“隐私与安全性”→“录屏与系统录音”中开启。"
           }
         }
       }
@@ -9493,6 +13851,7 @@
     "Show for the whole video" : {},
     "Show in Finder" : {},
     "Show keyboard shortcuts" : {
+      "comment" : "Recording bar toggle: shows the shortcuts pressed while recording as keycaps",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -9648,6 +14007,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "跳过设置"
+          }
+        }
+      }
+    },
+    "Skipping frames" : {
+      "comment" : "Short note in the recording HUD",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bilder fallen aus"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Images perdues"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在丢帧"
           }
         }
       }
@@ -9880,6 +14262,73 @@
         }
       }
     },
+    "Still saving the last recording — try again in a moment." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die letzte Aufnahme wird noch gesichert – versuche es gleich noch einmal."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le dernier enregistrement est encore en cours de finalisation — réessayez dans un instant."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仍在存储上一段录制内容 — 请稍后再试。"
+          }
+        }
+      }
+    },
+    "Still saving the recording…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufnahme wird noch gesichert …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finalisation de l’enregistrement en cours…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仍在存储录制内容…"
+          }
+        }
+      }
+    },
+    "Stitching…" : {
+      "comment" : "Scrolling capture: joining the frames into one image",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wird zusammengefügt …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assemblage…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在拼接…"
+          }
+        }
+      }
+    },
     "Stop Recording" : {
       "localizations" : {
         "de" : {
@@ -9898,6 +14347,51 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "停止录制"
+          }
+        }
+      }
+    },
+    "Stop recording" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufzeichnung stoppen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arrêter l’enregistrement"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停止录制"
+          }
+        }
+      }
+    },
+    "Stop recording (%@)" : {
+      "comment" : "Keyboard shortcut",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufzeichnung stoppen (%@)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arrêter l’enregistrement (%@)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停止录制（%@）"
           }
         }
       }
@@ -9969,6 +14463,28 @@
         }
       }
     },
+    "Subject" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Betreff"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Objet"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "主题"
+          }
+        }
+      }
+    },
     "Subtitles file" : {},
     "Sunset Coral" : {
       "localizations" : {
@@ -10017,6 +14533,7 @@
     "Swap the arrow's head and tail" : {},
     "Switch the camera to full screen for talking points, or put it side by side with the screen — at the playhead. Each shows on the Camera lane." : {},
     "System Default" : {
+      "comment" : "The Mac's default microphone or camera",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -10034,6 +14551,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "系统默认"
+          }
+        }
+      }
+    },
+    "System audio" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Systemton"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son de l’ordinateur"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "电脑声音"
+          }
+        }
+      }
+    },
+    "System audio couldn't be recorded. Try again without system audio." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Systemton konnte nicht aufgezeichnet werden. Versuche es ohne Systemton erneut."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le son de l’ordinateur n’a pas pu être enregistré. Réessayez sans le son de l’ordinateur."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法录制电脑声音。请关闭电脑声音后重试。"
+          }
+        }
+      }
+    },
+    "Table copied — paste it into a spreadsheet" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabelle kopiert – setze sie in eine Tabellenkalkulation ein"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tableau copié — collez-le dans un tableur"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已拷贝表格 — 可粘贴到电子表格中"
           }
         }
       }
@@ -10149,6 +14732,28 @@
         }
       }
     },
+    "Text QR found" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "QR-Code mit Text gefunden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Code QR avec texte détecté"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "找到文字二维码"
+          }
+        }
+      }
+    },
     "Text Recognition" : {
       "localizations" : {
         "de" : {
@@ -10167,6 +14772,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "文字识别"
+          }
+        }
+      }
+    },
+    "Text copied" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text kopiert"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Texte copié"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已拷贝文字"
+          }
+        }
+      }
+    },
+    "Text copied to clipboard" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text in die Zwischenablage kopiert"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Texte copié dans le presse-papiers"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已将文字拷贝到剪贴板"
+          }
+        }
+      }
+    },
+    "Text recognition failed" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Texterkennung fehlgeschlagen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Échec de la reconnaissance de texte"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文字识别失败"
           }
         }
       }
@@ -10215,7 +14886,117 @@
         }
       }
     },
+    "That display isn't available anymore." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieser Bildschirm ist nicht mehr verfügbar."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cet écran n’est plus disponible."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "该显示器已不可用。"
+          }
+        }
+      }
+    },
+    "That display or window isn't available anymore." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieser Bildschirm oder dieses Fenster ist nicht mehr verfügbar."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cet écran ou cette fenêtre n’est plus disponible."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "该显示器或窗口已不可用。"
+          }
+        }
+      }
+    },
+    "That window closed before recording could start." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Fenster wurde geschlossen, bevor die Aufzeichnung beginnen konnte."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La fenêtre s’est fermée avant le début de l’enregistrement."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "窗口在录制开始前已关闭。"
+          }
+        }
+      }
+    },
+    "The camera couldn't start." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Kamera konnte nicht gestartet werden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de démarrer la caméra."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法启动摄像头。"
+          }
+        }
+      }
+    },
     "The camera keeps your cursor in view and glides after it." : {},
+    "The camera stopped. The recording continues without it." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Kamera wurde gestoppt. Die Aufzeichnung läuft ohne Kamera weiter."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La caméra s’est arrêtée. L’enregistrement continue sans elle."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "摄像头已停止。录制将在没有摄像头的情况下继续。"
+          }
+        }
+      }
+    },
     "The cursor is part of this video" : {},
     "The export carries on in the background (Esc)" : {},
     "The menu bar icon is Shotnix's main entry point. While it is hidden, open Shotnix again from Finder, Launchpad, or Spotlight to bring these Preferences back." : {
@@ -10240,7 +15021,74 @@
         }
       }
     },
+    "The microphone couldn't start, so this recording has no mic." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Mikrofon konnte nicht gestartet werden, daher hat diese Aufnahme keinen Mikrofonton."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le micro n’a pas pu démarrer : cet enregistrement n’aura pas de son du micro."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "麦克风无法启动，因此此录制内容没有麦克风声音。"
+          }
+        }
+      }
+    },
+    "The microphone stopped working. The recording continues without it." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Mikrofon funktioniert nicht mehr. Die Aufzeichnung läuft ohne Mikrofon weiter."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le micro a cessé de fonctionner. L’enregistrement continue sans lui."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "麦克风已停止工作。录制将在没有麦克风的情况下继续。"
+          }
+        }
+      }
+    },
     "The picture's file is gone — choose it again with Replace." : {},
+    "The recording couldn't be finished — saved the first %@." : {
+      "comment" : "How much of the recording was kept, like “42 s” or “2:05”",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Aufnahme konnte nicht abgeschlossen werden – die ersten %@ sind gesichert."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’enregistrement n’a pas pu être finalisé — le début (%@) a été sauvegardé."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "录制无法完成 — 已存储前 %@。"
+          }
+        }
+      }
+    },
     "The save panel did not return a destination. Please try saving again." : {
       "localizations" : {
         "de" : {
@@ -10308,6 +15156,28 @@
       }
     },
     "The song's file is gone — choose it again with Replace." : {},
+    "The window you're recording closed. Stop when you're ready — the recording keeps going." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das aufgezeichnete Fenster wurde geschlossen. Stoppe, wenn du so weit bist – die Aufzeichnung läuft weiter."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La fenêtre enregistrée a été fermée. Arrêtez quand vous voulez — l’enregistrement continue."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在录制的窗口已关闭。准备好后再停止 — 录制仍在继续。"
+          }
+        }
+      }
+    },
     "This Week" : {
       "localizations" : {
         "de" : {
@@ -10470,6 +15340,29 @@
     "Timeline scale" : {},
     "Timeline scale (pinch, or ⌘-scroll)" : {},
     "Tips" : {},
+    "To" : {
+      "comment" : "Recipient of an email or message",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "À"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "收件人"
+          }
+        }
+      }
+    },
     "Today" : {
       "localizations" : {
         "de" : {
@@ -10566,6 +15459,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在此输入…"
+          }
+        }
+      }
+    },
+    "URL" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "网址"
           }
         }
       }
@@ -10806,6 +15721,28 @@
         }
       }
     },
+    "Warning" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warnung"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avertissement"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "警告"
+          }
+        }
+      }
+    },
     "Website" : {
       "localizations" : {
         "de" : {
@@ -10895,6 +15832,50 @@
         }
       }
     },
+    "Wi-Fi" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WLAN"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wi-Fi"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无线局域网"
+          }
+        }
+      }
+    },
+    "Wi-Fi QR found" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "QR-Code mit WLAN gefunden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Code QR Wi-Fi détecté"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "找到无线局域网二维码"
+          }
+        }
+      }
+    },
     "Window" : {
       "localizations" : {
         "de" : {
@@ -10939,6 +15920,29 @@
         }
       }
     },
+    "Window capture" : {
+      "comment" : "VoiceOver: the overlay while picking a window to capture",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fensteraufnahme"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capture de fenêtre"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "窗口截屏"
+          }
+        }
+      }
+    },
     "Window captures are isolated — nothing overlapping shows through. With this on they get transparent padding and a soft drop shadow." : {
       "localizations" : {
         "de" : {
@@ -10957,6 +15961,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "窗口截屏只包含窗口本身，不会带入任何遮挡的内容。开启后，截屏会带有透明边距和柔和的投影。"
+          }
+        }
+      }
+    },
+    "Window closed" : {
+      "comment" : "Short note in the recording HUD",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fenster geschlossen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fenêtre fermée"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "窗口已关闭"
           }
         }
       }
@@ -11113,6 +16140,28 @@
         }
       }
     },
+    "Your Mac can't keep up with this recording and is skipping frames. Balanced quality or 30 fps will help." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Mac kommt bei dieser Aufzeichnung nicht mit und lässt Bilder aus. Die Qualität „Ausgewogen“ oder 30 fps helfen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre Mac n’arrive pas à suivre cet enregistrement et saute des images. La qualité Équilibrée ou 30 fps vous aideront."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的 Mac 跟不上此录制，正在丢帧。选择“均衡”质量或 30 fps 会有帮助。"
+          }
+        }
+      }
+    },
     "Your camera is recorded as its own layer: a live bubble shows while you record (it never appears in the screen capture), and the editor lets you move, resize, and restyle it — or hide it — afterwards." : {
       "localizations" : {
         "de" : {
@@ -11131,6 +16180,201 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "摄像头画面会录制为单独的图层：录制时会显示实时气泡（它不会出现在屏幕录制中），之后你可以在编辑器中移动它、调整大小和更改样式，也可以将其隐藏。"
+          }
+        }
+      }
+    },
+    "Your disk filled up — saved the first %@." : {
+      "comment" : "How much of the recording was kept, like “42 s” or “2:05”",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Speicherplatz ist voll – die ersten %@ sind gesichert."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre disque est plein — le début (%@) a été sauvegardé."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "磁盘已满 — 已存储前 %@。"
+          }
+        }
+      }
+    },
+    "Your disk is almost full, so the recording stopped. It's saved." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Speicherplatz ist fast aufgebraucht, daher wurde die Aufzeichnung beendet. Die Aufnahme ist gesichert."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre disque est presque plein : l’enregistrement s’est arrêté. Il est sauvegardé."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "磁盘空间即将用完，录制已停止。录制内容已存储。"
+          }
+        }
+      }
+    },
+    "Your disk is almost full. In about %lld minutes the recording stops and saves itself." : {
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Dein Speicherplatz ist fast aufgebraucht. In etwa %lld Minute wird die Aufzeichnung beendet und gesichert."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Dein Speicherplatz ist fast aufgebraucht. In etwa %lld Minuten wird die Aufzeichnung beendet und gesichert."
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Your disk is almost full. In about %lld minute the recording stops and saves itself."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Your disk is almost full. In about %lld minutes the recording stops and saves itself."
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Votre disque est presque plein. Dans environ %lld minute, l’enregistrement s’arrêtera et sera sauvegardé."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Votre disque est presque plein. Dans environ %lld minutes, l’enregistrement s’arrêtera et sera sauvegardé."
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "磁盘空间即将用完。大约 %lld 分钟后，录制将停止并自动存储。"
+          }
+        }
+      }
+    },
+    "Your disk is almost full. In about %lld seconds the recording stops and saves itself." : {
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Dein Speicherplatz ist fast aufgebraucht. In etwa %lld Sekunde wird die Aufzeichnung beendet und gesichert."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Dein Speicherplatz ist fast aufgebraucht. In etwa %lld Sekunden wird die Aufzeichnung beendet und gesichert."
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Your disk is almost full. In about %lld second the recording stops and saves itself."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Your disk is almost full. In about %lld seconds the recording stops and saves itself."
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Votre disque est presque plein. Dans environ %lld seconde, l’enregistrement s’arrêtera et sera sauvegardé."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Votre disque est presque plein. Dans environ %lld secondes, l’enregistrement s’arrêtera et sera sauvegardé."
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "磁盘空间即将用完。大约 %lld 秒后，录制将停止并自动存储。"
+          }
+        }
+      }
+    },
+    "Your disk is full, so the recording couldn't be saved." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Speicherplatz ist voll, daher konnte die Aufnahme nicht gesichert werden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre disque est plein : l’enregistrement n’a pas pu être sauvegardé."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "磁盘已满，无法存储录制内容。"
           }
         }
       }
@@ -11186,6 +16430,29 @@
     "Zoom Level" : {},
     "Zoom to %@ (key %@)" : {},
     "Zoom — drag to move, drag an edge to resize, click to edit" : {},
+    "a table" : {
+      "comment" : "Listed with links and email addresses the recognized text holds",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "eine Tabelle"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "un tableau"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 个表格"
+          }
+        }
+      }
+    },
     "macOS screenshot shortcuts (⌘⇧3, ⌘⇧4, ⌘⇧5) conflict with Shotnix.\n\nDisable them so Shotnix owns the capture shortcuts and screenshots do not double-trigger.\n\nYou can re-enable Apple's shortcuts anytime in System Settings → Keyboard → Keyboard Shortcuts → Screenshots." : {
       "localizations" : {
         "de" : {
@@ -11204,6 +16471,144 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "macOS 截屏快捷键（⌘⇧3、⌘⇧4、⌘⇧5）与 Shotnix 冲突。\n\n停用它们，让 Shotnix 接管截屏快捷键，避免重复截屏。\n\n你可以随时在“系统设置”→“键盘”→“键盘快捷键”→“截屏”中重新启用 Apple 的快捷键。"
+          }
+        }
+      }
+    },
+    "mic" : {
+      "comment" : "Recording HUD: records the microphone; keep it very short",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mikro"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "micro"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "麦克风"
+          }
+        }
+      }
+    },
+    "no audio" : {
+      "comment" : "Recording HUD: records no sound; keep it very short",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Ton"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sans son"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无音频"
+          }
+        }
+      }
+    },
+    "sys+mic" : {
+      "comment" : "Recording HUD: records system audio and the microphone; keep it very short",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sys.+Mikro"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sys.+micro"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "系统+麦克风"
+          }
+        }
+      }
+    },
+    "system" : {
+      "comment" : "Recording HUD: records system audio; keep it very short",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "système"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "系统"
+          }
+        }
+      }
+    },
+    "up to %@ GB/min" : {
+      "comment" : "Estimated recording size per minute",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "bis zu %@ GB/Min."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "jusqu’à %@ Go/min"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最多 %@ GB/分钟"
+          }
+        }
+      }
+    },
+    "up to %@ MB/min" : {
+      "comment" : "Estimated recording size per minute",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "bis zu %@ MB/Min."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "jusqu’à %@ Mo/min"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最多 %@ MB/分钟"
           }
         }
       }
@@ -11274,6 +16679,73 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "✓ 已拷贝到剪贴板"
+          }
+        }
+      }
+    },
+    "✓ Saved screenshot" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✓ Bildschirmfoto gesichert"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✓ Capture d’écran enregistrée"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✓ 已存储截屏"
+          }
+        }
+      }
+    },
+    "✓ Text copied to clipboard" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✓ Text in die Zwischenablage kopiert"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✓ Texte copié dans le presse-papiers"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✓ 已将文字拷贝到剪贴板"
+          }
+        }
+      }
+    },
+    "✓ Text copied · %@ — click for options" : {
+      "comment" : "What else the text holds, like “a table, 2 links”",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✓ Text kopiert · %@ – für Optionen klicken"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✓ Texte copié · %@ — cliquez pour les options"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✓ 已拷贝文字 · %@ — 点按查看选项"
           }
         }
       }

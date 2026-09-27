@@ -2,6 +2,22 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>%lld QR codes found</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld QR code found</string>
+			<key>other</key>
+			<string>%lld QR codes found</string>
+		</dict>
+	</dict>
 	<key>%lld annotations</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -66,6 +82,22 @@
 			<string>%lld annotations, cropping</string>
 		</dict>
 	</dict>
+	<key>%lld barcodes found</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld barcode found</string>
+			<key>other</key>
+			<string>%lld barcodes found</string>
+		</dict>
+	</dict>
 	<key>%lld days</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -82,6 +114,70 @@
 			<string>%lld days</string>
 		</dict>
 	</dict>
+	<key>%lld email addresses</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld email address</string>
+			<key>other</key>
+			<string>%lld email addresses</string>
+		</dict>
+	</dict>
+	<key>%lld lines</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld line</string>
+			<key>other</key>
+			<string>%lld lines</string>
+		</dict>
+	</dict>
+	<key>%lld lines · found %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld line · found %@</string>
+			<key>other</key>
+			<string>%lld lines · found %@</string>
+		</dict>
+	</dict>
+	<key>%lld links</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld link</string>
+			<key>other</key>
+			<string>%lld links</string>
+		</dict>
+	</dict>
 	<key>%lld saved captures · drag any card to Finder · right-click for more actions</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -96,6 +192,22 @@
 			<string>%lld saved capture · drag any card to Finder · right-click for more actions</string>
 			<key>other</key>
 			<string>%lld saved captures · drag any card to Finder · right-click for more actions</string>
+		</dict>
+	</dict>
+	<key>%lld screens</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld screen</string>
+			<key>other</key>
+			<string>%lld screens</string>
 		</dict>
 	</dict>
 	<key>%lld screenshots deleted — click or press ⌘Z to undo</key>
@@ -306,6 +418,38 @@
 			<string>Last %lld captures</string>
 		</dict>
 	</dict>
+	<key>Scrolling capture reached its maximum length (%lld points) and finished.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Scrolling capture reached its maximum length (%lld point) and finished.</string>
+			<key>other</key>
+			<string>Scrolling capture reached its maximum length (%lld points) and finished.</string>
+		</dict>
+	</dict>
+	<key>Scrolling capture stopped after %lld minutes.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Scrolling capture stopped after %lld minute.</string>
+			<key>other</key>
+			<string>Scrolling capture stopped after %lld minutes.</string>
+		</dict>
+	</dict>
 	<key>You have unsaved edits in %lld screenshots.</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -320,6 +464,38 @@
 			<string>You have unsaved edits in %lld screenshot.</string>
 			<key>other</key>
 			<string>You have unsaved edits in %lld screenshots.</string>
+		</dict>
+	</dict>
+	<key>Your disk is almost full. In about %lld minutes the recording stops and saves itself.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Your disk is almost full. In about %lld minute the recording stops and saves itself.</string>
+			<key>other</key>
+			<string>Your disk is almost full. In about %lld minutes the recording stops and saves itself.</string>
+		</dict>
+	</dict>
+	<key>Your disk is almost full. In about %lld seconds the recording stops and saves itself.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Your disk is almost full. In about %lld second the recording stops and saves itself.</string>
+			<key>other</key>
+			<string>Your disk is almost full. In about %lld seconds the recording stops and saves itself.</string>
 		</dict>
 	</dict>
 </dict>

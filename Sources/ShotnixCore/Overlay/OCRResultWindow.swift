@@ -16,10 +16,10 @@ final class OCRResultWindow: NSWindow, NSWindowDelegate {
     /// user asks for it, never stealing focus from a plain copy.
     static func showCopiedToast(for result: OCRResult, on screen: NSScreen?) {
         guard let extras = extrasSummary(for: result) else {
-            ToastWindow.show(message: "✓ Text copied to clipboard", on: screen)
+            ToastWindow.show(message: L("✓ Text copied to clipboard"), on: screen)
             return
         }
-        ToastWindow.show(message: "✓ Text copied · \(extras) — click for options", duration: 5, on: screen) {
+        ToastWindow.show(message: L("✓ Text copied · \(extras) — click for options"), duration: 5, on: screen) {
             show(result: result, on: screen)
         }
     }
@@ -27,12 +27,13 @@ final class OCRResultWindow: NSWindow, NSWindowDelegate {
     /// "a table, 2 links, 1 email address", or nil for plain text.
     static func extrasSummary(for result: OCRResult) -> String? {
         var parts: [String] = []
-        if result.table != nil { parts.append("a table") }
+        if result.table != nil { parts.append(L("a table")) }
         let emails = result.links.filter(\.isEmail).count
         let links = result.links.count - emails
-        if links > 0 { parts.append(links == 1 ? "1 link" : "\(links) links") }
-        if emails > 0 { parts.append(emails == 1 ? "1 email address" : "\(emails) email addresses") }
-        return parts.isEmpty ? nil : parts.joined(separator: ", ")
+        if links > 0 { parts.append(L("\(links) links")) }
+        if emails > 0 { parts.append(L("\(emails) email addresses")) }
+        // Each language's list separator (Chinese joins with 、).
+        return parts.isEmpty ? nil : parts.dropFirst().reduce(parts[0]) { list, part in L("\(list), \(part)") }
     }
 
     static func show(result: OCRResult, on screen: NSScreen? = nil) {
@@ -60,7 +61,7 @@ final class OCRResultWindow: NSWindow, NSWindowDelegate {
             backing: .buffered,
             defer: false
         )
-        title = "Recognized Text"
+        title = L("Recognized Text")
         titleVisibility = .hidden
         titlebarAppearsTransparent = true
         isReleasedWhenClosed = false
@@ -90,15 +91,16 @@ final class OCRResultWindow: NSWindow, NSWindowDelegate {
         icon.contentTintColor = .controlAccentColor
         iconWrap.addSubview(icon)
 
-        let titleLabel = NSTextField(labelWithString: "Text copied to clipboard")
+        let titleLabel = NSTextField(labelWithString: L("Text copied to clipboard"))
         titleLabel.font = .boldSystemFont(ofSize: 19)
+        titleLabel.lineBreakMode = .byTruncatingTail
         titleLabel.frame = NSRect(x: 78, y: height - 68, width: width - 102, height: 24)
         background.addSubview(titleLabel)
 
         let lineCount = result.text.split(separator: "\n").count
-        var detail = lineCount == 1 ? "1 line" : "\(lineCount) lines"
-        if let extras = Self.extrasSummary(for: result) { detail += " · found \(extras)" }
+        let detail = Self.extrasSummary(for: result).map { L("\(lineCount) lines · found \($0)") } ?? L("\(lineCount) lines")
         let detailLabel = NSTextField(labelWithString: detail)
+        detailLabel.lineBreakMode = .byTruncatingTail
         detailLabel.font = .systemFont(ofSize: 12)
         detailLabel.textColor = .secondaryLabelColor
         detailLabel.frame = NSRect(x: 78, y: height - 90, width: width - 102, height: 18)
@@ -113,8 +115,8 @@ final class OCRResultWindow: NSWindow, NSWindowDelegate {
                 addLinkRow(link, index: index, y: rowY, width: width, in: background)
             }
             let header = NSTextField(labelWithString: result.links.count > visibleLinks.count
-                ? "Links (\(visibleLinks.count) of \(result.links.count))"
-                : "Links")
+                ? L("Links (\(visibleLinks.count) of \(result.links.count))")
+                : L("Links"))
             header.font = .systemFont(ofSize: 10, weight: .semibold)
             header.textColor = .tertiaryLabelColor
             header.frame = NSRect(x: 26, y: linksTop + CGFloat(visibleLinks.count) * 30 + 4, width: 200, height: 14)
@@ -149,26 +151,31 @@ final class OCRResultWindow: NSWindow, NSWindowDelegate {
         textView.font = .monospacedSystemFont(ofSize: 12, weight: .regular)
         textView.textColor = .labelColor
         textView.drawsBackground = false
-        textView.setAccessibilityLabel("Recognized text")
+        textView.setAccessibilityLabel(L("Recognized text"))
         scroll.documentView = textView
         card.addSubview(scroll)
 
-        let doneButton = NSButton(title: "Done", target: self, action: #selector(closeWindow))
+        // Right to left, 6 pt apart; each button fits its title (English
+        // keeps its widths).
+        let doneButton = NSButton(title: L("Done"), target: self, action: #selector(closeWindow))
         doneButton.bezelStyle = .rounded
         doneButton.keyEquivalent = "\r"
-        doneButton.frame = NSRect(x: width - 110, y: buttonY, width: 86, height: 32)
+        let doneWidth = TextFitting.buttonWidth(doneButton, minimum: 86)
+        doneButton.frame = NSRect(x: width - 24 - doneWidth, y: buttonY, width: doneWidth, height: 32)
         background.addSubview(doneButton)
 
-        let copyText = NSButton(title: "Copy Text", target: self, action: #selector(copyText))
+        let copyText = NSButton(title: L("Copy Text"), target: self, action: #selector(copyText))
         copyText.bezelStyle = .rounded
-        copyText.frame = NSRect(x: width - 222, y: buttonY, width: 106, height: 32)
+        let copyTextWidth = TextFitting.buttonWidth(copyText, minimum: 106)
+        copyText.frame = NSRect(x: doneButton.frame.minX - 6 - copyTextWidth, y: buttonY, width: copyTextWidth, height: 32)
         background.addSubview(copyText)
 
         if result.table != nil {
-            let copyTable = NSButton(title: "Copy as Table", target: self, action: #selector(copyTable))
+            let copyTable = NSButton(title: L("Copy as Table"), target: self, action: #selector(copyTable))
             copyTable.bezelStyle = .rounded
-            copyTable.frame = NSRect(x: width - 356, y: buttonY, width: 128, height: 32)
-            copyTable.toolTip = "Copy the rows tab-separated, ready to paste into a spreadsheet"
+            let copyTableWidth = TextFitting.buttonWidth(copyTable, minimum: 128)
+            copyTable.frame = NSRect(x: copyText.frame.minX - 6 - copyTableWidth, y: buttonY, width: copyTableWidth, height: 32)
+            copyTable.toolTip = L("Copy the rows tab-separated, ready to paste into a spreadsheet")
             background.addSubview(copyTable)
         }
     }
@@ -186,19 +193,19 @@ final class OCRResultWindow: NSWindow, NSWindowDelegate {
         label.frame = NSRect(x: 48, y: y + 4, width: width - 48 - 170, height: 18)
         parent.addSubview(label)
 
-        let open = NSButton(title: link.isEmail ? "Email" : "Open", target: self, action: #selector(openLink(_:)))
+        let open = NSButton(title: link.isEmail ? L("Email") : L("Open"), target: self, action: #selector(openLink(_:)))
         open.bezelStyle = .rounded
         open.controlSize = .small
         open.tag = index
-        open.setAccessibilityLabel(link.isEmail ? "Email \(shown)" : "Open \(shown)")
+        open.setAccessibilityLabel(link.isEmail ? L("Email \(shown)") : L("Open \(shown)"))
         open.frame = NSRect(x: width - 164, y: y, width: 70, height: 26)
         parent.addSubview(open)
 
-        let copy = NSButton(title: "Copy", target: self, action: #selector(copyLink(_:)))
+        let copy = NSButton(title: L("Copy"), target: self, action: #selector(copyLink(_:)))
         copy.bezelStyle = .rounded
         copy.controlSize = .small
         copy.tag = index
-        copy.setAccessibilityLabel("Copy \(shown)")
+        copy.setAccessibilityLabel(L("Copy \(shown)"))
         copy.frame = NSRect(x: width - 94, y: y, width: 70, height: 26)
         parent.addSubview(copy)
     }
@@ -217,16 +224,16 @@ final class OCRResultWindow: NSWindow, NSWindowDelegate {
         guard result.links.indices.contains(sender.tag) else { return }
         let link = result.links[sender.tag]
         let value = link.isEmail ? link.url.absoluteString.replacingOccurrences(of: "mailto:", with: "") : link.url.absoluteString
-        copyString(value, confirmation: link.isEmail ? "Email address copied" : "Link copied")
+        copyString(value, confirmation: link.isEmail ? L("Email address copied") : L("Link copied"))
     }
 
     @objc private func copyText() {
-        copyString(result.text, confirmation: "Text copied")
+        copyString(result.text, confirmation: L("Text copied"))
     }
 
     @objc private func copyTable() {
         guard let table = result.table else { return }
-        copyString(table.tabSeparated, confirmation: "Table copied — paste it into a spreadsheet")
+        copyString(table.tabSeparated, confirmation: L("Table copied — paste it into a spreadsheet"))
     }
 
     private func copyString(_ string: String, confirmation: String) {

@@ -100,7 +100,8 @@ final class ScrollingCaptureController: NSObject {
                 }
                 guard self.phase == .scrolling else { return }
                 if Date().timeIntervalSince(self.startedAt) > Self.maxDuration {
-                    self.finish(note: "Scrolling capture stopped after 10 minutes.")
+                    let minutes = Int(Self.maxDuration / 60)
+                    self.finish(note: L("Scrolling capture stopped after \(minutes) minutes."))
                     return
                 }
                 let remaining = Self.frameInterval - Date().timeIntervalSince(frameStarted)
@@ -134,14 +135,14 @@ final class ScrollingCaptureController: NSObject {
         let points = Int((CGFloat(height) / pixelScale).rounded())
         switch result {
         case .lostTrack:
-            hud?.update(heightPixels: height, status: "Scrolled too fast — scroll back up a little", isWarning: true)
+            hud?.update(heightPixels: height, status: L("Scrolled too fast — scroll back up a little"), isWarning: true)
         case .limitReached:
-            hud?.update(heightPixels: height, status: "Maximum length reached", isWarning: true)
-            finish(note: "Scrolling capture reached its maximum length (\(points.formatted()) points) and finished.")
+            hud?.update(heightPixels: height, status: L("Maximum length reached"), isWarning: true)
+            finish(note: L("Scrolling capture reached its maximum length (\(points) points) and finished."))
         case .scrolledBack:
-            hud?.update(heightPixels: height, status: "Scroll down to capture more", isWarning: false)
+            hud?.update(heightPixels: height, status: L("Scroll down to capture more"), isWarning: false)
         default:
-            hud?.update(heightPixels: height, status: "Scroll down to capture", isWarning: false)
+            hud?.update(heightPixels: height, status: L("Scroll down to capture"), isWarning: false)
         }
     }
 
@@ -161,7 +162,7 @@ final class ScrollingCaptureController: NSObject {
             self.hud?.orderOut(nil)
             self.hud = nil
             guard let stitched, let screen = self.captureScreen else {
-                self.complete(.failed(message: "Scrolling capture failed", screen: self.captureScreen))
+                self.complete(.failed(message: L("Scrolling capture failed"), screen: self.captureScreen))
                 return
             }
             // Point size from the frames' own pixel density, so a Retina
@@ -603,12 +604,13 @@ final class ScrollingCaptureHUD: NSPanel {
     var doneHandler: (() -> Void)?
     var cancelHandler: (() -> Void)?
 
+    /// The English layout; longer languages widen it to fit (see buildContent).
     nonisolated static let size = NSSize(width: 392, height: 56)
 
-    private let statusLabel = NSTextField(labelWithString: "Scroll down to capture")
-    private let detailLabel = NSTextField(labelWithString: "Esc or Done finishes")
-    private let doneButton = HUDButton(title: "Done", target: nil, action: nil)
-    private let cancelButton = HUDButton(title: "Cancel", target: nil, action: nil)
+    private let statusLabel = NSTextField(labelWithString: L("Scroll down to capture"))
+    private let detailLabel = NSTextField(labelWithString: L("Esc or Done finishes"))
+    private let doneButton = HUDButton(title: L("Done"), target: nil, action: nil)
+    private let cancelButton = HUDButton(title: L("Cancel"), target: nil, action: nil)
 
     init() {
         super.init(
@@ -635,7 +637,25 @@ final class ScrollingCaptureHUD: NSPanel {
     override var canBecomeKey: Bool { false }
 
     private func buildContent() {
-        let effect = NSVisualEffectView(frame: NSRect(origin: .zero, size: Self.size))
+        cancelButton.bezelStyle = .rounded
+        cancelButton.controlSize = .regular
+        doneButton.bezelStyle = .rounded
+        doneButton.controlSize = .regular
+        // Labels and buttons fit this language's words: English keeps the
+        // base size, longer languages widen the HUD. The long warnings
+        // (scrolled too fast) may still truncate, as they do in English.
+        let statusFont = NSFont.systemFont(ofSize: 13, weight: .semibold)
+        let detailFont = NSFont.monospacedDigitSystemFont(ofSize: 11, weight: .medium)
+        // + 4: a label's own inset.
+        let labelWidth = max(190, 4 + max(TextFitting.widest([
+            L("Scroll down to capture"), L("Scroll down to capture more"), L("Maximum length reached"), L("Stitching…"),
+        ], font: statusFont), TextFitting.width(of: L("\(30_000) px · Esc or Done finishes"), font: detailFont)))
+        let cancelWidth = TextFitting.buttonWidth(cancelButton, minimum: 70)
+        let doneWidth = TextFitting.buttonWidth(doneButton, minimum: 66)
+        let size = NSSize(width: 48 + labelWidth + 6 + cancelWidth + doneWidth + 12, height: Self.size.height)
+        setContentSize(size)
+
+        let effect = NSVisualEffectView(frame: NSRect(origin: .zero, size: size))
         effect.material = .hudWindow
         effect.blendingMode = .behindWindow
         effect.state = .active
@@ -651,49 +671,45 @@ final class ScrollingCaptureHUD: NSPanel {
         icon.contentTintColor = .controlAccentColor
         effect.addSubview(icon)
 
-        statusLabel.font = .systemFont(ofSize: 13, weight: .semibold)
+        statusLabel.font = statusFont
         statusLabel.textColor = .labelColor
         statusLabel.lineBreakMode = .byTruncatingTail
-        statusLabel.frame = NSRect(x: 48, y: 28, width: 190, height: 17)
+        statusLabel.frame = NSRect(x: 48, y: 28, width: labelWidth, height: 17)
         effect.addSubview(statusLabel)
 
-        detailLabel.font = .monospacedDigitSystemFont(ofSize: 11, weight: .medium)
+        detailLabel.font = detailFont
         detailLabel.textColor = .secondaryLabelColor
         detailLabel.lineBreakMode = .byTruncatingTail
-        detailLabel.frame = NSRect(x: 48, y: 11, width: 190, height: 15)
+        detailLabel.frame = NSRect(x: 48, y: 11, width: labelWidth, height: 15)
         effect.addSubview(detailLabel)
 
-        cancelButton.bezelStyle = .rounded
-        cancelButton.controlSize = .regular
         cancelButton.target = self
         cancelButton.action = #selector(cancelTapped)
-        cancelButton.frame = NSRect(x: 244, y: 12, width: 70, height: 32)
+        cancelButton.frame = NSRect(x: size.width - 12 - doneWidth - cancelWidth, y: 12, width: cancelWidth, height: 32)
         effect.addSubview(cancelButton)
 
-        doneButton.bezelStyle = .rounded
-        doneButton.controlSize = .regular
         doneButton.target = self
         doneButton.action = #selector(doneTapped)
-        doneButton.frame = NSRect(x: 314, y: 12, width: 66, height: 32)
+        doneButton.frame = NSRect(x: size.width - 12 - doneWidth, y: 12, width: doneWidth, height: 32)
         doneButton.bezelColor = .controlAccentColor
         effect.addSubview(doneButton)
 
-        setAccessibilityLabel("Scrolling capture controls")
+        setAccessibilityLabel(L("Scrolling capture controls"))
     }
 
     func show(selection: CGRect, on screen: NSScreen) {
-        setFrame(Self.frame(selection: selection, visibleFrame: screen.visibleFrame), display: false)
+        setFrame(Self.frame(selection: selection, visibleFrame: screen.visibleFrame, size: frame.size), display: false)
         orderFrontRegardless()
     }
 
     func update(heightPixels: Int, status: String, isWarning: Bool) {
         statusLabel.stringValue = status
         statusLabel.textColor = isWarning ? .systemOrange : .labelColor
-        detailLabel.stringValue = "\(heightPixels.formatted()) px · Esc or Done finishes"
+        detailLabel.stringValue = L("\(heightPixels) px · Esc or Done finishes")
     }
 
     func showFinishing() {
-        statusLabel.stringValue = "Stitching…"
+        statusLabel.stringValue = L("Stitching…")
         statusLabel.textColor = .labelColor
         doneButton.isEnabled = false
         cancelButton.isEnabled = false

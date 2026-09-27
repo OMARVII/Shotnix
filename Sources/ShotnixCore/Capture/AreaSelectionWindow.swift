@@ -284,7 +284,7 @@ final class SelectionOverlayView: NSView {
         updateTrackingArea()
         setAccessibilityElement(true)
         setAccessibilityRole(.layoutArea)
-        setAccessibilityLabel(mode == .window ? "Window capture" : "Screenshot selection")
+        setAccessibilityLabel(mode == .window ? L("Window capture") : L("Screenshot selection"))
         setAccessibilityHelp(hintText)
     }
     required init?(coder: NSCoder) { fatalError() }
@@ -445,15 +445,15 @@ final class SelectionOverlayView: NSView {
     /// Says what a release will do — and how to get the other behavior.
     var hintText: String {
         if mode == .window {
-            return "Click a window to capture it  ·  Esc cancels"
+            return L("Click a window to capture it  ·  Esc cancels")
         }
         switch stage {
         case .adjusting, .resizing, .moving:
-            return "Drag edges or corners to resize  ·  Arrow keys nudge (⇧ ×10)  ·  Return captures  ·  Esc cancels"
+            return L("Drag edges or corners to resize  ·  Arrow keys nudge (⇧ ×10)  ·  Return captures  ·  Esc cancels")
         case .idle, .drawing:
             return captureImmediately
-                ? "Drag to capture  ·  Hold ⇧ as you let go to adjust first  ·  Space moves  ·  Esc cancels"
-                : "Drag to select, then adjust  ·  Hold ⇧ as you let go to capture right away  ·  Esc cancels"
+                ? L("Drag to capture  ·  Hold ⇧ as you let go to adjust first  ·  Space moves  ·  Esc cancels")
+                : L("Drag to select, then adjust  ·  Hold ⇧ as you let go to capture right away  ·  Esc cancels")
         }
     }
 
@@ -724,7 +724,8 @@ final class SelectionOverlayView: NSView {
         .font: NSFont.systemFont(ofSize: 12.5, weight: .semibold),
         .foregroundColor: NSColor.white,
     ]
-    private static let confirmTitle = "Capture  ⏎"
+    /// Read each time: the language can change between selections (tests).
+    private static var confirmTitle: String { L("Capture  ⏎") }
 
     /// Under the selection, or inside its bottom edge when there's no room.
     func confirmButtonRect(for rect: NSRect) -> NSRect {
@@ -1236,15 +1237,17 @@ final class SelectionOverlayView: NSView {
     // MARK: – Accessibility
 
     private func updateAccessibilityValue(announce: Bool) {
-        let size = String(format: "%.0f by %.0f points", currentRect.width, currentRect.height)
-        setAccessibilityValue("Selection \(size)")
+        // Sizes as plain digits, like the dimension label.
+        let width = String(format: "%.0f", currentRect.width)
+        let height = String(format: "%.0f", currentRect.height)
+        setAccessibilityValue(L("Selection \(width) by \(height) points"))
         NSAccessibility.post(element: self, notification: .valueChanged)
         guard announce else { return }
         NSAccessibility.post(
             element: self,
             notification: .announcementRequested,
             userInfo: [
-                .announcement: "Selection \(size). Arrow keys move it, Return captures, Escape cancels.",
+                .announcement: L("Selection \(width) by \(height) points. Arrow keys move it, Return captures, Escape cancels."),
                 .priority: NSAccessibilityPriorityLevel.high.rawValue,
             ]
         )

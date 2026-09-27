@@ -1,0 +1,1423 @@
+{
+  "%@ found": {
+    "comment": "A barcode type, like “Code 128”",
+    "de": "%@ gefunden",
+    "fr": "%@ détecté",
+    "zh-Hans": "已找到：%@"
+  },
+  "%@ quality · %@": {
+    "comment": "Tooltip: recording quality, then the audio",
+    "de": "Qualität: %@ · %@",
+    "fr": "Qualité : %@ · %@",
+    "zh-Hans": "%@质量 · %@"
+  },
+  "%@ · %@ px": {
+    "comment": "App name · a window's pixel size",
+    "de": "%@ · %@ px",
+    "fr": "%@ · %@ px",
+    "zh-Hans": "%@ · %@ 像素"
+  },
+  "%@ · %lld fps": {
+    "comment": "Recording HUD: the audio, then frames per second",
+    "de": "%@ · %lld fps",
+    "fr": "%@ · %lld fps",
+    "zh-Hans": "%@ · %lld fps"
+  },
+  "%@ × %@ px": {
+    "comment": "A display's size in pixels",
+    "de": "%@ × %@ px",
+    "fr": "%@ × %@ px",
+    "zh-Hans": "%@ × %@ 像素"
+  },
+  "%@, %@": {
+    "comment": "Joins items of a list (“a table, 2 links”)",
+    "de": "%@, %@",
+    "fr": "%@, %@",
+    "zh-Hans": "%@、%@"
+  },
+  "%@: %@": {
+    "comment": "A decoded field: its label, then its value",
+    "de": "%@: %@",
+    "fr": "%@ : %@",
+    "zh-Hans": "%@：%@"
+  },
+  "%lld QR codes found": {
+    "de": {
+      "one": "%lld QR-Code gefunden",
+      "other": "%lld QR-Codes gefunden"
+    },
+    "en": {
+      "one": "%lld QR code found",
+      "other": "%lld QR codes found"
+    },
+    "fr": {
+      "one": "%lld code QR détecté",
+      "other": "%lld codes QR détectés"
+    },
+    "zh-Hans": "找到 %lld 个二维码"
+  },
+  "%lld barcodes found": {
+    "de": {
+      "one": "%lld Strichcode gefunden",
+      "other": "%lld Strichcodes gefunden"
+    },
+    "en": {
+      "one": "%lld barcode found",
+      "other": "%lld barcodes found"
+    },
+    "fr": {
+      "one": "%lld code-barres détecté",
+      "other": "%lld codes-barres détectés"
+    },
+    "zh-Hans": "找到 %lld 个条形码"
+  },
+  "%lld email addresses": {
+    "de": {
+      "one": "%lld E-Mail-Adresse",
+      "other": "%lld E-Mail-Adressen"
+    },
+    "en": {
+      "one": "%lld email address",
+      "other": "%lld email addresses"
+    },
+    "fr": {
+      "one": "%lld adresse e-mail",
+      "other": "%lld adresses e-mail"
+    },
+    "zh-Hans": "%lld 个电子邮件地址"
+  },
+  "%lld lines": {
+    "de": {
+      "one": "%lld Zeile",
+      "other": "%lld Zeilen"
+    },
+    "en": {
+      "one": "%lld line",
+      "other": "%lld lines"
+    },
+    "fr": {
+      "one": "%lld ligne",
+      "other": "%lld lignes"
+    },
+    "zh-Hans": "%lld 行"
+  },
+  "%lld lines · found %@": {
+    "comment": "Line count, then what else the text holds, like “a table, 2 links”",
+    "de": {
+      "one": "%lld Zeile · gefunden: %@",
+      "other": "%lld Zeilen · gefunden: %@"
+    },
+    "en": {
+      "one": "%lld line · found %@",
+      "other": "%lld lines · found %@"
+    },
+    "fr": {
+      "one": "%lld ligne · avec %@",
+      "other": "%lld lignes · avec %@"
+    },
+    "zh-Hans": "%lld 行 · 找到 %@"
+  },
+  "%lld links": {
+    "de": {
+      "one": "%lld Link",
+      "other": "%lld Links"
+    },
+    "en": {
+      "one": "%lld link",
+      "other": "%lld links"
+    },
+    "fr": {
+      "one": "%lld lien",
+      "other": "%lld liens"
+    },
+    "zh-Hans": "%lld 个链接"
+  },
+  "%lld px · Esc or Done finishes": {
+    "comment": "The capture's height so far, in pixels",
+    "de": "%lld px · Esc oder „Fertig“ zum Beenden",
+    "fr": "%lld px · Échap ou « Terminé » pour finir",
+    "zh-Hans": "%lld 像素 · 按 Esc 键或点按“完成”结束"
+  },
+  "%lld s": {
+    "comment": "A short duration in seconds",
+    "de": "%lld s",
+    "fr": "%lld s",
+    "zh-Hans": "%lld 秒"
+  },
+  "%lld screens": {
+    "de": {
+      "one": "%lld Bildschirm",
+      "other": "%lld Bildschirme"
+    },
+    "en": {
+      "one": "%lld screen",
+      "other": "%lld screens"
+    },
+    "fr": {
+      "one": "%lld écran",
+      "other": "%lld écrans"
+    },
+    "zh-Hans": "%lld 个显示器"
+  },
+  "%lld seconds": {
+    "de": {
+      "one": "%lld Sekunde",
+      "other": "%lld Sekunden"
+    },
+    "en": {
+      "one": "%lld second",
+      "other": "%lld seconds"
+    },
+    "fr": {
+      "one": "%lld seconde",
+      "other": "%lld secondes"
+    },
+    "zh-Hans": "%lld 秒"
+  },
+  "All Displays": {
+    "de": "Alle Bildschirme",
+    "fr": "Tous les écrans",
+    "zh-Hans": "所有显示器"
+  },
+  "Allow Shotnix in Accessibility — shortcuts turn on by themselves.": {
+    "de": "Erlaube Shotnix unter „Bedienungshilfen“ – die Kurzbefehle schalten sich dann selbst ein.",
+    "fr": "Autorisez Shotnix dans Accessibilité — les raccourcis s’activeront d’eux-mêmes.",
+    "zh-Hans": "请在“辅助功能”中允许 Shotnix — 快捷键会自动开启。"
+  },
+  "App": {
+    "comment": "Stands in for an app that has no name, in the window chooser",
+    "de": "App",
+    "fr": "App",
+    "zh-Hans": "App"
+  },
+  "Balanced": {
+    "comment": "Recording quality",
+    "de": "Ausgewogen",
+    "fr": "Équilibrée",
+    "zh-Hans": "均衡"
+  },
+  "Barcode": {
+    "de": "Strichcode",
+    "fr": "Code-barres",
+    "zh-Hans": "条形码"
+  },
+  "Barcode copied to clipboard": {
+    "de": "Strichcode in die Zwischenablage kopiert",
+    "fr": "Code-barres copié dans le presse-papiers",
+    "zh-Hans": "已将条形码内容拷贝到剪贴板"
+  },
+  "Barcodes": {
+    "comment": "Window title for several barcodes",
+    "de": "Strichcodes",
+    "fr": "Codes-barres",
+    "zh-Hans": "条形码"
+  },
+  "Call": {
+    "de": "Anrufen",
+    "fr": "Appeler",
+    "zh-Hans": "呼叫"
+  },
+  "Camera": {
+    "de": "Kamera",
+    "fr": "Caméra",
+    "zh-Hans": "摄像头"
+  },
+  "Camera access is off — allow Shotnix in System Settings → Privacy & Security → Camera.": {
+    "de": "Der Kamerazugriff ist deaktiviert – erlaube Shotnix in Systemeinstellungen → Datenschutz & Sicherheit → Kamera.",
+    "fr": "L’accès à la caméra est désactivé — autorisez Shotnix dans Réglages Système → Confidentialité et sécurité → Caméra.",
+    "zh-Hans": "摄像头访问权限已关闭 — 请在“系统设置”→“隐私与安全性”→“摄像头”中允许 Shotnix。"
+  },
+  "Camera disconnected": {
+    "comment": "Short note in the recording HUD",
+    "de": "Kamera getrennt",
+    "fr": "Caméra débranchée",
+    "zh-Hans": "摄像头已断开"
+  },
+  "Camera disconnected.": {
+    "de": "Kamera getrennt.",
+    "fr": "Caméra déconnectée.",
+    "zh-Hans": "摄像头已断开连接。"
+  },
+  "Camera disconnected. The recording continues without it.": {
+    "de": "Kamera getrennt. Die Aufzeichnung läuft ohne Kamera weiter.",
+    "fr": "Caméra déconnectée. L’enregistrement continue sans elle.",
+    "zh-Hans": "摄像头已断开连接。录制将在没有摄像头的情况下继续。"
+  },
+  "Camera preview": {
+    "de": "Kameravorschau",
+    "fr": "Aperçu de la caméra",
+    "zh-Hans": "摄像头预览"
+  },
+  "Camera stopped": {
+    "comment": "Short note in the recording HUD",
+    "de": "Kamera gestoppt",
+    "fr": "Caméra arrêtée",
+    "zh-Hans": "摄像头已停止"
+  },
+  "Cancel Recording": {
+    "comment": "Menu item while a recording is being set up (area selection, the recording bar, the countdown)",
+    "de": "Aufzeichnung abbrechen",
+    "fr": "Annuler l’enregistrement",
+    "zh-Hans": "取消录制"
+  },
+  "Capture  ⏎": {
+    "comment": "Button under an adjustable selection (verb); keep the two spaces and the Return symbol",
+    "de": "Aufnehmen  ⏎",
+    "fr": "Capturer  ⏎",
+    "zh-Hans": "捕捉  ⏎"
+  },
+  "Capture failed": {
+    "de": "Aufnahme fehlgeschlagen",
+    "fr": "Échec de la capture",
+    "zh-Hans": "截屏失败"
+  },
+  "Choose screen": {
+    "de": "Bildschirm wählen",
+    "fr": "Choisir un écran",
+    "zh-Hans": "选择显示器"
+  },
+  "Choose window": {
+    "de": "Fenster wählen",
+    "fr": "Choisir une fenêtre",
+    "zh-Hans": "选择窗口"
+  },
+  "Click a window to capture it  ·  Esc cancels": {
+    "comment": "Hint bar at the bottom of the screen; keep the double spaces around the dots",
+    "de": "Klicke auf ein Fenster, um es aufzunehmen  ·  Esc bricht ab",
+    "fr": "Cliquez sur une fenêtre pour la capturer  ·  Échap pour annuler",
+    "zh-Hans": "点按窗口以捕捉  ·  按 Esc 键取消"
+  },
+  "Click or press Esc to cancel": {
+    "de": "Zum Abbrechen klicken oder Esc drücken",
+    "fr": "Cliquez ou appuyez sur Échap pour annuler",
+    "zh-Hans": "点按或按下 Esc 键以取消"
+  },
+  "Close": {
+    "de": "Schließen",
+    "fr": "Fermer",
+    "zh-Hans": "关闭"
+  },
+  "Close All Pins": {
+    "comment": "Closes every pinned screenshot (context menu)",
+    "de": "Alle schließen",
+    "fr": "Tout fermer",
+    "zh-Hans": "关闭所有贴图"
+  },
+  "Close Pin": {
+    "comment": "Closes this pinned screenshot (context menu)",
+    "de": "Schließen",
+    "fr": "Fermer",
+    "zh-Hans": "关闭贴图"
+  },
+  "Compose Email": {
+    "de": "E-Mail verfassen",
+    "fr": "Rédiger un e-mail",
+    "zh-Hans": "撰写邮件"
+  },
+  "Copy %@": {
+    "comment": "VoiceOver: the link or email address",
+    "de": "%@ kopieren",
+    "fr": "Copier %@",
+    "zh-Hans": "拷贝 %@"
+  },
+  "Copy Text": {
+    "de": "Text kopieren",
+    "fr": "Copier le texte",
+    "zh-Hans": "拷贝文字"
+  },
+  "Copy as Table": {
+    "de": "Als Tabelle kopieren",
+    "fr": "Copier en tableau",
+    "zh-Hans": "拷贝为表格"
+  },
+  "Copy image to clipboard": {
+    "de": "Bild in die Zwischenablage kopieren",
+    "fr": "Copier l’image dans le presse-papiers",
+    "zh-Hans": "将图像拷贝到剪贴板"
+  },
+  "Copy recognized text (OCR)": {
+    "de": "Erkannten Text kopieren (OCR)",
+    "fr": "Copier le texte reconnu (OCR)",
+    "zh-Hans": "拷贝识别出的文字（OCR）"
+  },
+  "Copy the rows tab-separated, ready to paste into a spreadsheet": {
+    "de": "Zeilen mit Tabulatoren getrennt kopieren – bereit zum Einsetzen in eine Tabellenkalkulation",
+    "fr": "Copier les lignes séparées par des tabulations, prêtes à coller dans un tableur",
+    "zh-Hans": "以制表符分隔的形式拷贝各行，可直接粘贴到电子表格中"
+  },
+  "Could not copy the screenshot": {
+    "de": "Das Bildschirmfoto konnte nicht kopiert werden",
+    "fr": "Impossible de copier la capture d’écran",
+    "zh-Hans": "无法拷贝截屏"
+  },
+  "Could not list windows. Check permissions.": {
+    "de": "Fenster konnten nicht aufgelistet werden. Prüfe die Berechtigungen.",
+    "fr": "Impossible de lister les fenêtres. Vérifiez les autorisations.",
+    "zh-Hans": "无法列出窗口。请检查权限。"
+  },
+  "Could not save the recording (%@).": {
+    "comment": "The system's reason",
+    "de": "Die Aufnahme konnte nicht gesichert werden (%@).",
+    "fr": "Impossible de sauvegarder l’enregistrement (%@).",
+    "zh-Hans": "无法存储录制内容（%@）。"
+  },
+  "Could not save the recording.": {
+    "de": "Die Aufnahme konnte nicht gesichert werden.",
+    "fr": "Impossible de sauvegarder l’enregistrement.",
+    "zh-Hans": "无法存储录制内容。"
+  },
+  "Could not start recording (%@).": {
+    "comment": "The system's reason",
+    "de": "Die Aufzeichnung konnte nicht gestartet werden (%@).",
+    "fr": "Impossible de démarrer l’enregistrement (%@).",
+    "zh-Hans": "无法开始录制（%@）。"
+  },
+  "Couldn't create the video file.": {
+    "de": "Die Videodatei konnte nicht erstellt werden.",
+    "fr": "Impossible de créer le fichier vidéo.",
+    "zh-Hans": "无法创建视频文件。"
+  },
+  "Countdown": {
+    "de": "Countdown",
+    "fr": "Compte à rebours",
+    "zh-Hans": "倒计时"
+  },
+  "Cursor": {
+    "de": "Zeiger",
+    "fr": "Pointeur",
+    "zh-Hans": "指针"
+  },
+  "Decoded details": {
+    "de": "Decodierte Details",
+    "fr": "Détails décodés",
+    "zh-Hans": "解码详情"
+  },
+  "Discard": {
+    "comment": "Confirms throwing away the recording",
+    "de": "Verwerfen",
+    "fr": "Supprimer",
+    "zh-Hans": "丢弃"
+  },
+  "Discard recording": {
+    "de": "Aufnahme verwerfen",
+    "fr": "Supprimer l’enregistrement",
+    "zh-Hans": "丢弃录制内容"
+  },
+  "Discard this recording?": {
+    "comment": "Inline question in the small recording HUD; keep it short",
+    "de": "Aufnahme verwerfen?",
+    "fr": "Supprimer cette vidéo ?",
+    "zh-Hans": "要丢弃此录制内容吗？"
+  },
+  "Disk almost full": {
+    "comment": "Short note in the recording HUD",
+    "de": "Speicher fast voll",
+    "fr": "Disque bientôt plein",
+    "zh-Hans": "磁盘将满"
+  },
+  "Display": {
+    "comment": "What a fullscreen recording records, in the recording bar",
+    "de": "Bildschirm",
+    "fr": "Écran",
+    "zh-Hans": "显示器"
+  },
+  "Display %lld": {
+    "de": "Bildschirm %lld",
+    "fr": "Écran %lld",
+    "zh-Hans": "显示器 %lld"
+  },
+  "Display %lld · Main": {
+    "de": "Bildschirm %lld · Hauptbildschirm",
+    "fr": "Écran %lld · principal",
+    "zh-Hans": "显示器 %lld · 主显示器"
+  },
+  "Done": {
+    "de": "Fertig",
+    "fr": "Terminé",
+    "zh-Hans": "完成"
+  },
+  "Double-click to edit, or drag into another app. Command-C copies, Command-S saves, Escape dismisses.": {
+    "de": "Zum Bearbeiten doppelklicken oder in eine andere App ziehen. Befehl-C kopiert, Befehl-S sichert, Escape schließt.",
+    "fr": "Double-cliquez pour modifier, ou faites glisser vers une autre app. Commande + C copie, Commande + S enregistre, Échap ferme.",
+    "zh-Hans": "连按两次以编辑，或拖移到其他 App。Command-C 拷贝，Command-S 存储，Esc 键关闭。"
+  },
+  "Drag edges or corners to resize  ·  Arrow keys nudge (⇧ ×10)  ·  Return captures  ·  Esc cancels": {
+    "comment": "Hint bar while a selection can still be adjusted",
+    "de": "Größe an Kanten oder Ecken ändern  ·  Pfeiltasten verschieben (⇧ ×10)  ·  Return nimmt auf  ·  Esc bricht ab",
+    "fr": "Redimensionnez par les bords ou les coins  ·  Flèches pour déplacer (⇧ ×10)  ·  Retour pour capturer  ·  Échap pour annuler",
+    "zh-Hans": "拖移边缘或角落以调整大小  ·  方向键微调位置（⇧ ×10）  ·  按 Return 键捕捉  ·  按 Esc 键取消"
+  },
+  "Drag to capture  ·  Hold ⇧ as you let go to adjust first  ·  Space moves  ·  Esc cancels": {
+    "comment": "Hint bar before dragging, when a release captures right away",
+    "de": "Ziehen zum Aufnehmen  ·  Beim Loslassen ⇧ halten, um erst anzupassen  ·  Leertaste verschiebt  ·  Esc bricht ab",
+    "fr": "Faites glisser pour capturer  ·  Maintenez ⇧ en relâchant pour ajuster d’abord  ·  Espace pour déplacer  ·  Échap pour annuler",
+    "zh-Hans": "拖移以捕捉  ·  松开时按住 ⇧ 可先调整  ·  空格键移动选区  ·  按 Esc 键取消"
+  },
+  "Drag to move. Press Command-C to copy, Escape to close.": {
+    "de": "Ziehen zum Bewegen. Drücke Befehl-C zum Kopieren und Escape zum Schließen.",
+    "fr": "Faites glisser pour déplacer. Appuyez sur Commande + C pour copier, sur Échap pour fermer.",
+    "zh-Hans": "拖移以移动。按下 Command-C 拷贝，按下 Esc 键关闭。"
+  },
+  "Drag to select, then adjust  ·  Hold ⇧ as you let go to capture right away  ·  Esc cancels": {
+    "comment": "Hint bar before dragging, when a release keeps the selection adjustable",
+    "de": "Ziehen zum Auswählen, dann anpassen  ·  Beim Loslassen ⇧ halten, um sofort aufzunehmen  ·  Esc bricht ab",
+    "fr": "Faites glisser pour sélectionner, puis ajustez  ·  Maintenez ⇧ en relâchant pour capturer aussitôt  ·  Échap pour annuler",
+    "zh-Hans": "拖移以选择，然后调整  ·  松开时按住 ⇧ 可立即捕捉  ·  按 Esc 键取消"
+  },
+  "Editable Cursor": {
+    "de": "Bearbeitbarer Zeiger",
+    "fr": "Pointeur modifiable",
+    "zh-Hans": "可编辑指针"
+  },
+  "Email": {
+    "comment": "A field of a QR code, and the button that writes to an address found in text",
+    "de": "E-Mail",
+    "fr": "E-mail",
+    "zh-Hans": "电子邮件"
+  },
+  "Email %@": {
+    "comment": "VoiceOver: the email address",
+    "de": "E-Mail an %@",
+    "fr": "Écrire à %@",
+    "zh-Hans": "给 %@ 发邮件"
+  },
+  "Email QR found": {
+    "de": "QR-Code mit E-Mail gefunden",
+    "fr": "Code QR avec e-mail détecté",
+    "zh-Hans": "找到电子邮件二维码"
+  },
+  "Email address copied": {
+    "de": "E-Mail-Adresse kopiert",
+    "fr": "Adresse e-mail copiée",
+    "zh-Hans": "已拷贝电子邮件地址"
+  },
+  "Esc or Done finishes": {
+    "de": "Esc oder „Fertig“ zum Beenden",
+    "fr": "Échap ou « Terminé » pour finir",
+    "zh-Hans": "按 Esc 键或点按“完成”结束"
+  },
+  "Estimated file size. Still screens take less.": {
+    "de": "Geschätzte Dateigröße. Ruhige Bildschirminhalte brauchen weniger.",
+    "fr": "Taille de fichier estimée. Un écran immobile prend moins de place.",
+    "zh-Hans": "预估的文件大小。静止画面占用更少。"
+  },
+  "Estimated size %@": {
+    "de": "Geschätzte Größe: %@",
+    "fr": "Taille estimée : %@",
+    "zh-Hans": "预估大小：%@"
+  },
+  "Finish or cancel the current recording setup": {
+    "de": "Schließe die Einrichtung der aktuellen Aufzeichnung ab oder brich sie ab",
+    "fr": "Terminez ou annulez d’abord la configuration de l’enregistrement en cours",
+    "zh-Hans": "请先完成或取消当前的录制设置"
+  },
+  "Frame rate": {
+    "de": "Bildrate",
+    "fr": "Fréquence d’images",
+    "zh-Hans": "帧速率"
+  },
+  "Hidden": {
+    "comment": "Whether a Wi-Fi network is hidden",
+    "de": "Verborgen",
+    "fr": "Masqué",
+    "zh-Hans": "隐藏"
+  },
+  "High": {
+    "comment": "Recording quality",
+    "de": "Hoch",
+    "fr": "Élevée",
+    "zh-Hans": "高"
+  },
+  "Keep": {
+    "comment": "Keeps the recording going instead of discarding it",
+    "de": "Behalten",
+    "fr": "Garder",
+    "zh-Hans": "保留"
+  },
+  "Keyboard shortcuts are on": {
+    "de": "Tastaturkurzbefehle sind aktiviert",
+    "fr": "Les raccourcis clavier sont activés",
+    "zh-Hans": "快捷键已开启"
+  },
+  "Link": {
+    "comment": "What a QR code holds",
+    "de": "Link",
+    "fr": "Lien",
+    "zh-Hans": "链接"
+  },
+  "Link QR found": {
+    "de": "QR-Code mit Link gefunden",
+    "fr": "Code QR avec lien détecté",
+    "zh-Hans": "找到链接二维码"
+  },
+  "Link copied": {
+    "de": "Link kopiert",
+    "fr": "Lien copié",
+    "zh-Hans": "已拷贝链接"
+  },
+  "Links": {
+    "de": "Links",
+    "fr": "Liens",
+    "zh-Hans": "链接"
+  },
+  "Links (%lld of %lld)": {
+    "comment": "Links shown, then all links found",
+    "de": "Links (%lld von %lld)",
+    "fr": "Liens (%lld sur %lld)",
+    "zh-Hans": "链接（%2$lld 个中的 %1$lld 个）"
+  },
+  "Max": {
+    "comment": "Recording quality",
+    "de": "Maximal",
+    "fr": "Maximale",
+    "zh-Hans": "最高"
+  },
+  "Maximum length reached": {
+    "de": "Maximale Länge erreicht",
+    "fr": "Longueur maximale atteinte",
+    "zh-Hans": "已达到最大长度"
+  },
+  "Message": {
+    "comment": "What a QR code holds, and a message's text",
+    "de": "Nachricht",
+    "fr": "Message",
+    "zh-Hans": "信息"
+  },
+  "Message QR found": {
+    "de": "QR-Code mit Nachricht gefunden",
+    "fr": "Code QR avec message détecté",
+    "zh-Hans": "找到信息二维码"
+  },
+  "Mic disconnected": {
+    "comment": "Short note in the recording HUD",
+    "de": "Mikro getrennt",
+    "fr": "Micro déconnecté",
+    "zh-Hans": "麦克风已断开"
+  },
+  "Mic stopped": {
+    "comment": "Short note in the recording HUD",
+    "de": "Mikro gestoppt",
+    "fr": "Micro arrêté",
+    "zh-Hans": "麦克风已停止"
+  },
+  "Mic switched": {
+    "comment": "Short note in the recording HUD",
+    "de": "Mikro gewechselt",
+    "fr": "Micro changé",
+    "zh-Hans": "已切换麦克风"
+  },
+  "Microphone": {
+    "de": "Mikrofon",
+    "fr": "Micro",
+    "zh-Hans": "麦克风"
+  },
+  "Microphone access is off, so this recording has no mic.": {
+    "de": "Der Mikrofonzugriff ist deaktiviert, daher hat diese Aufnahme keinen Mikrofonton.",
+    "fr": "L’accès au micro est désactivé : cet enregistrement n’aura pas de son du micro.",
+    "zh-Hans": "麦克风访问权限已关闭，因此此录制内容没有麦克风声音。"
+  },
+  "Microphone access is off. Allow Shotnix in System Settings → Privacy & Security → Microphone.": {
+    "de": "Der Mikrofonzugriff ist deaktiviert. Erlaube Shotnix in Systemeinstellungen → Datenschutz & Sicherheit → Mikrofon.",
+    "fr": "L’accès au micro est désactivé. Autorisez Shotnix dans Réglages Système → Confidentialité et sécurité → Micro.",
+    "zh-Hans": "麦克风访问权限已关闭。请在“系统设置”→“隐私与安全性”→“麦克风”中允许 Shotnix。"
+  },
+  "Microphone disconnected. Now recording from %@.": {
+    "comment": "The microphone now used",
+    "de": "Mikrofon getrennt. Die Aufzeichnung läuft jetzt über „%@“.",
+    "fr": "Micro déconnecté. L’enregistrement utilise maintenant « %@ ».",
+    "zh-Hans": "麦克风已断开连接。现在使用“%@”录音。"
+  },
+  "Microphone disconnected. The recording continues without it.": {
+    "de": "Mikrofon getrennt. Die Aufzeichnung läuft ohne Mikrofon weiter.",
+    "fr": "Micro déconnecté. L’enregistrement continue sans lui.",
+    "zh-Hans": "麦克风已断开连接。录制将在没有麦克风的情况下继续。"
+  },
+  "Microphone level": {
+    "de": "Mikrofonpegel",
+    "fr": "Niveau du micro",
+    "zh-Hans": "麦克风电平"
+  },
+  "More recording options": {
+    "de": "Weitere Aufzeichnungsoptionen",
+    "fr": "Autres options d’enregistrement",
+    "zh-Hans": "更多录制选项"
+  },
+  "Network": {
+    "de": "Netzwerk",
+    "fr": "Réseau",
+    "zh-Hans": "网络"
+  },
+  "No barcode found in this selection": {
+    "de": "In dieser Auswahl wurde kein Strichcode gefunden",
+    "fr": "Aucun code-barres dans cette sélection",
+    "zh-Hans": "此选区中未找到条形码"
+  },
+  "No camera connected": {
+    "de": "Keine Kamera angeschlossen",
+    "fr": "Aucune caméra connectée",
+    "zh-Hans": "未连接摄像头"
+  },
+  "No camera found.": {
+    "de": "Keine Kamera gefunden.",
+    "fr": "Aucune caméra détectée.",
+    "zh-Hans": "未找到摄像头。"
+  },
+  "No microphone connected": {
+    "de": "Kein Mikrofon angeschlossen",
+    "fr": "Aucun micro connecté",
+    "zh-Hans": "未连接麦克风"
+  },
+  "No microphone is connected, so this recording has no mic.": {
+    "de": "Es ist kein Mikrofon angeschlossen, daher hat diese Aufnahme keinen Mikrofonton.",
+    "fr": "Aucun micro n’est connecté : cet enregistrement n’aura pas de son du micro.",
+    "zh-Hans": "未连接麦克风，因此此录制内容没有麦克风声音。"
+  },
+  "No recordable windows found": {
+    "de": "Keine aufzeichenbaren Fenster gefunden",
+    "fr": "Aucune fenêtre à enregistrer",
+    "zh-Hans": "未找到可录制的窗口"
+  },
+  "No recording in progress": {
+    "de": "Es läuft keine Aufzeichnung",
+    "fr": "Aucun enregistrement en cours",
+    "zh-Hans": "当前没有进行中的录制"
+  },
+  "No sound from the microphone": {
+    "de": "Kein Ton vom Mikrofon",
+    "fr": "Aucun son du micro",
+    "zh-Hans": "麦克风没有声音"
+  },
+  "No text found in this selection": {
+    "de": "In dieser Auswahl wurde kein Text gefunden",
+    "fr": "Aucun texte dans cette sélection",
+    "zh-Hans": "此选区中未找到文字"
+  },
+  "Not enough disk space to record.": {
+    "de": "Nicht genug Speicherplatz für die Aufzeichnung.",
+    "fr": "Espace disque insuffisant pour enregistrer.",
+    "zh-Hans": "磁盘空间不足，无法录制。"
+  },
+  "Not enough free disk space for this recording: it needs about %@ free, and %@ is available. Free up some space and try again.": {
+    "comment": "Space needed, then space available",
+    "de": "Nicht genug Speicherplatz für diese Aufzeichnung: Benötigt werden etwa %@, frei sind %@. Gib etwas Speicherplatz frei und versuche es erneut.",
+    "fr": "Espace disque insuffisant pour cet enregistrement : il faut environ %@ d’espace libre, et il reste %@. Libérez de l’espace et réessayez.",
+    "zh-Hans": "磁盘空间不足，无法进行此录制：大约需要 %@ 可用空间，当前可用 %@。请释放一些空间后重试。"
+  },
+  "Not enough free disk space for this recording: it needs about %@ free, and %@ is available. Free up space, or choose Balanced quality or 30 fps.": {
+    "comment": "Space needed, then space available",
+    "de": "Nicht genug Speicherplatz für diese Aufzeichnung: Benötigt werden etwa %@, frei sind %@. Gib Speicherplatz frei oder wähle die Qualität „Ausgewogen“ oder 30 fps.",
+    "fr": "Espace disque insuffisant pour cet enregistrement : il faut environ %@ d’espace libre, et il reste %@. Libérez de l’espace, ou choisissez la qualité Équilibrée ou 30 fps.",
+    "zh-Hans": "磁盘空间不足，无法进行此录制：大约需要 %@ 可用空间，当前可用 %@。请释放空间，或选择“均衡”质量或 30 fps。"
+  },
+  "Nothing was recorded — the screen didn't send any picture. Try again.": {
+    "de": "Es wurde nichts aufgezeichnet – der Bildschirm hat kein Bild geliefert. Versuche es erneut.",
+    "fr": "Rien n’a été enregistré — l’écran n’a envoyé aucune image. Réessayez.",
+    "zh-Hans": "未录制任何内容 — 屏幕没有传送画面。请重试。"
+  },
+  "Off": {
+    "comment": "No countdown",
+    "de": "Aus",
+    "fr": "Désactivé",
+    "zh-Hans": "关闭"
+  },
+  "Open": {
+    "comment": "Opens a link found in text",
+    "de": "Öffnen",
+    "fr": "Ouvrir",
+    "zh-Hans": "打开"
+  },
+  "Open %@": {
+    "comment": "VoiceOver: the link",
+    "de": "%@ öffnen",
+    "fr": "Ouvrir %@",
+    "zh-Hans": "打开 %@"
+  },
+  "Open Editor After Recording": {
+    "de": "Editor nach der Aufzeichnung öffnen",
+    "fr": "Ouvrir l’éditeur après l’enregistrement",
+    "zh-Hans": "录制后打开编辑器"
+  },
+  "Open Link": {
+    "de": "Link öffnen",
+    "fr": "Ouvrir le lien",
+    "zh-Hans": "打开链接"
+  },
+  "Open Messages": {
+    "comment": "Opens the Messages app",
+    "de": "Nachrichten öffnen",
+    "fr": "Ouvrir Messages",
+    "zh-Hans": "打开“信息”"
+  },
+  "Password": {
+    "de": "Passwort",
+    "fr": "Mot de passe",
+    "zh-Hans": "密码"
+  },
+  "Pause recording": {
+    "de": "Aufzeichnung pausieren",
+    "fr": "Suspendre l’enregistrement",
+    "zh-Hans": "暂停录制"
+  },
+  "Pause recording (%@)": {
+    "comment": "Keyboard shortcut",
+    "de": "Aufzeichnung pausieren (%@)",
+    "fr": "Suspendre l’enregistrement (%@)",
+    "zh-Hans": "暂停录制（%@）"
+  },
+  "Paused": {
+    "de": "Pausiert",
+    "fr": "En pause",
+    "zh-Hans": "已暂停"
+  },
+  "Phone": {
+    "de": "Telefon",
+    "fr": "Téléphone",
+    "zh-Hans": "电话"
+  },
+  "Phone QR found": {
+    "de": "QR-Code mit Telefonnummer gefunden",
+    "fr": "Code QR avec téléphone détecté",
+    "zh-Hans": "找到电话二维码"
+  },
+  "Pin": {
+    "comment": "Pins the screenshot to the screen",
+    "de": "Anheften",
+    "fr": "Épingler",
+    "zh-Hans": "贴到屏幕"
+  },
+  "Pinned Screenshot": {
+    "comment": "Context menu section of a pinned screenshot",
+    "de": "Angeheftetes Bildschirmfoto",
+    "fr": "Capture épinglée",
+    "zh-Hans": "贴图"
+  },
+  "Pinned screenshot": {
+    "comment": "VoiceOver: a screenshot pinned to the screen",
+    "de": "Angeheftetes Bildschirmfoto",
+    "fr": "Capture épinglée",
+    "zh-Hans": "贴图"
+  },
+  "Preview the target, then continue to recording controls.": {
+    "de": "Vorschau prüfen, dann weiter zur Aufzeichnung.",
+    "fr": "Vérifiez l’aperçu, puis passez à l’enregistrement.",
+    "zh-Hans": "预览目标，然后继续设置录制。"
+  },
+  "QR Code": {
+    "de": "QR-Code",
+    "fr": "Code QR",
+    "zh-Hans": "二维码"
+  },
+  "QR Codes": {
+    "comment": "Window title for several QR codes",
+    "de": "QR-Codes",
+    "fr": "Codes QR",
+    "zh-Hans": "二维码"
+  },
+  "QR copied to clipboard": {
+    "de": "QR-Code in die Zwischenablage kopiert",
+    "fr": "Code QR copié dans le presse-papiers",
+    "zh-Hans": "已将二维码内容拷贝到剪贴板"
+  },
+  "Quality": {
+    "de": "Qualität",
+    "fr": "Qualité",
+    "zh-Hans": "质量"
+  },
+  "Recognized Text": {
+    "comment": "Window title",
+    "de": "Erkannter Text",
+    "fr": "Texte reconnu",
+    "zh-Hans": "识别出的文字"
+  },
+  "Recognized text": {
+    "comment": "VoiceOver: the text view",
+    "de": "Erkannter Text",
+    "fr": "Texte reconnu",
+    "zh-Hans": "识别出的文字"
+  },
+  "Record": {
+    "comment": "Starts a screen recording (verb)",
+    "de": "Aufzeichnen",
+    "fr": "Enregistrer",
+    "zh-Hans": "录制"
+  },
+  "Record (Return)": {
+    "de": "Aufzeichnen (Return)",
+    "fr": "Enregistrer (Retour)",
+    "zh-Hans": "录制（Return 键）"
+  },
+  "Recording": {
+    "comment": "The recording HUD's status, before its details load",
+    "de": "Aufzeichnung",
+    "fr": "Enregistrement",
+    "zh-Hans": "录制"
+  },
+  "Recording already in progress": {
+    "de": "Es läuft bereits eine Aufzeichnung",
+    "fr": "Un enregistrement est déjà en cours",
+    "zh-Hans": "已在录制中"
+  },
+  "Recording canceled": {
+    "de": "Aufzeichnung abgebrochen",
+    "fr": "Enregistrement annulé",
+    "zh-Hans": "已取消录制"
+  },
+  "Recording controls": {
+    "de": "Aufzeichnungssteuerung",
+    "fr": "Commandes d’enregistrement",
+    "zh-Hans": "录制控制"
+  },
+  "Recording discarded": {
+    "de": "Aufnahme verworfen",
+    "fr": "Enregistrement supprimé",
+    "zh-Hans": "已丢弃录制内容"
+  },
+  "Recording failed before saving.": {
+    "de": "Die Aufzeichnung ist vor dem Sichern fehlgeschlagen.",
+    "fr": "L’enregistrement a échoué avant d’être sauvegardé.",
+    "zh-Hans": "录制在存储前失败。"
+  },
+  "Recording keyboard shortcuts": {
+    "de": "Tastaturkurzbefehle werden aufgezeichnet",
+    "fr": "Enregistrement des raccourcis clavier",
+    "zh-Hans": "正在录制快捷键"
+  },
+  "Recording stopped early — saved what was captured.": {
+    "de": "Die Aufzeichnung wurde vorzeitig beendet – das bisher Aufgezeichnete ist gesichert.",
+    "fr": "L’enregistrement s’est arrêté plus tôt — ce qui a été capturé est sauvegardé.",
+    "zh-Hans": "录制提前停止 — 已存储录到的内容。"
+  },
+  "Recording the camera": {
+    "de": "Kamera wird aufgezeichnet",
+    "fr": "Enregistrement de la caméra",
+    "zh-Hans": "正在录制摄像头"
+  },
+  "Recording time": {
+    "de": "Aufzeichnungsdauer",
+    "fr": "Durée d’enregistrement",
+    "zh-Hans": "录制时长"
+  },
+  "Recording without the camera.": {
+    "comment": "Follows the reason the camera couldn't start",
+    "de": "Aufzeichnung ohne Kamera.",
+    "fr": "Enregistrement sans la caméra.",
+    "zh-Hans": "将在没有摄像头的情况下录制。"
+  },
+  "Records %@ × %@ pixels (%@ × %@ points)": {
+    "de": "Zeichnet %@ × %@ Pixel auf (%@ × %@ Punkte)",
+    "fr": "Enregistre %@ × %@ pixels (%@ × %@ points)",
+    "zh-Hans": "录制 %@ × %@ 像素（%@ × %@ 点）"
+  },
+  "Records the pointer separately, so the editor can smooth it, resize it, and keep it crisp when zoomed.": {
+    "de": "Zeichnet den Zeiger separat auf, damit der Editor ihn glätten, skalieren und beim Zoomen scharf halten kann.",
+    "fr": "Enregistre le pointeur séparément, pour que l’éditeur puisse le lisser, le redimensionner et le garder net en cas de zoom.",
+    "zh-Hans": "单独录制指针，以便编辑器平滑指针、调整其大小，并在缩放时保持清晰。"
+  },
+  "Resize": {
+    "de": "Größe ändern",
+    "fr": "Redimensionner",
+    "zh-Hans": "调整大小"
+  },
+  "Resume recording": {
+    "de": "Aufzeichnung fortsetzen",
+    "fr": "Reprendre l’enregistrement",
+    "zh-Hans": "继续录制"
+  },
+  "Resume recording (%@)": {
+    "comment": "Keyboard shortcut",
+    "de": "Aufzeichnung fortsetzen (%@)",
+    "fr": "Reprendre l’enregistrement (%@)",
+    "zh-Hans": "继续录制（%@）"
+  },
+  "Review the decoded email payload before copying.": {
+    "de": "Prüfe die decodierten E-Mail-Daten vor dem Kopieren.",
+    "fr": "Vérifiez les données d’e-mail décodées avant de les copier.",
+    "zh-Hans": "拷贝前请检查解码出的电子邮件内容。"
+  },
+  "Review the decoded link before opening.": {
+    "de": "Prüfe den decodierten Link vor dem Öffnen.",
+    "fr": "Vérifiez le lien décodé avant de l’ouvrir.",
+    "zh-Hans": "打开前请检查解码出的链接。"
+  },
+  "Review the decoded link before opening: %@": {
+    "comment": "The link's host",
+    "de": "Prüfe den decodierten Link vor dem Öffnen: %@",
+    "fr": "Vérifiez le lien décodé avant de l’ouvrir : %@",
+    "zh-Hans": "打开前请检查解码出的链接：%@"
+  },
+  "Review the decoded text before copying.": {
+    "de": "Prüfe den decodierten Text vor dem Kopieren.",
+    "fr": "Vérifiez le texte décodé avant de le copier.",
+    "zh-Hans": "拷贝前请检查解码出的文字。"
+  },
+  "Review the decoded values before copying or opening.": {
+    "de": "Prüfe die decodierten Werte vor dem Kopieren oder Öffnen.",
+    "fr": "Vérifiez les valeurs décodées avant de les copier ou de les ouvrir.",
+    "zh-Hans": "拷贝或打开前，请检查解码后的值。"
+  },
+  "Review the email details before composing.": {
+    "de": "Prüfe die E-Mail-Details vor dem Verfassen.",
+    "fr": "Vérifiez les détails de l’e-mail avant de le rédiger.",
+    "zh-Hans": "撰写前请检查电子邮件详情。"
+  },
+  "Review the message details before opening.": {
+    "de": "Prüfe die Nachrichtendetails vor dem Öffnen.",
+    "fr": "Vérifiez les détails du message avant de l’ouvrir.",
+    "zh-Hans": "打开前请检查信息详情。"
+  },
+  "Review the network details before copying.": {
+    "de": "Prüfe die Netzwerkdetails vor dem Kopieren.",
+    "fr": "Vérifiez les détails du réseau avant de les copier.",
+    "zh-Hans": "拷贝前请检查网络详情。"
+  },
+  "Review the phone number before opening.": {
+    "de": "Prüfe die Telefonnummer vor dem Öffnen.",
+    "fr": "Vérifiez le numéro de téléphone avant de l’ouvrir.",
+    "zh-Hans": "打开前请检查电话号码。"
+  },
+  "Save": {
+    "de": "Sichern",
+    "fr": "Enregistrer",
+    "zh-Hans": "存储"
+  },
+  "Save screenshot to disk": {
+    "de": "Bildschirmfoto als Datei sichern",
+    "fr": "Enregistrer la capture d’écran sur le disque",
+    "zh-Hans": "将截屏存储到磁盘"
+  },
+  "Saved %@ to %@ — click to reveal in Finder": {
+    "comment": "The file name, then its folder",
+    "de": "„%1$@“ in „%2$@“ gesichert – zum Anzeigen im Finder klicken",
+    "fr": "%1$@ enregistré dans %2$@ — cliquez pour l’afficher dans le Finder",
+    "zh-Hans": "已将“%1$@”存储到“%2$@” — 点按以在“访达”中显示"
+  },
+  "Saved to %@: %@": {
+    "comment": "The folder, then the file name",
+    "de": "Gesichert in „%@“: %@",
+    "fr": "Enregistré dans « %@ » : %@",
+    "zh-Hans": "已存储到“%@”：%@"
+  },
+  "Saving the last recording…": {
+    "de": "Letzte Aufnahme wird gesichert …",
+    "fr": "Finalisation du dernier enregistrement…",
+    "zh-Hans": "正在存储上一段录制内容…"
+  },
+  "Saving the recording…": {
+    "de": "Aufnahme wird gesichert …",
+    "fr": "Finalisation de l’enregistrement…",
+    "zh-Hans": "正在存储录制内容…"
+  },
+  "Saving the screen recording": {
+    "comment": "Shown while quitting waits for a recording to be saved",
+    "de": "Bildschirmaufnahme wird gesichert",
+    "fr": "Finalisation de l’enregistrement de l’écran",
+    "zh-Hans": "正在存储屏幕录制内容"
+  },
+  "Saving…": {
+    "comment": "Recording HUD and menu bar after Stop, while the file is written",
+    "de": "Wird gesichert …",
+    "fr": "Finalisation…",
+    "zh-Hans": "正在存储…"
+  },
+  "Screen recording didn't start in time. Try again.": {
+    "de": "Die Bildschirmaufnahme hat nicht rechtzeitig begonnen. Versuche es erneut.",
+    "fr": "L’enregistrement de l’écran n’a pas démarré à temps. Réessayez.",
+    "zh-Hans": "屏幕录制未能及时开始。请重试。"
+  },
+  "Screenshot captured": {
+    "comment": "VoiceOver announcement",
+    "de": "Bildschirmfoto aufgenommen",
+    "fr": "Capture d’écran effectuée",
+    "zh-Hans": "已截屏"
+  },
+  "Screenshot selection": {
+    "comment": "VoiceOver: the overlay while dragging out an area",
+    "de": "Auswahl für Bildschirmfoto",
+    "fr": "Sélection pour la capture d’écran",
+    "zh-Hans": "截屏选区"
+  },
+  "Screenshot thumbnail": {
+    "de": "Miniatur des Bildschirmfotos",
+    "fr": "Vignette de la capture d’écran",
+    "zh-Hans": "截屏缩略图"
+  },
+  "Scroll down to capture": {
+    "de": "Nach unten scrollen zum Aufnehmen",
+    "fr": "Faites défiler vers le bas pour capturer",
+    "zh-Hans": "向下滚动以捕捉"
+  },
+  "Scroll down to capture more": {
+    "de": "Weiter nach unten scrollen",
+    "fr": "Continuez à défiler vers le bas",
+    "zh-Hans": "向下滚动以捕捉更多"
+  },
+  "Scrolled too fast — scroll back up a little": {
+    "comment": "Scrolling capture HUD; keep it short",
+    "de": "Zu schnell – scrolle ein Stück zurück",
+    "fr": "Trop rapide — remontez un peu",
+    "zh-Hans": "滚动太快 — 请往回滚动一点"
+  },
+  "Scrolling capture controls": {
+    "de": "Steuerung für Scroll-Aufnahme",
+    "fr": "Commandes de la capture défilante",
+    "zh-Hans": "滚动截屏控制"
+  },
+  "Scrolling capture failed": {
+    "de": "Scroll-Aufnahme fehlgeschlagen",
+    "fr": "Échec de la capture défilante",
+    "zh-Hans": "滚动截屏失败"
+  },
+  "Scrolling capture reached its maximum length (%lld points) and finished.": {
+    "de": {
+      "one": "Die Scroll-Aufnahme hat ihre maximale Länge (%lld Punkt) erreicht und ist beendet.",
+      "other": "Die Scroll-Aufnahme hat ihre maximale Länge (%lld Punkte) erreicht und ist beendet."
+    },
+    "en": {
+      "one": "Scrolling capture reached its maximum length (%lld point) and finished.",
+      "other": "Scrolling capture reached its maximum length (%lld points) and finished."
+    },
+    "fr": {
+      "one": "La capture défilante a atteint sa longueur maximale (%lld point) et s’est terminée.",
+      "other": "La capture défilante a atteint sa longueur maximale (%lld points) et s’est terminée."
+    },
+    "zh-Hans": "滚动截屏已达到最大长度（%lld 点），已完成。"
+  },
+  "Scrolling capture stopped after %lld minutes.": {
+    "de": {
+      "one": "Die Scroll-Aufnahme wurde nach %lld Minute beendet.",
+      "other": "Die Scroll-Aufnahme wurde nach %lld Minuten beendet."
+    },
+    "en": {
+      "one": "Scrolling capture stopped after %lld minute.",
+      "other": "Scrolling capture stopped after %lld minutes."
+    },
+    "fr": {
+      "one": "La capture défilante s’est arrêtée après %lld minute.",
+      "other": "La capture défilante s’est arrêtée après %lld minutes."
+    },
+    "zh-Hans": "滚动截屏已在 %lld 分钟后停止。"
+  },
+  "Security": {
+    "de": "Sicherheit",
+    "fr": "Sécurité",
+    "zh-Hans": "安全性"
+  },
+  "Choose": {
+    "comment": "Label on a window in the window chooser: picks it for the recording",
+    "de": "Auswählen",
+    "fr": "Choisir",
+    "zh-Hans": "选择"
+  },
+  "Select a window to record without blocking other apps": {
+    "de": "Wähle ein Fenster zum Aufzeichnen, ohne andere Apps zu blockieren",
+    "fr": "Choisissez une fenêtre à enregistrer sans bloquer les autres apps",
+    "zh-Hans": "选择要录制的窗口，不影响其他 App 的使用"
+  },
+  "Select which display to record fullscreen": {
+    "de": "Wähle den Bildschirm für die Vollbildaufzeichnung",
+    "fr": "Choisissez l’écran à enregistrer en plein écran",
+    "zh-Hans": "选择要全屏录制的显示器"
+  },
+  "Selection %@ by %@ points": {
+    "comment": "VoiceOver: the selection's width and height",
+    "de": "Auswahl: %@ mal %@ Punkte",
+    "fr": "Sélection de %@ sur %@ points",
+    "zh-Hans": "选区宽 %@ 点、高 %@ 点"
+  },
+  "Selection %@ by %@ points. Arrow keys move it, Return captures, Escape cancels.": {
+    "comment": "VoiceOver announcement when a selection becomes adjustable",
+    "de": "Auswahl: %@ mal %@ Punkte. Pfeiltasten verschieben sie, Return nimmt auf, Escape bricht ab.",
+    "fr": "Sélection de %@ sur %@ points. Les flèches la déplacent, Retour capture, Échap annule.",
+    "zh-Hans": "选区宽 %@ 点、高 %@ 点。方向键可移动选区，按 Return 键捕捉，按 Esc 键取消。"
+  },
+  "Shotnix can't write to the save folder. Choose another one in Settings → Screenshots.": {
+    "comment": "Names Shotnix's Settings pane where the save folder is chosen",
+    "de": "Shotnix kann nicht in den Speicherordner schreiben. Wähle einen anderen in Einstellungen → Bildschirmfotos.",
+    "fr": "Shotnix ne peut pas écrire dans le dossier d’enregistrement. Choisissez-en un autre dans Réglages → Captures.",
+    "zh-Hans": "Shotnix 无法写入存储文件夹。请在“设置”→“截屏”中选择其他文件夹。"
+  },
+  "Shotnix isn't allowed to record the screen. Turn it on in System Settings → Privacy & Security → Screen & System Audio Recording.": {
+    "comment": "Names the System Settings pane as macOS 15 and later call it",
+    "de": "Shotnix darf den Bildschirm nicht aufzeichnen. Aktiviere es in Systemeinstellungen → Datenschutz & Sicherheit → Bildschirm- & Systemaudioaufnahme.",
+    "fr": "Shotnix n’est pas autorisé à enregistrer l’écran. Activez-le dans Réglages Système → Confidentialité et sécurité → Enregistrement de l’écran et de l’audio du système.",
+    "zh-Hans": "Shotnix 无权录制屏幕。请在“系统设置”→“隐私与安全性”→“录屏与系统录音”中开启。"
+  },
+  "Show keyboard shortcuts": {
+    "comment": "Recording bar toggle: shows the shortcuts pressed while recording as keycaps",
+    "de": "Tastaturkurzbefehle anzeigen",
+    "fr": "Afficher les raccourcis clavier",
+    "zh-Hans": "显示快捷键"
+  },
+  "Skipping frames": {
+    "comment": "Short note in the recording HUD",
+    "de": "Bilder fallen aus",
+    "fr": "Images perdues",
+    "zh-Hans": "正在丢帧"
+  },
+  "Still saving the last recording — try again in a moment.": {
+    "de": "Die letzte Aufnahme wird noch gesichert – versuche es gleich noch einmal.",
+    "fr": "Le dernier enregistrement est encore en cours de finalisation — réessayez dans un instant.",
+    "zh-Hans": "仍在存储上一段录制内容 — 请稍后再试。"
+  },
+  "Still saving the recording…": {
+    "de": "Aufnahme wird noch gesichert …",
+    "fr": "Finalisation de l’enregistrement en cours…",
+    "zh-Hans": "仍在存储录制内容…"
+  },
+  "Stitching…": {
+    "comment": "Scrolling capture: joining the frames into one image",
+    "de": "Wird zusammengefügt …",
+    "fr": "Assemblage…",
+    "zh-Hans": "正在拼接…"
+  },
+  "Stop recording": {
+    "de": "Aufzeichnung stoppen",
+    "fr": "Arrêter l’enregistrement",
+    "zh-Hans": "停止录制"
+  },
+  "Stop recording (%@)": {
+    "comment": "Keyboard shortcut",
+    "de": "Aufzeichnung stoppen (%@)",
+    "fr": "Arrêter l’enregistrement (%@)",
+    "zh-Hans": "停止录制（%@）"
+  },
+  "Subject": {
+    "de": "Betreff",
+    "fr": "Objet",
+    "zh-Hans": "主题"
+  },
+  "System Default": {
+    "comment": "The Mac's default microphone or camera",
+    "de": "Systemstandard",
+    "fr": "Par défaut du système",
+    "zh-Hans": "系统默认"
+  },
+  "System audio": {
+    "de": "Systemton",
+    "fr": "Son de l’ordinateur",
+    "zh-Hans": "电脑声音"
+  },
+  "System audio couldn't be recorded. Try again without system audio.": {
+    "de": "Der Systemton konnte nicht aufgezeichnet werden. Versuche es ohne Systemton erneut.",
+    "fr": "Le son de l’ordinateur n’a pas pu être enregistré. Réessayez sans le son de l’ordinateur.",
+    "zh-Hans": "无法录制电脑声音。请关闭电脑声音后重试。"
+  },
+  "Table copied — paste it into a spreadsheet": {
+    "de": "Tabelle kopiert – setze sie in eine Tabellenkalkulation ein",
+    "fr": "Tableau copié — collez-le dans un tableur",
+    "zh-Hans": "已拷贝表格 — 可粘贴到电子表格中"
+  },
+  "Text QR found": {
+    "de": "QR-Code mit Text gefunden",
+    "fr": "Code QR avec texte détecté",
+    "zh-Hans": "找到文字二维码"
+  },
+  "Text copied": {
+    "de": "Text kopiert",
+    "fr": "Texte copié",
+    "zh-Hans": "已拷贝文字"
+  },
+  "Text copied to clipboard": {
+    "de": "Text in die Zwischenablage kopiert",
+    "fr": "Texte copié dans le presse-papiers",
+    "zh-Hans": "已将文字拷贝到剪贴板"
+  },
+  "Text recognition failed": {
+    "de": "Texterkennung fehlgeschlagen",
+    "fr": "Échec de la reconnaissance de texte",
+    "zh-Hans": "文字识别失败"
+  },
+  "That display isn't available anymore.": {
+    "de": "Dieser Bildschirm ist nicht mehr verfügbar.",
+    "fr": "Cet écran n’est plus disponible.",
+    "zh-Hans": "该显示器已不可用。"
+  },
+  "That display or window isn't available anymore.": {
+    "de": "Dieser Bildschirm oder dieses Fenster ist nicht mehr verfügbar.",
+    "fr": "Cet écran ou cette fenêtre n’est plus disponible.",
+    "zh-Hans": "该显示器或窗口已不可用。"
+  },
+  "That window closed before recording could start.": {
+    "de": "Das Fenster wurde geschlossen, bevor die Aufzeichnung beginnen konnte.",
+    "fr": "La fenêtre s’est fermée avant le début de l’enregistrement.",
+    "zh-Hans": "窗口在录制开始前已关闭。"
+  },
+  "The camera couldn't start.": {
+    "de": "Die Kamera konnte nicht gestartet werden.",
+    "fr": "Impossible de démarrer la caméra.",
+    "zh-Hans": "无法启动摄像头。"
+  },
+  "The camera stopped. The recording continues without it.": {
+    "de": "Die Kamera wurde gestoppt. Die Aufzeichnung läuft ohne Kamera weiter.",
+    "fr": "La caméra s’est arrêtée. L’enregistrement continue sans elle.",
+    "zh-Hans": "摄像头已停止。录制将在没有摄像头的情况下继续。"
+  },
+  "The microphone couldn't start, so this recording has no mic.": {
+    "de": "Das Mikrofon konnte nicht gestartet werden, daher hat diese Aufnahme keinen Mikrofonton.",
+    "fr": "Le micro n’a pas pu démarrer : cet enregistrement n’aura pas de son du micro.",
+    "zh-Hans": "麦克风无法启动，因此此录制内容没有麦克风声音。"
+  },
+  "The microphone stopped working. The recording continues without it.": {
+    "de": "Das Mikrofon funktioniert nicht mehr. Die Aufzeichnung läuft ohne Mikrofon weiter.",
+    "fr": "Le micro a cessé de fonctionner. L’enregistrement continue sans lui.",
+    "zh-Hans": "麦克风已停止工作。录制将在没有麦克风的情况下继续。"
+  },
+  "The recording couldn't be finished — saved the first %@.": {
+    "comment": "How much of the recording was kept, like “42 s” or “2:05”",
+    "de": "Die Aufnahme konnte nicht abgeschlossen werden – die ersten %@ sind gesichert.",
+    "fr": "L’enregistrement n’a pas pu être finalisé — le début (%@) a été sauvegardé.",
+    "zh-Hans": "录制无法完成 — 已存储前 %@。"
+  },
+  "The window you're recording closed. Stop when you're ready — the recording keeps going.": {
+    "de": "Das aufgezeichnete Fenster wurde geschlossen. Stoppe, wenn du so weit bist – die Aufzeichnung läuft weiter.",
+    "fr": "La fenêtre enregistrée a été fermée. Arrêtez quand vous voulez — l’enregistrement continue.",
+    "zh-Hans": "正在录制的窗口已关闭。准备好后再停止 — 录制仍在继续。"
+  },
+  "To": {
+    "comment": "Recipient of an email or message",
+    "de": "An",
+    "fr": "À",
+    "zh-Hans": "收件人"
+  },
+  "URL": {
+    "de": "URL",
+    "fr": "URL",
+    "zh-Hans": "网址"
+  },
+  "Warning": {
+    "de": "Warnung",
+    "fr": "Avertissement",
+    "zh-Hans": "警告"
+  },
+  "Wi-Fi": {
+    "de": "WLAN",
+    "fr": "Wi-Fi",
+    "zh-Hans": "无线局域网"
+  },
+  "Wi-Fi QR found": {
+    "de": "QR-Code mit WLAN gefunden",
+    "fr": "Code QR Wi-Fi détecté",
+    "zh-Hans": "找到无线局域网二维码"
+  },
+  "Window capture": {
+    "comment": "VoiceOver: the overlay while picking a window to capture",
+    "de": "Fensteraufnahme",
+    "fr": "Capture de fenêtre",
+    "zh-Hans": "窗口截屏"
+  },
+  "Window closed": {
+    "comment": "Short note in the recording HUD",
+    "de": "Fenster geschlossen",
+    "fr": "Fenêtre fermée",
+    "zh-Hans": "窗口已关闭"
+  },
+  "Your Mac can't keep up with this recording and is skipping frames. Balanced quality or 30 fps will help.": {
+    "de": "Dein Mac kommt bei dieser Aufzeichnung nicht mit und lässt Bilder aus. Die Qualität „Ausgewogen“ oder 30 fps helfen.",
+    "fr": "Votre Mac n’arrive pas à suivre cet enregistrement et saute des images. La qualité Équilibrée ou 30 fps vous aideront.",
+    "zh-Hans": "你的 Mac 跟不上此录制，正在丢帧。选择“均衡”质量或 30 fps 会有帮助。"
+  },
+  "Your disk filled up — saved the first %@.": {
+    "comment": "How much of the recording was kept, like “42 s” or “2:05”",
+    "de": "Dein Speicherplatz ist voll – die ersten %@ sind gesichert.",
+    "fr": "Votre disque est plein — le début (%@) a été sauvegardé.",
+    "zh-Hans": "磁盘已满 — 已存储前 %@。"
+  },
+  "Your disk is almost full, so the recording stopped. It's saved.": {
+    "de": "Dein Speicherplatz ist fast aufgebraucht, daher wurde die Aufzeichnung beendet. Die Aufnahme ist gesichert.",
+    "fr": "Votre disque est presque plein : l’enregistrement s’est arrêté. Il est sauvegardé.",
+    "zh-Hans": "磁盘空间即将用完，录制已停止。录制内容已存储。"
+  },
+  "Your disk is almost full. In about %lld minutes the recording stops and saves itself.": {
+    "de": {
+      "one": "Dein Speicherplatz ist fast aufgebraucht. In etwa %lld Minute wird die Aufzeichnung beendet und gesichert.",
+      "other": "Dein Speicherplatz ist fast aufgebraucht. In etwa %lld Minuten wird die Aufzeichnung beendet und gesichert."
+    },
+    "en": {
+      "one": "Your disk is almost full. In about %lld minute the recording stops and saves itself.",
+      "other": "Your disk is almost full. In about %lld minutes the recording stops and saves itself."
+    },
+    "fr": {
+      "one": "Votre disque est presque plein. Dans environ %lld minute, l’enregistrement s’arrêtera et sera sauvegardé.",
+      "other": "Votre disque est presque plein. Dans environ %lld minutes, l’enregistrement s’arrêtera et sera sauvegardé."
+    },
+    "zh-Hans": "磁盘空间即将用完。大约 %lld 分钟后，录制将停止并自动存储。"
+  },
+  "Your disk is almost full. In about %lld seconds the recording stops and saves itself.": {
+    "de": {
+      "one": "Dein Speicherplatz ist fast aufgebraucht. In etwa %lld Sekunde wird die Aufzeichnung beendet und gesichert.",
+      "other": "Dein Speicherplatz ist fast aufgebraucht. In etwa %lld Sekunden wird die Aufzeichnung beendet und gesichert."
+    },
+    "en": {
+      "one": "Your disk is almost full. In about %lld second the recording stops and saves itself.",
+      "other": "Your disk is almost full. In about %lld seconds the recording stops and saves itself."
+    },
+    "fr": {
+      "one": "Votre disque est presque plein. Dans environ %lld seconde, l’enregistrement s’arrêtera et sera sauvegardé.",
+      "other": "Votre disque est presque plein. Dans environ %lld secondes, l’enregistrement s’arrêtera et sera sauvegardé."
+    },
+    "zh-Hans": "磁盘空间即将用完。大约 %lld 秒后，录制将停止并自动存储。"
+  },
+  "Your disk is full, so the recording couldn't be saved.": {
+    "de": "Dein Speicherplatz ist voll, daher konnte die Aufnahme nicht gesichert werden.",
+    "fr": "Votre disque est plein : l’enregistrement n’a pas pu être sauvegardé.",
+    "zh-Hans": "磁盘已满，无法存储录制内容。"
+  },
+  "a table": {
+    "comment": "Listed with links and email addresses the recognized text holds",
+    "de": "eine Tabelle",
+    "fr": "un tableau",
+    "zh-Hans": "1 个表格"
+  },
+  "mic": {
+    "comment": "Recording HUD: records the microphone; keep it very short",
+    "de": "Mikro",
+    "fr": "micro",
+    "zh-Hans": "麦克风"
+  },
+  "no audio": {
+    "comment": "Recording HUD: records no sound; keep it very short",
+    "de": "Kein Ton",
+    "fr": "sans son",
+    "zh-Hans": "无音频"
+  },
+  "sys+mic": {
+    "comment": "Recording HUD: records system audio and the microphone; keep it very short",
+    "de": "Sys.+Mikro",
+    "fr": "sys.+micro",
+    "zh-Hans": "系统+麦克风"
+  },
+  "system": {
+    "comment": "Recording HUD: records system audio; keep it very short",
+    "de": "System",
+    "fr": "système",
+    "zh-Hans": "系统"
+  },
+  "up to %@ GB/min": {
+    "comment": "Estimated recording size per minute",
+    "de": "bis zu %@ GB/Min.",
+    "fr": "jusqu’à %@ Go/min",
+    "zh-Hans": "最多 %@ GB/分钟"
+  },
+  "up to %@ MB/min": {
+    "comment": "Estimated recording size per minute",
+    "de": "bis zu %@ MB/Min.",
+    "fr": "jusqu’à %@ Mo/min",
+    "zh-Hans": "最多 %@ MB/分钟"
+  },
+  "✓ Saved screenshot": {
+    "de": "✓ Bildschirmfoto gesichert",
+    "fr": "✓ Capture d’écran enregistrée",
+    "zh-Hans": "✓ 已存储截屏"
+  },
+  "✓ Text copied to clipboard": {
+    "de": "✓ Text in die Zwischenablage kopiert",
+    "fr": "✓ Texte copié dans le presse-papiers",
+    "zh-Hans": "✓ 已将文字拷贝到剪贴板"
+  },
+  "✓ Text copied · %@ — click for options": {
+    "comment": "What else the text holds, like “a table, 2 links”",
+    "de": "✓ Text kopiert · %@ – für Optionen klicken",
+    "fr": "✓ Texte copié · %@ — cliquez pour les options",
+    "zh-Hans": "✓ 已拷贝文字 · %@ — 点按查看选项"
+  }
+}

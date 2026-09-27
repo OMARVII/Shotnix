@@ -822,7 +822,7 @@
   "Frame rate" : {
     "de" : "Bildrate",
     "fr" : "Fréquence d’images",
-    "zh-Hans" : "帧率"
+    "zh-Hans" : "帧速率"
   },
   "Free up ⌘⇧ shortcuts · optional" : {
     "de" : "⌘⇧-Kurzbefehle freigeben · optional",
@@ -1431,9 +1431,9 @@
     "zh-Hans" : "就绪 · %lld 个可选快捷键未设置"
   },
   "Record" : {
-    "comment" : "Command center section with the screen recording actions",
-    "de" : "Aufzeichnung",
-    "fr" : "Enregistrement",
+    "comment" : "Starts a screen recording (verb); also the menu section with the recording actions",
+    "de" : "Aufzeichnen",
+    "fr" : "Enregistrer",
     "zh-Hans" : "录制"
   },
   "Record camera" : {
@@ -1622,7 +1622,7 @@
   "Saving…" : {
     "comment" : "Menu bar status while a finished recording is being written",
     "de" : "Wird gesichert …",
-    "fr" : "Enregistrement…",
+    "fr" : "Finalisation…",
     "zh-Hans" : "正在存储…"
   },
   "Scan QR Code" : {

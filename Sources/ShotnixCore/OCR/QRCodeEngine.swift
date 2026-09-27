@@ -13,12 +13,13 @@ struct QRCodeResult: Hashable {
     var isQRCode: Bool { symbology == .qr }
 
     /// Human-readable name for the detected symbology (e.g. "QR Code", "Code 128", "EAN-13").
+    /// Standard names stay as they are; the generic ones are translated.
     var symbologyName: String {
         if #available(macOS 14.0, *), symbology == .msiPlessey {
             return "MSI Plessey"
         }
         switch symbology {
-        case .qr: return "QR Code"
+        case .qr: return L("QR Code")
         case .microQR: return "Micro QR"
         case .aztec: return "Aztec"
         case .dataMatrix: return "Data Matrix"
@@ -34,7 +35,7 @@ struct QRCodeResult: Hashable {
         case .i2of5, .i2of5Checksum: return "Interleaved 2 of 5"
         case .codabar: return "Codabar"
         case .gs1DataBar, .gs1DataBarExpanded, .gs1DataBarLimited: return "GS1 DataBar"
-        default: return "Barcode"
+        default: return L("Barcode")
         }
     }
 }

@@ -18,7 +18,8 @@ final class QuickAccessOverlay {
         let folder = url.deletingLastPathComponent()
         let folderName = FileManager.default.displayName(atPath: folder.path)
         let destination = folderName.isEmpty ? folder.lastPathComponent : folderName
-        return "Saved \(url.lastPathComponent) to \(destination) — click to reveal in Finder"
+        let file = url.lastPathComponent
+        return L("Saved \(file) to \(destination) — click to reveal in Finder")
     }
 }
 
@@ -55,9 +56,10 @@ enum QuickAccessStackLayout {
 /// Non-activating panel: the overlay appears without stealing focus from the
 /// app the user is working in — they keep typing, the thumbnail just slides
 /// in. Keyboard shortcuts engage on hover, when the panel takes key status
-/// without activating the app (the Spotlight mechanism).
+/// without activating the app (the Spotlight mechanism). Internal so tests
+/// can photograph it; the app opens it through `QuickAccessOverlay.show`.
 @MainActor
-private final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
+final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
 
     /// Keep strong refs so ARC doesn't deallocate while visible.
     private static var openWindows: [QuickAccessWindow] = []
@@ -212,16 +214,16 @@ private final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
         guard let view = contentView else { return }
         ShotnixContextMenu.show(
             sections: [
-                ShotnixMenuSection(id: "quick.primary", title: "Capture", actions: [
-                    ShotnixMenuAction(id: "quick.copy", title: "Copy", symbolName: "doc.on.doc", shortcut: "⌘C", role: .primary) { [weak self] in self?.copyAction() },
-                    ShotnixMenuAction(id: "quick.copytext", title: "Copy Text", symbolName: "text.viewfinder") { [weak self] in self?.copyTextAction() },
-                    ShotnixMenuAction(id: "quick.save", title: "Save", symbolName: "square.and.arrow.down", shortcut: "⌘S") { [weak self] in self?.saveAction() },
-                    ShotnixMenuAction(id: "quick.edit", title: "Edit", symbolName: "pencil", shortcut: "⌘E") { [weak self] in self?.editAction() },
-                    ShotnixMenuAction(id: "quick.pin", title: "Pin", symbolName: "pin") { [weak self] in self?.pinAction() },
+                ShotnixMenuSection(id: "quick.primary", title: L("Capture"), actions: [
+                    ShotnixMenuAction(id: "quick.copy", title: L("Copy"), symbolName: "doc.on.doc", shortcut: "⌘C", role: .primary) { [weak self] in self?.copyAction() },
+                    ShotnixMenuAction(id: "quick.copytext", title: L("Copy Text"), symbolName: "text.viewfinder") { [weak self] in self?.copyTextAction() },
+                    ShotnixMenuAction(id: "quick.save", title: L("Save"), symbolName: "square.and.arrow.down", shortcut: "⌘S") { [weak self] in self?.saveAction() },
+                    ShotnixMenuAction(id: "quick.edit", title: L("Edit"), symbolName: "pencil", shortcut: "⌘E") { [weak self] in self?.editAction() },
+                    ShotnixMenuAction(id: "quick.pin", title: L("Pin"), symbolName: "pin") { [weak self] in self?.pinAction() },
                 ]),
-                ShotnixMenuSection(id: "quick.manage", title: "Manage", actions: [
-                    ShotnixMenuAction(id: "quick.delete", title: "Delete", symbolName: "trash", role: .destructive) { [weak self] in self?.deleteAction() },
-                    ShotnixMenuAction(id: "quick.close", title: "Close", symbolName: "xmark") { [weak self] in self?.dismissAction() },
+                ShotnixMenuSection(id: "quick.manage", title: L("Manage"), actions: [
+                    ShotnixMenuAction(id: "quick.delete", title: L("Delete"), symbolName: "trash", role: .destructive) { [weak self] in self?.deleteAction() },
+                    ShotnixMenuAction(id: "quick.close", title: L("Close"), symbolName: "xmark") { [weak self] in self?.dismissAction() },
                 ])
             ],
             at: event,
@@ -317,8 +319,8 @@ private final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
         thumb.layer?.contentsScale = NSScreen.main?.backingScaleFactor ?? 2.0
         thumb.dragImage = image
         thumb.dragFileProvider = { [weak self] in self?.makeDragFile() }
-        thumb.setAccessibilityLabel("Screenshot thumbnail")
-        thumb.setAccessibilityHelp("Double-click to edit, or drag into another app. Command-C copies, Command-S saves, Escape dismisses.")
+        thumb.setAccessibilityLabel(L("Screenshot thumbnail"))
+        thumb.setAccessibilityHelp(L("Double-click to edit, or drag into another app. Command-C copies, Command-S saves, Escape dismisses."))
         thumb.onDoubleClick = { [weak self] in self?.editAction() }
         thumb.onDragStarted = { [weak self] in self?.dismissTimer?.invalidate() }
         thumb.onDragCompleted = { [weak self] in self?.animatedClose() }
@@ -341,10 +343,10 @@ private final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
         let cConfig = NSImage.SymbolConfiguration(pointSize: 12, weight: .medium)
 
         let corners: [(String, String, Selector, CGFloat, CGFloat)] = [
-            ("pencil",  "Edit",   #selector(editAction),    cMargin,                   thumbH - cSize - cMargin),
-            ("xmark",   "Close",  #selector(dismissAction), thumbW - cSize - cMargin,  thumbH - cSize - cMargin),
-            ("trash",   "Delete", #selector(deleteAction),  cMargin,                   cMargin),
-            ("pin",     "Pin",    #selector(pinAction),     thumbW - cSize - cMargin,  cMargin),
+            ("pencil",  L("Edit"),   #selector(editAction),    cMargin,                   thumbH - cSize - cMargin),
+            ("xmark",   L("Close"),  #selector(dismissAction), thumbW - cSize - cMargin,  thumbH - cSize - cMargin),
+            ("trash",   L("Delete"), #selector(deleteAction),  cMargin,                   cMargin),
+            ("pin",     L("Pin"),    #selector(pinAction),     thumbW - cSize - cMargin,  cMargin),
         ]
         let screenScale = NSScreen.main?.backingScaleFactor ?? 2.0
         for (icon, tip, sel, cx, cy) in corners {
@@ -367,8 +369,6 @@ private final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
 
         // ── Center pills (tight-fit white capsules) ──
         let pillH: CGFloat = 28
-        let pillGap: CGFloat = 8
-        let pillPadding: CGFloat = 28  // total horizontal padding (14 each side)
         let pillFont = NSFont.systemFont(ofSize: 13, weight: .medium)
         let pillAttrs: [NSAttributedString.Key: Any] = [
             .foregroundColor: NSColor.black.withAlphaComponent(0.85),
@@ -376,15 +376,18 @@ private final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
         ]
 
         let pills: [(String, String, Selector)] = [
-            ("Copy", "Copy image to clipboard", #selector(copyAction)),
-            ("Save", "Save screenshot to disk", #selector(saveAction)),
-            ("Text", "Copy recognized text (OCR)", #selector(copyTextAction)),
+            (L("Copy"), L("Copy image to clipboard"), #selector(copyAction)),
+            (L("Save"), L("Save screenshot to disk"), #selector(saveAction)),
+            (L("Text"), L("Copy recognized text (OCR)"), #selector(copyTextAction)),
         ]
 
-        // Measure each pill to fit text snugly
-        let pillWidths = pills.map { title, _, _ in
-            ceil((title as NSString).size(withAttributes: pillAttrs).width) + pillPadding
+        // Measure each pill to fit text snugly. Longer words (Enregistrer)
+        // trade padding for room, so the row stays clear of the card's edges.
+        let textWidths = pills.map { title, _, _ in
+            ceil((title as NSString).size(withAttributes: pillAttrs).width)
         }
+        let (pillPadding, pillGap) = Self.pillSpacing(textWidths: textWidths, available: thumbW - 24)
+        let pillWidths = textWidths.map { $0 + pillPadding }
         let totalPillW = pillWidths.reduce(0, +) + CGFloat(pills.count - 1) * pillGap
         let pillY = round((thumbH - pillH) / 2)
         var pillCursorX = round((thumbW - totalPillW) / 2)
@@ -433,7 +436,22 @@ private final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
         }
     }
 
-    private func setHovered(_ hovered: Bool) {
+    /// Padding inside each pill and the gap between them: the design's 28
+    /// and 8 while the row fits `available`, then less of each (down to 14
+    /// and 4) for longer words.
+    nonisolated static func pillSpacing(textWidths: [CGFloat], available: CGFloat) -> (padding: CGFloat, gap: CGFloat) {
+        let count = CGFloat(textWidths.count)
+        let gaps = CGFloat(max(textWidths.count - 1, 0))
+        let text = textWidths.reduce(0, +)
+        guard count > 0, text + count * 28 + gaps * 8 > available else { return (28, 8) }
+        let spare = max(0, available - text)
+        let padding = max(14, min(28, (spare - gaps * 4) / count))
+        let gap = gaps > 0 ? max(4, min(8, (spare - count * padding) / gaps)) : 0
+        return (padding, gap)
+    }
+
+    /// Shows the controls (and pauses the dismiss timer) while hovered.
+    func setHovered(_ hovered: Bool) {
         guard hovered != isHovered else { return }
         isHovered = hovered
 
@@ -683,7 +701,7 @@ private final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
         ImageExporter.copyToClipboardAsync(image: image) { [weak self] copied in
             guard let self, !self.isClosing else { return }
             guard copied else {
-                ToastWindow.show(message: "Could not copy the screenshot", on: self.captureScreen)
+                ToastWindow.show(message: L("Could not copy the screenshot"), on: self.captureScreen)
                 return
             }
             self.showConfirmation(icon: "checkmark") { [weak self] in self?.animatedClose() }
@@ -739,7 +757,7 @@ private final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
                 // Only touch the pasteboard when there is actual text —
                 // never clobber the user's clipboard for an empty result.
                 if result.isEmpty {
-                    ToastWindow.show(message: "No text found in this selection", on: self.captureScreen)
+                    ToastWindow.show(message: L("No text found in this selection"), on: self.captureScreen)
                 } else {
                     NSPasteboard.general.clearContents()
                     NSPasteboard.general.setString(result.text, forType: .string)
@@ -748,7 +766,7 @@ private final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
                 }
             } catch {
                 print("[Shotnix] OCR failed: \(error)")
-                ToastWindow.show(message: "Text recognition failed", on: self.captureScreen)
+                ToastWindow.show(message: L("Text recognition failed"), on: self.captureScreen)
             }
         }
     }
@@ -832,7 +850,7 @@ private final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
         NSAccessibility.post(
             element: self,
             notification: .announcementRequested,
-            userInfo: [.announcement: "Screenshot captured", .priority: NSAccessibilityPriorityLevel.medium.rawValue]
+            userInfo: [.announcement: L("Screenshot captured"), .priority: NSAccessibilityPriorityLevel.medium.rawValue]
         )
     }
 }

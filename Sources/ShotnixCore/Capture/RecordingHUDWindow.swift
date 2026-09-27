@@ -23,8 +23,8 @@ final class RecordingHUDWindow: NSPanel {
 
     private(set) var state: State = .recording
     private let timeLabel = NSTextField(labelWithString: "00:00")
-    private let detailLabel = NSTextField(labelWithString: "Recording")
-    private let confirmLabel = NSTextField(labelWithString: "Discard this recording?")
+    private let detailLabel = NSTextField(labelWithString: L("Recording"))
+    private let confirmLabel = NSTextField(labelWithString: L("Discard this recording?"))
     private let dotHalo = NSView()
     private let dot = NSView()
     private let pauseGlyph = NSImageView()
@@ -34,12 +34,12 @@ final class RecordingHUDWindow: NSPanel {
     private let warningIcon = NSImageView()
     private let microphoneLevelMeter = RecordingHUDLevelMeter()
     private let microphoneWarning = NSImageView()
-    private let pauseButton = RecordingHUDIconButton(symbol: "pause.fill", label: "Pause recording", tint: .white)
-    private let discardButton = RecordingHUDIconButton(symbol: "trash", label: "Discard recording", tint: .white)
-    private let stopButton = RecordingHUDIconButton(symbol: "stop.fill", label: "Stop recording", tint: .systemRed, size: 15)
-    private let confirmDiscardButton = RecordingHUDTextButton(title: "Discard", tint: .systemRed)
-    private let keepButton = RecordingHUDTextButton(title: "Keep", tint: .white)
-    private var detailText = "Recording"
+    private let pauseButton = RecordingHUDIconButton(symbol: "pause.fill", label: L("Pause recording"), tint: .white)
+    private let discardButton = RecordingHUDIconButton(symbol: "trash", label: L("Discard recording"), tint: .white)
+    private let stopButton = RecordingHUDIconButton(symbol: "stop.fill", label: L("Stop recording"), tint: .systemRed, size: 15)
+    private let confirmDiscardButton = RecordingHUDTextButton(title: L("Discard"), tint: .systemRed)
+    private let keepButton = RecordingHUDTextButton(title: L("Keep"), tint: .white)
+    private var detailText = L("Recording")
     private var showsMicrophone = false
     private var showsCamera = false
     private var showsKeystrokes = false
@@ -74,7 +74,7 @@ final class RecordingHUDWindow: NSPanel {
         worksWhenModal = true
         isReleasedWhenClosed = false
         sharingType = .none
-        setAccessibilityLabel("Recording controls")
+        setAccessibilityLabel(L("Recording controls"))
 
         buildContent()
         moveObserver = NotificationCenter.default.addObserver(forName: NSWindow.didMoveNotification, object: self, queue: .main) { [weak self] _ in
@@ -144,7 +144,7 @@ final class RecordingHUDWindow: NSPanel {
         timeLabel.textColor = .white
         timeLabel.frame = NSRect(x: 50, y: 13, width: 56, height: 18)
         timeLabel.lineBreakMode = .byClipping
-        timeLabel.setAccessibilityLabel("Recording time")
+        timeLabel.setAccessibilityLabel(L("Recording time"))
         root.addSubview(timeLabel)
 
         detailLabel.font = .systemFont(ofSize: 10, weight: .semibold)
@@ -153,16 +153,24 @@ final class RecordingHUDWindow: NSPanel {
         detailLabel.lineBreakMode = .byTruncatingTail
         root.addSubview(detailLabel)
 
+        // Discard and Keep fit their words, right-aligned; the question takes
+        // the room left of them (English: 150 pt, buttons 66 and 58).
+        let keepWidth = max(58, ceil(keepButton.attributedTitle.size().width) + 16)
+        let discardWidth = max(66, ceil(confirmDiscardButton.attributedTitle.size().width) + 16)
+        keepButton.frame = NSRect(x: Self.size.width - 8 - keepWidth, y: 10, width: keepWidth, height: 24)
+        confirmDiscardButton.frame = NSRect(x: keepButton.frame.minX - 6 - discardWidth, y: 10, width: discardWidth, height: 24)
+
         confirmLabel.font = .systemFont(ofSize: 11, weight: .bold)
         confirmLabel.textColor = .white
-        confirmLabel.frame = NSRect(x: 106, y: 14, width: 150, height: 15)
+        confirmLabel.lineBreakMode = .byTruncatingTail
+        confirmLabel.frame = NSRect(x: 106, y: 14, width: confirmDiscardButton.frame.minX - 6 - 106, height: 15)
         confirmLabel.isHidden = true
         root.addSubview(confirmLabel)
 
         for (icon, name, tint, label) in [
-            (cameraIcon, "video.fill", NSColor.systemBlue, "Recording the camera"),
-            (keysIcon, "command", NSColor.white.withAlphaComponent(0.6), "Recording keyboard shortcuts"),
-            (warningIcon, "exclamationmark.triangle.fill", NSColor.systemOrange, "Warning"),
+            (cameraIcon, "video.fill", NSColor.systemBlue, L("Recording the camera")),
+            (keysIcon, "command", NSColor.white.withAlphaComponent(0.6), L("Recording keyboard shortcuts")),
+            (warningIcon, "exclamationmark.triangle.fill", NSColor.systemOrange, L("Warning")),
         ] {
             icon.image = symbol(name, size: 10)
             icon.contentTintColor = tint
@@ -179,8 +187,8 @@ final class RecordingHUDWindow: NSPanel {
         microphoneWarning.frame = NSRect(x: 274, y: 14, width: 18, height: 16)
         microphoneWarning.image = symbol("mic.slash.fill", size: 12)
         microphoneWarning.contentTintColor = .systemOrange
-        microphoneWarning.toolTip = "No sound from the microphone"
-        microphoneWarning.setAccessibilityLabel("No sound from the microphone")
+        microphoneWarning.toolTip = L("No sound from the microphone")
+        microphoneWarning.setAccessibilityLabel(L("No sound from the microphone"))
         microphoneWarning.isHidden = true
         root.addSubview(microphoneWarning)
 
@@ -199,13 +207,11 @@ final class RecordingHUDWindow: NSPanel {
         stopButton.action = #selector(stopTapped)
         root.addSubview(stopButton)
 
-        confirmDiscardButton.frame = NSRect(x: 262, y: 10, width: 66, height: 24)
         confirmDiscardButton.target = self
         confirmDiscardButton.action = #selector(confirmDiscardTapped)
         confirmDiscardButton.isHidden = true
         root.addSubview(confirmDiscardButton)
 
-        keepButton.frame = NSRect(x: 334, y: 10, width: 58, height: 24)
         keepButton.target = self
         keepButton.action = #selector(keepTapped)
         keepButton.isHidden = true
@@ -216,17 +222,17 @@ final class RecordingHUDWindow: NSPanel {
 
     func configure(systemAudio: Bool, microphone: Bool, camera: Bool, keystrokes: Bool, fps: Int, quality: String) {
         let audio = if systemAudio && microphone {
-            "sys+mic"
+            L("sys+mic")
         } else if systemAudio {
-            "system"
+            L("system")
         } else if microphone {
-            "mic"
+            L("mic")
         } else {
-            "no audio"
+            L("no audio")
         }
-        detailText = "\(audio) · \(fps) fps"
+        detailText = L("\(audio) · \(fps) fps")
         detailLabel.stringValue = detailText
-        detailLabel.toolTip = "\(quality.capitalized) quality · \(audio)"
+        detailLabel.toolTip = L("\(quality.capitalized) quality · \(audio)")
         showsMicrophone = microphone
         showsCamera = camera
         showsKeystrokes = keystrokes
@@ -365,7 +371,7 @@ final class RecordingHUDWindow: NSPanel {
         confirmDiscardButton.isHidden = !confirming
         keepButton.isHidden = !confirming
 
-        pauseButton.setAccessibilityLabel(state == .paused ? "Resume recording" : "Pause recording")
+        pauseButton.setAccessibilityLabel(state == .paused ? L("Resume recording") : L("Pause recording"))
         pauseButton.setSymbol(state == .paused ? "play.fill" : "pause.fill")
         updateToolTips()
         restoreDetail()
@@ -378,7 +384,7 @@ final class RecordingHUDWindow: NSPanel {
             detailLabel.stringValue = freshWarning
             detailLabel.textColor = .systemOrange
         } else {
-            detailLabel.stringValue = state == .paused ? "Paused" : detailText
+            detailLabel.stringValue = state == .paused ? L("Paused") : detailText
             detailLabel.textColor = state == .paused ? .systemYellow : NSColor.white.withAlphaComponent(0.46)
         }
     }
@@ -392,16 +398,21 @@ final class RecordingHUDWindow: NSPanel {
     }
 
     private func updateToolTips() {
-        stopButton.toolTip = "Stop recording (\(RecordingStopHotkey.displayText))"
-        let pauseShortcut = ShotnixShortcut.pauseRecording.assignedShortcutText.map { " (\($0))" } ?? ""
-        pauseButton.toolTip = (state == .paused ? "Resume recording" : "Pause recording") + pauseShortcut
-        discardButton.toolTip = "Discard recording"
+        let stopShortcut = RecordingStopHotkey.displayText
+        stopButton.toolTip = L("Stop recording (\(stopShortcut))")
+        let paused = state == .paused
+        if let pauseShortcut = ShotnixShortcut.pauseRecording.assignedShortcutText {
+            pauseButton.toolTip = paused ? L("Resume recording (\(pauseShortcut))") : L("Pause recording (\(pauseShortcut))")
+        } else {
+            pauseButton.toolTip = paused ? L("Resume recording") : L("Pause recording")
+        }
+        discardButton.toolTip = L("Discard recording")
     }
 
     private func updateTime() {
         switch state {
         case .saving:
-            timeLabel.stringValue = "Saving…"
+            timeLabel.stringValue = L("Saving…")
         default:
             let elapsed = max(0, Int(elapsedProvider?() ?? 0))
             timeLabel.stringValue = String(format: "%02d:%02d", elapsed / 60, elapsed % 60)
@@ -578,7 +589,7 @@ private final class RecordingHUDLevelMeter: NSView {
             bar.layer?.cornerCurve = .continuous
             addSubview(bar)
         }
-        setAccessibilityLabel("Microphone level")
+        setAccessibilityLabel(L("Microphone level"))
         setLevel(0)
     }
 

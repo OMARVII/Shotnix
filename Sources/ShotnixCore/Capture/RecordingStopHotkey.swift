@@ -8,7 +8,7 @@ import Carbon.HIToolbox
 /// the rest of the time.
 @MainActor
 enum RecordingStopHotkey {
-    static let displayText = "⌃⌘Esc"
+    static let displayText = "⌃⌘Esc" // l10n-ignore: a shortcut, the same in every language
 
     private static var hotKey: EventHotKeyRef?
     private static var eventHandler: EventHandlerRef?
