@@ -145,6 +145,14 @@ extension VideoCaptionTests {
         XCTAssertEqual(english.filter(\.isFiller).map(\.text), ["um", "uh"])
         let german = VideoCaptionLine(start: 0, end: 2, text: "", words: [VideoCaptionWord(text: "er", start: 0, end: 0.3), VideoCaptionWord(text: "ähm", start: 0.5, end: 0.8)])
         XCTAssertEqual(VideoTranscript.words(from: [german], language: "de-DE").filter(\.isFiller).map(\.text), ["ähm"])
+
+        func fillers(_ words: [String], _ language: String) -> [String] {
+            let line = VideoCaptionLine(start: 0, end: 5, text: "", words: words.enumerated().map { VideoCaptionWord(text: $0.element, start: Double($0.offset) * 0.5, end: Double($0.offset) * 0.5 + 0.4) })
+            return VideoTranscript.words(from: [line], language: language).filter(\.isFiller).map(\.text)
+        }
+        XCTAssertEqual(fillers(["嗯，", "那个", "我们", "呃", "打开"], "zh-Hans"), ["嗯，", "呃"], "那个 is a real word")
+        XCTAssertEqual(fillers(["Ну,", "э-э", "эм,", "откроем", "Эм"], "ru-RU"), ["э-э", "эм,", "Эм"], "ну is a real word")
+        XCTAssertEqual(fillers(["Ну", "ем,", "відкриємо", "е"], "uk-UA"), ["ем,", "е"])
     }
 
     func testRecognizedStretchesJoinUp() {

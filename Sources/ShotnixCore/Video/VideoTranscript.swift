@@ -26,6 +26,10 @@ enum VideoTranscript {
         case "es", "it": set.formUnion(["eh"])
         case "pt": set.formUnion(["hã", "ahn", "hum"])
         case "nl": set.formUnion(["eh", "uh"])
+        // Not 那个 or 就是, "ну" or "типа": real words people also hesitate with.
+        case "zh": set.formUnion(["嗯", "呃", "额", "唔", "嗯嗯", "呃呃"])
+        case "ru": set.formUnion(["э", "ээ", "эээ", "э-э", "э-э-э", "эм", "эмм", "мм", "ммм", "хм"])
+        case "uk": set.formUnion(["е", "ее", "еее", "е-е", "е-е-е", "ем", "емм", "мм", "ммм", "хм"])
         default: break
         }
         return set
