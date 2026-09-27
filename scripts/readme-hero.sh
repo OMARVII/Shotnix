@@ -29,21 +29,21 @@ frames() {
     "$WORK/readme-hero" "$MARKETING_DIR/shotnix-editor-frame.png" "$WORK/demo" "$WORK/frames" "$1" "$2"
 }
 
-# The README animation: 1.25× the window (sharp on Retina, 1890 × 1180), 30 fps.
-# Video range (every decoder honors it) and sRGB tags, so tones match the render.
+# Both from the window at 2× (3024 × 1888), 60 fps: sharp on Retina.
+frames 3024 60
+
+# The README animation. Video range (every decoder honors it) and sRGB
+# tags, so tones match the render.
 HERO="$SCRIPT_DIR/../assets/readme/hero.avif"
-frames 1890 30
-ffmpeg -v error -y -framerate 30 -i "$WORK/frames/h%04d.png" \
+ffmpeg -v error -y -framerate 60 -i "$WORK/frames/h%04d.png" \
     -vf "scale=out_color_matrix=bt709:out_range=tv:flags=lanczos+accurate_rnd+full_chroma_int,format=yuv420p" \
-    -c:v libsvtav1 -preset 4 -crf 26 -g 60 -svtav1-params tune=0 \
+    -c:v libsvtav1 -preset 4 -crf 22 -g 120 -svtav1-params tune=0 \
     -color_range tv -colorspace bt709 -color_primaries bt709 -color_trc iec61966-2-1 \
     -f avif "$HERO"
 echo "✓ $HERO ($(($(stat -f %z "$HERO") / 1024)) KB)"
 
-# The full-quality video: the window at 2× (3024 × 1888), 60 fps, tagged like
-# the site's other videos.
+# The full-quality video, tagged like the site's other videos.
 PLAYBACK="$MARKETING_DIR/shotnix-editor-playback.mp4"
-frames 3024 60
 ffmpeg -v error -y -framerate 60 -i "$WORK/frames/h%04d.png" \
     -vf "scale=out_color_matrix=bt709:out_range=tv:flags=lanczos+accurate_rnd+full_chroma_int,format=yuv420p" \
     -c:v libx264 -preset slow -crf 18 -profile:v high -level 5.2 \
