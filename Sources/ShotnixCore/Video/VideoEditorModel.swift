@@ -1901,16 +1901,10 @@ final class VideoEditorModel: ObservableObject {
     /// behind it (undo) stay put.
     var hasOverlayOpen: Bool { isExportPresented || isCommandPalettePresented || isShortcutsPresented }
 
-    /// Something that shouldn't be dropped silently by closing the window.
-    /// (Exports carry on in the background: they work from a snapshot.)
-    var runningJobDescription: String? {
-        if captionTask != nil { return "transcribing" }
-        if voiceJob != nil { return "cleaning up the voice" }
-        return nil
-    }
-
-    /// The same, as the title of the "close anyway?" question — a whole
-    /// sentence, so every language can word it.
+    /// Something that shouldn't be dropped silently by closing the window,
+    /// as the title of the "close anyway?" question: a whole sentence, so
+    /// every language can word it. (Exports carry on in the background:
+    /// they work from a snapshot.)
     var runningJobTitle: String? {
         if captionTask != nil { return L("Shotnix is still transcribing") }
         if voiceJob != nil { return L("Shotnix is still cleaning up the voice") }
