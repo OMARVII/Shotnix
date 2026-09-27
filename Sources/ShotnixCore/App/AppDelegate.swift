@@ -73,7 +73,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         return .terminateLater
     }
 
+    /// Quitting is certain now: when it's a restart (a new language), the new
+    /// Shotnix starts, and waits for this one to exit.
+    func applicationWillTerminate(_ notification: Notification) {
+        AppRelaunch.launchNewInstanceIfRestarting()
+    }
+
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // After a restart, the previous Shotnix finishes quitting before this
+        // one takes the hotkeys, the menu bar, and History.
+        AppRelaunch.waitForPreviousInstance()
         Settings.migrateOnboardingFlagIfNeeded()
         // Before the welcome window marks this install as launched.
         Settings.migrateCaptureSettingsIfNeeded()
@@ -155,8 +164,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             promptForNativeShortcuts()
             // Escape hatch on cold launch: applicationShouldHandleReopen only
             // fires for an already-running app, so with the status item hidden
-            // a fresh launch would otherwise be completely invisible.
-            if !Settings.showMenuBarIcon {
+            // a fresh launch would otherwise be completely invisible. After a
+            // restart for a new language, Settings comes back where it was.
+            if !Settings.showMenuBarIcon || AppRelaunch.previousInstance() != nil {
                 PreferencesWindowController.shared.show(tab: .general)
             }
         }

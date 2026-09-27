@@ -384,6 +384,17 @@ struct PreferenceMenuSelector<Value: Hashable>: View {
     }
 }
 
+extension PreferenceMenuSelector {
+    /// Wide enough for the longest title, as a pop-up button sizes itself to
+    /// its menu, and never narrower than the other selectors.
+    static func width(fitting options: [PreferenceOption<Value>], minimum: CGFloat = 156) -> CGFloat {
+        let font = NSFont.systemFont(ofSize: 12, weight: .semibold)
+        let widest = options.map { ceil(($0.title as NSString).size(withAttributes: [.font: font]).width) }.max() ?? 0
+        // The padding, the gaps and spacer before the chevron, the chevron.
+        return max(minimum, widest + 52)
+    }
+}
+
 struct PreferenceSegmentedSelector<Value: Hashable>: View {
     @Binding var selection: Value
     let options: [PreferenceOption<Value>]
@@ -429,9 +440,34 @@ struct GeneralSettingsView: View {
     @AppStorage("overlayTimeout") var overlayTimeout: Double = 6.0
     
     @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
+    @State private var language = AppLanguage().choice
+
+    /// System Default, named after the Mac's language, then each language in
+    /// its own words.
+    static func languageOptions(system: String = AppLanguage.systemLanguage()) -> [PreferenceOption<String?>] {
+        [PreferenceOption(value: nil, title: L("System Default (\(AppLanguage.localizedName(system)))"))]
+            + AppLanguage.all.map { PreferenceOption(value: $0, title: AppLanguage.endonym($0)) }
+    }
 
     var body: some View {
         PreferencesPane {
+            PreferenceSection(L("Language")) {
+                PreferenceRow(L("Language")) {
+                    let options = Self.languageOptions()
+                    PreferenceMenuSelector(
+                        selection: Binding(get: { language }, set: chooseLanguage),
+                        options: options,
+                        width: PreferenceMenuSelector.width(fitting: options)
+                    )
+                }
+            }
+            // Coming back from System Settings, where Shotnix's language can be set too.
+            .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+                language = AppLanguage().choice
+            }
+
+            PreferenceFootnote(text: L("Shotnix restarts to switch languages. You can also set it in System Settings → General → Language & Region → Applications."))
+
             PreferenceSection(L("Startup")) {
                 PreferenceRow(L("Launch Shotnix at login")) {
                     Toggle("", isOn: $launchAtLogin)
@@ -522,6 +558,27 @@ struct GeneralSettingsView: View {
             }
 
             PreferenceFootnote(text: L("Choose what happens immediately after taking a screenshot."))
+        }
+    }
+
+    /// Stored at once; Shotnix shows it after a restart, now or at the next launch.
+    private func chooseLanguage(_ choice: String?) {
+        language = choice
+        AppLanguage().choice = choice
+        guard let next = AppLanguage.languageAfterRestart(with: choice) else { return }
+        DispatchQueue.main.async {
+            offerRestart(toUse: next)
+        }
+    }
+
+    private func offerRestart(toUse language: String) {
+        let alert = NSAlert()
+        alert.messageText = L("Restart Shotnix to use \(AppLanguage.endonym(language))?")
+        alert.informativeText = L("Otherwise, Shotnix switches languages the next time it opens.")
+        alert.addButton(withTitle: L("Restart Now"))
+        alert.addButton(withTitle: L("Later")).keyEquivalent = "\u{1b}"
+        if alert.runModal() == .alertFirstButtonReturn {
+            AppRelaunch.restart()
         }
     }
 

@@ -166,6 +166,43 @@ final class LocalizedLayoutTests: XCTestCase {
         }
     }
 
+    func testLanguagePopUpFitsAtTheNarrowestWidth() {
+        // The narrowest window leaves 452 pt inside a row (520, less 22 pt of
+        // pane and 12 pt of row padding on each side); the title, the row's
+        // gaps and its spacer come first.
+        let font = NSFont.systemFont(ofSize: 13, weight: .semibold)
+        for language in Self.languages {
+            L10n.use(language)
+            let title = ceil((L("Language") as NSString).size(withAttributes: [.font: font]).width)
+            for system in AppLanguage.all {
+                let width = PreferenceMenuSelector.width(fitting: GeneralSettingsView.languageOptions(system: system))
+                XCTAssertLessThanOrEqual(title + 36 + width, 452, "\(language) on a Mac in \(system)")
+            }
+        }
+    }
+
+    func testRenderLanguagePopUpInEveryLanguage() async throws {
+        for language in Self.languages {
+            L10n.use(language)
+            // One row per Mac language, for every System Default title.
+            let rows = PreferenceSection(L("Language")) {
+                ForEach(AppLanguage.all, id: \.self) { system in
+                    let options = GeneralSettingsView.languageOptions(system: system)
+                    PreferenceRow(L("Language")) {
+                        PreferenceMenuSelector(selection: .constant(nil), options: options, width: PreferenceMenuSelector.width(fitting: options))
+                    }
+                    if system != AppLanguage.all.last {
+                        PreferenceDivider()
+                    }
+                }
+            }
+            .padding(22)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .background(ShotnixHUDBackground())
+            try await Self.render(rows, size: NSSize(width: 520, height: 260), name: "settings-language-\(language)")
+        }
+    }
+
     func testRenderCommandCenterInEveryLanguage() async throws {
         let delegate = AppDelegate()
         let broken = ShotnixHealthSnapshot(

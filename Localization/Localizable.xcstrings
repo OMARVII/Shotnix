@@ -16905,6 +16905,29 @@
         }
       }
     },
+    "Later" : {
+      "comment" : "Restart alert button: the new language waits for the next launch",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Später"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus tard"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "稍后"
+          }
+        }
+      }
+    },
     "Launch Shotnix at login" : {
       "localizations" : {
         "de" : {
@@ -20842,6 +20865,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "原始"
+          }
+        }
+      }
+    },
+    "Otherwise, Shotnix switches languages the next time it opens." : {
+      "comment" : "Restart alert, below the question: what Later does",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Andernfalls wechselt Shotnix beim nächsten Öffnen die Sprache."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sinon, Shotnix changera de langue à sa prochaine ouverture."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "否则，Shotnix 会在下次打开时切换语言。"
           }
         }
       }
@@ -27459,6 +27505,52 @@
         }
       }
     },
+    "Restart Now" : {
+      "comment" : "Restart alert button: quit Shotnix and open it again in the new language",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jetzt neu starten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Redémarrer maintenant"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "退出并重新打开"
+          }
+        }
+      }
+    },
+    "Restart Shotnix to use %@?" : {
+      "comment" : "Alert after choosing a language in Settings; the language's own name (English, Deutsch, Français)",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shotnix neu starten, um %@ zu verwenden?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Redémarrer Shotnix pour utiliser %@ ?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "要退出并重新打开 Shotnix 以使用 %@ 吗？"
+          }
+        }
+      }
+    },
     "Restore" : {
       "localizations" : {
         "de" : {
@@ -30637,6 +30729,29 @@
         }
       }
     },
+    "Shotnix restarts to switch languages. You can also set it in System Settings → General → Language & Region → Applications." : {
+      "comment" : "Settings → General, below the language pop-up",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shotnix startet neu, um die Sprache zu wechseln. Du kannst sie auch unter „Systemeinstellungen“ → „Allgemein“ → „Sprache & Region“ → „Apps“ festlegen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shotnix redémarre pour changer de langue. Vous pouvez aussi la choisir dans Réglages Système → Général → Langue et région → Applications."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "切换语言时，Shotnix 会退出并重新打开。你也可以在“系统设置”→“通用”→“语言与地区”→“应用程序”中设置。"
+          }
+        }
+      }
+    },
     "Shotnix will wrap these up before it quits." : {
       "localizations" : {
         "de" : {
@@ -33045,6 +33160,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "系统默认"
+          }
+        }
+      }
+    },
+    "System Default (%@)" : {
+      "comment" : "Settings → General, the language pop-up's first item: follow the Mac; its language in parentheses, named in the current language",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Systemstandard (%@)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Par défaut du système (%@)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "系统默认（%@）"
           }
         }
       }

@@ -1280,6 +1280,8 @@
 	<string>Groß</string>
 	<key>Larger than the recording — text may look softer than at a lower resolution.</key>
 	<string>Größer als die Aufnahme – Text wirkt eventuell weicher als bei einer niedrigeren Auflösung.</string>
+	<key>Later</key>
+	<string>Später</string>
 	<key>Launch Shotnix at login</key>
 	<string>Shotnix bei der Anmeldung öffnen</string>
 	<key>Lavender Glass</key>
@@ -1636,6 +1638,8 @@
 	<string>Orchidee</string>
 	<key>Original</key>
 	<string>Original</string>
+	<key>Otherwise, Shotnix switches languages the next time it opens.</key>
+	<string>Andernfalls wechselt Shotnix beim nächsten Öffnen die Sprache.</string>
 	<key>Out</key>
 	<string>Ende</string>
 	<key>Out earlier</key>
@@ -2184,6 +2188,10 @@
 	<string>Größe ändern</string>
 	<key>Resolution</key>
 	<string>Auflösung</string>
+	<key>Restart Now</key>
+	<string>Jetzt neu starten</string>
+	<key>Restart Shotnix to use %@?</key>
+	<string>Shotnix neu starten, um %@ zu verwenden?</string>
 	<key>Restore</key>
 	<string>Wiederherstellen</string>
 	<key>Restore %@ at %@</key>
@@ -2442,6 +2450,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>Shotnix braucht die Berechtigung für Bildschirmaufnahmen, um deinen Bildschirm aufzunehmen.
 
 Aktiviere sie unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherheit“ → „Aufnahme von Bildschirm &amp; Systemaudio“.</string>
+	<key>Shotnix restarts to switch languages. You can also set it in System Settings → General → Language &amp; Region → Applications.</key>
+	<string>Shotnix startet neu, um die Sprache zu wechseln. Du kannst sie auch unter „Systemeinstellungen“ → „Allgemein“ → „Sprache &amp; Region“ → „Apps“ festlegen.</string>
 	<key>Shotnix will wrap these up before it quits.</key>
 	<string>Shotnix schließt diese Vorgänge vor dem Beenden ab.</string>
 	<key>Shotnix – Capture History</key>
@@ -2648,6 +2658,8 @@ Aktiviere sie unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherhei
 	<string>Schalte die Kamera für Kernaussagen ins Vollbild oder zeige sie neben dem Bildschirm – an der Abspielposition. Jeder Wechsel erscheint in der Kameraspur.</string>
 	<key>System Default</key>
 	<string>Systemstandard</string>
+	<key>System Default (%@)</key>
+	<string>Systemstandard (%@)</string>
 	<key>System audio</key>
 	<string>Systemton</string>
 	<key>System audio couldn't be recorded. Try again without system audio.</key>

@@ -1102,6 +1102,12 @@
     "fr" : "Langues",
     "zh-Hans" : "语言"
   },
+  "Later" : {
+    "comment" : "Restart alert button: the new language waits for the next launch",
+    "de" : "Später",
+    "fr" : "Plus tard",
+    "zh-Hans" : "稍后"
+  },
   "Launch Shotnix at login" : {
     "de" : "Shotnix bei der Anmeldung öffnen",
     "fr" : "Ouvrir Shotnix à l’ouverture de session",
@@ -1284,6 +1290,12 @@
     "de" : "Orange",
     "fr" : "Orange",
     "zh-Hans" : "橙色"
+  },
+  "Otherwise, Shotnix switches languages the next time it opens." : {
+    "comment" : "Restart alert, below the question: what Later does",
+    "de" : "Andernfalls wechselt Shotnix beim nächsten Öffnen die Sprache.",
+    "fr" : "Sinon, Shotnix changera de langue à sa prochaine ouverture.",
+    "zh-Hans" : "否则，Shotnix 会在下次打开时切换语言。"
   },
   "Overlay position" : {
     "de" : "Position der Miniatur",
@@ -1528,6 +1540,18 @@
     "fr" : "Réinitialiser le rognage",
     "zh-Hans" : "重置裁剪"
   },
+  "Restart Now" : {
+    "comment" : "Restart alert button: quit Shotnix and open it again in the new language",
+    "de" : "Jetzt neu starten",
+    "fr" : "Redémarrer maintenant",
+    "zh-Hans" : "退出并重新打开"
+  },
+  "Restart Shotnix to use %@?" : {
+    "comment" : "Alert after choosing a language in Settings; the language's own name (English, Deutsch, Français)",
+    "de" : "Shotnix neu starten, um %@ zu verwenden?",
+    "fr" : "Redémarrer Shotnix pour utiliser %@ ?",
+    "zh-Hans" : "要退出并重新打开 Shotnix 以使用 %@ 吗？"
+  },
   "Restore Apple Shortcuts" : {
     "de" : "Apple-Kurzbefehle wiederherstellen",
     "fr" : "Restaurer les raccourcis Apple",
@@ -1746,6 +1770,12 @@
     "fr" : "Shotnix a besoin de l’autorisation d’enregistrement de l’écran pour capturer votre écran.\n\nActivez-la dans Réglages Système → Confidentialité et sécurité → Enregistrement de l’écran et des sons du système.",
     "zh-Hans" : "Shotnix 需要屏幕录制权限才能截取你的屏幕。\n\n请在“系统设置”→“隐私与安全性”→“录屏与系统录音”中启用。"
   },
+  "Shotnix restarts to switch languages. You can also set it in System Settings → General → Language & Region → Applications." : {
+    "comment" : "Settings → General, below the language pop-up",
+    "de" : "Shotnix startet neu, um die Sprache zu wechseln. Du kannst sie auch unter „Systemeinstellungen“ → „Allgemein“ → „Sprache & Region“ → „Apps“ festlegen.",
+    "fr" : "Shotnix redémarre pour changer de langue. Vous pouvez aussi la choisir dans Réglages Système → Général → Langue et région → Applications.",
+    "zh-Hans" : "切换语言时，Shotnix 会退出并重新打开。你也可以在“系统设置”→“通用”→“语言与地区”→“应用程序”中设置。"
+  },
   "Shotnix will wrap these up before it quits." : {
     "de" : "Shotnix schließt diese Vorgänge vor dem Beenden ab.",
     "fr" : "Shotnix terminera ces tâches avant de quitter.",
@@ -1885,6 +1915,12 @@
     "de" : "Systemstandard",
     "fr" : "Par défaut du système",
     "zh-Hans" : "系统默认"
+  },
+  "System Default (%@)" : {
+    "comment" : "Settings → General, the language pop-up's first item: follow the Mac; its language in parentheses, named in the current language",
+    "de" : "Systemstandard (%@)",
+    "fr" : "Par défaut du système (%@)",
+    "zh-Hans" : "系统默认（%@）"
   },
   "Tahoe Ice" : {
     "de" : "Tahoe-Eis",

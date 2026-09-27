@@ -1274,6 +1274,8 @@
 	<string>Grande</string>
 	<key>Larger than the recording — text may look softer than at a lower resolution.</key>
 	<string>Plus grand que l’enregistrement — le texte peut paraître moins net qu’à une résolution plus basse.</string>
+	<key>Later</key>
+	<string>Plus tard</string>
 	<key>Launch Shotnix at login</key>
 	<string>Ouvrir Shotnix à l’ouverture de session</string>
 	<key>Lavender Glass</key>
@@ -1630,6 +1632,8 @@
 	<string>Orchidée</string>
 	<key>Original</key>
 	<string>Original</string>
+	<key>Otherwise, Shotnix switches languages the next time it opens.</key>
+	<string>Sinon, Shotnix changera de langue à sa prochaine ouverture.</string>
 	<key>Out</key>
 	<string>Sortie</string>
 	<key>Out earlier</key>
@@ -2178,6 +2182,10 @@
 	<string>Redimensionner</string>
 	<key>Resolution</key>
 	<string>Résolution</string>
+	<key>Restart Now</key>
+	<string>Redémarrer maintenant</string>
+	<key>Restart Shotnix to use %@?</key>
+	<string>Redémarrer Shotnix pour utiliser %@ ?</string>
 	<key>Restore</key>
 	<string>Restaurer</string>
 	<key>Restore %@ at %@</key>
@@ -2436,6 +2444,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>Shotnix a besoin de l’autorisation d’enregistrement de l’écran pour capturer votre écran.
 
 Activez-la dans Réglages Système → Confidentialité et sécurité → Enregistrement de l’écran et des sons du système.</string>
+	<key>Shotnix restarts to switch languages. You can also set it in System Settings → General → Language &amp; Region → Applications.</key>
+	<string>Shotnix redémarre pour changer de langue. Vous pouvez aussi la choisir dans Réglages Système → Général → Langue et région → Applications.</string>
 	<key>Shotnix will wrap these up before it quits.</key>
 	<string>Shotnix terminera ces tâches avant de quitter.</string>
 	<key>Shotnix – Capture History</key>
@@ -2642,6 +2652,8 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Passez la caméra en plein écran pour les points clés, ou placez-la côte à côte avec l’écran — à la tête de lecture. Chaque changement apparaît sur la piste Caméra.</string>
 	<key>System Default</key>
 	<string>Par défaut du système</string>
+	<key>System Default (%@)</key>
+	<string>Par défaut du système (%@)</string>
 	<key>System audio</key>
 	<string>Son de l’ordinateur</string>
 	<key>System audio couldn't be recorded. Try again without system audio.</key>

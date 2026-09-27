@@ -1364,6 +1364,8 @@
 	<string>大于录制内容 — 文字可能不如较低分辨率时清晰。</string>
 	<key>Last %lld captures</key>
 	<string>最近 %lld 张截屏</string>
+	<key>Later</key>
+	<string>稍后</string>
 	<key>Launch Shotnix at login</key>
 	<string>登录时打开 Shotnix</string>
 	<key>Lavender Glass</key>
@@ -1720,6 +1722,8 @@
 	<string>兰花</string>
 	<key>Original</key>
 	<string>原始</string>
+	<key>Otherwise, Shotnix switches languages the next time it opens.</key>
+	<string>否则，Shotnix 会在下次打开时切换语言。</string>
 	<key>Out</key>
 	<string>出点</string>
 	<key>Out earlier</key>
@@ -2286,6 +2290,10 @@
 	<string>调整大小</string>
 	<key>Resolution</key>
 	<string>分辨率</string>
+	<key>Restart Now</key>
+	<string>退出并重新打开</string>
+	<key>Restart Shotnix to use %@?</key>
+	<string>要退出并重新打开 Shotnix 以使用 %@ 吗？</string>
 	<key>Restore</key>
 	<string>恢复</string>
 	<key>Restore %@ at %@</key>
@@ -2556,6 +2564,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>Shotnix 需要屏幕录制权限才能截取你的屏幕。
 
 请在“系统设置”→“隐私与安全性”→“录屏与系统录音”中启用。</string>
+	<key>Shotnix restarts to switch languages. You can also set it in System Settings → General → Language &amp; Region → Applications.</key>
+	<string>切换语言时，Shotnix 会退出并重新打开。你也可以在“系统设置”→“通用”→“语言与地区”→“应用程序”中设置。</string>
 	<key>Shotnix will wrap these up before it quits.</key>
 	<string>Shotnix 会在退出前完成这些任务。</string>
 	<key>Shotnix – Capture History</key>
@@ -2766,6 +2776,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>在播放头处将摄像头切换为全屏以讲解要点，或与屏幕并排显示。每次切换都会显示在“摄像头”轨道上。</string>
 	<key>System Default</key>
 	<string>系统默认</string>
+	<key>System Default (%@)</key>
+	<string>系统默认（%@）</string>
 	<key>System audio</key>
 	<string>电脑声音</string>
 	<key>System audio couldn't be recorded. Try again without system audio.</key>
