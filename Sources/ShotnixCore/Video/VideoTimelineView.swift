@@ -499,6 +499,8 @@ struct VideoTimelineSurface: View {
                     Text(width > 80 ? L("\(VideoEditorModel.formatScale(region.scale)) Zoom") : VideoEditorModel.formatScale(region.scale))
                         .font(.system(size: 11, weight: .bold))
                         .monospacedDigit()
+                        // The level stays whole; the tag after it gives way first.
+                        .layoutPriority(1)
                     if width > 150 {
                         Text(region.followsCursor ? L("· follows cursor") : L("· aim by hand"))
                             .font(.system(size: 10.5, weight: .semibold))

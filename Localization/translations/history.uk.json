@@ -1,0 +1,181 @@
+{
+  "%@ capture from %@" : {
+    "uk" : "Знімок (%@) від %@"
+  },
+  "%@ capture, %@" : {
+    "uk" : "Знімок (%@), %@"
+  },
+  "%@ · %@ × %@ image" : {
+    "uk" : "%@ · зображення %@ × %@"
+  },
+  "%lld of %lld captures" : {
+    "uk" : "%lld з %lld знімків"
+  },
+  "%lld saved captures · drag any card to Finder · right-click for more actions" : {
+    "uk" : {
+      "few" : "%lld збережені знімки · перетягуйте картки у Finder · права кнопка — інші дії",
+      "many" : "%lld збережених знімків · перетягуйте картки у Finder · права кнопка — інші дії",
+      "one" : "%lld збережений знімок · перетягуйте картки у Finder · права кнопка — інші дії",
+      "other" : "%lld збереженого знімка · перетягуйте картки у Finder · права кнопка — інші дії"
+    }
+  },
+  "%lld screenshots deleted — click or press ⌘Z to undo" : {
+    "uk" : {
+      "few" : "%lld знімки видалено — клацніть або натисніть ⌘Z, щоб відмінити",
+      "many" : "%lld знімків видалено — клацніть або натисніть ⌘Z, щоб відмінити",
+      "one" : "%lld знімок видалено — клацніть або натисніть ⌘Z, щоб відмінити",
+      "other" : "%lld знімка видалено — клацніть або натисніть ⌘Z, щоб відмінити"
+    }
+  },
+  "All Captures" : {
+    "uk" : "Усі знімки"
+  },
+  "All captures are moved to Shotnix’s trash and permanently deleted after %lld days." : {
+    "uk" : {
+      "few" : "Усі знімки буде переміщено в кошик Shotnix і остаточно видалено через %lld дні.",
+      "many" : "Усі знімки буде переміщено в кошик Shotnix і остаточно видалено через %lld днів.",
+      "one" : "Усі знімки буде переміщено в кошик Shotnix і остаточно видалено через %lld день.",
+      "other" : "Усі знімки буде переміщено в кошик Shotnix і остаточно видалено через %lld дня."
+    }
+  },
+  "Capture" : {
+    "uk" : "Знімок"
+  },
+  "Capture History" : {
+    "uk" : "Історія знімків"
+  },
+  "Capture from %@" : {
+    "uk" : "Знімок від %@"
+  },
+  "Capture type" : {
+    "uk" : "Тип знімка"
+  },
+  "Capture, %@" : {
+    "uk" : "Знімок, %@"
+  },
+  "Captured screenshots will appear here instantly" : {
+    "uk" : "Нові знімки екрана одразу з’являтимуться тут"
+  },
+  "Captures" : {
+    "uk" : "Знімки"
+  },
+  "Choose Capture Area in the Shotnix menu to start" : {
+    "uk" : "Щоб почати, виберіть «Зняти область» у меню Shotnix"
+  },
+  "Clear All" : {
+    "uk" : "Очистити все"
+  },
+  "Clear History" : {
+    "uk" : "Очистити історію"
+  },
+  "Clear History?" : {
+    "uk" : "Очистити історію?"
+  },
+  "Copy capture to clipboard" : {
+    "uk" : "Скопіювати знімок у буфер обміну"
+  },
+  "Could not copy this capture" : {
+    "uk" : "Не вдалося скопіювати цей знімок"
+  },
+  "Delete All" : {
+    "uk" : "Видалити все"
+  },
+  "Delete Screenshot" : {
+    "uk" : "Видалити знімок"
+  },
+  "Delete Screenshots" : {
+    "uk" : "Видалити знімки"
+  },
+  "Delete every saved capture" : {
+    "uk" : "Видалити всі збережені знімки"
+  },
+  "Enjoying Shotnix? Star it on GitHub so more people find it." : {
+    "uk" : "Подобається Shotnix? Поставте зірку на GitHub, щоб про Shotnix дізналося більше людей."
+  },
+  "Forever" : {
+    "uk" : "Назавжди"
+  },
+  "History cleared — click or press ⌘Z to undo" : {
+    "uk" : "Історію очищено — клацніть або натисніть ⌘Z, щоб відмінити"
+  },
+  "Last %lld captures" : {
+    "uk" : {
+      "few" : "Останні %lld знімки",
+      "many" : "Останні %lld знімків",
+      "one" : "Останній %lld знімок",
+      "other" : "Останні %lld знімка"
+    }
+  },
+  "Manage" : {
+    "uk" : "Керувати"
+  },
+  "No captures contain “%@”" : {
+    "uk" : "Жоден знімок не містить «%@»"
+  },
+  "No captures of this type" : {
+    "uk" : "Немає знімків цього типу"
+  },
+  "No captures yet" : {
+    "uk" : "Ще немає знімків"
+  },
+  "No saved captures yet" : {
+    "uk" : "Ще немає збережених знімків"
+  },
+  "Not now" : {
+    "uk" : "Не зараз"
+  },
+  "Older" : {
+    "uk" : "Раніше"
+  },
+  "Open in annotation editor" : {
+    "uk" : "Відкрити в редакторі знімків"
+  },
+  "Pin to Screen" : {
+    "uk" : "Закріпити на екрані"
+  },
+  "Press %@ to take your first screenshot" : {
+    "uk" : "Натисніть %@, щоб зробити перший знімок екрана"
+  },
+  "SHOTNIX LIBRARY" : {
+    "uk" : "МЕДІАТЕКА SHOTNIX"
+  },
+  "Saved" : {
+    "uk" : "Збережено"
+  },
+  "Saved capture" : {
+    "uk" : "Збережений знімок"
+  },
+  "Saving captures to History" : {
+    "uk" : "Збереження знімків в історію"
+  },
+  "Scrolling" : {
+    "uk" : "Прокручування"
+  },
+  "Scrolling capture" : {
+    "uk" : "Знімок із прокручуванням"
+  },
+  "Search text in captures" : {
+    "uk" : "Шукати текст у знімках"
+  },
+  "Shotnix – Capture History" : {
+    "uk" : "Shotnix — Історія знімків"
+  },
+  "Show one kind of capture" : {
+    "uk" : "Показати лише один тип знімків"
+  },
+  "Star on GitHub" : {
+    "uk" : "Поставити зірку"
+  },
+  "This Week" : {
+    "uk" : "Цього тижня"
+  },
+  "Today" : {
+    "uk" : "Сьогодні"
+  },
+  "Yesterday" : {
+    "uk" : "Учора"
+  },
+  "“%@” found in %lld of %lld captures" : {
+    "uk" : "«%@» знайдено в %lld з %lld знімків"
+  }
+}

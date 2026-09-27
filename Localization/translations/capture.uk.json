@@ -1,0 +1,794 @@
+{
+  "%@ found" : {
+    "uk" : "Знайдено: %@"
+  },
+  "%@ quality · %@" : {
+    "uk" : "Якість: %@ · %@"
+  },
+  "%@ · %@ px" : {
+    "uk" : "%@ · %@ px"
+  },
+  "%@ · %lld fps" : {
+    "uk" : "%@ · %lld fps"
+  },
+  "%@ × %@ px" : {
+    "uk" : "%@ × %@ px"
+  },
+  "%@, %@" : {
+    "uk" : "%@, %@"
+  },
+  "%@: %@" : {
+    "uk" : "%@: %@"
+  },
+  "%lld QR codes found" : {
+    "uk" : {
+      "few" : "Знайдено %lld QR-коди",
+      "many" : "Знайдено %lld QR-кодів",
+      "one" : "Знайдено %lld QR-код",
+      "other" : "Знайдено %lld QR-коду"
+    }
+  },
+  "%lld barcodes found" : {
+    "uk" : {
+      "few" : "Знайдено %lld штрихкоди",
+      "many" : "Знайдено %lld штрихкодів",
+      "one" : "Знайдено %lld штрихкод",
+      "other" : "Знайдено %lld штрихкоду"
+    }
+  },
+  "%lld email addresses" : {
+    "uk" : {
+      "few" : "%lld адреси ел. пошти",
+      "many" : "%lld адрес ел. пошти",
+      "one" : "%lld адреса ел. пошти",
+      "other" : "%lld адреси ел. пошти"
+    }
+  },
+  "%lld lines" : {
+    "uk" : {
+      "few" : "%lld рядки",
+      "many" : "%lld рядків",
+      "one" : "%lld рядок",
+      "other" : "%lld рядка"
+    }
+  },
+  "%lld lines · found %@" : {
+    "uk" : {
+      "few" : "%lld рядки · знайдено: %@",
+      "many" : "%lld рядків · знайдено: %@",
+      "one" : "%lld рядок · знайдено: %@",
+      "other" : "%lld рядка · знайдено: %@"
+    }
+  },
+  "%lld links" : {
+    "uk" : {
+      "few" : "%lld посилання",
+      "many" : "%lld посилань",
+      "one" : "%lld посилання",
+      "other" : "%lld посилання"
+    }
+  },
+  "%lld px · Esc or Done finishes" : {
+    "uk" : "%lld px · Esc або «Готово» — завершити"
+  },
+  "%lld s" : {
+    "uk" : "%lld с"
+  },
+  "%lld screens" : {
+    "uk" : {
+      "few" : "%lld екрани",
+      "many" : "%lld екранів",
+      "one" : "%lld екран",
+      "other" : "%lld екрана"
+    }
+  },
+  "%lld seconds" : {
+    "uk" : {
+      "few" : "%lld секунди",
+      "many" : "%lld секунд",
+      "one" : "%lld секунда",
+      "other" : "%lld секунди"
+    }
+  },
+  "All Displays" : {
+    "uk" : "Усі дисплеї"
+  },
+  "Allow Shotnix in Accessibility — shortcuts turn on by themselves." : {
+    "uk" : "Дозвольте Shotnix у розділі «Доступність» — скорочення ввімкнуться самі."
+  },
+  "App" : {
+    "uk" : "Програма"
+  },
+  "Balanced" : {
+    "uk" : "Збалансована"
+  },
+  "Barcode" : {
+    "uk" : "Штрихкод"
+  },
+  "Barcode copied to clipboard" : {
+    "uk" : "Штрихкод скопійовано в буфер обміну"
+  },
+  "Barcodes" : {
+    "uk" : "Штрихкоди"
+  },
+  "Call" : {
+    "uk" : "Зателефонувати"
+  },
+  "Camera" : {
+    "uk" : "Камера"
+  },
+  "Camera access is off — allow Shotnix in System Settings → Privacy & Security → Camera." : {
+    "uk" : "Доступ до камери вимкнено — дозвольте його для Shotnix: Системні параметри → Приватність і безпека → Камера."
+  },
+  "Camera disconnected" : {
+    "uk" : "Камеру від’єднано"
+  },
+  "Camera disconnected." : {
+    "uk" : "Камеру від’єднано."
+  },
+  "Camera disconnected. The recording continues without it." : {
+    "uk" : "Камеру від’єднано. Запис триває без неї."
+  },
+  "Camera preview" : {
+    "uk" : "Перегляд камери"
+  },
+  "Camera stopped" : {
+    "uk" : "Збій камери"
+  },
+  "Cancel Recording" : {
+    "uk" : "Скасувати запис"
+  },
+  "Capture  ⏎" : {
+    "uk" : "Зняти  ⏎"
+  },
+  "Capture failed" : {
+    "uk" : "Не вдалося зробити знімок"
+  },
+  "Choose" : {
+    "uk" : "Вибрати"
+  },
+  "Choose screen" : {
+    "uk" : "Вибрати екран"
+  },
+  "Choose window" : {
+    "uk" : "Вибрати вікно"
+  },
+  "Click a window to capture it  ·  Esc cancels" : {
+    "uk" : "Клацніть вікно, щоб зняти його  ·  Esc — скасувати"
+  },
+  "Click or press Esc to cancel" : {
+    "uk" : "Клацніть або натисніть Esc, щоб скасувати"
+  },
+  "Close" : {
+    "uk" : "Закрити"
+  },
+  "Close All Pins" : {
+    "uk" : "Закрити всі"
+  },
+  "Close Pin" : {
+    "uk" : "Закрити"
+  },
+  "Compose Email" : {
+    "uk" : "Написати лист"
+  },
+  "Copy %@" : {
+    "uk" : "Скопіювати %@"
+  },
+  "Copy Text" : {
+    "uk" : "Скопіювати текст"
+  },
+  "Copy as Table" : {
+    "uk" : "Скопіювати як таблицю"
+  },
+  "Copy image to clipboard" : {
+    "uk" : "Скопіювати зображення в буфер обміну"
+  },
+  "Copy recognized text (OCR)" : {
+    "uk" : "Скопіювати розпізнаний текст (OCR)"
+  },
+  "Copy the rows tab-separated, ready to paste into a spreadsheet" : {
+    "uk" : "Скопіювати рядки, розділені табуляцією, щоб вставити в електронну таблицю"
+  },
+  "Could not copy the screenshot" : {
+    "uk" : "Не вдалося скопіювати знімок екрана"
+  },
+  "Could not list windows. Check permissions." : {
+    "uk" : "Не вдалося отримати список вікон. Перевірте дозволи."
+  },
+  "Could not save the recording (%@)." : {
+    "uk" : "Не вдалося зберегти запис (%@)."
+  },
+  "Could not save the recording." : {
+    "uk" : "Не вдалося зберегти запис."
+  },
+  "Could not start recording (%@)." : {
+    "uk" : "Не вдалося почати запис (%@)."
+  },
+  "Couldn't create the video file." : {
+    "uk" : "Не вдалося створити відеофайл."
+  },
+  "Countdown" : {
+    "uk" : "Зворотний відлік"
+  },
+  "Cursor" : {
+    "uk" : "Курсор"
+  },
+  "Decoded details" : {
+    "uk" : "Розкодовані дані"
+  },
+  "Discard" : {
+    "uk" : "Відкинути"
+  },
+  "Discard recording" : {
+    "uk" : "Відкинути запис"
+  },
+  "Discard this recording?" : {
+    "uk" : "Відкинути запис?"
+  },
+  "Disk almost full" : {
+    "uk" : "Диск майже повний"
+  },
+  "Display" : {
+    "uk" : "Дисплей"
+  },
+  "Display %lld" : {
+    "uk" : "Дисплей %lld"
+  },
+  "Display %lld · Main" : {
+    "uk" : "Дисплей %lld · основний"
+  },
+  "Done" : {
+    "uk" : "Готово"
+  },
+  "Double-click to edit, or drag into another app. Command-C copies, Command-S saves, Escape dismisses." : {
+    "uk" : "Двічі клацніть, щоб редагувати, або перетягніть в іншу програму. Command-C копіює, Command-S зберігає, Escape закриває."
+  },
+  "Drag edges or corners to resize  ·  Arrow keys nudge (⇧ ×10)  ·  Return captures  ·  Esc cancels" : {
+    "uk" : "Тягніть краї чи кути, щоб змінити розмір  ·  Стрілки зсувають (⇧ ×10)  ·  Return — зняти  ·  Esc — скасувати"
+  },
+  "Drag to capture  ·  Hold ⇧ as you let go to adjust first  ·  Space moves  ·  Esc cancels" : {
+    "uk" : "Перетягніть, щоб зняти  ·  Утримуйте ⇧, коли відпускаєте, щоб спершу налаштувати  ·  Пробіл — перемістити  ·  Esc — скасувати"
+  },
+  "Drag to move. Press Command-C to copy, Escape to close." : {
+    "uk" : "Перетягніть, щоб перемістити. Натисніть Command-C, щоб скопіювати, або Escape, щоб закрити."
+  },
+  "Drag to select, then adjust  ·  Hold ⇧ as you let go to capture right away  ·  Esc cancels" : {
+    "uk" : "Перетягніть, щоб вибрати, а потім налаштуйте  ·  Утримуйте ⇧, коли відпускаєте, щоб зняти одразу  ·  Esc — скасувати"
+  },
+  "Editable Cursor" : {
+    "uk" : "Редагований курсор"
+  },
+  "Email" : {
+    "uk" : "Ел. пошта"
+  },
+  "Email %@" : {
+    "uk" : "Написати на %@"
+  },
+  "Email QR found" : {
+    "uk" : "Знайдено QR-код з ел. адресою"
+  },
+  "Email address copied" : {
+    "uk" : "Ел. адресу скопійовано"
+  },
+  "Esc or Done finishes" : {
+    "uk" : "Esc або «Готово» — завершити"
+  },
+  "Estimated file size. Still screens take less." : {
+    "uk" : "Орієнтовний розмір файлу. Статичний екран займає менше."
+  },
+  "Estimated size %@" : {
+    "uk" : "Орієнтовний розмір: %@"
+  },
+  "Finish or cancel the current recording setup" : {
+    "uk" : "Завершіть або скасуйте поточну підготовку до запису"
+  },
+  "Frame rate" : {
+    "uk" : "Частота кадрів"
+  },
+  "Hidden network" : {
+    "uk" : "Прихована мережа"
+  },
+  "High" : {
+    "uk" : "Висока"
+  },
+  "Keep" : {
+    "uk" : "Залишити"
+  },
+  "Keyboard shortcuts are on" : {
+    "uk" : "Клавіатурні скорочення ввімкнено"
+  },
+  "Link" : {
+    "uk" : "Посилання"
+  },
+  "Link QR found" : {
+    "uk" : "Знайдено QR-код із посиланням"
+  },
+  "Link copied" : {
+    "uk" : "Посилання скопійовано"
+  },
+  "Links" : {
+    "uk" : "Посилання"
+  },
+  "Links (%lld of %lld)" : {
+    "uk" : "Посилання (%lld з %lld)"
+  },
+  "Max" : {
+    "uk" : "Максимальна"
+  },
+  "Maximum length reached" : {
+    "uk" : "Досягнуто максимальної довжини"
+  },
+  "Message" : {
+    "uk" : "Повідомлення"
+  },
+  "Message QR found" : {
+    "uk" : "Знайдено QR-код із повідомленням"
+  },
+  "Mic disconnected" : {
+    "uk" : "Немає мікрофона"
+  },
+  "Mic stopped" : {
+    "uk" : "Збій мікрофона"
+  },
+  "Mic switched" : {
+    "uk" : "Мікрофон змінено"
+  },
+  "Microphone" : {
+    "uk" : "Мікрофон"
+  },
+  "Microphone access is off, so this recording has no mic." : {
+    "uk" : "Доступ до мікрофона вимкнено, тому в цьому записі немає звуку з мікрофона."
+  },
+  "Microphone access is off. Allow Shotnix in System Settings → Privacy & Security → Microphone." : {
+    "uk" : "Доступ до мікрофона вимкнено. Дозвольте його для Shotnix: Системні параметри → Приватність і безпека → Мікрофон."
+  },
+  "Microphone disconnected. Now recording from %@." : {
+    "uk" : "Мікрофон від’єднано. Тепер запис іде з «%@»."
+  },
+  "Microphone disconnected. The recording continues without it." : {
+    "uk" : "Мікрофон від’єднано. Запис триває без нього."
+  },
+  "Microphone level" : {
+    "uk" : "Рівень мікрофона"
+  },
+  "More recording options" : {
+    "uk" : "Інші параметри запису"
+  },
+  "Network" : {
+    "uk" : "Мережа"
+  },
+  "No" : {
+    "uk" : "Ні"
+  },
+  "No barcode found in this selection" : {
+    "uk" : "У вибраній області не знайдено штрихкоду"
+  },
+  "No camera connected" : {
+    "uk" : "Камеру не під’єднано"
+  },
+  "No camera found." : {
+    "uk" : "Камеру не знайдено."
+  },
+  "No microphone connected" : {
+    "uk" : "Мікрофон не під’єднано"
+  },
+  "No microphone is connected, so this recording has no mic." : {
+    "uk" : "Мікрофон не під’єднано, тому в цьому записі немає звуку з мікрофона."
+  },
+  "No recordable windows found" : {
+    "uk" : "Не знайдено вікон для запису"
+  },
+  "No recording in progress" : {
+    "uk" : "Запис не триває"
+  },
+  "No sound from the microphone" : {
+    "uk" : "Немає звуку з мікрофона"
+  },
+  "No text found in this selection" : {
+    "uk" : "У вибраній області не знайдено тексту"
+  },
+  "Not enough disk space to record." : {
+    "uk" : "Недостатньо місця на диску для запису."
+  },
+  "Not enough free disk space for this recording: it needs about %@ free, and %@ is available. Free up some space and try again." : {
+    "uk" : "Недостатньо вільного місця на диску для цього запису: потрібно приблизно %@, а доступно %@. Звільніть трохи місця й спробуйте ще раз."
+  },
+  "Not enough free disk space for this recording: it needs about %@ free, and %@ is available. Free up space, or choose Balanced quality or 30 fps." : {
+    "uk" : "Недостатньо вільного місця на диску для цього запису: потрібно приблизно %@, а доступно %@. Звільніть місце або виберіть якість «Збалансована» чи 30 fps."
+  },
+  "Nothing was recorded — the screen didn't send any picture. Try again." : {
+    "uk" : "Нічого не записано — екран не передав жодного зображення. Спробуйте ще раз."
+  },
+  "Off" : {
+    "uk" : "Вимкнено"
+  },
+  "Open" : {
+    "uk" : "Відкрити"
+  },
+  "Open %@" : {
+    "uk" : "Відкрити %@"
+  },
+  "Open Editor After Recording" : {
+    "uk" : "Відкривати редактор після запису"
+  },
+  "Open Link" : {
+    "uk" : "Відкрити посилання"
+  },
+  "Open Messages" : {
+    "uk" : "Відкрити Повідомлення"
+  },
+  "Password" : {
+    "uk" : "Пароль"
+  },
+  "Pause recording" : {
+    "uk" : "Призупинити запис"
+  },
+  "Pause recording (%@)" : {
+    "uk" : "Призупинити запис (%@)"
+  },
+  "Paused" : {
+    "uk" : "Призупинено"
+  },
+  "Phone" : {
+    "uk" : "Телефон"
+  },
+  "Phone QR found" : {
+    "uk" : "Знайдено QR-код із номером телефону"
+  },
+  "Pin" : {
+    "uk" : "Закріпити"
+  },
+  "Pinned Screenshot" : {
+    "uk" : "Закріплений знімок"
+  },
+  "Pinned screenshot" : {
+    "uk" : "Закріплений знімок"
+  },
+  "Preview the target, then continue to recording controls." : {
+    "uk" : "Перевірте, що буде записано, а потім перейдіть до керування записом."
+  },
+  "QR Code" : {
+    "uk" : "QR-код"
+  },
+  "QR Codes" : {
+    "uk" : "QR-коди"
+  },
+  "QR copied to clipboard" : {
+    "uk" : "QR-код скопійовано в буфер обміну"
+  },
+  "Quality" : {
+    "uk" : "Якість"
+  },
+  "Recognized Text" : {
+    "uk" : "Розпізнаний текст"
+  },
+  "Recognized text" : {
+    "uk" : "Розпізнаний текст"
+  },
+  "Record" : {
+    "uk" : "Записати"
+  },
+  "Record (Return)" : {
+    "uk" : "Записати (Return)"
+  },
+  "Recording" : {
+    "uk" : "Запис"
+  },
+  "Recording already in progress" : {
+    "uk" : "Запис уже триває"
+  },
+  "Recording canceled" : {
+    "uk" : "Запис скасовано"
+  },
+  "Recording controls" : {
+    "uk" : "Керування записом"
+  },
+  "Recording discarded" : {
+    "uk" : "Запис відкинуто"
+  },
+  "Recording failed before saving." : {
+    "uk" : "Під час запису сталася помилка, і його не збережено."
+  },
+  "Recording keyboard shortcuts" : {
+    "uk" : "Записуються клавіатурні скорочення"
+  },
+  "Recording stopped early — saved what was captured." : {
+    "uk" : "Запис зупинився завчасно — записане збережено."
+  },
+  "Recording the camera" : {
+    "uk" : "Записується камера"
+  },
+  "Recording time" : {
+    "uk" : "Тривалість запису"
+  },
+  "Recording without the camera." : {
+    "uk" : "Запис без камери."
+  },
+  "Records %@ × %@ pixels (%@ × %@ points)" : {
+    "uk" : "Записує %@ × %@ пікселів (%@ × %@ точок)"
+  },
+  "Records the pointer separately, so the editor can smooth it, resize it, and keep it crisp when zoomed." : {
+    "uk" : "Записує курсор окремо, щоб редактор міг згладжувати його, змінювати розмір і зберігати чіткість під час наближення."
+  },
+  "Resize" : {
+    "uk" : "Змінити розмір"
+  },
+  "Resume recording" : {
+    "uk" : "Продовжити запис"
+  },
+  "Resume recording (%@)" : {
+    "uk" : "Продовжити запис (%@)"
+  },
+  "Review the decoded email payload before copying." : {
+    "uk" : "Перш ніж копіювати, перевірте розкодовані дані листа."
+  },
+  "Review the decoded link before opening." : {
+    "uk" : "Перш ніж відкривати, перевірте розкодоване посилання."
+  },
+  "Review the decoded link before opening: %@" : {
+    "uk" : "Перш ніж відкривати, перевірте розкодоване посилання: %@"
+  },
+  "Review the decoded text before copying." : {
+    "uk" : "Перш ніж копіювати, перевірте розкодований текст."
+  },
+  "Review the decoded values before copying or opening." : {
+    "uk" : "Перш ніж копіювати чи відкривати, перевірте розкодовані значення."
+  },
+  "Review the email details before composing." : {
+    "uk" : "Перш ніж писати лист, перевірте його дані."
+  },
+  "Review the message details before opening." : {
+    "uk" : "Перш ніж відкривати, перевірте дані повідомлення."
+  },
+  "Review the network details before copying." : {
+    "uk" : "Перш ніж копіювати, перевірте дані мережі."
+  },
+  "Review the phone number before opening." : {
+    "uk" : "Перш ніж відкривати, перевірте номер телефону."
+  },
+  "Save" : {
+    "uk" : "Зберегти"
+  },
+  "Save screenshot to disk" : {
+    "uk" : "Зберегти знімок екрана на диск"
+  },
+  "Saved %@ to %@ — click to reveal in Finder" : {
+    "uk" : "«%1$@» збережено в «%2$@» — клацніть, щоб показати у Finder"
+  },
+  "Saved to %@: %@" : {
+    "uk" : "Збережено в «%@»: %@"
+  },
+  "Saving the last recording…" : {
+    "uk" : "Збереження останнього запису…"
+  },
+  "Saving the recording…" : {
+    "uk" : "Збереження запису…"
+  },
+  "Saving the screen recording" : {
+    "uk" : "Збереження запису екрана"
+  },
+  "Saving…" : {
+    "uk" : "Збереження…"
+  },
+  "Screen recording didn't start in time. Try again." : {
+    "uk" : "Запис екрана не почався вчасно. Спробуйте ще раз."
+  },
+  "Screenshot captured" : {
+    "uk" : "Знімок екрана зроблено"
+  },
+  "Screenshot selection" : {
+    "uk" : "Вибір області для знімка"
+  },
+  "Screenshot thumbnail" : {
+    "uk" : "Мініатюра знімка екрана"
+  },
+  "Scroll down to capture" : {
+    "uk" : "Прокрутіть униз, щоб зняти"
+  },
+  "Scroll down to capture more" : {
+    "uk" : "Прокручуйте далі вниз"
+  },
+  "Scrolled too fast — scroll back up a little" : {
+    "uk" : "Надто швидко — прокрутіть трохи назад"
+  },
+  "Scrolling capture controls" : {
+    "uk" : "Керування знімком із прокручуванням"
+  },
+  "Scrolling capture failed" : {
+    "uk" : "Не вдалося зробити знімок із прокручуванням"
+  },
+  "Scrolling capture reached its maximum length (%lld points) and finished." : {
+    "uk" : {
+      "few" : "Знімок із прокручуванням досяг максимальної довжини (%lld точки) і завершився.",
+      "many" : "Знімок із прокручуванням досяг максимальної довжини (%lld точок) і завершився.",
+      "one" : "Знімок із прокручуванням досяг максимальної довжини (%lld точка) і завершився.",
+      "other" : "Знімок із прокручуванням досяг максимальної довжини (%lld точки) і завершився."
+    }
+  },
+  "Scrolling capture stopped after %lld minutes." : {
+    "uk" : {
+      "few" : "Знімок із прокручуванням зупинився через %lld хвилини.",
+      "many" : "Знімок із прокручуванням зупинився через %lld хвилин.",
+      "one" : "Знімок із прокручуванням зупинився через %lld хвилину.",
+      "other" : "Знімок із прокручуванням зупинився через %lld хвилини."
+    }
+  },
+  "Security" : {
+    "uk" : "Безпека"
+  },
+  "Select a window to record without blocking other apps" : {
+    "uk" : "Виберіть вікно для запису, не блокуючи інших програм"
+  },
+  "Select which display to record fullscreen" : {
+    "uk" : "Виберіть дисплей для запису на весь екран"
+  },
+  "Selection %@ by %@ points" : {
+    "uk" : "Вибір: %@ на %@ точок"
+  },
+  "Selection %@ by %@ points. Arrow keys move it, Return captures, Escape cancels." : {
+    "uk" : "Вибір: %@ на %@ точок. Клавіші зі стрілками переміщують його, Return знімає, Escape скасовує."
+  },
+  "Shotnix can't write to the save folder. Choose another one in Settings → Screenshots." : {
+    "uk" : "Shotnix не може записувати в папку збереження. Виберіть іншу в розділі Параметри → Знімки екрана."
+  },
+  "Shotnix isn't allowed to record the screen. Turn it on in System Settings → Privacy & Security → Screen & System Audio Recording." : {
+    "uk" : "Shotnix не має дозволу на запис екрана. Увімкніть його тут: Системні параметри → Приватність і безпека → Записування системного звуку й екрана."
+  },
+  "Show keyboard shortcuts" : {
+    "uk" : "Показувати клавіатурні скорочення"
+  },
+  "Skipping frames" : {
+    "uk" : "Пропуск кадрів"
+  },
+  "Still saving the last recording — try again in a moment." : {
+    "uk" : "Останній запис ще зберігається — спробуйте за мить."
+  },
+  "Still saving the recording…" : {
+    "uk" : "Запис ще зберігається…"
+  },
+  "Stitching…" : {
+    "uk" : "Склеювання…"
+  },
+  "Stop recording" : {
+    "uk" : "Зупинити запис"
+  },
+  "Stop recording (%@)" : {
+    "uk" : "Зупинити запис (%@)"
+  },
+  "Subject" : {
+    "uk" : "Тема"
+  },
+  "System Default" : {
+    "uk" : "Як у системі"
+  },
+  "System audio" : {
+    "uk" : "Системний звук"
+  },
+  "System audio couldn't be recorded. Try again without system audio." : {
+    "uk" : "Не вдалося записати системний звук. Спробуйте ще раз без системного звуку."
+  },
+  "Table copied — paste it into a spreadsheet" : {
+    "uk" : "Таблицю скопійовано — вставте її в електронну таблицю"
+  },
+  "Text QR found" : {
+    "uk" : "Знайдено QR-код із текстом"
+  },
+  "Text copied" : {
+    "uk" : "Текст скопійовано"
+  },
+  "Text copied to clipboard" : {
+    "uk" : "Текст скопійовано в буфер обміну"
+  },
+  "Text recognition failed" : {
+    "uk" : "Не вдалося розпізнати текст"
+  },
+  "That display isn't available anymore." : {
+    "uk" : "Цей дисплей більше не доступний."
+  },
+  "That display or window isn't available anymore." : {
+    "uk" : "Цей дисплей або вікно більше не доступні."
+  },
+  "That window closed before recording could start." : {
+    "uk" : "Вікно закрилося до початку запису."
+  },
+  "The camera couldn't start." : {
+    "uk" : "Не вдалося запустити камеру."
+  },
+  "The camera stopped. The recording continues without it." : {
+    "uk" : "Камера зупинилася. Запис триває без неї."
+  },
+  "The microphone couldn't start, so this recording has no mic." : {
+    "uk" : "Не вдалося запустити мікрофон, тому в цьому записі немає звуку з мікрофона."
+  },
+  "The microphone stopped working. The recording continues without it." : {
+    "uk" : "Мікрофон перестав працювати. Запис триває без нього."
+  },
+  "The recording couldn't be finished — saved the first %@." : {
+    "uk" : "Не вдалося завершити запис — збережено перші %@."
+  },
+  "The window you're recording closed. Stop when you're ready — the recording keeps going." : {
+    "uk" : "Вікно, яке ви записуєте, закрилося. Зупиніть запис, коли будете готові, — він триває."
+  },
+  "To" : {
+    "uk" : "Кому"
+  },
+  "URL" : {
+    "uk" : "URL"
+  },
+  "Warning" : {
+    "uk" : "Попередження"
+  },
+  "Wi-Fi" : {
+    "uk" : "Wi-Fi"
+  },
+  "Wi-Fi QR found" : {
+    "uk" : "Знайдено QR-код Wi-Fi"
+  },
+  "Window capture" : {
+    "uk" : "Знімок вікна"
+  },
+  "Window closed" : {
+    "uk" : "Вікно закрито"
+  },
+  "Yes" : {
+    "uk" : "Так"
+  },
+  "Your Mac can't keep up with this recording and is skipping frames. Balanced quality or 30 fps will help." : {
+    "uk" : "Ваш Mac не встигає за цим записом і пропускає кадри. Допоможе якість «Збалансована» або 30 fps."
+  },
+  "Your disk filled up — saved the first %@." : {
+    "uk" : "Диск заповнився — збережено перші %@."
+  },
+  "Your disk is almost full, so the recording stopped. It's saved." : {
+    "uk" : "Диск майже заповнено, тому запис зупинено. Його збережено."
+  },
+  "Your disk is almost full. In about %lld minutes the recording stops and saves itself." : {
+    "uk" : {
+      "few" : "Диск майже заповнено. Приблизно через %lld хвилини запис зупиниться й збережеться.",
+      "many" : "Диск майже заповнено. Приблизно через %lld хвилин запис зупиниться й збережеться.",
+      "one" : "Диск майже заповнено. Приблизно через %lld хвилину запис зупиниться й збережеться.",
+      "other" : "Диск майже заповнено. Приблизно через %lld хвилини запис зупиниться й збережеться."
+    }
+  },
+  "Your disk is almost full. In about %lld seconds the recording stops and saves itself." : {
+    "uk" : {
+      "few" : "Диск майже заповнено. Приблизно через %lld секунди запис зупиниться й збережеться.",
+      "many" : "Диск майже заповнено. Приблизно через %lld секунд запис зупиниться й збережеться.",
+      "one" : "Диск майже заповнено. Приблизно через %lld секунду запис зупиниться й збережеться.",
+      "other" : "Диск майже заповнено. Приблизно через %lld секунди запис зупиниться й збережеться."
+    }
+  },
+  "Your disk is full, so the recording couldn't be saved." : {
+    "uk" : "Диск заповнено, тому не вдалося зберегти запис."
+  },
+  "a table" : {
+    "uk" : "таблиця"
+  },
+  "mic" : {
+    "uk" : "мікр."
+  },
+  "no audio" : {
+    "uk" : "без звуку"
+  },
+  "sys+mic" : {
+    "uk" : "сист.+мікр."
+  },
+  "system" : {
+    "uk" : "система"
+  },
+  "up to %@ GB/min" : {
+    "uk" : "до %@ ГБ/хв"
+  },
+  "up to %@ MB/min" : {
+    "uk" : "до %@ МБ/хв"
+  },
+  "✓ Saved screenshot" : {
+    "uk" : "✓ Знімок екрана збережено"
+  },
+  "✓ Text copied to clipboard" : {
+    "uk" : "✓ Текст скопійовано в буфер обміну"
+  },
+  "✓ Text copied · %@ — click for options" : {
+    "uk" : "✓ Текст скопійовано · %@ — клацніть, щоб побачити варіанти"
+  }
+}

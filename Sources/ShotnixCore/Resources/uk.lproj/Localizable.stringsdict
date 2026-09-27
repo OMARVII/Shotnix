@@ -1,0 +1,1466 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>%lld QR codes found</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Знайдено %lld QR-коди</string>
+			<key>many</key>
+			<string>Знайдено %lld QR-кодів</string>
+			<key>one</key>
+			<string>Знайдено %lld QR-код</string>
+			<key>other</key>
+			<string>Знайдено %lld QR-коду</string>
+		</dict>
+	</dict>
+	<key>%lld annotations</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld елементи розмітки</string>
+			<key>many</key>
+			<string>%lld елементів розмітки</string>
+			<key>one</key>
+			<string>%lld елемент розмітки</string>
+			<key>other</key>
+			<string>%lld елемента розмітки</string>
+		</dict>
+	</dict>
+	<key>%lld annotations, %@ selected</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld елементи розмітки, вибрано: %@</string>
+			<key>many</key>
+			<string>%lld елементів розмітки, вибрано: %@</string>
+			<key>one</key>
+			<string>%lld елемент розмітки, вибрано: %@</string>
+			<key>other</key>
+			<string>%lld елемента розмітки, вибрано: %@</string>
+		</dict>
+	</dict>
+	<key>%lld annotations, %@ selected, cropping</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld елементи розмітки, вибрано: %@, обрізання</string>
+			<key>many</key>
+			<string>%lld елементів розмітки, вибрано: %@, обрізання</string>
+			<key>one</key>
+			<string>%lld елемент розмітки, вибрано: %@, обрізання</string>
+			<key>other</key>
+			<string>%lld елемента розмітки, вибрано: %@, обрізання</string>
+		</dict>
+	</dict>
+	<key>%lld annotations, cropping</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld елементи розмітки, обрізання</string>
+			<key>many</key>
+			<string>%lld елементів розмітки, обрізання</string>
+			<key>one</key>
+			<string>%lld елемент розмітки, обрізання</string>
+			<key>other</key>
+			<string>%lld елемента розмітки, обрізання</string>
+		</dict>
+	</dict>
+	<key>%lld barcodes found</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Знайдено %lld штрихкоди</string>
+			<key>many</key>
+			<string>Знайдено %lld штрихкодів</string>
+			<key>one</key>
+			<string>Знайдено %lld штрихкод</string>
+			<key>other</key>
+			<string>Знайдено %lld штрихкоду</string>
+		</dict>
+	</dict>
+	<key>%lld camera layouts</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld макети камери</string>
+			<key>many</key>
+			<string>%lld макетів камери</string>
+			<key>one</key>
+			<string>%lld макет камери</string>
+			<key>other</key>
+			<string>%lld макета камери</string>
+		</dict>
+	</dict>
+	<key>%lld captions</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld субтитри</string>
+			<key>many</key>
+			<string>%lld субтитрів</string>
+			<key>one</key>
+			<string>%lld субтитр</string>
+			<key>other</key>
+			<string>%lld субтитру</string>
+		</dict>
+	</dict>
+	<key>%lld clicks</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld клацання</string>
+			<key>many</key>
+			<string>%lld клацань</string>
+			<key>one</key>
+			<string>%lld клацання</string>
+			<key>other</key>
+			<string>%lld клацання</string>
+		</dict>
+	</dict>
+	<key>%lld clips</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld кліпи</string>
+			<key>many</key>
+			<string>%lld кліпів</string>
+			<key>one</key>
+			<string>%lld кліп</string>
+			<key>other</key>
+			<string>%lld кліпу</string>
+		</dict>
+	</dict>
+	<key>%lld cuts here (%@ removed) — click to restore some or all</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Тут вирізано %lld фрагменти (%@) — клацніть, щоб відновити деякі чи всі</string>
+			<key>many</key>
+			<string>Тут вирізано %lld фрагментів (%@) — клацніть, щоб відновити деякі чи всі</string>
+			<key>one</key>
+			<string>Тут вирізано %lld фрагмент (%@) — клацніть, щоб відновити</string>
+			<key>other</key>
+			<string>Тут вирізано %lld фрагмента (%@) — клацніть, щоб відновити деякі чи всі</string>
+		</dict>
+	</dict>
+	<key>%lld cuts, %@ removed</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld вирізані фрагменти, вилучено %@</string>
+			<key>many</key>
+			<string>%lld вирізаних фрагментів, вилучено %@</string>
+			<key>one</key>
+			<string>%lld вирізаний фрагмент, вилучено %@</string>
+			<key>other</key>
+			<string>%lld вирізаного фрагмента, вилучено %@</string>
+		</dict>
+	</dict>
+	<key>%lld days</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld дні</string>
+			<key>many</key>
+			<string>%lld днів</string>
+			<key>one</key>
+			<string>%lld день</string>
+			<key>other</key>
+			<string>%lld дня</string>
+		</dict>
+	</dict>
+	<key>%lld email addresses</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld адреси ел. пошти</string>
+			<key>many</key>
+			<string>%lld адрес ел. пошти</string>
+			<key>one</key>
+			<string>%lld адреса ел. пошти</string>
+			<key>other</key>
+			<string>%lld адреси ел. пошти</string>
+		</dict>
+	</dict>
+	<key>%lld lines</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld рядки</string>
+			<key>many</key>
+			<string>%lld рядків</string>
+			<key>one</key>
+			<string>%lld рядок</string>
+			<key>other</key>
+			<string>%lld рядка</string>
+		</dict>
+	</dict>
+	<key>%lld lines changed since translating</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld рядки змінено після перекладу</string>
+			<key>many</key>
+			<string>%lld рядків змінено після перекладу</string>
+			<key>one</key>
+			<string>%lld рядок змінено після перекладу</string>
+			<key>other</key>
+			<string>%lld рядка змінено після перекладу</string>
+		</dict>
+	</dict>
+	<key>%lld lines · found %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld рядки · знайдено: %@</string>
+			<key>many</key>
+			<string>%lld рядків · знайдено: %@</string>
+			<key>one</key>
+			<string>%lld рядок · знайдено: %@</string>
+			<key>other</key>
+			<string>%lld рядка · знайдено: %@</string>
+		</dict>
+	</dict>
+	<key>%lld links</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld посилання</string>
+			<key>many</key>
+			<string>%lld посилань</string>
+			<key>one</key>
+			<string>%lld посилання</string>
+			<key>other</key>
+			<string>%lld посилання</string>
+		</dict>
+	</dict>
+	<key>%lld parts</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld частини</string>
+			<key>many</key>
+			<string>%lld частин</string>
+			<key>one</key>
+			<string>%lld частина</string>
+			<key>other</key>
+			<string>%lld частини</string>
+		</dict>
+	</dict>
+	<key>%lld pressed — select one on the timeline and press ⌫ to hide it</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Натиснуто %lld скорочення — виберіть одне на шкалі часу й натисніть ⌫, щоб сховати його</string>
+			<key>many</key>
+			<string>Натиснуто %lld скорочень — виберіть одне на шкалі часу й натисніть ⌫, щоб сховати його</string>
+			<key>one</key>
+			<string>Натиснуто %lld скорочення — виберіть його на шкалі часу й натисніть ⌫, щоб сховати</string>
+			<key>other</key>
+			<string>Натиснуто %lld скорочення — виберіть одне на шкалі часу й натисніть ⌫, щоб сховати його</string>
+		</dict>
+	</dict>
+	<key>%lld recorded clicks — in the preview and the export</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld записані клацання — у перегляді й експорті</string>
+			<key>many</key>
+			<string>%lld записаних клацань — у перегляді й експорті</string>
+			<key>one</key>
+			<string>%lld записане клацання — у перегляді й експорті</string>
+			<key>other</key>
+			<string>%lld записаного клацання — у перегляді й експорті</string>
+		</dict>
+	</dict>
+	<key>%lld saved captures · drag any card to Finder · right-click for more actions</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld збережені знімки · перетягуйте картки у Finder · права кнопка — інші дії</string>
+			<key>many</key>
+			<string>%lld збережених знімків · перетягуйте картки у Finder · права кнопка — інші дії</string>
+			<key>one</key>
+			<string>%lld збережений знімок · перетягуйте картки у Finder · права кнопка — інші дії</string>
+			<key>other</key>
+			<string>%lld збереженого знімка · перетягуйте картки у Finder · права кнопка — інші дії</string>
+		</dict>
+	</dict>
+	<key>%lld screens</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld екрани</string>
+			<key>many</key>
+			<string>%lld екранів</string>
+			<key>one</key>
+			<string>%lld екран</string>
+			<key>other</key>
+			<string>%lld екрана</string>
+		</dict>
+	</dict>
+	<key>%lld screenshots deleted — click or press ⌘Z to undo</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld знімки видалено — клацніть або натисніть ⌘Z, щоб відмінити</string>
+			<key>many</key>
+			<string>%lld знімків видалено — клацніть або натисніть ⌘Z, щоб відмінити</string>
+			<key>one</key>
+			<string>%lld знімок видалено — клацніть або натисніть ⌘Z, щоб відмінити</string>
+			<key>other</key>
+			<string>%lld знімка видалено — клацніть або натисніть ⌘Z, щоб відмінити</string>
+		</dict>
+	</dict>
+	<key>%lld seconds</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld секунди</string>
+			<key>many</key>
+			<string>%lld секунд</string>
+			<key>one</key>
+			<string>%lld секунда</string>
+			<key>other</key>
+			<string>%lld секунди</string>
+		</dict>
+	</dict>
+	<key>%lld shortcuts</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld скорочення</string>
+			<key>many</key>
+			<string>%lld скорочень</string>
+			<key>one</key>
+			<string>%lld скорочення</string>
+			<key>other</key>
+			<string>%lld скорочення</string>
+		</dict>
+	</dict>
+	<key>%lld zooms</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld наближення</string>
+			<key>many</key>
+			<string>%lld наближень</string>
+			<key>one</key>
+			<string>%lld наближення</string>
+			<key>other</key>
+			<string>%lld наближення</string>
+		</dict>
+	</dict>
+	<key>All captures are moved to Shotnix’s trash and permanently deleted after %lld days.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Усі знімки буде переміщено в кошик Shotnix і остаточно видалено через %lld дні.</string>
+			<key>many</key>
+			<string>Усі знімки буде переміщено в кошик Shotnix і остаточно видалено через %lld днів.</string>
+			<key>one</key>
+			<string>Усі знімки буде переміщено в кошик Shotnix і остаточно видалено через %lld день.</string>
+			<key>other</key>
+			<string>Усі знімки буде переміщено в кошик Shotnix і остаточно видалено через %lld дня.</string>
+		</dict>
+	</dict>
+	<key>Auto zoom applied — %lld zooms follow your clicks</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Автонаближення застосовано — %lld наближення стежать за вашими клацаннями</string>
+			<key>many</key>
+			<string>Автонаближення застосовано — %lld наближень стежать за вашими клацаннями</string>
+			<key>one</key>
+			<string>Автонаближення застосовано — %lld наближення стежить за вашими клацаннями</string>
+			<key>other</key>
+			<string>Автонаближення застосовано — %lld наближення стежать за вашими клацаннями</string>
+		</dict>
+	</dict>
+	<key>Auto zoom — %lld zooms</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Автонаближення — %lld наближення</string>
+			<key>many</key>
+			<string>Автонаближення — %lld наближень</string>
+			<key>one</key>
+			<string>Автонаближення — %lld наближення</string>
+			<key>other</key>
+			<string>Автонаближення — %lld наближення</string>
+		</dict>
+	</dict>
+	<key>Captions ready — %lld lines</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Субтитри готові — %lld рядки</string>
+			<key>many</key>
+			<string>Субтитри готові — %lld рядків</string>
+			<key>one</key>
+			<string>Субтитри готові — %lld рядок</string>
+			<key>other</key>
+			<string>Субтитри готові — %lld рядка</string>
+		</dict>
+	</dict>
+	<key>Cut %lld words — ⌘Z to undo</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Вирізано %lld слова — ⌘Z, щоб відмінити</string>
+			<key>many</key>
+			<string>Вирізано %lld слів — ⌘Z, щоб відмінити</string>
+			<key>one</key>
+			<string>Вирізано %lld слово — ⌘Z, щоб відмінити</string>
+			<key>other</key>
+			<string>Вирізано %lld слова — ⌘Z, щоб відмінити</string>
+		</dict>
+	</dict>
+	<key>Delete %lld Captures?</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Видалити %lld знімки?</string>
+			<key>many</key>
+			<string>Видалити %lld знімків?</string>
+			<key>one</key>
+			<string>Видалити %lld знімок?</string>
+			<key>other</key>
+			<string>Видалити %lld знімка?</string>
+		</dict>
+	</dict>
+	<key>Deleted captures waiting in History's trash and files no capture uses are removed for good, along with %lld captures past your History limit. The rest of your history stays.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Видалені знімки з кошика історії та файли, яких не використовує жоден знімок, буде вилучено назавжди, а разом із ними — %lld знімки понад обмеження історії. Решта історії залишиться.</string>
+			<key>many</key>
+			<string>Видалені знімки з кошика історії та файли, яких не використовує жоден знімок, буде вилучено назавжди, а разом із ними — %lld знімків понад обмеження історії. Решта історії залишиться.</string>
+			<key>one</key>
+			<string>Видалені знімки з кошика історії та файли, яких не використовує жоден знімок, буде вилучено назавжди, а разом із ними — %lld знімок понад обмеження історії. Решта історії залишиться.</string>
+			<key>other</key>
+			<string>Видалені знімки з кошика історії та файли, яких не використовує жоден знімок, буде вилучено назавжди, а разом із ними — %lld знімка понад обмеження історії. Решта історії залишиться.</string>
+		</dict>
+	</dict>
+	<key>Freed %@ (%lld files)</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%2$#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Звільнено %1$@ (%2$lld файли)</string>
+			<key>many</key>
+			<string>Звільнено %1$@ (%2$lld файлів)</string>
+			<key>one</key>
+			<string>Звільнено %1$@ (%2$lld файл)</string>
+			<key>other</key>
+			<string>Звільнено %1$@ (%2$lld файлу)</string>
+		</dict>
+	</dict>
+	<key>History uses %@ (%lld captures)</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%2$#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Історія займає %1$@ (%2$lld знімки)</string>
+			<key>many</key>
+			<string>Історія займає %1$@ (%2$lld знімків)</string>
+			<key>one</key>
+			<string>Історія займає %1$@ (%2$lld знімок)</string>
+			<key>other</key>
+			<string>Історія займає %1$@ (%2$lld знімка)</string>
+		</dict>
+	</dict>
+	<key>History uses … (%lld captures)</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Історія займає … (%lld знімки)</string>
+			<key>many</key>
+			<string>Історія займає … (%lld знімків)</string>
+			<key>one</key>
+			<string>Історія займає … (%lld знімок)</string>
+			<key>other</key>
+			<string>Історія займає … (%lld знімка)</string>
+		</dict>
+	</dict>
+	<key>Keeping 30 days removes %lld older captures from History now. This can't be undone.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Варіант «30 днів» одразу вилучить з історії %lld старіші знімки. Цю дію не можна відмінити.</string>
+			<key>many</key>
+			<string>Варіант «30 днів» одразу вилучить з історії %lld старіших знімків. Цю дію не можна відмінити.</string>
+			<key>one</key>
+			<string>Варіант «30 днів» одразу вилучить з історії %lld старіший знімок. Цю дію не можна відмінити.</string>
+			<key>other</key>
+			<string>Варіант «30 днів» одразу вилучить з історії %lld старішого знімка. Цю дію не можна відмінити.</string>
+		</dict>
+	</dict>
+	<key>Keeping 7 days removes %lld older captures from History now. This can't be undone.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Варіант «7 днів» одразу вилучить з історії %lld старіші знімки. Цю дію не можна відмінити.</string>
+			<key>many</key>
+			<string>Варіант «7 днів» одразу вилучить з історії %lld старіших знімків. Цю дію не можна відмінити.</string>
+			<key>one</key>
+			<string>Варіант «7 днів» одразу вилучить з історії %lld старіший знімок. Цю дію не можна відмінити.</string>
+			<key>other</key>
+			<string>Варіант «7 днів» одразу вилучить з історії %lld старішого знімка. Цю дію не можна відмінити.</string>
+		</dict>
+	</dict>
+	<key>Keeping 90 days removes %lld older captures from History now. This can't be undone.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Варіант «90 днів» одразу вилучить з історії %lld старіші знімки. Цю дію не можна відмінити.</string>
+			<key>many</key>
+			<string>Варіант «90 днів» одразу вилучить з історії %lld старіших знімків. Цю дію не можна відмінити.</string>
+			<key>one</key>
+			<string>Варіант «90 днів» одразу вилучить з історії %lld старіший знімок. Цю дію не можна відмінити.</string>
+			<key>other</key>
+			<string>Варіант «90 днів» одразу вилучить з історії %lld старішого знімка. Цю дію не можна відмінити.</string>
+		</dict>
+	</dict>
+	<key>Keeping last 1,000 captures removes %lld older captures from History now. This can't be undone.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Варіант «Останні 1 000 знімків» одразу вилучить з історії %lld старіші знімки. Цю дію не можна відмінити.</string>
+			<key>many</key>
+			<string>Варіант «Останні 1 000 знімків» одразу вилучить з історії %lld старіших знімків. Цю дію не можна відмінити.</string>
+			<key>one</key>
+			<string>Варіант «Останні 1 000 знімків» одразу вилучить з історії %lld старіший знімок. Цю дію не можна відмінити.</string>
+			<key>other</key>
+			<string>Варіант «Останні 1 000 знімків» одразу вилучить з історії %lld старішого знімка. Цю дію не можна відмінити.</string>
+		</dict>
+	</dict>
+	<key>Keeping last 100 captures removes %lld older captures from History now. This can't be undone.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Варіант «Останні 100 знімків» одразу вилучить з історії %lld старіші знімки. Цю дію не можна відмінити.</string>
+			<key>many</key>
+			<string>Варіант «Останні 100 знімків» одразу вилучить з історії %lld старіших знімків. Цю дію не можна відмінити.</string>
+			<key>one</key>
+			<string>Варіант «Останні 100 знімків» одразу вилучить з історії %lld старіший знімок. Цю дію не можна відмінити.</string>
+			<key>other</key>
+			<string>Варіант «Останні 100 знімків» одразу вилучить з історії %lld старішого знімка. Цю дію не можна відмінити.</string>
+		</dict>
+	</dict>
+	<key>Keeping last 500 captures removes %lld older captures from History now. This can't be undone.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Варіант «Останні 500 знімків» одразу вилучить з історії %lld старіші знімки. Цю дію не можна відмінити.</string>
+			<key>many</key>
+			<string>Варіант «Останні 500 знімків» одразу вилучить з історії %lld старіших знімків. Цю дію не можна відмінити.</string>
+			<key>one</key>
+			<string>Варіант «Останні 500 знімків» одразу вилучить з історії %lld старіший знімок. Цю дію не можна відмінити.</string>
+			<key>other</key>
+			<string>Варіант «Останні 500 знімків» одразу вилучить з історії %lld старішого знімка. Цю дію не можна відмінити.</string>
+		</dict>
+	</dict>
+	<key>Last %lld captures</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Останні %lld знімки</string>
+			<key>many</key>
+			<string>Останні %lld знімків</string>
+			<key>one</key>
+			<string>Останній %lld знімок</string>
+			<key>other</key>
+			<string>Останні %lld знімка</string>
+		</dict>
+	</dict>
+	<key>Plans zooms around your %lld clicks. Zooms you placed by hand are kept.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Планує наближення навколо ваших клацань (%lld). Наближення, додані вручну, залишаються.</string>
+			<key>many</key>
+			<string>Планує наближення навколо ваших клацань (%lld). Наближення, додані вручну, залишаються.</string>
+			<key>one</key>
+			<string>Планує наближення навколо ваших клацань (%lld). Наближення, додані вручну, залишаються.</string>
+			<key>other</key>
+			<string>Планує наближення навколо ваших клацань (%lld). Наближення, додані вручну, залишаються.</string>
+		</dict>
+	</dict>
+	<key>Ready · %lld optional off</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Готово · %lld необов’язкові вимкнено</string>
+			<key>many</key>
+			<string>Готово · %lld необов’язкових вимкнено</string>
+			<key>one</key>
+			<string>Готово · %lld необов’язкове вимкнено</string>
+			<key>other</key>
+			<string>Готово · %lld необов’язкового вимкнено</string>
+		</dict>
+	</dict>
+	<key>Redo Delete %lld Items</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Повторити видалення %lld елементів</string>
+			<key>many</key>
+			<string>Повторити видалення %lld елементів</string>
+			<key>one</key>
+			<string>Повторити видалення %lld елемента</string>
+			<key>other</key>
+			<string>Повторити видалення %lld елемента</string>
+		</dict>
+	</dict>
+	<key>Redo Move %lld Items</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Повторити переміщення %lld елементів</string>
+			<key>many</key>
+			<string>Повторити переміщення %lld елементів</string>
+			<key>one</key>
+			<string>Повторити переміщення %lld елемента</string>
+			<key>other</key>
+			<string>Повторити переміщення %lld елемента</string>
+		</dict>
+	</dict>
+	<key>Remove %lld ums</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Вилучити %lld слова-паразити</string>
+			<key>many</key>
+			<string>Вилучити %lld слів-паразитів</string>
+			<key>one</key>
+			<string>Вилучити %lld слово-паразит</string>
+			<key>other</key>
+			<string>Вилучити %lld слова-паразита</string>
+		</dict>
+	</dict>
+	<key>Removed %lld filler words — %@ shorter</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Вилучено %lld слова-паразити — на %@ коротше</string>
+			<key>many</key>
+			<string>Вилучено %lld слів-паразитів — на %@ коротше</string>
+			<key>one</key>
+			<string>Вилучено %lld слово-паразит — на %@ коротше</string>
+			<key>other</key>
+			<string>Вилучено %lld слова-паразита — на %@ коротше</string>
+		</dict>
+	</dict>
+	<key>Removed %lld items — ⌘Z to undo</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Вилучено %lld елементи — ⌘Z, щоб відмінити</string>
+			<key>many</key>
+			<string>Вилучено %lld елементів — ⌘Z, щоб відмінити</string>
+			<key>one</key>
+			<string>Вилучено %lld елемент — ⌘Z, щоб відмінити</string>
+			<key>other</key>
+			<string>Вилучено %lld елемента — ⌘Z, щоб відмінити</string>
+		</dict>
+	</dict>
+	<key>Removed %lld items — ⌘Z to undo (a video keeps at least one clip)</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Вилучено %lld елементи — ⌘Z, щоб відмінити (у відео має лишитися хоча б один кліп)</string>
+			<key>many</key>
+			<string>Вилучено %lld елементів — ⌘Z, щоб відмінити (у відео має лишитися хоча б один кліп)</string>
+			<key>one</key>
+			<string>Вилучено %lld елемент — ⌘Z, щоб відмінити (у відео має лишитися хоча б один кліп)</string>
+			<key>other</key>
+			<string>Вилучено %lld елемента — ⌘Z, щоб відмінити (у відео має лишитися хоча б один кліп)</string>
+		</dict>
+	</dict>
+	<key>Removed %lld zooms — ⌘Z to undo</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Вилучено %lld наближення — ⌘Z, щоб відмінити</string>
+			<key>many</key>
+			<string>Вилучено %lld наближень — ⌘Z, щоб відмінити</string>
+			<key>one</key>
+			<string>Вилучено %lld наближення — ⌘Z, щоб відмінити</string>
+			<key>other</key>
+			<string>Вилучено %lld наближення — ⌘Z, щоб відмінити</string>
+		</dict>
+	</dict>
+	<key>Restored %lld cuts — %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Відновлено %lld фрагменти — %@</string>
+			<key>many</key>
+			<string>Відновлено %lld фрагментів — %@</string>
+			<key>one</key>
+			<string>Відновлено %lld фрагмент — %@</string>
+			<key>other</key>
+			<string>Відновлено %lld фрагмента — %@</string>
+		</dict>
+	</dict>
+	<key>Restored %lld words</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Відновлено %lld слова</string>
+			<key>many</key>
+			<string>Відновлено %lld слів</string>
+			<key>one</key>
+			<string>Відновлено %lld слово</string>
+			<key>other</key>
+			<string>Відновлено %lld слова</string>
+		</dict>
+	</dict>
+	<key>Scrolling capture reached its maximum length (%lld points) and finished.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Знімок із прокручуванням досяг максимальної довжини (%lld точки) і завершився.</string>
+			<key>many</key>
+			<string>Знімок із прокручуванням досяг максимальної довжини (%lld точок) і завершився.</string>
+			<key>one</key>
+			<string>Знімок із прокручуванням досяг максимальної довжини (%lld точка) і завершився.</string>
+			<key>other</key>
+			<string>Знімок із прокручуванням досяг максимальної довжини (%lld точки) і завершився.</string>
+		</dict>
+	</dict>
+	<key>Scrolling capture stopped after %lld minutes.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Знімок із прокручуванням зупинився через %lld хвилини.</string>
+			<key>many</key>
+			<string>Знімок із прокручуванням зупинився через %lld хвилин.</string>
+			<key>one</key>
+			<string>Знімок із прокручуванням зупинився через %lld хвилину.</string>
+			<key>other</key>
+			<string>Знімок із прокручуванням зупинився через %lld хвилини.</string>
+		</dict>
+	</dict>
+	<key>Shorten %lld pauses</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Скоротити %lld паузи</string>
+			<key>many</key>
+			<string>Скоротити %lld пауз</string>
+			<key>one</key>
+			<string>Скоротити %lld паузу</string>
+			<key>other</key>
+			<string>Скоротити %lld паузи</string>
+		</dict>
+	</dict>
+	<key>Shortened %lld pauses — %@ shorter</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Скорочено %lld паузи — на %@ коротше</string>
+			<key>many</key>
+			<string>Скорочено %lld пауз — на %@ коротше</string>
+			<key>one</key>
+			<string>Скорочено %lld паузу — на %@ коротше</string>
+			<key>other</key>
+			<string>Скорочено %lld паузи — на %@ коротше</string>
+		</dict>
+	</dict>
+	<key>Sped up %lld idle moments — saved %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Прискорено %lld простої — заощаджено %@</string>
+			<key>many</key>
+			<string>Прискорено %lld простоїв — заощаджено %@</string>
+			<key>one</key>
+			<string>Прискорено %lld простій — заощаджено %@</string>
+			<key>other</key>
+			<string>Прискорено %lld простою — заощаджено %@</string>
+		</dict>
+	</dict>
+	<key>Sped up %lld idle moments — saved %@ · check any typing</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Прискорено %lld простої — заощаджено %@ · перевірте місця з введенням тексту</string>
+			<key>many</key>
+			<string>Прискорено %lld простоїв — заощаджено %@ · перевірте місця з введенням тексту</string>
+			<key>one</key>
+			<string>Прискорено %lld простій — заощаджено %@ · перевірте місця з введенням тексту</string>
+			<key>other</key>
+			<string>Прискорено %lld простою — заощаджено %@ · перевірте місця з введенням тексту</string>
+		</dict>
+	</dict>
+	<key>This replaces all %lld caption lines, including any you edited or typed, with a new transcript in %@.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Це замінить усі %lld рядки субтитрів, зокрема відредаговані чи введені вручну, новою розшифровкою (%@).</string>
+			<key>many</key>
+			<string>Це замінить усі %lld рядків субтитрів, зокрема відредаговані чи введені вручну, новою розшифровкою (%@).</string>
+			<key>one</key>
+			<string>Це замінить %lld рядок субтитрів — навіть відредагований чи введений вручну — новою розшифровкою (%@).</string>
+			<key>other</key>
+			<string>Це замінить усі %lld рядка субтитрів, зокрема відредаговані чи введені вручну, новою розшифровкою (%@).</string>
+		</dict>
+	</dict>
+	<key>Undo Delete %lld Items</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Відмінити видалення %lld елементів</string>
+			<key>many</key>
+			<string>Відмінити видалення %lld елементів</string>
+			<key>one</key>
+			<string>Відмінити видалення %lld елемента</string>
+			<key>other</key>
+			<string>Відмінити видалення %lld елемента</string>
+		</dict>
+	</dict>
+	<key>Undo Move %lld Items</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Відмінити переміщення %lld елементів</string>
+			<key>many</key>
+			<string>Відмінити переміщення %lld елементів</string>
+			<key>one</key>
+			<string>Відмінити переміщення %lld елемента</string>
+			<key>other</key>
+			<string>Відмінити переміщення %lld елемента</string>
+		</dict>
+	</dict>
+	<key>You have unsaved edits in %lld screenshots.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>У %lld знімках є незбережені зміни.</string>
+			<key>many</key>
+			<string>У %lld знімках є незбережені зміни.</string>
+			<key>one</key>
+			<string>У %lld знімку є незбережені зміни.</string>
+			<key>other</key>
+			<string>У %lld знімка є незбережені зміни.</string>
+		</dict>
+	</dict>
+	<key>Your disk is almost full. In about %lld minutes the recording stops and saves itself.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Диск майже заповнено. Приблизно через %lld хвилини запис зупиниться й збережеться.</string>
+			<key>many</key>
+			<string>Диск майже заповнено. Приблизно через %lld хвилин запис зупиниться й збережеться.</string>
+			<key>one</key>
+			<string>Диск майже заповнено. Приблизно через %lld хвилину запис зупиниться й збережеться.</string>
+			<key>other</key>
+			<string>Диск майже заповнено. Приблизно через %lld хвилини запис зупиниться й збережеться.</string>
+		</dict>
+	</dict>
+	<key>Your disk is almost full. In about %lld seconds the recording stops and saves itself.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Диск майже заповнено. Приблизно через %lld секунди запис зупиниться й збережеться.</string>
+			<key>many</key>
+			<string>Диск майже заповнено. Приблизно через %lld секунд запис зупиниться й збережеться.</string>
+			<key>one</key>
+			<string>Диск майже заповнено. Приблизно через %lld секунду запис зупиниться й збережеться.</string>
+			<key>other</key>
+			<string>Диск майже заповнено. Приблизно через %lld секунди запис зупиниться й збережеться.</string>
+		</dict>
+	</dict>
+	<key>• %lld small notes about recordings that are gone</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>• %lld невеликі нотатки про записи, яких уже немає</string>
+			<key>many</key>
+			<string>• %lld невеликих нотаток про записи, яких уже немає</string>
+			<key>one</key>
+			<string>• %lld невелика нотатка про записи, яких уже немає</string>
+			<key>other</key>
+			<string>• %lld невеликої нотатки про записи, яких уже немає</string>
+		</dict>
+	</dict>
+	<key>• Camera footage no recording uses — %lld files, %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>• Відео з камери, яке не використовує жоден запис, — %lld файли, %@</string>
+			<key>many</key>
+			<string>• Відео з камери, яке не використовує жоден запис, — %lld файлів, %@</string>
+			<key>one</key>
+			<string>• Відео з камери, яке не використовує жоден запис, — %lld файл, %@</string>
+			<key>other</key>
+			<string>• Відео з камери, яке не використовує жоден запис, — %lld файлу, %@</string>
+		</dict>
+	</dict>
+	<key>• Cleaned-up voice of recordings not found or changed since — %lld files, %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>• Очищений голос записів, які не знайдено або відтоді змінено, — %lld файли, %@</string>
+			<key>many</key>
+			<string>• Очищений голос записів, які не знайдено або відтоді змінено, — %lld файлів, %@</string>
+			<key>one</key>
+			<string>• Очищений голос записів, які не знайдено або відтоді змінено, — %lld файл, %@</string>
+			<key>other</key>
+			<string>• Очищений голос записів, які не знайдено або відтоді змінено, — %lld файлу, %@</string>
+		</dict>
+	</dict>
+	<key>• Clipboard exports older than a day — %lld files, %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>• Експорти в буфер обміну, старші за день, — %lld файли, %@</string>
+			<key>many</key>
+			<string>• Експорти в буфер обміну, старші за день, — %lld файлів, %@</string>
+			<key>one</key>
+			<string>• Експорти в буфер обміну, старші за день, — %lld файл, %@</string>
+			<key>other</key>
+			<string>• Експорти в буфер обміну, старші за день, — %lld файлу, %@</string>
+		</dict>
+	</dict>
+	<key>• Edits, recording details, and camera footage of %lld recordings Shotnix can't find (%@): %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>• Зміни, дані й відео з камери для %lld записів, яких Shotnix не може знайти (%@): %@</string>
+			<key>many</key>
+			<string>• Зміни, дані й відео з камери для %lld записів, яких Shotnix не може знайти (%@): %@</string>
+			<key>one</key>
+			<string>• Зміни, дані й відео з камери для %lld запису, якого Shotnix не може знайти (%@): %@</string>
+			<key>other</key>
+			<string>• Зміни, дані й відео з камери для %lld запису, якого Shotnix не може знайти (%@): %@</string>
+		</dict>
+	</dict>
+	<key>• Pictures and songs no video uses — %lld files, %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>• Зображення й треки, яких не використовує жодне відео, — %lld файли, %@</string>
+			<key>many</key>
+			<string>• Зображення й треки, яких не використовує жодне відео, — %lld файлів, %@</string>
+			<key>one</key>
+			<string>• Зображення й треки, яких не використовує жодне відео, — %lld файл, %@</string>
+			<key>other</key>
+			<string>• Зображення й треки, яких не використовує жодне відео, — %lld файлу, %@</string>
+		</dict>
+	</dict>
+</dict>
+</plist>

@@ -1,0 +1,1242 @@
+{
+  "%@ (%@)" : {
+    "uk" : "%@ (%@)"
+  },
+  "%@ area" : {
+    "uk" : "%@ область"
+  },
+  "%@ fullscreen" : {
+    "uk" : "%@ весь екран"
+  },
+  "%@ pt" : {
+    "uk" : "%@ пт"
+  },
+  "%@ window" : {
+    "uk" : "%@ вікно"
+  },
+  "%@ — Shotnix lives in your menu bar" : {
+    "uk" : "%@ — Shotnix у смузі меню"
+  },
+  "%lld annotations" : {
+    "uk" : {
+      "few" : "%lld елементи розмітки",
+      "many" : "%lld елементів розмітки",
+      "one" : "%lld елемент розмітки",
+      "other" : "%lld елемента розмітки"
+    }
+  },
+  "%lld annotations, %@ selected" : {
+    "uk" : {
+      "few" : "%lld елементи розмітки, вибрано: %@",
+      "many" : "%lld елементів розмітки, вибрано: %@",
+      "one" : "%lld елемент розмітки, вибрано: %@",
+      "other" : "%lld елемента розмітки, вибрано: %@"
+    }
+  },
+  "%lld annotations, %@ selected, cropping" : {
+    "uk" : {
+      "few" : "%lld елементи розмітки, вибрано: %@, обрізання",
+      "many" : "%lld елементів розмітки, вибрано: %@, обрізання",
+      "one" : "%lld елемент розмітки, вибрано: %@, обрізання",
+      "other" : "%lld елемента розмітки, вибрано: %@, обрізання"
+    }
+  },
+  "%lld annotations, cropping" : {
+    "uk" : {
+      "few" : "%lld елементи розмітки, обрізання",
+      "many" : "%lld елементів розмітки, обрізання",
+      "one" : "%lld елемент розмітки, обрізання",
+      "other" : "%lld елемента розмітки, обрізання"
+    }
+  },
+  "%lld seconds" : {
+    "uk" : {
+      "few" : "%lld секунди",
+      "many" : "%lld секунд",
+      "one" : "%lld секунда",
+      "other" : "%lld секунди"
+    }
+  },
+  "%lld%%" : {
+    "uk" : "%lld%%"
+  },
+  "%lld/%lld configured" : {
+    "uk" : "Налаштовано %lld/%lld"
+  },
+  "About" : {
+    "uk" : "Про програму"
+  },
+  "About Shotnix" : {
+    "uk" : "Про Shotnix"
+  },
+  "Accuracy" : {
+    "uk" : "Точність"
+  },
+  "Accurate" : {
+    "uk" : "Точне"
+  },
+  "Advanced Tools" : {
+    "uk" : "Додаткові інструменти"
+  },
+  "After Capture" : {
+    "uk" : "Після створення знімка"
+  },
+  "All configured" : {
+    "uk" : "Усе налаштовано"
+  },
+  "Allow Access…" : {
+    "uk" : "Дозволити доступ…"
+  },
+  "Allow Screen Recording" : {
+    "uk" : "Дозволити запис екрана"
+  },
+  "Amber Fold" : {
+    "uk" : "Бурштинова складка"
+  },
+  "Annotate Last Screenshot" : {
+    "uk" : "Розмітити останній знімок"
+  },
+  "Annotation" : {
+    "uk" : "Розмітка"
+  },
+  "Annotation text" : {
+    "uk" : "Текст розмітки"
+  },
+  "Annotation tools" : {
+    "uk" : "Інструменти розмітки"
+  },
+  "Apple Shortcuts" : {
+    "uk" : "Скорочення Apple"
+  },
+  "Apple screenshot shortcuts disabled." : {
+    "uk" : "Скорочення Apple для знімків екрана вимкнено."
+  },
+  "Apple screenshot shortcuts disabled. Shotnix shortcuts are now active." : {
+    "uk" : "Скорочення Apple для знімків екрана вимкнено. Тепер діють скорочення Shotnix."
+  },
+  "Apple screenshot shortcuts restored." : {
+    "uk" : "Скорочення Apple для знімків екрана відновлено."
+  },
+  "Apple's screenshot shortcuts still own ⌘⇧3/4/5 — captures can double-trigger." : {
+    "uk" : "Скорочення Apple для знімків екрана досі займають ⌘⇧3/4/5 — знімки можуть спрацьовувати двічі."
+  },
+  "Apple's shortcuts are out of the way." : {
+    "uk" : "Скорочення Apple більше не заважають."
+  },
+  "Apply" : {
+    "uk" : "Застосувати"
+  },
+  "Apply background to this image" : {
+    "uk" : "Застосувати тло до цього зображення"
+  },
+  "Apply crop" : {
+    "uk" : "Застосувати обрізання"
+  },
+  "Apply the crop (Return)" : {
+    "uk" : "Застосувати обрізання (Return)"
+  },
+  "Aqua Marble" : {
+    "uk" : "Бірюзовий мармур"
+  },
+  "Arrow" : {
+    "uk" : "Стрілка"
+  },
+  "Audio" : {
+    "uk" : "Аудіо"
+  },
+  "Aurora Blue" : {
+    "uk" : "Синє сяйво"
+  },
+  "Auto-dismiss overlay" : {
+    "uk" : "Автоматично ховати мініатюру"
+  },
+  "Auto-save folder" : {
+    "uk" : "Папка автозбереження"
+  },
+  "Auto-zoom new recordings" : {
+    "uk" : "Автонаближення в нових записах"
+  },
+  "Automatic" : {
+    "uk" : "Автоматично"
+  },
+  "Automatic detects each capture's language; pick languages when it guesses wrong. Accurate reads small text best — Fast answers sooner but knows fewer languages. Used by Capture Text, Copy Text, and History search." : {
+    "uk" : "«Автоматично» визначає мову кожного знімка; якщо мову визначено неправильно, виберіть мови самостійно. «Точне» найкраще читає дрібний текст — «Швидке» дає результат швидше, але знає менше мов. Використовується для «Розпізнати текст», «Скопіювати текст» і пошуку в історії."
+  },
+  "Background" : {
+    "uk" : "Тло"
+  },
+  "Balanced" : {
+    "uk" : "Збалансована"
+  },
+  "Black" : {
+    "uk" : "Чорний"
+  },
+  "Blue" : {
+    "uk" : "Синій"
+  },
+  "Blur" : {
+    "uk" : "Розмиття"
+  },
+  "Blurred area" : {
+    "uk" : "Розмита область"
+  },
+  "Bold" : {
+    "uk" : "Жирний"
+  },
+  "Bone" : {
+    "uk" : "Слонова кістка"
+  },
+  "Bring All to Front" : {
+    "uk" : "Вивести все на передній план"
+  },
+  "Callout" : {
+    "uk" : "Виноска"
+  },
+  "Callout: %@" : {
+    "uk" : "Виноска: %@"
+  },
+  "Camera" : {
+    "uk" : "Камера"
+  },
+  "Canyon Silk" : {
+    "uk" : "Шовк каньйону"
+  },
+  "Capture Text" : {
+    "uk" : "Розпізнати текст"
+  },
+  "Capture Text and Scrolling Capture come without shortcuts, so ⌘⇧O and ⌘⇧S keep meaning Open and Save As in your other apps — click a field to set your own. Pressing the Scrolling Capture shortcut again finishes a scrolling capture." : {
+    "uk" : "«Розпізнати текст» і «Знімок із прокручуванням» не мають типових скорочень, тож ⌘⇧O і ⌘⇧S і далі означають «Відкрити» та «Зберегти як» в інших програмах — клацніть поле, щоб задати власне. Повторне натискання скорочення знімка з прокручуванням завершує його."
+  },
+  "Capture immediately after selecting" : {
+    "uk" : "Знімати одразу після вибору"
+  },
+  "Capture · Record · Updates" : {
+    "uk" : "Знімки · Запис · Оновлення"
+  },
+  "Captures stay in History until you delete them, unless you pick a limit here. Clean Up empties History's trash (deleted captures you could still undo) and removes files no capture uses anymore." : {
+    "uk" : "Знімки зберігаються в історії, доки ви їх не видалите, якщо тут не задано обмеження. «Прибрати» спорожнює кошик історії (видалені знімки, які ще можна повернути) і вилучає файли, яких більше не використовує жоден знімок."
+  },
+  "Carbon Arc" : {
+    "uk" : "Вуглецева дуга"
+  },
+  "Check" : {
+    "uk" : "Перевірити"
+  },
+  "Check for Updates" : {
+    "uk" : "Перевірити оновлення"
+  },
+  "Choose a writable folder for auto-save." : {
+    "uk" : "Виберіть для автозбереження папку, у яку можна записувати."
+  },
+  "Choose a writable folder." : {
+    "uk" : "Виберіть папку, у яку можна записувати."
+  },
+  "Choose folder" : {
+    "uk" : "Вибрати папку"
+  },
+  "Choose what happens immediately after taking a screenshot." : {
+    "uk" : "Виберіть, що відбувається одразу після створення знімка екрана."
+  },
+  "Choose..." : {
+    "uk" : "Вибрати…"
+  },
+  "Clay" : {
+    "uk" : "Глина"
+  },
+  "Clean Up" : {
+    "uk" : "Прибрати"
+  },
+  "Clean Up History?" : {
+    "uk" : "Прибрати в історії?"
+  },
+  "Clean Up lists what it would remove — the data of recordings Shotnix can't find, camera footage and pictures nothing uses, and clipboard exports older than a day — and asks first. On its own, Shotnix only removes clipboard exports older than a day; the data of your recordings stays until you clean it up here." : {
+    "uk" : "«Прибрати» показує, що буде вилучено, — дані записів, яких Shotnix не може знайти, відео з камери й зображення, які ніде не використовуються, та експорти в буфер обміну, старші за день, — і спершу запитує. Сам Shotnix вилучає лише експорти в буфер обміну, старші за день; дані ваших записів залишаються, доки ви не приберете їх тут."
+  },
+  "Clean Up…" : {
+    "uk" : "Прибрати…"
+  },
+  "Cleaning Up…" : {
+    "uk" : "Прибирання…"
+  },
+  "Click an annotation to edit it" : {
+    "uk" : "Клацніть розмітку, щоб змінити її"
+  },
+  "Click to add the next step" : {
+    "uk" : "Клацніть, щоб додати наступний крок"
+  },
+  "Clipboard" : {
+    "uk" : "Буфер обміну"
+  },
+  "Close Window" : {
+    "uk" : "Закрити вікно"
+  },
+  "Coastal Haze" : {
+    "uk" : "Прибережний серпанок"
+  },
+  "Cobalt Drapes" : {
+    "uk" : "Кобальтова завіса"
+  },
+  "Color" : {
+    "uk" : "Колір"
+  },
+  "Command Center" : {
+    "uk" : "Командний центр"
+  },
+  "Conflict detected" : {
+    "uk" : "Виявлено конфлікт"
+  },
+  "Copied to clipboard" : {
+    "uk" : "Скопійовано в буфер обміну"
+  },
+  "Copy (⌘C)" : {
+    "uk" : "Скопіювати (⌘C)"
+  },
+  "Copy screenshots to clipboard" : {
+    "uk" : "Копіювати знімки в буфер обміну"
+  },
+  "Could Not Disable Apple Shortcuts" : {
+    "uk" : "Не вдалося вимкнути скорочення Apple"
+  },
+  "Could Not Save Screenshot" : {
+    "uk" : "Не вдалося зберегти знімок екрана"
+  },
+  "Could not encode screenshot as PNG." : {
+    "uk" : "Не вдалося закодувати знімок екрана в PNG."
+  },
+  "Could not encode the screenshot." : {
+    "uk" : "Не вдалося закодувати знімок екрана."
+  },
+  "Could not restore Apple shortcuts." : {
+    "uk" : "Не вдалося відновити скорочення Apple."
+  },
+  "Couldn't copy the screenshot. Try again, or save it instead." : {
+    "uk" : "Не вдалося скопіювати знімок екрана. Спробуйте ще раз або збережіть його."
+  },
+  "Couldn't save the screenshot to %@. Click to check the save folder." : {
+    "uk" : "Не вдалося зберегти знімок екрана в «%@». Клацніть, щоб перевірити папку збереження."
+  },
+  "Couldn't save the screenshot: Shotnix can't write to %@. Click to choose another save folder." : {
+    "uk" : "Не вдалося зберегти знімок екрана: Shotnix не може записувати в «%@». Клацніть, щоб вибрати іншу папку збереження."
+  },
+  "Couldn't save the screenshot: it could not be encoded as %@." : {
+    "uk" : "Не вдалося зберегти знімок екрана: помилка кодування у формат %@."
+  },
+  "Couldn't save the screenshot: the disk is full. Free up space or pick another save folder." : {
+    "uk" : "Не вдалося зберегти знімок екрана: диск заповнено. Звільніть місце або виберіть іншу папку збереження."
+  },
+  "Countdown" : {
+    "uk" : "Зворотний відлік"
+  },
+  "Crimson Ridge" : {
+    "uk" : "Багряний хребет"
+  },
+  "Crop" : {
+    "uk" : "Обрізання"
+  },
+  "Custom color" : {
+    "uk" : "Власний колір"
+  },
+  "Custom color #%@" : {
+    "uk" : "Власний колір #%@"
+  },
+  "Custom: %@" : {
+    "uk" : "Власне зображення: %@"
+  },
+  "Custom…" : {
+    "uk" : "Власний…"
+  },
+  "Cut" : {
+    "uk" : "Вирізати"
+  },
+  "Delete %lld Captures?" : {
+    "uk" : {
+      "few" : "Видалити %lld знімки?",
+      "many" : "Видалити %lld знімків?",
+      "one" : "Видалити %lld знімок?",
+      "other" : "Видалити %lld знімка?"
+    }
+  },
+  "Delete Captures" : {
+    "uk" : "Видалити знімки"
+  },
+  "Delete Selection" : {
+    "uk" : "Видалити вибране"
+  },
+  "Deleted captures waiting in History's trash and files no capture uses are removed for good, along with %lld captures past your History limit. The rest of your history stays." : {
+    "uk" : {
+      "few" : "Видалені знімки з кошика історії та файли, яких не використовує жоден знімок, буде вилучено назавжди, а разом із ними — %lld знімки понад обмеження історії. Решта історії залишиться.",
+      "many" : "Видалені знімки з кошика історії та файли, яких не використовує жоден знімок, буде вилучено назавжди, а разом із ними — %lld знімків понад обмеження історії. Решта історії залишиться.",
+      "one" : "Видалені знімки з кошика історії та файли, яких не використовує жоден знімок, буде вилучено назавжди, а разом із ними — %lld знімок понад обмеження історії. Решта історії залишиться.",
+      "other" : "Видалені знімки з кошика історії та файли, яких не використовує жоден знімок, буде вилучено назавжди, а разом із ними — %lld знімка понад обмеження історії. Решта історії залишиться."
+    }
+  },
+  "Deleted captures waiting in History's trash and files no capture uses are removed for good. The captures in your history stay." : {
+    "uk" : "Видалені знімки з кошика історії та файли, яких не використовує жоден знімок, буде вилучено назавжди. Знімки в історії залишаться."
+  },
+  "Desert Violet" : {
+    "uk" : "Фіолет пустелі"
+  },
+  "Directory where screenshots are saved if Auto-Save is enabled." : {
+    "uk" : "Папка, у яку зберігаються знімки екрана, якщо ввімкнено автозбереження."
+  },
+  "Disable Apple Shortcuts" : {
+    "uk" : "Вимкнути скорочення Apple"
+  },
+  "Disabled" : {
+    "uk" : "Вимкнено"
+  },
+  "Discard Changes" : {
+    "uk" : "Відкинути зміни"
+  },
+  "Do you want to review them before quitting?" : {
+    "uk" : "Переглянути їх перед завершенням?"
+  },
+  "Don't Ask Again" : {
+    "uk" : "Більше не питати"
+  },
+  "Don't Save" : {
+    "uk" : "Не зберігати"
+  },
+  "Done" : {
+    "uk" : "Готово"
+  },
+  "Draw with the selected tool. Tool shortcuts: V select, A arrow, R rectangle, T text, O callout, H highlighter, B blur, P pixelate, S spotlight, C crop." : {
+    "uk" : "Малюйте вибраним інструментом. Скорочення інструментів: V — вибір, A — стрілка, R — прямокутник, T — текст, O — виноска, H — маркер, B — розмиття, P — пікселізація, S — прожектор, C — обрізання."
+  },
+  "Drawing" : {
+    "uk" : "Малюнок"
+  },
+  "Edit Last Recording" : {
+    "uk" : "Редагувати останній запис"
+  },
+  "Editable cursor" : {
+    "uk" : "Редагований курсор"
+  },
+  "Editable cursor records the pointer separately so the editor can smooth it, resize it, and keep it crisp when zoomed — the video editor adds it back on export (the raw recording file has no pointer). Auto-zoom makes a fresh recording open already produced: the camera zooms to follow your clicks. Keyboard shortcuts records only ⌘, ⌃ and ⌥ combos (plus Esc and F-keys) so the editor can show them as keycaps — plain typing is never recorded; macOS asks for Accessibility access. High quality is the default; Max keeps more detail but creates larger files. The countdown gives you a moment after pressing Record; Esc cancels it. Stop a recording with %@ from any app — plain Esc stays with the app you're recording." : {
+    "uk" : "«Редагований курсор» записує курсор окремо, щоб редактор міг згладжувати його, змінювати розмір і зберігати чіткість під час наближення, — відеоредактор додає його назад під час експорту (у самому файлі запису курсора немає). «Автонаближення» відкриває новий запис уже змонтованим: камера наближається слідом за вашими клацаннями. «Показувати клавіатурні скорочення» записує лише комбінації з ⌘, ⌃ і ⌥ (а також Esc і функціональні клавіші), щоб редактор міг показати їх як клавіші, — звичайне введення тексту ніколи не записується; macOS запитає дозвіл у розділі «Доступність». Типова якість — «Висока»; «Максимальна» зберігає більше деталей, але створює більші файли. Зворотний відлік дає вам мить після натискання «Записати»; Esc скасовує його. Зупинити запис із будь-якої програми можна за допомогою %@ — звичайна клавіша Esc і далі діє у програмі, яку ви записуєте."
+  },
+  "Ellipse" : {
+    "uk" : "Еліпс"
+  },
+  "Ember Fog" : {
+    "uk" : "Жаринний туман"
+  },
+  "Enable Shotnix in System Settings → Privacy & Security → Screen & System Audio Recording, then quit and reopen Shotnix so macOS applies the permission." : {
+    "uk" : "Відкрийте Системні параметри → Приватність і безпека → Записування системного звуку й екрана, увімкніть Shotnix, а потім завершіть і знову відкрийте Shotnix, щоб дозвіл набув чинності."
+  },
+  "Enable Shotnix in System Settings, then relaunch so macOS applies it." : {
+    "uk" : "Увімкніть Shotnix у Системних параметрах, а потім перезапустіть програму, щоб дозвіл набув чинності."
+  },
+  "Enabled" : {
+    "uk" : "Увімкнено"
+  },
+  "Enjoying Shotnix? Click to star it on GitHub ★" : {
+    "uk" : "Подобається Shotnix? Клацніть, щоб поставити зірку на GitHub ★"
+  },
+  "Everything is ready" : {
+    "uk" : "Усе готово"
+  },
+  "Export Format" : {
+    "uk" : "Формат експорту"
+  },
+  "Fast" : {
+    "uk" : "Швидке"
+  },
+  "File" : {
+    "uk" : "Файл"
+  },
+  "File Name" : {
+    "uk" : "Назва файлу"
+  },
+  "Filled Rectangle" : {
+    "uk" : "Заповнений прямокутник"
+  },
+  "Filled rectangle" : {
+    "uk" : "Заповнений прямокутник"
+  },
+  "Filled rounded rectangle" : {
+    "uk" : "Заповнений заокруглений прямокутник"
+  },
+  "Finish and Quit" : {
+    "uk" : "Дочекатися й завершити"
+  },
+  "Fix" : {
+    "uk" : "Виправити"
+  },
+  "Format" : {
+    "uk" : "Формат"
+  },
+  "Frame rate" : {
+    "uk" : "Частота кадрів"
+  },
+  "Free up ⌘⇧ shortcuts · optional" : {
+    "uk" : "Звільнити скорочення ⌘⇧ · необов’язково"
+  },
+  "Freed %@" : {
+    "uk" : "Звільнено %@"
+  },
+  "Freehand Draw" : {
+    "uk" : "Малювання від руки"
+  },
+  "Freehand Highlighter" : {
+    "uk" : "Маркер від руки"
+  },
+  "Freehand highlight" : {
+    "uk" : "Виділення від руки"
+  },
+  "Full screen: %@" : {
+    "uk" : "Весь екран: %@"
+  },
+  "General" : {
+    "uk" : "Загальні"
+  },
+  "Gradient" : {
+    "uk" : "Градієнт"
+  },
+  "Grant Screen Recording first, then try it here." : {
+    "uk" : "Спершу дозвольте запис екрана, а потім спробуйте тут."
+  },
+  "Granted — captures, recordings, and OCR are ready." : {
+    "uk" : "Дозволено — знімки, записи й OCR готові."
+  },
+  "Graphite" : {
+    "uk" : "Графіт"
+  },
+  "Green" : {
+    "uk" : "Зелений"
+  },
+  "Health" : {
+    "uk" : "Стан"
+  },
+  "Hide Desktop Icons" : {
+    "uk" : "Сховати значки робочого столу"
+  },
+  "Hide Icon" : {
+    "uk" : "Сховати значок"
+  },
+  "Hide desktop icons while capturing" : {
+    "uk" : "Ховати значки робочого столу під час знімання"
+  },
+  "Hide the Menu Bar Icon?" : {
+    "uk" : "Сховати значок у смузі меню?"
+  },
+  "High" : {
+    "uk" : "Висока"
+  },
+  "Highlight" : {
+    "uk" : "Виділення"
+  },
+  "Highlighter" : {
+    "uk" : "Маркер"
+  },
+  "History" : {
+    "uk" : "Історія"
+  },
+  "History uses %@ (%lld captures)" : {
+    "uk" : {
+      "few" : "Історія займає %@ (%lld знімки)",
+      "many" : "Історія займає %@ (%lld знімків)",
+      "one" : "Історія займає %@ (%lld знімок)",
+      "other" : "Історія займає %@ (%lld знімка)"
+    }
+  },
+  "History uses … (%lld captures)" : {
+    "uk" : {
+      "few" : "Історія займає … (%lld знімки)",
+      "many" : "Історія займає … (%lld знімків)",
+      "one" : "Історія займає … (%lld знімок)",
+      "other" : "Історія займає … (%lld знімка)"
+    }
+  },
+  "History was already tidy" : {
+    "uk" : "В історії вже прибрано"
+  },
+  "Hotkeys are system-wide and active while Shotnix is running. The ⌘⇧3 default works best after Apple's screenshot shortcut is disabled." : {
+    "uk" : "Скорочення діють у всій системі, поки працює Shotnix. Типове ⌘⇧3 працює найкраще, коли скорочення Apple для знімків екрана вимкнено."
+  },
+  "How strongly blur and pixelate hide what's under them" : {
+    "uk" : "Наскільки сильно розмиття й пікселізація приховують вміст під ними"
+  },
+  "Image" : {
+    "uk" : "Зображення"
+  },
+  "JPEG Quality" : {
+    "uk" : "Якість JPEG"
+  },
+  "Keep Working" : {
+    "uk" : "Продовжити роботу"
+  },
+  "Keep captures" : {
+    "uk" : "Зберігати знімки"
+  },
+  "Keeping 30 days removes %lld older captures from History now. This can't be undone." : {
+    "uk" : {
+      "few" : "Варіант «30 днів» одразу вилучить з історії %lld старіші знімки. Цю дію не можна відмінити.",
+      "many" : "Варіант «30 днів» одразу вилучить з історії %lld старіших знімків. Цю дію не можна відмінити.",
+      "one" : "Варіант «30 днів» одразу вилучить з історії %lld старіший знімок. Цю дію не можна відмінити.",
+      "other" : "Варіант «30 днів» одразу вилучить з історії %lld старішого знімка. Цю дію не можна відмінити."
+    }
+  },
+  "Keeping 7 days removes %lld older captures from History now. This can't be undone." : {
+    "uk" : {
+      "few" : "Варіант «7 днів» одразу вилучить з історії %lld старіші знімки. Цю дію не можна відмінити.",
+      "many" : "Варіант «7 днів» одразу вилучить з історії %lld старіших знімків. Цю дію не можна відмінити.",
+      "one" : "Варіант «7 днів» одразу вилучить з історії %lld старіший знімок. Цю дію не можна відмінити.",
+      "other" : "Варіант «7 днів» одразу вилучить з історії %lld старішого знімка. Цю дію не можна відмінити."
+    }
+  },
+  "Keeping 90 days removes %lld older captures from History now. This can't be undone." : {
+    "uk" : {
+      "few" : "Варіант «90 днів» одразу вилучить з історії %lld старіші знімки. Цю дію не можна відмінити.",
+      "many" : "Варіант «90 днів» одразу вилучить з історії %lld старіших знімків. Цю дію не можна відмінити.",
+      "one" : "Варіант «90 днів» одразу вилучить з історії %lld старіший знімок. Цю дію не можна відмінити.",
+      "other" : "Варіант «90 днів» одразу вилучить з історії %lld старішого знімка. Цю дію не можна відмінити."
+    }
+  },
+  "Keeping last 1,000 captures removes %lld older captures from History now. This can't be undone." : {
+    "uk" : {
+      "few" : "Варіант «Останні 1 000 знімків» одразу вилучить з історії %lld старіші знімки. Цю дію не можна відмінити.",
+      "many" : "Варіант «Останні 1 000 знімків» одразу вилучить з історії %lld старіших знімків. Цю дію не можна відмінити.",
+      "one" : "Варіант «Останні 1 000 знімків» одразу вилучить з історії %lld старіший знімок. Цю дію не можна відмінити.",
+      "other" : "Варіант «Останні 1 000 знімків» одразу вилучить з історії %lld старішого знімка. Цю дію не можна відмінити."
+    }
+  },
+  "Keeping last 100 captures removes %lld older captures from History now. This can't be undone." : {
+    "uk" : {
+      "few" : "Варіант «Останні 100 знімків» одразу вилучить з історії %lld старіші знімки. Цю дію не можна відмінити.",
+      "many" : "Варіант «Останні 100 знімків» одразу вилучить з історії %lld старіших знімків. Цю дію не можна відмінити.",
+      "one" : "Варіант «Останні 100 знімків» одразу вилучить з історії %lld старіший знімок. Цю дію не можна відмінити.",
+      "other" : "Варіант «Останні 100 знімків» одразу вилучить з історії %lld старішого знімка. Цю дію не можна відмінити."
+    }
+  },
+  "Keeping last 500 captures removes %lld older captures from History now. This can't be undone." : {
+    "uk" : {
+      "few" : "Варіант «Останні 500 знімків» одразу вилучить з історії %lld старіші знімки. Цю дію не можна відмінити.",
+      "many" : "Варіант «Останні 500 знімків» одразу вилучить з історії %lld старіших знімків. Цю дію не можна відмінити.",
+      "one" : "Варіант «Останні 500 знімків» одразу вилучить з історії %lld старіший знімок. Цю дію не можна відмінити.",
+      "other" : "Варіант «Останні 500 знімків» одразу вилучить з історії %lld старішого знімка. Цю дію не можна відмінити."
+    }
+  },
+  "Keyboard" : {
+    "uk" : "Клавіатура"
+  },
+  "Languages" : {
+    "uk" : "Мови"
+  },
+  "Later" : {
+    "uk" : "Пізніше"
+  },
+  "Launch Shotnix at login" : {
+    "uk" : "Відкривати Shotnix під час входу"
+  },
+  "Lavender Glass" : {
+    "uk" : "Лавандове скло"
+  },
+  "Left" : {
+    "uk" : "Ліворуч"
+  },
+  "Lime Signal" : {
+    "uk" : "Лаймовий сигнал"
+  },
+  "Line" : {
+    "uk" : "Лінія"
+  },
+  "Line width" : {
+    "uk" : "Товщина лінії"
+  },
+  "MIT License — Free and open source" : {
+    "uk" : "Ліцензія MIT — безплатне ПЗ з відкритим кодом"
+  },
+  "Max" : {
+    "uk" : "Максимальна"
+  },
+  "Menu Bar" : {
+    "uk" : "Смуга меню"
+  },
+  "Menu bar is full, so macOS hid the Shotnix icon — %@ still captures. Click here for the menu." : {
+    "uk" : "Смуга меню заповнена, тож macOS ховає значок Shotnix — %@ і далі знімає. Клацніть тут, щоб відкрити меню."
+  },
+  "Menu bar is full, so macOS hid the Shotnix icon — your shortcuts still work. Click here for the menu." : {
+    "uk" : "Смуга меню заповнена, тож macOS ховає значок Shotnix — ваші скорочення і далі працюють. Клацніть тут, щоб відкрити меню."
+  },
+  "Microphone" : {
+    "uk" : "Мікрофон"
+  },
+  "Microphone recording requires macOS microphone permission. System audio excludes Shotnix sounds to avoid feedback." : {
+    "uk" : "Для запису мікрофона потрібен дозвіл macOS на доступ до мікрофона. Системний звук не містить звуків Shotnix, щоб уникнути відлуння."
+  },
+  "Midnight Graphite" : {
+    "uk" : "Опівнічний графіт"
+  },
+  "Minimize" : {
+    "uk" : "Згорнути"
+  },
+  "Moss" : {
+    "uk" : "Мох"
+  },
+  "Moss Glow" : {
+    "uk" : "Сяйво моху"
+  },
+  "Mute Clip" : {
+    "uk" : "Вимкнути звук кліпу"
+  },
+  "Needed to capture the screen. macOS will ask once." : {
+    "uk" : "Потрібно, щоб знімати екран. macOS запитає лише раз."
+  },
+  "Neo Pop" : {
+    "uk" : "Неопоп"
+  },
+  "Never" : {
+    "uk" : "Ніколи"
+  },
+  "New screenshots are copied automatically. Turn this off if you only want to use the overlay or history actions." : {
+    "uk" : "Нові знімки екрана копіюються автоматично. Вимкніть це, якщо хочете користуватися лише мініатюрою чи діями в історії."
+  },
+  "Nice shot. You're all set." : {
+    "uk" : "Чудовий знімок. Усе готово."
+  },
+  "Night Current" : {
+    "uk" : "Нічна течія"
+  },
+  "No conflict" : {
+    "uk" : "Конфліктів немає"
+  },
+  "Numbered Steps" : {
+    "uk" : "Нумеровані кроки"
+  },
+  "OK" : {
+    "uk" : "OK"
+  },
+  "Off" : {
+    "uk" : "Вимкнено"
+  },
+  "Open History" : {
+    "uk" : "Відкрити історію"
+  },
+  "Open Keyboard Settings" : {
+    "uk" : "Відкрити параметри клавіатури"
+  },
+  "Open Settings" : {
+    "uk" : "Відкрити параметри"
+  },
+  "Open System Settings" : {
+    "uk" : "Відкрити Системні параметри"
+  },
+  "Open System Settings → Keyboard → Keyboard Shortcuts → Screenshots and turn off the screenshot shortcuts manually." : {
+    "uk" : "Відкрийте Системні параметри → Клавіатура → Клавіатурні скорочення → Знімки екрана й вимкніть скорочення для знімків екрана вручну."
+  },
+  "Open Video Editor" : {
+    "uk" : "Відкрити відеоредактор"
+  },
+  "Open editor after recording" : {
+    "uk" : "Відкривати редактор після запису"
+  },
+  "Orange" : {
+    "uk" : "Помаранчевий"
+  },
+  "Otherwise, Shotnix switches languages the next time it opens." : {
+    "uk" : "Інакше Shotnix змінить мову під час наступного відкриття."
+  },
+  "Overlay position" : {
+    "uk" : "Розташування мініатюри"
+  },
+  "Padding" : {
+    "uk" : "Відступ"
+  },
+  "Paste" : {
+    "uk" : "Вставити"
+  },
+  "Pause Recording" : {
+    "uk" : "Призупинити запис"
+  },
+  "Pending" : {
+    "uk" : "Очікує"
+  },
+  "Permission needed" : {
+    "uk" : "Потрібен дозвіл"
+  },
+  "Pine Dusk" : {
+    "uk" : "Сосновий присмерк"
+  },
+  "Pixelate" : {
+    "uk" : "Пікселізація"
+  },
+  "Pixelated area" : {
+    "uk" : "Пікселізована область"
+  },
+  "Play capture sound" : {
+    "uk" : "Відтворювати звук знімання"
+  },
+  "Polar Dawn" : {
+    "uk" : "Полярний світанок"
+  },
+  "Porcelain" : {
+    "uk" : "Порцеляна"
+  },
+  "Preferences" : {
+    "uk" : "Параметри"
+  },
+  "Preset" : {
+    "uk" : "Шаблон"
+  },
+  "Press %@ anytime — or try it right now." : {
+    "uk" : "Натисніть %@ будь-коли — або спробуйте просто зараз."
+  },
+  "Preview" : {
+    "uk" : "Попередній перегляд"
+  },
+  "Prism Sweep" : {
+    "uk" : "Призматична хвиля"
+  },
+  "Privacy Policy" : {
+    "uk" : "Політика конфіденційності"
+  },
+  "Purple" : {
+    "uk" : "Фіолетовий"
+  },
+  "Quality" : {
+    "uk" : "Якість"
+  },
+  "Quit & Reopen" : {
+    "uk" : "Завершити й відкрити знову"
+  },
+  "Quit Shotnix" : {
+    "uk" : "Завершити Shotnix"
+  },
+  "Quit Shotnix?" : {
+    "uk" : "Завершити Shotnix?"
+  },
+  "Radius" : {
+    "uk" : "Радіус"
+  },
+  "Re-enable Apple's ⌘⇧3/4/5 screenshot shortcuts" : {
+    "uk" : "Знову ввімкнути скорочення Apple ⌘⇧3/4/5 для знімків екрана"
+  },
+  "Ready" : {
+    "uk" : "Готово"
+  },
+  "Ready · %lld optional off" : {
+    "uk" : {
+      "few" : "Готово · %lld необов’язкові вимкнено",
+      "many" : "Готово · %lld необов’язкових вимкнено",
+      "one" : "Готово · %lld необов’язкове вимкнено",
+      "other" : "Готово · %lld необов’язкового вимкнено"
+    }
+  },
+  "Record" : {
+    "uk" : "Записати"
+  },
+  "Record camera" : {
+    "uk" : "Записувати камеру"
+  },
+  "Record microphone" : {
+    "uk" : "Записувати мікрофон"
+  },
+  "Record system audio" : {
+    "uk" : "Записувати системний звук"
+  },
+  "Recording" : {
+    "uk" : "Запис"
+  },
+  "Recording paused — click to stop (%@)" : {
+    "uk" : "Запис призупинено — клацніть, щоб зупинити (%@)"
+  },
+  "Recording shortcuts are unassigned by default — click a field to set one. Stop Recording also cancels recording setup. While recording, %@ always stops it, from any app." : {
+    "uk" : "Скорочення для запису типово не призначено — клацніть поле, щоб задати. «Зупинити запис» також скасовує підготовку до запису. Під час запису %@ завжди зупиняє його з будь-якої програми."
+  },
+  "Recording — click to stop (%@)" : {
+    "uk" : "Іде запис — клацніть, щоб зупинити (%@)"
+  },
+  "Recovered your interrupted recording “%@”. Click to open it." : {
+    "uk" : "Ваш перерваний запис «%@» відновлено. Клацніть, щоб відкрити його."
+  },
+  "Rectangle" : {
+    "uk" : "Прямокутник"
+  },
+  "Red" : {
+    "uk" : "Червоний"
+  },
+  "Redaction strength" : {
+    "uk" : "Сила приховування"
+  },
+  "Redo" : {
+    "uk" : "Повторити"
+  },
+  "Redo Timeline Edit" : {
+    "uk" : "Повторити зміну на шкалі часу"
+  },
+  "Releasing the mouse takes the shot. Hold ⇧ as you release to adjust the selection first — drag its edges, nudge it with the arrow keys, then press Return." : {
+    "uk" : "Щойно ви відпустите кнопку миші, буде зроблено знімок. Утримуйте ⇧, коли відпускаєте, щоб спершу налаштувати вибір — перетягуйте його краї, зсувайте клавішами зі стрілками, а потім натисніть Return."
+  },
+  "Report Issue" : {
+    "uk" : "Повідомити про проблему"
+  },
+  "Reset" : {
+    "uk" : "Скинути"
+  },
+  "Reset Defaults" : {
+    "uk" : "Відновити типові"
+  },
+  "Reset crop" : {
+    "uk" : "Скинути обрізання"
+  },
+  "Restart Now" : {
+    "uk" : "Перезапустити"
+  },
+  "Restart Shotnix to use %@?" : {
+    "uk" : "Перезапустити Shotnix, щоб увімкнути мову «%@»?"
+  },
+  "Restore Apple Shortcuts" : {
+    "uk" : "Відновити скорочення Apple"
+  },
+  "Resume Recording" : {
+    "uk" : "Продовжити запис"
+  },
+  "Review Changes…" : {
+    "uk" : "Переглянути зміни…"
+  },
+  "Right" : {
+    "uk" : "Праворуч"
+  },
+  "Rose Smoke" : {
+    "uk" : "Рожевий дим"
+  },
+  "Rounded Corners (⌥R)" : {
+    "uk" : "Заокруглені кути (⌥R)"
+  },
+  "Rounded corners" : {
+    "uk" : "Заокруглені кути"
+  },
+  "Rounded rectangle" : {
+    "uk" : "Заокруглений прямокутник"
+  },
+  "Save" : {
+    "uk" : "Зберегти"
+  },
+  "Save (⌘S)" : {
+    "uk" : "Зберегти (⌘S)"
+  },
+  "Save Folder" : {
+    "uk" : "Папка збереження"
+  },
+  "Save Location" : {
+    "uk" : "Місце збереження"
+  },
+  "Save automatically" : {
+    "uk" : "Зберігати автоматично"
+  },
+  "Save changes to this screenshot?" : {
+    "uk" : "Зберегти зміни в цьому знімку екрана?"
+  },
+  "Save folder updated." : {
+    "uk" : "Папку збереження оновлено."
+  },
+  "Saved to %@: %@" : {
+    "uk" : "Збережено в «%@»: %@"
+  },
+  "Save…" : {
+    "uk" : "Зберегти…"
+  },
+  "Saving the recording" : {
+    "uk" : "Збереження запису"
+  },
+  "Saving…" : {
+    "uk" : "Збереження…"
+  },
+  "Scan QR Code" : {
+    "uk" : "Сканувати QR-код"
+  },
+  "Screen Recording" : {
+    "uk" : "Запис екрана"
+  },
+  "Screen Recording Permission Required" : {
+    "uk" : "Потрібен дозвіл на запис екрана"
+  },
+  "Screenshot Editor" : {
+    "uk" : "Редактор знімків"
+  },
+  "Screenshot canvas" : {
+    "uk" : "Полотно знімка"
+  },
+  "Screenshots" : {
+    "uk" : "Знімки екрана"
+  },
+  "Select" : {
+    "uk" : "Вибір"
+  },
+  "Select All" : {
+    "uk" : "Вибрати все"
+  },
+  "Selection" : {
+    "uk" : "Вибір"
+  },
+  "Set In to Playhead" : {
+    "uk" : "Встановити початок на покажчику відтворення"
+  },
+  "Set Out to Playhead" : {
+    "uk" : "Встановити кінець на покажчику відтворення"
+  },
+  "Settings" : {
+    "uk" : "Параметри"
+  },
+  "Settings…" : {
+    "uk" : "Параметри…"
+  },
+  "Shadow" : {
+    "uk" : "Тінь"
+  },
+  "Shadow and transparent padding" : {
+    "uk" : "Тінь і прозорий відступ"
+  },
+  "Shape" : {
+    "uk" : "Форма"
+  },
+  "Shortcut Conflict Detected" : {
+    "uk" : "Виявлено конфлікт скорочень"
+  },
+  "Shortcuts" : {
+    "uk" : "Скорочення"
+  },
+  "Shotnix Preferences" : {
+    "uk" : "Параметри Shotnix"
+  },
+  "Shotnix could not write the file to:\n%@" : {
+    "uk" : "Shotnix не вдалося записати файл сюди:\n%@"
+  },
+  "Shotnix is ready to use!" : {
+    "uk" : "Усе готово до роботи з Shotnix!"
+  },
+  "Shotnix lives here — setup continues next launch" : {
+    "uk" : "Shotnix тут — налаштування продовжиться під час наступного запуску"
+  },
+  "Shotnix lives in your menu bar" : {
+    "uk" : "Shotnix — у вашій смузі меню"
+  },
+  "Shotnix needs Screen Recording permission to capture your screen.\n\nPlease enable it in System Settings → Privacy & Security → Screen & System Audio Recording." : {
+    "uk" : "Shotnix потрібен дозвіл на запис екрана, щоб знімати ваш екран.\n\nУвімкніть його тут: Системні параметри → Приватність і безпека → Записування системного звуку й екрана."
+  },
+  "Shotnix restarts to switch languages. You can also set it in System Settings → General → Language & Region → Applications." : {
+    "uk" : "Щоб змінити мову, Shotnix перезапускається. Мову також можна задати тут: Системні параметри → Загальні → Мова і регіон → Програми."
+  },
+  "Shotnix will wrap these up before it quits." : {
+    "uk" : "Shotnix завершить їх перед виходом."
+  },
+  "Show Desktop Icons" : {
+    "uk" : "Показати значки робочого столу"
+  },
+  "Show Editor" : {
+    "uk" : "Показати редактор"
+  },
+  "Show Quick Access Overlay" : {
+    "uk" : "Показувати мініатюру швидкого доступу"
+  },
+  "Show Video Editor" : {
+    "uk" : "Показати відеоредактор"
+  },
+  "Show cursor" : {
+    "uk" : "Показувати курсор"
+  },
+  "Show keyboard shortcuts" : {
+    "uk" : "Показувати клавіатурні скорочення"
+  },
+  "Show menu bar icon" : {
+    "uk" : "Показувати значок у смузі меню"
+  },
+  "Show the whole screenshot again" : {
+    "uk" : "Знову показати весь знімок"
+  },
+  "Silver" : {
+    "uk" : "Сріблястий"
+  },
+  "Size" : {
+    "uk" : "Розмір"
+  },
+  "Skip Setup" : {
+    "uk" : "Пропустити налаштування"
+  },
+  "Sky Wash" : {
+    "uk" : "Небесна акварель"
+  },
+  "Solid Color" : {
+    "uk" : "Суцільний колір"
+  },
+  "Sounds" : {
+    "uk" : "Звуки"
+  },
+  "Space Gray" : {
+    "uk" : "Сірий космос"
+  },
+  "Split at Playhead" : {
+    "uk" : "Розділити на покажчику відтворення"
+  },
+  "Spotlight" : {
+    "uk" : "Прожектор"
+  },
+  "Spotlight shape" : {
+    "uk" : "Форма прожектора"
+  },
+  "Startup" : {
+    "uk" : "Запуск"
+  },
+  "Step %lld" : {
+    "uk" : "Крок %lld"
+  },
+  "Storage" : {
+    "uk" : "Сховище"
+  },
+  "Strength" : {
+    "uk" : "Сила"
+  },
+  "Style" : {
+    "uk" : "Стиль"
+  },
+  "Sunset Coral" : {
+    "uk" : "Кораловий захід"
+  },
+  "Support" : {
+    "uk" : "Підтримка"
+  },
+  "System Default" : {
+    "uk" : "Як у системі"
+  },
+  "System Default (%@)" : {
+    "uk" : "Як у системі (%@)"
+  },
+  "Tahoe Ice" : {
+    "uk" : "Лід Тахо"
+  },
+  "Take a Test Screenshot" : {
+    "uk" : "Зробити пробний знімок"
+  },
+  "Take your first screenshot" : {
+    "uk" : "Зробіть перший знімок екрана"
+  },
+  "Template" : {
+    "uk" : "Шаблон"
+  },
+  "Text Recognition" : {
+    "uk" : "Розпізнавання тексту"
+  },
+  "Text size" : {
+    "uk" : "Розмір тексту"
+  },
+  "Text: %@" : {
+    "uk" : "Текст: %@"
+  },
+  "The menu bar icon is Shotnix's main entry point. While it is hidden, open Shotnix again from Finder, Launchpad, or Spotlight to bring these Preferences back." : {
+    "uk" : "Значок у смузі меню — основний вхід до Shotnix. Поки його сховано, відкрийте Shotnix знову з Finder, Launchpad або Spotlight, щоб повернутися до цих параметрів."
+  },
+  "The save panel did not return a destination. Please try saving again." : {
+    "uk" : "Вікно збереження не повернуло місце призначення. Спробуйте зберегти ще раз."
+  },
+  "The screenshot has no image data." : {
+    "uk" : "Знімок екрана не містить даних зображення."
+  },
+  "The selection stays on screen to adjust — drag its edges, nudge it with the arrow keys, then press Return. Hold ⇧ as you release to capture right away." : {
+    "uk" : "Вибір лишається на екрані, щоб його можна було налаштувати, — перетягуйте краї, зсувайте клавішами зі стрілками, а потім натисніть Return. Утримуйте ⇧, коли відпускаєте, щоб зняти одразу."
+  },
+  "Three quick steps and you're capturing." : {
+    "uk" : "Три швидкі кроки — і можна знімати."
+  },
+  "Tide Glass" : {
+    "uk" : "Скло припливу"
+  },
+  "Timed Capture (%llds)" : {
+    "uk" : "Знімок за таймером (%lld с)"
+  },
+  "Timed Capture selects the area first, then counts down before the shot — time to open menus or hover states. Esc cancels." : {
+    "uk" : "Знімок за таймером спершу дає вибрати область, а потім веде зворотний відлік — є час відкрити меню чи навести курсор на елемент. Esc скасовує."
+  },
+  "Timeline" : {
+    "uk" : "Шкала часу"
+  },
+  "Tools" : {
+    "uk" : "Інструменти"
+  },
+  "Try it right now — Capture Area is also in the menu bar." : {
+    "uk" : "Спробуйте просто зараз — «Зняти область» є також у смузі меню."
+  },
+  "Type here…" : {
+    "uk" : "Введіть текст…"
+  },
+  "Undo" : {
+    "uk" : "Відмінити"
+  },
+  "Undo Timeline Edit" : {
+    "uk" : "Відмінити зміну на шкалі часу"
+  },
+  "Updates" : {
+    "uk" : "Оновлення"
+  },
+  "Upload Custom Image" : {
+    "uk" : "Вибрати власне зображення"
+  },
+  "Used for screenshots and recordings. Tokens: %y year, %m month, %d day, %H hour, %M minute, %S second. Leave empty to restore the default." : {
+    "uk" : "Для знімків екрана й записів. Маркери: %y — рік, %m — місяць, %d — день, %H — година, %M — хвилина, %S — секунда. Залиште порожнім, щоб відновити типовий шаблон."
+  },
+  "Utility" : {
+    "uk" : "Утиліти"
+  },
+  "Version" : {
+    "uk" : "Версія"
+  },
+  "Version %@" : {
+    "uk" : "Версія %@"
+  },
+  "Video" : {
+    "uk" : "Відео"
+  },
+  "Violet Bloom" : {
+    "uk" : "Фіолетовий цвіт"
+  },
+  "Website" : {
+    "uk" : "Вебсайт"
+  },
+  "Welcome to Shotnix" : {
+    "uk" : "Вітаємо в Shotnix"
+  },
+  "What's New" : {
+    "uk" : "Що нового"
+  },
+  "White" : {
+    "uk" : "Білий"
+  },
+  "Window Capture" : {
+    "uk" : "Знімок вікна"
+  },
+  "Window captures are isolated — nothing overlapping shows through. With this on they get transparent padding and a soft drop shadow." : {
+    "uk" : "Знімки вікон ізольовані — те, що їх перекриває, не потрапляє в кадр. Якщо це ввімкнено, вони отримують прозорий відступ і м’яку тінь."
+  },
+  "Writable" : {
+    "uk" : "Доступна для запису"
+  },
+  "Yellow" : {
+    "uk" : "Жовтий"
+  },
+  "You have unsaved edits in %lld screenshots." : {
+    "uk" : {
+      "few" : "У %lld знімках є незбережені зміни.",
+      "many" : "У %lld знімках є незбережені зміни.",
+      "one" : "У %lld знімку є незбережені зміни.",
+      "other" : "У %lld знімка є незбережені зміни."
+    }
+  },
+  "You're all set — Shotnix lives here" : {
+    "uk" : "Усе готово — Shotnix тут"
+  },
+  "Your camera is recorded as its own layer: a live bubble shows while you record (it never appears in the screen capture), and the editor lets you move, resize, and restyle it — or hide it — afterwards." : {
+    "uk" : "Камера записується окремим шаром: під час запису видно живу бульбашку (вона ніколи не потрапляє в запис екрана), а потім у редакторі її можна перемістити, змінити розмір і стиль — або сховати."
+  },
+  "Your edits will be lost if you close without saving or copying them." : {
+    "uk" : "Якщо закрити, не зберігши й не скопіювавши зміни, їх буде втрачено."
+  },
+  "Zoom" : {
+    "uk" : "Масштаб"
+  },
+  "macOS screenshot shortcuts (⌘⇧3, ⌘⇧4, ⌘⇧5) conflict with Shotnix.\n\nDisable them so Shotnix owns the capture shortcuts and screenshots do not double-trigger.\n\nYou can re-enable Apple's shortcuts anytime in System Settings → Keyboard → Keyboard Shortcuts → Screenshots." : {
+    "uk" : "Скорочення macOS для знімків екрана (⌘⇧3, ⌘⇧4, ⌘⇧5) конфліктують із Shotnix.\n\nВимкніть їх, щоб скорочення для знімання належали Shotnix і знімки не спрацьовували двічі.\n\nСкорочення Apple можна будь-коли знову ввімкнути тут: Системні параметри → Клавіатура → Клавіатурні скорочення → Знімки екрана."
+  },
+  "© 2026 Shotnix Contributors" : {
+    "uk" : "© 2026 Учасники Shotnix"
+  }
+}

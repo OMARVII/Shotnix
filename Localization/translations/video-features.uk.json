@@ -1,0 +1,1460 @@
+{
+  "%@ (edited)" : {
+    "uk" : "%@ (змінено)"
+  },
+  "%@ (original)" : {
+    "uk" : "%@ (оригінал)"
+  },
+  "%@ can't be transcribed on this Mac without sending your voice to a server. To add it, turn on Dictation for %@ in System Settings → Keyboard, or pick another language." : {
+    "uk" : "Мову «%@» не можна розшифрувати на цьому Mac без надсилання вашого голосу на сервер. Щоб додати її, увімкніть диктування для мови «%@» (Системні параметри → Клавіатура) або виберіть іншу мову."
+  },
+  "%@ isn't supported for captions on this Mac. Pick another language." : {
+    "uk" : "Мова «%@» не підтримується для субтитрів на цьому Mac. Виберіть іншу мову."
+  },
+  "%@ transition" : {
+    "uk" : "Перехід: %@"
+  },
+  "%@ · on your clipboard — paste it anywhere" : {
+    "uk" : "%@ · у буфері обміну — вставте будь-де"
+  },
+  "%@ — click to change" : {
+    "uk" : "%@ — клацніть, щоб змінити"
+  },
+  "%@ → %@ — the part you ⇧-dragged on the timeline" : {
+    "uk" : "%@ → %@ — частина, яку ви виділили на шкалі часу з ⇧"
+  },
+  "%@, %@" : {
+    "uk" : "%@, %@"
+  },
+  "%@, and %lld more" : {
+    "uk" : "%@ і ще %lld"
+  },
+  "%@s" : {
+    "uk" : "%@ с"
+  },
+  "%@–%@ only" : {
+    "uk" : "лише %@–%@"
+  },
+  "%lld lines changed since translating" : {
+    "uk" : {
+      "few" : "%lld рядки змінено після перекладу",
+      "many" : "%lld рядків змінено після перекладу",
+      "one" : "%lld рядок змінено після перекладу",
+      "other" : "%lld рядка змінено після перекладу"
+    }
+  },
+  "%lld recorded clicks — in the preview and the export" : {
+    "uk" : {
+      "few" : "%lld записані клацання — у перегляді й експорті",
+      "many" : "%lld записаних клацань — у перегляді й експорті",
+      "one" : "%lld записане клацання — у перегляді й експорті",
+      "other" : "%lld записаного клацання — у перегляді й експорті"
+    }
+  },
+  "%lld%%" : {
+    "uk" : "%lld%%"
+  },
+  "A 2-second “Made with Shotnix” outro on your background — your own outro card is in Style" : {
+    "uk" : "Двосекундне завершення «Made with Shotnix» на вашому тлі — власна завершальна заставка є у вкладці «Стиль»"
+  },
+  "A big GIF — about %@ and %@ of memory to make. A smaller size, fewer fps, or MP4 is lighter." : {
+    "uk" : "Великий GIF — приблизно %@, і для створення потрібно %@ пам’яті. Менший розмір, менше fps або MP4 — легший варіант."
+  },
+  "A clean picture plus a subtitles file to upload." : {
+    "uk" : "Чисте зображення плюс файл субтитрів для вивантаження."
+  },
+  "A cut — click to add a transition" : {
+    "uk" : "Склейка — клацніть, щоб додати перехід"
+  },
+  "A file with that name is in the way. Pick another name and export again." : {
+    "uk" : "Файл із такою назвою вже існує. Виберіть іншу назву й експортуйте ще раз."
+  },
+  "A second caption track you can show, burn in, or save as subtitles. Translated on this Mac — nothing is uploaded." : {
+    "uk" : "Друга доріжка субтитрів, яку можна показати, вшити у відео чи зберегти як файл субтитрів. Перекладається на цьому Mac — нічого не вивантажується."
+  },
+  "A song under the whole video — it loops to fill, fades in and out, and dips while you talk. Use music you have the rights to." : {
+    "uk" : "Трек під усім відео — він повторюється до кінця, плавно з’являється й згасає та стишується, коли ви говорите. Використовуйте музику, на яку маєте права."
+  },
+  "A subtitles file for YouTube and web players (.srt), or for the web (.vtt) — follows your cuts" : {
+    "uk" : "Файл субтитрів для YouTube і вебплеєрів (.srt) або для вебу (.vtt) — враховує ваші вирізання"
+  },
+  "A video needs at least one clip" : {
+    "uk" : "У відео має бути хоча б один кліп"
+  },
+  "About %lld min left" : {
+    "uk" : "Лишилося близько %lld хв"
+  },
+  "About %lld%% smaller — plays on Apple devices and most phones; some browsers and Windows PCs can't play it without an extra codec" : {
+    "uk" : "Приблизно на %lld%% менше — відтворюється на пристроях Apple і більшості телефонів; деякі браузери та ПК з Windows не відтворять його без додаткового кодека"
+  },
+  "About %llds left" : {
+    "uk" : "Лишилося близько %lld с"
+  },
+  "Add Image or Logo…" : {
+    "uk" : "Додати зображення чи логотип…"
+  },
+  "Add Intro Card" : {
+    "uk" : "Додати вступну заставку"
+  },
+  "Add Music…" : {
+    "uk" : "Додати музику…"
+  },
+  "Add Outro Card" : {
+    "uk" : "Додати завершальну заставку"
+  },
+  "Add another recording or video after this one — Shotnix recordings keep their pointer, clicks, and shortcuts." : {
+    "uk" : "Додайте після цього ще один запис чи відео — записи Shotnix зберігають свій курсор, клацання й скорочення."
+  },
+  "Added %@ — %@" : {
+    "uk" : "Додано «%@» — %@"
+  },
+  "All zooms set to %@" : {
+    "uk" : "Для всіх наближень встановлено %@"
+  },
+  "Almost done" : {
+    "uk" : "Майже готово"
+  },
+  "Append Video…" : {
+    "uk" : "Додати відео в кінець…"
+  },
+  "Applies at every cut. Click a cut's marker on the timeline, or select a clip, to choose one for that cut only." : {
+    "uk" : "Застосовується до кожної склейки. Клацніть позначку склейки на шкалі часу або виберіть кліп, щоб вибрати перехід лише для цієї склейки."
+  },
+  "Arrow" : {
+    "uk" : "Стрілка"
+  },
+  "At playhead" : {
+    "uk" : "На покажчику"
+  },
+  "Aurora" : {
+    "uk" : "Полярне сяйво"
+  },
+  "Auto" : {
+    "uk" : "Авто"
+  },
+  "Auto zoom applied — %lld zooms follow your clicks" : {
+    "uk" : {
+      "few" : "Автонаближення застосовано — %lld наближення стежать за вашими клацаннями",
+      "many" : "Автонаближення застосовано — %lld наближень стежать за вашими клацаннями",
+      "one" : "Автонаближення застосовано — %lld наближення стежить за вашими клацаннями",
+      "other" : "Автонаближення застосовано — %lld наближення стежать за вашими клацаннями"
+    }
+  },
+  "Auto zoom — %lld zooms" : {
+    "uk" : {
+      "few" : "Автонаближення — %lld наближення",
+      "many" : "Автонаближення — %lld наближень",
+      "one" : "Автонаближення — %lld наближення",
+      "other" : "Автонаближення — %lld наближення"
+    }
+  },
+  "Back" : {
+    "uk" : "Назад"
+  },
+  "Back to the Shotnix look" : {
+    "uk" : "Відновлено стиль Shotnix"
+  },
+  "Back to the original recording — ⌘Z to undo" : {
+    "uk" : "Відновлено оригінальний запис — ⌘Z, щоб відмінити"
+  },
+  "Balancing loudness…" : {
+    "uk" : "Вирівнювання гучності…"
+  },
+  "Between clips" : {
+    "uk" : "Між кліпами"
+  },
+  "Blossom" : {
+    "uk" : "Цвітіння"
+  },
+  "Blur" : {
+    "uk" : "Розмиття"
+  },
+  "Bold" : {
+    "uk" : "Жирний"
+  },
+  "Bold outline" : {
+    "uk" : "Жирний контур"
+  },
+  "Bottom" : {
+    "uk" : "Унизу"
+  },
+  "Bottom left" : {
+    "uk" : "Унизу ліворуч"
+  },
+  "Bottom right" : {
+    "uk" : "Унизу праворуч"
+  },
+  "Burn captions into the video" : {
+    "uk" : "Вшити субтитри у відео"
+  },
+  "Camera footage, cleaned-up voice, drafts, and clipboard exports" : {
+    "uk" : "Відео з камери, очищений голос, чернетки й експорти в буфер обміну"
+  },
+  "Camera hidden" : {
+    "uk" : "Камеру сховано"
+  },
+  "Camera layout removed" : {
+    "uk" : "Макет камери вилучено"
+  },
+  "Cancel export" : {
+    "uk" : "Скасувати експорт"
+  },
+  "Cancel this export" : {
+    "uk" : "Скасувати цей експорт"
+  },
+  "Cancelled" : {
+    "uk" : "Скасовано"
+  },
+  "Caption removed" : {
+    "uk" : "Субтитр вилучено"
+  },
+  "Caption style %@" : {
+    "uk" : "Стиль субтитрів «%@»"
+  },
+  "Captions" : {
+    "uk" : "Субтитри"
+  },
+  "Captions are drawn into the picture, and a subtitles file is saved next to the video." : {
+    "uk" : "Субтитри вшиваються в зображення, а поруч із відео зберігається файл субтитрів."
+  },
+  "Captions are drawn into the picture." : {
+    "uk" : "Субтитри вшиваються в зображення."
+  },
+  "Captions are hidden in the editor (Captions tab → Show captions)." : {
+    "uk" : "Субтитри сховано в редакторі (вкладка «Субтитри» → «Показувати субтитри»)."
+  },
+  "Captions look like this" : {
+    "uk" : "Ось такі субтитри"
+  },
+  "Captions ready — %lld lines" : {
+    "uk" : {
+      "few" : "Субтитри готові — %lld рядки",
+      "many" : "Субтитри готові — %lld рядків",
+      "one" : "Субтитри готові — %lld рядок",
+      "other" : "Субтитри готові — %lld рядка"
+    }
+  },
+  "Captions translated to %@" : {
+    "uk" : "Субтитри перекладено: %@"
+  },
+  "Cards use your background, and the timeline grows to fit them. The “Made with Shotnix” end card is separate — it's in the export options." : {
+    "uk" : "Заставки використовують ваше тло, а шкала часу подовжується, щоб їх умістити. Кінцева заставка «Made with Shotnix» окрема — вона в параметрах експорту."
+  },
+  "Center" : {
+    "uk" : "По центру"
+  },
+  "Choose a language" : {
+    "uk" : "Виберіть мову"
+  },
+  "Choose a logo, watermark, or screenshot to place on the video" : {
+    "uk" : "Виберіть логотип, водяний знак чи знімок екрана, щоб розмістити на відео"
+  },
+  "Choose a recording or video to add after this one" : {
+    "uk" : "Виберіть запис чи відео, щоб додати після цього"
+  },
+  "Choose a song to play under the video" : {
+    "uk" : "Виберіть трек, що звучатиме під відео"
+  },
+  "Circle" : {
+    "uk" : "Коло"
+  },
+  "Citrus" : {
+    "uk" : "Цитрус"
+  },
+  "Classic" : {
+    "uk" : "Класичний"
+  },
+  "Clean Up…" : {
+    "uk" : "Прибрати…"
+  },
+  "Cleaning up the voice in “%@”" : {
+    "uk" : "Очищення голосу в «%@»"
+  },
+  "Cleaning up voice…" : {
+    "uk" : "Очищення голосу…"
+  },
+  "Cleaning up your voice first… %lld%%" : {
+    "uk" : "Спершу очищення голосу… %lld%%"
+  },
+  "Cleaning up your voice… %lld%%" : {
+    "uk" : "Очищення голосу… %lld%%"
+  },
+  "Click removed — ⌘Z to undo" : {
+    "uk" : "Клацання вилучено — ⌘Z, щоб відмінити"
+  },
+  "Click sounds" : {
+    "uk" : "Звуки клацання"
+  },
+  "Click volume" : {
+    "uk" : "Гучність клацань"
+  },
+  "Clip moved — ⌘Z to undo" : {
+    "uk" : "Кліп переміщено — ⌘Z, щоб відмінити"
+  },
+  "Clip now ends here" : {
+    "uk" : "Тепер кліп закінчується тут"
+  },
+  "Clip now starts here" : {
+    "uk" : "Тепер кліп починається тут"
+  },
+  "Clip removed — ⌘Z to undo" : {
+    "uk" : "Кліп вилучено — ⌘Z, щоб відмінити"
+  },
+  "Clip split" : {
+    "uk" : "Кліп розділено"
+  },
+  "Close" : {
+    "uk" : "Закрити"
+  },
+  "Close (Esc)" : {
+    "uk" : "Закрити (Esc)"
+  },
+  "Copied" : {
+    "uk" : "Скопійовано"
+  },
+  "Copied to clipboard" : {
+    "uk" : "Скопійовано в буфер обміну"
+  },
+  "Copied — paste it anywhere" : {
+    "uk" : "Скопійовано — вставте будь-де"
+  },
+  "Copy Path" : {
+    "uk" : "Скопіювати шлях"
+  },
+  "Copy to clipboard" : {
+    "uk" : "Скопіювати в буфер обміну"
+  },
+  "Copy to clipboard — %@" : {
+    "uk" : "Скопіювати в буфер обміну — %@"
+  },
+  "Copying %lld%%" : {
+    "uk" : "Копіювання %lld%%"
+  },
+  "Couldn't add that song — %@" : {
+    "uk" : "Не вдалося додати трек — %@"
+  },
+  "Couldn't create the GIF file. Check that you can save to that folder, then export again." : {
+    "uk" : "Не вдалося створити файл GIF. Перевірте, чи можна зберігати в цю папку, а потім експортуйте ще раз."
+  },
+  "Couldn't make captions" : {
+    "uk" : "Не вдалося створити субтитри"
+  },
+  "Couldn't make the click sound. Turn off Click sounds (Audio tab), then export again." : {
+    "uk" : "Не вдалося створити звук клацання. Вимкніть «Звуки клацання» (вкладка «Аудіо»), а потім експортуйте ще раз."
+  },
+  "Couldn't open that image" : {
+    "uk" : "Не вдалося відкрити зображення"
+  },
+  "Couldn't open that video — %@" : {
+    "uk" : "Не вдалося відкрити відео — %@"
+  },
+  "Couldn't prepare the video. Export again; if it keeps happening, restart Shotnix." : {
+    "uk" : "Не вдалося підготувати відео. Експортуйте ще раз; якщо це повторюється, перезапустіть Shotnix."
+  },
+  "Couldn't read that audio file" : {
+    "uk" : "Не вдалося прочитати аудіофайл"
+  },
+  "Couldn't read the recording for the GIF. Try exporting a shorter part, or choose MP4." : {
+    "uk" : "Не вдалося прочитати запис для GIF. Спробуйте експортувати коротшу частину або виберіть MP4."
+  },
+  "Couldn't read the recording. Check that its file is still there, then export again." : {
+    "uk" : "Не вдалося прочитати запис. Перевірте, чи його файл досі на місці, а потім експортуйте ще раз."
+  },
+  "Couldn't save the captions file" : {
+    "uk" : "Не вдалося зберегти файл субтитрів"
+  },
+  "Couldn't set up the video encoder. Choose H.264 or a lower resolution, then export again." : {
+    "uk" : "Не вдалося налаштувати відеокодер. Виберіть H.264 або нижчу роздільність, а потім експортуйте ще раз."
+  },
+  "Couldn't start the export. Export again; if it keeps happening, restart Shotnix." : {
+    "uk" : "Не вдалося почати експорт. Експортуйте ще раз; якщо це повторюється, перезапустіть Shotnix."
+  },
+  "Couldn't translate (%@). Try again, or pick another language." : {
+    "uk" : "Не вдалося перекласти (%@). Спробуйте ще раз або виберіть іншу мову."
+  },
+  "Couldn't write the GIF. Check that there's free space, or export a shorter part." : {
+    "uk" : "Не вдалося записати GIF. Перевірте, чи є вільне місце, або експортуйте коротшу частину."
+  },
+  "Couldn't write the video. Check that there's free space and that you can save to that folder, then export again." : {
+    "uk" : "Не вдалося записати відео. Перевірте, чи є вільне місце і чи можна зберігати в цю папку, а потім експортуйте ще раз."
+  },
+  "Crisp and compact — the best default" : {
+    "uk" : "Чітко й компактно — найкращий типовий варіант"
+  },
+  "Cut %lld words — ⌘Z to undo" : {
+    "uk" : {
+      "few" : "Вирізано %lld слова — ⌘Z, щоб відмінити",
+      "many" : "Вирізано %lld слів — ⌘Z, щоб відмінити",
+      "one" : "Вирізано %lld слово — ⌘Z, щоб відмінити",
+      "other" : "Вирізано %lld слова — ⌘Z, щоб відмінити"
+    }
+  },
+  "Cut, no transition" : {
+    "uk" : "Склейка без переходу"
+  },
+  "Cutout" : {
+    "uk" : "Силует"
+  },
+  "Dip to black" : {
+    "uk" : "Затемнення"
+  },
+  "Dips while you talk, comes back in the pauses" : {
+    "uk" : "Стишується, коли ви говорите, і повертається в паузах"
+  },
+  "Dismiss" : {
+    "uk" : "Закрити"
+  },
+  "Dissolve" : {
+    "uk" : "Розчинення"
+  },
+  "Dissolve Between Clips" : {
+    "uk" : "Розчинення між кліпами"
+  },
+  "Docs, slides" : {
+    "uk" : "Документи, слайди"
+  },
+  "Done" : {
+    "uk" : "Готово"
+  },
+  "Downloading the language model…" : {
+    "uk" : "Завантаження мовної моделі…"
+  },
+  "Drag to move; drag a corner to resize" : {
+    "uk" : "Перетягніть, щоб перемістити; тягніть кут, щоб змінити розмір"
+  },
+  "Duplicated" : {
+    "uk" : "Продубльовано"
+  },
+  "Dusk" : {
+    "uk" : "Сутінки"
+  },
+  "Each recording keeps its own pointer, clicks, and shortcuts. Reorder them here; cut and trim them on the timeline like any clip." : {
+    "uk" : "Кожен запис зберігає свій курсор, клацання й скорочення. Змінюйте їх порядок тут; вирізайте й підрізайте їх на шкалі часу, як будь-який кліп."
+  },
+  "Edit Video" : {
+    "uk" : "Редагувати відео"
+  },
+  "Ellipse" : {
+    "uk" : "Еліпс"
+  },
+  "Ember" : {
+    "uk" : "Жарина"
+  },
+  "Emerald" : {
+    "uk" : "Смарагд"
+  },
+  "Encoding" : {
+    "uk" : "Кодування"
+  },
+  "End card" : {
+    "uk" : "Кінцева заставка"
+  },
+  "English" : {
+    "uk" : "Англійська"
+  },
+  "Estimating…" : {
+    "uk" : "Оцінювання…"
+  },
+  "Every clip is muted — this export will have no sound." : {
+    "uk" : "Звук усіх кліпів вимкнено — цей експорт буде без звуку."
+  },
+  "Every cut, zoom, annotation, caption, and style change on this video is removed — the recordings you added stay. You can undo this." : {
+    "uk" : "Усі вирізання, наближення, розмітку, субтитри й зміни стилю в цьому відео буде вилучено — додані записи залишаться. Цю дію можна відмінити."
+  },
+  "Every cut, zoom, annotation, caption, and style change on this video is removed. You can undo this." : {
+    "uk" : "Усі вирізання, наближення, розмітку, субтитри й зміни стилю в цьому відео буде вилучено. Цю дію можна відмінити."
+  },
+  "Every sound level is at 0 (Audio tab) — this export will have no sound." : {
+    "uk" : "Усі рівні звуку на 0 (вкладка «Аудіо») — цей експорт буде без звуку."
+  },
+  "Export" : {
+    "uk" : "Експорт"
+  },
+  "Export and put the file on the clipboard — paste it into Slack, Mail, or Finder" : {
+    "uk" : "Експортувати й покласти файл у буфер обміну — вставте його в Slack, Пошту чи Finder"
+  },
+  "Export cancelled" : {
+    "uk" : "Експорт скасовано"
+  },
+  "Export cancelled." : {
+    "uk" : "Експорт скасовано."
+  },
+  "Export complete" : {
+    "uk" : "Експорт завершено"
+  },
+  "Export failed" : {
+    "uk" : "Помилка експорту"
+  },
+  "Export: %@" : {
+    "uk" : "Експорт: %@"
+  },
+  "Exported" : {
+    "uk" : "Експортовано"
+  },
+  "Exported without Enhance voice — it couldn't finish." : {
+    "uk" : "Експортовано без покращення голосу — його не вдалося завершити."
+  },
+  "Exported · %@" : {
+    "uk" : "Експортовано · %@"
+  },
+  "Exporting %lld%%" : {
+    "uk" : "Експорт %lld%%"
+  },
+  "Exporting a video for the clipboard" : {
+    "uk" : "Експорт відео для буфера обміну"
+  },
+  "Exporting “%@”" : {
+    "uk" : "Експорт «%@»"
+  },
+  "Exporting…" : {
+    "uk" : "Експорт…"
+  },
+  "Exporting… %lld%%" : {
+    "uk" : "Експорт… %lld%%"
+  },
+  "Export…" : {
+    "uk" : "Експортувати…"
+  },
+  "Fade in" : {
+    "uk" : "Поява"
+  },
+  "Fade in from black" : {
+    "uk" : "Поява з чорного"
+  },
+  "Fade out" : {
+    "uk" : "Зникнення"
+  },
+  "Fade out to black" : {
+    "uk" : "Зникнення в чорне"
+  },
+  "File not found" : {
+    "uk" : "Файл не знайдено"
+  },
+  "Filling the frame — the view follows your cursor" : {
+    "uk" : "Кадр заповнено — вигляд стежить за курсором"
+  },
+  "Flamingo" : {
+    "uk" : "Фламінго"
+  },
+  "Frame copied" : {
+    "uk" : "Кадр скопійовано"
+  },
+  "Frame rate" : {
+    "uk" : "Частота кадрів"
+  },
+  "Freed %@ (%lld files)" : {
+    "uk" : {
+      "few" : "Звільнено %@ (%lld файли)",
+      "many" : "Звільнено %@ (%lld файлів)",
+      "one" : "Звільнено %@ (%lld файл)",
+      "other" : "Звільнено %@ (%lld файлу)"
+    }
+  },
+  "Full camera" : {
+    "uk" : "Лише камера"
+  },
+  "Full-screen camera for your intro and outro" : {
+    "uk" : "Лише камера у вступі й завершенні"
+  },
+  "GIFs embed anywhere — READMEs, pull requests, docs. Keep them short: they get big fast." : {
+    "uk" : "GIF можна вбудувати будь-де — у README, pull request, документацію. Робіть їх короткими: вони швидко стають великими."
+  },
+  "Getting ready…" : {
+    "uk" : "Підготовка…"
+  },
+  "Glacier" : {
+    "uk" : "Льодовик"
+  },
+  "Graphite" : {
+    "uk" : "Графіт"
+  },
+  "Hard Cuts Between Clips" : {
+    "uk" : "Прямі склейки між кліпами"
+  },
+  "Hard cut" : {
+    "uk" : "Пряма склейка"
+  },
+  "Hidden" : {
+    "uk" : "Сховано"
+  },
+  "Hide — the export keeps going (Esc)" : {
+    "uk" : "Сховати — експорт триває (Esc)"
+  },
+  "Highlight" : {
+    "uk" : "Виділення"
+  },
+  "Highlight color" : {
+    "uk" : "Колір виділення"
+  },
+  "Image" : {
+    "uk" : "Зображення"
+  },
+  "In" : {
+    "uk" : "Початок"
+  },
+  "In & out" : {
+    "uk" : "Початок і кінець"
+  },
+  "In earlier" : {
+    "uk" : "Початок раніше"
+  },
+  "In later" : {
+    "uk" : "Початок пізніше"
+  },
+  "Includes: %@" : {
+    "uk" : "Містить: %@"
+  },
+  "Instagram, LinkedIn" : {
+    "uk" : "Instagram, LinkedIn"
+  },
+  "Instant" : {
+    "uk" : "Миттєво"
+  },
+  "Intro & outro" : {
+    "uk" : "Вступ і завершення"
+  },
+  "Intro card" : {
+    "uk" : "Вступна заставка"
+  },
+  "Iris" : {
+    "uk" : "Ірис"
+  },
+  "It may be damaged, still being saved, or in a format this Mac can't play. MP4 and MOV videos work best." : {
+    "uk" : "Можливо, файл пошкоджено, він ще зберігається або має формат, який цей Mac не відтворює. Найкраще працюють відео MP4 і MOV."
+  },
+  "It only has sound, or nothing at all. Shotnix edits screen recordings and other videos." : {
+    "uk" : "Він містить лише звук або взагалі нічого. Shotnix редагує записи екрана та інші відео."
+  },
+  "It was moved, renamed, or deleted. Open it from where it is now." : {
+    "uk" : "Його переміщено, перейменовано чи видалено. Відкрийте його з нового місця."
+  },
+  "Keep Editing" : {
+    "uk" : "Продовжити редагування"
+  },
+  "L" : {
+    "uk" : "L"
+  },
+  "Lagoon" : {
+    "uk" : "Лагуна"
+  },
+  "Languages" : {
+    "uk" : "Мови"
+  },
+  "Large" : {
+    "uk" : "Великий"
+  },
+  "Larger than the recording — text may look softer than at a lower resolution." : {
+    "uk" : "Більше за запис — текст може бути менш чітким, ніж за нижчої роздільності."
+  },
+  "Left" : {
+    "uk" : "Ліворуч"
+  },
+  "Length" : {
+    "uk" : "Тривалість"
+  },
+  "Light" : {
+    "uk" : "Злегка"
+  },
+  "Linen" : {
+    "uk" : "Льон"
+  },
+  "Listening…" : {
+    "uk" : "Слухання…"
+  },
+  "Loop to fill" : {
+    "uk" : "Повторювати до кінця"
+  },
+  "Lower under your voice" : {
+    "uk" : "Стишувати під голос"
+  },
+  "M" : {
+    "uk" : "M"
+  },
+  "Make it lighter: %@, %@ fps" : {
+    "uk" : "Полегшити: %@, %@ fps"
+  },
+  "Match the recording" : {
+    "uk" : "Як у записі"
+  },
+  "Maximum detail for further editing" : {
+    "uk" : "Максимум деталей для подальшого монтажу"
+  },
+  "Meadow" : {
+    "uk" : "Луг"
+  },
+  "Medium" : {
+    "uk" : "Середній"
+  },
+  "Midnight" : {
+    "uk" : "Опівніч"
+  },
+  "Minimal" : {
+    "uk" : "Мінімалістичний"
+  },
+  "Mint" : {
+    "uk" : "М’ята"
+  },
+  "Mist" : {
+    "uk" : "Імла"
+  },
+  "Move %@ earlier" : {
+    "uk" : "Перемістити «%@» раніше"
+  },
+  "Move %@ later" : {
+    "uk" : "Перемістити «%@» пізніше"
+  },
+  "Move earlier" : {
+    "uk" : "Раніше"
+  },
+  "Move later" : {
+    "uk" : "Пізніше"
+  },
+  "Move the playhead inside a clip to split" : {
+    "uk" : "Щоб розділити, перемістіть покажчик відтворення всередину кліпу"
+  },
+  "Music" : {
+    "uk" : "Музика"
+  },
+  "Music added — it dips while you talk" : {
+    "uk" : "Музику додано — вона стишується, коли ви говорите"
+  },
+  "Music options" : {
+    "uk" : "Параметри музики"
+  },
+  "Music removed — ⌘Z to undo" : {
+    "uk" : "Музику вилучено — ⌘Z, щоб відмінити"
+  },
+  "Music — click to change its volume, fades, and ducking" : {
+    "uk" : "Музика — клацніть, щоб змінити гучність, появу/згасання та приглушення"
+  },
+  "Mute video is on (Audio tab) — this export will have no sound." : {
+    "uk" : "Увімкнено «Вимкнути звук відео» (вкладка «Аудіо») — цей експорт буде без звуку."
+  },
+  "Nebula" : {
+    "uk" : "Туманність"
+  },
+  "New caption" : {
+    "uk" : "Новий субтитр"
+  },
+  "No captions in the picture — add a subtitles file to upload them separately." : {
+    "uk" : "Без субтитрів у кадрі — додайте файл субтитрів, щоб вивантажити їх окремо."
+  },
+  "No clicks left on the timeline" : {
+    "uk" : "На шкалі часу не залишилося клацань"
+  },
+  "No clicks were recorded in this video" : {
+    "uk" : "У цьому відео не записано клацань"
+  },
+  "No clicks were recorded — add zooms by hand" : {
+    "uk" : "Клацань не записано — додайте наближення вручну"
+  },
+  "No idle moments found — nice and tight" : {
+    "uk" : "Простоїв не знайдено — усе щільно"
+  },
+  "No long pauses to shorten" : {
+    "uk" : "Немає довгих пауз для скорочення"
+  },
+  "No room after this zoom" : {
+    "uk" : "Після цього наближення немає місця"
+  },
+  "No room here — move the playhead" : {
+    "uk" : "Тут немає місця — перемістіть покажчик відтворення"
+  },
+  "No speech was found in this recording. If it has narration, check its level in the Audio tab, then try again." : {
+    "uk" : "У цьому записі не знайдено мовлення. Якщо в ньому є коментар, перевірте рівень у вкладці «Аудіо», а потім спробуйте ще раз."
+  },
+  "No ums or uhs left" : {
+    "uk" : "Слів-паразитів не залишилося"
+  },
+  "None" : {
+    "uk" : "Немає"
+  },
+  "Nothing to clean up — everything belongs to recordings you still have" : {
+    "uk" : "Нічого прибирати — усе належить записам, які у вас досі є"
+  },
+  "Ocean" : {
+    "uk" : "Океан"
+  },
+  "Of the frame's width." : {
+    "uk" : "Від ширини кадру."
+  },
+  "Off" : {
+    "uk" : "Вимкнено"
+  },
+  "On your clipboard · %@" : {
+    "uk" : "У буфері обміну · %@"
+  },
+  "Only %@ free on your disk — this may not fit. Free up space or save to another drive." : {
+    "uk" : "На диску вільно лише %@ — цього може не вистачити. Звільніть місце або збережіть на інший диск."
+  },
+  "Opacity" : {
+    "uk" : "Непрозорість"
+  },
+  "Opens its volume, fades, and ducking in Audio" : {
+    "uk" : "Відкриває гучність, появу/згасання та приглушення у вкладці «Аудіо»"
+  },
+  "Or drag it on the preview. Images stay put while the camera zooms." : {
+    "uk" : "Або перетягніть його в перегляді. Зображення лишаються на місці, поки камера наближається."
+  },
+  "Or drag its bar on the timeline." : {
+    "uk" : "Або перетягніть його смугу на шкалі часу."
+  },
+  "Orchid" : {
+    "uk" : "Орхідея"
+  },
+  "Original" : {
+    "uk" : "Оригінал"
+  },
+  "Out" : {
+    "uk" : "Кінець"
+  },
+  "Out earlier" : {
+    "uk" : "Кінець раніше"
+  },
+  "Out later" : {
+    "uk" : "Кінець пізніше"
+  },
+  "Outro card" : {
+    "uk" : "Завершальна заставка"
+  },
+  "Part of the recording couldn't be read — the file may be damaged. Try exporting a shorter part of the video." : {
+    "uk" : "Частину запису не вдалося прочитати — можливо, файл пошкоджено. Спробуйте експортувати коротшу частину відео."
+  },
+  "Pause restored" : {
+    "uk" : "Паузу відновлено"
+  },
+  "Pause shortened" : {
+    "uk" : "Паузу скорочено"
+  },
+  "Peach" : {
+    "uk" : "Персик"
+  },
+  "Picked up where you left off" : {
+    "uk" : "Продовжено з того місця, де ви зупинилися"
+  },
+  "Play" : {
+    "uk" : "Відтворити"
+  },
+  "Play Click Sounds" : {
+    "uk" : "Відтворювати звуки клацання"
+  },
+  "Play a click on each click" : {
+    "uk" : "Звук на кожне клацання"
+  },
+  "Playing %lld×" : {
+    "uk" : "Відтворення %lld×"
+  },
+  "Plays after the last clip, before the end card" : {
+    "uk" : "Після останнього кліпу, перед кінцевою заставкою"
+  },
+  "Plays before the first clip" : {
+    "uk" : "Перед першим кліпом"
+  },
+  "Plays everywhere" : {
+    "uk" : "Відтворюється всюди"
+  },
+  "Plum" : {
+    "uk" : "Слива"
+  },
+  "Position" : {
+    "uk" : "Позиція"
+  },
+  "Preparing to copy…" : {
+    "uk" : "Підготовка до копіювання…"
+  },
+  "Preparing…" : {
+    "uk" : "Підготовка…"
+  },
+  "Press" : {
+    "uk" : "Натиск"
+  },
+  "Preview muted — the export keeps its sound" : {
+    "uk" : "Звук перегляду вимкнено — експорт зберігає звук"
+  },
+  "Preview sound on" : {
+    "uk" : "Звук перегляду ввімкнено"
+  },
+  "Pure" : {
+    "uk" : "Чистий"
+  },
+  "Quality" : {
+    "uk" : "Якість"
+  },
+  "Quick" : {
+    "uk" : "Швидко"
+  },
+  "Range" : {
+    "uk" : "Діапазон"
+  },
+  "Recording removed — ⌘Z to undo" : {
+    "uk" : "Запис вилучено — ⌘Z, щоб відмінити"
+  },
+  "Recording saved" : {
+    "uk" : "Запис збережено"
+  },
+  "Recordings" : {
+    "uk" : "Записи"
+  },
+  "Recordings in the Trash or on a drive that isn't plugged in keep their data. This can't be undone." : {
+    "uk" : "Записи в Кошику або на непід’єднаному диску зберігають свої дані. Цю дію не можна відмінити."
+  },
+  "Rectangle" : {
+    "uk" : "Прямокутник"
+  },
+  "Reels, TikTok, Shorts" : {
+    "uk" : "Reels, TikTok, Shorts"
+  },
+  "Regular" : {
+    "uk" : "Звичайний"
+  },
+  "Remove" : {
+    "uk" : "Вилучити"
+  },
+  "Remove %@" : {
+    "uk" : "Вилучити «%@»"
+  },
+  "Remove %@ of video data?" : {
+    "uk" : "Вилучити %@ відеоданих?"
+  },
+  "Remove Intro Card" : {
+    "uk" : "Вилучити вступну заставку"
+  },
+  "Remove Music" : {
+    "uk" : "Вилучити музику"
+  },
+  "Remove Outro Card" : {
+    "uk" : "Вилучити завершальну заставку"
+  },
+  "Remove from this video" : {
+    "uk" : "Вилучити з цього відео"
+  },
+  "Remove this translation" : {
+    "uk" : "Вилучити цей переклад"
+  },
+  "Remove translation" : {
+    "uk" : "Вилучити переклад"
+  },
+  "Removed %@ — ⌘Z to undo" : {
+    "uk" : "Вирізано %@ — ⌘Z, щоб відмінити"
+  },
+  "Removed %lld filler words — %@ shorter" : {
+    "uk" : {
+      "few" : "Вилучено %lld слова-паразити — на %@ коротше",
+      "many" : "Вилучено %lld слів-паразитів — на %@ коротше",
+      "one" : "Вилучено %lld слово-паразит — на %@ коротше",
+      "other" : "Вилучено %lld слова-паразита — на %@ коротше"
+    }
+  },
+  "Removed %lld zooms — ⌘Z to undo" : {
+    "uk" : {
+      "few" : "Вилучено %lld наближення — ⌘Z, щоб відмінити",
+      "many" : "Вилучено %lld наближень — ⌘Z, щоб відмінити",
+      "one" : "Вилучено %lld наближення — ⌘Z, щоб відмінити",
+      "other" : "Вилучено %lld наближення — ⌘Z, щоб відмінити"
+    }
+  },
+  "Removed — ⌘Z to undo" : {
+    "uk" : "Вилучено — ⌘Z, щоб відмінити"
+  },
+  "Rendering for the clipboard… %lld%%" : {
+    "uk" : "Рендеринг для буфера обміну… %lld%%"
+  },
+  "Rendering, then copying to your clipboard" : {
+    "uk" : "Рендеринг і копіювання в буфер обміну"
+  },
+  "Replace Music…" : {
+    "uk" : "Замінити музику…"
+  },
+  "Replace…" : {
+    "uk" : "Замінити…"
+  },
+  "Resolution" : {
+    "uk" : "Роздільність"
+  },
+  "Restored %@" : {
+    "uk" : "Відновлено %@"
+  },
+  "Restored %lld cuts — %@" : {
+    "uk" : {
+      "few" : "Відновлено %lld фрагменти — %@",
+      "many" : "Відновлено %lld фрагментів — %@",
+      "one" : "Відновлено %lld фрагмент — %@",
+      "other" : "Відновлено %lld фрагмента — %@"
+    }
+  },
+  "Restored %lld words" : {
+    "uk" : {
+      "few" : "Відновлено %lld слова",
+      "many" : "Відновлено %lld слів",
+      "one" : "Відновлено %lld слово",
+      "other" : "Відновлено %lld слова"
+    }
+  },
+  "Reveal" : {
+    "uk" : "Показати"
+  },
+  "Reveal in Finder" : {
+    "uk" : "Показати у Finder"
+  },
+  "Right" : {
+    "uk" : "Праворуч"
+  },
+  "Ripple" : {
+    "uk" : "Хвиля"
+  },
+  "Rounded" : {
+    "uk" : "Заокруглена"
+  },
+  "S" : {
+    "uk" : "S"
+  },
+  "Save %@…" : {
+    "uk" : "Зберегти %@…"
+  },
+  "Save Subtitles" : {
+    "uk" : "Зберегти субтитри"
+  },
+  "Save Subtitles (.vtt)…" : {
+    "uk" : "Зберегти субтитри (.vtt)…"
+  },
+  "Saved %@" : {
+    "uk" : "Збережено «%@»"
+  },
+  "Saved — new recordings will use this look" : {
+    "uk" : "Збережено — нові записи матимуть такий стиль"
+  },
+  "Selection" : {
+    "uk" : "Вибір"
+  },
+  "Set the in point to the playhead (%@)" : {
+    "uk" : "Встановити початок на покажчику відтворення (%@)"
+  },
+  "Set the out point to the playhead (%@)" : {
+    "uk" : "Встановити кінець на покажчику відтворення (%@)"
+  },
+  "Share" : {
+    "uk" : "Поділитися"
+  },
+  "Share — Mail, Messages, AirDrop…" : {
+    "uk" : "Поділитися — Пошта, Повідомлення, AirDrop…"
+  },
+  "Shortcut hidden" : {
+    "uk" : "Скорочення сховано"
+  },
+  "Shortened %lld pauses — %@ shorter" : {
+    "uk" : {
+      "few" : "Скорочено %lld паузи — на %@ коротше",
+      "many" : "Скорочено %lld пауз — на %@ коротше",
+      "one" : "Скорочено %lld паузу — на %@ коротше",
+      "other" : "Скорочено %lld паузи — на %@ коротше"
+    }
+  },
+  "Shotnix can't open this file" : {
+    "uk" : "Shotnix не може відкрити цей файл"
+  },
+  "Shotnix can't save to that folder. Pick another place, like Desktop or Movies, and export again." : {
+    "uk" : "Shotnix не може зберігати в цю папку. Виберіть інше місце, наприклад «Робочий стіл» чи «Фільми», і експортуйте ще раз."
+  },
+  "Shotnix is still cleaning up the voice" : {
+    "uk" : "Shotnix ще очищає голос"
+  },
+  "Shotnix is still transcribing" : {
+    "uk" : "Shotnix ще розшифровує мовлення"
+  },
+  "Show" : {
+    "uk" : "Показ"
+  },
+  "Show for the whole video" : {
+    "uk" : "Показувати протягом усього відео"
+  },
+  "Show in Finder" : {
+    "uk" : "Показати у Finder"
+  },
+  "Shows what can be removed — data of recordings Shotnix can't find, unused footage and pictures, old clipboard exports — and asks before removing it" : {
+    "uk" : "Показує, що можна вилучити, — дані записів, яких Shotnix не може знайти, невикористані відео й зображення, старі експорти в буфер обміну, — і запитує перед вилученням"
+  },
+  "Side by side" : {
+    "uk" : "Поруч"
+  },
+  "Silky" : {
+    "uk" : "Шовковисто"
+  },
+  "Size" : {
+    "uk" : "Розмір"
+  },
+  "Sky" : {
+    "uk" : "Небо"
+  },
+  "Slow" : {
+    "uk" : "Повільно"
+  },
+  "Small" : {
+    "uk" : "Малий"
+  },
+  "Smallest files, great for docs and chat" : {
+    "uk" : "Найменші файли — чудово для документів і чатів"
+  },
+  "Smooth" : {
+    "uk" : "Плавно"
+  },
+  "Social" : {
+    "uk" : "Соцмережі"
+  },
+  "Social feeds" : {
+    "uk" : "Стрічки соцмереж"
+  },
+  "Sped up %lld idle moments — saved %@" : {
+    "uk" : {
+      "few" : "Прискорено %lld простої — заощаджено %@",
+      "many" : "Прискорено %lld простоїв — заощаджено %@",
+      "one" : "Прискорено %lld простій — заощаджено %@",
+      "other" : "Прискорено %lld простою — заощаджено %@"
+    }
+  },
+  "Sped up %lld idle moments — saved %@ · check any typing" : {
+    "uk" : {
+      "few" : "Прискорено %lld простої — заощаджено %@ · перевірте місця з введенням тексту",
+      "many" : "Прискорено %lld простоїв — заощаджено %@ · перевірте місця з введенням тексту",
+      "one" : "Прискорено %lld простій — заощаджено %@ · перевірте місця з введенням тексту",
+      "other" : "Прискорено %lld простою — заощаджено %@ · перевірте місця з введенням тексту"
+    }
+  },
+  "Speech recognition is turned off for Shotnix in System Settings → Privacy & Security → Speech Recognition. Turn it on, then try again." : {
+    "uk" : "Розпізнавання мовлення для Shotnix вимкнено (Системні параметри → Приватність і безпека → Розпізнавання мовлення). Увімкніть його й спробуйте ще раз."
+  },
+  "Speech recognition isn't available on this Mac right now. Try again in a moment." : {
+    "uk" : "Розпізнавання мовлення зараз недоступне на цьому Mac. Спробуйте за мить."
+  },
+  "Speed Up Idle works on Shotnix recordings — it watches the pointer" : {
+    "uk" : "«Прискорити простої» працює із записами Shotnix — функція стежить за курсором"
+  },
+  "Split the video (S) to make cuts; each can dissolve or dip to black." : {
+    "uk" : "Розділіть відео (S), щоб створити склейки; на кожній можливе розчинення чи затемнення."
+  },
+  "Spoken word" : {
+    "uk" : "Вимовлене слово"
+  },
+  "Spotlight" : {
+    "uk" : "Прожектор"
+  },
+  "Start Over" : {
+    "uk" : "Почати заново"
+  },
+  "Start over from the original recording?" : {
+    "uk" : "Почати заново з оригінального запису?"
+  },
+  "Start the song at" : {
+    "uk" : "Почати трек з"
+  },
+  "Studio" : {
+    "uk" : "Студія"
+  },
+  "Subtitle" : {
+    "uk" : "Підзаголовок"
+  },
+  "Subtitles file" : {
+    "uk" : "Файл субтитрів"
+  },
+  "Sunset" : {
+    "uk" : "Захід сонця"
+  },
+  "Tag" : {
+    "uk" : "Плашка"
+  },
+  "Tangerine" : {
+    "uk" : "Мандарин"
+  },
+  "Thanks for watching" : {
+    "uk" : "Дякуємо за перегляд"
+  },
+  "That drive is read-only. Pick another place to save, then export again." : {
+    "uk" : "Цей диск доступний лише для читання. Виберіть інше місце для збереження й експортуйте ще раз."
+  },
+  "That part is only a title card — include a moment of the video to export it." : {
+    "uk" : "Ця частина — лише заставка: додайте момент відео, щоб її експортувати."
+  },
+  "That part of the timeline is only a title card. Include a moment of the video in the range, then export again." : {
+    "uk" : "Ця частина шкали часу — лише заставка. Додайте до діапазону момент відео, а потім експортуйте ще раз."
+  },
+  "That video is empty" : {
+    "uk" : "Це відео порожнє"
+  },
+  "The export carries on in the background (Esc)" : {
+    "uk" : "Експорт триває у фоні (Esc)"
+  },
+  "The export stopped unexpectedly (%@). Try again — if it keeps happening, export at a lower resolution or in H.264." : {
+    "uk" : "Експорт несподівано зупинився (%@). Спробуйте ще раз — якщо це повторюється, експортуйте з нижчою роздільністю або в H.264."
+  },
+  "The picture's file is gone — choose it again with Replace." : {
+    "uk" : "Файл зображення зник — виберіть його знову за допомогою «Замінити»."
+  },
+  "The recording's file can't be found — it may have been moved or deleted. Put it back and export again." : {
+    "uk" : "Не вдається знайти файл запису — можливо, його переміщено чи видалено. Поверніть його на місце й експортуйте ще раз."
+  },
+  "The selected file has no video track. Choose a video file instead." : {
+    "uk" : "Вибраний файл не має відеодоріжки. Виберіть відеофайл."
+  },
+  "The song is shorter than the video" : {
+    "uk" : "Трек коротший за відео"
+  },
+  "The song's file is gone — choose it again with Replace." : {
+    "uk" : "Файл треку зник — виберіть його знову за допомогою «Замінити»."
+  },
+  "The timeline is empty. Restore a clip, then export again." : {
+    "uk" : "Шкала часу порожня. Відновіть кліп, а потім експортуйте ще раз."
+  },
+  "The video encoder is busy — another app may be recording or exporting. Wait a moment and try again, or choose H.264." : {
+    "uk" : "Відеокодер зайнятий — можливо, інша програма записує чи експортує. Зачекайте трохи й спробуйте ще раз або виберіть H.264."
+  },
+  "The video's own recording can't be removed" : {
+    "uk" : "Основний запис відео не можна вилучити"
+  },
+  "The voice track is empty, so there's nothing to clean up. Turn off Enhance voice to keep the original sound." : {
+    "uk" : "Голосова доріжка порожня, тож очищати нічого. Вимкніть «Покращити голос», щоб зберегти оригінальний звук."
+  },
+  "There are no captions to translate yet. Transcribe or add captions first." : {
+    "uk" : "Ще немає субтитрів для перекладу. Спершу розшифруйте мовлення або додайте субтитри."
+  },
+  "There isn't enough free space on this disk: this export needs about %@ and %@ is free. Free up some space (empty the Trash, delete old recordings) or export to another drive." : {
+    "uk" : "На цьому диску недостатньо вільного місця: для експорту потрібно приблизно %@, а вільно %@. Звільніть місце (очистіть Кошик, видаліть старі записи) або експортуйте на інший диск."
+  },
+  "There isn't enough free space on “%@”: this export needs about %@ and %@ is free. Free up some space (empty the Trash, delete old recordings) or export to another drive." : {
+    "uk" : "На «%@» недостатньо вільного місця: для експорту потрібно приблизно %@, а вільно %@. Звільніть місце (очистіть Кошик, видаліть старі записи) або експортуйте на інший диск."
+  },
+  "There's already a zoom here" : {
+    "uk" : "Тут уже є наближення"
+  },
+  "There's no video in this file" : {
+    "uk" : "У цьому файлі немає відео"
+  },
+  "Thin" : {
+    "uk" : "Тонкий"
+  },
+  "This GIF is too long for its size — it would need about %@ of memory. Pick a smaller size or fewer frames per second, export part of the video, or choose MP4." : {
+    "uk" : "Цей GIF задовгий для такого розміру — потрібно приблизно %@ пам’яті. Виберіть менший розмір або менше кадрів на секунду, експортуйте частину відео чи виберіть MP4."
+  },
+  "This Mac can't translate between these languages. Pick another language." : {
+    "uk" : "Цей Mac не може перекладати між цими мовами. Виберіть іншу мову."
+  },
+  "This recording has no sound to transcribe. You can still type captions yourself." : {
+    "uk" : "У цьому записі немає звуку для розшифрування. Але ви можете ввести субтитри самостійно."
+  },
+  "This recording has no voice to duck under" : {
+    "uk" : "У цьому записі немає голосу, під який можна стишувати музику"
+  },
+  "This replaces all %lld caption lines, including any you edited or typed, with a new transcript in %@." : {
+    "uk" : {
+      "few" : "Це замінить усі %lld рядки субтитрів, зокрема відредаговані чи введені вручну, новою розшифровкою (%@).",
+      "many" : "Це замінить усі %lld рядків субтитрів, зокрема відредаговані чи введені вручну, новою розшифровкою (%@).",
+      "one" : "Це замінить %lld рядок субтитрів — навіть відредагований чи введений вручну — новою розшифровкою (%@).",
+      "other" : "Це замінить усі %lld рядка субтитрів, зокрема відредаговані чи введені вручну, новою розшифровкою (%@)."
+    }
+  },
+  "This video is copy-protected and can't be exported." : {
+    "uk" : "Це відео захищене від копіювання, його не можна експортувати."
+  },
+  "This video isn't there anymore" : {
+    "uk" : "Цього відео більше немає"
+  },
+  "Timing" : {
+    "uk" : "Час"
+  },
+  "Title" : {
+    "uk" : "Назва"
+  },
+  "Too long for a GIF at this size — it would need about %@ of memory. Make it lighter, export a part, or choose MP4." : {
+    "uk" : "Задовго для GIF такого розміру — потрібно приблизно %@ пам’яті. Полегште його, експортуйте частину чи виберіть MP4."
+  },
+  "Too short for an intro and outro" : {
+    "uk" : "Закоротке для вступу й завершення"
+  },
+  "Top" : {
+    "uk" : "Угорі"
+  },
+  "Top left" : {
+    "uk" : "Угорі ліворуч"
+  },
+  "Top right" : {
+    "uk" : "Угорі праворуч"
+  },
+  "Transcribe Again" : {
+    "uk" : "Розшифрувати знову"
+  },
+  "Transcribe again?" : {
+    "uk" : "Розшифрувати знову?"
+  },
+  "Transcribe the narration to search its words" : {
+    "uk" : "Розшифруйте мовлення, щоб шукати в ньому слова"
+  },
+  "Transcribing “%@”" : {
+    "uk" : "Розшифрування «%@»"
+  },
+  "Transcript and captions removed — ⌘Z to undo" : {
+    "uk" : "Розшифровку й субтитри вилучено — ⌘Z, щоб відмінити"
+  },
+  "Transition in" : {
+    "uk" : "Перехід на початку"
+  },
+  "Transitions" : {
+    "uk" : "Переходи"
+  },
+  "Translate" : {
+    "uk" : "Перекласти"
+  },
+  "Turn Off Click Sounds" : {
+    "uk" : "Вимкнути звуки клацання"
+  },
+  "Under the voice" : {
+    "uk" : "Під голосом"
+  },
+  "Video copied" : {
+    "uk" : "Відео скопійовано"
+  },
+  "Video data" : {
+    "uk" : "Відеодані"
+  },
+  "Video data uses %@" : {
+    "uk" : "Відеодані займають %@"
+  },
+  "Video exported" : {
+    "uk" : "Відео експортовано"
+  },
+  "Violet" : {
+    "uk" : "Фіалковий"
+  },
+  "Voice enhanced — background noise removed" : {
+    "uk" : "Голос покращено — фоновий шум вилучено"
+  },
+  "Voice enhancement isn't available on this Mac. Turn off Enhance voice to keep the original sound." : {
+    "uk" : "Покращення голосу недоступне на цьому Mac. Вимкніть «Покращити голос», щоб зберегти оригінальний звук."
+  },
+  "Voice enhancement stopped partway. Turn Enhance voice off and on again to retry." : {
+    "uk" : "Покращення голосу зупинилося на півдорозі. Вимкніть і знову ввімкніть «Покращити голос», щоб повторити."
+  },
+  "Volume" : {
+    "uk" : "Гучність"
+  },
+  "Waiting…" : {
+    "uk" : "Очікування…"
+  },
+  "Web" : {
+    "uk" : "Веб"
+  },
+  "Welcome" : {
+    "uk" : "Вітаємо"
+  },
+  "Whole video" : {
+    "uk" : "Усе відео"
+  },
+  "Wide" : {
+    "uk" : "Широка"
+  },
+  "YouTube, presentations" : {
+    "uk" : "YouTube, презентації"
+  },
+  "Your Mac ran low on memory. Close some apps or pick a lower resolution, then export again." : {
+    "uk" : "На вашому Mac бракує пам’яті. Закрийте кілька програм або виберіть нижчу роздільність, а потім експортуйте ще раз."
+  },
+  "Your disk is full. Free up some space (empty the Trash, delete old recordings) or export to another drive, then try again." : {
+    "uk" : "Диск заповнено. Звільніть місце (очистіть Кошик, видаліть старі записи) або експортуйте на інший диск, а потім спробуйте ще раз."
+  },
+  "Your text" : {
+    "uk" : "Ваш текст"
+  },
+  "Zoom removed — ⌘Z to undo" : {
+    "uk" : "Наближення вилучено — ⌘Z, щоб відмінити"
+  },
+  "captions burned in" : {
+    "uk" : "вшиті субтитри"
+  },
+  "intro card" : {
+    "uk" : "вступна заставка"
+  },
+  "macOS downloads %@ once, then translates right here — nothing is uploaded." : {
+    "uk" : "macOS один раз завантажить мову «%@», а потім перекладатиме просто тут — нічого не вивантажується."
+  },
+  "music" : {
+    "uk" : "музика"
+  },
+  "no captions in the picture" : {
+    "uk" : "без субтитрів у кадрі"
+  },
+  "no end card" : {
+    "uk" : "без кінцевої заставки"
+  },
+  "outro card" : {
+    "uk" : "завершальна заставка"
+  },
+  "pointer" : {
+    "uk" : "курсор"
+  },
+  "the video" : {
+    "uk" : "відео"
+  },
+  "this recording" : {
+    "uk" : "цей запис"
+  },
+  "“%@” (was in %@)" : {
+    "uk" : "«%@» (раніше в %@)"
+  },
+  "“%@” can't be found. Put it back where it was, or remove it from this video (Style → Recordings), then export again." : {
+    "uk" : "Не вдається знайти «%@». Поверніть файл на місце або вилучіть його з цього відео (Стиль → Записи), а потім експортуйте ще раз."
+  },
+  "“%@” can't be read — it may be damaged, still being saved, or in a format this Mac can't play. Remove it from this video (Style → Recordings), or put a working copy in its place, then export again." : {
+    "uk" : "Не вдається прочитати «%@» — можливо, файл пошкоджено, він ще зберігається або має формат, який цей Mac не відтворює. Вилучіть його з цього відео (Стиль → Записи) або замініть робочою копією, а потім експортуйте ще раз."
+  },
+  "“Made with Shotnix” end card (2s)" : {
+    "uk" : "кінцева заставка «Made with Shotnix» (2 с)"
+  },
+  "• %lld small notes about recordings that are gone" : {
+    "uk" : {
+      "few" : "• %lld невеликі нотатки про записи, яких уже немає",
+      "many" : "• %lld невеликих нотаток про записи, яких уже немає",
+      "one" : "• %lld невелика нотатка про записи, яких уже немає",
+      "other" : "• %lld невеликої нотатки про записи, яких уже немає"
+    }
+  },
+  "• Camera footage no recording uses — %lld files, %@" : {
+    "uk" : {
+      "few" : "• Відео з камери, яке не використовує жоден запис, — %lld файли, %@",
+      "many" : "• Відео з камери, яке не використовує жоден запис, — %lld файлів, %@",
+      "one" : "• Відео з камери, яке не використовує жоден запис, — %lld файл, %@",
+      "other" : "• Відео з камери, яке не використовує жоден запис, — %lld файлу, %@"
+    }
+  },
+  "• Cleaned-up voice of recordings not found or changed since — %lld files, %@" : {
+    "uk" : {
+      "few" : "• Очищений голос записів, які не знайдено або відтоді змінено, — %lld файли, %@",
+      "many" : "• Очищений голос записів, які не знайдено або відтоді змінено, — %lld файлів, %@",
+      "one" : "• Очищений голос записів, які не знайдено або відтоді змінено, — %lld файл, %@",
+      "other" : "• Очищений голос записів, які не знайдено або відтоді змінено, — %lld файлу, %@"
+    }
+  },
+  "• Clipboard exports older than a day — %lld files, %@" : {
+    "uk" : {
+      "few" : "• Експорти в буфер обміну, старші за день, — %lld файли, %@",
+      "many" : "• Експорти в буфер обміну, старші за день, — %lld файлів, %@",
+      "one" : "• Експорти в буфер обміну, старші за день, — %lld файл, %@",
+      "other" : "• Експорти в буфер обміну, старші за день, — %lld файлу, %@"
+    }
+  },
+  "• Edits, recording details, and camera footage of %lld recordings Shotnix can't find (%@): %@" : {
+    "uk" : {
+      "few" : "• Зміни, дані й відео з камери для %lld записів, яких Shotnix не може знайти (%@): %@",
+      "many" : "• Зміни, дані й відео з камери для %lld записів, яких Shotnix не може знайти (%@): %@",
+      "one" : "• Зміни, дані й відео з камери для %lld запису, якого Shotnix не може знайти (%@): %@",
+      "other" : "• Зміни, дані й відео з камери для %lld запису, якого Shotnix не може знайти (%@): %@"
+    }
+  },
+  "• Pictures and songs no video uses — %lld files, %@" : {
+    "uk" : {
+      "few" : "• Зображення й треки, яких не використовує жодне відео, — %lld файли, %@",
+      "many" : "• Зображення й треки, яких не використовує жодне відео, — %lld файлів, %@",
+      "one" : "• Зображення й треки, яких не використовує жодне відео, — %lld файл, %@",
+      "other" : "• Зображення й треки, яких не використовує жодне відео, — %lld файлу, %@"
+    }
+  },
+  "⇧-drag on the timeline to select a part first." : {
+    "uk" : "Спершу виділіть частину, перетягнувши з ⇧ на шкалі часу."
+  }
+}

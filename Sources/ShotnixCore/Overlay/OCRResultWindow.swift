@@ -187,28 +187,30 @@ final class OCRResultWindow: NSWindow, NSWindowDelegate {
         parent.addSubview(symbol)
 
         let shown = link.isEmail ? link.url.absoluteString.replacingOccurrences(of: "mailto:", with: "") : link.text
-
-        // The buttons are 70 pt as designed; a longer word (Скопировать)
-        // widens its button, and the link's label gives up the room.
-        let copy = NSButton(title: L("Copy"), target: self, action: #selector(copyLink(_:)))
-        copy.bezelStyle = .rounded
-        copy.controlSize = .small
-        copy.tag = index
-        copy.setAccessibilityLabel(L("Copy \(shown)"))
-        let copyWidth = TextFitting.buttonWidth(copy, minimum: 70, padding: 14)
-        copy.frame = NSRect(x: width - 24 - copyWidth, y: y, width: copyWidth, height: 26)
+        let label = NSTextField(labelWithString: shown)
+        label.font = .systemFont(ofSize: 12.5)
+        label.lineBreakMode = .byTruncatingMiddle
 
         let open = NSButton(title: link.isEmail ? L("Email") : L("Open"), target: self, action: #selector(openLink(_:)))
         open.bezelStyle = .rounded
         open.controlSize = .small
         open.tag = index
         open.setAccessibilityLabel(link.isEmail ? L("Email \(shown)") : L("Open \(shown)"))
-        let openWidth = TextFitting.buttonWidth(open, minimum: 70, padding: 14)
-        open.frame = NSRect(x: copy.frame.minX - openWidth, y: y, width: openWidth, height: 26)
 
-        let label = NSTextField(labelWithString: shown)
-        label.font = .systemFont(ofSize: 12.5)
-        label.lineBreakMode = .byTruncatingMiddle
+        let copy = NSButton(title: L("Copy"), target: self, action: #selector(copyLink(_:)))
+        copy.bezelStyle = .rounded
+        copy.controlSize = .small
+        copy.tag = index
+        copy.setAccessibilityLabel(L("Copy \(shown)"))
+
+        // Right to left; the buttons fit their titles (English keeps 70 pt
+        // each), Open and Email one width so the rows line up, and the
+        // address takes the room left of them.
+        let copyWidth = TextFitting.buttonWidth(copy, minimum: 70, padding: 20)
+        copy.frame = NSRect(x: width - 24 - copyWidth, y: y, width: copyWidth, height: 26)
+        let openFont = open.font ?? .systemFont(ofSize: NSFont.systemFontSize)
+        let openWidth = max(70, TextFitting.widest([L("Open"), L("Email")], font: openFont) + 20)
+        open.frame = NSRect(x: copy.frame.minX - openWidth, y: y, width: openWidth, height: 26)
         label.frame = NSRect(x: 48, y: y + 4, width: open.frame.minX - 6 - 48, height: 18)
         parent.addSubview(label)
         parent.addSubview(open)

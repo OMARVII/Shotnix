@@ -98,6 +98,7 @@ final class LocalizationTests: XCTestCase {
             "fr": ("Capturer une zone", "Enregistrer une zone", "Effacer l’historique\u{00A0}?"),
             "zh-Hans": ("捕捉区域", "录制区域", "要清除历史记录吗？"),
             "ru": ("Снять область", "Записать область", "Очистить историю?"),
+            "uk": ("Зняти область", "Записати область", "Очистити історію?"),
         ]
         for (language, strings) in expected {
             L10n.use(language)

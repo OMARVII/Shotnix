@@ -1,0 +1,2199 @@
+{
+  "%@ (This Mac)" : {
+    "uk" : "%@ (цей Mac)"
+  },
+  "%@ (⇧⌘Z)" : {
+    "uk" : "%@ (⇧⌘Z)"
+  },
+  "%@ (⌘Z)" : {
+    "uk" : "%@ (⌘Z)"
+  },
+  "%@ Zoom" : {
+    "uk" : "Масштаб %@"
+  },
+  "%@ long" : {
+    "uk" : "тривалість %@"
+  },
+  "%@ of recording plays in %@." : {
+    "uk" : "%@ запису відтворюється за %@."
+  },
+  "%@ speed" : {
+    "uk" : "швидкість %@"
+  },
+  "%@ — %@" : {
+    "uk" : "%@ — %@"
+  },
+  "%lld annotations" : {
+    "uk" : {
+      "few" : "%lld елементи розмітки",
+      "many" : "%lld елементів розмітки",
+      "one" : "%lld елемент розмітки",
+      "other" : "%lld елемента розмітки"
+    }
+  },
+  "%lld camera layouts" : {
+    "uk" : {
+      "few" : "%lld макети камери",
+      "many" : "%lld макетів камери",
+      "one" : "%lld макет камери",
+      "other" : "%lld макета камери"
+    }
+  },
+  "%lld captions" : {
+    "uk" : {
+      "few" : "%lld субтитри",
+      "many" : "%lld субтитрів",
+      "one" : "%lld субтитр",
+      "other" : "%lld субтитру"
+    }
+  },
+  "%lld clicks" : {
+    "uk" : {
+      "few" : "%lld клацання",
+      "many" : "%lld клацань",
+      "one" : "%lld клацання",
+      "other" : "%lld клацання"
+    }
+  },
+  "%lld clips" : {
+    "uk" : {
+      "few" : "%lld кліпи",
+      "many" : "%lld кліпів",
+      "one" : "%lld кліп",
+      "other" : "%lld кліпу"
+    }
+  },
+  "%lld cuts here (%@ removed) — click to restore some or all" : {
+    "uk" : {
+      "few" : "Тут вирізано %lld фрагменти (%@) — клацніть, щоб відновити деякі чи всі",
+      "many" : "Тут вирізано %lld фрагментів (%@) — клацніть, щоб відновити деякі чи всі",
+      "one" : "Тут вирізано %lld фрагмент (%@) — клацніть, щоб відновити",
+      "other" : "Тут вирізано %lld фрагмента (%@) — клацніть, щоб відновити деякі чи всі"
+    }
+  },
+  "%lld cuts, %@ removed" : {
+    "uk" : {
+      "few" : "%lld вирізані фрагменти, вилучено %@",
+      "many" : "%lld вирізаних фрагментів, вилучено %@",
+      "one" : "%lld вирізаний фрагмент, вилучено %@",
+      "other" : "%lld вирізаного фрагмента, вилучено %@"
+    }
+  },
+  "%lld parts" : {
+    "uk" : {
+      "few" : "%lld частини",
+      "many" : "%lld частин",
+      "one" : "%lld частина",
+      "other" : "%lld частини"
+    }
+  },
+  "%lld pressed — select one on the timeline and press ⌫ to hide it" : {
+    "uk" : {
+      "few" : "Натиснуто %lld скорочення — виберіть одне на шкалі часу й натисніть ⌫, щоб сховати його",
+      "many" : "Натиснуто %lld скорочень — виберіть одне на шкалі часу й натисніть ⌫, щоб сховати його",
+      "one" : "Натиснуто %lld скорочення — виберіть його на шкалі часу й натисніть ⌫, щоб сховати",
+      "other" : "Натиснуто %lld скорочення — виберіть одне на шкалі часу й натисніть ⌫, щоб сховати його"
+    }
+  },
+  "%lld selected" : {
+    "uk" : "Вибрано: %lld"
+  },
+  "%lld shortcuts" : {
+    "uk" : {
+      "few" : "%lld скорочення",
+      "many" : "%lld скорочень",
+      "one" : "%lld скорочення",
+      "other" : "%lld скорочення"
+    }
+  },
+  "%lld zooms" : {
+    "uk" : {
+      "few" : "%lld наближення",
+      "many" : "%lld наближень",
+      "one" : "%lld наближення",
+      "other" : "%lld наближення"
+    }
+  },
+  "%lld%%" : {
+    "uk" : "%lld%%"
+  },
+  "%lld%% volume" : {
+    "uk" : "гучність %lld%%"
+  },
+  ", " : {
+    "uk" : ", "
+  },
+  ", %@ to %@" : {
+    "uk" : ", від %@ до %@"
+  },
+  ", at %@" : {
+    "uk" : ", на %@"
+  },
+  "0.1s earlier" : {
+    "uk" : "На 0,1 с раніше"
+  },
+  "0.1s later" : {
+    "uk" : "На 0,1 с пізніше"
+  },
+  "A hairline that separates dark recordings from the background" : {
+    "uk" : "Тонка лінія, що відділяє темні записи від тла"
+  },
+  "Add Arrow" : {
+    "uk" : "Додати стрілку"
+  },
+  "Add Blur" : {
+    "uk" : "Додати розмиття"
+  },
+  "Add Caption Line at Playhead" : {
+    "uk" : "Додати рядок субтитрів на покажчику відтворення"
+  },
+  "Add Highlight" : {
+    "uk" : "Додати виділення"
+  },
+  "Add Spotlight (Dim Around a Spot)" : {
+    "uk" : "Додати прожектор (затемнити все навколо)"
+  },
+  "Add Text" : {
+    "uk" : "Додати текст"
+  },
+  "Add Zoom at Playhead" : {
+    "uk" : "Додати наближення на покажчику відтворення"
+  },
+  "Add a caption at the playhead" : {
+    "uk" : "Додати субтитр на покажчику відтворення"
+  },
+  "Add a zoom at the playhead (Z)" : {
+    "uk" : "Додати наближення на покажчику відтворення (Z)"
+  },
+  "Add arrow at the playhead (A)" : {
+    "uk" : "Додати стрілку на покажчику відтворення (A)"
+  },
+  "Add blur at the playhead (B)" : {
+    "uk" : "Додати розмиття на покажчику відтворення (B)"
+  },
+  "Add highlight at the playhead (H)" : {
+    "uk" : "Додати виділення на покажчику відтворення (H)"
+  },
+  "Add image at the playhead" : {
+    "uk" : "Додати зображення на покажчику відтворення"
+  },
+  "Add spotlight at the playhead" : {
+    "uk" : "Додати прожектор на покажчику відтворення"
+  },
+  "Add text at the playhead (T)" : {
+    "uk" : "Додати текст на покажчику відтворення (T)"
+  },
+  "Add zoom at playhead" : {
+    "uk" : "Додати наближення на покажчику відтворення"
+  },
+  "Add “%@” at the playhead" : {
+    "uk" : "Додати «%@» на покажчику відтворення"
+  },
+  "Adjust to move it half a second" : {
+    "uk" : "Регулюйте, щоб зсунути на пів секунди"
+  },
+  "Aim by Hand" : {
+    "uk" : "Навести вручну"
+  },
+  "Aim by hand" : {
+    "uk" : "Навести вручну"
+  },
+  "All commands" : {
+    "uk" : "Усі команди"
+  },
+  "All commands (⌘K)" : {
+    "uk" : "Усі команди (⌘K)"
+  },
+  "Always show the arrow" : {
+    "uk" : "Завжди показувати стрілку"
+  },
+  "Annotation" : {
+    "uk" : "Розмітка"
+  },
+  "Any color…" : {
+    "uk" : "Будь-який колір…"
+  },
+  "Appearance" : {
+    "uk" : "Вигляд"
+  },
+  "Apply to all zooms" : {
+    "uk" : "Застосувати до всіх наближень"
+  },
+  "Arrow head" : {
+    "uk" : "Вістря стрілки"
+  },
+  "Arrow tail" : {
+    "uk" : "Хвіст стрілки"
+  },
+  "Aspect Ratio %@ — %@" : {
+    "uk" : "Співвідношення сторін %@ — %@"
+  },
+  "Aspect ratio" : {
+    "uk" : "Співвідношення сторін"
+  },
+  "Audio" : {
+    "uk" : "Аудіо"
+  },
+  "Auto Zoom" : {
+    "uk" : "Автонаближення"
+  },
+  "Auto Zoom from Clicks" : {
+    "uk" : "Автонаближення за клацаннями"
+  },
+  "Back · pause · faster" : {
+    "uk" : "Назад · пауза · швидше"
+  },
+  "Background" : {
+    "uk" : "Тло"
+  },
+  "Background, padding, corners, shadow" : {
+    "uk" : "Тло, відступ, кути, тінь"
+  },
+  "Behavior" : {
+    "uk" : "Поведінка"
+  },
+  "Behind you" : {
+    "uk" : "Позаду вас"
+  },
+  "Blur" : {
+    "uk" : "Розмиття"
+  },
+  "Blurs fast camera moves the way a real camera does." : {
+    "uk" : "Розмиває швидкі рухи камери, як справжня камера."
+  },
+  "Camera" : {
+    "uk" : "Камера"
+  },
+  "Camera Side by Side at Playhead" : {
+    "uk" : "Камера поруч на покажчику відтворення"
+  },
+  "Camera bubble" : {
+    "uk" : "Бульбашка камери"
+  },
+  "Camera follows your cursor" : {
+    "uk" : "Камера стежить за курсором"
+  },
+  "Camera footage is missing" : {
+    "uk" : "Відео з камери відсутнє"
+  },
+  "Camera layout" : {
+    "uk" : "Макет камери"
+  },
+  "Camera layout: %@" : {
+    "uk" : "Макет камери: %@"
+  },
+  "Camera layouts" : {
+    "uk" : "Макети камери"
+  },
+  "Camera layouts — drag to move, drag an edge to retime, click to change" : {
+    "uk" : "Макети камери — перетягуйте, щоб перемістити, тягніть край, щоб змінити тривалість, клацніть, щоб вибрати інший"
+  },
+  "Camera — drag to move it, click for options" : {
+    "uk" : "Камера — перетягніть, щоб перемістити, клацніть, щоб побачити параметри"
+  },
+  "Caption" : {
+    "uk" : "Субтитр"
+  },
+  "Caption “%@”" : {
+    "uk" : "Субтитр «%@»"
+  },
+  "Captions" : {
+    "uk" : "Субтитри"
+  },
+  "Captions from your narration — and cut the video by editing its words" : {
+    "uk" : "Субтитри з вашого мовлення — і монтаж відео редагуванням слів"
+  },
+  "Captions tab" : {
+    "uk" : "Вкладка «Субтитри»"
+  },
+  "Center" : {
+    "uk" : "По центру"
+  },
+  "Choose Image…" : {
+    "uk" : "Вибрати зображення…"
+  },
+  "Cleaning up your voice…" : {
+    "uk" : "Очищення голосу…"
+  },
+  "Click" : {
+    "uk" : "Клацання"
+  },
+  "Click a zoom" : {
+    "uk" : "Клацніть наближення"
+  },
+  "Click it on the video" : {
+    "uk" : "Клацніть його у відео"
+  },
+  "Click to add a zoom — or press Z at the playhead" : {
+    "uk" : "Клацніть, щоб додати наближення, — або натисніть Z на покажчику відтворення"
+  },
+  "Clicks" : {
+    "uk" : "Клацання"
+  },
+  "Clicks — drag one to retime it, ⌫ removes the selected one" : {
+    "uk" : "Клацання — перетягніть одне, щоб змінити час, ⌫ вилучає вибране"
+  },
+  "Clip" : {
+    "uk" : "Кліп"
+  },
+  "Clip %lld" : {
+    "uk" : "Кліп %lld"
+  },
+  "Clip starts / ends here" : {
+    "uk" : "Кліп починається/закінчується тут"
+  },
+  "Close" : {
+    "uk" : "Закрити"
+  },
+  "Close (Esc)" : {
+    "uk" : "Закрити (Esc)"
+  },
+  "Closing the editor stops it." : {
+    "uk" : "Якщо закрити редактор, процес зупиниться."
+  },
+  "Color" : {
+    "uk" : "Колір"
+  },
+  "Commands" : {
+    "uk" : "Команди"
+  },
+  "Computer sound" : {
+    "uk" : "Звук комп’ютера"
+  },
+  "Copy Current Frame" : {
+    "uk" : "Скопіювати поточний кадр"
+  },
+  "Copy current frame" : {
+    "uk" : "Скопіювати поточний кадр"
+  },
+  "Couldn't open this video" : {
+    "uk" : "Не вдалося відкрити це відео"
+  },
+  "Crop" : {
+    "uk" : "Обрізання"
+  },
+  "Crop the Recording…" : {
+    "uk" : "Обрізати запис…"
+  },
+  "Crop the recording — trim away toolbars or empty space" : {
+    "uk" : "Обрізати запис — прибрати панелі інструментів чи порожнє місце"
+  },
+  "Cropped" : {
+    "uk" : "Обрізано"
+  },
+  "Cropped — cursor, zooms, and clicks follow" : {
+    "uk" : "Обрізано — курсор, наближення й клацання підлаштовуються"
+  },
+  "Cursor" : {
+    "uk" : "Курсор"
+  },
+  "Cursor, clicks, and keyboard shortcuts" : {
+    "uk" : "Курсор, клацання й клавіатурні скорочення"
+  },
+  "Custom" : {
+    "uk" : "Власний"
+  },
+  "Custom color" : {
+    "uk" : "Власний колір"
+  },
+  "Cut filler words like um and uh" : {
+    "uk" : "Вирізати слова-паразити на кшталт «е-е» та «м-м»"
+  },
+  "Cut from Video" : {
+    "uk" : "Вирізати з відео"
+  },
+  "Cut this part" : {
+    "uk" : "Вирізати цю частину"
+  },
+  "Delete (⌫)" : {
+    "uk" : "Видалити (⌫)"
+  },
+  "Delete Clip" : {
+    "uk" : "Видалити кліп"
+  },
+  "Delete Zoom" : {
+    "uk" : "Видалити наближення"
+  },
+  "Delete selection" : {
+    "uk" : "Видалити вибране"
+  },
+  "Delete selection (⌫)" : {
+    "uk" : "Видалити вибране (⌫)"
+  },
+  "Deselect / close" : {
+    "uk" : "Зняти вибір/закрити"
+  },
+  "Dismiss" : {
+    "uk" : "Закрити"
+  },
+  "Dismiss tips" : {
+    "uk" : "Сховати поради"
+  },
+  "Done" : {
+    "uk" : "Готово"
+  },
+  "Done (Esc)" : {
+    "uk" : "Готово (Esc)"
+  },
+  "Double-click" : {
+    "uk" : "Двічі клацнути"
+  },
+  "Double-click text" : {
+    "uk" : "Двічі клацніть текст"
+  },
+  "Double-click to show the recording in Finder" : {
+    "uk" : "Двічі клацніть, щоб показати запис у Finder"
+  },
+  "Drag it on the preview to move it; drag a corner to resize. Its bar on the timeline sets when it shows." : {
+    "uk" : "Перетягуйте його в перегляді, щоб перемістити; тягніть кут, щоб змінити розмір. Його смуга на шкалі часу визначає, коли він з’являється."
+  },
+  "Drag it on the preview to move it; drag a corner to resize; double-click it to type. Its bar on the timeline sets when it shows." : {
+    "uk" : "Перетягуйте текст у перегляді, щоб перемістити; тягніть кут, щоб змінити розмір; двічі клацніть, щоб вводити текст. Його смуга на шкалі часу визначає, коли він з’являється."
+  },
+  "Drag one of them on the timeline to move them all together; ⌫ removes them all. ⇧- or ⌘-click adds or takes one out." : {
+    "uk" : "Перетягніть один із них на шкалі часу, щоб перемістити всі разом; ⌫ вилучає всі. Клацання з ⇧ чи ⌘ додає або вилучає один елемент."
+  },
+  "Drag the arrow on the preview to move it; drag its head or tail to point it anywhere. Its bar on the timeline sets when it shows." : {
+    "uk" : "Перетягуйте стрілку в перегляді, щоб перемістити її; тягніть вістря чи хвіст, щоб спрямувати її куди завгодно. Її смуга на шкалі часу визначає, коли вона з’являється."
+  },
+  "Drag the block on the Camera lane to move it, or its edges to change how long it lasts. Each change eases in and out." : {
+    "uk" : "Перетягуйте блок на доріжці «Камера», щоб перемістити його, або його краї, щоб змінити тривалість. Кожна зміна відбувається плавно."
+  },
+  "Drag the box on the preview over anything private. Blur follows zooms and stays until its bar ends." : {
+    "uk" : "Перетягніть рамку в перегляді на все приватне. Розмиття стежить за наближеннями й діє до кінця своєї смуги."
+  },
+  "Drag the frame on the preview to aim; drag its corners to zoom in or out." : {
+    "uk" : "Перетягуйте рамку в перегляді, щоб навести; тягніть її кути, щоб наблизити чи віддалити."
+  },
+  "Drag the spot on the preview; drag a corner to resize it. Everything around it dims while its bar on the timeline runs." : {
+    "uk" : "Перетягуйте світлову пляму в перегляді; тягніть кут, щоб змінити її розмір. Усе навколо затемнюється, поки триває її смуга на шкалі часу."
+  },
+  "Drag to change where this clip ends" : {
+    "uk" : "Перетягніть, щоб змінити кінець кліпу"
+  },
+  "Drag to change where this clip starts" : {
+    "uk" : "Перетягніть, щоб змінити початок кліпу"
+  },
+  "Drag to move this clip to another place in the video" : {
+    "uk" : "Перетягніть, щоб перемістити кліп в інше місце відео"
+  },
+  "Drag to move where the arrow starts" : {
+    "uk" : "Перетягніть, щоб перемістити початок стрілки"
+  },
+  "Drag to point the arrow" : {
+    "uk" : "Перетягніть, щоб спрямувати стрілку"
+  },
+  "Duplicate" : {
+    "uk" : "Дублювати"
+  },
+  "Duplicate zoom or annotation" : {
+    "uk" : "Дублювати наближення чи розмітку"
+  },
+  "Edge highlight" : {
+    "uk" : "Окантовка"
+  },
+  "Edit by text" : {
+    "uk" : "Монтаж за текстом"
+  },
+  "Editing" : {
+    "uk" : "Монтаж"
+  },
+  "End here" : {
+    "uk" : "Кінець тут"
+  },
+  "Ends" : {
+    "uk" : "Кінець"
+  },
+  "Enhance Voice" : {
+    "uk" : "Покращити голос"
+  },
+  "Enhance voice" : {
+    "uk" : "Покращити голос"
+  },
+  "Esc" : {
+    "uk" : "Esc"
+  },
+  "Even out loudness" : {
+    "uk" : "Вирівняти гучність"
+  },
+  "Exactly as recorded." : {
+    "uk" : "Точно як записано."
+  },
+  "Export" : {
+    "uk" : "Експорт"
+  },
+  "Export (⌘E)" : {
+    "uk" : "Експортувати (⌘E)"
+  },
+  "Export Video…" : {
+    "uk" : "Експортувати відео…"
+  },
+  "Exports at the level video sites expect (−16 LUFS) without clipping" : {
+    "uk" : "Експортує з рівнем, якого очікують відеосайти (−16 LUFS), без перевантаження"
+  },
+  "Exports without sound — to quiet just the preview, press M" : {
+    "uk" : "Експортує без звуку — щоб вимкнути звук лише в перегляді, натисніть M"
+  },
+  "Export…" : {
+    "uk" : "Експортувати…"
+  },
+  "Extra-fluid curves for slow, cinematic demos." : {
+    "uk" : "Особливо плавні криві для повільних кінематографічних демо."
+  },
+  "Fade in" : {
+    "uk" : "Поява"
+  },
+  "Fade out" : {
+    "uk" : "Зникнення"
+  },
+  "Fades out after a moment without movement" : {
+    "uk" : "Зникає, якщо якийсь час не рухається"
+  },
+  "Fast-forward moments where nothing happens" : {
+    "uk" : "Прискорювати моменти, коли нічого не відбувається"
+  },
+  "Fill the Frame, Follow the Cursor" : {
+    "uk" : "Заповнити кадр і стежити за курсором"
+  },
+  "Find in Transcript" : {
+    "uk" : "Знайти в розшифровці"
+  },
+  "Find in the transcript" : {
+    "uk" : "Знайти в розшифровці"
+  },
+  "Flip like a selfie" : {
+    "uk" : "Віддзеркалити, як селфі"
+  },
+  "Follow Cursor" : {
+    "uk" : "Стежити за курсором"
+  },
+  "Follow cursor" : {
+    "uk" : "Стежити за курсором"
+  },
+  "Follows cursor" : {
+    "uk" : "Стежить за курсором"
+  },
+  "Frame" : {
+    "uk" : "Рамка"
+  },
+  "Framing" : {
+    "uk" : "Кадрування"
+  },
+  "Free" : {
+    "uk" : "Довільне"
+  },
+  "From your Mac" : {
+    "uk" : "З вашого Mac"
+  },
+  "Full Camera at Playhead" : {
+    "uk" : "Лише камера на покажчику відтворення"
+  },
+  "Full Frame (No Background)" : {
+    "uk" : "Весь кадр (без тла)"
+  },
+  "Full camera for intro & outro" : {
+    "uk" : "Лише камера у вступі й завершенні"
+  },
+  "Full frame (no background)" : {
+    "uk" : "Весь кадр (без тла)"
+  },
+  "Full-Camera Intro and Outro" : {
+    "uk" : "Вступ і завершення лише з камерою"
+  },
+  "General" : {
+    "uk" : "Загальні"
+  },
+  "Gets out of the way during zoom moves" : {
+    "uk" : "Не заважає під час наближень"
+  },
+  "Glides without lagging behind — clicks still land exactly." : {
+    "uk" : "Плавно рухається без запізнення — клацання влучають точно."
+  },
+  "Go to End" : {
+    "uk" : "Перейти в кінець"
+  },
+  "Go to Start" : {
+    "uk" : "Перейти на початок"
+  },
+  "Gradient" : {
+    "uk" : "Градієнт"
+  },
+  "Hide" : {
+    "uk" : "Сховати"
+  },
+  "Hide the move to Stop" : {
+    "uk" : "Сховати рух до «Зупинити»"
+  },
+  "Hide tips (bring them back from ⌘K or the shortcuts list)" : {
+    "uk" : "Сховати поради (повернути їх можна через ⌘K або список скорочень)"
+  },
+  "Hide when idle" : {
+    "uk" : "Ховати в спокої"
+  },
+  "Highlight words" : {
+    "uk" : "Виділяти слова"
+  },
+  "Home  End" : {
+    "uk" : "Home  End"
+  },
+  "Hover the Zoom track" : {
+    "uk" : "Наведіть на доріжку «Масштаб»"
+  },
+  "Hover the zoom track and click to add a zoom, or press Z at the playhead. Drag a zoom to move it; drag its edges to change how long it lasts." : {
+    "uk" : "Наведіть курсор на доріжку «Масштаб» і клацніть, щоб додати наближення, або натисніть Z на покажчику відтворення. Перетягуйте наближення, щоб перемістити; тягніть його краї, щоб змінити тривалість."
+  },
+  "Image" : {
+    "uk" : "Зображення"
+  },
+  "Inspector tabs" : {
+    "uk" : "Вкладки інспектора"
+  },
+  "Intro" : {
+    "uk" : "Вступ"
+  },
+  "Intro card — click to edit it in Style" : {
+    "uk" : "Вступна заставка — клацніть, щоб змінити її у вкладці «Стиль»"
+  },
+  "Intro card “%@”, %@ to %@" : {
+    "uk" : "Вступна заставка «%@», від %@ до %@"
+  },
+  "Intro card, %@ to %@" : {
+    "uk" : "Вступна заставка, від %@ до %@"
+  },
+  "It was recorded into the pixels, so it can't be resized or smoothed. New recordings capture an editable cursor by default (Settings → Recording)." : {
+    "uk" : "Його записано просто в зображення, тому не можна змінити розмір чи згладити. Нові записи типово містять редагований курсор (Параметри → Запис)."
+  },
+  "Jump here" : {
+    "uk" : "Перейти сюди"
+  },
+  "Jump one second" : {
+    "uk" : "Перейти на секунду"
+  },
+  "Keep Editing" : {
+    "uk" : "Продовжити редагування"
+  },
+  "Keep editing — the words appear here when Shotnix is done listening." : {
+    "uk" : "Редагуйте далі — слова з’являться тут, щойно Shotnix закінчить слухати."
+  },
+  "Keyboard Shortcuts" : {
+    "uk" : "Клавіатурні скорочення"
+  },
+  "Keyboard shortcuts" : {
+    "uk" : "Клавіатурні скорочення"
+  },
+  "Keyboard shortcuts (?)" : {
+    "uk" : "Клавіатурні скорочення (?)"
+  },
+  "Keyboard shortcuts — click one to select it, ⌫ hides it" : {
+    "uk" : "Клавіатурні скорочення — клацніть одне, щоб вибрати, ⌫ ховає його"
+  },
+  "Keys on screen" : {
+    "uk" : "Клавіші на екрані"
+  },
+  "Language" : {
+    "uk" : "Мова"
+  },
+  "Layout" : {
+    "uk" : "Макет"
+  },
+  "Layouts" : {
+    "uk" : "Макети"
+  },
+  "Letterbox Instead of Following the Cursor" : {
+    "uk" : "Вписати з полями замість стеження за курсором"
+  },
+  "Level" : {
+    "uk" : "Рівень"
+  },
+  "Lines · %lld" : {
+    "uk" : "Рядки · %lld"
+  },
+  "Listens on this Mac — nothing is uploaded" : {
+    "uk" : "Слухає на цьому Mac — нічого не вивантажується"
+  },
+  "Look" : {
+    "uk" : "Вигляд"
+  },
+  "Mirror" : {
+    "uk" : "Віддзеркалити"
+  },
+  "More" : {
+    "uk" : "Більше"
+  },
+  "More caption options" : {
+    "uk" : "Інші параметри субтитрів"
+  },
+  "More tips" : {
+    "uk" : "Інші поради"
+  },
+  "Motion" : {
+    "uk" : "Рух"
+  },
+  "Motion blur" : {
+    "uk" : "Розмиття руху"
+  },
+  "Move Earlier" : {
+    "uk" : "Перемістити раніше"
+  },
+  "Move Later" : {
+    "uk" : "Перемістити пізніше"
+  },
+  "Move earlier" : {
+    "uk" : "Раніше"
+  },
+  "Move later" : {
+    "uk" : "Пізніше"
+  },
+  "Movement" : {
+    "uk" : "Рух"
+  },
+  "Music “%@”" : {
+    "uk" : "Музика «%@»"
+  },
+  "Mute Clip" : {
+    "uk" : "Вимкнути звук кліпу"
+  },
+  "Mute preview" : {
+    "uk" : "Вимкнути звук перегляду"
+  },
+  "Mute the Preview (the Export Keeps Its Sound)" : {
+    "uk" : "Вимкнути звук перегляду (експорт зберігає звук)"
+  },
+  "Mute the preview (M) — the export keeps its sound" : {
+    "uk" : "Вимкнути звук перегляду (M) — експорт зберігає звук"
+  },
+  "Mute the preview (or the selected clip)" : {
+    "uk" : "Вимкнути звук перегляду (або вибраного кліпу)"
+  },
+  "Mute this clip" : {
+    "uk" : "Вимкнути звук цього кліпу"
+  },
+  "Mute this part" : {
+    "uk" : "Вимкнути звук цієї частини"
+  },
+  "Mute video" : {
+    "uk" : "Вимкнути звук відео"
+  },
+  "Never switch to the text beam or the hand" : {
+    "uk" : "Ніколи не перемикати на текстовий курсор чи руку"
+  },
+  "New recordings use this look" : {
+    "uk" : "Нові записи мають такий вигляд"
+  },
+  "New zooms" : {
+    "uk" : "Нові наближення"
+  },
+  "No Exports Yet" : {
+    "uk" : "Ще немає експортів"
+  },
+  "No background" : {
+    "uk" : "Без тла"
+  },
+  "No background — text only" : {
+    "uk" : "Без тла — лише текст"
+  },
+  "No camera in this recording" : {
+    "uk" : "У цьому записі немає камери"
+  },
+  "No clicks were recorded, so add zooms by hand: hover the zoom track and click." : {
+    "uk" : "Клацань не записано, тож додавайте наближення вручну: наведіть курсор на доріжку «Масштаб» і клацніть."
+  },
+  "No cursor data in this video" : {
+    "uk" : "У цьому відео немає даних курсора"
+  },
+  "No music" : {
+    "uk" : "Без музики"
+  },
+  "No pauses to shorten" : {
+    "uk" : "Немає пауз для скорочення"
+  },
+  "No ums" : {
+    "uk" : "Немає слів-паразитів"
+  },
+  "None in this recording. Turn on “Show keyboard shortcuts” in Settings → Recording and every ⌘ shortcut you press appears as keycaps. Plain typing is never recorded." : {
+    "uk" : "У цьому записі їх немає. Увімкніть «Показувати клавіатурні скорочення» в розділі Параметри → Запис, і кожне натиснуте скорочення з ⌘ з’являтиметься у вигляді клавіш. Звичайне введення тексту ніколи не записується."
+  },
+  "Not for this video" : {
+    "uk" : "Не для цього відео"
+  },
+  "Open Another Video…" : {
+    "uk" : "Відкрити інше відео…"
+  },
+  "Open Privacy Settings" : {
+    "uk" : "Відкрити «Приватність і безпека»"
+  },
+  "Open Recording Settings…" : {
+    "uk" : "Відкрити параметри запису…"
+  },
+  "Opens its title and length in Style" : {
+    "uk" : "Відкриває назву й тривалість у вкладці «Стиль»"
+  },
+  "Or drag the bubble on the video — it snaps to the nearest spot." : {
+    "uk" : "Або перетягніть бульбашку у відео — вона прилипне до найближчого місця."
+  },
+  "Or type one at the playhead" : {
+    "uk" : "Або введіть субтитр на покажчику відтворення"
+  },
+  "Outro" : {
+    "uk" : "Завершення"
+  },
+  "Outro card — click to edit it in Style" : {
+    "uk" : "Завершальна заставка — клацніть, щоб змінити її у вкладці «Стиль»"
+  },
+  "Outro card “%@”, %@ to %@" : {
+    "uk" : "Завершальна заставка «%@», від %@ до %@"
+  },
+  "Outro card, %@ to %@" : {
+    "uk" : "Завершальна заставка, від %@ до %@"
+  },
+  "Padding" : {
+    "uk" : "Відступ"
+  },
+  "Pause" : {
+    "uk" : "Пауза"
+  },
+  "Pause (Space)" : {
+    "uk" : "Пауза (пробіл)"
+  },
+  "Placement" : {
+    "uk" : "Розташування"
+  },
+  "Plan zooms from your clicks — keeps zooms you placed by hand" : {
+    "uk" : "Спланувати наближення за клацаннями — додані вручну залишаються"
+  },
+  "Plans zooms around your %lld clicks. Zooms you placed by hand are kept." : {
+    "uk" : {
+      "few" : "Планує наближення навколо ваших клацань (%lld). Наближення, додані вручну, залишаються.",
+      "many" : "Планує наближення навколо ваших клацань (%lld). Наближення, додані вручну, залишаються.",
+      "one" : "Планує наближення навколо ваших клацань (%lld). Наближення, додані вручну, залишаються.",
+      "other" : "Планує наближення навколо ваших клацань (%lld). Наближення, додані вручну, залишаються."
+    }
+  },
+  "Play" : {
+    "uk" : "Відтворити"
+  },
+  "Play (Space)" : {
+    "uk" : "Відтворити (пробіл)"
+  },
+  "Play / pause" : {
+    "uk" : "Відтворення/пауза"
+  },
+  "Play from Here" : {
+    "uk" : "Відтворити звідси"
+  },
+  "Playback" : {
+    "uk" : "Відтворення"
+  },
+  "Plays or pauses. Use Option-arrow keys to select what's on the timeline." : {
+    "uk" : "Відтворює або призупиняє. Щоб вибирати елементи на шкалі часу, використовуйте Option і клавіші зі стрілками."
+  },
+  "Position" : {
+    "uk" : "Позиція"
+  },
+  "Preparing your video…" : {
+    "uk" : "Підготовка відео…"
+  },
+  "Pressed at %@. Press ⌫ to hide it from the video — handy for a stray ⌘Tab." : {
+    "uk" : "Натиснуто на %@. Натисніть ⌫, щоб сховати його з відео, — зручно для випадкового ⌘Tab."
+  },
+  "Previous / next frame" : {
+    "uk" : "Попередній/наступний кадр"
+  },
+  "Recent Exports" : {
+    "uk" : "Нещодавні експорти"
+  },
+  "Recorded at %@. Drag its dot on the timeline to retime it; ripples and Auto Zoom follow." : {
+    "uk" : "Записано на %@. Перетягніть його крапку на шкалі часу, щоб змінити час; хвилі й автонаближення підлаштуються."
+  },
+  "Recordings made with Shotnix capture the pointer so it can be smoothed, resized, and hidden." : {
+    "uk" : "Записи, зроблені в Shotnix, зберігають курсор окремо, тож його можна згладити, змінити розмір чи сховати."
+  },
+  "Redo" : {
+    "uk" : "Повторити"
+  },
+  "Redo Add Arrow" : {
+    "uk" : "Повторити додавання стрілки"
+  },
+  "Redo Add Blur" : {
+    "uk" : "Повторити додавання розмиття"
+  },
+  "Redo Add Camera Layout" : {
+    "uk" : "Повторити додавання макета камери"
+  },
+  "Redo Add Camera Layouts" : {
+    "uk" : "Повторити додавання макетів камери"
+  },
+  "Redo Add Caption" : {
+    "uk" : "Повторити додавання субтитру"
+  },
+  "Redo Add Captions" : {
+    "uk" : "Повторити додавання субтитрів"
+  },
+  "Redo Add Click" : {
+    "uk" : "Повторити додавання клацання"
+  },
+  "Redo Add Clicks" : {
+    "uk" : "Повторити додавання клацань"
+  },
+  "Redo Add Highlight" : {
+    "uk" : "Повторити додавання виділення"
+  },
+  "Redo Add Image" : {
+    "uk" : "Повторити додавання зображення"
+  },
+  "Redo Add Intro Card" : {
+    "uk" : "Повторити додавання вступної заставки"
+  },
+  "Redo Add Music" : {
+    "uk" : "Повторити додавання музики"
+  },
+  "Redo Add Outro Card" : {
+    "uk" : "Повторити додавання завершальної заставки"
+  },
+  "Redo Add Recording" : {
+    "uk" : "Повторити додавання запису"
+  },
+  "Redo Add Spotlight" : {
+    "uk" : "Повторити додавання прожектора"
+  },
+  "Redo Add Text" : {
+    "uk" : "Повторити додавання тексту"
+  },
+  "Redo Add Zoom" : {
+    "uk" : "Повторити додавання наближення"
+  },
+  "Redo Add Zooms" : {
+    "uk" : "Повторити додавання наближень"
+  },
+  "Redo Annotation Change" : {
+    "uk" : "Повторити зміну розмітки"
+  },
+  "Redo Annotations" : {
+    "uk" : "Повторити зміни розмітки"
+  },
+  "Redo Arrow Style" : {
+    "uk" : "Повторити зміну стилю стрілки"
+  },
+  "Redo Aspect Ratio" : {
+    "uk" : "Повторити зміну співвідношення сторін"
+  },
+  "Redo Auto Zoom" : {
+    "uk" : "Повторити автонаближення"
+  },
+  "Redo Background" : {
+    "uk" : "Повторити зміну тла"
+  },
+  "Redo Blur Style" : {
+    "uk" : "Повторити зміну стилю розмиття"
+  },
+  "Redo Camera Change" : {
+    "uk" : "Повторити зміну камери"
+  },
+  "Redo Camera Layout Change" : {
+    "uk" : "Повторити зміну макета камери"
+  },
+  "Redo Camera Layouts" : {
+    "uk" : "Повторити зміну макетів камери"
+  },
+  "Redo Caption Style" : {
+    "uk" : "Повторити зміну стилю субтитрів"
+  },
+  "Redo Caption Translation" : {
+    "uk" : "Повторити переклад субтитрів"
+  },
+  "Redo Captions" : {
+    "uk" : "Повторити зміну субтитрів"
+  },
+  "Redo Click Sounds" : {
+    "uk" : "Повторити зміну звуків клацання"
+  },
+  "Redo Clicks" : {
+    "uk" : "Повторити зміну клацань"
+  },
+  "Redo Crop" : {
+    "uk" : "Повторити обрізання"
+  },
+  "Redo Cursor Change" : {
+    "uk" : "Повторити зміну курсора"
+  },
+  "Redo Cut" : {
+    "uk" : "Повторити вирізання"
+  },
+  "Redo Cut Word" : {
+    "uk" : "Повторити вирізання слова"
+  },
+  "Redo Cut Words" : {
+    "uk" : "Повторити вирізання слів"
+  },
+  "Redo Delete %lld Items" : {
+    "uk" : {
+      "few" : "Повторити видалення %lld елементів",
+      "many" : "Повторити видалення %lld елементів",
+      "one" : "Повторити видалення %lld елемента",
+      "other" : "Повторити видалення %lld елемента"
+    }
+  },
+  "Redo Delete Annotations" : {
+    "uk" : "Повторити видалення розмітки"
+  },
+  "Redo Delete Arrow" : {
+    "uk" : "Повторити видалення стрілки"
+  },
+  "Redo Delete Blur" : {
+    "uk" : "Повторити видалення розмиття"
+  },
+  "Redo Delete Camera Layout" : {
+    "uk" : "Повторити видалення макета камери"
+  },
+  "Redo Delete Camera Layouts" : {
+    "uk" : "Повторити видалення макетів камери"
+  },
+  "Redo Delete Caption" : {
+    "uk" : "Повторити видалення субтитру"
+  },
+  "Redo Delete Captions" : {
+    "uk" : "Повторити видалення субтитрів"
+  },
+  "Redo Delete Click" : {
+    "uk" : "Повторити видалення клацання"
+  },
+  "Redo Delete Clicks" : {
+    "uk" : "Повторити видалення клацань"
+  },
+  "Redo Delete Clip" : {
+    "uk" : "Повторити видалення кліпу"
+  },
+  "Redo Delete Clips" : {
+    "uk" : "Повторити видалення кліпів"
+  },
+  "Redo Delete Highlight" : {
+    "uk" : "Повторити видалення виділення"
+  },
+  "Redo Delete Image" : {
+    "uk" : "Повторити видалення зображення"
+  },
+  "Redo Delete Spotlight" : {
+    "uk" : "Повторити видалення прожектора"
+  },
+  "Redo Delete Text" : {
+    "uk" : "Повторити видалення тексту"
+  },
+  "Redo Delete Zoom" : {
+    "uk" : "Повторити видалення наближення"
+  },
+  "Redo Delete Zooms" : {
+    "uk" : "Повторити видалення наближень"
+  },
+  "Redo Edit Caption" : {
+    "uk" : "Повторити редагування субтитру"
+  },
+  "Redo Edit Text" : {
+    "uk" : "Повторити редагування тексту"
+  },
+  "Redo Enhance Voice" : {
+    "uk" : "Повторити покращення голосу"
+  },
+  "Redo Fade" : {
+    "uk" : "Повторити плавну появу/зникнення"
+  },
+  "Redo Hide Shortcut" : {
+    "uk" : "Повторити приховування скорочення"
+  },
+  "Redo Highlight Style" : {
+    "uk" : "Повторити зміну стилю виділення"
+  },
+  "Redo Image Style" : {
+    "uk" : "Повторити зміну стилю зображення"
+  },
+  "Redo Intro and Outro" : {
+    "uk" : "Повторити камеру для вступу й завершення"
+  },
+  "Redo Move %lld Items" : {
+    "uk" : {
+      "few" : "Повторити переміщення %lld елементів",
+      "many" : "Повторити переміщення %lld елементів",
+      "one" : "Повторити переміщення %lld елемента",
+      "other" : "Повторити переміщення %lld елемента"
+    }
+  },
+  "Redo Move Arrow" : {
+    "uk" : "Повторити переміщення стрілки"
+  },
+  "Redo Move Blur" : {
+    "uk" : "Повторити переміщення розмиття"
+  },
+  "Redo Move Click" : {
+    "uk" : "Повторити переміщення клацання"
+  },
+  "Redo Move Clip" : {
+    "uk" : "Повторити переміщення кліпу"
+  },
+  "Redo Move Highlight" : {
+    "uk" : "Повторити переміщення виділення"
+  },
+  "Redo Move Image" : {
+    "uk" : "Повторити переміщення зображення"
+  },
+  "Redo Move Recording" : {
+    "uk" : "Повторити переміщення запису"
+  },
+  "Redo Move Spotlight" : {
+    "uk" : "Повторити переміщення прожектора"
+  },
+  "Redo Move Text" : {
+    "uk" : "Повторити переміщення тексту"
+  },
+  "Redo Music Change" : {
+    "uk" : "Повторити зміну музики"
+  },
+  "Redo Mute Clip" : {
+    "uk" : "Повторити вимкнення звуку кліпу"
+  },
+  "Redo Mute Part" : {
+    "uk" : "Повторити вимкнення звуку частини"
+  },
+  "Redo Mute Video" : {
+    "uk" : "Повторити вимкнення звуку відео"
+  },
+  "Redo Remove All Zooms" : {
+    "uk" : "Повторити вилучення всіх наближень"
+  },
+  "Redo Remove Captions" : {
+    "uk" : "Повторити вилучення субтитрів"
+  },
+  "Redo Remove Intro Card" : {
+    "uk" : "Повторити вилучення вступної заставки"
+  },
+  "Redo Remove Music" : {
+    "uk" : "Повторити вилучення музики"
+  },
+  "Redo Remove Outro Card" : {
+    "uk" : "Повторити вилучення завершальної заставки"
+  },
+  "Redo Remove Recording" : {
+    "uk" : "Повторити вилучення запису"
+  },
+  "Redo Remove Ums" : {
+    "uk" : "Повторити вилучення слів-паразитів"
+  },
+  "Redo Replace Music" : {
+    "uk" : "Повторити заміну музики"
+  },
+  "Redo Reset Look" : {
+    "uk" : "Повторити скидання стилю"
+  },
+  "Redo Restore" : {
+    "uk" : "Повторити відновлення"
+  },
+  "Redo Restore Cut" : {
+    "uk" : "Повторити відновлення фрагмента"
+  },
+  "Redo Restore Cuts" : {
+    "uk" : "Повторити відновлення фрагментів"
+  },
+  "Redo Restore Pause" : {
+    "uk" : "Повторити відновлення паузи"
+  },
+  "Redo Restore Word" : {
+    "uk" : "Повторити відновлення слова"
+  },
+  "Redo Restore Words" : {
+    "uk" : "Повторити відновлення слів"
+  },
+  "Redo Shortcut Style" : {
+    "uk" : "Повторити зміну стилю скорочень"
+  },
+  "Redo Shortcuts" : {
+    "uk" : "Повторити зміну скорочень"
+  },
+  "Redo Shorten Pause" : {
+    "uk" : "Повторити скорочення паузи"
+  },
+  "Redo Shorten Pauses" : {
+    "uk" : "Повторити скорочення пауз"
+  },
+  "Redo Sound Change" : {
+    "uk" : "Повторити зміну звуку"
+  },
+  "Redo Speed Change" : {
+    "uk" : "Повторити зміну швидкості"
+  },
+  "Redo Speed Up Idle" : {
+    "uk" : "Повторити прискорення простоїв"
+  },
+  "Redo Split" : {
+    "uk" : "Повторити розділення"
+  },
+  "Redo Spotlight Style" : {
+    "uk" : "Повторити зміну стилю прожектора"
+  },
+  "Redo Start Over" : {
+    "uk" : "Повторити повернення до оригіналу"
+  },
+  "Redo Style Change" : {
+    "uk" : "Повторити зміну стилю"
+  },
+  "Redo Text Style" : {
+    "uk" : "Повторити зміну стилю тексту"
+  },
+  "Redo Title Card" : {
+    "uk" : "Повторити зміну заставки"
+  },
+  "Redo Transcribe" : {
+    "uk" : "Повторити розшифрування"
+  },
+  "Redo Transitions" : {
+    "uk" : "Повторити зміну переходів"
+  },
+  "Redo Trim" : {
+    "uk" : "Повторити підрізання"
+  },
+  "Redo Unmute Clip" : {
+    "uk" : "Повторити увімкнення звуку кліпу"
+  },
+  "Redo Unmute Part" : {
+    "uk" : "Повторити увімкнення звуку частини"
+  },
+  "Redo Unmute Video" : {
+    "uk" : "Повторити увімкнення звуку відео"
+  },
+  "Redo Zoom Change" : {
+    "uk" : "Повторити зміну наближення"
+  },
+  "Redo Zoom Level for All" : {
+    "uk" : "Повторити спільний рівень наближення"
+  },
+  "Redo Zooms" : {
+    "uk" : "Повторити зміну наближень"
+  },
+  "Remove %lld ums" : {
+    "uk" : {
+      "few" : "Вилучити %lld слова-паразити",
+      "many" : "Вилучити %lld слів-паразитів",
+      "one" : "Вилучити %lld слово-паразит",
+      "other" : "Вилучити %lld слова-паразита"
+    }
+  },
+  "Remove All Zooms" : {
+    "uk" : "Вилучити всі наближення"
+  },
+  "Remove Intro Card" : {
+    "uk" : "Вилучити вступну заставку"
+  },
+  "Remove Outro Card" : {
+    "uk" : "Вилучити завершальну заставку"
+  },
+  "Remove Transcript & Captions" : {
+    "uk" : "Вилучити розшифровку й субтитри"
+  },
+  "Remove Ums" : {
+    "uk" : "Вилучити слова-паразити"
+  },
+  "Remove all %lld" : {
+    "uk" : "Вилучити всі (%lld)"
+  },
+  "Remove all zooms" : {
+    "uk" : "Вилучити всі наближення"
+  },
+  "Remove caption" : {
+    "uk" : "Вилучити субтитр"
+  },
+  "Remove this caption" : {
+    "uk" : "Вилучити цей субтитр"
+  },
+  "Removed %@ — click to restore" : {
+    "uk" : "Вирізано %@ — клацніть, щоб відновити"
+  },
+  "Removed %lld items — ⌘Z to undo" : {
+    "uk" : {
+      "few" : "Вилучено %lld елементи — ⌘Z, щоб відмінити",
+      "many" : "Вилучено %lld елементів — ⌘Z, щоб відмінити",
+      "one" : "Вилучено %lld елемент — ⌘Z, щоб відмінити",
+      "other" : "Вилучено %lld елемента — ⌘Z, щоб відмінити"
+    }
+  },
+  "Removed %lld items — ⌘Z to undo (a video keeps at least one clip)" : {
+    "uk" : {
+      "few" : "Вилучено %lld елементи — ⌘Z, щоб відмінити (у відео має лишитися хоча б один кліп)",
+      "many" : "Вилучено %lld елементів — ⌘Z, щоб відмінити (у відео має лишитися хоча б один кліп)",
+      "one" : "Вилучено %lld елемент — ⌘Z, щоб відмінити (у відео має лишитися хоча б один кліп)",
+      "other" : "Вилучено %lld елемента — ⌘Z, щоб відмінити (у відео має лишитися хоча б один кліп)"
+    }
+  },
+  "Removed parts can be restored from the yellow marker on the timeline." : {
+    "uk" : "Вирізані частини можна відновити з жовтої позначки на шкалі часу."
+  },
+  "Removes background noise and hum, and evens out your level — processed on this Mac" : {
+    "uk" : "Прибирає фоновий шум і гудіння та вирівнює рівень — обробка на цьому Mac"
+  },
+  "Removes jitter, keeps it snappy." : {
+    "uk" : "Прибирає тремтіння, зберігаючи жвавість."
+  },
+  "Reset" : {
+    "uk" : "Скинути"
+  },
+  "Reset %@" : {
+    "uk" : "Скинути: %@"
+  },
+  "Reset to the Shotnix Look" : {
+    "uk" : "Скинути до стилю Shotnix"
+  },
+  "Reset to the Shotnix look" : {
+    "uk" : "Скинути до стилю Shotnix"
+  },
+  "Restore" : {
+    "uk" : "Відновити"
+  },
+  "Restore %@ at %@" : {
+    "uk" : "Відновити %@ на %@"
+  },
+  "Restore %@ cut at %@" : {
+    "uk" : "Відновити вирізаний фрагмент (%@) на %@"
+  },
+  "Restore All %lld" : {
+    "uk" : "Відновити всі (%lld)"
+  },
+  "Roundness" : {
+    "uk" : "Заокруглення"
+  },
+  "Save Subtitles (.srt)…" : {
+    "uk" : "Зберегти субтитри (.srt)…"
+  },
+  "Saves %@ — only silences where nothing happens on screen" : {
+    "uk" : "Заощаджує %@ — лише тиша, коли на екрані нічого не відбувається"
+  },
+  "Saves %@ — silences where the pointer rests and nothing is clicked or pressed (this older recording can't see typing)" : {
+    "uk" : "Заощаджує %@ — тиша, коли курсор нерухомий і нічого не клацають і не натискають (цей старіший запис не бачить введення тексту)"
+  },
+  "Saves the background, frame, cursor, and zoom style." : {
+    "uk" : "Зберігає тло, рамку, курсор і стиль наближення."
+  },
+  "Search commands" : {
+    "uk" : "Шукати команди"
+  },
+  "Select a clip on the timeline to mute it or fade it in and out." : {
+    "uk" : "Виберіть кліп на шкалі часу, щоб вимкнути його звук або додати плавну появу й зникнення."
+  },
+  "Select a range to cut" : {
+    "uk" : "Вибрати проміжок для вирізання"
+  },
+  "Select previous / next item" : {
+    "uk" : "Вибрати попередній/наступний елемент"
+  },
+  "Select several items" : {
+    "uk" : "Вибрати кілька елементів"
+  },
+  "Select words and press ⌫ to cut them from the video — ⌫ again on crossed-out words puts them back. Click a word to jump there; ⌘F finds." : {
+    "uk" : "Виберіть слова й натисніть ⌫, щоб вирізати їх з відео, — повторне ⌫ на закреслених словах повертає їх. Клацніть слово, щоб перейти до нього; ⌘F — пошук."
+  },
+  "Selected %@" : {
+    "uk" : "Вибрано: %@"
+  },
+  "Selected part" : {
+    "uk" : "Вибрана частина"
+  },
+  "Shadow" : {
+    "uk" : "Тінь"
+  },
+  "Shape" : {
+    "uk" : "Форма"
+  },
+  "Shortcut" : {
+    "uk" : "Скорочення"
+  },
+  "Shortcut %@" : {
+    "uk" : "Скорочення %@"
+  },
+  "Shorten %lld pauses" : {
+    "uk" : {
+      "few" : "Скоротити %lld паузи",
+      "many" : "Скоротити %lld пауз",
+      "one" : "Скоротити %lld паузу",
+      "other" : "Скоротити %lld паузи"
+    }
+  },
+  "Shorten Pauses" : {
+    "uk" : "Скоротити паузи"
+  },
+  "Shortens every silence over a second (this video has no Shotnix pointer data to spot what happens on screen)" : {
+    "uk" : "Скорочує кожну тишу, довшу за секунду (у цьому відео немає даних курсора Shotnix, щоб розпізнати, що відбувається на екрані)"
+  },
+  "Shotnix is still cleaning up the voice" : {
+    "uk" : "Shotnix ще очищає голос"
+  },
+  "Shotnix is still transcribing" : {
+    "uk" : "Shotnix ще розшифровує мовлення"
+  },
+  "Shotnix listens to the recording right on this Mac — nothing is uploaded. Then cut the video by deleting words, remove ums and long pauses in one click, and add captions." : {
+    "uk" : "Shotnix слухає запис просто на цьому Mac — нічого не вивантажується. Потім монтуйте відео, видаляючи слова, одним клацанням вилучайте слова-паразити й довгі паузи та додавайте субтитри."
+  },
+  "Show Background" : {
+    "uk" : "Показати тло"
+  },
+  "Show Editor Tips" : {
+    "uk" : "Показати поради редактора"
+  },
+  "Show Folder in Finder" : {
+    "uk" : "Показати папку у Finder"
+  },
+  "Show Recent Export “%@” in Finder" : {
+    "uk" : "Показати нещодавній експорт «%@» у Finder"
+  },
+  "Show Recording in Finder" : {
+    "uk" : "Показати запис у Finder"
+  },
+  "Show background" : {
+    "uk" : "Показувати тло"
+  },
+  "Show camera" : {
+    "uk" : "Показувати камеру"
+  },
+  "Show captions" : {
+    "uk" : "Показувати субтитри"
+  },
+  "Show cursor" : {
+    "uk" : "Показувати курсор"
+  },
+  "Show in Finder" : {
+    "uk" : "Показати у Finder"
+  },
+  "Show in Finder — %@" : {
+    "uk" : "Показати у Finder — %@"
+  },
+  "Show more / less detail" : {
+    "uk" : "Показати більше/менше деталей"
+  },
+  "Show more of the timeline" : {
+    "uk" : "Показати більшу частину шкали часу"
+  },
+  "Show shortcuts" : {
+    "uk" : "Показувати скорочення"
+  },
+  "Show the timeline in more detail" : {
+    "uk" : "Показати шкалу часу детальніше"
+  },
+  "Show tips under the video again" : {
+    "uk" : "Знову показувати поради під відео"
+  },
+  "Shrink while zoomed" : {
+    "uk" : "Зменшувати під час наближення"
+  },
+  "Shuffle Background" : {
+    "uk" : "Випадкове тло"
+  },
+  "Shuffle the background" : {
+    "uk" : "Вибрати випадкове тло"
+  },
+  "Silences over a second get shortened — except while you click, type, scroll, or move the pointer, so the demo itself is never cut" : {
+    "uk" : "Тиша, довша за секунду, скорочується — окрім моментів, коли ви клацаєте, вводите текст, прокручуєте чи рухаєте курсор, тож сама демонстрація ніколи не вирізається"
+  },
+  "Silences over a second get shortened — except while you move the pointer, click, or press a shortcut" : {
+    "uk" : "Тиша, довша за секунду, скорочується — окрім моментів, коли ви рухаєте курсор, клацаєте чи натискаєте скорочення"
+  },
+  "Size" : {
+    "uk" : "Розмір"
+  },
+  "Skips the dash to the Stop button at the end" : {
+    "uk" : "Пропускає ривок до кнопки «Зупинити» наприкінці"
+  },
+  "Soft streaks on fast moves" : {
+    "uk" : "М’які шлейфи під час швидких рухів"
+  },
+  "Solid color" : {
+    "uk" : "Суцільний колір"
+  },
+  "Sound" : {
+    "uk" : "Звук"
+  },
+  "Space" : {
+    "uk" : "Пробіл"
+  },
+  "Speed" : {
+    "uk" : "Швидкість"
+  },
+  "Speed Up Idle" : {
+    "uk" : "Прискорити простої"
+  },
+  "Speed Up Idle Moments" : {
+    "uk" : "Прискорити моменти простою"
+  },
+  "Speed of this part" : {
+    "uk" : "Швидкість цієї частини"
+  },
+  "Split" : {
+    "uk" : "Розділити"
+  },
+  "Split at Playhead" : {
+    "uk" : "Розділити на покажчику відтворення"
+  },
+  "Split at playhead" : {
+    "uk" : "Розділити на покажчику відтворення"
+  },
+  "Split at the playhead (S)" : {
+    "uk" : "Розділити на покажчику відтворення (S)"
+  },
+  "Start / end" : {
+    "uk" : "Початок/кінець"
+  },
+  "Start Over from the Original Recording…" : {
+    "uk" : "Почати заново з оригінального запису…"
+  },
+  "Start at the playhead" : {
+    "uk" : "Почати на покажчику відтворення"
+  },
+  "Start here" : {
+    "uk" : "Початок тут"
+  },
+  "Starts" : {
+    "uk" : "Початок"
+  },
+  "Stop Enhancing Voice" : {
+    "uk" : "Зупинити покращення голосу"
+  },
+  "Stop and Close" : {
+    "uk" : "Зупинити й закрити"
+  },
+  "Style" : {
+    "uk" : "Стиль"
+  },
+  "Swap the arrow's head and tail" : {
+    "uk" : "Поміняти місцями вістря й хвіст стрілки"
+  },
+  "Switch the camera to full screen for talking points, or put it side by side with the screen — at the playhead. Each shows on the Camera lane." : {
+    "uk" : "Перемикайте камеру на весь кадр для ключових думок або ставте її поруч з екраном — на покажчику відтворення. Кожна зміна з’являється на доріжці «Камера»."
+  },
+  "Tag color" : {
+    "uk" : "Колір плашки"
+  },
+  "Text · highlight · arrow · blur" : {
+    "uk" : "Текст · виділення · стрілка · розмиття"
+  },
+  "Text “%@”" : {
+    "uk" : "Текст «%@»"
+  },
+  "The camera keeps your cursor in view and glides after it." : {
+    "uk" : "Камера тримає курсор у кадрі й плавно стежить за ним."
+  },
+  "The cursor is part of this video" : {
+    "uk" : "Курсор — частина цього відео"
+  },
+  "Thickness" : {
+    "uk" : "Товщина"
+  },
+  "This list" : {
+    "uk" : "Цей список"
+  },
+  "This recording has no sound" : {
+    "uk" : "У цьому записі немає звуку"
+  },
+  "This recording has no sound. Turn on the microphone before recording to narrate it." : {
+    "uk" : "У цьому записі немає звуку. Щоб додати коментар, перед записом увімкніть мікрофон."
+  },
+  "This recording only has the arrow" : {
+    "uk" : "У цьому записі є лише стрілка"
+  },
+  "This video was recorded with your camera, but “%@” isn't in %@ anymore. Put it back there and open the video again to get the camera bubble back." : {
+    "uk" : "Це відео записано з камерою, але файлу «%@» більше немає в %@. Поверніть його туди й відкрийте відео знову, щоб повернути бульбашку камери."
+  },
+  "Timeline" : {
+    "uk" : "Шкала часу"
+  },
+  "Timeline scale" : {
+    "uk" : "Масштаб шкали часу"
+  },
+  "Timeline scale (pinch, or ⌘-scroll)" : {
+    "uk" : "Масштаб шкали часу (зведення пальців або ⌘ і прокручування)"
+  },
+  "Timing" : {
+    "uk" : "Час"
+  },
+  "Tips" : {
+    "uk" : "Поради"
+  },
+  "Tools" : {
+    "uk" : "Інструменти"
+  },
+  "Transcribe" : {
+    "uk" : "Розшифрувати"
+  },
+  "Transcribe Again…" : {
+    "uk" : "Розшифрувати знову…"
+  },
+  "Transcribe Narration (Captions, Edit by Text)" : {
+    "uk" : "Розшифрувати мовлення (субтитри, монтаж за текстом)"
+  },
+  "Transcribe…" : {
+    "uk" : "Розшифрувати…"
+  },
+  "Transcript" : {
+    "uk" : "Розшифровка"
+  },
+  "Trim the clip's end to the playhead (O)" : {
+    "uk" : "Підрізати кінець кліпу до покажчика відтворення (O)"
+  },
+  "Trim the clip's start to the playhead (I)" : {
+    "uk" : "Підрізати початок кліпу до покажчика відтворення (I)"
+  },
+  "Try Again" : {
+    "uk" : "Спробувати ще раз"
+  },
+  "Turn On" : {
+    "uk" : "Увімкнути"
+  },
+  "Turn around" : {
+    "uk" : "Розвернути"
+  },
+  "Turn on the camera in the recording bar before you record, and your face appears here as a bubble you can place, resize, and restyle." : {
+    "uk" : "Перед записом увімкніть камеру на панелі запису, і ваше обличчя з’явиться тут у бульбашці, яку можна розмістити, змінити розмір і стиль."
+  },
+  "Turn on the microphone or system audio before recording to capture sound." : {
+    "uk" : "Щоб записати звук, перед записом увімкніть мікрофон або системний звук."
+  },
+  "Turn the video's sound back on" : {
+    "uk" : "Знову ввімкнути звук відео"
+  },
+  "Type in a text annotation" : {
+    "uk" : "Вводити текст у текстовий елемент"
+  },
+  "Undo" : {
+    "uk" : "Відмінити"
+  },
+  "Undo / redo" : {
+    "uk" : "Відмінити/повторити"
+  },
+  "Undo Add Arrow" : {
+    "uk" : "Відмінити додавання стрілки"
+  },
+  "Undo Add Blur" : {
+    "uk" : "Відмінити додавання розмиття"
+  },
+  "Undo Add Camera Layout" : {
+    "uk" : "Відмінити додавання макета камери"
+  },
+  "Undo Add Camera Layouts" : {
+    "uk" : "Відмінити додавання макетів камери"
+  },
+  "Undo Add Caption" : {
+    "uk" : "Відмінити додавання субтитру"
+  },
+  "Undo Add Captions" : {
+    "uk" : "Відмінити додавання субтитрів"
+  },
+  "Undo Add Click" : {
+    "uk" : "Відмінити додавання клацання"
+  },
+  "Undo Add Clicks" : {
+    "uk" : "Відмінити додавання клацань"
+  },
+  "Undo Add Highlight" : {
+    "uk" : "Відмінити додавання виділення"
+  },
+  "Undo Add Image" : {
+    "uk" : "Відмінити додавання зображення"
+  },
+  "Undo Add Intro Card" : {
+    "uk" : "Відмінити додавання вступної заставки"
+  },
+  "Undo Add Music" : {
+    "uk" : "Відмінити додавання музики"
+  },
+  "Undo Add Outro Card" : {
+    "uk" : "Відмінити додавання завершальної заставки"
+  },
+  "Undo Add Recording" : {
+    "uk" : "Відмінити додавання запису"
+  },
+  "Undo Add Spotlight" : {
+    "uk" : "Відмінити додавання прожектора"
+  },
+  "Undo Add Text" : {
+    "uk" : "Відмінити додавання тексту"
+  },
+  "Undo Add Zoom" : {
+    "uk" : "Відмінити додавання наближення"
+  },
+  "Undo Add Zooms" : {
+    "uk" : "Відмінити додавання наближень"
+  },
+  "Undo Annotation Change" : {
+    "uk" : "Відмінити зміну розмітки"
+  },
+  "Undo Annotations" : {
+    "uk" : "Відмінити зміни розмітки"
+  },
+  "Undo Arrow Style" : {
+    "uk" : "Відмінити зміну стилю стрілки"
+  },
+  "Undo Aspect Ratio" : {
+    "uk" : "Відмінити зміну співвідношення сторін"
+  },
+  "Undo Auto Zoom" : {
+    "uk" : "Відмінити автонаближення"
+  },
+  "Undo Background" : {
+    "uk" : "Відмінити зміну тла"
+  },
+  "Undo Blur Style" : {
+    "uk" : "Відмінити зміну стилю розмиття"
+  },
+  "Undo Camera Change" : {
+    "uk" : "Відмінити зміну камери"
+  },
+  "Undo Camera Layout Change" : {
+    "uk" : "Відмінити зміну макета камери"
+  },
+  "Undo Camera Layouts" : {
+    "uk" : "Відмінити зміну макетів камери"
+  },
+  "Undo Caption Style" : {
+    "uk" : "Відмінити зміну стилю субтитрів"
+  },
+  "Undo Caption Translation" : {
+    "uk" : "Відмінити переклад субтитрів"
+  },
+  "Undo Captions" : {
+    "uk" : "Відмінити зміну субтитрів"
+  },
+  "Undo Click Sounds" : {
+    "uk" : "Відмінити зміну звуків клацання"
+  },
+  "Undo Clicks" : {
+    "uk" : "Відмінити зміну клацань"
+  },
+  "Undo Crop" : {
+    "uk" : "Відмінити обрізання"
+  },
+  "Undo Cursor Change" : {
+    "uk" : "Відмінити зміну курсора"
+  },
+  "Undo Cut" : {
+    "uk" : "Відмінити вирізання"
+  },
+  "Undo Cut Word" : {
+    "uk" : "Відмінити вирізання слова"
+  },
+  "Undo Cut Words" : {
+    "uk" : "Відмінити вирізання слів"
+  },
+  "Undo Delete %lld Items" : {
+    "uk" : {
+      "few" : "Відмінити видалення %lld елементів",
+      "many" : "Відмінити видалення %lld елементів",
+      "one" : "Відмінити видалення %lld елемента",
+      "other" : "Відмінити видалення %lld елемента"
+    }
+  },
+  "Undo Delete Annotations" : {
+    "uk" : "Відмінити видалення розмітки"
+  },
+  "Undo Delete Arrow" : {
+    "uk" : "Відмінити видалення стрілки"
+  },
+  "Undo Delete Blur" : {
+    "uk" : "Відмінити видалення розмиття"
+  },
+  "Undo Delete Camera Layout" : {
+    "uk" : "Відмінити видалення макета камери"
+  },
+  "Undo Delete Camera Layouts" : {
+    "uk" : "Відмінити видалення макетів камери"
+  },
+  "Undo Delete Caption" : {
+    "uk" : "Відмінити видалення субтитру"
+  },
+  "Undo Delete Captions" : {
+    "uk" : "Відмінити видалення субтитрів"
+  },
+  "Undo Delete Click" : {
+    "uk" : "Відмінити видалення клацання"
+  },
+  "Undo Delete Clicks" : {
+    "uk" : "Відмінити видалення клацань"
+  },
+  "Undo Delete Clip" : {
+    "uk" : "Відмінити видалення кліпу"
+  },
+  "Undo Delete Clips" : {
+    "uk" : "Відмінити видалення кліпів"
+  },
+  "Undo Delete Highlight" : {
+    "uk" : "Відмінити видалення виділення"
+  },
+  "Undo Delete Image" : {
+    "uk" : "Відмінити видалення зображення"
+  },
+  "Undo Delete Spotlight" : {
+    "uk" : "Відмінити видалення прожектора"
+  },
+  "Undo Delete Text" : {
+    "uk" : "Відмінити видалення тексту"
+  },
+  "Undo Delete Zoom" : {
+    "uk" : "Відмінити видалення наближення"
+  },
+  "Undo Delete Zooms" : {
+    "uk" : "Відмінити видалення наближень"
+  },
+  "Undo Edit Caption" : {
+    "uk" : "Відмінити редагування субтитру"
+  },
+  "Undo Edit Text" : {
+    "uk" : "Відмінити редагування тексту"
+  },
+  "Undo Enhance Voice" : {
+    "uk" : "Відмінити покращення голосу"
+  },
+  "Undo Fade" : {
+    "uk" : "Відмінити плавну появу/зникнення"
+  },
+  "Undo Hide Shortcut" : {
+    "uk" : "Відмінити приховування скорочення"
+  },
+  "Undo Highlight Style" : {
+    "uk" : "Відмінити зміну стилю виділення"
+  },
+  "Undo Image Style" : {
+    "uk" : "Відмінити зміну стилю зображення"
+  },
+  "Undo Intro and Outro" : {
+    "uk" : "Відмінити камеру для вступу й завершення"
+  },
+  "Undo Move %lld Items" : {
+    "uk" : {
+      "few" : "Відмінити переміщення %lld елементів",
+      "many" : "Відмінити переміщення %lld елементів",
+      "one" : "Відмінити переміщення %lld елемента",
+      "other" : "Відмінити переміщення %lld елемента"
+    }
+  },
+  "Undo Move Arrow" : {
+    "uk" : "Відмінити переміщення стрілки"
+  },
+  "Undo Move Blur" : {
+    "uk" : "Відмінити переміщення розмиття"
+  },
+  "Undo Move Click" : {
+    "uk" : "Відмінити переміщення клацання"
+  },
+  "Undo Move Clip" : {
+    "uk" : "Відмінити переміщення кліпу"
+  },
+  "Undo Move Highlight" : {
+    "uk" : "Відмінити переміщення виділення"
+  },
+  "Undo Move Image" : {
+    "uk" : "Відмінити переміщення зображення"
+  },
+  "Undo Move Recording" : {
+    "uk" : "Відмінити переміщення запису"
+  },
+  "Undo Move Spotlight" : {
+    "uk" : "Відмінити переміщення прожектора"
+  },
+  "Undo Move Text" : {
+    "uk" : "Відмінити переміщення тексту"
+  },
+  "Undo Music Change" : {
+    "uk" : "Відмінити зміну музики"
+  },
+  "Undo Mute Clip" : {
+    "uk" : "Відмінити вимкнення звуку кліпу"
+  },
+  "Undo Mute Part" : {
+    "uk" : "Відмінити вимкнення звуку частини"
+  },
+  "Undo Mute Video" : {
+    "uk" : "Відмінити вимкнення звуку відео"
+  },
+  "Undo Remove All Zooms" : {
+    "uk" : "Відмінити вилучення всіх наближень"
+  },
+  "Undo Remove Captions" : {
+    "uk" : "Відмінити вилучення субтитрів"
+  },
+  "Undo Remove Intro Card" : {
+    "uk" : "Відмінити вилучення вступної заставки"
+  },
+  "Undo Remove Music" : {
+    "uk" : "Відмінити вилучення музики"
+  },
+  "Undo Remove Outro Card" : {
+    "uk" : "Відмінити вилучення завершальної заставки"
+  },
+  "Undo Remove Recording" : {
+    "uk" : "Відмінити вилучення запису"
+  },
+  "Undo Remove Ums" : {
+    "uk" : "Відмінити вилучення слів-паразитів"
+  },
+  "Undo Replace Music" : {
+    "uk" : "Відмінити заміну музики"
+  },
+  "Undo Reset Look" : {
+    "uk" : "Відмінити скидання стилю"
+  },
+  "Undo Restore" : {
+    "uk" : "Відмінити відновлення"
+  },
+  "Undo Restore Cut" : {
+    "uk" : "Відмінити відновлення фрагмента"
+  },
+  "Undo Restore Cuts" : {
+    "uk" : "Відмінити відновлення фрагментів"
+  },
+  "Undo Restore Pause" : {
+    "uk" : "Відмінити відновлення паузи"
+  },
+  "Undo Restore Word" : {
+    "uk" : "Відмінити відновлення слова"
+  },
+  "Undo Restore Words" : {
+    "uk" : "Відмінити відновлення слів"
+  },
+  "Undo Shortcut Style" : {
+    "uk" : "Відмінити зміну стилю скорочень"
+  },
+  "Undo Shortcuts" : {
+    "uk" : "Відмінити зміну скорочень"
+  },
+  "Undo Shorten Pause" : {
+    "uk" : "Відмінити скорочення паузи"
+  },
+  "Undo Shorten Pauses" : {
+    "uk" : "Відмінити скорочення пауз"
+  },
+  "Undo Sound Change" : {
+    "uk" : "Відмінити зміну звуку"
+  },
+  "Undo Speed Change" : {
+    "uk" : "Відмінити зміну швидкості"
+  },
+  "Undo Speed Up Idle" : {
+    "uk" : "Відмінити прискорення простоїв"
+  },
+  "Undo Split" : {
+    "uk" : "Відмінити розділення"
+  },
+  "Undo Spotlight Style" : {
+    "uk" : "Відмінити зміну стилю прожектора"
+  },
+  "Undo Start Over" : {
+    "uk" : "Відмінити повернення до оригіналу"
+  },
+  "Undo Style Change" : {
+    "uk" : "Відмінити зміну стилю"
+  },
+  "Undo Text Style" : {
+    "uk" : "Відмінити зміну стилю тексту"
+  },
+  "Undo Title Card" : {
+    "uk" : "Відмінити зміну заставки"
+  },
+  "Undo Transcribe" : {
+    "uk" : "Відмінити розшифрування"
+  },
+  "Undo Transitions" : {
+    "uk" : "Відмінити зміну переходів"
+  },
+  "Undo Trim" : {
+    "uk" : "Відмінити підрізання"
+  },
+  "Undo Unmute Clip" : {
+    "uk" : "Відмінити увімкнення звуку кліпу"
+  },
+  "Undo Unmute Part" : {
+    "uk" : "Відмінити увімкнення звуку частини"
+  },
+  "Undo Unmute Video" : {
+    "uk" : "Відмінити увімкнення звуку відео"
+  },
+  "Undo Zoom Change" : {
+    "uk" : "Відмінити зміну наближення"
+  },
+  "Undo Zoom Level for All" : {
+    "uk" : "Відмінити спільний рівень наближення"
+  },
+  "Undo Zooms" : {
+    "uk" : "Відмінити зміну наближень"
+  },
+  "Unmute Clip" : {
+    "uk" : "Увімкнути звук кліпу"
+  },
+  "Unmute preview" : {
+    "uk" : "Увімкнути звук перегляду"
+  },
+  "Unmute the Preview" : {
+    "uk" : "Увімкнути звук перегляду"
+  },
+  "Unmute the preview (M)" : {
+    "uk" : "Увімкнути звук перегляду (M)"
+  },
+  "Use This Look for New Recordings" : {
+    "uk" : "Використовувати цей стиль для нових записів"
+  },
+  "Use for new recordings" : {
+    "uk" : "Для нових записів"
+  },
+  "Use this color" : {
+    "uk" : "Використати цей колір"
+  },
+  "Use this level for every zoom" : {
+    "uk" : "Цей рівень для всіх наближень"
+  },
+  "Video preview" : {
+    "uk" : "Перегляд відео"
+  },
+  "Voice" : {
+    "uk" : "Голос"
+  },
+  "Volume" : {
+    "uk" : "Гучність"
+  },
+  "Wallpaper" : {
+    "uk" : "Шпалери"
+  },
+  "What was playing on your Mac" : {
+    "uk" : "Те, що звучало на вашому Mac"
+  },
+  "Words light up as they're spoken" : {
+    "uk" : "Слова підсвічуються, коли їх вимовляють"
+  },
+  "Your look" : {
+    "uk" : "Ваш стиль"
+  },
+  "Your microphone" : {
+    "uk" : "Ваш мікрофон"
+  },
+  "Your narration can become captions — then cut the video by editing its words." : {
+    "uk" : "Ваше мовлення може стати субтитрами — а потім монтуйте відео, редагуючи слова."
+  },
+  "Your narration can become captions — transcribe it here" : {
+    "uk" : "Ваше мовлення може стати субтитрами — розшифруйте його тут"
+  },
+  "Your video's background shows behind you — found on this Mac, frame by frame." : {
+    "uk" : "Позаду вас видно тло відео — його відокремлено на цьому Mac, кадр за кадром."
+  },
+  "Your words, as text" : {
+    "uk" : "Ваші слова у вигляді тексту"
+  },
+  "Zoom" : {
+    "uk" : "Масштаб"
+  },
+  "Zoom %@" : {
+    "uk" : "Наближення %@"
+  },
+  "Zoom Level" : {
+    "uk" : "Рівень наближення"
+  },
+  "Zoom in at the pointer" : {
+    "uk" : "Наблизити в місці курсора"
+  },
+  "Zoom level" : {
+    "uk" : "Рівень наближення"
+  },
+  "Zoom level (zoom selected)" : {
+    "uk" : "Рівень наближення (вибране наближення)"
+  },
+  "Zoom moves" : {
+    "uk" : "Рухи наближення"
+  },
+  "Zoom to %@ (key %@)" : {
+    "uk" : "Наблизити до %@ (клавіша %@)"
+  },
+  "Zoom — drag to move, drag an edge to resize, click to edit" : {
+    "uk" : "Наближення — перетягуйте, щоб перемістити, тягніть край, щоб змінити тривалість, клацніть, щоб редагувати"
+  },
+  "Zooms" : {
+    "uk" : "Наближення"
+  },
+  "Zooms & annotations" : {
+    "uk" : "Наближення й розмітка"
+  },
+  "Zooms and annotations can be duplicated" : {
+    "uk" : "Дублювати можна лише наближення й розмітку"
+  },
+  "add a zoom" : {
+    "uk" : "додати наближення"
+  },
+  "aim or resize it" : {
+    "uk" : "навести чи змінити розмір"
+  },
+  "all shortcuts" : {
+    "uk" : "усі скорочення"
+  },
+  "cut by editing words" : {
+    "uk" : "монтаж редагуванням слів"
+  },
+  "dips under your voice" : {
+    "uk" : "стишується під голос"
+  },
+  "every command" : {
+    "uk" : "усі команди"
+  },
+  "export" : {
+    "uk" : "експортувати"
+  },
+  "follows the cursor" : {
+    "uk" : "стежить за курсором"
+  },
+  "loops" : {
+    "uk" : "повторюється"
+  },
+  "mute the preview" : {
+    "uk" : "вимкнути звук перегляду"
+  },
+  "muted" : {
+    "uk" : "без звуку"
+  },
+  "play" : {
+    "uk" : "відтворити"
+  },
+  "select a part to cut" : {
+    "uk" : "вибрати частину для вирізання"
+  },
+  "select it" : {
+    "uk" : "вибрати"
+  },
+  "split at the playhead" : {
+    "uk" : "розділити на покажчику відтворення"
+  },
+  "step through the timeline" : {
+    "uk" : "переходити по шкалі часу"
+  },
+  "text, highlight, arrow, blur" : {
+    "uk" : "текст, виділення, стрілка, розмиття"
+  },
+  "trim to the playhead" : {
+    "uk" : "підрізати до покажчика відтворення"
+  },
+  "type" : {
+    "uk" : "вводити текст"
+  },
+  "zoom the timeline" : {
+    "uk" : "масштабувати шкалу часу"
+  },
+  "· aim by hand" : {
+    "uk" : "· вручну"
+  },
+  "· drag to aim" : {
+    "uk" : "· тягніть, щоб навести"
+  },
+  "· follows cursor" : {
+    "uk" : "· за курсором"
+  },
+  "⇧-drag" : {
+    "uk" : "⇧-тягнути"
+  },
+  "⇧-drag the timeline" : {
+    "uk" : "⇧-тягнути по шкалі часу"
+  },
+  "⇧/⌘-click" : {
+    "uk" : "⇧/⌘-клацнути"
+  },
+  "⌘ scroll" : {
+    "uk" : "⌘ прокрутити"
+  },
+  "⌘-scroll" : {
+    "uk" : "⌘-прокрутити"
+  }
+}

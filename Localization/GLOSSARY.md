@@ -221,6 +221,34 @@ Finder, GIF, MP4…) stay in Latin letters and aren't declined.
 | export (button, tab, section) / Export… | Экспорт / Экспортировать… | — |
 | recording quality: Balanced, High, Max | Среднее, Высокое, Максимальное | — |
 | px / pt (units) | пикс. / пт | — |
+| Settings tabs: General / Shortcuts / Screenshots / Recording / About | — | Загальні / Скорочення / Знімки екрана / Запис / Про програму |
+| System Default (language pop-up) | — | Як у системі |
+| scrolling capture | — | знімок із прокручуванням |
+| timed capture | — | знімок за таймером |
+| Capture Text (OCR) | — | Розпізнати текст |
+| display (a screen) | — | дисплей |
+| Quick Access overlay (the thumbnail) | — | мініатюра |
+| spotlight (tool) | — | прожектор |
+| Clean Up (History, video data) / Clear History | — | Прибрати / Очистити історію |
+| Command Center / Health | — | командний центр / Стан |
+| Library (History's sidebar) | — | медіатека |
+| click (noun) | — | клацання |
+| Zoom (the editor's tab and lane) / a zoom | — | Масштаб / наближення (Auto Zoom: автонаближення) |
+| playhead | — | покажчик відтворення |
+| lane (timeline) | — | доріжка |
+| Style (the editor's tab) | — | Стиль |
+| camera bubble / camera layout | — | бульбашка камери / макет камери |
+| title card / intro card / outro card / end card | — | заставка / вступна заставка / завершальна заставка / кінцева заставка |
+| cut (a removed part) / cut (between clips) | — | вирізаний фрагмент / склейка |
+| trim (a clip) | — | підрізати |
+| transition: dissolve / dip to black / hard cut | — | розчинення / затемнення / пряма склейка |
+| fade in / fade out | — | плавна поява / плавне зникнення |
+| transcribe / narration | — | розшифрувати / мовлення |
+| filler words (um, uh) | — | слова-паразити |
+| idle moments (Speed Up Idle) | — | простої |
+| burn in (captions) | — | вшити |
+| song (music) | — | трек |
+| upload | — | вивантажити |
 
 macOS names, from System Settings on macOS 26:
 

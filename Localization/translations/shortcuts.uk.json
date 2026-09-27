@@ -1,0 +1,47 @@
+{
+  "Capture All Displays" : {
+    "uk" : "Зняти всі дисплеї"
+  },
+  "Capture Area" : {
+    "uk" : "Зняти область"
+  },
+  "Capture Fullscreen" : {
+    "uk" : "Зняти весь екран"
+  },
+  "Capture Fullscreen Alt" : {
+    "uk" : "Зняти весь екран (інше скорочення)"
+  },
+  "Capture Previous Area" : {
+    "uk" : "Зняти попередню область"
+  },
+  "Capture Window" : {
+    "uk" : "Зняти вікно"
+  },
+  "OCR / Capture Text" : {
+    "uk" : "Розпізнати текст (OCR)"
+  },
+  "Open Command Center" : {
+    "uk" : "Відкрити командний центр"
+  },
+  "Pause / Resume Recording" : {
+    "uk" : "Призупинити/продовжити запис"
+  },
+  "Record Area" : {
+    "uk" : "Записати область"
+  },
+  "Record Fullscreen" : {
+    "uk" : "Записати весь екран"
+  },
+  "Record Window" : {
+    "uk" : "Записати вікно"
+  },
+  "Scrolling Capture" : {
+    "uk" : "Знімок із прокручуванням"
+  },
+  "Stop Recording" : {
+    "uk" : "Зупинити запис"
+  },
+  "Timed Capture" : {
+    "uk" : "Знімок за таймером"
+  }
+}

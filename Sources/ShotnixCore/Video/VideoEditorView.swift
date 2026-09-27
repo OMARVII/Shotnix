@@ -821,6 +821,13 @@ struct VideoShortcutsSheet: View {
 
     private var groups: [(String, [(String, String)])] { Self.groups }
 
+    /// The keys' column: 92 pt, wider only when a language's key names
+    /// ("Double-click") need more.
+    static var keyColumnWidth: CGFloat {
+        let font = NSFont.monospacedSystemFont(ofSize: 11.5, weight: .semibold)
+        return max(92, TextFitting.widest(groups.flatMap { $0.1.map(\.0) }, font: font) + 4)
+    }
+
     var body: some View {
         ZStack {
             Color.black.opacity(0.45)
@@ -838,7 +845,8 @@ struct VideoShortcutsSheet: View {
     }
 
     private func sheet(columnWidth: CGFloat) -> some View {
-        VStack(alignment: .leading, spacing: 18) {
+        let keyWidth = Self.keyColumnWidth
+        return VStack(alignment: .leading, spacing: 18) {
             HStack {
                 Text(L("Keyboard Shortcuts"))
                     .font(.system(size: 16, weight: .bold))
@@ -865,7 +873,7 @@ struct VideoShortcutsSheet: View {
                                         Text(item.0)
                                             .font(.system(size: 11.5, weight: .semibold, design: .monospaced))
                                             .foregroundStyle(VideoEditorTheme.textPrimary)
-                                            .frame(width: 92, alignment: .leading)
+                                            .frame(width: keyWidth, alignment: .leading)
                                         Text(item.1)
                                             .font(.system(size: 12))
                                             .foregroundStyle(VideoEditorTheme.textSecondary)

@@ -75,6 +75,7 @@ final class VideoEditorLocalizationTests: XCTestCase {
             "fr": ("Annuler la suppression du zoom", "Rétablir la suppression du zoom", "Annuler"),
             "zh-Hans": ("撤销删除缩放", "重做删除缩放", "撤销"),
             "ru": ("Отменить удаление увеличения", "Повторить удаление увеличения", "Отменить"),
+            "uk": ("Відмінити видалення наближення", "Повторити видалення наближення", "Відмінити"),
         ]
         for (language, phrases) in expected {
             L10n.use(language)

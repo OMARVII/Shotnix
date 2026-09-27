@@ -90,6 +90,7 @@ final class AppLanguageTests: XCTestCase {
             "fr": ("Par défaut du système (anglais)", "Par défaut du système (allemand)"),
             "zh-Hans": ("系统默认（英语）", "系统默认（德语）"),
             "ru": ("Как в системе (английский)", "Как в системе (немецкий)"),
+            "uk": ("Як у системі (англійська)", "Як у системі (німецька)"),
         ]
         for (language, titles) in expected {
             L10n.use(language)

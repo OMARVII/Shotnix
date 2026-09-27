@@ -1,0 +1,3408 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>%@ (%@)</key>
+	<string>%@ (%@)</string>
+	<key>%@ (This Mac)</key>
+	<string>%@ (цей Mac)</string>
+	<key>%@ (edited)</key>
+	<string>%@ (змінено)</string>
+	<key>%@ (original)</key>
+	<string>%@ (оригінал)</string>
+	<key>%@ (⇧⌘Z)</key>
+	<string>%@ (⇧⌘Z)</string>
+	<key>%@ (⌘Z)</key>
+	<string>%@ (⌘Z)</string>
+	<key>%@ Zoom</key>
+	<string>Масштаб %@</string>
+	<key>%@ area</key>
+	<string>%@ область</string>
+	<key>%@ can't be transcribed on this Mac without sending your voice to a server. To add it, turn on Dictation for %@ in System Settings → Keyboard, or pick another language.</key>
+	<string>Мову «%@» не можна розшифрувати на цьому Mac без надсилання вашого голосу на сервер. Щоб додати її, увімкніть диктування для мови «%@» (Системні параметри → Клавіатура) або виберіть іншу мову.</string>
+	<key>%@ capture from %@</key>
+	<string>Знімок (%@) від %@</string>
+	<key>%@ capture, %@</key>
+	<string>Знімок (%@), %@</string>
+	<key>%@ found</key>
+	<string>Знайдено: %@</string>
+	<key>%@ fullscreen</key>
+	<string>%@ весь екран</string>
+	<key>%@ isn't supported for captions on this Mac. Pick another language.</key>
+	<string>Мова «%@» не підтримується для субтитрів на цьому Mac. Виберіть іншу мову.</string>
+	<key>%@ long</key>
+	<string>тривалість %@</string>
+	<key>%@ of recording plays in %@.</key>
+	<string>%@ запису відтворюється за %@.</string>
+	<key>%@ pt</key>
+	<string>%@ пт</string>
+	<key>%@ quality · %@</key>
+	<string>Якість: %@ · %@</string>
+	<key>%@ speed</key>
+	<string>швидкість %@</string>
+	<key>%@ transition</key>
+	<string>Перехід: %@</string>
+	<key>%@ window</key>
+	<string>%@ вікно</string>
+	<key>%@ · %@ px</key>
+	<string>%@ · %@ px</string>
+	<key>%@ · %@ × %@ image</key>
+	<string>%@ · зображення %@ × %@</string>
+	<key>%@ · %lld fps</key>
+	<string>%@ · %lld fps</string>
+	<key>%@ · on your clipboard — paste it anywhere</key>
+	<string>%@ · у буфері обміну — вставте будь-де</string>
+	<key>%@ × %@ px</key>
+	<string>%@ × %@ px</string>
+	<key>%@ — %@</key>
+	<string>%@ — %@</string>
+	<key>%@ — Shotnix lives in your menu bar</key>
+	<string>%@ — Shotnix у смузі меню</string>
+	<key>%@ — click to change</key>
+	<string>%@ — клацніть, щоб змінити</string>
+	<key>%@ → %@ — the part you ⇧-dragged on the timeline</key>
+	<string>%@ → %@ — частина, яку ви виділили на шкалі часу з ⇧</string>
+	<key>%@, %@</key>
+	<string>%@, %@</string>
+	<key>%@, and %lld more</key>
+	<string>%@ і ще %lld</string>
+	<key>%@: %@</key>
+	<string>%@: %@</string>
+	<key>%@s</key>
+	<string>%@ с</string>
+	<key>%@–%@ only</key>
+	<string>лише %@–%@</string>
+	<key>%lld of %lld captures</key>
+	<string>%lld з %lld знімків</string>
+	<key>%lld px · Esc or Done finishes</key>
+	<string>%lld px · Esc або «Готово» — завершити</string>
+	<key>%lld s</key>
+	<string>%lld с</string>
+	<key>%lld selected</key>
+	<string>Вибрано: %lld</string>
+	<key>%lld%%</key>
+	<string>%lld%%</string>
+	<key>%lld%% volume</key>
+	<string>гучність %lld%%</string>
+	<key>%lld/%lld configured</key>
+	<string>Налаштовано %lld/%lld</string>
+	<key>, </key>
+	<string>, </string>
+	<key>, %@ to %@</key>
+	<string>, від %@ до %@</string>
+	<key>, at %@</key>
+	<string>, на %@</string>
+	<key>0.1s earlier</key>
+	<string>На 0,1 с раніше</string>
+	<key>0.1s later</key>
+	<string>На 0,1 с пізніше</string>
+	<key>A 2-second “Made with Shotnix” outro on your background — your own outro card is in Style</key>
+	<string>Двосекундне завершення «Made with Shotnix» на вашому тлі — власна завершальна заставка є у вкладці «Стиль»</string>
+	<key>A big GIF — about %@ and %@ of memory to make. A smaller size, fewer fps, or MP4 is lighter.</key>
+	<string>Великий GIF — приблизно %@, і для створення потрібно %@ пам’яті. Менший розмір, менше fps або MP4 — легший варіант.</string>
+	<key>A clean picture plus a subtitles file to upload.</key>
+	<string>Чисте зображення плюс файл субтитрів для вивантаження.</string>
+	<key>A cut — click to add a transition</key>
+	<string>Склейка — клацніть, щоб додати перехід</string>
+	<key>A file with that name is in the way. Pick another name and export again.</key>
+	<string>Файл із такою назвою вже існує. Виберіть іншу назву й експортуйте ще раз.</string>
+	<key>A hairline that separates dark recordings from the background</key>
+	<string>Тонка лінія, що відділяє темні записи від тла</string>
+	<key>A second caption track you can show, burn in, or save as subtitles. Translated on this Mac — nothing is uploaded.</key>
+	<string>Друга доріжка субтитрів, яку можна показати, вшити у відео чи зберегти як файл субтитрів. Перекладається на цьому Mac — нічого не вивантажується.</string>
+	<key>A song under the whole video — it loops to fill, fades in and out, and dips while you talk. Use music you have the rights to.</key>
+	<string>Трек під усім відео — він повторюється до кінця, плавно з’являється й згасає та стишується, коли ви говорите. Використовуйте музику, на яку маєте права.</string>
+	<key>A subtitles file for YouTube and web players (.srt), or for the web (.vtt) — follows your cuts</key>
+	<string>Файл субтитрів для YouTube і вебплеєрів (.srt) або для вебу (.vtt) — враховує ваші вирізання</string>
+	<key>A video needs at least one clip</key>
+	<string>У відео має бути хоча б один кліп</string>
+	<key>About</key>
+	<string>Про програму</string>
+	<key>About %lld min left</key>
+	<string>Лишилося близько %lld хв</string>
+	<key>About %lld%% smaller — plays on Apple devices and most phones; some browsers and Windows PCs can't play it without an extra codec</key>
+	<string>Приблизно на %lld%% менше — відтворюється на пристроях Apple і більшості телефонів; деякі браузери та ПК з Windows не відтворять його без додаткового кодека</string>
+	<key>About %llds left</key>
+	<string>Лишилося близько %lld с</string>
+	<key>About Shotnix</key>
+	<string>Про Shotnix</string>
+	<key>Accuracy</key>
+	<string>Точність</string>
+	<key>Accurate</key>
+	<string>Точне</string>
+	<key>Add Arrow</key>
+	<string>Додати стрілку</string>
+	<key>Add Blur</key>
+	<string>Додати розмиття</string>
+	<key>Add Caption Line at Playhead</key>
+	<string>Додати рядок субтитрів на покажчику відтворення</string>
+	<key>Add Highlight</key>
+	<string>Додати виділення</string>
+	<key>Add Image or Logo…</key>
+	<string>Додати зображення чи логотип…</string>
+	<key>Add Intro Card</key>
+	<string>Додати вступну заставку</string>
+	<key>Add Music…</key>
+	<string>Додати музику…</string>
+	<key>Add Outro Card</key>
+	<string>Додати завершальну заставку</string>
+	<key>Add Spotlight (Dim Around a Spot)</key>
+	<string>Додати прожектор (затемнити все навколо)</string>
+	<key>Add Text</key>
+	<string>Додати текст</string>
+	<key>Add Zoom at Playhead</key>
+	<string>Додати наближення на покажчику відтворення</string>
+	<key>Add a caption at the playhead</key>
+	<string>Додати субтитр на покажчику відтворення</string>
+	<key>Add a zoom at the playhead (Z)</key>
+	<string>Додати наближення на покажчику відтворення (Z)</string>
+	<key>Add another recording or video after this one — Shotnix recordings keep their pointer, clicks, and shortcuts.</key>
+	<string>Додайте після цього ще один запис чи відео — записи Shotnix зберігають свій курсор, клацання й скорочення.</string>
+	<key>Add arrow at the playhead (A)</key>
+	<string>Додати стрілку на покажчику відтворення (A)</string>
+	<key>Add blur at the playhead (B)</key>
+	<string>Додати розмиття на покажчику відтворення (B)</string>
+	<key>Add highlight at the playhead (H)</key>
+	<string>Додати виділення на покажчику відтворення (H)</string>
+	<key>Add image at the playhead</key>
+	<string>Додати зображення на покажчику відтворення</string>
+	<key>Add spotlight at the playhead</key>
+	<string>Додати прожектор на покажчику відтворення</string>
+	<key>Add text at the playhead (T)</key>
+	<string>Додати текст на покажчику відтворення (T)</string>
+	<key>Add zoom at playhead</key>
+	<string>Додати наближення на покажчику відтворення</string>
+	<key>Add “%@” at the playhead</key>
+	<string>Додати «%@» на покажчику відтворення</string>
+	<key>Added %@ — %@</key>
+	<string>Додано «%@» — %@</string>
+	<key>Adjust to move it half a second</key>
+	<string>Регулюйте, щоб зсунути на пів секунди</string>
+	<key>Advanced Tools</key>
+	<string>Додаткові інструменти</string>
+	<key>After Capture</key>
+	<string>Після створення знімка</string>
+	<key>Aim by Hand</key>
+	<string>Навести вручну</string>
+	<key>Aim by hand</key>
+	<string>Навести вручну</string>
+	<key>All Captures</key>
+	<string>Усі знімки</string>
+	<key>All Displays</key>
+	<string>Усі дисплеї</string>
+	<key>All commands</key>
+	<string>Усі команди</string>
+	<key>All commands (⌘K)</key>
+	<string>Усі команди (⌘K)</string>
+	<key>All configured</key>
+	<string>Усе налаштовано</string>
+	<key>All zooms set to %@</key>
+	<string>Для всіх наближень встановлено %@</string>
+	<key>Allow Access…</key>
+	<string>Дозволити доступ…</string>
+	<key>Allow Screen Recording</key>
+	<string>Дозволити запис екрана</string>
+	<key>Allow Shotnix in Accessibility — shortcuts turn on by themselves.</key>
+	<string>Дозвольте Shotnix у розділі «Доступність» — скорочення ввімкнуться самі.</string>
+	<key>Almost done</key>
+	<string>Майже готово</string>
+	<key>Always show the arrow</key>
+	<string>Завжди показувати стрілку</string>
+	<key>Amber Fold</key>
+	<string>Бурштинова складка</string>
+	<key>Annotate Last Screenshot</key>
+	<string>Розмітити останній знімок</string>
+	<key>Annotation</key>
+	<string>Розмітка</string>
+	<key>Annotation text</key>
+	<string>Текст розмітки</string>
+	<key>Annotation tools</key>
+	<string>Інструменти розмітки</string>
+	<key>Any color…</key>
+	<string>Будь-який колір…</string>
+	<key>App</key>
+	<string>Програма</string>
+	<key>Appearance</key>
+	<string>Вигляд</string>
+	<key>Append Video…</key>
+	<string>Додати відео в кінець…</string>
+	<key>Apple Shortcuts</key>
+	<string>Скорочення Apple</string>
+	<key>Apple screenshot shortcuts disabled.</key>
+	<string>Скорочення Apple для знімків екрана вимкнено.</string>
+	<key>Apple screenshot shortcuts disabled. Shotnix shortcuts are now active.</key>
+	<string>Скорочення Apple для знімків екрана вимкнено. Тепер діють скорочення Shotnix.</string>
+	<key>Apple screenshot shortcuts restored.</key>
+	<string>Скорочення Apple для знімків екрана відновлено.</string>
+	<key>Apple's screenshot shortcuts still own ⌘⇧3/4/5 — captures can double-trigger.</key>
+	<string>Скорочення Apple для знімків екрана досі займають ⌘⇧3/4/5 — знімки можуть спрацьовувати двічі.</string>
+	<key>Apple's shortcuts are out of the way.</key>
+	<string>Скорочення Apple більше не заважають.</string>
+	<key>Applies at every cut. Click a cut's marker on the timeline, or select a clip, to choose one for that cut only.</key>
+	<string>Застосовується до кожної склейки. Клацніть позначку склейки на шкалі часу або виберіть кліп, щоб вибрати перехід лише для цієї склейки.</string>
+	<key>Apply</key>
+	<string>Застосувати</string>
+	<key>Apply background to this image</key>
+	<string>Застосувати тло до цього зображення</string>
+	<key>Apply crop</key>
+	<string>Застосувати обрізання</string>
+	<key>Apply the crop (Return)</key>
+	<string>Застосувати обрізання (Return)</string>
+	<key>Apply to all zooms</key>
+	<string>Застосувати до всіх наближень</string>
+	<key>Aqua Marble</key>
+	<string>Бірюзовий мармур</string>
+	<key>Area</key>
+	<string>Область</string>
+	<key>Arrow</key>
+	<string>Стрілка</string>
+	<key>Arrow head</key>
+	<string>Вістря стрілки</string>
+	<key>Arrow tail</key>
+	<string>Хвіст стрілки</string>
+	<key>Aspect Ratio %@ — %@</key>
+	<string>Співвідношення сторін %@ — %@</string>
+	<key>Aspect ratio</key>
+	<string>Співвідношення сторін</string>
+	<key>At playhead</key>
+	<string>На покажчику</string>
+	<key>Audio</key>
+	<string>Аудіо</string>
+	<key>Aurora</key>
+	<string>Полярне сяйво</string>
+	<key>Aurora Blue</key>
+	<string>Синє сяйво</string>
+	<key>Auto</key>
+	<string>Авто</string>
+	<key>Auto Zoom</key>
+	<string>Автонаближення</string>
+	<key>Auto Zoom from Clicks</key>
+	<string>Автонаближення за клацаннями</string>
+	<key>Auto-dismiss overlay</key>
+	<string>Автоматично ховати мініатюру</string>
+	<key>Auto-save folder</key>
+	<string>Папка автозбереження</string>
+	<key>Auto-zoom new recordings</key>
+	<string>Автонаближення в нових записах</string>
+	<key>Automatic</key>
+	<string>Автоматично</string>
+	<key>Automatic detects each capture's language; pick languages when it guesses wrong. Accurate reads small text best — Fast answers sooner but knows fewer languages. Used by Capture Text, Copy Text, and History search.</key>
+	<string>«Автоматично» визначає мову кожного знімка; якщо мову визначено неправильно, виберіть мови самостійно. «Точне» найкраще читає дрібний текст — «Швидке» дає результат швидше, але знає менше мов. Використовується для «Розпізнати текст», «Скопіювати текст» і пошуку в історії.</string>
+	<key>Back</key>
+	<string>Назад</string>
+	<key>Back to the Shotnix look</key>
+	<string>Відновлено стиль Shotnix</string>
+	<key>Back to the original recording — ⌘Z to undo</key>
+	<string>Відновлено оригінальний запис — ⌘Z, щоб відмінити</string>
+	<key>Back · pause · faster</key>
+	<string>Назад · пауза · швидше</string>
+	<key>Background</key>
+	<string>Тло</string>
+	<key>Background, padding, corners, shadow</key>
+	<string>Тло, відступ, кути, тінь</string>
+	<key>Balanced</key>
+	<string>Збалансована</string>
+	<key>Balancing loudness…</key>
+	<string>Вирівнювання гучності…</string>
+	<key>Barcode</key>
+	<string>Штрихкод</string>
+	<key>Barcode copied to clipboard</key>
+	<string>Штрихкод скопійовано в буфер обміну</string>
+	<key>Barcodes</key>
+	<string>Штрихкоди</string>
+	<key>Behavior</key>
+	<string>Поведінка</string>
+	<key>Behind you</key>
+	<string>Позаду вас</string>
+	<key>Between clips</key>
+	<string>Між кліпами</string>
+	<key>Black</key>
+	<string>Чорний</string>
+	<key>Blossom</key>
+	<string>Цвітіння</string>
+	<key>Blue</key>
+	<string>Синій</string>
+	<key>Blur</key>
+	<string>Розмиття</string>
+	<key>Blurred area</key>
+	<string>Розмита область</string>
+	<key>Blurs fast camera moves the way a real camera does.</key>
+	<string>Розмиває швидкі рухи камери, як справжня камера.</string>
+	<key>Bold</key>
+	<string>Жирний</string>
+	<key>Bold outline</key>
+	<string>Жирний контур</string>
+	<key>Bone</key>
+	<string>Слонова кістка</string>
+	<key>Bottom</key>
+	<string>Унизу</string>
+	<key>Bottom left</key>
+	<string>Унизу ліворуч</string>
+	<key>Bottom right</key>
+	<string>Унизу праворуч</string>
+	<key>Bring All to Front</key>
+	<string>Вивести все на передній план</string>
+	<key>Burn captions into the video</key>
+	<string>Вшити субтитри у відео</string>
+	<key>Call</key>
+	<string>Зателефонувати</string>
+	<key>Callout</key>
+	<string>Виноска</string>
+	<key>Callout: %@</key>
+	<string>Виноска: %@</string>
+	<key>Camera</key>
+	<string>Камера</string>
+	<key>Camera Side by Side at Playhead</key>
+	<string>Камера поруч на покажчику відтворення</string>
+	<key>Camera access is off — allow Shotnix in System Settings → Privacy &amp; Security → Camera.</key>
+	<string>Доступ до камери вимкнено — дозвольте його для Shotnix: Системні параметри → Приватність і безпека → Камера.</string>
+	<key>Camera bubble</key>
+	<string>Бульбашка камери</string>
+	<key>Camera disconnected</key>
+	<string>Камеру від’єднано</string>
+	<key>Camera disconnected.</key>
+	<string>Камеру від’єднано.</string>
+	<key>Camera disconnected. The recording continues without it.</key>
+	<string>Камеру від’єднано. Запис триває без неї.</string>
+	<key>Camera follows your cursor</key>
+	<string>Камера стежить за курсором</string>
+	<key>Camera footage is missing</key>
+	<string>Відео з камери відсутнє</string>
+	<key>Camera footage, cleaned-up voice, drafts, and clipboard exports</key>
+	<string>Відео з камери, очищений голос, чернетки й експорти в буфер обміну</string>
+	<key>Camera hidden</key>
+	<string>Камеру сховано</string>
+	<key>Camera layout</key>
+	<string>Макет камери</string>
+	<key>Camera layout removed</key>
+	<string>Макет камери вилучено</string>
+	<key>Camera layout: %@</key>
+	<string>Макет камери: %@</string>
+	<key>Camera layouts</key>
+	<string>Макети камери</string>
+	<key>Camera layouts — drag to move, drag an edge to retime, click to change</key>
+	<string>Макети камери — перетягуйте, щоб перемістити, тягніть край, щоб змінити тривалість, клацніть, щоб вибрати інший</string>
+	<key>Camera preview</key>
+	<string>Перегляд камери</string>
+	<key>Camera stopped</key>
+	<string>Збій камери</string>
+	<key>Camera — drag to move it, click for options</key>
+	<string>Камера — перетягніть, щоб перемістити, клацніть, щоб побачити параметри</string>
+	<key>Cancel</key>
+	<string>Скасувати</string>
+	<key>Cancel Recording</key>
+	<string>Скасувати запис</string>
+	<key>Cancel export</key>
+	<string>Скасувати експорт</string>
+	<key>Cancel this export</key>
+	<string>Скасувати цей експорт</string>
+	<key>Cancelled</key>
+	<string>Скасовано</string>
+	<key>Canyon Silk</key>
+	<string>Шовк каньйону</string>
+	<key>Caption</key>
+	<string>Субтитр</string>
+	<key>Caption removed</key>
+	<string>Субтитр вилучено</string>
+	<key>Caption style %@</key>
+	<string>Стиль субтитрів «%@»</string>
+	<key>Caption “%@”</key>
+	<string>Субтитр «%@»</string>
+	<key>Captions</key>
+	<string>Субтитри</string>
+	<key>Captions are drawn into the picture, and a subtitles file is saved next to the video.</key>
+	<string>Субтитри вшиваються в зображення, а поруч із відео зберігається файл субтитрів.</string>
+	<key>Captions are drawn into the picture.</key>
+	<string>Субтитри вшиваються в зображення.</string>
+	<key>Captions are hidden in the editor (Captions tab → Show captions).</key>
+	<string>Субтитри сховано в редакторі (вкладка «Субтитри» → «Показувати субтитри»).</string>
+	<key>Captions from your narration — and cut the video by editing its words</key>
+	<string>Субтитри з вашого мовлення — і монтаж відео редагуванням слів</string>
+	<key>Captions look like this</key>
+	<string>Ось такі субтитри</string>
+	<key>Captions tab</key>
+	<string>Вкладка «Субтитри»</string>
+	<key>Captions translated to %@</key>
+	<string>Субтитри перекладено: %@</string>
+	<key>Capture</key>
+	<string>Знімок</string>
+	<key>Capture  ⏎</key>
+	<string>Зняти  ⏎</string>
+	<key>Capture All Displays</key>
+	<string>Зняти всі дисплеї</string>
+	<key>Capture Area</key>
+	<string>Зняти область</string>
+	<key>Capture Fullscreen</key>
+	<string>Зняти весь екран</string>
+	<key>Capture Fullscreen Alt</key>
+	<string>Зняти весь екран (інше скорочення)</string>
+	<key>Capture History</key>
+	<string>Історія знімків</string>
+	<key>Capture Previous Area</key>
+	<string>Зняти попередню область</string>
+	<key>Capture Text</key>
+	<string>Розпізнати текст</string>
+	<key>Capture Text and Scrolling Capture come without shortcuts, so ⌘⇧O and ⌘⇧S keep meaning Open and Save As in your other apps — click a field to set your own. Pressing the Scrolling Capture shortcut again finishes a scrolling capture.</key>
+	<string>«Розпізнати текст» і «Знімок із прокручуванням» не мають типових скорочень, тож ⌘⇧O і ⌘⇧S і далі означають «Відкрити» та «Зберегти як» в інших програмах — клацніть поле, щоб задати власне. Повторне натискання скорочення знімка з прокручуванням завершує його.</string>
+	<key>Capture Window</key>
+	<string>Зняти вікно</string>
+	<key>Capture failed</key>
+	<string>Не вдалося зробити знімок</string>
+	<key>Capture from %@</key>
+	<string>Знімок від %@</string>
+	<key>Capture immediately after selecting</key>
+	<string>Знімати одразу після вибору</string>
+	<key>Capture type</key>
+	<string>Тип знімка</string>
+	<key>Capture · Record · Updates</key>
+	<string>Знімки · Запис · Оновлення</string>
+	<key>Capture, %@</key>
+	<string>Знімок, %@</string>
+	<key>Captured screenshots will appear here instantly</key>
+	<string>Нові знімки екрана одразу з’являтимуться тут</string>
+	<key>Captures</key>
+	<string>Знімки</string>
+	<key>Captures stay in History until you delete them, unless you pick a limit here. Clean Up empties History's trash (deleted captures you could still undo) and removes files no capture uses anymore.</key>
+	<string>Знімки зберігаються в історії, доки ви їх не видалите, якщо тут не задано обмеження. «Прибрати» спорожнює кошик історії (видалені знімки, які ще можна повернути) і вилучає файли, яких більше не використовує жоден знімок.</string>
+	<key>Carbon Arc</key>
+	<string>Вуглецева дуга</string>
+	<key>Cards use your background, and the timeline grows to fit them. The “Made with Shotnix” end card is separate — it's in the export options.</key>
+	<string>Заставки використовують ваше тло, а шкала часу подовжується, щоб їх умістити. Кінцева заставка «Made with Shotnix» окрема — вона в параметрах експорту.</string>
+	<key>Center</key>
+	<string>По центру</string>
+	<key>Check</key>
+	<string>Перевірити</string>
+	<key>Check for Updates</key>
+	<string>Перевірити оновлення</string>
+	<key>Choose</key>
+	<string>Вибрати</string>
+	<key>Choose Capture Area in the Shotnix menu to start</key>
+	<string>Щоб почати, виберіть «Зняти область» у меню Shotnix</string>
+	<key>Choose Image…</key>
+	<string>Вибрати зображення…</string>
+	<key>Choose a language</key>
+	<string>Виберіть мову</string>
+	<key>Choose a logo, watermark, or screenshot to place on the video</key>
+	<string>Виберіть логотип, водяний знак чи знімок екрана, щоб розмістити на відео</string>
+	<key>Choose a recording or video to add after this one</key>
+	<string>Виберіть запис чи відео, щоб додати після цього</string>
+	<key>Choose a song to play under the video</key>
+	<string>Виберіть трек, що звучатиме під відео</string>
+	<key>Choose a writable folder for auto-save.</key>
+	<string>Виберіть для автозбереження папку, у яку можна записувати.</string>
+	<key>Choose a writable folder.</key>
+	<string>Виберіть папку, у яку можна записувати.</string>
+	<key>Choose folder</key>
+	<string>Вибрати папку</string>
+	<key>Choose screen</key>
+	<string>Вибрати екран</string>
+	<key>Choose what happens immediately after taking a screenshot.</key>
+	<string>Виберіть, що відбувається одразу після створення знімка екрана.</string>
+	<key>Choose window</key>
+	<string>Вибрати вікно</string>
+	<key>Choose...</key>
+	<string>Вибрати…</string>
+	<key>Circle</key>
+	<string>Коло</string>
+	<key>Citrus</key>
+	<string>Цитрус</string>
+	<key>Classic</key>
+	<string>Класичний</string>
+	<key>Clay</key>
+	<string>Глина</string>
+	<key>Clean Up</key>
+	<string>Прибрати</string>
+	<key>Clean Up History?</key>
+	<string>Прибрати в історії?</string>
+	<key>Clean Up lists what it would remove — the data of recordings Shotnix can't find, camera footage and pictures nothing uses, and clipboard exports older than a day — and asks first. On its own, Shotnix only removes clipboard exports older than a day; the data of your recordings stays until you clean it up here.</key>
+	<string>«Прибрати» показує, що буде вилучено, — дані записів, яких Shotnix не може знайти, відео з камери й зображення, які ніде не використовуються, та експорти в буфер обміну, старші за день, — і спершу запитує. Сам Shotnix вилучає лише експорти в буфер обміну, старші за день; дані ваших записів залишаються, доки ви не приберете їх тут.</string>
+	<key>Clean Up…</key>
+	<string>Прибрати…</string>
+	<key>Cleaning Up…</key>
+	<string>Прибирання…</string>
+	<key>Cleaning up the voice in “%@”</key>
+	<string>Очищення голосу в «%@»</string>
+	<key>Cleaning up voice…</key>
+	<string>Очищення голосу…</string>
+	<key>Cleaning up your voice first… %lld%%</key>
+	<string>Спершу очищення голосу… %lld%%</string>
+	<key>Cleaning up your voice…</key>
+	<string>Очищення голосу…</string>
+	<key>Cleaning up your voice… %lld%%</key>
+	<string>Очищення голосу… %lld%%</string>
+	<key>Clear All</key>
+	<string>Очистити все</string>
+	<key>Clear History</key>
+	<string>Очистити історію</string>
+	<key>Clear History?</key>
+	<string>Очистити історію?</string>
+	<key>Click</key>
+	<string>Клацання</string>
+	<key>Click a window to capture it  ·  Esc cancels</key>
+	<string>Клацніть вікно, щоб зняти його  ·  Esc — скасувати</string>
+	<key>Click a zoom</key>
+	<string>Клацніть наближення</string>
+	<key>Click an annotation to edit it</key>
+	<string>Клацніть розмітку, щоб змінити її</string>
+	<key>Click it on the video</key>
+	<string>Клацніть його у відео</string>
+	<key>Click or press Esc to cancel</key>
+	<string>Клацніть або натисніть Esc, щоб скасувати</string>
+	<key>Click removed — ⌘Z to undo</key>
+	<string>Клацання вилучено — ⌘Z, щоб відмінити</string>
+	<key>Click sounds</key>
+	<string>Звуки клацання</string>
+	<key>Click to add a zoom — or press Z at the playhead</key>
+	<string>Клацніть, щоб додати наближення, — або натисніть Z на покажчику відтворення</string>
+	<key>Click to add the next step</key>
+	<string>Клацніть, щоб додати наступний крок</string>
+	<key>Click volume</key>
+	<string>Гучність клацань</string>
+	<key>Clicks</key>
+	<string>Клацання</string>
+	<key>Clicks — drag one to retime it, ⌫ removes the selected one</key>
+	<string>Клацання — перетягніть одне, щоб змінити час, ⌫ вилучає вибране</string>
+	<key>Clip</key>
+	<string>Кліп</string>
+	<key>Clip %lld</key>
+	<string>Кліп %lld</string>
+	<key>Clip moved — ⌘Z to undo</key>
+	<string>Кліп переміщено — ⌘Z, щоб відмінити</string>
+	<key>Clip now ends here</key>
+	<string>Тепер кліп закінчується тут</string>
+	<key>Clip now starts here</key>
+	<string>Тепер кліп починається тут</string>
+	<key>Clip removed — ⌘Z to undo</key>
+	<string>Кліп вилучено — ⌘Z, щоб відмінити</string>
+	<key>Clip split</key>
+	<string>Кліп розділено</string>
+	<key>Clip starts / ends here</key>
+	<string>Кліп починається/закінчується тут</string>
+	<key>Clipboard</key>
+	<string>Буфер обміну</string>
+	<key>Close</key>
+	<string>Закрити</string>
+	<key>Close (Esc)</key>
+	<string>Закрити (Esc)</string>
+	<key>Close All Pins</key>
+	<string>Закрити всі</string>
+	<key>Close Pin</key>
+	<string>Закрити</string>
+	<key>Close Window</key>
+	<string>Закрити вікно</string>
+	<key>Closing the editor stops it.</key>
+	<string>Якщо закрити редактор, процес зупиниться.</string>
+	<key>Coastal Haze</key>
+	<string>Прибережний серпанок</string>
+	<key>Cobalt Drapes</key>
+	<string>Кобальтова завіса</string>
+	<key>Color</key>
+	<string>Колір</string>
+	<key>Command Center</key>
+	<string>Командний центр</string>
+	<key>Commands</key>
+	<string>Команди</string>
+	<key>Compose Email</key>
+	<string>Написати лист</string>
+	<key>Computer sound</key>
+	<string>Звук комп’ютера</string>
+	<key>Conflict detected</key>
+	<string>Виявлено конфлікт</string>
+	<key>Copied</key>
+	<string>Скопійовано</string>
+	<key>Copied to clipboard</key>
+	<string>Скопійовано в буфер обміну</string>
+	<key>Copied — paste it anywhere</key>
+	<string>Скопійовано — вставте будь-де</string>
+	<key>Copy</key>
+	<string>Скопіювати</string>
+	<key>Copy %@</key>
+	<string>Скопіювати %@</string>
+	<key>Copy (⌘C)</key>
+	<string>Скопіювати (⌘C)</string>
+	<key>Copy Current Frame</key>
+	<string>Скопіювати поточний кадр</string>
+	<key>Copy Path</key>
+	<string>Скопіювати шлях</string>
+	<key>Copy Text</key>
+	<string>Скопіювати текст</string>
+	<key>Copy as Table</key>
+	<string>Скопіювати як таблицю</string>
+	<key>Copy capture to clipboard</key>
+	<string>Скопіювати знімок у буфер обміну</string>
+	<key>Copy current frame</key>
+	<string>Скопіювати поточний кадр</string>
+	<key>Copy image to clipboard</key>
+	<string>Скопіювати зображення в буфер обміну</string>
+	<key>Copy recognized text (OCR)</key>
+	<string>Скопіювати розпізнаний текст (OCR)</string>
+	<key>Copy screenshots to clipboard</key>
+	<string>Копіювати знімки в буфер обміну</string>
+	<key>Copy the rows tab-separated, ready to paste into a spreadsheet</key>
+	<string>Скопіювати рядки, розділені табуляцією, щоб вставити в електронну таблицю</string>
+	<key>Copy to clipboard</key>
+	<string>Скопіювати в буфер обміну</string>
+	<key>Copy to clipboard — %@</key>
+	<string>Скопіювати в буфер обміну — %@</string>
+	<key>Copying %lld%%</key>
+	<string>Копіювання %lld%%</string>
+	<key>Could Not Disable Apple Shortcuts</key>
+	<string>Не вдалося вимкнути скорочення Apple</string>
+	<key>Could Not Save Screenshot</key>
+	<string>Не вдалося зберегти знімок екрана</string>
+	<key>Could not copy the screenshot</key>
+	<string>Не вдалося скопіювати знімок екрана</string>
+	<key>Could not copy this capture</key>
+	<string>Не вдалося скопіювати цей знімок</string>
+	<key>Could not encode screenshot as PNG.</key>
+	<string>Не вдалося закодувати знімок екрана в PNG.</string>
+	<key>Could not encode the screenshot.</key>
+	<string>Не вдалося закодувати знімок екрана.</string>
+	<key>Could not list windows. Check permissions.</key>
+	<string>Не вдалося отримати список вікон. Перевірте дозволи.</string>
+	<key>Could not restore Apple shortcuts.</key>
+	<string>Не вдалося відновити скорочення Apple.</string>
+	<key>Could not save the recording (%@).</key>
+	<string>Не вдалося зберегти запис (%@).</string>
+	<key>Could not save the recording.</key>
+	<string>Не вдалося зберегти запис.</string>
+	<key>Could not start recording (%@).</key>
+	<string>Не вдалося почати запис (%@).</string>
+	<key>Couldn't add that song — %@</key>
+	<string>Не вдалося додати трек — %@</string>
+	<key>Couldn't copy the screenshot. Try again, or save it instead.</key>
+	<string>Не вдалося скопіювати знімок екрана. Спробуйте ще раз або збережіть його.</string>
+	<key>Couldn't create the GIF file. Check that you can save to that folder, then export again.</key>
+	<string>Не вдалося створити файл GIF. Перевірте, чи можна зберігати в цю папку, а потім експортуйте ще раз.</string>
+	<key>Couldn't create the video file.</key>
+	<string>Не вдалося створити відеофайл.</string>
+	<key>Couldn't make captions</key>
+	<string>Не вдалося створити субтитри</string>
+	<key>Couldn't make the click sound. Turn off Click sounds (Audio tab), then export again.</key>
+	<string>Не вдалося створити звук клацання. Вимкніть «Звуки клацання» (вкладка «Аудіо»), а потім експортуйте ще раз.</string>
+	<key>Couldn't open that image</key>
+	<string>Не вдалося відкрити зображення</string>
+	<key>Couldn't open that video — %@</key>
+	<string>Не вдалося відкрити відео — %@</string>
+	<key>Couldn't open this video</key>
+	<string>Не вдалося відкрити це відео</string>
+	<key>Couldn't prepare the video. Export again; if it keeps happening, restart Shotnix.</key>
+	<string>Не вдалося підготувати відео. Експортуйте ще раз; якщо це повторюється, перезапустіть Shotnix.</string>
+	<key>Couldn't read that audio file</key>
+	<string>Не вдалося прочитати аудіофайл</string>
+	<key>Couldn't read the recording for the GIF. Try exporting a shorter part, or choose MP4.</key>
+	<string>Не вдалося прочитати запис для GIF. Спробуйте експортувати коротшу частину або виберіть MP4.</string>
+	<key>Couldn't read the recording. Check that its file is still there, then export again.</key>
+	<string>Не вдалося прочитати запис. Перевірте, чи його файл досі на місці, а потім експортуйте ще раз.</string>
+	<key>Couldn't save the captions file</key>
+	<string>Не вдалося зберегти файл субтитрів</string>
+	<key>Couldn't save the screenshot to %@. Click to check the save folder.</key>
+	<string>Не вдалося зберегти знімок екрана в «%@». Клацніть, щоб перевірити папку збереження.</string>
+	<key>Couldn't save the screenshot: Shotnix can't write to %@. Click to choose another save folder.</key>
+	<string>Не вдалося зберегти знімок екрана: Shotnix не може записувати в «%@». Клацніть, щоб вибрати іншу папку збереження.</string>
+	<key>Couldn't save the screenshot: it could not be encoded as %@.</key>
+	<string>Не вдалося зберегти знімок екрана: помилка кодування у формат %@.</string>
+	<key>Couldn't save the screenshot: the disk is full. Free up space or pick another save folder.</key>
+	<string>Не вдалося зберегти знімок екрана: диск заповнено. Звільніть місце або виберіть іншу папку збереження.</string>
+	<key>Couldn't set up the video encoder. Choose H.264 or a lower resolution, then export again.</key>
+	<string>Не вдалося налаштувати відеокодер. Виберіть H.264 або нижчу роздільність, а потім експортуйте ще раз.</string>
+	<key>Couldn't start the export. Export again; if it keeps happening, restart Shotnix.</key>
+	<string>Не вдалося почати експорт. Експортуйте ще раз; якщо це повторюється, перезапустіть Shotnix.</string>
+	<key>Couldn't translate (%@). Try again, or pick another language.</key>
+	<string>Не вдалося перекласти (%@). Спробуйте ще раз або виберіть іншу мову.</string>
+	<key>Couldn't write the GIF. Check that there's free space, or export a shorter part.</key>
+	<string>Не вдалося записати GIF. Перевірте, чи є вільне місце, або експортуйте коротшу частину.</string>
+	<key>Couldn't write the video. Check that there's free space and that you can save to that folder, then export again.</key>
+	<string>Не вдалося записати відео. Перевірте, чи є вільне місце і чи можна зберігати в цю папку, а потім експортуйте ще раз.</string>
+	<key>Countdown</key>
+	<string>Зворотний відлік</string>
+	<key>Crimson Ridge</key>
+	<string>Багряний хребет</string>
+	<key>Crisp and compact — the best default</key>
+	<string>Чітко й компактно — найкращий типовий варіант</string>
+	<key>Crop</key>
+	<string>Обрізання</string>
+	<key>Crop the Recording…</key>
+	<string>Обрізати запис…</string>
+	<key>Crop the recording — trim away toolbars or empty space</key>
+	<string>Обрізати запис — прибрати панелі інструментів чи порожнє місце</string>
+	<key>Cropped</key>
+	<string>Обрізано</string>
+	<key>Cropped — cursor, zooms, and clicks follow</key>
+	<string>Обрізано — курсор, наближення й клацання підлаштовуються</string>
+	<key>Cursor</key>
+	<string>Курсор</string>
+	<key>Cursor, clicks, and keyboard shortcuts</key>
+	<string>Курсор, клацання й клавіатурні скорочення</string>
+	<key>Custom</key>
+	<string>Власний</string>
+	<key>Custom color</key>
+	<string>Власний колір</string>
+	<key>Custom color #%@</key>
+	<string>Власний колір #%@</string>
+	<key>Custom: %@</key>
+	<string>Власне зображення: %@</string>
+	<key>Custom…</key>
+	<string>Власний…</string>
+	<key>Cut</key>
+	<string>Вирізати</string>
+	<key>Cut filler words like um and uh</key>
+	<string>Вирізати слова-паразити на кшталт «е-е» та «м-м»</string>
+	<key>Cut from Video</key>
+	<string>Вирізати з відео</string>
+	<key>Cut this part</key>
+	<string>Вирізати цю частину</string>
+	<key>Cut, no transition</key>
+	<string>Склейка без переходу</string>
+	<key>Cutout</key>
+	<string>Силует</string>
+	<key>Decoded details</key>
+	<string>Розкодовані дані</string>
+	<key>Delete</key>
+	<string>Видалити</string>
+	<key>Delete (⌫)</key>
+	<string>Видалити (⌫)</string>
+	<key>Delete All</key>
+	<string>Видалити все</string>
+	<key>Delete Captures</key>
+	<string>Видалити знімки</string>
+	<key>Delete Clip</key>
+	<string>Видалити кліп</string>
+	<key>Delete Screenshot</key>
+	<string>Видалити знімок</string>
+	<key>Delete Screenshots</key>
+	<string>Видалити знімки</string>
+	<key>Delete Selection</key>
+	<string>Видалити вибране</string>
+	<key>Delete Zoom</key>
+	<string>Видалити наближення</string>
+	<key>Delete every saved capture</key>
+	<string>Видалити всі збережені знімки</string>
+	<key>Delete selection</key>
+	<string>Видалити вибране</string>
+	<key>Delete selection (⌫)</key>
+	<string>Видалити вибране (⌫)</string>
+	<key>Deleted captures waiting in History's trash and files no capture uses are removed for good. The captures in your history stay.</key>
+	<string>Видалені знімки з кошика історії та файли, яких не використовує жоден знімок, буде вилучено назавжди. Знімки в історії залишаться.</string>
+	<key>Deselect / close</key>
+	<string>Зняти вибір/закрити</string>
+	<key>Desert Violet</key>
+	<string>Фіолет пустелі</string>
+	<key>Dip to black</key>
+	<string>Затемнення</string>
+	<key>Dips while you talk, comes back in the pauses</key>
+	<string>Стишується, коли ви говорите, і повертається в паузах</string>
+	<key>Directory where screenshots are saved if Auto-Save is enabled.</key>
+	<string>Папка, у яку зберігаються знімки екрана, якщо ввімкнено автозбереження.</string>
+	<key>Disable Apple Shortcuts</key>
+	<string>Вимкнути скорочення Apple</string>
+	<key>Disabled</key>
+	<string>Вимкнено</string>
+	<key>Discard</key>
+	<string>Відкинути</string>
+	<key>Discard Changes</key>
+	<string>Відкинути зміни</string>
+	<key>Discard recording</key>
+	<string>Відкинути запис</string>
+	<key>Discard this recording?</key>
+	<string>Відкинути запис?</string>
+	<key>Disk almost full</key>
+	<string>Диск майже повний</string>
+	<key>Dismiss</key>
+	<string>Закрити</string>
+	<key>Dismiss tips</key>
+	<string>Сховати поради</string>
+	<key>Display</key>
+	<string>Дисплей</string>
+	<key>Display %lld</key>
+	<string>Дисплей %lld</string>
+	<key>Display %lld · Main</key>
+	<string>Дисплей %lld · основний</string>
+	<key>Dissolve</key>
+	<string>Розчинення</string>
+	<key>Dissolve Between Clips</key>
+	<string>Розчинення між кліпами</string>
+	<key>Do you want to review them before quitting?</key>
+	<string>Переглянути їх перед завершенням?</string>
+	<key>Docs, slides</key>
+	<string>Документи, слайди</string>
+	<key>Don't Ask Again</key>
+	<string>Більше не питати</string>
+	<key>Don't Save</key>
+	<string>Не зберігати</string>
+	<key>Done</key>
+	<string>Готово</string>
+	<key>Done (Esc)</key>
+	<string>Готово (Esc)</string>
+	<key>Double-click</key>
+	<string>Двічі клацнути</string>
+	<key>Double-click text</key>
+	<string>Двічі клацніть текст</string>
+	<key>Double-click to edit, or drag into another app. Command-C copies, Command-S saves, Escape dismisses.</key>
+	<string>Двічі клацніть, щоб редагувати, або перетягніть в іншу програму. Command-C копіює, Command-S зберігає, Escape закриває.</string>
+	<key>Double-click to show the recording in Finder</key>
+	<string>Двічі клацніть, щоб показати запис у Finder</string>
+	<key>Downloading the language model…</key>
+	<string>Завантаження мовної моделі…</string>
+	<key>Drag edges or corners to resize  ·  Arrow keys nudge (⇧ ×10)  ·  Return captures  ·  Esc cancels</key>
+	<string>Тягніть краї чи кути, щоб змінити розмір  ·  Стрілки зсувають (⇧ ×10)  ·  Return — зняти  ·  Esc — скасувати</string>
+	<key>Drag it on the preview to move it; drag a corner to resize. Its bar on the timeline sets when it shows.</key>
+	<string>Перетягуйте його в перегляді, щоб перемістити; тягніть кут, щоб змінити розмір. Його смуга на шкалі часу визначає, коли він з’являється.</string>
+	<key>Drag it on the preview to move it; drag a corner to resize; double-click it to type. Its bar on the timeline sets when it shows.</key>
+	<string>Перетягуйте текст у перегляді, щоб перемістити; тягніть кут, щоб змінити розмір; двічі клацніть, щоб вводити текст. Його смуга на шкалі часу визначає, коли він з’являється.</string>
+	<key>Drag one of them on the timeline to move them all together; ⌫ removes them all. ⇧- or ⌘-click adds or takes one out.</key>
+	<string>Перетягніть один із них на шкалі часу, щоб перемістити всі разом; ⌫ вилучає всі. Клацання з ⇧ чи ⌘ додає або вилучає один елемент.</string>
+	<key>Drag the arrow on the preview to move it; drag its head or tail to point it anywhere. Its bar on the timeline sets when it shows.</key>
+	<string>Перетягуйте стрілку в перегляді, щоб перемістити її; тягніть вістря чи хвіст, щоб спрямувати її куди завгодно. Її смуга на шкалі часу визначає, коли вона з’являється.</string>
+	<key>Drag the block on the Camera lane to move it, or its edges to change how long it lasts. Each change eases in and out.</key>
+	<string>Перетягуйте блок на доріжці «Камера», щоб перемістити його, або його краї, щоб змінити тривалість. Кожна зміна відбувається плавно.</string>
+	<key>Drag the box on the preview over anything private. Blur follows zooms and stays until its bar ends.</key>
+	<string>Перетягніть рамку в перегляді на все приватне. Розмиття стежить за наближеннями й діє до кінця своєї смуги.</string>
+	<key>Drag the frame on the preview to aim; drag its corners to zoom in or out.</key>
+	<string>Перетягуйте рамку в перегляді, щоб навести; тягніть її кути, щоб наблизити чи віддалити.</string>
+	<key>Drag the spot on the preview; drag a corner to resize it. Everything around it dims while its bar on the timeline runs.</key>
+	<string>Перетягуйте світлову пляму в перегляді; тягніть кут, щоб змінити її розмір. Усе навколо затемнюється, поки триває її смуга на шкалі часу.</string>
+	<key>Drag to capture  ·  Hold ⇧ as you let go to adjust first  ·  Space moves  ·  Esc cancels</key>
+	<string>Перетягніть, щоб зняти  ·  Утримуйте ⇧, коли відпускаєте, щоб спершу налаштувати  ·  Пробіл — перемістити  ·  Esc — скасувати</string>
+	<key>Drag to change where this clip ends</key>
+	<string>Перетягніть, щоб змінити кінець кліпу</string>
+	<key>Drag to change where this clip starts</key>
+	<string>Перетягніть, щоб змінити початок кліпу</string>
+	<key>Drag to move this clip to another place in the video</key>
+	<string>Перетягніть, щоб перемістити кліп в інше місце відео</string>
+	<key>Drag to move where the arrow starts</key>
+	<string>Перетягніть, щоб перемістити початок стрілки</string>
+	<key>Drag to move. Press Command-C to copy, Escape to close.</key>
+	<string>Перетягніть, щоб перемістити. Натисніть Command-C, щоб скопіювати, або Escape, щоб закрити.</string>
+	<key>Drag to move; drag a corner to resize</key>
+	<string>Перетягніть, щоб перемістити; тягніть кут, щоб змінити розмір</string>
+	<key>Drag to point the arrow</key>
+	<string>Перетягніть, щоб спрямувати стрілку</string>
+	<key>Drag to select, then adjust  ·  Hold ⇧ as you let go to capture right away  ·  Esc cancels</key>
+	<string>Перетягніть, щоб вибрати, а потім налаштуйте  ·  Утримуйте ⇧, коли відпускаєте, щоб зняти одразу  ·  Esc — скасувати</string>
+	<key>Draw with the selected tool. Tool shortcuts: V select, A arrow, R rectangle, T text, O callout, H highlighter, B blur, P pixelate, S spotlight, C crop.</key>
+	<string>Малюйте вибраним інструментом. Скорочення інструментів: V — вибір, A — стрілка, R — прямокутник, T — текст, O — виноска, H — маркер, B — розмиття, P — пікселізація, S — прожектор, C — обрізання.</string>
+	<key>Drawing</key>
+	<string>Малюнок</string>
+	<key>Duplicate</key>
+	<string>Дублювати</string>
+	<key>Duplicate zoom or annotation</key>
+	<string>Дублювати наближення чи розмітку</string>
+	<key>Duplicated</key>
+	<string>Продубльовано</string>
+	<key>Dusk</key>
+	<string>Сутінки</string>
+	<key>Each recording keeps its own pointer, clicks, and shortcuts. Reorder them here; cut and trim them on the timeline like any clip.</key>
+	<string>Кожен запис зберігає свій курсор, клацання й скорочення. Змінюйте їх порядок тут; вирізайте й підрізайте їх на шкалі часу, як будь-який кліп.</string>
+	<key>Edge highlight</key>
+	<string>Окантовка</string>
+	<key>Edit</key>
+	<string>Редагувати</string>
+	<key>Edit Last Recording</key>
+	<string>Редагувати останній запис</string>
+	<key>Edit Video</key>
+	<string>Редагувати відео</string>
+	<key>Edit by text</key>
+	<string>Монтаж за текстом</string>
+	<key>Editable Cursor</key>
+	<string>Редагований курсор</string>
+	<key>Editable cursor</key>
+	<string>Редагований курсор</string>
+	<key>Editable cursor records the pointer separately so the editor can smooth it, resize it, and keep it crisp when zoomed — the video editor adds it back on export (the raw recording file has no pointer). Auto-zoom makes a fresh recording open already produced: the camera zooms to follow your clicks. Keyboard shortcuts records only ⌘, ⌃ and ⌥ combos (plus Esc and F-keys) so the editor can show them as keycaps — plain typing is never recorded; macOS asks for Accessibility access. High quality is the default; Max keeps more detail but creates larger files. The countdown gives you a moment after pressing Record; Esc cancels it. Stop a recording with %@ from any app — plain Esc stays with the app you're recording.</key>
+	<string>«Редагований курсор» записує курсор окремо, щоб редактор міг згладжувати його, змінювати розмір і зберігати чіткість під час наближення, — відеоредактор додає його назад під час експорту (у самому файлі запису курсора немає). «Автонаближення» відкриває новий запис уже змонтованим: камера наближається слідом за вашими клацаннями. «Показувати клавіатурні скорочення» записує лише комбінації з ⌘, ⌃ і ⌥ (а також Esc і функціональні клавіші), щоб редактор міг показати їх як клавіші, — звичайне введення тексту ніколи не записується; macOS запитає дозвіл у розділі «Доступність». Типова якість — «Висока»; «Максимальна» зберігає більше деталей, але створює більші файли. Зворотний відлік дає вам мить після натискання «Записати»; Esc скасовує його. Зупинити запис із будь-якої програми можна за допомогою %@ — звичайна клавіша Esc і далі діє у програмі, яку ви записуєте.</string>
+	<key>Editing</key>
+	<string>Монтаж</string>
+	<key>Ellipse</key>
+	<string>Еліпс</string>
+	<key>Email</key>
+	<string>Ел. пошта</string>
+	<key>Email %@</key>
+	<string>Написати на %@</string>
+	<key>Email QR found</key>
+	<string>Знайдено QR-код з ел. адресою</string>
+	<key>Email address copied</key>
+	<string>Ел. адресу скопійовано</string>
+	<key>Ember</key>
+	<string>Жарина</string>
+	<key>Ember Fog</key>
+	<string>Жаринний туман</string>
+	<key>Emerald</key>
+	<string>Смарагд</string>
+	<key>Enable Shotnix in System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording, then quit and reopen Shotnix so macOS applies the permission.</key>
+	<string>Відкрийте Системні параметри → Приватність і безпека → Записування системного звуку й екрана, увімкніть Shotnix, а потім завершіть і знову відкрийте Shotnix, щоб дозвіл набув чинності.</string>
+	<key>Enable Shotnix in System Settings, then relaunch so macOS applies it.</key>
+	<string>Увімкніть Shotnix у Системних параметрах, а потім перезапустіть програму, щоб дозвіл набув чинності.</string>
+	<key>Enabled</key>
+	<string>Увімкнено</string>
+	<key>Encoding</key>
+	<string>Кодування</string>
+	<key>End card</key>
+	<string>Кінцева заставка</string>
+	<key>End here</key>
+	<string>Кінець тут</string>
+	<key>Ends</key>
+	<string>Кінець</string>
+	<key>English</key>
+	<string>Англійська</string>
+	<key>Enhance Voice</key>
+	<string>Покращити голос</string>
+	<key>Enhance voice</key>
+	<string>Покращити голос</string>
+	<key>Enjoying Shotnix? Click to star it on GitHub ★</key>
+	<string>Подобається Shotnix? Клацніть, щоб поставити зірку на GitHub ★</string>
+	<key>Enjoying Shotnix? Star it on GitHub so more people find it.</key>
+	<string>Подобається Shotnix? Поставте зірку на GitHub, щоб про Shotnix дізналося більше людей.</string>
+	<key>Esc</key>
+	<string>Esc</string>
+	<key>Esc or Done finishes</key>
+	<string>Esc або «Готово» — завершити</string>
+	<key>Estimated file size. Still screens take less.</key>
+	<string>Орієнтовний розмір файлу. Статичний екран займає менше.</string>
+	<key>Estimated size %@</key>
+	<string>Орієнтовний розмір: %@</string>
+	<key>Estimating…</key>
+	<string>Оцінювання…</string>
+	<key>Even out loudness</key>
+	<string>Вирівняти гучність</string>
+	<key>Every clip is muted — this export will have no sound.</key>
+	<string>Звук усіх кліпів вимкнено — цей експорт буде без звуку.</string>
+	<key>Every cut, zoom, annotation, caption, and style change on this video is removed — the recordings you added stay. You can undo this.</key>
+	<string>Усі вирізання, наближення, розмітку, субтитри й зміни стилю в цьому відео буде вилучено — додані записи залишаться. Цю дію можна відмінити.</string>
+	<key>Every cut, zoom, annotation, caption, and style change on this video is removed. You can undo this.</key>
+	<string>Усі вирізання, наближення, розмітку, субтитри й зміни стилю в цьому відео буде вилучено. Цю дію можна відмінити.</string>
+	<key>Every sound level is at 0 (Audio tab) — this export will have no sound.</key>
+	<string>Усі рівні звуку на 0 (вкладка «Аудіо») — цей експорт буде без звуку.</string>
+	<key>Everything is ready</key>
+	<string>Усе готово</string>
+	<key>Exactly as recorded.</key>
+	<string>Точно як записано.</string>
+	<key>Export</key>
+	<string>Експорт</string>
+	<key>Export (⌘E)</key>
+	<string>Експортувати (⌘E)</string>
+	<key>Export Format</key>
+	<string>Формат експорту</string>
+	<key>Export Video…</key>
+	<string>Експортувати відео…</string>
+	<key>Export and put the file on the clipboard — paste it into Slack, Mail, or Finder</key>
+	<string>Експортувати й покласти файл у буфер обміну — вставте його в Slack, Пошту чи Finder</string>
+	<key>Export cancelled</key>
+	<string>Експорт скасовано</string>
+	<key>Export cancelled.</key>
+	<string>Експорт скасовано.</string>
+	<key>Export complete</key>
+	<string>Експорт завершено</string>
+	<key>Export failed</key>
+	<string>Помилка експорту</string>
+	<key>Export: %@</key>
+	<string>Експорт: %@</string>
+	<key>Exported</key>
+	<string>Експортовано</string>
+	<key>Exported without Enhance voice — it couldn't finish.</key>
+	<string>Експортовано без покращення голосу — його не вдалося завершити.</string>
+	<key>Exported · %@</key>
+	<string>Експортовано · %@</string>
+	<key>Exporting %lld%%</key>
+	<string>Експорт %lld%%</string>
+	<key>Exporting a video for the clipboard</key>
+	<string>Експорт відео для буфера обміну</string>
+	<key>Exporting “%@”</key>
+	<string>Експорт «%@»</string>
+	<key>Exporting…</key>
+	<string>Експорт…</string>
+	<key>Exporting… %lld%%</key>
+	<string>Експорт… %lld%%</string>
+	<key>Exports at the level video sites expect (−16 LUFS) without clipping</key>
+	<string>Експортує з рівнем, якого очікують відеосайти (−16 LUFS), без перевантаження</string>
+	<key>Exports without sound — to quiet just the preview, press M</key>
+	<string>Експортує без звуку — щоб вимкнути звук лише в перегляді, натисніть M</string>
+	<key>Export…</key>
+	<string>Експортувати…</string>
+	<key>Extra-fluid curves for slow, cinematic demos.</key>
+	<string>Особливо плавні криві для повільних кінематографічних демо.</string>
+	<key>Fade in</key>
+	<string>Поява</string>
+	<key>Fade in from black</key>
+	<string>Поява з чорного</string>
+	<key>Fade out</key>
+	<string>Зникнення</string>
+	<key>Fade out to black</key>
+	<string>Зникнення в чорне</string>
+	<key>Fades out after a moment without movement</key>
+	<string>Зникає, якщо якийсь час не рухається</string>
+	<key>Fast</key>
+	<string>Швидке</string>
+	<key>Fast-forward moments where nothing happens</key>
+	<string>Прискорювати моменти, коли нічого не відбувається</string>
+	<key>File</key>
+	<string>Файл</string>
+	<key>File Name</key>
+	<string>Назва файлу</string>
+	<key>File not found</key>
+	<string>Файл не знайдено</string>
+	<key>Fill the Frame, Follow the Cursor</key>
+	<string>Заповнити кадр і стежити за курсором</string>
+	<key>Filled Rectangle</key>
+	<string>Заповнений прямокутник</string>
+	<key>Filled rectangle</key>
+	<string>Заповнений прямокутник</string>
+	<key>Filled rounded rectangle</key>
+	<string>Заповнений заокруглений прямокутник</string>
+	<key>Filling the frame — the view follows your cursor</key>
+	<string>Кадр заповнено — вигляд стежить за курсором</string>
+	<key>Find in Transcript</key>
+	<string>Знайти в розшифровці</string>
+	<key>Find in the transcript</key>
+	<string>Знайти в розшифровці</string>
+	<key>Finish and Quit</key>
+	<string>Дочекатися й завершити</string>
+	<key>Finish or cancel the current recording setup</key>
+	<string>Завершіть або скасуйте поточну підготовку до запису</string>
+	<key>Fix</key>
+	<string>Виправити</string>
+	<key>Flamingo</key>
+	<string>Фламінго</string>
+	<key>Flip like a selfie</key>
+	<string>Віддзеркалити, як селфі</string>
+	<key>Follow Cursor</key>
+	<string>Стежити за курсором</string>
+	<key>Follow cursor</key>
+	<string>Стежити за курсором</string>
+	<key>Follows cursor</key>
+	<string>Стежить за курсором</string>
+	<key>Forever</key>
+	<string>Назавжди</string>
+	<key>Format</key>
+	<string>Формат</string>
+	<key>Frame</key>
+	<string>Рамка</string>
+	<key>Frame copied</key>
+	<string>Кадр скопійовано</string>
+	<key>Frame rate</key>
+	<string>Частота кадрів</string>
+	<key>Framing</key>
+	<string>Кадрування</string>
+	<key>Free</key>
+	<string>Довільне</string>
+	<key>Free up ⌘⇧ shortcuts · optional</key>
+	<string>Звільнити скорочення ⌘⇧ · необов’язково</string>
+	<key>Freed %@</key>
+	<string>Звільнено %@</string>
+	<key>Freehand Draw</key>
+	<string>Малювання від руки</string>
+	<key>Freehand Highlighter</key>
+	<string>Маркер від руки</string>
+	<key>Freehand highlight</key>
+	<string>Виділення від руки</string>
+	<key>From your Mac</key>
+	<string>З вашого Mac</string>
+	<key>Full Camera at Playhead</key>
+	<string>Лише камера на покажчику відтворення</string>
+	<key>Full Frame (No Background)</key>
+	<string>Весь кадр (без тла)</string>
+	<key>Full camera</key>
+	<string>Лише камера</string>
+	<key>Full camera for intro &amp; outro</key>
+	<string>Лише камера у вступі й завершенні</string>
+	<key>Full frame (no background)</key>
+	<string>Весь кадр (без тла)</string>
+	<key>Full screen: %@</key>
+	<string>Весь екран: %@</string>
+	<key>Full-Camera Intro and Outro</key>
+	<string>Вступ і завершення лише з камерою</string>
+	<key>Full-screen camera for your intro and outro</key>
+	<string>Лише камера у вступі й завершенні</string>
+	<key>Fullscreen</key>
+	<string>Весь екран</string>
+	<key>GIFs embed anywhere — READMEs, pull requests, docs. Keep them short: they get big fast.</key>
+	<string>GIF можна вбудувати будь-де — у README, pull request, документацію. Робіть їх короткими: вони швидко стають великими.</string>
+	<key>General</key>
+	<string>Загальні</string>
+	<key>Gets out of the way during zoom moves</key>
+	<string>Не заважає під час наближень</string>
+	<key>Getting ready…</key>
+	<string>Підготовка…</string>
+	<key>Glacier</key>
+	<string>Льодовик</string>
+	<key>Glides without lagging behind — clicks still land exactly.</key>
+	<string>Плавно рухається без запізнення — клацання влучають точно.</string>
+	<key>Go to End</key>
+	<string>Перейти в кінець</string>
+	<key>Go to Start</key>
+	<string>Перейти на початок</string>
+	<key>Gradient</key>
+	<string>Градієнт</string>
+	<key>Grant Screen Recording first, then try it here.</key>
+	<string>Спершу дозвольте запис екрана, а потім спробуйте тут.</string>
+	<key>Granted — captures, recordings, and OCR are ready.</key>
+	<string>Дозволено — знімки, записи й OCR готові.</string>
+	<key>Graphite</key>
+	<string>Графіт</string>
+	<key>Green</key>
+	<string>Зелений</string>
+	<key>Hard Cuts Between Clips</key>
+	<string>Прямі склейки між кліпами</string>
+	<key>Hard cut</key>
+	<string>Пряма склейка</string>
+	<key>Health</key>
+	<string>Стан</string>
+	<key>Hidden</key>
+	<string>Сховано</string>
+	<key>Hidden network</key>
+	<string>Прихована мережа</string>
+	<key>Hide</key>
+	<string>Сховати</string>
+	<key>Hide Desktop Icons</key>
+	<string>Сховати значки робочого столу</string>
+	<key>Hide Icon</key>
+	<string>Сховати значок</string>
+	<key>Hide desktop icons while capturing</key>
+	<string>Ховати значки робочого столу під час знімання</string>
+	<key>Hide the Menu Bar Icon?</key>
+	<string>Сховати значок у смузі меню?</string>
+	<key>Hide the move to Stop</key>
+	<string>Сховати рух до «Зупинити»</string>
+	<key>Hide tips (bring them back from ⌘K or the shortcuts list)</key>
+	<string>Сховати поради (повернути їх можна через ⌘K або список скорочень)</string>
+	<key>Hide when idle</key>
+	<string>Ховати в спокої</string>
+	<key>Hide — the export keeps going (Esc)</key>
+	<string>Сховати — експорт триває (Esc)</string>
+	<key>High</key>
+	<string>Висока</string>
+	<key>Highlight</key>
+	<string>Виділення</string>
+	<key>Highlight color</key>
+	<string>Колір виділення</string>
+	<key>Highlight words</key>
+	<string>Виділяти слова</string>
+	<key>Highlighter</key>
+	<string>Маркер</string>
+	<key>History</key>
+	<string>Історія</string>
+	<key>History cleared — click or press ⌘Z to undo</key>
+	<string>Історію очищено — клацніть або натисніть ⌘Z, щоб відмінити</string>
+	<key>History was already tidy</key>
+	<string>В історії вже прибрано</string>
+	<key>Home  End</key>
+	<string>Home  End</string>
+	<key>Hotkeys are system-wide and active while Shotnix is running. The ⌘⇧3 default works best after Apple's screenshot shortcut is disabled.</key>
+	<string>Скорочення діють у всій системі, поки працює Shotnix. Типове ⌘⇧3 працює найкраще, коли скорочення Apple для знімків екрана вимкнено.</string>
+	<key>Hover the Zoom track</key>
+	<string>Наведіть на доріжку «Масштаб»</string>
+	<key>Hover the zoom track and click to add a zoom, or press Z at the playhead. Drag a zoom to move it; drag its edges to change how long it lasts.</key>
+	<string>Наведіть курсор на доріжку «Масштаб» і клацніть, щоб додати наближення, або натисніть Z на покажчику відтворення. Перетягуйте наближення, щоб перемістити; тягніть його краї, щоб змінити тривалість.</string>
+	<key>How strongly blur and pixelate hide what's under them</key>
+	<string>Наскільки сильно розмиття й пікселізація приховують вміст під ними</string>
+	<key>Image</key>
+	<string>Зображення</string>
+	<key>In</key>
+	<string>Початок</string>
+	<key>In &amp; out</key>
+	<string>Початок і кінець</string>
+	<key>In earlier</key>
+	<string>Початок раніше</string>
+	<key>In later</key>
+	<string>Початок пізніше</string>
+	<key>Includes: %@</key>
+	<string>Містить: %@</string>
+	<key>Inspector tabs</key>
+	<string>Вкладки інспектора</string>
+	<key>Instagram, LinkedIn</key>
+	<string>Instagram, LinkedIn</string>
+	<key>Instant</key>
+	<string>Миттєво</string>
+	<key>Intro</key>
+	<string>Вступ</string>
+	<key>Intro &amp; outro</key>
+	<string>Вступ і завершення</string>
+	<key>Intro card</key>
+	<string>Вступна заставка</string>
+	<key>Intro card — click to edit it in Style</key>
+	<string>Вступна заставка — клацніть, щоб змінити її у вкладці «Стиль»</string>
+	<key>Intro card “%@”, %@ to %@</key>
+	<string>Вступна заставка «%@», від %@ до %@</string>
+	<key>Intro card, %@ to %@</key>
+	<string>Вступна заставка, від %@ до %@</string>
+	<key>Iris</key>
+	<string>Ірис</string>
+	<key>It may be damaged, still being saved, or in a format this Mac can't play. MP4 and MOV videos work best.</key>
+	<string>Можливо, файл пошкоджено, він ще зберігається або має формат, який цей Mac не відтворює. Найкраще працюють відео MP4 і MOV.</string>
+	<key>It only has sound, or nothing at all. Shotnix edits screen recordings and other videos.</key>
+	<string>Він містить лише звук або взагалі нічого. Shotnix редагує записи екрана та інші відео.</string>
+	<key>It was moved, renamed, or deleted. Open it from where it is now.</key>
+	<string>Його переміщено, перейменовано чи видалено. Відкрийте його з нового місця.</string>
+	<key>It was recorded into the pixels, so it can't be resized or smoothed. New recordings capture an editable cursor by default (Settings → Recording).</key>
+	<string>Його записано просто в зображення, тому не можна змінити розмір чи згладити. Нові записи типово містять редагований курсор (Параметри → Запис).</string>
+	<key>JPEG Quality</key>
+	<string>Якість JPEG</string>
+	<key>Jump here</key>
+	<string>Перейти сюди</string>
+	<key>Jump one second</key>
+	<string>Перейти на секунду</string>
+	<key>Keep</key>
+	<string>Залишити</string>
+	<key>Keep Editing</key>
+	<string>Продовжити редагування</string>
+	<key>Keep Working</key>
+	<string>Продовжити роботу</string>
+	<key>Keep captures</key>
+	<string>Зберігати знімки</string>
+	<key>Keep editing — the words appear here when Shotnix is done listening.</key>
+	<string>Редагуйте далі — слова з’являться тут, щойно Shotnix закінчить слухати.</string>
+	<key>Keyboard</key>
+	<string>Клавіатура</string>
+	<key>Keyboard Shortcuts</key>
+	<string>Клавіатурні скорочення</string>
+	<key>Keyboard shortcuts</key>
+	<string>Клавіатурні скорочення</string>
+	<key>Keyboard shortcuts (?)</key>
+	<string>Клавіатурні скорочення (?)</string>
+	<key>Keyboard shortcuts are on</key>
+	<string>Клавіатурні скорочення ввімкнено</string>
+	<key>Keyboard shortcuts — click one to select it, ⌫ hides it</key>
+	<string>Клавіатурні скорочення — клацніть одне, щоб вибрати, ⌫ ховає його</string>
+	<key>Keys on screen</key>
+	<string>Клавіші на екрані</string>
+	<key>L</key>
+	<string>L</string>
+	<key>Lagoon</key>
+	<string>Лагуна</string>
+	<key>Language</key>
+	<string>Мова</string>
+	<key>Languages</key>
+	<string>Мови</string>
+	<key>Large</key>
+	<string>Великий</string>
+	<key>Larger than the recording — text may look softer than at a lower resolution.</key>
+	<string>Більше за запис — текст може бути менш чітким, ніж за нижчої роздільності.</string>
+	<key>Later</key>
+	<string>Пізніше</string>
+	<key>Launch Shotnix at login</key>
+	<string>Відкривати Shotnix під час входу</string>
+	<key>Lavender Glass</key>
+	<string>Лавандове скло</string>
+	<key>Layout</key>
+	<string>Макет</string>
+	<key>Layouts</key>
+	<string>Макети</string>
+	<key>Left</key>
+	<string>Ліворуч</string>
+	<key>Length</key>
+	<string>Тривалість</string>
+	<key>Letterbox Instead of Following the Cursor</key>
+	<string>Вписати з полями замість стеження за курсором</string>
+	<key>Level</key>
+	<string>Рівень</string>
+	<key>Light</key>
+	<string>Злегка</string>
+	<key>Lime Signal</key>
+	<string>Лаймовий сигнал</string>
+	<key>Line</key>
+	<string>Лінія</string>
+	<key>Line width</key>
+	<string>Товщина лінії</string>
+	<key>Linen</key>
+	<string>Льон</string>
+	<key>Lines · %lld</key>
+	<string>Рядки · %lld</string>
+	<key>Link</key>
+	<string>Посилання</string>
+	<key>Link QR found</key>
+	<string>Знайдено QR-код із посиланням</string>
+	<key>Link copied</key>
+	<string>Посилання скопійовано</string>
+	<key>Links</key>
+	<string>Посилання</string>
+	<key>Links (%lld of %lld)</key>
+	<string>Посилання (%lld з %lld)</string>
+	<key>Listening…</key>
+	<string>Слухання…</string>
+	<key>Listens on this Mac — nothing is uploaded</key>
+	<string>Слухає на цьому Mac — нічого не вивантажується</string>
+	<key>Look</key>
+	<string>Вигляд</string>
+	<key>Loop to fill</key>
+	<string>Повторювати до кінця</string>
+	<key>Lower under your voice</key>
+	<string>Стишувати під голос</string>
+	<key>M</key>
+	<string>M</string>
+	<key>MIT License — Free and open source</key>
+	<string>Ліцензія MIT — безплатне ПЗ з відкритим кодом</string>
+	<key>Make it lighter: %@, %@ fps</key>
+	<string>Полегшити: %@, %@ fps</string>
+	<key>Manage</key>
+	<string>Керувати</string>
+	<key>Match the recording</key>
+	<string>Як у записі</string>
+	<key>Max</key>
+	<string>Максимальна</string>
+	<key>Maximum detail for further editing</key>
+	<string>Максимум деталей для подальшого монтажу</string>
+	<key>Maximum length reached</key>
+	<string>Досягнуто максимальної довжини</string>
+	<key>Meadow</key>
+	<string>Луг</string>
+	<key>Medium</key>
+	<string>Середній</string>
+	<key>Menu Bar</key>
+	<string>Смуга меню</string>
+	<key>Menu bar is full, so macOS hid the Shotnix icon — %@ still captures. Click here for the menu.</key>
+	<string>Смуга меню заповнена, тож macOS ховає значок Shotnix — %@ і далі знімає. Клацніть тут, щоб відкрити меню.</string>
+	<key>Menu bar is full, so macOS hid the Shotnix icon — your shortcuts still work. Click here for the menu.</key>
+	<string>Смуга меню заповнена, тож macOS ховає значок Shotnix — ваші скорочення і далі працюють. Клацніть тут, щоб відкрити меню.</string>
+	<key>Message</key>
+	<string>Повідомлення</string>
+	<key>Message QR found</key>
+	<string>Знайдено QR-код із повідомленням</string>
+	<key>Mic disconnected</key>
+	<string>Немає мікрофона</string>
+	<key>Mic stopped</key>
+	<string>Збій мікрофона</string>
+	<key>Mic switched</key>
+	<string>Мікрофон змінено</string>
+	<key>Microphone</key>
+	<string>Мікрофон</string>
+	<key>Microphone access is off, so this recording has no mic.</key>
+	<string>Доступ до мікрофона вимкнено, тому в цьому записі немає звуку з мікрофона.</string>
+	<key>Microphone access is off. Allow Shotnix in System Settings → Privacy &amp; Security → Microphone.</key>
+	<string>Доступ до мікрофона вимкнено. Дозвольте його для Shotnix: Системні параметри → Приватність і безпека → Мікрофон.</string>
+	<key>Microphone disconnected. Now recording from %@.</key>
+	<string>Мікрофон від’єднано. Тепер запис іде з «%@».</string>
+	<key>Microphone disconnected. The recording continues without it.</key>
+	<string>Мікрофон від’єднано. Запис триває без нього.</string>
+	<key>Microphone level</key>
+	<string>Рівень мікрофона</string>
+	<key>Microphone recording requires macOS microphone permission. System audio excludes Shotnix sounds to avoid feedback.</key>
+	<string>Для запису мікрофона потрібен дозвіл macOS на доступ до мікрофона. Системний звук не містить звуків Shotnix, щоб уникнути відлуння.</string>
+	<key>Midnight</key>
+	<string>Опівніч</string>
+	<key>Midnight Graphite</key>
+	<string>Опівнічний графіт</string>
+	<key>Minimal</key>
+	<string>Мінімалістичний</string>
+	<key>Minimize</key>
+	<string>Згорнути</string>
+	<key>Mint</key>
+	<string>М’ята</string>
+	<key>Mirror</key>
+	<string>Віддзеркалити</string>
+	<key>Mist</key>
+	<string>Імла</string>
+	<key>More</key>
+	<string>Більше</string>
+	<key>More caption options</key>
+	<string>Інші параметри субтитрів</string>
+	<key>More recording options</key>
+	<string>Інші параметри запису</string>
+	<key>More tips</key>
+	<string>Інші поради</string>
+	<key>Moss</key>
+	<string>Мох</string>
+	<key>Moss Glow</key>
+	<string>Сяйво моху</string>
+	<key>Motion</key>
+	<string>Рух</string>
+	<key>Motion blur</key>
+	<string>Розмиття руху</string>
+	<key>Move %@ earlier</key>
+	<string>Перемістити «%@» раніше</string>
+	<key>Move %@ later</key>
+	<string>Перемістити «%@» пізніше</string>
+	<key>Move Earlier</key>
+	<string>Перемістити раніше</string>
+	<key>Move Later</key>
+	<string>Перемістити пізніше</string>
+	<key>Move earlier</key>
+	<string>Раніше</string>
+	<key>Move later</key>
+	<string>Пізніше</string>
+	<key>Move the playhead inside a clip to split</key>
+	<string>Щоб розділити, перемістіть покажчик відтворення всередину кліпу</string>
+	<key>Movement</key>
+	<string>Рух</string>
+	<key>Music</key>
+	<string>Музика</string>
+	<key>Music added — it dips while you talk</key>
+	<string>Музику додано — вона стишується, коли ви говорите</string>
+	<key>Music options</key>
+	<string>Параметри музики</string>
+	<key>Music removed — ⌘Z to undo</key>
+	<string>Музику вилучено — ⌘Z, щоб відмінити</string>
+	<key>Music — click to change its volume, fades, and ducking</key>
+	<string>Музика — клацніть, щоб змінити гучність, появу/згасання та приглушення</string>
+	<key>Music “%@”</key>
+	<string>Музика «%@»</string>
+	<key>Mute Clip</key>
+	<string>Вимкнути звук кліпу</string>
+	<key>Mute preview</key>
+	<string>Вимкнути звук перегляду</string>
+	<key>Mute the Preview (the Export Keeps Its Sound)</key>
+	<string>Вимкнути звук перегляду (експорт зберігає звук)</string>
+	<key>Mute the preview (M) — the export keeps its sound</key>
+	<string>Вимкнути звук перегляду (M) — експорт зберігає звук</string>
+	<key>Mute the preview (or the selected clip)</key>
+	<string>Вимкнути звук перегляду (або вибраного кліпу)</string>
+	<key>Mute this clip</key>
+	<string>Вимкнути звук цього кліпу</string>
+	<key>Mute this part</key>
+	<string>Вимкнути звук цієї частини</string>
+	<key>Mute video</key>
+	<string>Вимкнути звук відео</string>
+	<key>Mute video is on (Audio tab) — this export will have no sound.</key>
+	<string>Увімкнено «Вимкнути звук відео» (вкладка «Аудіо») — цей експорт буде без звуку.</string>
+	<key>Nebula</key>
+	<string>Туманність</string>
+	<key>Needed to capture the screen. macOS will ask once.</key>
+	<string>Потрібно, щоб знімати екран. macOS запитає лише раз.</string>
+	<key>Neo Pop</key>
+	<string>Неопоп</string>
+	<key>Network</key>
+	<string>Мережа</string>
+	<key>Never</key>
+	<string>Ніколи</string>
+	<key>Never switch to the text beam or the hand</key>
+	<string>Ніколи не перемикати на текстовий курсор чи руку</string>
+	<key>New caption</key>
+	<string>Новий субтитр</string>
+	<key>New recordings use this look</key>
+	<string>Нові записи мають такий вигляд</string>
+	<key>New screenshots are copied automatically. Turn this off if you only want to use the overlay or history actions.</key>
+	<string>Нові знімки екрана копіюються автоматично. Вимкніть це, якщо хочете користуватися лише мініатюрою чи діями в історії.</string>
+	<key>New zooms</key>
+	<string>Нові наближення</string>
+	<key>Nice shot. You're all set.</key>
+	<string>Чудовий знімок. Усе готово.</string>
+	<key>Night Current</key>
+	<string>Нічна течія</string>
+	<key>No</key>
+	<string>Ні</string>
+	<key>No Exports Yet</key>
+	<string>Ще немає експортів</string>
+	<key>No background</key>
+	<string>Без тла</string>
+	<key>No background — text only</key>
+	<string>Без тла — лише текст</string>
+	<key>No barcode found in this selection</key>
+	<string>У вибраній області не знайдено штрихкоду</string>
+	<key>No camera connected</key>
+	<string>Камеру не під’єднано</string>
+	<key>No camera found.</key>
+	<string>Камеру не знайдено.</string>
+	<key>No camera in this recording</key>
+	<string>У цьому записі немає камери</string>
+	<key>No captions in the picture — add a subtitles file to upload them separately.</key>
+	<string>Без субтитрів у кадрі — додайте файл субтитрів, щоб вивантажити їх окремо.</string>
+	<key>No captures contain “%@”</key>
+	<string>Жоден знімок не містить «%@»</string>
+	<key>No captures of this type</key>
+	<string>Немає знімків цього типу</string>
+	<key>No captures yet</key>
+	<string>Ще немає знімків</string>
+	<key>No clicks left on the timeline</key>
+	<string>На шкалі часу не залишилося клацань</string>
+	<key>No clicks were recorded in this video</key>
+	<string>У цьому відео не записано клацань</string>
+	<key>No clicks were recorded — add zooms by hand</key>
+	<string>Клацань не записано — додайте наближення вручну</string>
+	<key>No clicks were recorded, so add zooms by hand: hover the zoom track and click.</key>
+	<string>Клацань не записано, тож додавайте наближення вручну: наведіть курсор на доріжку «Масштаб» і клацніть.</string>
+	<key>No conflict</key>
+	<string>Конфліктів немає</string>
+	<key>No cursor data in this video</key>
+	<string>У цьому відео немає даних курсора</string>
+	<key>No idle moments found — nice and tight</key>
+	<string>Простоїв не знайдено — усе щільно</string>
+	<key>No long pauses to shorten</key>
+	<string>Немає довгих пауз для скорочення</string>
+	<key>No microphone connected</key>
+	<string>Мікрофон не під’єднано</string>
+	<key>No microphone is connected, so this recording has no mic.</key>
+	<string>Мікрофон не під’єднано, тому в цьому записі немає звуку з мікрофона.</string>
+	<key>No music</key>
+	<string>Без музики</string>
+	<key>No pauses to shorten</key>
+	<string>Немає пауз для скорочення</string>
+	<key>No recordable windows found</key>
+	<string>Не знайдено вікон для запису</string>
+	<key>No recording in progress</key>
+	<string>Запис не триває</string>
+	<key>No room after this zoom</key>
+	<string>Після цього наближення немає місця</string>
+	<key>No room here — move the playhead</key>
+	<string>Тут немає місця — перемістіть покажчик відтворення</string>
+	<key>No saved captures yet</key>
+	<string>Ще немає збережених знімків</string>
+	<key>No sound from the microphone</key>
+	<string>Немає звуку з мікрофона</string>
+	<key>No speech was found in this recording. If it has narration, check its level in the Audio tab, then try again.</key>
+	<string>У цьому записі не знайдено мовлення. Якщо в ньому є коментар, перевірте рівень у вкладці «Аудіо», а потім спробуйте ще раз.</string>
+	<key>No text found in this selection</key>
+	<string>У вибраній області не знайдено тексту</string>
+	<key>No ums</key>
+	<string>Немає слів-паразитів</string>
+	<key>No ums or uhs left</key>
+	<string>Слів-паразитів не залишилося</string>
+	<key>None</key>
+	<string>Немає</string>
+	<key>None in this recording. Turn on “Show keyboard shortcuts” in Settings → Recording and every ⌘ shortcut you press appears as keycaps. Plain typing is never recorded.</key>
+	<string>У цьому записі їх немає. Увімкніть «Показувати клавіатурні скорочення» в розділі Параметри → Запис, і кожне натиснуте скорочення з ⌘ з’являтиметься у вигляді клавіш. Звичайне введення тексту ніколи не записується.</string>
+	<key>Not enough disk space to record.</key>
+	<string>Недостатньо місця на диску для запису.</string>
+	<key>Not enough free disk space for this recording: it needs about %@ free, and %@ is available. Free up some space and try again.</key>
+	<string>Недостатньо вільного місця на диску для цього запису: потрібно приблизно %@, а доступно %@. Звільніть трохи місця й спробуйте ще раз.</string>
+	<key>Not enough free disk space for this recording: it needs about %@ free, and %@ is available. Free up space, or choose Balanced quality or 30 fps.</key>
+	<string>Недостатньо вільного місця на диску для цього запису: потрібно приблизно %@, а доступно %@. Звільніть місце або виберіть якість «Збалансована» чи 30 fps.</string>
+	<key>Not for this video</key>
+	<string>Не для цього відео</string>
+	<key>Not now</key>
+	<string>Не зараз</string>
+	<key>Nothing to clean up — everything belongs to recordings you still have</key>
+	<string>Нічого прибирати — усе належить записам, які у вас досі є</string>
+	<key>Nothing was recorded — the screen didn't send any picture. Try again.</key>
+	<string>Нічого не записано — екран не передав жодного зображення. Спробуйте ще раз.</string>
+	<key>Numbered Steps</key>
+	<string>Нумеровані кроки</string>
+	<key>OCR / Capture Text</key>
+	<string>Розпізнати текст (OCR)</string>
+	<key>OK</key>
+	<string>OK</string>
+	<key>Ocean</key>
+	<string>Океан</string>
+	<key>Of the frame's width.</key>
+	<string>Від ширини кадру.</string>
+	<key>Off</key>
+	<string>Вимкнено</string>
+	<key>Older</key>
+	<string>Раніше</string>
+	<key>On your clipboard · %@</key>
+	<string>У буфері обміну · %@</string>
+	<key>Only %@ free on your disk — this may not fit. Free up space or save to another drive.</key>
+	<string>На диску вільно лише %@ — цього може не вистачити. Звільніть місце або збережіть на інший диск.</string>
+	<key>Opacity</key>
+	<string>Непрозорість</string>
+	<key>Open</key>
+	<string>Відкрити</string>
+	<key>Open %@</key>
+	<string>Відкрити %@</string>
+	<key>Open Another Video…</key>
+	<string>Відкрити інше відео…</string>
+	<key>Open Command Center</key>
+	<string>Відкрити командний центр</string>
+	<key>Open Editor After Recording</key>
+	<string>Відкривати редактор після запису</string>
+	<key>Open History</key>
+	<string>Відкрити історію</string>
+	<key>Open Keyboard Settings</key>
+	<string>Відкрити параметри клавіатури</string>
+	<key>Open Link</key>
+	<string>Відкрити посилання</string>
+	<key>Open Messages</key>
+	<string>Відкрити Повідомлення</string>
+	<key>Open Privacy Settings</key>
+	<string>Відкрити «Приватність і безпека»</string>
+	<key>Open Recording Settings…</key>
+	<string>Відкрити параметри запису…</string>
+	<key>Open Settings</key>
+	<string>Відкрити параметри</string>
+	<key>Open System Settings</key>
+	<string>Відкрити Системні параметри</string>
+	<key>Open System Settings → Keyboard → Keyboard Shortcuts → Screenshots and turn off the screenshot shortcuts manually.</key>
+	<string>Відкрийте Системні параметри → Клавіатура → Клавіатурні скорочення → Знімки екрана й вимкніть скорочення для знімків екрана вручну.</string>
+	<key>Open Video Editor</key>
+	<string>Відкрити відеоредактор</string>
+	<key>Open editor after recording</key>
+	<string>Відкривати редактор після запису</string>
+	<key>Open in annotation editor</key>
+	<string>Відкрити в редакторі знімків</string>
+	<key>Opens its title and length in Style</key>
+	<string>Відкриває назву й тривалість у вкладці «Стиль»</string>
+	<key>Opens its volume, fades, and ducking in Audio</key>
+	<string>Відкриває гучність, появу/згасання та приглушення у вкладці «Аудіо»</string>
+	<key>Or drag it on the preview. Images stay put while the camera zooms.</key>
+	<string>Або перетягніть його в перегляді. Зображення лишаються на місці, поки камера наближається.</string>
+	<key>Or drag its bar on the timeline.</key>
+	<string>Або перетягніть його смугу на шкалі часу.</string>
+	<key>Or drag the bubble on the video — it snaps to the nearest spot.</key>
+	<string>Або перетягніть бульбашку у відео — вона прилипне до найближчого місця.</string>
+	<key>Or type one at the playhead</key>
+	<string>Або введіть субтитр на покажчику відтворення</string>
+	<key>Orange</key>
+	<string>Помаранчевий</string>
+	<key>Orchid</key>
+	<string>Орхідея</string>
+	<key>Original</key>
+	<string>Оригінал</string>
+	<key>Otherwise, Shotnix switches languages the next time it opens.</key>
+	<string>Інакше Shotnix змінить мову під час наступного відкриття.</string>
+	<key>Out</key>
+	<string>Кінець</string>
+	<key>Out earlier</key>
+	<string>Кінець раніше</string>
+	<key>Out later</key>
+	<string>Кінець пізніше</string>
+	<key>Outro</key>
+	<string>Завершення</string>
+	<key>Outro card</key>
+	<string>Завершальна заставка</string>
+	<key>Outro card — click to edit it in Style</key>
+	<string>Завершальна заставка — клацніть, щоб змінити її у вкладці «Стиль»</string>
+	<key>Outro card “%@”, %@ to %@</key>
+	<string>Завершальна заставка «%@», від %@ до %@</string>
+	<key>Outro card, %@ to %@</key>
+	<string>Завершальна заставка, від %@ до %@</string>
+	<key>Overlay position</key>
+	<string>Розташування мініатюри</string>
+	<key>Padding</key>
+	<string>Відступ</string>
+	<key>Part of the recording couldn't be read — the file may be damaged. Try exporting a shorter part of the video.</key>
+	<string>Частину запису не вдалося прочитати — можливо, файл пошкоджено. Спробуйте експортувати коротшу частину відео.</string>
+	<key>Password</key>
+	<string>Пароль</string>
+	<key>Paste</key>
+	<string>Вставити</string>
+	<key>Pause</key>
+	<string>Пауза</string>
+	<key>Pause (Space)</key>
+	<string>Пауза (пробіл)</string>
+	<key>Pause / Resume Recording</key>
+	<string>Призупинити/продовжити запис</string>
+	<key>Pause Recording</key>
+	<string>Призупинити запис</string>
+	<key>Pause recording</key>
+	<string>Призупинити запис</string>
+	<key>Pause recording (%@)</key>
+	<string>Призупинити запис (%@)</string>
+	<key>Pause restored</key>
+	<string>Паузу відновлено</string>
+	<key>Pause shortened</key>
+	<string>Паузу скорочено</string>
+	<key>Paused</key>
+	<string>Призупинено</string>
+	<key>Peach</key>
+	<string>Персик</string>
+	<key>Pending</key>
+	<string>Очікує</string>
+	<key>Permission needed</key>
+	<string>Потрібен дозвіл</string>
+	<key>Phone</key>
+	<string>Телефон</string>
+	<key>Phone QR found</key>
+	<string>Знайдено QR-код із номером телефону</string>
+	<key>Picked up where you left off</key>
+	<string>Продовжено з того місця, де ви зупинилися</string>
+	<key>Pin</key>
+	<string>Закріпити</string>
+	<key>Pin to Screen</key>
+	<string>Закріпити на екрані</string>
+	<key>Pine Dusk</key>
+	<string>Сосновий присмерк</string>
+	<key>Pinned Screenshot</key>
+	<string>Закріплений знімок</string>
+	<key>Pinned screenshot</key>
+	<string>Закріплений знімок</string>
+	<key>Pixelate</key>
+	<string>Пікселізація</string>
+	<key>Pixelated area</key>
+	<string>Пікселізована область</string>
+	<key>Placement</key>
+	<string>Розташування</string>
+	<key>Plan zooms from your clicks — keeps zooms you placed by hand</key>
+	<string>Спланувати наближення за клацаннями — додані вручну залишаються</string>
+	<key>Play</key>
+	<string>Відтворити</string>
+	<key>Play (Space)</key>
+	<string>Відтворити (пробіл)</string>
+	<key>Play / pause</key>
+	<string>Відтворення/пауза</string>
+	<key>Play Click Sounds</key>
+	<string>Відтворювати звуки клацання</string>
+	<key>Play a click on each click</key>
+	<string>Звук на кожне клацання</string>
+	<key>Play capture sound</key>
+	<string>Відтворювати звук знімання</string>
+	<key>Play from Here</key>
+	<string>Відтворити звідси</string>
+	<key>Playback</key>
+	<string>Відтворення</string>
+	<key>Playing %lld×</key>
+	<string>Відтворення %lld×</string>
+	<key>Plays after the last clip, before the end card</key>
+	<string>Після останнього кліпу, перед кінцевою заставкою</string>
+	<key>Plays before the first clip</key>
+	<string>Перед першим кліпом</string>
+	<key>Plays everywhere</key>
+	<string>Відтворюється всюди</string>
+	<key>Plays or pauses. Use Option-arrow keys to select what's on the timeline.</key>
+	<string>Відтворює або призупиняє. Щоб вибирати елементи на шкалі часу, використовуйте Option і клавіші зі стрілками.</string>
+	<key>Plum</key>
+	<string>Слива</string>
+	<key>Polar Dawn</key>
+	<string>Полярний світанок</string>
+	<key>Porcelain</key>
+	<string>Порцеляна</string>
+	<key>Position</key>
+	<string>Позиція</string>
+	<key>Preferences</key>
+	<string>Параметри</string>
+	<key>Preparing to copy…</key>
+	<string>Підготовка до копіювання…</string>
+	<key>Preparing your video…</key>
+	<string>Підготовка відео…</string>
+	<key>Preparing…</key>
+	<string>Підготовка…</string>
+	<key>Preset</key>
+	<string>Шаблон</string>
+	<key>Press</key>
+	<string>Натиск</string>
+	<key>Press %@ anytime — or try it right now.</key>
+	<string>Натисніть %@ будь-коли — або спробуйте просто зараз.</string>
+	<key>Press %@ to take your first screenshot</key>
+	<string>Натисніть %@, щоб зробити перший знімок екрана</string>
+	<key>Pressed at %@. Press ⌫ to hide it from the video — handy for a stray ⌘Tab.</key>
+	<string>Натиснуто на %@. Натисніть ⌫, щоб сховати його з відео, — зручно для випадкового ⌘Tab.</string>
+	<key>Preview</key>
+	<string>Попередній перегляд</string>
+	<key>Preview muted — the export keeps its sound</key>
+	<string>Звук перегляду вимкнено — експорт зберігає звук</string>
+	<key>Preview sound on</key>
+	<string>Звук перегляду ввімкнено</string>
+	<key>Preview the target, then continue to recording controls.</key>
+	<string>Перевірте, що буде записано, а потім перейдіть до керування записом.</string>
+	<key>Previous / next frame</key>
+	<string>Попередній/наступний кадр</string>
+	<key>Prism Sweep</key>
+	<string>Призматична хвиля</string>
+	<key>Privacy Policy</key>
+	<string>Політика конфіденційності</string>
+	<key>Pure</key>
+	<string>Чистий</string>
+	<key>Purple</key>
+	<string>Фіолетовий</string>
+	<key>QR Code</key>
+	<string>QR-код</string>
+	<key>QR Codes</key>
+	<string>QR-коди</string>
+	<key>QR copied to clipboard</key>
+	<string>QR-код скопійовано в буфер обміну</string>
+	<key>Quality</key>
+	<string>Якість</string>
+	<key>Quick</key>
+	<string>Швидко</string>
+	<key>Quit &amp; Reopen</key>
+	<string>Завершити й відкрити знову</string>
+	<key>Quit Shotnix</key>
+	<string>Завершити Shotnix</string>
+	<key>Quit Shotnix?</key>
+	<string>Завершити Shotnix?</string>
+	<key>Radius</key>
+	<string>Радіус</string>
+	<key>Range</key>
+	<string>Діапазон</string>
+	<key>Re-enable Apple's ⌘⇧3/4/5 screenshot shortcuts</key>
+	<string>Знову ввімкнути скорочення Apple ⌘⇧3/4/5 для знімків екрана</string>
+	<key>Ready</key>
+	<string>Готово</string>
+	<key>Recent Exports</key>
+	<string>Нещодавні експорти</string>
+	<key>Recognized Text</key>
+	<string>Розпізнаний текст</string>
+	<key>Recognized text</key>
+	<string>Розпізнаний текст</string>
+	<key>Record</key>
+	<string>Записати</string>
+	<key>Record (Return)</key>
+	<string>Записати (Return)</string>
+	<key>Record Area</key>
+	<string>Записати область</string>
+	<key>Record Fullscreen</key>
+	<string>Записати весь екран</string>
+	<key>Record Window</key>
+	<string>Записати вікно</string>
+	<key>Record camera</key>
+	<string>Записувати камеру</string>
+	<key>Record microphone</key>
+	<string>Записувати мікрофон</string>
+	<key>Record system audio</key>
+	<string>Записувати системний звук</string>
+	<key>Recorded at %@. Drag its dot on the timeline to retime it; ripples and Auto Zoom follow.</key>
+	<string>Записано на %@. Перетягніть його крапку на шкалі часу, щоб змінити час; хвилі й автонаближення підлаштуються.</string>
+	<key>Recording</key>
+	<string>Запис</string>
+	<key>Recording already in progress</key>
+	<string>Запис уже триває</string>
+	<key>Recording canceled</key>
+	<string>Запис скасовано</string>
+	<key>Recording controls</key>
+	<string>Керування записом</string>
+	<key>Recording discarded</key>
+	<string>Запис відкинуто</string>
+	<key>Recording failed before saving.</key>
+	<string>Під час запису сталася помилка, і його не збережено.</string>
+	<key>Recording keyboard shortcuts</key>
+	<string>Записуються клавіатурні скорочення</string>
+	<key>Recording paused — click to stop (%@)</key>
+	<string>Запис призупинено — клацніть, щоб зупинити (%@)</string>
+	<key>Recording removed — ⌘Z to undo</key>
+	<string>Запис вилучено — ⌘Z, щоб відмінити</string>
+	<key>Recording saved</key>
+	<string>Запис збережено</string>
+	<key>Recording shortcuts are unassigned by default — click a field to set one. Stop Recording also cancels recording setup. While recording, %@ always stops it, from any app.</key>
+	<string>Скорочення для запису типово не призначено — клацніть поле, щоб задати. «Зупинити запис» також скасовує підготовку до запису. Під час запису %@ завжди зупиняє його з будь-якої програми.</string>
+	<key>Recording stopped early — saved what was captured.</key>
+	<string>Запис зупинився завчасно — записане збережено.</string>
+	<key>Recording the camera</key>
+	<string>Записується камера</string>
+	<key>Recording time</key>
+	<string>Тривалість запису</string>
+	<key>Recording without the camera.</key>
+	<string>Запис без камери.</string>
+	<key>Recording — click to stop (%@)</key>
+	<string>Іде запис — клацніть, щоб зупинити (%@)</string>
+	<key>Recordings</key>
+	<string>Записи</string>
+	<key>Recordings in the Trash or on a drive that isn't plugged in keep their data. This can't be undone.</key>
+	<string>Записи в Кошику або на непід’єднаному диску зберігають свої дані. Цю дію не можна відмінити.</string>
+	<key>Recordings made with Shotnix capture the pointer so it can be smoothed, resized, and hidden.</key>
+	<string>Записи, зроблені в Shotnix, зберігають курсор окремо, тож його можна згладити, змінити розмір чи сховати.</string>
+	<key>Records %@ × %@ pixels (%@ × %@ points)</key>
+	<string>Записує %@ × %@ пікселів (%@ × %@ точок)</string>
+	<key>Records the pointer separately, so the editor can smooth it, resize it, and keep it crisp when zoomed.</key>
+	<string>Записує курсор окремо, щоб редактор міг згладжувати його, змінювати розмір і зберігати чіткість під час наближення.</string>
+	<key>Recovered your interrupted recording “%@”. Click to open it.</key>
+	<string>Ваш перерваний запис «%@» відновлено. Клацніть, щоб відкрити його.</string>
+	<key>Rectangle</key>
+	<string>Прямокутник</string>
+	<key>Red</key>
+	<string>Червоний</string>
+	<key>Redaction strength</key>
+	<string>Сила приховування</string>
+	<key>Redo</key>
+	<string>Повторити</string>
+	<key>Redo Add Arrow</key>
+	<string>Повторити додавання стрілки</string>
+	<key>Redo Add Blur</key>
+	<string>Повторити додавання розмиття</string>
+	<key>Redo Add Camera Layout</key>
+	<string>Повторити додавання макета камери</string>
+	<key>Redo Add Camera Layouts</key>
+	<string>Повторити додавання макетів камери</string>
+	<key>Redo Add Caption</key>
+	<string>Повторити додавання субтитру</string>
+	<key>Redo Add Captions</key>
+	<string>Повторити додавання субтитрів</string>
+	<key>Redo Add Click</key>
+	<string>Повторити додавання клацання</string>
+	<key>Redo Add Clicks</key>
+	<string>Повторити додавання клацань</string>
+	<key>Redo Add Highlight</key>
+	<string>Повторити додавання виділення</string>
+	<key>Redo Add Image</key>
+	<string>Повторити додавання зображення</string>
+	<key>Redo Add Intro Card</key>
+	<string>Повторити додавання вступної заставки</string>
+	<key>Redo Add Music</key>
+	<string>Повторити додавання музики</string>
+	<key>Redo Add Outro Card</key>
+	<string>Повторити додавання завершальної заставки</string>
+	<key>Redo Add Recording</key>
+	<string>Повторити додавання запису</string>
+	<key>Redo Add Spotlight</key>
+	<string>Повторити додавання прожектора</string>
+	<key>Redo Add Text</key>
+	<string>Повторити додавання тексту</string>
+	<key>Redo Add Zoom</key>
+	<string>Повторити додавання наближення</string>
+	<key>Redo Add Zooms</key>
+	<string>Повторити додавання наближень</string>
+	<key>Redo Annotation Change</key>
+	<string>Повторити зміну розмітки</string>
+	<key>Redo Annotations</key>
+	<string>Повторити зміни розмітки</string>
+	<key>Redo Arrow Style</key>
+	<string>Повторити зміну стилю стрілки</string>
+	<key>Redo Aspect Ratio</key>
+	<string>Повторити зміну співвідношення сторін</string>
+	<key>Redo Auto Zoom</key>
+	<string>Повторити автонаближення</string>
+	<key>Redo Background</key>
+	<string>Повторити зміну тла</string>
+	<key>Redo Blur Style</key>
+	<string>Повторити зміну стилю розмиття</string>
+	<key>Redo Camera Change</key>
+	<string>Повторити зміну камери</string>
+	<key>Redo Camera Layout Change</key>
+	<string>Повторити зміну макета камери</string>
+	<key>Redo Camera Layouts</key>
+	<string>Повторити зміну макетів камери</string>
+	<key>Redo Caption Style</key>
+	<string>Повторити зміну стилю субтитрів</string>
+	<key>Redo Caption Translation</key>
+	<string>Повторити переклад субтитрів</string>
+	<key>Redo Captions</key>
+	<string>Повторити зміну субтитрів</string>
+	<key>Redo Click Sounds</key>
+	<string>Повторити зміну звуків клацання</string>
+	<key>Redo Clicks</key>
+	<string>Повторити зміну клацань</string>
+	<key>Redo Crop</key>
+	<string>Повторити обрізання</string>
+	<key>Redo Cursor Change</key>
+	<string>Повторити зміну курсора</string>
+	<key>Redo Cut</key>
+	<string>Повторити вирізання</string>
+	<key>Redo Cut Word</key>
+	<string>Повторити вирізання слова</string>
+	<key>Redo Cut Words</key>
+	<string>Повторити вирізання слів</string>
+	<key>Redo Delete Annotations</key>
+	<string>Повторити видалення розмітки</string>
+	<key>Redo Delete Arrow</key>
+	<string>Повторити видалення стрілки</string>
+	<key>Redo Delete Blur</key>
+	<string>Повторити видалення розмиття</string>
+	<key>Redo Delete Camera Layout</key>
+	<string>Повторити видалення макета камери</string>
+	<key>Redo Delete Camera Layouts</key>
+	<string>Повторити видалення макетів камери</string>
+	<key>Redo Delete Caption</key>
+	<string>Повторити видалення субтитру</string>
+	<key>Redo Delete Captions</key>
+	<string>Повторити видалення субтитрів</string>
+	<key>Redo Delete Click</key>
+	<string>Повторити видалення клацання</string>
+	<key>Redo Delete Clicks</key>
+	<string>Повторити видалення клацань</string>
+	<key>Redo Delete Clip</key>
+	<string>Повторити видалення кліпу</string>
+	<key>Redo Delete Clips</key>
+	<string>Повторити видалення кліпів</string>
+	<key>Redo Delete Highlight</key>
+	<string>Повторити видалення виділення</string>
+	<key>Redo Delete Image</key>
+	<string>Повторити видалення зображення</string>
+	<key>Redo Delete Spotlight</key>
+	<string>Повторити видалення прожектора</string>
+	<key>Redo Delete Text</key>
+	<string>Повторити видалення тексту</string>
+	<key>Redo Delete Zoom</key>
+	<string>Повторити видалення наближення</string>
+	<key>Redo Delete Zooms</key>
+	<string>Повторити видалення наближень</string>
+	<key>Redo Edit Caption</key>
+	<string>Повторити редагування субтитру</string>
+	<key>Redo Edit Text</key>
+	<string>Повторити редагування тексту</string>
+	<key>Redo Enhance Voice</key>
+	<string>Повторити покращення голосу</string>
+	<key>Redo Fade</key>
+	<string>Повторити плавну появу/зникнення</string>
+	<key>Redo Hide Shortcut</key>
+	<string>Повторити приховування скорочення</string>
+	<key>Redo Highlight Style</key>
+	<string>Повторити зміну стилю виділення</string>
+	<key>Redo Image Style</key>
+	<string>Повторити зміну стилю зображення</string>
+	<key>Redo Intro and Outro</key>
+	<string>Повторити камеру для вступу й завершення</string>
+	<key>Redo Move Arrow</key>
+	<string>Повторити переміщення стрілки</string>
+	<key>Redo Move Blur</key>
+	<string>Повторити переміщення розмиття</string>
+	<key>Redo Move Click</key>
+	<string>Повторити переміщення клацання</string>
+	<key>Redo Move Clip</key>
+	<string>Повторити переміщення кліпу</string>
+	<key>Redo Move Highlight</key>
+	<string>Повторити переміщення виділення</string>
+	<key>Redo Move Image</key>
+	<string>Повторити переміщення зображення</string>
+	<key>Redo Move Recording</key>
+	<string>Повторити переміщення запису</string>
+	<key>Redo Move Spotlight</key>
+	<string>Повторити переміщення прожектора</string>
+	<key>Redo Move Text</key>
+	<string>Повторити переміщення тексту</string>
+	<key>Redo Music Change</key>
+	<string>Повторити зміну музики</string>
+	<key>Redo Mute Clip</key>
+	<string>Повторити вимкнення звуку кліпу</string>
+	<key>Redo Mute Part</key>
+	<string>Повторити вимкнення звуку частини</string>
+	<key>Redo Mute Video</key>
+	<string>Повторити вимкнення звуку відео</string>
+	<key>Redo Remove All Zooms</key>
+	<string>Повторити вилучення всіх наближень</string>
+	<key>Redo Remove Captions</key>
+	<string>Повторити вилучення субтитрів</string>
+	<key>Redo Remove Intro Card</key>
+	<string>Повторити вилучення вступної заставки</string>
+	<key>Redo Remove Music</key>
+	<string>Повторити вилучення музики</string>
+	<key>Redo Remove Outro Card</key>
+	<string>Повторити вилучення завершальної заставки</string>
+	<key>Redo Remove Recording</key>
+	<string>Повторити вилучення запису</string>
+	<key>Redo Remove Ums</key>
+	<string>Повторити вилучення слів-паразитів</string>
+	<key>Redo Replace Music</key>
+	<string>Повторити заміну музики</string>
+	<key>Redo Reset Look</key>
+	<string>Повторити скидання стилю</string>
+	<key>Redo Restore</key>
+	<string>Повторити відновлення</string>
+	<key>Redo Restore Cut</key>
+	<string>Повторити відновлення фрагмента</string>
+	<key>Redo Restore Cuts</key>
+	<string>Повторити відновлення фрагментів</string>
+	<key>Redo Restore Pause</key>
+	<string>Повторити відновлення паузи</string>
+	<key>Redo Restore Word</key>
+	<string>Повторити відновлення слова</string>
+	<key>Redo Restore Words</key>
+	<string>Повторити відновлення слів</string>
+	<key>Redo Shortcut Style</key>
+	<string>Повторити зміну стилю скорочень</string>
+	<key>Redo Shortcuts</key>
+	<string>Повторити зміну скорочень</string>
+	<key>Redo Shorten Pause</key>
+	<string>Повторити скорочення паузи</string>
+	<key>Redo Shorten Pauses</key>
+	<string>Повторити скорочення пауз</string>
+	<key>Redo Sound Change</key>
+	<string>Повторити зміну звуку</string>
+	<key>Redo Speed Change</key>
+	<string>Повторити зміну швидкості</string>
+	<key>Redo Speed Up Idle</key>
+	<string>Повторити прискорення простоїв</string>
+	<key>Redo Split</key>
+	<string>Повторити розділення</string>
+	<key>Redo Spotlight Style</key>
+	<string>Повторити зміну стилю прожектора</string>
+	<key>Redo Start Over</key>
+	<string>Повторити повернення до оригіналу</string>
+	<key>Redo Style Change</key>
+	<string>Повторити зміну стилю</string>
+	<key>Redo Text Style</key>
+	<string>Повторити зміну стилю тексту</string>
+	<key>Redo Timeline Edit</key>
+	<string>Повторити зміну на шкалі часу</string>
+	<key>Redo Title Card</key>
+	<string>Повторити зміну заставки</string>
+	<key>Redo Transcribe</key>
+	<string>Повторити розшифрування</string>
+	<key>Redo Transitions</key>
+	<string>Повторити зміну переходів</string>
+	<key>Redo Trim</key>
+	<string>Повторити підрізання</string>
+	<key>Redo Unmute Clip</key>
+	<string>Повторити увімкнення звуку кліпу</string>
+	<key>Redo Unmute Part</key>
+	<string>Повторити увімкнення звуку частини</string>
+	<key>Redo Unmute Video</key>
+	<string>Повторити увімкнення звуку відео</string>
+	<key>Redo Zoom Change</key>
+	<string>Повторити зміну наближення</string>
+	<key>Redo Zoom Level for All</key>
+	<string>Повторити спільний рівень наближення</string>
+	<key>Redo Zooms</key>
+	<string>Повторити зміну наближень</string>
+	<key>Reels, TikTok, Shorts</key>
+	<string>Reels, TikTok, Shorts</string>
+	<key>Regular</key>
+	<string>Звичайний</string>
+	<key>Releasing the mouse takes the shot. Hold ⇧ as you release to adjust the selection first — drag its edges, nudge it with the arrow keys, then press Return.</key>
+	<string>Щойно ви відпустите кнопку миші, буде зроблено знімок. Утримуйте ⇧, коли відпускаєте, щоб спершу налаштувати вибір — перетягуйте його краї, зсувайте клавішами зі стрілками, а потім натисніть Return.</string>
+	<key>Remove</key>
+	<string>Вилучити</string>
+	<key>Remove %@</key>
+	<string>Вилучити «%@»</string>
+	<key>Remove %@ of video data?</key>
+	<string>Вилучити %@ відеоданих?</string>
+	<key>Remove All Zooms</key>
+	<string>Вилучити всі наближення</string>
+	<key>Remove Intro Card</key>
+	<string>Вилучити вступну заставку</string>
+	<key>Remove Music</key>
+	<string>Вилучити музику</string>
+	<key>Remove Outro Card</key>
+	<string>Вилучити завершальну заставку</string>
+	<key>Remove Transcript &amp; Captions</key>
+	<string>Вилучити розшифровку й субтитри</string>
+	<key>Remove Ums</key>
+	<string>Вилучити слова-паразити</string>
+	<key>Remove all %lld</key>
+	<string>Вилучити всі (%lld)</string>
+	<key>Remove all zooms</key>
+	<string>Вилучити всі наближення</string>
+	<key>Remove caption</key>
+	<string>Вилучити субтитр</string>
+	<key>Remove from this video</key>
+	<string>Вилучити з цього відео</string>
+	<key>Remove this caption</key>
+	<string>Вилучити цей субтитр</string>
+	<key>Remove this translation</key>
+	<string>Вилучити цей переклад</string>
+	<key>Remove translation</key>
+	<string>Вилучити переклад</string>
+	<key>Removed %@ — click to restore</key>
+	<string>Вирізано %@ — клацніть, щоб відновити</string>
+	<key>Removed %@ — ⌘Z to undo</key>
+	<string>Вирізано %@ — ⌘Z, щоб відмінити</string>
+	<key>Removed parts can be restored from the yellow marker on the timeline.</key>
+	<string>Вирізані частини можна відновити з жовтої позначки на шкалі часу.</string>
+	<key>Removed — ⌘Z to undo</key>
+	<string>Вилучено — ⌘Z, щоб відмінити</string>
+	<key>Removes background noise and hum, and evens out your level — processed on this Mac</key>
+	<string>Прибирає фоновий шум і гудіння та вирівнює рівень — обробка на цьому Mac</string>
+	<key>Removes jitter, keeps it snappy.</key>
+	<string>Прибирає тремтіння, зберігаючи жвавість.</string>
+	<key>Rendering for the clipboard… %lld%%</key>
+	<string>Рендеринг для буфера обміну… %lld%%</string>
+	<key>Rendering, then copying to your clipboard</key>
+	<string>Рендеринг і копіювання в буфер обміну</string>
+	<key>Replace Music…</key>
+	<string>Замінити музику…</string>
+	<key>Replace…</key>
+	<string>Замінити…</string>
+	<key>Report Issue</key>
+	<string>Повідомити про проблему</string>
+	<key>Reset</key>
+	<string>Скинути</string>
+	<key>Reset %@</key>
+	<string>Скинути: %@</string>
+	<key>Reset Defaults</key>
+	<string>Відновити типові</string>
+	<key>Reset crop</key>
+	<string>Скинути обрізання</string>
+	<key>Reset to the Shotnix Look</key>
+	<string>Скинути до стилю Shotnix</string>
+	<key>Reset to the Shotnix look</key>
+	<string>Скинути до стилю Shotnix</string>
+	<key>Resize</key>
+	<string>Змінити розмір</string>
+	<key>Resolution</key>
+	<string>Роздільність</string>
+	<key>Restart Now</key>
+	<string>Перезапустити</string>
+	<key>Restart Shotnix to use %@?</key>
+	<string>Перезапустити Shotnix, щоб увімкнути мову «%@»?</string>
+	<key>Restore</key>
+	<string>Відновити</string>
+	<key>Restore %@ at %@</key>
+	<string>Відновити %@ на %@</string>
+	<key>Restore %@ cut at %@</key>
+	<string>Відновити вирізаний фрагмент (%@) на %@</string>
+	<key>Restore All %lld</key>
+	<string>Відновити всі (%lld)</string>
+	<key>Restore Apple Shortcuts</key>
+	<string>Відновити скорочення Apple</string>
+	<key>Restored %@</key>
+	<string>Відновлено %@</string>
+	<key>Resume Recording</key>
+	<string>Продовжити запис</string>
+	<key>Resume recording</key>
+	<string>Продовжити запис</string>
+	<key>Resume recording (%@)</key>
+	<string>Продовжити запис (%@)</string>
+	<key>Reveal</key>
+	<string>Показати</string>
+	<key>Reveal in Finder</key>
+	<string>Показати у Finder</string>
+	<key>Review Changes…</key>
+	<string>Переглянути зміни…</string>
+	<key>Review the decoded email payload before copying.</key>
+	<string>Перш ніж копіювати, перевірте розкодовані дані листа.</string>
+	<key>Review the decoded link before opening.</key>
+	<string>Перш ніж відкривати, перевірте розкодоване посилання.</string>
+	<key>Review the decoded link before opening: %@</key>
+	<string>Перш ніж відкривати, перевірте розкодоване посилання: %@</string>
+	<key>Review the decoded text before copying.</key>
+	<string>Перш ніж копіювати, перевірте розкодований текст.</string>
+	<key>Review the decoded values before copying or opening.</key>
+	<string>Перш ніж копіювати чи відкривати, перевірте розкодовані значення.</string>
+	<key>Review the email details before composing.</key>
+	<string>Перш ніж писати лист, перевірте його дані.</string>
+	<key>Review the message details before opening.</key>
+	<string>Перш ніж відкривати, перевірте дані повідомлення.</string>
+	<key>Review the network details before copying.</key>
+	<string>Перш ніж копіювати, перевірте дані мережі.</string>
+	<key>Review the phone number before opening.</key>
+	<string>Перш ніж відкривати, перевірте номер телефону.</string>
+	<key>Right</key>
+	<string>Праворуч</string>
+	<key>Ripple</key>
+	<string>Хвиля</string>
+	<key>Rose Smoke</key>
+	<string>Рожевий дим</string>
+	<key>Rounded</key>
+	<string>Заокруглена</string>
+	<key>Rounded Corners (⌥R)</key>
+	<string>Заокруглені кути (⌥R)</string>
+	<key>Rounded corners</key>
+	<string>Заокруглені кути</string>
+	<key>Rounded rectangle</key>
+	<string>Заокруглений прямокутник</string>
+	<key>Roundness</key>
+	<string>Заокруглення</string>
+	<key>S</key>
+	<string>S</string>
+	<key>SHOTNIX LIBRARY</key>
+	<string>МЕДІАТЕКА SHOTNIX</string>
+	<key>Save</key>
+	<string>Зберегти</string>
+	<key>Save %@…</key>
+	<string>Зберегти %@…</string>
+	<key>Save (⌘S)</key>
+	<string>Зберегти (⌘S)</string>
+	<key>Save As…</key>
+	<string>Зберегти як…</string>
+	<key>Save Folder</key>
+	<string>Папка збереження</string>
+	<key>Save Location</key>
+	<string>Місце збереження</string>
+	<key>Save Subtitles</key>
+	<string>Зберегти субтитри</string>
+	<key>Save Subtitles (.srt)…</key>
+	<string>Зберегти субтитри (.srt)…</string>
+	<key>Save Subtitles (.vtt)…</key>
+	<string>Зберегти субтитри (.vtt)…</string>
+	<key>Save automatically</key>
+	<string>Зберігати автоматично</string>
+	<key>Save changes to this screenshot?</key>
+	<string>Зберегти зміни в цьому знімку екрана?</string>
+	<key>Save folder updated.</key>
+	<string>Папку збереження оновлено.</string>
+	<key>Save screenshot to disk</key>
+	<string>Зберегти знімок екрана на диск</string>
+	<key>Saved</key>
+	<string>Збережено</string>
+	<key>Saved %@</key>
+	<string>Збережено «%@»</string>
+	<key>Saved %@ to %@ — click to reveal in Finder</key>
+	<string>«%1$@» збережено в «%2$@» — клацніть, щоб показати у Finder</string>
+	<key>Saved capture</key>
+	<string>Збережений знімок</string>
+	<key>Saved to %@: %@</key>
+	<string>Збережено в «%@»: %@</string>
+	<key>Saved — new recordings will use this look</key>
+	<string>Збережено — нові записи матимуть такий стиль</string>
+	<key>Saves %@ — only silences where nothing happens on screen</key>
+	<string>Заощаджує %@ — лише тиша, коли на екрані нічого не відбувається</string>
+	<key>Saves %@ — silences where the pointer rests and nothing is clicked or pressed (this older recording can't see typing)</key>
+	<string>Заощаджує %@ — тиша, коли курсор нерухомий і нічого не клацають і не натискають (цей старіший запис не бачить введення тексту)</string>
+	<key>Saves the background, frame, cursor, and zoom style.</key>
+	<string>Зберігає тло, рамку, курсор і стиль наближення.</string>
+	<key>Save…</key>
+	<string>Зберегти…</string>
+	<key>Saving captures to History</key>
+	<string>Збереження знімків в історію</string>
+	<key>Saving the last recording…</key>
+	<string>Збереження останнього запису…</string>
+	<key>Saving the recording</key>
+	<string>Збереження запису</string>
+	<key>Saving the recording…</key>
+	<string>Збереження запису…</string>
+	<key>Saving the screen recording</key>
+	<string>Збереження запису екрана</string>
+	<key>Saving…</key>
+	<string>Збереження…</string>
+	<key>Scan QR Code</key>
+	<string>Сканувати QR-код</string>
+	<key>Screen Recording</key>
+	<string>Запис екрана</string>
+	<key>Screen Recording Permission Required</key>
+	<string>Потрібен дозвіл на запис екрана</string>
+	<key>Screen recording didn't start in time. Try again.</key>
+	<string>Запис екрана не почався вчасно. Спробуйте ще раз.</string>
+	<key>Screenshot Editor</key>
+	<string>Редактор знімків</string>
+	<key>Screenshot canvas</key>
+	<string>Полотно знімка</string>
+	<key>Screenshot captured</key>
+	<string>Знімок екрана зроблено</string>
+	<key>Screenshot selection</key>
+	<string>Вибір області для знімка</string>
+	<key>Screenshot thumbnail</key>
+	<string>Мініатюра знімка екрана</string>
+	<key>Screenshots</key>
+	<string>Знімки екрана</string>
+	<key>Scroll down to capture</key>
+	<string>Прокрутіть униз, щоб зняти</string>
+	<key>Scroll down to capture more</key>
+	<string>Прокручуйте далі вниз</string>
+	<key>Scrolled too fast — scroll back up a little</key>
+	<string>Надто швидко — прокрутіть трохи назад</string>
+	<key>Scrolling</key>
+	<string>Прокручування</string>
+	<key>Scrolling Capture</key>
+	<string>Знімок із прокручуванням</string>
+	<key>Scrolling capture</key>
+	<string>Знімок із прокручуванням</string>
+	<key>Scrolling capture controls</key>
+	<string>Керування знімком із прокручуванням</string>
+	<key>Scrolling capture failed</key>
+	<string>Не вдалося зробити знімок із прокручуванням</string>
+	<key>Search commands</key>
+	<string>Шукати команди</string>
+	<key>Search text in captures</key>
+	<string>Шукати текст у знімках</string>
+	<key>Security</key>
+	<string>Безпека</string>
+	<key>Select</key>
+	<string>Вибір</string>
+	<key>Select All</key>
+	<string>Вибрати все</string>
+	<key>Select a clip on the timeline to mute it or fade it in and out.</key>
+	<string>Виберіть кліп на шкалі часу, щоб вимкнути його звук або додати плавну появу й зникнення.</string>
+	<key>Select a range to cut</key>
+	<string>Вибрати проміжок для вирізання</string>
+	<key>Select a window to record without blocking other apps</key>
+	<string>Виберіть вікно для запису, не блокуючи інших програм</string>
+	<key>Select previous / next item</key>
+	<string>Вибрати попередній/наступний елемент</string>
+	<key>Select several items</key>
+	<string>Вибрати кілька елементів</string>
+	<key>Select which display to record fullscreen</key>
+	<string>Виберіть дисплей для запису на весь екран</string>
+	<key>Select words and press ⌫ to cut them from the video — ⌫ again on crossed-out words puts them back. Click a word to jump there; ⌘F finds.</key>
+	<string>Виберіть слова й натисніть ⌫, щоб вирізати їх з відео, — повторне ⌫ на закреслених словах повертає їх. Клацніть слово, щоб перейти до нього; ⌘F — пошук.</string>
+	<key>Selected %@</key>
+	<string>Вибрано: %@</string>
+	<key>Selected part</key>
+	<string>Вибрана частина</string>
+	<key>Selection</key>
+	<string>Вибір</string>
+	<key>Selection %@ by %@ points</key>
+	<string>Вибір: %@ на %@ точок</string>
+	<key>Selection %@ by %@ points. Arrow keys move it, Return captures, Escape cancels.</key>
+	<string>Вибір: %@ на %@ точок. Клавіші зі стрілками переміщують його, Return знімає, Escape скасовує.</string>
+	<key>Set In to Playhead</key>
+	<string>Встановити початок на покажчику відтворення</string>
+	<key>Set Out to Playhead</key>
+	<string>Встановити кінець на покажчику відтворення</string>
+	<key>Set the in point to the playhead (%@)</key>
+	<string>Встановити початок на покажчику відтворення (%@)</string>
+	<key>Set the out point to the playhead (%@)</key>
+	<string>Встановити кінець на покажчику відтворення (%@)</string>
+	<key>Settings</key>
+	<string>Параметри</string>
+	<key>Settings…</key>
+	<string>Параметри…</string>
+	<key>Shadow</key>
+	<string>Тінь</string>
+	<key>Shadow and transparent padding</key>
+	<string>Тінь і прозорий відступ</string>
+	<key>Shape</key>
+	<string>Форма</string>
+	<key>Share</key>
+	<string>Поділитися</string>
+	<key>Share — Mail, Messages, AirDrop…</key>
+	<string>Поділитися — Пошта, Повідомлення, AirDrop…</string>
+	<key>Shortcut</key>
+	<string>Скорочення</string>
+	<key>Shortcut %@</key>
+	<string>Скорочення %@</string>
+	<key>Shortcut Conflict Detected</key>
+	<string>Виявлено конфлікт скорочень</string>
+	<key>Shortcut hidden</key>
+	<string>Скорочення сховано</string>
+	<key>Shortcuts</key>
+	<string>Скорочення</string>
+	<key>Shorten Pauses</key>
+	<string>Скоротити паузи</string>
+	<key>Shortens every silence over a second (this video has no Shotnix pointer data to spot what happens on screen)</key>
+	<string>Скорочує кожну тишу, довшу за секунду (у цьому відео немає даних курсора Shotnix, щоб розпізнати, що відбувається на екрані)</string>
+	<key>Shotnix Preferences</key>
+	<string>Параметри Shotnix</string>
+	<key>Shotnix can't open this file</key>
+	<string>Shotnix не може відкрити цей файл</string>
+	<key>Shotnix can't save to that folder. Pick another place, like Desktop or Movies, and export again.</key>
+	<string>Shotnix не може зберігати в цю папку. Виберіть інше місце, наприклад «Робочий стіл» чи «Фільми», і експортуйте ще раз.</string>
+	<key>Shotnix can't write to the save folder. Choose another one in Settings → Screenshots.</key>
+	<string>Shotnix не може записувати в папку збереження. Виберіть іншу в розділі Параметри → Знімки екрана.</string>
+	<key>Shotnix could not write the file to:
+%@</key>
+	<string>Shotnix не вдалося записати файл сюди:
+%@</string>
+	<key>Shotnix is ready to use!</key>
+	<string>Усе готово до роботи з Shotnix!</string>
+	<key>Shotnix is still cleaning up the voice</key>
+	<string>Shotnix ще очищає голос</string>
+	<key>Shotnix is still transcribing</key>
+	<string>Shotnix ще розшифровує мовлення</string>
+	<key>Shotnix isn't allowed to record the screen. Turn it on in System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording.</key>
+	<string>Shotnix не має дозволу на запис екрана. Увімкніть його тут: Системні параметри → Приватність і безпека → Записування системного звуку й екрана.</string>
+	<key>Shotnix listens to the recording right on this Mac — nothing is uploaded. Then cut the video by deleting words, remove ums and long pauses in one click, and add captions.</key>
+	<string>Shotnix слухає запис просто на цьому Mac — нічого не вивантажується. Потім монтуйте відео, видаляючи слова, одним клацанням вилучайте слова-паразити й довгі паузи та додавайте субтитри.</string>
+	<key>Shotnix lives here — setup continues next launch</key>
+	<string>Shotnix тут — налаштування продовжиться під час наступного запуску</string>
+	<key>Shotnix lives in your menu bar</key>
+	<string>Shotnix — у вашій смузі меню</string>
+	<key>Shotnix needs Screen Recording permission to capture your screen.
+
+Please enable it in System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording.</key>
+	<string>Shotnix потрібен дозвіл на запис екрана, щоб знімати ваш екран.
+
+Увімкніть його тут: Системні параметри → Приватність і безпека → Записування системного звуку й екрана.</string>
+	<key>Shotnix restarts to switch languages. You can also set it in System Settings → General → Language &amp; Region → Applications.</key>
+	<string>Щоб змінити мову, Shotnix перезапускається. Мову також можна задати тут: Системні параметри → Загальні → Мова і регіон → Програми.</string>
+	<key>Shotnix will wrap these up before it quits.</key>
+	<string>Shotnix завершить їх перед виходом.</string>
+	<key>Shotnix – Capture History</key>
+	<string>Shotnix — Історія знімків</string>
+	<key>Show</key>
+	<string>Показ</string>
+	<key>Show Background</key>
+	<string>Показати тло</string>
+	<key>Show Desktop Icons</key>
+	<string>Показати значки робочого столу</string>
+	<key>Show Editor</key>
+	<string>Показати редактор</string>
+	<key>Show Editor Tips</key>
+	<string>Показати поради редактора</string>
+	<key>Show Folder in Finder</key>
+	<string>Показати папку у Finder</string>
+	<key>Show Quick Access Overlay</key>
+	<string>Показувати мініатюру швидкого доступу</string>
+	<key>Show Recent Export “%@” in Finder</key>
+	<string>Показати нещодавній експорт «%@» у Finder</string>
+	<key>Show Recording in Finder</key>
+	<string>Показати запис у Finder</string>
+	<key>Show Video Editor</key>
+	<string>Показати відеоредактор</string>
+	<key>Show background</key>
+	<string>Показувати тло</string>
+	<key>Show camera</key>
+	<string>Показувати камеру</string>
+	<key>Show captions</key>
+	<string>Показувати субтитри</string>
+	<key>Show cursor</key>
+	<string>Показувати курсор</string>
+	<key>Show for the whole video</key>
+	<string>Показувати протягом усього відео</string>
+	<key>Show in Finder</key>
+	<string>Показати у Finder</string>
+	<key>Show in Finder — %@</key>
+	<string>Показати у Finder — %@</string>
+	<key>Show keyboard shortcuts</key>
+	<string>Показувати клавіатурні скорочення</string>
+	<key>Show menu bar icon</key>
+	<string>Показувати значок у смузі меню</string>
+	<key>Show more / less detail</key>
+	<string>Показати більше/менше деталей</string>
+	<key>Show more of the timeline</key>
+	<string>Показати більшу частину шкали часу</string>
+	<key>Show one kind of capture</key>
+	<string>Показати лише один тип знімків</string>
+	<key>Show shortcuts</key>
+	<string>Показувати скорочення</string>
+	<key>Show the timeline in more detail</key>
+	<string>Показати шкалу часу детальніше</string>
+	<key>Show the whole screenshot again</key>
+	<string>Знову показати весь знімок</string>
+	<key>Show tips under the video again</key>
+	<string>Знову показувати поради під відео</string>
+	<key>Shows what can be removed — data of recordings Shotnix can't find, unused footage and pictures, old clipboard exports — and asks before removing it</key>
+	<string>Показує, що можна вилучити, — дані записів, яких Shotnix не може знайти, невикористані відео й зображення, старі експорти в буфер обміну, — і запитує перед вилученням</string>
+	<key>Shrink while zoomed</key>
+	<string>Зменшувати під час наближення</string>
+	<key>Shuffle Background</key>
+	<string>Випадкове тло</string>
+	<key>Shuffle the background</key>
+	<string>Вибрати випадкове тло</string>
+	<key>Side by side</key>
+	<string>Поруч</string>
+	<key>Silences over a second get shortened — except while you click, type, scroll, or move the pointer, so the demo itself is never cut</key>
+	<string>Тиша, довша за секунду, скорочується — окрім моментів, коли ви клацаєте, вводите текст, прокручуєте чи рухаєте курсор, тож сама демонстрація ніколи не вирізається</string>
+	<key>Silences over a second get shortened — except while you move the pointer, click, or press a shortcut</key>
+	<string>Тиша, довша за секунду, скорочується — окрім моментів, коли ви рухаєте курсор, клацаєте чи натискаєте скорочення</string>
+	<key>Silky</key>
+	<string>Шовковисто</string>
+	<key>Silver</key>
+	<string>Сріблястий</string>
+	<key>Size</key>
+	<string>Розмір</string>
+	<key>Skip Setup</key>
+	<string>Пропустити налаштування</string>
+	<key>Skipping frames</key>
+	<string>Пропуск кадрів</string>
+	<key>Skips the dash to the Stop button at the end</key>
+	<string>Пропускає ривок до кнопки «Зупинити» наприкінці</string>
+	<key>Sky</key>
+	<string>Небо</string>
+	<key>Sky Wash</key>
+	<string>Небесна акварель</string>
+	<key>Slow</key>
+	<string>Повільно</string>
+	<key>Small</key>
+	<string>Малий</string>
+	<key>Smallest files, great for docs and chat</key>
+	<string>Найменші файли — чудово для документів і чатів</string>
+	<key>Smooth</key>
+	<string>Плавно</string>
+	<key>Social</key>
+	<string>Соцмережі</string>
+	<key>Social feeds</key>
+	<string>Стрічки соцмереж</string>
+	<key>Soft streaks on fast moves</key>
+	<string>М’які шлейфи під час швидких рухів</string>
+	<key>Solid Color</key>
+	<string>Суцільний колір</string>
+	<key>Solid color</key>
+	<string>Суцільний колір</string>
+	<key>Sound</key>
+	<string>Звук</string>
+	<key>Sounds</key>
+	<string>Звуки</string>
+	<key>Space</key>
+	<string>Пробіл</string>
+	<key>Space Gray</key>
+	<string>Сірий космос</string>
+	<key>Speech recognition is turned off for Shotnix in System Settings → Privacy &amp; Security → Speech Recognition. Turn it on, then try again.</key>
+	<string>Розпізнавання мовлення для Shotnix вимкнено (Системні параметри → Приватність і безпека → Розпізнавання мовлення). Увімкніть його й спробуйте ще раз.</string>
+	<key>Speech recognition isn't available on this Mac right now. Try again in a moment.</key>
+	<string>Розпізнавання мовлення зараз недоступне на цьому Mac. Спробуйте за мить.</string>
+	<key>Speed</key>
+	<string>Швидкість</string>
+	<key>Speed Up Idle</key>
+	<string>Прискорити простої</string>
+	<key>Speed Up Idle Moments</key>
+	<string>Прискорити моменти простою</string>
+	<key>Speed Up Idle works on Shotnix recordings — it watches the pointer</key>
+	<string>«Прискорити простої» працює із записами Shotnix — функція стежить за курсором</string>
+	<key>Speed of this part</key>
+	<string>Швидкість цієї частини</string>
+	<key>Split</key>
+	<string>Розділити</string>
+	<key>Split at Playhead</key>
+	<string>Розділити на покажчику відтворення</string>
+	<key>Split at playhead</key>
+	<string>Розділити на покажчику відтворення</string>
+	<key>Split at the playhead (S)</key>
+	<string>Розділити на покажчику відтворення (S)</string>
+	<key>Split the video (S) to make cuts; each can dissolve or dip to black.</key>
+	<string>Розділіть відео (S), щоб створити склейки; на кожній можливе розчинення чи затемнення.</string>
+	<key>Spoken word</key>
+	<string>Вимовлене слово</string>
+	<key>Spotlight</key>
+	<string>Прожектор</string>
+	<key>Spotlight shape</key>
+	<string>Форма прожектора</string>
+	<key>Star on GitHub</key>
+	<string>Поставити зірку</string>
+	<key>Start / end</key>
+	<string>Початок/кінець</string>
+	<key>Start Over</key>
+	<string>Почати заново</string>
+	<key>Start Over from the Original Recording…</key>
+	<string>Почати заново з оригінального запису…</string>
+	<key>Start at the playhead</key>
+	<string>Почати на покажчику відтворення</string>
+	<key>Start here</key>
+	<string>Початок тут</string>
+	<key>Start over from the original recording?</key>
+	<string>Почати заново з оригінального запису?</string>
+	<key>Start the song at</key>
+	<string>Почати трек з</string>
+	<key>Starts</key>
+	<string>Початок</string>
+	<key>Startup</key>
+	<string>Запуск</string>
+	<key>Step %lld</key>
+	<string>Крок %lld</string>
+	<key>Still saving the last recording — try again in a moment.</key>
+	<string>Останній запис ще зберігається — спробуйте за мить.</string>
+	<key>Still saving the recording…</key>
+	<string>Запис ще зберігається…</string>
+	<key>Stitching…</key>
+	<string>Склеювання…</string>
+	<key>Stop Enhancing Voice</key>
+	<string>Зупинити покращення голосу</string>
+	<key>Stop Recording</key>
+	<string>Зупинити запис</string>
+	<key>Stop and Close</key>
+	<string>Зупинити й закрити</string>
+	<key>Stop recording</key>
+	<string>Зупинити запис</string>
+	<key>Stop recording (%@)</key>
+	<string>Зупинити запис (%@)</string>
+	<key>Storage</key>
+	<string>Сховище</string>
+	<key>Strength</key>
+	<string>Сила</string>
+	<key>Studio</key>
+	<string>Студія</string>
+	<key>Style</key>
+	<string>Стиль</string>
+	<key>Subject</key>
+	<string>Тема</string>
+	<key>Subtitle</key>
+	<string>Підзаголовок</string>
+	<key>Subtitles file</key>
+	<string>Файл субтитрів</string>
+	<key>Sunset</key>
+	<string>Захід сонця</string>
+	<key>Sunset Coral</key>
+	<string>Кораловий захід</string>
+	<key>Support</key>
+	<string>Підтримка</string>
+	<key>Swap the arrow's head and tail</key>
+	<string>Поміняти місцями вістря й хвіст стрілки</string>
+	<key>Switch the camera to full screen for talking points, or put it side by side with the screen — at the playhead. Each shows on the Camera lane.</key>
+	<string>Перемикайте камеру на весь кадр для ключових думок або ставте її поруч з екраном — на покажчику відтворення. Кожна зміна з’являється на доріжці «Камера».</string>
+	<key>System Default</key>
+	<string>Як у системі</string>
+	<key>System Default (%@)</key>
+	<string>Як у системі (%@)</string>
+	<key>System audio</key>
+	<string>Системний звук</string>
+	<key>System audio couldn't be recorded. Try again without system audio.</key>
+	<string>Не вдалося записати системний звук. Спробуйте ще раз без системного звуку.</string>
+	<key>Table copied — paste it into a spreadsheet</key>
+	<string>Таблицю скопійовано — вставте її в електронну таблицю</string>
+	<key>Tag</key>
+	<string>Плашка</string>
+	<key>Tag color</key>
+	<string>Колір плашки</string>
+	<key>Tahoe Ice</key>
+	<string>Лід Тахо</string>
+	<key>Take a Test Screenshot</key>
+	<string>Зробити пробний знімок</string>
+	<key>Take your first screenshot</key>
+	<string>Зробіть перший знімок екрана</string>
+	<key>Tangerine</key>
+	<string>Мандарин</string>
+	<key>Template</key>
+	<string>Шаблон</string>
+	<key>Text</key>
+	<string>Текст</string>
+	<key>Text QR found</key>
+	<string>Знайдено QR-код із текстом</string>
+	<key>Text Recognition</key>
+	<string>Розпізнавання тексту</string>
+	<key>Text copied</key>
+	<string>Текст скопійовано</string>
+	<key>Text copied to clipboard</key>
+	<string>Текст скопійовано в буфер обміну</string>
+	<key>Text recognition failed</key>
+	<string>Не вдалося розпізнати текст</string>
+	<key>Text size</key>
+	<string>Розмір тексту</string>
+	<key>Text · highlight · arrow · blur</key>
+	<string>Текст · виділення · стрілка · розмиття</string>
+	<key>Text “%@”</key>
+	<string>Текст «%@»</string>
+	<key>Text: %@</key>
+	<string>Текст: %@</string>
+	<key>Thanks for watching</key>
+	<string>Дякуємо за перегляд</string>
+	<key>That display isn't available anymore.</key>
+	<string>Цей дисплей більше не доступний.</string>
+	<key>That display or window isn't available anymore.</key>
+	<string>Цей дисплей або вікно більше не доступні.</string>
+	<key>That drive is read-only. Pick another place to save, then export again.</key>
+	<string>Цей диск доступний лише для читання. Виберіть інше місце для збереження й експортуйте ще раз.</string>
+	<key>That part is only a title card — include a moment of the video to export it.</key>
+	<string>Ця частина — лише заставка: додайте момент відео, щоб її експортувати.</string>
+	<key>That part of the timeline is only a title card. Include a moment of the video in the range, then export again.</key>
+	<string>Ця частина шкали часу — лише заставка. Додайте до діапазону момент відео, а потім експортуйте ще раз.</string>
+	<key>That video is empty</key>
+	<string>Це відео порожнє</string>
+	<key>That window closed before recording could start.</key>
+	<string>Вікно закрилося до початку запису.</string>
+	<key>The camera couldn't start.</key>
+	<string>Не вдалося запустити камеру.</string>
+	<key>The camera keeps your cursor in view and glides after it.</key>
+	<string>Камера тримає курсор у кадрі й плавно стежить за ним.</string>
+	<key>The camera stopped. The recording continues without it.</key>
+	<string>Камера зупинилася. Запис триває без неї.</string>
+	<key>The cursor is part of this video</key>
+	<string>Курсор — частина цього відео</string>
+	<key>The export carries on in the background (Esc)</key>
+	<string>Експорт триває у фоні (Esc)</string>
+	<key>The export stopped unexpectedly (%@). Try again — if it keeps happening, export at a lower resolution or in H.264.</key>
+	<string>Експорт несподівано зупинився (%@). Спробуйте ще раз — якщо це повторюється, експортуйте з нижчою роздільністю або в H.264.</string>
+	<key>The menu bar icon is Shotnix's main entry point. While it is hidden, open Shotnix again from Finder, Launchpad, or Spotlight to bring these Preferences back.</key>
+	<string>Значок у смузі меню — основний вхід до Shotnix. Поки його сховано, відкрийте Shotnix знову з Finder, Launchpad або Spotlight, щоб повернутися до цих параметрів.</string>
+	<key>The microphone couldn't start, so this recording has no mic.</key>
+	<string>Не вдалося запустити мікрофон, тому в цьому записі немає звуку з мікрофона.</string>
+	<key>The microphone stopped working. The recording continues without it.</key>
+	<string>Мікрофон перестав працювати. Запис триває без нього.</string>
+	<key>The picture's file is gone — choose it again with Replace.</key>
+	<string>Файл зображення зник — виберіть його знову за допомогою «Замінити».</string>
+	<key>The recording couldn't be finished — saved the first %@.</key>
+	<string>Не вдалося завершити запис — збережено перші %@.</string>
+	<key>The recording's file can't be found — it may have been moved or deleted. Put it back and export again.</key>
+	<string>Не вдається знайти файл запису — можливо, його переміщено чи видалено. Поверніть його на місце й експортуйте ще раз.</string>
+	<key>The save panel did not return a destination. Please try saving again.</key>
+	<string>Вікно збереження не повернуло місце призначення. Спробуйте зберегти ще раз.</string>
+	<key>The screenshot has no image data.</key>
+	<string>Знімок екрана не містить даних зображення.</string>
+	<key>The selected file has no video track. Choose a video file instead.</key>
+	<string>Вибраний файл не має відеодоріжки. Виберіть відеофайл.</string>
+	<key>The selection stays on screen to adjust — drag its edges, nudge it with the arrow keys, then press Return. Hold ⇧ as you release to capture right away.</key>
+	<string>Вибір лишається на екрані, щоб його можна було налаштувати, — перетягуйте краї, зсувайте клавішами зі стрілками, а потім натисніть Return. Утримуйте ⇧, коли відпускаєте, щоб зняти одразу.</string>
+	<key>The song is shorter than the video</key>
+	<string>Трек коротший за відео</string>
+	<key>The song's file is gone — choose it again with Replace.</key>
+	<string>Файл треку зник — виберіть його знову за допомогою «Замінити».</string>
+	<key>The timeline is empty. Restore a clip, then export again.</key>
+	<string>Шкала часу порожня. Відновіть кліп, а потім експортуйте ще раз.</string>
+	<key>The video encoder is busy — another app may be recording or exporting. Wait a moment and try again, or choose H.264.</key>
+	<string>Відеокодер зайнятий — можливо, інша програма записує чи експортує. Зачекайте трохи й спробуйте ще раз або виберіть H.264.</string>
+	<key>The video's own recording can't be removed</key>
+	<string>Основний запис відео не можна вилучити</string>
+	<key>The voice track is empty, so there's nothing to clean up. Turn off Enhance voice to keep the original sound.</key>
+	<string>Голосова доріжка порожня, тож очищати нічого. Вимкніть «Покращити голос», щоб зберегти оригінальний звук.</string>
+	<key>The window you're recording closed. Stop when you're ready — the recording keeps going.</key>
+	<string>Вікно, яке ви записуєте, закрилося. Зупиніть запис, коли будете готові, — він триває.</string>
+	<key>There are no captions to translate yet. Transcribe or add captions first.</key>
+	<string>Ще немає субтитрів для перекладу. Спершу розшифруйте мовлення або додайте субтитри.</string>
+	<key>There isn't enough free space on this disk: this export needs about %@ and %@ is free. Free up some space (empty the Trash, delete old recordings) or export to another drive.</key>
+	<string>На цьому диску недостатньо вільного місця: для експорту потрібно приблизно %@, а вільно %@. Звільніть місце (очистіть Кошик, видаліть старі записи) або експортуйте на інший диск.</string>
+	<key>There isn't enough free space on “%@”: this export needs about %@ and %@ is free. Free up some space (empty the Trash, delete old recordings) or export to another drive.</key>
+	<string>На «%@» недостатньо вільного місця: для експорту потрібно приблизно %@, а вільно %@. Звільніть місце (очистіть Кошик, видаліть старі записи) або експортуйте на інший диск.</string>
+	<key>There's already a zoom here</key>
+	<string>Тут уже є наближення</string>
+	<key>There's no video in this file</key>
+	<string>У цьому файлі немає відео</string>
+	<key>Thickness</key>
+	<string>Товщина</string>
+	<key>Thin</key>
+	<string>Тонкий</string>
+	<key>This GIF is too long for its size — it would need about %@ of memory. Pick a smaller size or fewer frames per second, export part of the video, or choose MP4.</key>
+	<string>Цей GIF задовгий для такого розміру — потрібно приблизно %@ пам’яті. Виберіть менший розмір або менше кадрів на секунду, експортуйте частину відео чи виберіть MP4.</string>
+	<key>This Mac can't translate between these languages. Pick another language.</key>
+	<string>Цей Mac не може перекладати між цими мовами. Виберіть іншу мову.</string>
+	<key>This Week</key>
+	<string>Цього тижня</string>
+	<key>This list</key>
+	<string>Цей список</string>
+	<key>This recording has no sound</key>
+	<string>У цьому записі немає звуку</string>
+	<key>This recording has no sound to transcribe. You can still type captions yourself.</key>
+	<string>У цьому записі немає звуку для розшифрування. Але ви можете ввести субтитри самостійно.</string>
+	<key>This recording has no sound. Turn on the microphone before recording to narrate it.</key>
+	<string>У цьому записі немає звуку. Щоб додати коментар, перед записом увімкніть мікрофон.</string>
+	<key>This recording has no voice to duck under</key>
+	<string>У цьому записі немає голосу, під який можна стишувати музику</string>
+	<key>This recording only has the arrow</key>
+	<string>У цьому записі є лише стрілка</string>
+	<key>This video is copy-protected and can't be exported.</key>
+	<string>Це відео захищене від копіювання, його не можна експортувати.</string>
+	<key>This video isn't there anymore</key>
+	<string>Цього відео більше немає</string>
+	<key>This video was recorded with your camera, but “%@” isn't in %@ anymore. Put it back there and open the video again to get the camera bubble back.</key>
+	<string>Це відео записано з камерою, але файлу «%@» більше немає в %@. Поверніть його туди й відкрийте відео знову, щоб повернути бульбашку камери.</string>
+	<key>Three quick steps and you're capturing.</key>
+	<string>Три швидкі кроки — і можна знімати.</string>
+	<key>Tide Glass</key>
+	<string>Скло припливу</string>
+	<key>Timed Capture</key>
+	<string>Знімок за таймером</string>
+	<key>Timed Capture (%llds)</key>
+	<string>Знімок за таймером (%lld с)</string>
+	<key>Timed Capture selects the area first, then counts down before the shot — time to open menus or hover states. Esc cancels.</key>
+	<string>Знімок за таймером спершу дає вибрати область, а потім веде зворотний відлік — є час відкрити меню чи навести курсор на елемент. Esc скасовує.</string>
+	<key>Timeline</key>
+	<string>Шкала часу</string>
+	<key>Timeline scale</key>
+	<string>Масштаб шкали часу</string>
+	<key>Timeline scale (pinch, or ⌘-scroll)</key>
+	<string>Масштаб шкали часу (зведення пальців або ⌘ і прокручування)</string>
+	<key>Timing</key>
+	<string>Час</string>
+	<key>Tips</key>
+	<string>Поради</string>
+	<key>Title</key>
+	<string>Назва</string>
+	<key>To</key>
+	<string>Кому</string>
+	<key>Today</key>
+	<string>Сьогодні</string>
+	<key>Too long for a GIF at this size — it would need about %@ of memory. Make it lighter, export a part, or choose MP4.</key>
+	<string>Задовго для GIF такого розміру — потрібно приблизно %@ пам’яті. Полегште його, експортуйте частину чи виберіть MP4.</string>
+	<key>Too short for an intro and outro</key>
+	<string>Закоротке для вступу й завершення</string>
+	<key>Tools</key>
+	<string>Інструменти</string>
+	<key>Top</key>
+	<string>Угорі</string>
+	<key>Top left</key>
+	<string>Угорі ліворуч</string>
+	<key>Top right</key>
+	<string>Угорі праворуч</string>
+	<key>Transcribe</key>
+	<string>Розшифрувати</string>
+	<key>Transcribe Again</key>
+	<string>Розшифрувати знову</string>
+	<key>Transcribe Again…</key>
+	<string>Розшифрувати знову…</string>
+	<key>Transcribe Narration (Captions, Edit by Text)</key>
+	<string>Розшифрувати мовлення (субтитри, монтаж за текстом)</string>
+	<key>Transcribe again?</key>
+	<string>Розшифрувати знову?</string>
+	<key>Transcribe the narration to search its words</key>
+	<string>Розшифруйте мовлення, щоб шукати в ньому слова</string>
+	<key>Transcribe…</key>
+	<string>Розшифрувати…</string>
+	<key>Transcribing “%@”</key>
+	<string>Розшифрування «%@»</string>
+	<key>Transcript</key>
+	<string>Розшифровка</string>
+	<key>Transcript and captions removed — ⌘Z to undo</key>
+	<string>Розшифровку й субтитри вилучено — ⌘Z, щоб відмінити</string>
+	<key>Transition in</key>
+	<string>Перехід на початку</string>
+	<key>Transitions</key>
+	<string>Переходи</string>
+	<key>Translate</key>
+	<string>Перекласти</string>
+	<key>Trim the clip's end to the playhead (O)</key>
+	<string>Підрізати кінець кліпу до покажчика відтворення (O)</string>
+	<key>Trim the clip's start to the playhead (I)</key>
+	<string>Підрізати початок кліпу до покажчика відтворення (I)</string>
+	<key>Try Again</key>
+	<string>Спробувати ще раз</string>
+	<key>Try it right now — Capture Area is also in the menu bar.</key>
+	<string>Спробуйте просто зараз — «Зняти область» є також у смузі меню.</string>
+	<key>Turn Off Click Sounds</key>
+	<string>Вимкнути звуки клацання</string>
+	<key>Turn On</key>
+	<string>Увімкнути</string>
+	<key>Turn around</key>
+	<string>Розвернути</string>
+	<key>Turn on the camera in the recording bar before you record, and your face appears here as a bubble you can place, resize, and restyle.</key>
+	<string>Перед записом увімкніть камеру на панелі запису, і ваше обличчя з’явиться тут у бульбашці, яку можна розмістити, змінити розмір і стиль.</string>
+	<key>Turn on the microphone or system audio before recording to capture sound.</key>
+	<string>Щоб записати звук, перед записом увімкніть мікрофон або системний звук.</string>
+	<key>Turn the video's sound back on</key>
+	<string>Знову ввімкнути звук відео</string>
+	<key>Type here…</key>
+	<string>Введіть текст…</string>
+	<key>Type in a text annotation</key>
+	<string>Вводити текст у текстовий елемент</string>
+	<key>URL</key>
+	<string>URL</string>
+	<key>Under the voice</key>
+	<string>Під голосом</string>
+	<key>Undo</key>
+	<string>Відмінити</string>
+	<key>Undo / redo</key>
+	<string>Відмінити/повторити</string>
+	<key>Undo Add Arrow</key>
+	<string>Відмінити додавання стрілки</string>
+	<key>Undo Add Blur</key>
+	<string>Відмінити додавання розмиття</string>
+	<key>Undo Add Camera Layout</key>
+	<string>Відмінити додавання макета камери</string>
+	<key>Undo Add Camera Layouts</key>
+	<string>Відмінити додавання макетів камери</string>
+	<key>Undo Add Caption</key>
+	<string>Відмінити додавання субтитру</string>
+	<key>Undo Add Captions</key>
+	<string>Відмінити додавання субтитрів</string>
+	<key>Undo Add Click</key>
+	<string>Відмінити додавання клацання</string>
+	<key>Undo Add Clicks</key>
+	<string>Відмінити додавання клацань</string>
+	<key>Undo Add Highlight</key>
+	<string>Відмінити додавання виділення</string>
+	<key>Undo Add Image</key>
+	<string>Відмінити додавання зображення</string>
+	<key>Undo Add Intro Card</key>
+	<string>Відмінити додавання вступної заставки</string>
+	<key>Undo Add Music</key>
+	<string>Відмінити додавання музики</string>
+	<key>Undo Add Outro Card</key>
+	<string>Відмінити додавання завершальної заставки</string>
+	<key>Undo Add Recording</key>
+	<string>Відмінити додавання запису</string>
+	<key>Undo Add Spotlight</key>
+	<string>Відмінити додавання прожектора</string>
+	<key>Undo Add Text</key>
+	<string>Відмінити додавання тексту</string>
+	<key>Undo Add Zoom</key>
+	<string>Відмінити додавання наближення</string>
+	<key>Undo Add Zooms</key>
+	<string>Відмінити додавання наближень</string>
+	<key>Undo Annotation Change</key>
+	<string>Відмінити зміну розмітки</string>
+	<key>Undo Annotations</key>
+	<string>Відмінити зміни розмітки</string>
+	<key>Undo Arrow Style</key>
+	<string>Відмінити зміну стилю стрілки</string>
+	<key>Undo Aspect Ratio</key>
+	<string>Відмінити зміну співвідношення сторін</string>
+	<key>Undo Auto Zoom</key>
+	<string>Відмінити автонаближення</string>
+	<key>Undo Background</key>
+	<string>Відмінити зміну тла</string>
+	<key>Undo Blur Style</key>
+	<string>Відмінити зміну стилю розмиття</string>
+	<key>Undo Camera Change</key>
+	<string>Відмінити зміну камери</string>
+	<key>Undo Camera Layout Change</key>
+	<string>Відмінити зміну макета камери</string>
+	<key>Undo Camera Layouts</key>
+	<string>Відмінити зміну макетів камери</string>
+	<key>Undo Caption Style</key>
+	<string>Відмінити зміну стилю субтитрів</string>
+	<key>Undo Caption Translation</key>
+	<string>Відмінити переклад субтитрів</string>
+	<key>Undo Captions</key>
+	<string>Відмінити зміну субтитрів</string>
+	<key>Undo Click Sounds</key>
+	<string>Відмінити зміну звуків клацання</string>
+	<key>Undo Clicks</key>
+	<string>Відмінити зміну клацань</string>
+	<key>Undo Crop</key>
+	<string>Відмінити обрізання</string>
+	<key>Undo Cursor Change</key>
+	<string>Відмінити зміну курсора</string>
+	<key>Undo Cut</key>
+	<string>Відмінити вирізання</string>
+	<key>Undo Cut Word</key>
+	<string>Відмінити вирізання слова</string>
+	<key>Undo Cut Words</key>
+	<string>Відмінити вирізання слів</string>
+	<key>Undo Delete Annotations</key>
+	<string>Відмінити видалення розмітки</string>
+	<key>Undo Delete Arrow</key>
+	<string>Відмінити видалення стрілки</string>
+	<key>Undo Delete Blur</key>
+	<string>Відмінити видалення розмиття</string>
+	<key>Undo Delete Camera Layout</key>
+	<string>Відмінити видалення макета камери</string>
+	<key>Undo Delete Camera Layouts</key>
+	<string>Відмінити видалення макетів камери</string>
+	<key>Undo Delete Caption</key>
+	<string>Відмінити видалення субтитру</string>
+	<key>Undo Delete Captions</key>
+	<string>Відмінити видалення субтитрів</string>
+	<key>Undo Delete Click</key>
+	<string>Відмінити видалення клацання</string>
+	<key>Undo Delete Clicks</key>
+	<string>Відмінити видалення клацань</string>
+	<key>Undo Delete Clip</key>
+	<string>Відмінити видалення кліпу</string>
+	<key>Undo Delete Clips</key>
+	<string>Відмінити видалення кліпів</string>
+	<key>Undo Delete Highlight</key>
+	<string>Відмінити видалення виділення</string>
+	<key>Undo Delete Image</key>
+	<string>Відмінити видалення зображення</string>
+	<key>Undo Delete Spotlight</key>
+	<string>Відмінити видалення прожектора</string>
+	<key>Undo Delete Text</key>
+	<string>Відмінити видалення тексту</string>
+	<key>Undo Delete Zoom</key>
+	<string>Відмінити видалення наближення</string>
+	<key>Undo Delete Zooms</key>
+	<string>Відмінити видалення наближень</string>
+	<key>Undo Edit Caption</key>
+	<string>Відмінити редагування субтитру</string>
+	<key>Undo Edit Text</key>
+	<string>Відмінити редагування тексту</string>
+	<key>Undo Enhance Voice</key>
+	<string>Відмінити покращення голосу</string>
+	<key>Undo Fade</key>
+	<string>Відмінити плавну появу/зникнення</string>
+	<key>Undo Hide Shortcut</key>
+	<string>Відмінити приховування скорочення</string>
+	<key>Undo Highlight Style</key>
+	<string>Відмінити зміну стилю виділення</string>
+	<key>Undo Image Style</key>
+	<string>Відмінити зміну стилю зображення</string>
+	<key>Undo Intro and Outro</key>
+	<string>Відмінити камеру для вступу й завершення</string>
+	<key>Undo Move Arrow</key>
+	<string>Відмінити переміщення стрілки</string>
+	<key>Undo Move Blur</key>
+	<string>Відмінити переміщення розмиття</string>
+	<key>Undo Move Click</key>
+	<string>Відмінити переміщення клацання</string>
+	<key>Undo Move Clip</key>
+	<string>Відмінити переміщення кліпу</string>
+	<key>Undo Move Highlight</key>
+	<string>Відмінити переміщення виділення</string>
+	<key>Undo Move Image</key>
+	<string>Відмінити переміщення зображення</string>
+	<key>Undo Move Recording</key>
+	<string>Відмінити переміщення запису</string>
+	<key>Undo Move Spotlight</key>
+	<string>Відмінити переміщення прожектора</string>
+	<key>Undo Move Text</key>
+	<string>Відмінити переміщення тексту</string>
+	<key>Undo Music Change</key>
+	<string>Відмінити зміну музики</string>
+	<key>Undo Mute Clip</key>
+	<string>Відмінити вимкнення звуку кліпу</string>
+	<key>Undo Mute Part</key>
+	<string>Відмінити вимкнення звуку частини</string>
+	<key>Undo Mute Video</key>
+	<string>Відмінити вимкнення звуку відео</string>
+	<key>Undo Remove All Zooms</key>
+	<string>Відмінити вилучення всіх наближень</string>
+	<key>Undo Remove Captions</key>
+	<string>Відмінити вилучення субтитрів</string>
+	<key>Undo Remove Intro Card</key>
+	<string>Відмінити вилучення вступної заставки</string>
+	<key>Undo Remove Music</key>
+	<string>Відмінити вилучення музики</string>
+	<key>Undo Remove Outro Card</key>
+	<string>Відмінити вилучення завершальної заставки</string>
+	<key>Undo Remove Recording</key>
+	<string>Відмінити вилучення запису</string>
+	<key>Undo Remove Ums</key>
+	<string>Відмінити вилучення слів-паразитів</string>
+	<key>Undo Replace Music</key>
+	<string>Відмінити заміну музики</string>
+	<key>Undo Reset Look</key>
+	<string>Відмінити скидання стилю</string>
+	<key>Undo Restore</key>
+	<string>Відмінити відновлення</string>
+	<key>Undo Restore Cut</key>
+	<string>Відмінити відновлення фрагмента</string>
+	<key>Undo Restore Cuts</key>
+	<string>Відмінити відновлення фрагментів</string>
+	<key>Undo Restore Pause</key>
+	<string>Відмінити відновлення паузи</string>
+	<key>Undo Restore Word</key>
+	<string>Відмінити відновлення слова</string>
+	<key>Undo Restore Words</key>
+	<string>Відмінити відновлення слів</string>
+	<key>Undo Shortcut Style</key>
+	<string>Відмінити зміну стилю скорочень</string>
+	<key>Undo Shortcuts</key>
+	<string>Відмінити зміну скорочень</string>
+	<key>Undo Shorten Pause</key>
+	<string>Відмінити скорочення паузи</string>
+	<key>Undo Shorten Pauses</key>
+	<string>Відмінити скорочення пауз</string>
+	<key>Undo Sound Change</key>
+	<string>Відмінити зміну звуку</string>
+	<key>Undo Speed Change</key>
+	<string>Відмінити зміну швидкості</string>
+	<key>Undo Speed Up Idle</key>
+	<string>Відмінити прискорення простоїв</string>
+	<key>Undo Split</key>
+	<string>Відмінити розділення</string>
+	<key>Undo Spotlight Style</key>
+	<string>Відмінити зміну стилю прожектора</string>
+	<key>Undo Start Over</key>
+	<string>Відмінити повернення до оригіналу</string>
+	<key>Undo Style Change</key>
+	<string>Відмінити зміну стилю</string>
+	<key>Undo Text Style</key>
+	<string>Відмінити зміну стилю тексту</string>
+	<key>Undo Timeline Edit</key>
+	<string>Відмінити зміну на шкалі часу</string>
+	<key>Undo Title Card</key>
+	<string>Відмінити зміну заставки</string>
+	<key>Undo Transcribe</key>
+	<string>Відмінити розшифрування</string>
+	<key>Undo Transitions</key>
+	<string>Відмінити зміну переходів</string>
+	<key>Undo Trim</key>
+	<string>Відмінити підрізання</string>
+	<key>Undo Unmute Clip</key>
+	<string>Відмінити увімкнення звуку кліпу</string>
+	<key>Undo Unmute Part</key>
+	<string>Відмінити увімкнення звуку частини</string>
+	<key>Undo Unmute Video</key>
+	<string>Відмінити увімкнення звуку відео</string>
+	<key>Undo Zoom Change</key>
+	<string>Відмінити зміну наближення</string>
+	<key>Undo Zoom Level for All</key>
+	<string>Відмінити спільний рівень наближення</string>
+	<key>Undo Zooms</key>
+	<string>Відмінити зміну наближень</string>
+	<key>Unmute Clip</key>
+	<string>Увімкнути звук кліпу</string>
+	<key>Unmute preview</key>
+	<string>Увімкнути звук перегляду</string>
+	<key>Unmute the Preview</key>
+	<string>Увімкнути звук перегляду</string>
+	<key>Unmute the preview (M)</key>
+	<string>Увімкнути звук перегляду (M)</string>
+	<key>Updates</key>
+	<string>Оновлення</string>
+	<key>Upload Custom Image</key>
+	<string>Вибрати власне зображення</string>
+	<key>Use This Look for New Recordings</key>
+	<string>Використовувати цей стиль для нових записів</string>
+	<key>Use for new recordings</key>
+	<string>Для нових записів</string>
+	<key>Use this color</key>
+	<string>Використати цей колір</string>
+	<key>Use this level for every zoom</key>
+	<string>Цей рівень для всіх наближень</string>
+	<key>Used for screenshots and recordings. Tokens: %y year, %m month, %d day, %H hour, %M minute, %S second. Leave empty to restore the default.</key>
+	<string>Для знімків екрана й записів. Маркери: %y — рік, %m — місяць, %d — день, %H — година, %M — хвилина, %S — секунда. Залиште порожнім, щоб відновити типовий шаблон.</string>
+	<key>Utility</key>
+	<string>Утиліти</string>
+	<key>Version</key>
+	<string>Версія</string>
+	<key>Version %@</key>
+	<string>Версія %@</string>
+	<key>Video</key>
+	<string>Відео</string>
+	<key>Video copied</key>
+	<string>Відео скопійовано</string>
+	<key>Video data</key>
+	<string>Відеодані</string>
+	<key>Video data uses %@</key>
+	<string>Відеодані займають %@</string>
+	<key>Video exported</key>
+	<string>Відео експортовано</string>
+	<key>Video preview</key>
+	<string>Перегляд відео</string>
+	<key>Violet</key>
+	<string>Фіалковий</string>
+	<key>Violet Bloom</key>
+	<string>Фіолетовий цвіт</string>
+	<key>Voice</key>
+	<string>Голос</string>
+	<key>Voice enhanced — background noise removed</key>
+	<string>Голос покращено — фоновий шум вилучено</string>
+	<key>Voice enhancement isn't available on this Mac. Turn off Enhance voice to keep the original sound.</key>
+	<string>Покращення голосу недоступне на цьому Mac. Вимкніть «Покращити голос», щоб зберегти оригінальний звук.</string>
+	<key>Voice enhancement stopped partway. Turn Enhance voice off and on again to retry.</key>
+	<string>Покращення голосу зупинилося на півдорозі. Вимкніть і знову ввімкніть «Покращити голос», щоб повторити.</string>
+	<key>Volume</key>
+	<string>Гучність</string>
+	<key>Waiting…</key>
+	<string>Очікування…</string>
+	<key>Wallpaper</key>
+	<string>Шпалери</string>
+	<key>Warning</key>
+	<string>Попередження</string>
+	<key>Web</key>
+	<string>Веб</string>
+	<key>Website</key>
+	<string>Вебсайт</string>
+	<key>Welcome</key>
+	<string>Вітаємо</string>
+	<key>Welcome to Shotnix</key>
+	<string>Вітаємо в Shotnix</string>
+	<key>What was playing on your Mac</key>
+	<string>Те, що звучало на вашому Mac</string>
+	<key>What's New</key>
+	<string>Що нового</string>
+	<key>White</key>
+	<string>Білий</string>
+	<key>Whole video</key>
+	<string>Усе відео</string>
+	<key>Wi-Fi</key>
+	<string>Wi-Fi</string>
+	<key>Wi-Fi QR found</key>
+	<string>Знайдено QR-код Wi-Fi</string>
+	<key>Wide</key>
+	<string>Широка</string>
+	<key>Window</key>
+	<string>Вікно</string>
+	<key>Window Capture</key>
+	<string>Знімок вікна</string>
+	<key>Window capture</key>
+	<string>Знімок вікна</string>
+	<key>Window captures are isolated — nothing overlapping shows through. With this on they get transparent padding and a soft drop shadow.</key>
+	<string>Знімки вікон ізольовані — те, що їх перекриває, не потрапляє в кадр. Якщо це ввімкнено, вони отримують прозорий відступ і м’яку тінь.</string>
+	<key>Window closed</key>
+	<string>Вікно закрито</string>
+	<key>Words light up as they're spoken</key>
+	<string>Слова підсвічуються, коли їх вимовляють</string>
+	<key>Writable</key>
+	<string>Доступна для запису</string>
+	<key>Yellow</key>
+	<string>Жовтий</string>
+	<key>Yes</key>
+	<string>Так</string>
+	<key>Yesterday</key>
+	<string>Учора</string>
+	<key>You're all set — Shotnix lives here</key>
+	<string>Усе готово — Shotnix тут</string>
+	<key>YouTube, presentations</key>
+	<string>YouTube, презентації</string>
+	<key>Your Mac can't keep up with this recording and is skipping frames. Balanced quality or 30 fps will help.</key>
+	<string>Ваш Mac не встигає за цим записом і пропускає кадри. Допоможе якість «Збалансована» або 30 fps.</string>
+	<key>Your Mac ran low on memory. Close some apps or pick a lower resolution, then export again.</key>
+	<string>На вашому Mac бракує пам’яті. Закрийте кілька програм або виберіть нижчу роздільність, а потім експортуйте ще раз.</string>
+	<key>Your camera is recorded as its own layer: a live bubble shows while you record (it never appears in the screen capture), and the editor lets you move, resize, and restyle it — or hide it — afterwards.</key>
+	<string>Камера записується окремим шаром: під час запису видно живу бульбашку (вона ніколи не потрапляє в запис екрана), а потім у редакторі її можна перемістити, змінити розмір і стиль — або сховати.</string>
+	<key>Your disk filled up — saved the first %@.</key>
+	<string>Диск заповнився — збережено перші %@.</string>
+	<key>Your disk is almost full, so the recording stopped. It's saved.</key>
+	<string>Диск майже заповнено, тому запис зупинено. Його збережено.</string>
+	<key>Your disk is full, so the recording couldn't be saved.</key>
+	<string>Диск заповнено, тому не вдалося зберегти запис.</string>
+	<key>Your disk is full. Free up some space (empty the Trash, delete old recordings) or export to another drive, then try again.</key>
+	<string>Диск заповнено. Звільніть місце (очистіть Кошик, видаліть старі записи) або експортуйте на інший диск, а потім спробуйте ще раз.</string>
+	<key>Your edits will be lost if you close without saving or copying them.</key>
+	<string>Якщо закрити, не зберігши й не скопіювавши зміни, їх буде втрачено.</string>
+	<key>Your look</key>
+	<string>Ваш стиль</string>
+	<key>Your microphone</key>
+	<string>Ваш мікрофон</string>
+	<key>Your narration can become captions — then cut the video by editing its words.</key>
+	<string>Ваше мовлення може стати субтитрами — а потім монтуйте відео, редагуючи слова.</string>
+	<key>Your narration can become captions — transcribe it here</key>
+	<string>Ваше мовлення може стати субтитрами — розшифруйте його тут</string>
+	<key>Your text</key>
+	<string>Ваш текст</string>
+	<key>Your video's background shows behind you — found on this Mac, frame by frame.</key>
+	<string>Позаду вас видно тло відео — його відокремлено на цьому Mac, кадр за кадром.</string>
+	<key>Your words, as text</key>
+	<string>Ваші слова у вигляді тексту</string>
+	<key>Zoom</key>
+	<string>Масштаб</string>
+	<key>Zoom %@</key>
+	<string>Наближення %@</string>
+	<key>Zoom Level</key>
+	<string>Рівень наближення</string>
+	<key>Zoom in at the pointer</key>
+	<string>Наблизити в місці курсора</string>
+	<key>Zoom level</key>
+	<string>Рівень наближення</string>
+	<key>Zoom level (zoom selected)</key>
+	<string>Рівень наближення (вибране наближення)</string>
+	<key>Zoom moves</key>
+	<string>Рухи наближення</string>
+	<key>Zoom removed — ⌘Z to undo</key>
+	<string>Наближення вилучено — ⌘Z, щоб відмінити</string>
+	<key>Zoom to %@ (key %@)</key>
+	<string>Наблизити до %@ (клавіша %@)</string>
+	<key>Zoom — drag to move, drag an edge to resize, click to edit</key>
+	<string>Наближення — перетягуйте, щоб перемістити, тягніть край, щоб змінити тривалість, клацніть, щоб редагувати</string>
+	<key>Zooms</key>
+	<string>Наближення</string>
+	<key>Zooms &amp; annotations</key>
+	<string>Наближення й розмітка</string>
+	<key>Zooms and annotations can be duplicated</key>
+	<string>Дублювати можна лише наближення й розмітку</string>
+	<key>a table</key>
+	<string>таблиця</string>
+	<key>add a zoom</key>
+	<string>додати наближення</string>
+	<key>aim or resize it</key>
+	<string>навести чи змінити розмір</string>
+	<key>all shortcuts</key>
+	<string>усі скорочення</string>
+	<key>captions burned in</key>
+	<string>вшиті субтитри</string>
+	<key>cut by editing words</key>
+	<string>монтаж редагуванням слів</string>
+	<key>dips under your voice</key>
+	<string>стишується під голос</string>
+	<key>every command</key>
+	<string>усі команди</string>
+	<key>export</key>
+	<string>експортувати</string>
+	<key>follows the cursor</key>
+	<string>стежить за курсором</string>
+	<key>intro card</key>
+	<string>вступна заставка</string>
+	<key>loops</key>
+	<string>повторюється</string>
+	<key>macOS downloads %@ once, then translates right here — nothing is uploaded.</key>
+	<string>macOS один раз завантажить мову «%@», а потім перекладатиме просто тут — нічого не вивантажується.</string>
+	<key>macOS screenshot shortcuts (⌘⇧3, ⌘⇧4, ⌘⇧5) conflict with Shotnix.
+
+Disable them so Shotnix owns the capture shortcuts and screenshots do not double-trigger.
+
+You can re-enable Apple's shortcuts anytime in System Settings → Keyboard → Keyboard Shortcuts → Screenshots.</key>
+	<string>Скорочення macOS для знімків екрана (⌘⇧3, ⌘⇧4, ⌘⇧5) конфліктують із Shotnix.
+
+Вимкніть їх, щоб скорочення для знімання належали Shotnix і знімки не спрацьовували двічі.
+
+Скорочення Apple можна будь-коли знову ввімкнути тут: Системні параметри → Клавіатура → Клавіатурні скорочення → Знімки екрана.</string>
+	<key>mic</key>
+	<string>мікр.</string>
+	<key>music</key>
+	<string>музика</string>
+	<key>mute the preview</key>
+	<string>вимкнути звук перегляду</string>
+	<key>muted</key>
+	<string>без звуку</string>
+	<key>no audio</key>
+	<string>без звуку</string>
+	<key>no captions in the picture</key>
+	<string>без субтитрів у кадрі</string>
+	<key>no end card</key>
+	<string>без кінцевої заставки</string>
+	<key>outro card</key>
+	<string>завершальна заставка</string>
+	<key>play</key>
+	<string>відтворити</string>
+	<key>pointer</key>
+	<string>курсор</string>
+	<key>select a part to cut</key>
+	<string>вибрати частину для вирізання</string>
+	<key>select it</key>
+	<string>вибрати</string>
+	<key>split at the playhead</key>
+	<string>розділити на покажчику відтворення</string>
+	<key>step through the timeline</key>
+	<string>переходити по шкалі часу</string>
+	<key>sys+mic</key>
+	<string>сист.+мікр.</string>
+	<key>system</key>
+	<string>система</string>
+	<key>text, highlight, arrow, blur</key>
+	<string>текст, виділення, стрілка, розмиття</string>
+	<key>the video</key>
+	<string>відео</string>
+	<key>this recording</key>
+	<string>цей запис</string>
+	<key>trim to the playhead</key>
+	<string>підрізати до покажчика відтворення</string>
+	<key>type</key>
+	<string>вводити текст</string>
+	<key>up to %@ GB/min</key>
+	<string>до %@ ГБ/хв</string>
+	<key>up to %@ MB/min</key>
+	<string>до %@ МБ/хв</string>
+	<key>zoom the timeline</key>
+	<string>масштабувати шкалу часу</string>
+	<key>© 2026 Shotnix Contributors</key>
+	<string>© 2026 Учасники Shotnix</string>
+	<key>· aim by hand</key>
+	<string>· вручну</string>
+	<key>· drag to aim</key>
+	<string>· тягніть, щоб навести</string>
+	<key>· follows cursor</key>
+	<string>· за курсором</string>
+	<key>“%@” (was in %@)</key>
+	<string>«%@» (раніше в %@)</string>
+	<key>“%@” can't be found. Put it back where it was, or remove it from this video (Style → Recordings), then export again.</key>
+	<string>Не вдається знайти «%@». Поверніть файл на місце або вилучіть його з цього відео (Стиль → Записи), а потім експортуйте ще раз.</string>
+	<key>“%@” can't be read — it may be damaged, still being saved, or in a format this Mac can't play. Remove it from this video (Style → Recordings), or put a working copy in its place, then export again.</key>
+	<string>Не вдається прочитати «%@» — можливо, файл пошкоджено, він ще зберігається або має формат, який цей Mac не відтворює. Вилучіть його з цього відео (Стиль → Записи) або замініть робочою копією, а потім експортуйте ще раз.</string>
+	<key>“%@” found in %lld of %lld captures</key>
+	<string>«%@» знайдено в %lld з %lld знімків</string>
+	<key>“Made with Shotnix” end card (2s)</key>
+	<string>кінцева заставка «Made with Shotnix» (2 с)</string>
+	<key>⇧-drag</key>
+	<string>⇧-тягнути</string>
+	<key>⇧-drag on the timeline to select a part first.</key>
+	<string>Спершу виділіть частину, перетягнувши з ⇧ на шкалі часу.</string>
+	<key>⇧-drag the timeline</key>
+	<string>⇧-тягнути по шкалі часу</string>
+	<key>⇧/⌘-click</key>
+	<string>⇧/⌘-клацнути</string>
+	<key>⌘ scroll</key>
+	<string>⌘ прокрутити</string>
+	<key>⌘-scroll</key>
+	<string>⌘-прокрутити</string>
+	<key>✓ Copied to clipboard</key>
+	<string>✓ Скопійовано в буфер обміну</string>
+	<key>✓ Saved screenshot</key>
+	<string>✓ Знімок екрана збережено</string>
+	<key>✓ Text copied to clipboard</key>
+	<string>✓ Текст скопійовано в буфер обміну</string>
+	<key>✓ Text copied · %@ — click for options</key>
+	<string>✓ Текст скопійовано · %@ — клацніть, щоб побачити варіанти</string>
+</dict>
+</plist>
