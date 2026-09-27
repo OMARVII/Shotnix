@@ -109,6 +109,19 @@ enum VideoDemoOverlayEffectKind: String, Codable, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
+        case .text: return L("Text")
+        case .arrow: return L("Arrow")
+        case .highlight: return L("Highlight")
+        case .blur: return L("Blur")
+        case .spotlight: return L("Spotlight")
+        case .image: return L("Image")
+        }
+    }
+
+    /// The English name undo steps are labeled with ("Add Arrow"): an
+    /// identifier, never shown as is (VideoEditHistory.swift words it).
+    var undoName: String {
+        switch self {
         case .text: return "Text"
         case .arrow: return "Arrow"
         case .highlight: return "Highlight"
@@ -144,7 +157,7 @@ enum VideoOverlayShape: String, Codable, CaseIterable, Identifiable {
     case ellipse
 
     var id: String { rawValue }
-    var title: String { self == .rectangle ? "Rectangle" : "Ellipse" }
+    var title: String { self == .rectangle ? L("Rectangle") : L("Ellipse") }
 }
 
 struct VideoDemoOverlayEffect: Codable, Equatable, Identifiable {
@@ -232,9 +245,9 @@ enum VideoOverlayThickness: String, Codable, CaseIterable, Identifiable {
     var id: String { rawValue }
     var title: String {
         switch self {
-        case .thin: return "Thin"
-        case .regular: return "Regular"
-        case .bold: return "Bold"
+        case .thin: return L("Thin")
+        case .regular: return L("Regular")
+        case .bold: return L("Bold")
         }
     }
     var scale: CGFloat {
@@ -357,10 +370,10 @@ enum VideoZoomSpeed: String, Codable, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .slow: return "Slow"
-        case .smooth: return "Smooth"
-        case .quick: return "Quick"
-        case .instant: return "Instant"
+        case .slow: return L("Slow")
+        case .smooth: return L("Smooth")
+        case .quick: return L("Quick")
+        case .instant: return L("Instant")
         }
     }
 
@@ -417,10 +430,10 @@ struct VideoCursorSettings: Codable, Equatable {
 
         var title: String {
             switch self {
-            case .off: return "Off"
-            case .light: return "Light"
-            case .smooth: return "Smooth"
-            case .silky: return "Silky"
+            case .off: return L("Off")
+            case .light: return L("Light")
+            case .smooth: return L("Smooth")
+            case .silky: return L("Silky")
             }
         }
 
@@ -444,9 +457,9 @@ struct VideoCursorSettings: Codable, Equatable {
 
         var title: String {
             switch self {
-            case .none: return "None"
-            case .press: return "Press"
-            case .ripple: return "Ripple"
+            case .none: return L("None")
+            case .press: return L("Press")
+            case .ripple: return L("Ripple")
             }
         }
     }
@@ -551,7 +564,7 @@ struct VideoDemoProject: Codable, Equatable, Identifiable {
 
         var title: String {
             switch self {
-            case .source: return "Auto"
+            case .source: return L("Auto")
             case .widescreen: return "16:9"
             case .classic: return "4:3"
             case .square: return "1:1"
@@ -562,12 +575,12 @@ struct VideoDemoProject: Codable, Equatable, Identifiable {
 
         var detail: String {
             switch self {
-            case .source: return "Match the recording"
-            case .widescreen: return "YouTube, presentations"
-            case .classic: return "Docs, slides"
-            case .square: return "Social feeds"
-            case .portrait: return "Instagram, LinkedIn"
-            case .vertical: return "Reels, TikTok, Shorts"
+            case .source: return L("Match the recording")
+            case .widescreen: return L("YouTube, presentations")
+            case .classic: return L("Docs, slides")
+            case .square: return L("Social feeds")
+            case .portrait: return L("Instagram, LinkedIn")
+            case .vertical: return L("Reels, TikTok, Shorts")
             }
         }
 

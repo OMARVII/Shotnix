@@ -45,11 +45,11 @@ enum VideoImagePlacement: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .topLeft: return "Top left"
-        case .topRight: return "Top right"
-        case .center: return "Center"
-        case .bottomLeft: return "Bottom left"
-        case .bottomRight: return "Bottom right"
+        case .topLeft: return L("Top left")
+        case .topRight: return L("Top right")
+        case .center: return L("Center")
+        case .bottomLeft: return L("Bottom left")
+        case .bottomRight: return L("Bottom right")
         }
     }
 
@@ -209,7 +209,7 @@ extension VideoEditorModel {
         panel.canChooseDirectories = false
         panel.allowsMultipleSelection = false
         panel.allowedContentTypes = [.image]
-        panel.message = "Choose a logo, watermark, or screenshot to place on the video"
+        panel.message = L("Choose a logo, watermark, or screenshot to place on the video")
         guard panel.runModal() == .OK, let url = panel.url else { return }
         addImageOverlay(from: url)
     }
@@ -218,7 +218,7 @@ extension VideoEditorModel {
     func addImageOverlay(from url: URL, at time: Double? = nil) -> UUID? {
         guard let size = VideoImageOverlayRenderer.pixelSize(of: url),
               let stored = try? VideoAssetStore.importFile(url) else {
-            showNotice("Couldn't open that image", symbol: "exclamationmark.triangle.fill")
+            showNotice(L("Couldn't open that image"), symbol: "exclamationmark.triangle.fill")
             return nil
         }
         let aspect = Double(size.width / size.height)
@@ -340,7 +340,7 @@ struct VideoImageOverlayHandles: View {
                             model.endGesture()
                         }
                 )
-                .help("Drag to move; drag a corner to resize")
+                .help(L("Drag to move; drag a corner to resize"))
 
             ForEach(0..<4, id: \.self) { corner in
                 let isRight = corner == 1 || corner == 3
@@ -398,7 +398,7 @@ struct VideoImageOverlayInspector: View {
 
     var body: some View {
         if let image = overlay.image {
-            VideoInspectorSection("Image") {
+            VideoInspectorSection(L("Image")) {
                 HStack(spacing: 10) {
                     thumbnail(image)
                     VStack(alignment: .leading, spacing: 3) {
@@ -407,7 +407,7 @@ struct VideoImageOverlayInspector: View {
                             .foregroundStyle(VideoEditorTheme.textPrimary)
                             .lineLimit(1)
                             .truncationMode(.middle)
-                        Button("Replace…") { model.replaceImage(overlay.id) }
+                        Button(L("Replace…")) { model.replaceImage(overlay.id) }
                             .buttonStyle(.plain)
                             .font(.system(size: 11, weight: .medium))
                             .foregroundStyle(Color.accentColor)
@@ -415,30 +415,30 @@ struct VideoImageOverlayInspector: View {
                     Spacer(minLength: 0)
                 }
                 if !FileManager.default.fileExists(atPath: image.path) {
-                    Label("The picture's file is gone — choose it again with Replace.", systemImage: "exclamationmark.triangle.fill")
+                    Label(L("The picture's file is gone — choose it again with Replace."), systemImage: "exclamationmark.triangle.fill")
                         .font(.system(size: 10.5, weight: .medium))
                         .foregroundStyle(Color.orange)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 VideoSliderRow(
-                    title: "Opacity",
+                    title: L("Opacity"),
                     value: Binding(get: { image.opacity }, set: { model.setImageOpacity(overlay.id, $0) }),
                     range: 0.05...1,
                     defaultValue: 1,
-                    format: { "\(Int(($0 * 100).rounded()))%" },
+                    format: { VideoEditorModel.formatPercent($0) },
                     onEditingEnded: { model.endGesture() }
                 )
                 VideoSliderRow(
-                    title: "Size",
+                    title: L("Size"),
                     value: Binding(get: { overlay.width }, set: { model.setImageWidth(overlay.id, $0) }),
                     range: 0.04...1,
                     defaultValue: nil,
-                    format: { "\(Int(($0 * 100).rounded()))%" },
-                    detail: "Of the frame's width.",
+                    format: { VideoEditorModel.formatPercent($0) },
+                    detail: L("Of the frame's width."),
                     onEditingEnded: { model.endGesture() }
                 )
             }
-            VideoInspectorSection("Position") {
+            VideoInspectorSection(L("Position")) {
                 HStack(spacing: 6) {
                     ForEach(VideoImagePlacement.allCases) { placement in
                         Button {
@@ -454,20 +454,20 @@ struct VideoImageOverlayInspector: View {
                         .accessibilityLabel(placement.title)
                     }
                 }
-                Text("Or drag it on the preview. Images stay put while the camera zooms.")
+                Text(L("Or drag it on the preview. Images stay put while the camera zooms."))
                     .font(.system(size: 10.5))
                     .foregroundStyle(VideoEditorTheme.textTertiary)
                     .fixedSize(horizontal: false, vertical: true)
             }
-            VideoInspectorSection("Timing") {
+            VideoInspectorSection(L("Timing")) {
                 Button {
                     model.showImageForWholeVideo(overlay.id)
                 } label: {
-                    Label("Show for the whole video", systemImage: "arrow.left.and.right")
+                    Label(L("Show for the whole video"), systemImage: "arrow.left.and.right")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(VideoSecondaryButtonStyle())
-                Text("Or drag its bar on the timeline.")
+                Text(L("Or drag its bar on the timeline."))
                     .font(.system(size: 10.5))
                     .foregroundStyle(VideoEditorTheme.textTertiary)
             }

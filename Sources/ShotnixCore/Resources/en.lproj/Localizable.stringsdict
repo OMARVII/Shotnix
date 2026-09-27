@@ -146,6 +146,22 @@
 			<string>%lld lines</string>
 		</dict>
 	</dict>
+	<key>%lld lines changed since translating</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld line changed since translating</string>
+			<key>other</key>
+			<string>%lld lines changed since translating</string>
+		</dict>
+	</dict>
 	<key>%lld lines · found %@</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -176,6 +192,22 @@
 			<string>%lld link</string>
 			<key>other</key>
 			<string>%lld links</string>
+		</dict>
+	</dict>
+	<key>%lld recorded clicks — in the preview and the export</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld recorded click — in the preview and the export</string>
+			<key>other</key>
+			<string>%lld recorded clicks — in the preview and the export</string>
 		</dict>
 	</dict>
 	<key>%lld saved captures · drag any card to Finder · right-click for more actions</key>
@@ -242,6 +274,70 @@
 			<string>%lld seconds</string>
 		</dict>
 	</dict>
+	<key>Auto zoom applied — %lld zooms follow your clicks</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Auto zoom applied — %lld zoom follows your clicks</string>
+			<key>other</key>
+			<string>Auto zoom applied — %lld zooms follow your clicks</string>
+		</dict>
+	</dict>
+	<key>Auto zoom — %lld zooms</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Auto zoom — %lld zoom</string>
+			<key>other</key>
+			<string>Auto zoom — %lld zooms</string>
+		</dict>
+	</dict>
+	<key>Captions ready — %lld lines</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Captions ready — %lld line</string>
+			<key>other</key>
+			<string>Captions ready — %lld lines</string>
+		</dict>
+	</dict>
+	<key>Cut %lld words — ⌘Z to undo</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Cut %lld word — ⌘Z to undo</string>
+			<key>other</key>
+			<string>Cut %lld words — ⌘Z to undo</string>
+		</dict>
+	</dict>
 	<key>Delete %lld Captures?</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -272,6 +368,22 @@
 			<string>Deleted captures waiting in History's trash and files no capture uses are removed for good, along with %lld capture past your History limit. The rest of your history stays.</string>
 			<key>other</key>
 			<string>Deleted captures waiting in History's trash and files no capture uses are removed for good, along with %lld captures past your History limit. The rest of your history stays.</string>
+		</dict>
+	</dict>
+	<key>Freed %@ (%lld files)</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%2$#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Freed %1$@ (%2$lld file)</string>
+			<key>other</key>
+			<string>Freed %1$@ (%2$lld files)</string>
 		</dict>
 	</dict>
 	<key>History uses %@ (%lld captures)</key>
@@ -418,6 +530,70 @@
 			<string>Last %lld captures</string>
 		</dict>
 	</dict>
+	<key>Removed %lld filler words — %@ shorter</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Removed %lld filler word — %@ shorter</string>
+			<key>other</key>
+			<string>Removed %lld filler words — %@ shorter</string>
+		</dict>
+	</dict>
+	<key>Removed %lld zooms — ⌘Z to undo</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Removed %lld zoom — ⌘Z to undo</string>
+			<key>other</key>
+			<string>Removed %lld zooms — ⌘Z to undo</string>
+		</dict>
+	</dict>
+	<key>Restored %lld cuts — %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Restored %lld cut — %@</string>
+			<key>other</key>
+			<string>Restored %lld cuts — %@</string>
+		</dict>
+	</dict>
+	<key>Restored %lld words</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Restored %lld word</string>
+			<key>other</key>
+			<string>Restored %lld words</string>
+		</dict>
+	</dict>
 	<key>Scrolling capture reached its maximum length (%lld points) and finished.</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -448,6 +624,70 @@
 			<string>Scrolling capture stopped after %lld minute.</string>
 			<key>other</key>
 			<string>Scrolling capture stopped after %lld minutes.</string>
+		</dict>
+	</dict>
+	<key>Shortened %lld pauses — %@ shorter</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Shortened %lld pause — %@ shorter</string>
+			<key>other</key>
+			<string>Shortened %lld pauses — %@ shorter</string>
+		</dict>
+	</dict>
+	<key>Sped up %lld idle moments — saved %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Sped up %lld idle moment — saved %@</string>
+			<key>other</key>
+			<string>Sped up %lld idle moments — saved %@</string>
+		</dict>
+	</dict>
+	<key>Sped up %lld idle moments — saved %@ · check any typing</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Sped up %lld idle moment — saved %@ · check any typing</string>
+			<key>other</key>
+			<string>Sped up %lld idle moments — saved %@ · check any typing</string>
+		</dict>
+	</dict>
+	<key>This replaces all %lld caption lines, including any you edited or typed, with a new transcript in %@.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>This replaces %lld caption line, even if you edited or typed it, with a new transcript in %@.</string>
+			<key>other</key>
+			<string>This replaces all %lld caption lines, including any you edited or typed, with a new transcript in %@.</string>
 		</dict>
 	</dict>
 	<key>You have unsaved edits in %lld screenshots.</key>
@@ -496,6 +736,102 @@
 			<string>Your disk is almost full. In about %lld second the recording stops and saves itself.</string>
 			<key>other</key>
 			<string>Your disk is almost full. In about %lld seconds the recording stops and saves itself.</string>
+		</dict>
+	</dict>
+	<key>• %lld small notes about recordings that are gone</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>• %lld small note about a recording that's gone</string>
+			<key>other</key>
+			<string>• %lld small notes about recordings that are gone</string>
+		</dict>
+	</dict>
+	<key>• Camera footage no recording uses — %lld files, %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>• Camera footage no recording uses — %lld file, %@</string>
+			<key>other</key>
+			<string>• Camera footage no recording uses — %lld files, %@</string>
+		</dict>
+	</dict>
+	<key>• Cleaned-up voice of recordings not found or changed since — %lld files, %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>• Cleaned-up voice of recordings not found or changed since — %lld file, %@</string>
+			<key>other</key>
+			<string>• Cleaned-up voice of recordings not found or changed since — %lld files, %@</string>
+		</dict>
+	</dict>
+	<key>• Clipboard exports older than a day — %lld files, %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>• Clipboard exports older than a day — %lld file, %@</string>
+			<key>other</key>
+			<string>• Clipboard exports older than a day — %lld files, %@</string>
+		</dict>
+	</dict>
+	<key>• Edits, recording details, and camera footage of %lld recordings Shotnix can't find (%@): %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>• Edits, recording details, and camera footage of %lld recording Shotnix can't find (%@): %@</string>
+			<key>other</key>
+			<string>• Edits, recording details, and camera footage of %lld recordings Shotnix can't find (%@): %@</string>
+		</dict>
+	</dict>
+	<key>• Pictures and songs no video uses — %lld files, %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>• Pictures and songs no video uses — %lld file, %@</string>
+			<key>other</key>
+			<string>• Pictures and songs no video uses — %lld files, %@</string>
 		</dict>
 	</dict>
 </dict>

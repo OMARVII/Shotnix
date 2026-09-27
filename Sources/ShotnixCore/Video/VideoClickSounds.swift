@@ -54,11 +54,11 @@ enum VideoClickSound {
         let url = FileManager.default.temporaryDirectory.appendingPathComponent("shotnix-click-v\(version).caf")
         if FileManager.default.fileExists(atPath: url.path) { return url }
         guard let format = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: sampleRate, channels: 1, interleaved: false) else {
-            throw VideoDemoExportError.exportFailed("Couldn't make the click sound.")
+            throw VideoDemoExportError.exportFailed(L("Couldn't make the click sound. Turn off Click sounds (Audio tab), then export again."))
         }
         let values = samples()
         guard let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: AVAudioFrameCount(values.count)), let data = buffer.floatChannelData else {
-            throw VideoDemoExportError.exportFailed("Couldn't make the click sound.")
+            throw VideoDemoExportError.exportFailed(L("Couldn't make the click sound. Turn off Click sounds (Audio tab), then export again."))
         }
         buffer.frameLength = AVAudioFrameCount(values.count)
         values.withUnsafeBufferPointer { data[0].update(from: $0.baseAddress!, count: values.count) }
@@ -144,22 +144,22 @@ struct VideoClickSoundSection: View {
     @ObservedObject var model: VideoEditorModel
 
     var body: some View {
-        VideoInspectorSection("Click sounds") {
+        VideoInspectorSection(L("Click sounds")) {
             VideoToggleRow(
-                title: "Play a click on each click",
+                title: L("Play a click on each click"),
                 detail: model.project.clickEvents.isEmpty
-                    ? "No clicks were recorded in this video"
-                    : "\(model.project.clickEvents.count) recorded click\(model.project.clickEvents.count == 1 ? "" : "s") — in the preview and the export",
+                    ? L("No clicks were recorded in this video")
+                    : L("\(model.project.clickEvents.count) recorded clicks — in the preview and the export"),
                 isOn: Binding(get: { model.project.clickSounds.enabled }, set: { value in model.setStyle { $0.clickSounds.enabled = value } })
             )
             .disabled(model.project.clickEvents.isEmpty && !model.project.clickSounds.enabled)
             if model.project.clickSounds.enabled {
                 VideoSliderRow(
-                    title: "Click volume",
+                    title: L("Click volume"),
                     value: Binding(get: { model.project.clickSounds.volume }, set: { value in model.setStyle(coalesce: "click-volume") { $0.clickSounds.volume = value } }),
                     range: 0...1,
                     defaultValue: 0.6,
-                    format: { "\(Int(($0 * 100).rounded()))%" },
+                    format: { VideoEditorModel.formatPercent($0) },
                     onEditingEnded: { model.endGesture() }
                 )
             }

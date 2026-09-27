@@ -16,9 +16,9 @@ enum VideoTransitionKind: String, Codable, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .none: return "Cut"
-        case .dissolve: return "Dissolve"
-        case .fadeThroughBlack: return "Dip to black"
+        case .none: return L("Hard cut")
+        case .dissolve: return L("Dissolve")
+        case .fadeThroughBlack: return L("Dip to black")
         }
     }
 
@@ -212,25 +212,25 @@ struct VideoTransitionsSection: View {
     private var settings: VideoTransitionSettings { model.project.transitions }
 
     var body: some View {
-        VideoInspectorSection("Transitions") {
+        VideoInspectorSection(L("Transitions")) {
             VideoSliderRow(
-                title: "Fade in from black",
+                title: L("Fade in from black"),
                 value: Binding(get: { settings.fadeIn }, set: { value in model.setStyle(coalesce: "fade-in-video") { $0.transitions.fadeIn = (value * 10).rounded() / 10 } }),
                 range: VideoTransitionSettings.fadeRange,
                 defaultValue: 0,
-                format: { $0 < 0.05 ? "Off" : String(format: "%.1fs", $0) },
+                format: { $0 < 0.05 ? L("Off") : VideoEditorModel.formatTenths($0) },
                 onEditingEnded: { model.endGesture() }
             )
             VideoSliderRow(
-                title: "Fade out to black",
+                title: L("Fade out to black"),
                 value: Binding(get: { settings.fadeOut }, set: { value in model.setStyle(coalesce: "fade-out-video") { $0.transitions.fadeOut = (value * 10).rounded() / 10 } }),
                 range: VideoTransitionSettings.fadeRange,
                 defaultValue: 0,
-                format: { $0 < 0.05 ? "Off" : String(format: "%.1fs", $0) },
+                format: { $0 < 0.05 ? L("Off") : VideoEditorModel.formatTenths($0) },
                 onEditingEnded: { model.endGesture() }
             )
             VStack(alignment: .leading, spacing: 6) {
-                Text("Between clips")
+                Text(L("Between clips"))
                     .font(.system(size: 12, weight: .medium))
                     .foregroundStyle(VideoEditorTheme.textPrimary)
                 VideoSegmented(options: VideoTransitionKind.allCases.map { ($0, $0.title) }, selection: Binding(
@@ -240,17 +240,17 @@ struct VideoTransitionsSection: View {
             }
             if settings.betweenClips != .none {
                 VideoSliderRow(
-                    title: "Length",
+                    title: L("Length"),
                     value: Binding(get: { settings.duration }, set: { value in model.setStyle(coalesce: "transition-length") { $0.transitions.duration = (value * 10).rounded() / 10 } }),
                     range: VideoTransitionSettings.durationRange,
                     defaultValue: 0.5,
-                    format: { String(format: "%.1fs", $0) },
+                    format: { VideoEditorModel.formatTenths($0) },
                     onEditingEnded: { model.endGesture() }
                 )
             }
             Text(model.segments.count > 1
-                 ? "Applies at every cut. Click a cut's marker on the timeline, or select a clip, to choose one for that cut only."
-                 : "Split the video (S) to make cuts; each can dissolve or dip to black.")
+                 ? L("Applies at every cut. Click a cut's marker on the timeline, or select a clip, to choose one for that cut only.")
+                 : L("Split the video (S) to make cuts; each can dissolve or dip to black."))
                 .font(.system(size: 10.5))
                 .foregroundStyle(VideoEditorTheme.textTertiary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -266,18 +266,18 @@ struct VideoClipTransitionSection: View {
     var body: some View {
         if let index = model.segments.firstIndex(where: { $0.id == segment.id }), index > 0 {
             let current = model.project.transitions.transition(into: segment.id)
-            VideoInspectorSection("Transition in") {
+            VideoInspectorSection(L("Transition in")) {
                 VideoSegmented(options: VideoTransitionKind.allCases.map { ($0, $0.title) }, selection: Binding(
                     get: { current.kind },
                     set: { value in model.setTransition(into: segment.id, kind: value) }
                 ))
                 if current.kind != .none {
                     VideoSliderRow(
-                        title: "Length",
+                        title: L("Length"),
                         value: Binding(get: { current.duration }, set: { value in model.setTransition(into: segment.id, kind: nil, duration: (value * 10).rounded() / 10) }),
                         range: VideoTransitionSettings.durationRange,
                         defaultValue: model.project.transitions.duration,
-                        format: { String(format: "%.1fs", $0) },
+                        format: { VideoEditorModel.formatTenths($0) },
                         onEditingEnded: { model.endGesture() }
                     )
                 }
@@ -338,8 +338,8 @@ struct VideoTransitionMarkers: View {
                         }
                     }
                 }
-                .help(cut.kind == .none ? "A cut — click to add a transition" : "\(cut.kind.title) — click to change")
-                .accessibilityLabel(cut.kind == .none ? "Cut, no transition" : "\(cut.kind.title) transition")
+                .help(cut.kind == .none ? L("A cut — click to add a transition") : L("\(cut.kind.title) — click to change"))
+                .accessibilityLabel(cut.kind == .none ? L("Cut, no transition") : L("\(cut.kind.title) transition"))
                 .offset(x: geometry.x(cut.time) - 10, y: clipTop + (VideoTimelineMetrics.clipTrackHeight - 20) / 2)
             }
         }

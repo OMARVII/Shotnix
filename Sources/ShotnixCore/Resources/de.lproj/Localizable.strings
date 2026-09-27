@@ -4,8 +4,14 @@
 <dict>
 	<key>%@ (%@)</key>
 	<string>%@ (%@)</string>
+	<key>%@ (edited)</key>
+	<string>%@ (bearbeitet)</string>
+	<key>%@ (original)</key>
+	<string>%@ (Original)</string>
 	<key>%@ area</key>
 	<string>%@ Bereich</string>
+	<key>%@ can't be transcribed on this Mac without sending your voice to a server. To add it, turn on Dictation for %@ in System Settings → Keyboard, or pick another language.</key>
+	<string>%@ kann auf diesem Mac nicht transkribiert werden, ohne deine Stimme an einen Server zu senden. Aktiviere dazu das Diktat für %@ unter „Systemeinstellungen“ → „Tastatur“ oder wähle eine andere Sprache.</string>
 	<key>%@ capture from %@</key>
 	<string>Bildschirmfoto: %1$@ vom %2$@</string>
 	<key>%@ capture, %@</key>
@@ -14,10 +20,14 @@
 	<string>%@ gefunden</string>
 	<key>%@ fullscreen</key>
 	<string>%@ Vollbild</string>
+	<key>%@ isn't supported for captions on this Mac. Pick another language.</key>
+	<string>%@ wird auf diesem Mac für Untertitel nicht unterstützt. Wähle eine andere Sprache.</string>
 	<key>%@ pt</key>
 	<string>%@ pt</string>
 	<key>%@ quality · %@</key>
 	<string>Qualität: %@ · %@</string>
+	<key>%@ transition</key>
+	<string>Übergang: %@</string>
 	<key>%@ window</key>
 	<string>%@ Fenster</string>
 	<key>%@ · %@ px</key>
@@ -26,14 +36,26 @@
 	<string>%@ · Bild %@ × %@</string>
 	<key>%@ · %lld fps</key>
 	<string>%@ · %lld fps</string>
+	<key>%@ · on your clipboard — paste it anywhere</key>
+	<string>%@ · in der Zwischenablage – überall einsetzen</string>
 	<key>%@ × %@ px</key>
 	<string>%@ × %@ px</string>
 	<key>%@ — Shotnix lives in your menu bar</key>
 	<string>%@ – Shotnix findest du in der Menüleiste</string>
+	<key>%@ — click to change</key>
+	<string>%@ – zum Ändern klicken</string>
+	<key>%@ → %@ — the part you ⇧-dragged on the timeline</key>
+	<string>%@ → %@ – der Teil, den du auf der Zeitleiste mit ⇧ markiert hast</string>
 	<key>%@, %@</key>
 	<string>%@, %@</string>
+	<key>%@, and %lld more</key>
+	<string>%@ und %lld weitere</string>
 	<key>%@: %@</key>
 	<string>%@: %@</string>
+	<key>%@s</key>
+	<string>%@ s</string>
+	<key>%@–%@ only</key>
+	<string>nur %@–%@</string>
 	<key>%lld of %lld captures</key>
 	<string>%lld von %lld Bildschirmfotos</string>
 	<key>%lld px · Esc or Done finishes</key>
@@ -44,14 +66,50 @@
 	<string>%lld %%</string>
 	<key>%lld/%lld configured</key>
 	<string>%lld/%lld eingerichtet</string>
+	<key>A 2-second “Made with Shotnix” outro on your background — your own outro card is in Style</key>
+	<string>Ein 2 Sekunden langes Outro „Made with Shotnix“ auf deinem Hintergrund – deine eigene Outro-Karte findest du unter „Stil“</string>
+	<key>A big GIF — about %@ and %@ of memory to make. A smaller size, fewer fps, or MP4 is lighter.</key>
+	<string>Ein großes GIF – etwa %@, und zum Erstellen werden %@ Arbeitsspeicher gebraucht. Eine kleinere Größe, weniger fps oder MP4 ist sparsamer.</string>
+	<key>A clean picture plus a subtitles file to upload.</key>
+	<string>Ein sauberes Bild plus eine Untertiteldatei zum Hochladen.</string>
+	<key>A cut — click to add a transition</key>
+	<string>Ein Schnitt – klicken, um einen Übergang hinzuzufügen</string>
+	<key>A file with that name is in the way. Pick another name and export again.</key>
+	<string>Eine Datei mit diesem Namen ist im Weg. Wähle einen anderen Namen und exportiere erneut.</string>
+	<key>A second caption track you can show, burn in, or save as subtitles. Translated on this Mac — nothing is uploaded.</key>
+	<string>Eine zweite Untertitelspur, die du anzeigen, einbrennen oder als Untertiteldatei sichern kannst. Übersetzt auf diesem Mac – nichts wird hochgeladen.</string>
+	<key>A song under the whole video — it loops to fill, fades in and out, and dips while you talk. Use music you have the rights to.</key>
+	<string>Ein Song unter dem ganzen Video – er wiederholt sich bei Bedarf, wird ein- und ausgeblendet und leiser, während du sprichst. Verwende nur Musik, für die du die Rechte hast.</string>
+	<key>A subtitles file for YouTube and web players (.srt), or for the web (.vtt) — follows your cuts</key>
+	<string>Eine Untertiteldatei für YouTube und Web-Player (.srt) oder fürs Web (.vtt) – folgt deinen Schnitten</string>
+	<key>A video needs at least one clip</key>
+	<string>Ein Video braucht mindestens einen Clip</string>
 	<key>About</key>
 	<string>Info</string>
+	<key>About %lld min left</key>
+	<string>Noch etwa %lld Min.</string>
+	<key>About %lld%% smaller — plays on Apple devices and most phones; some browsers and Windows PCs can't play it without an extra codec</key>
+	<string>Etwa %lld %% kleiner – läuft auf Apple-Geräten und den meisten Smartphones; manche Browser und Windows-PCs brauchen dafür einen zusätzlichen Codec</string>
+	<key>About %llds left</key>
+	<string>Noch etwa %lld s</string>
 	<key>About Shotnix</key>
 	<string>Über Shotnix</string>
 	<key>Accuracy</key>
 	<string>Genauigkeit</string>
 	<key>Accurate</key>
 	<string>Genau</string>
+	<key>Add Image or Logo…</key>
+	<string>Bild oder Logo hinzufügen …</string>
+	<key>Add Intro Card</key>
+	<string>Intro-Karte hinzufügen</string>
+	<key>Add Music…</key>
+	<string>Musik hinzufügen …</string>
+	<key>Add Outro Card</key>
+	<string>Outro-Karte hinzufügen</string>
+	<key>Add another recording or video after this one — Shotnix recordings keep their pointer, clicks, and shortcuts.</key>
+	<string>Füge nach dieser Aufnahme eine weitere Aufnahme oder ein Video hinzu – Shotnix-Aufnahmen behalten ihren Zeiger, ihre Klicks und Kurzbefehle.</string>
+	<key>Added %@ — %@</key>
+	<string>%@ hinzugefügt – %@</string>
 	<key>Advanced Tools</key>
 	<string>Erweiterte Werkzeuge</string>
 	<key>After Capture</key>
@@ -64,12 +122,16 @@
 	<string>Alle Bildschirmfotos werden in den Papierkorb von Shotnix gelegt und nach %lld Tagen endgültig gelöscht.</string>
 	<key>All configured</key>
 	<string>Alle eingerichtet</string>
+	<key>All zooms set to %@</key>
+	<string>Alle Zooms auf %@ gesetzt</string>
 	<key>Allow Access…</key>
 	<string>Zugriff erlauben …</string>
 	<key>Allow Screen Recording</key>
 	<string>Bildschirmaufnahme erlauben</string>
 	<key>Allow Shotnix in Accessibility — shortcuts turn on by themselves.</key>
 	<string>Erlaube Shotnix unter „Bedienungshilfen“ – die Kurzbefehle schalten sich dann selbst ein.</string>
+	<key>Almost done</key>
+	<string>Fast fertig</string>
 	<key>Amber Fold</key>
 	<string>Bernsteinfalte</string>
 	<key>Annotate Last Screenshot</key>
@@ -82,6 +144,8 @@
 	<string>Beschriftungswerkzeuge</string>
 	<key>App</key>
 	<string>App</string>
+	<key>Append Video…</key>
+	<string>Video anhängen …</string>
 	<key>Apple Shortcuts</key>
 	<string>Apple-Kurzbefehle</string>
 	<key>Apple screenshot shortcuts disabled.</key>
@@ -94,6 +158,8 @@
 	<string>Apples Bildschirmfoto-Kurzbefehle belegen noch ⌘⇧3/4/5 – Bildschirmfotos können doppelt ausgelöst werden.</string>
 	<key>Apple's shortcuts are out of the way.</key>
 	<string>Apples Kurzbefehle stören nicht mehr.</string>
+	<key>Applies at every cut. Click a cut's marker on the timeline, or select a clip, to choose one for that cut only.</key>
+	<string>Gilt für jeden Schnitt. Klicke auf die Markierung eines Schnitts auf der Zeitleiste oder wähle einen Clip aus, um nur für diesen Schnitt einen Übergang festzulegen.</string>
 	<key>Apply</key>
 	<string>Anwenden</string>
 	<key>Apply background to this image</key>
@@ -108,10 +174,16 @@
 	<string>Bereich</string>
 	<key>Arrow</key>
 	<string>Pfeil</string>
+	<key>At playhead</key>
+	<string>Auf Abspielposition</string>
 	<key>Audio</key>
 	<string>Audio</string>
+	<key>Aurora</key>
+	<string>Polarlicht</string>
 	<key>Aurora Blue</key>
 	<string>Polarlichtblau</string>
+	<key>Auto</key>
+	<string>Auto</string>
 	<key>Auto-dismiss overlay</key>
 	<string>Miniatur automatisch ausblenden</string>
 	<key>Auto-save folder</key>
@@ -122,18 +194,30 @@
 	<string>Automatisch</string>
 	<key>Automatic detects each capture's language; pick languages when it guesses wrong. Accurate reads small text best — Fast answers sooner but knows fewer languages. Used by Capture Text, Copy Text, and History search.</key>
 	<string>„Automatisch“ erkennt die Sprache jedes Bildschirmfotos; wähle Sprachen aus, wenn es falsch liegt. „Genau“ liest kleinen Text am besten – „Schnell“ antwortet früher, kennt aber weniger Sprachen. Wird von „Text erfassen“, „Text kopieren“ und der Suche im Verlauf verwendet.</string>
+	<key>Back</key>
+	<string>Zurück</string>
+	<key>Back to the Shotnix look</key>
+	<string>Zurück zum Shotnix-Stil</string>
+	<key>Back to the original recording — ⌘Z to undo</key>
+	<string>Zurück zur Originalaufnahme – ⌘Z zum Widerrufen</string>
 	<key>Background</key>
 	<string>Hintergrund</string>
 	<key>Balanced</key>
 	<string>Ausgewogen</string>
+	<key>Balancing loudness…</key>
+	<string>Lautstärke wird angeglichen …</string>
 	<key>Barcode</key>
 	<string>Strichcode</string>
 	<key>Barcode copied to clipboard</key>
 	<string>Strichcode in die Zwischenablage kopiert</string>
 	<key>Barcodes</key>
 	<string>Strichcodes</string>
+	<key>Between clips</key>
+	<string>Zwischen Clips</string>
 	<key>Black</key>
 	<string>Schwarz</string>
+	<key>Blossom</key>
+	<string>Blüte</string>
 	<key>Blue</key>
 	<string>Blau</string>
 	<key>Blur</key>
@@ -142,10 +226,20 @@
 	<string>Weichgezeichneter Bereich</string>
 	<key>Bold</key>
 	<string>Fett</string>
+	<key>Bold outline</key>
+	<string>Fette Kontur</string>
 	<key>Bone</key>
 	<string>Knochenweiß</string>
+	<key>Bottom</key>
+	<string>Unten</string>
+	<key>Bottom left</key>
+	<string>Unten links</string>
+	<key>Bottom right</key>
+	<string>Unten rechts</string>
 	<key>Bring All to Front</key>
 	<string>Alle nach vorne bringen</string>
+	<key>Burn captions into the video</key>
+	<string>Untertitel ins Video einbrennen</string>
 	<key>Call</key>
 	<string>Anrufen</string>
 	<key>Callout</key>
@@ -162,6 +256,12 @@
 	<string>Kamera getrennt.</string>
 	<key>Camera disconnected. The recording continues without it.</key>
 	<string>Kamera getrennt. Die Aufzeichnung läuft ohne Kamera weiter.</string>
+	<key>Camera footage, cleaned-up voice, drafts, and clipboard exports</key>
+	<string>Kameramaterial, bereinigte Stimme, Entwürfe und Exporte für die Zwischenablage</string>
+	<key>Camera hidden</key>
+	<string>Kamera ausgeblendet</string>
+	<key>Camera layout removed</key>
+	<string>Kameralayout entfernt</string>
 	<key>Camera preview</key>
 	<string>Kameravorschau</string>
 	<key>Camera stopped</key>
@@ -170,8 +270,30 @@
 	<string>Abbrechen</string>
 	<key>Cancel Recording</key>
 	<string>Aufzeichnung abbrechen</string>
+	<key>Cancel export</key>
+	<string>Export abbrechen</string>
+	<key>Cancel this export</key>
+	<string>Diesen Export abbrechen</string>
+	<key>Cancelled</key>
+	<string>Abgebrochen</string>
 	<key>Canyon Silk</key>
 	<string>Canyonseide</string>
+	<key>Caption removed</key>
+	<string>Untertitel entfernt</string>
+	<key>Caption style %@</key>
+	<string>Untertitelstil %@</string>
+	<key>Captions</key>
+	<string>Untertitel</string>
+	<key>Captions are drawn into the picture, and a subtitles file is saved next to the video.</key>
+	<string>Untertitel werden ins Bild gezeichnet, und neben dem Video wird eine Untertiteldatei gesichert.</string>
+	<key>Captions are drawn into the picture.</key>
+	<string>Untertitel werden ins Bild gezeichnet.</string>
+	<key>Captions are hidden in the editor (Captions tab → Show captions).</key>
+	<string>Untertitel sind im Editor ausgeblendet (Tab „Untertitel“ → „Untertitel anzeigen“).</string>
+	<key>Captions look like this</key>
+	<string>So sehen Untertitel aus</string>
+	<key>Captions translated to %@</key>
+	<string>Untertitel übersetzt: %@</string>
 	<key>Capture</key>
 	<string>Bildschirmfoto</string>
 	<key>Capture  ⏎</key>
@@ -214,6 +336,10 @@
 	<string>Bildschirmfotos bleiben im Verlauf, bis du sie löschst – außer du legst hier eine Grenze fest. „Aufräumen“ leert den Papierkorb des Verlaufs (gelöschte Bildschirmfotos, die du noch wiederherstellen könntest) und entfernt Dateien, die kein Bildschirmfoto mehr verwendet.</string>
 	<key>Carbon Arc</key>
 	<string>Kohlebogen</string>
+	<key>Cards use your background, and the timeline grows to fit them. The “Made with Shotnix” end card is separate — it's in the export options.</key>
+	<string>Karten nutzen deinen Hintergrund, und die Zeitleiste wird für sie länger. Die Endkarte „Made with Shotnix“ ist davon getrennt – du findest sie in den Exportoptionen.</string>
+	<key>Center</key>
+	<string>Zentrieren</string>
 	<key>Check</key>
 	<string>Prüfen</string>
 	<key>Check for Updates</key>
@@ -222,6 +348,14 @@
 	<string>Auswählen</string>
 	<key>Choose Capture Area in the Shotnix menu to start</key>
 	<string>Wähle „Bereich aufnehmen“ im Shotnix-Menü, um loszulegen</string>
+	<key>Choose a language</key>
+	<string>Sprache wählen</string>
+	<key>Choose a logo, watermark, or screenshot to place on the video</key>
+	<string>Wähle ein Logo, ein Wasserzeichen oder ein Bildschirmfoto für das Video</string>
+	<key>Choose a recording or video to add after this one</key>
+	<string>Wähle eine Aufnahme oder ein Video, das nach dieser Aufnahme folgt</string>
+	<key>Choose a song to play under the video</key>
+	<string>Wähle einen Song, der unter dem Video läuft</string>
 	<key>Choose a writable folder for auto-save.</key>
 	<string>Wähle einen beschreibbaren Ordner zum automatischen Sichern.</string>
 	<key>Choose a writable folder.</key>
@@ -236,6 +370,12 @@
 	<string>Fenster wählen</string>
 	<key>Choose...</key>
 	<string>Auswählen …</string>
+	<key>Circle</key>
+	<string>Kreis</string>
+	<key>Citrus</key>
+	<string>Zitrus</string>
+	<key>Classic</key>
+	<string>Klassisch</string>
 	<key>Clay</key>
 	<string>Terrakotta</string>
 	<key>Clean Up</key>
@@ -248,6 +388,14 @@
 	<string>Aufräumen …</string>
 	<key>Cleaning Up…</key>
 	<string>Wird aufgeräumt …</string>
+	<key>Cleaning up the voice in “%@”</key>
+	<string>Stimme in „%@“ wird bereinigt</string>
+	<key>Cleaning up voice…</key>
+	<string>Stimme wird bereinigt …</string>
+	<key>Cleaning up your voice first… %lld%%</key>
+	<string>Zuerst wird deine Stimme bereinigt … %lld %%</string>
+	<key>Cleaning up your voice… %lld%%</key>
+	<string>Deine Stimme wird bereinigt … %lld %%</string>
 	<key>Clear All</key>
 	<string>Alle löschen</string>
 	<key>Clear History</key>
@@ -260,12 +408,30 @@
 	<string>Klicke auf eine Beschriftung, um sie zu bearbeiten</string>
 	<key>Click or press Esc to cancel</key>
 	<string>Zum Abbrechen klicken oder Esc drücken</string>
+	<key>Click removed — ⌘Z to undo</key>
+	<string>Klick entfernt – ⌘Z zum Widerrufen</string>
+	<key>Click sounds</key>
+	<string>Klickgeräusche</string>
 	<key>Click to add the next step</key>
 	<string>Klicke, um den nächsten Schritt hinzuzufügen</string>
+	<key>Click volume</key>
+	<string>Klicklautstärke</string>
+	<key>Clip moved — ⌘Z to undo</key>
+	<string>Clip verschoben – ⌘Z zum Widerrufen</string>
+	<key>Clip now ends here</key>
+	<string>Clip endet jetzt hier</string>
+	<key>Clip now starts here</key>
+	<string>Clip beginnt jetzt hier</string>
+	<key>Clip removed — ⌘Z to undo</key>
+	<string>Clip entfernt – ⌘Z zum Widerrufen</string>
+	<key>Clip split</key>
+	<string>Clip geteilt</string>
 	<key>Clipboard</key>
 	<string>Zwischenablage</string>
 	<key>Close</key>
 	<string>Schließen</string>
+	<key>Close (Esc)</key>
+	<string>Schließen (Esc)</string>
 	<key>Close All Pins</key>
 	<string>Alle schließen</string>
 	<key>Close Pin</key>
@@ -284,14 +450,20 @@
 	<string>E-Mail verfassen</string>
 	<key>Conflict detected</key>
 	<string>Konflikt erkannt</string>
+	<key>Copied</key>
+	<string>Kopiert</string>
 	<key>Copied to clipboard</key>
 	<string>In die Zwischenablage kopiert</string>
+	<key>Copied — paste it anywhere</key>
+	<string>Kopiert – überall einsetzbar</string>
 	<key>Copy</key>
 	<string>Kopieren</string>
 	<key>Copy %@</key>
 	<string>%@ kopieren</string>
 	<key>Copy (⌘C)</key>
 	<string>Kopieren (⌘C)</string>
+	<key>Copy Path</key>
+	<string>Pfad kopieren</string>
 	<key>Copy Text</key>
 	<string>Text kopieren</string>
 	<key>Copy as Table</key>
@@ -306,6 +478,12 @@
 	<string>Bildschirmfotos in die Zwischenablage kopieren</string>
 	<key>Copy the rows tab-separated, ready to paste into a spreadsheet</key>
 	<string>Zeilen mit Tabulatoren getrennt kopieren – bereit zum Einsetzen in eine Tabellenkalkulation</string>
+	<key>Copy to clipboard</key>
+	<string>In die Zwischenablage kopieren</string>
+	<key>Copy to clipboard — %@</key>
+	<string>In die Zwischenablage kopieren – %@</string>
+	<key>Copying %lld%%</key>
+	<string>Kopieren %lld %%</string>
 	<key>Could Not Disable Apple Shortcuts</key>
 	<string>Apple-Kurzbefehle konnten nicht deaktiviert werden</string>
 	<key>Could Not Save Screenshot</key>
@@ -328,10 +506,32 @@
 	<string>Die Aufnahme konnte nicht gesichert werden.</string>
 	<key>Could not start recording (%@).</key>
 	<string>Die Aufzeichnung konnte nicht gestartet werden (%@).</string>
+	<key>Couldn't add that song — %@</key>
+	<string>Song konnte nicht hinzugefügt werden – %@</string>
 	<key>Couldn't copy the screenshot. Try again, or save it instead.</key>
 	<string>Das Bildschirmfoto konnte nicht kopiert werden. Versuche es erneut oder sichere es stattdessen.</string>
+	<key>Couldn't create the GIF file. Check that you can save to that folder, then export again.</key>
+	<string>Die GIF-Datei konnte nicht erstellt werden. Prüfe, ob du in diesem Ordner sichern darfst, und exportiere erneut.</string>
 	<key>Couldn't create the video file.</key>
 	<string>Die Videodatei konnte nicht erstellt werden.</string>
+	<key>Couldn't make captions</key>
+	<string>Untertitel konnten nicht erstellt werden</string>
+	<key>Couldn't make the click sound. Turn off Click sounds (Audio tab), then export again.</key>
+	<string>Das Klickgeräusch konnte nicht erzeugt werden. Deaktiviere „Klickgeräusche“ (Tab „Audio“) und exportiere erneut.</string>
+	<key>Couldn't open that image</key>
+	<string>Das Bild konnte nicht geöffnet werden</string>
+	<key>Couldn't open that video — %@</key>
+	<string>Das Video konnte nicht geöffnet werden – %@</string>
+	<key>Couldn't prepare the video. Export again; if it keeps happening, restart Shotnix.</key>
+	<string>Das Video konnte nicht vorbereitet werden. Exportiere erneut; wenn das weiterhin passiert, starte Shotnix neu.</string>
+	<key>Couldn't read that audio file</key>
+	<string>Die Audiodatei konnte nicht gelesen werden</string>
+	<key>Couldn't read the recording for the GIF. Try exporting a shorter part, or choose MP4.</key>
+	<string>Die Aufnahme konnte für das GIF nicht gelesen werden. Exportiere einen kürzeren Teil oder wähle MP4.</string>
+	<key>Couldn't read the recording. Check that its file is still there, then export again.</key>
+	<string>Die Aufnahme konnte nicht gelesen werden. Prüfe, ob die Datei noch vorhanden ist, und exportiere erneut.</string>
+	<key>Couldn't save the captions file</key>
+	<string>Die Untertiteldatei konnte nicht gesichert werden</string>
 	<key>Couldn't save the screenshot to %@. Click to check the save folder.</key>
 	<string>Das Bildschirmfoto konnte nicht in „%@“ gesichert werden. Klicke, um den Zielordner zu prüfen.</string>
 	<key>Couldn't save the screenshot: Shotnix can't write to %@. Click to choose another save folder.</key>
@@ -340,10 +540,22 @@
 	<string>Das Bildschirmfoto konnte nicht gesichert werden: Es ließ sich nicht als %@ codieren.</string>
 	<key>Couldn't save the screenshot: the disk is full. Free up space or pick another save folder.</key>
 	<string>Das Bildschirmfoto konnte nicht gesichert werden: Der Speicher ist voll. Gib Speicherplatz frei oder wähle einen anderen Zielordner.</string>
+	<key>Couldn't set up the video encoder. Choose H.264 or a lower resolution, then export again.</key>
+	<string>Der Video-Encoder konnte nicht eingerichtet werden. Wähle H.264 oder eine niedrigere Auflösung und exportiere erneut.</string>
+	<key>Couldn't start the export. Export again; if it keeps happening, restart Shotnix.</key>
+	<string>Der Export konnte nicht gestartet werden. Exportiere erneut; wenn das weiterhin passiert, starte Shotnix neu.</string>
+	<key>Couldn't translate (%@). Try again, or pick another language.</key>
+	<string>Übersetzung fehlgeschlagen (%@). Versuche es erneut oder wähle eine andere Sprache.</string>
+	<key>Couldn't write the GIF. Check that there's free space, or export a shorter part.</key>
+	<string>Das GIF konnte nicht geschrieben werden. Prüfe, ob genug Speicherplatz frei ist, oder exportiere einen kürzeren Teil.</string>
+	<key>Couldn't write the video. Check that there's free space and that you can save to that folder, then export again.</key>
+	<string>Das Video konnte nicht geschrieben werden. Prüfe, ob genug Speicherplatz frei ist und du in diesem Ordner sichern darfst, und exportiere erneut.</string>
 	<key>Countdown</key>
 	<string>Countdown</string>
 	<key>Crimson Ridge</key>
 	<string>Purpurgrat</string>
+	<key>Crisp and compact — the best default</key>
+	<string>Scharf und kompakt – die beste Standardwahl</string>
 	<key>Crop</key>
 	<string>Beschneiden</string>
 	<key>Cursor</key>
@@ -358,6 +570,10 @@
 	<string>Eigene Farbe …</string>
 	<key>Cut</key>
 	<string>Ausschneiden</string>
+	<key>Cut, no transition</key>
+	<string>Schnitt, kein Übergang</string>
+	<key>Cutout</key>
+	<string>Freigestellt</string>
 	<key>Decoded details</key>
 	<string>Decodierte Details</string>
 	<key>Delete</key>
@@ -378,6 +594,10 @@
 	<string>Gelöschte Bildschirmfotos im Papierkorb des Verlaufs und Dateien, die kein Bildschirmfoto verwendet, werden endgültig entfernt. Die Bildschirmfotos in deinem Verlauf bleiben erhalten.</string>
 	<key>Desert Violet</key>
 	<string>Wüstenviolett</string>
+	<key>Dip to black</key>
+	<string>Schwarzblende</string>
+	<key>Dips while you talk, comes back in the pauses</key>
+	<string>Wird leiser, während du sprichst, und in Pausen wieder lauter</string>
 	<key>Directory where screenshots are saved if Auto-Save is enabled.</key>
 	<string>Ordner, in dem Bildschirmfotos gesichert werden, wenn automatisches Sichern aktiviert ist.</string>
 	<key>Disable Apple Shortcuts</key>
@@ -394,14 +614,22 @@
 	<string>Aufnahme verwerfen?</string>
 	<key>Disk almost full</key>
 	<string>Speicher fast voll</string>
+	<key>Dismiss</key>
+	<string>Ausblenden</string>
 	<key>Display</key>
 	<string>Bildschirm</string>
 	<key>Display %lld</key>
 	<string>Bildschirm %lld</string>
 	<key>Display %lld · Main</key>
 	<string>Bildschirm %lld · Hauptbildschirm</string>
+	<key>Dissolve</key>
+	<string>Überblenden</string>
+	<key>Dissolve Between Clips</key>
+	<string>Zwischen Clips überblenden</string>
 	<key>Do you want to review them before quitting?</key>
 	<string>Möchtest du sie vor dem Beenden durchsehen?</string>
+	<key>Docs, slides</key>
+	<string>Dokumente, Folien</string>
 	<key>Don't Ask Again</key>
 	<string>Nicht mehr fragen</string>
 	<key>Don't Save</key>
@@ -410,22 +638,34 @@
 	<string>Fertig</string>
 	<key>Double-click to edit, or drag into another app. Command-C copies, Command-S saves, Escape dismisses.</key>
 	<string>Zum Bearbeiten doppelklicken oder in eine andere App ziehen. Befehl-C kopiert, Befehl-S sichert, Escape schließt.</string>
+	<key>Downloading the language model…</key>
+	<string>Sprachmodell wird geladen …</string>
 	<key>Drag edges or corners to resize  ·  Arrow keys nudge (⇧ ×10)  ·  Return captures  ·  Esc cancels</key>
 	<string>Größe an Kanten oder Ecken ändern  ·  Pfeiltasten verschieben (⇧ ×10)  ·  Return nimmt auf  ·  Esc bricht ab</string>
 	<key>Drag to capture  ·  Hold ⇧ as you let go to adjust first  ·  Space moves  ·  Esc cancels</key>
 	<string>Ziehen zum Aufnehmen  ·  Beim Loslassen ⇧ halten, um erst anzupassen  ·  Leertaste verschiebt  ·  Esc bricht ab</string>
 	<key>Drag to move. Press Command-C to copy, Escape to close.</key>
 	<string>Ziehen zum Bewegen. Drücke Befehl-C zum Kopieren und Escape zum Schließen.</string>
+	<key>Drag to move; drag a corner to resize</key>
+	<string>Zum Bewegen ziehen; zum Ändern der Größe an einer Ecke ziehen</string>
 	<key>Drag to select, then adjust  ·  Hold ⇧ as you let go to capture right away  ·  Esc cancels</key>
 	<string>Ziehen zum Auswählen, dann anpassen  ·  Beim Loslassen ⇧ halten, um sofort aufzunehmen  ·  Esc bricht ab</string>
 	<key>Draw with the selected tool. Tool shortcuts: V select, A arrow, R rectangle, T text, O callout, H highlighter, B blur, P pixelate, S spotlight, C crop.</key>
 	<string>Mit dem ausgewählten Werkzeug zeichnen. Kurzbefehle: V Auswählen, A Pfeil, R Rechteck, T Text, O Sprechblase, H Textmarker, B Weichzeichnen, P Verpixeln, S Fokus, C Beschneiden.</string>
 	<key>Drawing</key>
 	<string>Zeichnung</string>
+	<key>Duplicated</key>
+	<string>Dupliziert</string>
+	<key>Dusk</key>
+	<string>Dämmerung</string>
+	<key>Each recording keeps its own pointer, clicks, and shortcuts. Reorder them here; cut and trim them on the timeline like any clip.</key>
+	<string>Jede Aufnahme behält ihren eigenen Zeiger, ihre Klicks und Kurzbefehle. Ändere hier die Reihenfolge; schneide und kürze sie auf der Zeitleiste wie jeden Clip.</string>
 	<key>Edit</key>
 	<string>Bearbeiten</string>
 	<key>Edit Last Recording</key>
 	<string>Letzte Aufnahme bearbeiten</string>
+	<key>Edit Video</key>
+	<string>Video bearbeiten</string>
 	<key>Editable Cursor</key>
 	<string>Bearbeitbarer Zeiger</string>
 	<key>Editable cursor</key>
@@ -442,14 +682,24 @@
 	<string>QR-Code mit E-Mail gefunden</string>
 	<key>Email address copied</key>
 	<string>E-Mail-Adresse kopiert</string>
+	<key>Ember</key>
+	<string>Glut</string>
 	<key>Ember Fog</key>
 	<string>Glutnebel</string>
+	<key>Emerald</key>
+	<string>Smaragd</string>
 	<key>Enable Shotnix in System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording, then quit and reopen Shotnix so macOS applies the permission.</key>
 	<string>Aktiviere Shotnix unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherheit“ → „Aufnahme von Bildschirm &amp; Systemaudio“. Beende und öffne Shotnix danach erneut, damit macOS die Berechtigung übernimmt.</string>
 	<key>Enable Shotnix in System Settings, then relaunch so macOS applies it.</key>
 	<string>Aktiviere Shotnix in den Systemeinstellungen und starte es dann neu, damit macOS es übernimmt.</string>
 	<key>Enabled</key>
 	<string>Aktiviert</string>
+	<key>Encoding</key>
+	<string>Codierung</string>
+	<key>End card</key>
+	<string>Endkarte</string>
+	<key>English</key>
+	<string>Englisch</string>
 	<key>Enjoying Shotnix? Click to star it on GitHub ★</key>
 	<string>Gefällt dir Shotnix? Klicke, um ihm auf GitHub einen Stern zu geben ★</string>
 	<key>Enjoying Shotnix? Star it on GitHub so more people find it.</key>
@@ -460,32 +710,90 @@
 	<string>Geschätzte Dateigröße. Ruhige Bildschirminhalte brauchen weniger.</string>
 	<key>Estimated size %@</key>
 	<string>Geschätzte Größe: %@</string>
+	<key>Estimating…</key>
+	<string>Wird geschätzt …</string>
+	<key>Every clip is muted — this export will have no sound.</key>
+	<string>Alle Clips sind stummgeschaltet – dieser Export hat keinen Ton.</string>
+	<key>Every cut, zoom, annotation, caption, and style change on this video is removed — the recordings you added stay. You can undo this.</key>
+	<string>Alle Schnitte, Zooms, Beschriftungen, Untertitel und Stiländerungen an diesem Video werden entfernt – hinzugefügte Aufnahmen bleiben erhalten. Du kannst das widerrufen.</string>
+	<key>Every cut, zoom, annotation, caption, and style change on this video is removed. You can undo this.</key>
+	<string>Alle Schnitte, Zooms, Beschriftungen, Untertitel und Stiländerungen an diesem Video werden entfernt. Du kannst das widerrufen.</string>
+	<key>Every sound level is at 0 (Audio tab) — this export will have no sound.</key>
+	<string>Alle Lautstärken stehen auf 0 (Tab „Audio“) – dieser Export hat keinen Ton.</string>
 	<key>Everything is ready</key>
 	<string>Alles bereit</string>
+	<key>Export</key>
+	<string>Exportieren</string>
 	<key>Export Format</key>
 	<string>Exportformat</string>
+	<key>Export and put the file on the clipboard — paste it into Slack, Mail, or Finder</key>
+	<string>Exportieren und die Datei in die Zwischenablage legen – setze sie in Slack, Mail oder im Finder ein</string>
+	<key>Export cancelled</key>
+	<string>Export abgebrochen</string>
+	<key>Export cancelled.</key>
+	<string>Export abgebrochen.</string>
+	<key>Export complete</key>
+	<string>Export abgeschlossen</string>
+	<key>Export failed</key>
+	<string>Export fehlgeschlagen</string>
+	<key>Export: %@</key>
+	<string>Export: %@</string>
+	<key>Exported</key>
+	<string>Exportiert</string>
+	<key>Exported without Enhance voice — it couldn't finish.</key>
+	<string>Ohne „Stimme verbessern“ exportiert – die Bereinigung wurde nicht fertig.</string>
+	<key>Exported · %@</key>
+	<string>Exportiert · %@</string>
+	<key>Exporting %lld%%</key>
+	<string>Export %lld %%</string>
+	<key>Exporting a video for the clipboard</key>
+	<string>Video für die Zwischenablage wird exportiert</string>
+	<key>Exporting “%@”</key>
+	<string>„%@“ wird exportiert</string>
+	<key>Exporting…</key>
+	<string>Wird exportiert …</string>
+	<key>Exporting… %lld%%</key>
+	<string>Wird exportiert … %lld %%</string>
+	<key>Export…</key>
+	<string>Exportieren …</string>
+	<key>Fade in</key>
+	<string>Einblenden</string>
+	<key>Fade in from black</key>
+	<string>Aus Schwarz einblenden</string>
+	<key>Fade out</key>
+	<string>Ausblenden</string>
+	<key>Fade out to black</key>
+	<string>Zu Schwarz ausblenden</string>
 	<key>Fast</key>
 	<string>Schnell</string>
 	<key>File</key>
 	<string>Ablage</string>
 	<key>File Name</key>
 	<string>Dateiname</string>
+	<key>File not found</key>
+	<string>Datei nicht gefunden</string>
 	<key>Filled Rectangle</key>
 	<string>Gefülltes Rechteck</string>
 	<key>Filled rectangle</key>
 	<string>Gefülltes Rechteck</string>
 	<key>Filled rounded rectangle</key>
 	<string>Gefülltes abgerundetes Rechteck</string>
+	<key>Filling the frame — the view follows your cursor</key>
+	<string>Füllt das Bild – die Ansicht folgt deinem Zeiger</string>
 	<key>Finish and Quit</key>
 	<string>Abschließen und beenden</string>
 	<key>Finish or cancel the current recording setup</key>
 	<string>Schließe die Einrichtung der aktuellen Aufzeichnung ab oder brich sie ab</string>
 	<key>Fix</key>
 	<string>Beheben</string>
+	<key>Flamingo</key>
+	<string>Flamingo</string>
 	<key>Forever</key>
 	<string>Für immer</string>
 	<key>Format</key>
 	<string>Format</string>
+	<key>Frame copied</key>
+	<string>Bild kopiert</string>
 	<key>Frame rate</key>
 	<string>Bildrate</string>
 	<key>Free up ⌘⇧ shortcuts · optional</key>
@@ -498,12 +806,22 @@
 	<string>Freihand-Textmarker</string>
 	<key>Freehand highlight</key>
 	<string>Freihand-Markierung</string>
+	<key>Full camera</key>
+	<string>Kamera im Vollbild</string>
 	<key>Full screen: %@</key>
 	<string>Vollbild: %@</string>
+	<key>Full-screen camera for your intro and outro</key>
+	<string>Kamera im Vollbild für Intro und Outro</string>
 	<key>Fullscreen</key>
 	<string>Vollbild</string>
+	<key>GIFs embed anywhere — READMEs, pull requests, docs. Keep them short: they get big fast.</key>
+	<string>GIFs lassen sich überall einbetten – READMEs, Pull-Requests, Dokumentationen. Halte sie kurz – sie werden schnell groß.</string>
 	<key>General</key>
 	<string>Allgemein</string>
+	<key>Getting ready…</key>
+	<string>Wird vorbereitet …</string>
+	<key>Glacier</key>
+	<string>Gletscher</string>
 	<key>Gradient</key>
 	<string>Farbverlauf</string>
 	<key>Grant Screen Recording first, then try it here.</key>
@@ -514,6 +832,10 @@
 	<string>Graphit</string>
 	<key>Green</key>
 	<string>Grün</string>
+	<key>Hard Cuts Between Clips</key>
+	<string>Harte Schnitte zwischen Clips</string>
+	<key>Hard cut</key>
+	<string>Schnitt</string>
 	<key>Health</key>
 	<string>Status</string>
 	<key>Hidden</key>
@@ -526,10 +848,14 @@
 	<string>Schreibtischsymbole beim Aufnehmen ausblenden</string>
 	<key>Hide the Menu Bar Icon?</key>
 	<string>Symbol in der Menüleiste ausblenden?</string>
+	<key>Hide — the export keeps going (Esc)</key>
+	<string>Ausblenden – der Export läuft weiter (Esc)</string>
 	<key>High</key>
 	<string>Hoch</string>
 	<key>Highlight</key>
 	<string>Markierung</string>
+	<key>Highlight color</key>
+	<string>Markierungsfarbe</string>
 	<key>Highlighter</key>
 	<string>Textmarker</string>
 	<key>History</key>
@@ -544,10 +870,38 @@
 	<string>Wie stark Weichzeichnen und Verpixeln den Inhalt darunter verbergen</string>
 	<key>Image</key>
 	<string>Bild</string>
+	<key>In</key>
+	<string>Start</string>
+	<key>In &amp; out</key>
+	<string>Start &amp; Ende</string>
+	<key>In earlier</key>
+	<string>Start früher</string>
+	<key>In later</key>
+	<string>Start später</string>
+	<key>Includes: %@</key>
+	<string>Enthält: %@</string>
+	<key>Instagram, LinkedIn</key>
+	<string>Instagram, LinkedIn</string>
+	<key>Instant</key>
+	<string>Sofort</string>
+	<key>Intro &amp; outro</key>
+	<string>Intro &amp; Outro</string>
+	<key>Intro card</key>
+	<string>Intro-Karte</string>
+	<key>Iris</key>
+	<string>Iris</string>
+	<key>It may be damaged, still being saved, or in a format this Mac can't play. MP4 and MOV videos work best.</key>
+	<string>Die Datei ist möglicherweise beschädigt, wird noch gesichert oder hat ein Format, das dieser Mac nicht abspielen kann. MP4- und MOV-Videos funktionieren am besten.</string>
+	<key>It only has sound, or nothing at all. Shotnix edits screen recordings and other videos.</key>
+	<string>Die Datei enthält nur Ton oder gar nichts. Shotnix bearbeitet Bildschirmaufnahmen und andere Videos.</string>
+	<key>It was moved, renamed, or deleted. Open it from where it is now.</key>
+	<string>Es wurde bewegt, umbenannt oder gelöscht. Öffne es an seinem aktuellen Ort.</string>
 	<key>JPEG Quality</key>
 	<string>JPEG-Qualität</string>
 	<key>Keep</key>
 	<string>Behalten</string>
+	<key>Keep Editing</key>
+	<string>Weiter bearbeiten</string>
 	<key>Keep Working</key>
 	<string>Weiterarbeiten</string>
 	<key>Keep captures</key>
@@ -556,20 +910,34 @@
 	<string>Tastatur</string>
 	<key>Keyboard shortcuts are on</key>
 	<string>Tastaturkurzbefehle sind aktiviert</string>
+	<key>L</key>
+	<string>L</string>
+	<key>Lagoon</key>
+	<string>Lagune</string>
 	<key>Languages</key>
 	<string>Sprachen</string>
+	<key>Large</key>
+	<string>Groß</string>
+	<key>Larger than the recording — text may look softer than at a lower resolution.</key>
+	<string>Größer als die Aufnahme – Text wirkt eventuell weicher als bei einer niedrigeren Auflösung.</string>
 	<key>Launch Shotnix at login</key>
 	<string>Shotnix bei der Anmeldung öffnen</string>
 	<key>Lavender Glass</key>
 	<string>Lavendelglas</string>
 	<key>Left</key>
 	<string>Links</string>
+	<key>Length</key>
+	<string>Dauer</string>
+	<key>Light</key>
+	<string>Leicht</string>
 	<key>Lime Signal</key>
 	<string>Limettensignal</string>
 	<key>Line</key>
 	<string>Linie</string>
 	<key>Line width</key>
 	<string>Linienstärke</string>
+	<key>Linen</key>
+	<string>Leinen</string>
 	<key>Link</key>
 	<string>Link</string>
 	<key>Link QR found</key>
@@ -580,14 +948,32 @@
 	<string>Links</string>
 	<key>Links (%lld of %lld)</key>
 	<string>Links (%lld von %lld)</string>
+	<key>Listening…</key>
+	<string>Hört zu …</string>
+	<key>Loop to fill</key>
+	<string>Bis zum Ende wiederholen</string>
+	<key>Lower under your voice</key>
+	<string>Unter deiner Stimme leiser</string>
+	<key>M</key>
+	<string>M</string>
 	<key>MIT License — Free and open source</key>
 	<string>MIT-Lizenz – kostenlos und Open Source</string>
+	<key>Make it lighter: %@, %@ fps</key>
+	<string>Sparsamer machen: %@, %@ fps</string>
 	<key>Manage</key>
 	<string>Verwalten</string>
+	<key>Match the recording</key>
+	<string>Wie die Aufnahme</string>
 	<key>Max</key>
 	<string>Maximal</string>
+	<key>Maximum detail for further editing</key>
+	<string>Maximale Details zur Weiterbearbeitung</string>
 	<key>Maximum length reached</key>
 	<string>Maximale Länge erreicht</string>
+	<key>Meadow</key>
+	<string>Wiese</string>
+	<key>Medium</key>
+	<string>Mittel</string>
 	<key>Menu Bar</key>
 	<string>Menüleiste</string>
 	<key>Menu bar is full, so macOS hid the Shotnix icon — %@ still captures. Click here for the menu.</key>
@@ -618,18 +1004,50 @@
 	<string>Mikrofonpegel</string>
 	<key>Microphone recording requires macOS microphone permission. System audio excludes Shotnix sounds to avoid feedback.</key>
 	<string>Für Mikrofonaufzeichnungen braucht Shotnix die Mikrofonberechtigung von macOS. Der Systemton enthält keine Töne von Shotnix, um Rückkopplungen zu vermeiden.</string>
+	<key>Midnight</key>
+	<string>Mitternacht</string>
 	<key>Midnight Graphite</key>
 	<string>Mitternachtsgraphit</string>
+	<key>Minimal</key>
+	<string>Minimal</string>
 	<key>Minimize</key>
 	<string>Im Dock ablegen</string>
+	<key>Mint</key>
+	<string>Minze</string>
+	<key>Mist</key>
+	<string>Dunst</string>
 	<key>More recording options</key>
 	<string>Weitere Aufzeichnungsoptionen</string>
 	<key>Moss</key>
 	<string>Moos</string>
 	<key>Moss Glow</key>
 	<string>Moosschimmer</string>
+	<key>Move %@ earlier</key>
+	<string>%@ nach vorn verschieben</string>
+	<key>Move %@ later</key>
+	<string>%@ nach hinten verschieben</string>
+	<key>Move earlier</key>
+	<string>Nach vorn</string>
+	<key>Move later</key>
+	<string>Nach hinten</string>
+	<key>Move the playhead inside a clip to split</key>
+	<string>Bewege die Abspielposition in einen Clip, um ihn zu teilen</string>
+	<key>Music</key>
+	<string>Musik</string>
+	<key>Music added — it dips while you talk</key>
+	<string>Musik hinzugefügt – sie wird leiser, während du sprichst</string>
+	<key>Music options</key>
+	<string>Musikoptionen</string>
+	<key>Music removed — ⌘Z to undo</key>
+	<string>Musik entfernt – ⌘Z zum Widerrufen</string>
+	<key>Music — click to change its volume, fades, and ducking</key>
+	<string>Musik – klicken, um Lautstärke, Blenden und Absenkung zu ändern</string>
 	<key>Mute Clip</key>
 	<string>Clip stummschalten</string>
+	<key>Mute video is on (Audio tab) — this export will have no sound.</key>
+	<string>„Video stummschalten“ ist aktiviert (Tab „Audio“) – dieser Export hat keinen Ton.</string>
+	<key>Nebula</key>
+	<string>Nebel</string>
 	<key>Needed to capture the screen. macOS will ask once.</key>
 	<string>Nötig, um den Bildschirm aufzunehmen. macOS fragt einmal nach.</string>
 	<key>Neo Pop</key>
@@ -638,6 +1056,8 @@
 	<string>Netzwerk</string>
 	<key>Never</key>
 	<string>Nie</string>
+	<key>New caption</key>
+	<string>Neuer Untertitel</string>
 	<key>New screenshots are copied automatically. Turn this off if you only want to use the overlay or history actions.</key>
 	<string>Neue Bildschirmfotos werden automatisch kopiert. Schalte dies aus, wenn du nur die Miniatur oder den Verlauf nutzen möchtest.</string>
 	<key>Nice shot. You're all set.</key>
@@ -650,14 +1070,26 @@
 	<string>Keine Kamera angeschlossen</string>
 	<key>No camera found.</key>
 	<string>Keine Kamera gefunden.</string>
+	<key>No captions in the picture — add a subtitles file to upload them separately.</key>
+	<string>Keine Untertitel im Bild – füge eine Untertiteldatei hinzu, um sie separat hochzuladen.</string>
 	<key>No captures contain “%@”</key>
 	<string>Kein Bildschirmfoto enthält „%@“</string>
 	<key>No captures of this type</key>
 	<string>Keine Bildschirmfotos dieser Art</string>
 	<key>No captures yet</key>
 	<string>Noch keine Bildschirmfotos</string>
+	<key>No clicks left on the timeline</key>
+	<string>Keine Klicks mehr auf der Zeitleiste</string>
+	<key>No clicks were recorded in this video</key>
+	<string>In diesem Video wurden keine Klicks aufgezeichnet</string>
+	<key>No clicks were recorded — add zooms by hand</key>
+	<string>Keine Klicks aufgezeichnet – füge Zooms von Hand hinzu</string>
 	<key>No conflict</key>
 	<string>Kein Konflikt</string>
+	<key>No idle moments found — nice and tight</key>
+	<string>Keine Leerlaufphasen gefunden – schön straff</string>
+	<key>No long pauses to shorten</key>
+	<string>Keine langen Pausen zum Kürzen</string>
 	<key>No microphone connected</key>
 	<string>Kein Mikrofon angeschlossen</string>
 	<key>No microphone is connected, so this recording has no mic.</key>
@@ -666,12 +1098,22 @@
 	<string>Keine aufzeichenbaren Fenster gefunden</string>
 	<key>No recording in progress</key>
 	<string>Es läuft keine Aufzeichnung</string>
+	<key>No room after this zoom</key>
+	<string>Kein Platz nach diesem Zoom</string>
+	<key>No room here — move the playhead</key>
+	<string>Hier ist kein Platz – bewege die Abspielposition</string>
 	<key>No saved captures yet</key>
 	<string>Noch keine gesicherten Bildschirmfotos</string>
 	<key>No sound from the microphone</key>
 	<string>Kein Ton vom Mikrofon</string>
+	<key>No speech was found in this recording. If it has narration, check its level in the Audio tab, then try again.</key>
+	<string>In dieser Aufnahme wurde keine Sprache gefunden. Wenn sie gesprochenen Text enthält, prüfe die Lautstärke im Tab „Audio“ und versuche es erneut.</string>
 	<key>No text found in this selection</key>
 	<string>In dieser Auswahl wurde kein Text gefunden</string>
+	<key>No ums or uhs left</key>
+	<string>Keine Füllwörter mehr</string>
+	<key>None</key>
+	<string>Ohne</string>
 	<key>Not enough disk space to record.</key>
 	<string>Nicht genug Speicherplatz für die Aufzeichnung.</string>
 	<key>Not enough free disk space for this recording: it needs about %@ free, and %@ is available. Free up some space and try again.</key>
@@ -680,6 +1122,8 @@
 	<string>Nicht genug Speicherplatz für diese Aufzeichnung: Benötigt werden etwa %@, frei sind %@. Gib Speicherplatz frei oder wähle die Qualität „Ausgewogen“ oder 30 fps.</string>
 	<key>Not now</key>
 	<string>Nicht jetzt</string>
+	<key>Nothing to clean up — everything belongs to recordings you still have</key>
+	<string>Nichts aufzuräumen – alles gehört zu Aufnahmen, die du noch hast</string>
 	<key>Nothing was recorded — the screen didn't send any picture. Try again.</key>
 	<string>Es wurde nichts aufgezeichnet – der Bildschirm hat kein Bild geliefert. Versuche es erneut.</string>
 	<key>Numbered Steps</key>
@@ -688,10 +1132,20 @@
 	<string>Text erfassen (OCR)</string>
 	<key>OK</key>
 	<string>OK</string>
+	<key>Ocean</key>
+	<string>Ozean</string>
+	<key>Of the frame's width.</key>
+	<string>Anteil an der Bildbreite.</string>
 	<key>Off</key>
 	<string>Aus</string>
 	<key>Older</key>
 	<string>Älter</string>
+	<key>On your clipboard · %@</key>
+	<string>In der Zwischenablage · %@</string>
+	<key>Only %@ free on your disk — this may not fit. Free up space or save to another drive.</key>
+	<string>Nur noch %@ frei auf deiner Festplatte – das reicht eventuell nicht. Gib Speicherplatz frei oder sichere auf einem anderen Laufwerk.</string>
+	<key>Opacity</key>
+	<string>Deckkraft</string>
 	<key>Open</key>
 	<string>Öffnen</string>
 	<key>Open %@</key>
@@ -720,12 +1174,32 @@
 	<string>Editor nach der Aufzeichnung öffnen</string>
 	<key>Open in annotation editor</key>
 	<string>Im Bildschirmfoto-Editor öffnen</string>
+	<key>Opens its volume, fades, and ducking in Audio</key>
+	<string>Öffnet Lautstärke, Blenden und Absenkung unter „Audio“</string>
+	<key>Or drag it on the preview. Images stay put while the camera zooms.</key>
+	<string>Oder zieh es in der Vorschau. Bilder bleiben an ihrem Platz, während die Kamera zoomt.</string>
+	<key>Or drag its bar on the timeline.</key>
+	<string>Oder zieh seinen Balken auf der Zeitleiste.</string>
 	<key>Orange</key>
 	<string>Orange</string>
+	<key>Orchid</key>
+	<string>Orchidee</string>
+	<key>Original</key>
+	<string>Original</string>
+	<key>Out</key>
+	<string>Ende</string>
+	<key>Out earlier</key>
+	<string>Ende früher</string>
+	<key>Out later</key>
+	<string>Ende später</string>
+	<key>Outro card</key>
+	<string>Outro-Karte</string>
 	<key>Overlay position</key>
 	<string>Position der Miniatur</string>
 	<key>Padding</key>
 	<string>Rand</string>
+	<key>Part of the recording couldn't be read — the file may be damaged. Try exporting a shorter part of the video.</key>
+	<string>Ein Teil der Aufnahme konnte nicht gelesen werden – die Datei ist eventuell beschädigt. Exportiere einen kürzeren Teil des Videos.</string>
 	<key>Password</key>
 	<string>Passwort</string>
 	<key>Paste</key>
@@ -738,8 +1212,14 @@
 	<string>Aufzeichnung pausieren</string>
 	<key>Pause recording (%@)</key>
 	<string>Aufzeichnung pausieren (%@)</string>
+	<key>Pause restored</key>
+	<string>Pause wiederhergestellt</string>
+	<key>Pause shortened</key>
+	<string>Pause gekürzt</string>
 	<key>Paused</key>
 	<string>Pausiert</string>
+	<key>Peach</key>
+	<string>Pfirsich</string>
 	<key>Pending</key>
 	<string>Ausstehend</string>
 	<key>Permission needed</key>
@@ -748,6 +1228,8 @@
 	<string>Telefon</string>
 	<key>Phone QR found</key>
 	<string>QR-Code mit Telefonnummer gefunden</string>
+	<key>Picked up where you left off</key>
+	<string>Weiter, wo du aufgehört hast</string>
 	<key>Pin</key>
 	<string>Anheften</string>
 	<key>Pin to Screen</key>
@@ -762,28 +1244,58 @@
 	<string>Verpixeln</string>
 	<key>Pixelated area</key>
 	<string>Verpixelter Bereich</string>
+	<key>Play</key>
+	<string>Abspielen</string>
+	<key>Play Click Sounds</key>
+	<string>Klickgeräusche abspielen</string>
+	<key>Play a click on each click</key>
+	<string>Bei jedem Klick ein Klickgeräusch</string>
 	<key>Play capture sound</key>
 	<string>Ton beim Aufnehmen abspielen</string>
+	<key>Playing %lld×</key>
+	<string>Wiedergabe mit %lld×</string>
+	<key>Plays after the last clip, before the end card</key>
+	<string>Läuft nach dem letzten Clip, vor der Endkarte</string>
+	<key>Plays before the first clip</key>
+	<string>Läuft vor dem ersten Clip</string>
+	<key>Plays everywhere</key>
+	<string>Läuft überall</string>
+	<key>Plum</key>
+	<string>Pflaume</string>
 	<key>Polar Dawn</key>
 	<string>Polarmorgen</string>
 	<key>Porcelain</key>
 	<string>Porzellan</string>
+	<key>Position</key>
+	<string>Position</string>
 	<key>Preferences</key>
 	<string>Einstellungen</string>
+	<key>Preparing to copy…</key>
+	<string>Kopieren wird vorbereitet …</string>
+	<key>Preparing…</key>
+	<string>Wird vorbereitet …</string>
 	<key>Preset</key>
 	<string>Vorgabe</string>
+	<key>Press</key>
+	<string>Drücken</string>
 	<key>Press %@ anytime — or try it right now.</key>
 	<string>Drücke jederzeit %@ – oder probier es gleich aus.</string>
 	<key>Press %@ to take your first screenshot</key>
 	<string>Drücke %@ für dein erstes Bildschirmfoto</string>
 	<key>Preview</key>
 	<string>Vorschau</string>
+	<key>Preview muted — the export keeps its sound</key>
+	<string>Vorschau stumm – der Export behält seinen Ton</string>
+	<key>Preview sound on</key>
+	<string>Vorschau-Ton an</string>
 	<key>Preview the target, then continue to recording controls.</key>
 	<string>Vorschau prüfen, dann weiter zur Aufzeichnung.</string>
 	<key>Prism Sweep</key>
 	<string>Prismenschwung</string>
 	<key>Privacy Policy</key>
 	<string>Datenschutzerklärung</string>
+	<key>Pure</key>
+	<string>Rein</string>
 	<key>Purple</key>
 	<string>Violett</string>
 	<key>QR Code</key>
@@ -794,6 +1306,8 @@
 	<string>QR-Code in die Zwischenablage kopiert</string>
 	<key>Quality</key>
 	<string>Qualität</string>
+	<key>Quick</key>
+	<string>Schnell</string>
 	<key>Quit &amp; Reopen</key>
 	<string>Beenden &amp; neu öffnen</string>
 	<key>Quit Shotnix</key>
@@ -802,6 +1316,8 @@
 	<string>Shotnix beenden?</string>
 	<key>Radius</key>
 	<string>Radius</string>
+	<key>Range</key>
+	<string>Bereich</string>
 	<key>Re-enable Apple's ⌘⇧3/4/5 screenshot shortcuts</key>
 	<string>Apples Bildschirmfoto-Kurzbefehle ⌘⇧3/4/5 wieder aktivieren</string>
 	<key>Ready</key>
@@ -842,6 +1358,10 @@
 	<string>Tastaturkurzbefehle werden aufgezeichnet</string>
 	<key>Recording paused — click to stop (%@)</key>
 	<string>Aufzeichnung pausiert – zum Stoppen klicken (%@)</string>
+	<key>Recording removed — ⌘Z to undo</key>
+	<string>Aufnahme entfernt – ⌘Z zum Widerrufen</string>
+	<key>Recording saved</key>
+	<string>Aufnahme gesichert</string>
 	<key>Recording shortcuts are unassigned by default — click a field to set one. Stop Recording also cancels recording setup. While recording, %@ always stops it, from any app.</key>
 	<string>Aufzeichnungs-Kurzbefehle sind anfangs nicht belegt – klicke in ein Feld, um einen festzulegen. „Aufzeichnung stoppen“ bricht auch die Vorbereitung ab. Während einer Aufzeichnung stoppt %@ sie immer, in jeder App.</string>
 	<key>Recording stopped early — saved what was captured.</key>
@@ -854,6 +1374,10 @@
 	<string>Aufzeichnung ohne Kamera.</string>
 	<key>Recording — click to stop (%@)</key>
 	<string>Aufzeichnung läuft – zum Stoppen klicken (%@)</string>
+	<key>Recordings</key>
+	<string>Aufnahmen</string>
+	<key>Recordings in the Trash or on a drive that isn't plugged in keep their data. This can't be undone.</key>
+	<string>Aufnahmen im Papierkorb oder auf einem nicht angeschlossenen Laufwerk behalten ihre Daten. Dies kann nicht widerrufen werden.</string>
 	<key>Records %@ × %@ pixels (%@ × %@ points)</key>
 	<string>Zeichnet %@ × %@ Pixel auf (%@ × %@ Punkte)</string>
 	<key>Records the pointer separately, so the editor can smooth it, resize it, and keep it crisp when zoomed.</key>
@@ -870,8 +1394,42 @@
 	<string>Wiederholen</string>
 	<key>Redo Timeline Edit</key>
 	<string>Änderung an der Zeitleiste wiederholen</string>
+	<key>Reels, TikTok, Shorts</key>
+	<string>Reels, TikTok, Shorts</string>
+	<key>Regular</key>
+	<string>Normal</string>
 	<key>Releasing the mouse takes the shot. Hold ⇧ as you release to adjust the selection first — drag its edges, nudge it with the arrow keys, then press Return.</key>
 	<string>Loslassen der Maus löst die Aufnahme aus. Halte beim Loslassen ⇧ gedrückt, um die Auswahl erst anzupassen – ziehe an den Rändern, verschiebe sie mit den Pfeiltasten und drücke dann den Zeilenschalter.</string>
+	<key>Remove</key>
+	<string>Entfernen</string>
+	<key>Remove %@</key>
+	<string>%@ entfernen</string>
+	<key>Remove %@ of video data?</key>
+	<string>%@ Videodaten entfernen?</string>
+	<key>Remove Intro Card</key>
+	<string>Intro-Karte entfernen</string>
+	<key>Remove Music</key>
+	<string>Musik entfernen</string>
+	<key>Remove Outro Card</key>
+	<string>Outro-Karte entfernen</string>
+	<key>Remove from this video</key>
+	<string>Aus diesem Video entfernen</string>
+	<key>Remove this translation</key>
+	<string>Diese Übersetzung entfernen</string>
+	<key>Remove translation</key>
+	<string>Übersetzung entfernen</string>
+	<key>Removed %@ — ⌘Z to undo</key>
+	<string>%@ entfernt – ⌘Z zum Widerrufen</string>
+	<key>Removed — ⌘Z to undo</key>
+	<string>Entfernt – ⌘Z zum Widerrufen</string>
+	<key>Rendering for the clipboard… %lld%%</key>
+	<string>Wird für die Zwischenablage gerendert … %lld %%</string>
+	<key>Rendering, then copying to your clipboard</key>
+	<string>Wird gerendert und dann in die Zwischenablage kopiert</string>
+	<key>Replace Music…</key>
+	<string>Musik ersetzen …</string>
+	<key>Replace…</key>
+	<string>Ersetzen …</string>
 	<key>Report Issue</key>
 	<string>Problem melden</string>
 	<key>Reset</key>
@@ -882,14 +1440,22 @@
 	<string>Zuschnitt zurücksetzen</string>
 	<key>Resize</key>
 	<string>Größe ändern</string>
+	<key>Resolution</key>
+	<string>Auflösung</string>
 	<key>Restore Apple Shortcuts</key>
 	<string>Apple-Kurzbefehle wiederherstellen</string>
+	<key>Restored %@</key>
+	<string>%@ wiederhergestellt</string>
 	<key>Resume Recording</key>
 	<string>Aufzeichnung fortsetzen</string>
 	<key>Resume recording</key>
 	<string>Aufzeichnung fortsetzen</string>
 	<key>Resume recording (%@)</key>
 	<string>Aufzeichnung fortsetzen (%@)</string>
+	<key>Reveal</key>
+	<string>Zeigen</string>
+	<key>Reveal in Finder</key>
+	<string>Im Finder zeigen</string>
 	<key>Review Changes…</key>
 	<string>Änderungen prüfen …</string>
 	<key>Review the decoded email payload before copying.</key>
@@ -912,18 +1478,26 @@
 	<string>Prüfe die Telefonnummer vor dem Öffnen.</string>
 	<key>Right</key>
 	<string>Rechts</string>
+	<key>Ripple</key>
+	<string>Welle</string>
 	<key>Rose Smoke</key>
 	<string>Rosenrauch</string>
+	<key>Rounded</key>
+	<string>Abgerundet</string>
 	<key>Rounded Corners (⌥R)</key>
 	<string>Abgerundete Ecken (⌥R)</string>
 	<key>Rounded corners</key>
 	<string>Abgerundete Ecken</string>
 	<key>Rounded rectangle</key>
 	<string>Abgerundetes Rechteck</string>
+	<key>S</key>
+	<string>S</string>
 	<key>SHOTNIX LIBRARY</key>
 	<string>SHOTNIX-BIBLIOTHEK</string>
 	<key>Save</key>
 	<string>Sichern</string>
+	<key>Save %@…</key>
+	<string>%@ sichern …</string>
 	<key>Save (⌘S)</key>
 	<string>Sichern (⌘S)</string>
 	<key>Save As…</key>
@@ -932,6 +1506,10 @@
 	<string>Zielordner</string>
 	<key>Save Location</key>
 	<string>Speicherort</string>
+	<key>Save Subtitles</key>
+	<string>Untertitel sichern</string>
+	<key>Save Subtitles (.vtt)…</key>
+	<string>Untertitel sichern (.vtt) …</string>
 	<key>Save automatically</key>
 	<string>Automatisch sichern</string>
 	<key>Save changes to this screenshot?</key>
@@ -942,12 +1520,16 @@
 	<string>Bildschirmfoto als Datei sichern</string>
 	<key>Saved</key>
 	<string>Gesichert</string>
+	<key>Saved %@</key>
+	<string>%@ gesichert</string>
 	<key>Saved %@ to %@ — click to reveal in Finder</key>
 	<string>„%1$@“ in „%2$@“ gesichert – zum Anzeigen im Finder klicken</string>
 	<key>Saved capture</key>
 	<string>Gesichertes Bildschirmfoto</string>
 	<key>Saved to %@: %@</key>
 	<string>Gesichert in „%@“: %@</string>
+	<key>Saved — new recordings will use this look</key>
+	<string>Gesichert – neue Aufnahmen verwenden diesen Stil</string>
 	<key>Save…</key>
 	<string>Sichern …</string>
 	<key>Saving captures to History</key>
@@ -1020,6 +1602,10 @@
 	<string>Startpunkt an Abspielposition setzen</string>
 	<key>Set Out to Playhead</key>
 	<string>Endpunkt an Abspielposition setzen</string>
+	<key>Set the in point to the playhead (%@)</key>
+	<string>Startpunkt auf die Abspielposition setzen (%@)</string>
+	<key>Set the out point to the playhead (%@)</key>
+	<string>Endpunkt auf die Abspielposition setzen (%@)</string>
 	<key>Settings</key>
 	<string>Einstellungen</string>
 	<key>Settings…</key>
@@ -1030,12 +1616,22 @@
 	<string>Schatten und transparenter Rand</string>
 	<key>Shape</key>
 	<string>Form</string>
+	<key>Share</key>
+	<string>Teilen</string>
+	<key>Share — Mail, Messages, AirDrop…</key>
+	<string>Teilen – Mail, Nachrichten, AirDrop …</string>
 	<key>Shortcut Conflict Detected</key>
 	<string>Konflikt bei Kurzbefehlen erkannt</string>
+	<key>Shortcut hidden</key>
+	<string>Kurzbefehl ausgeblendet</string>
 	<key>Shortcuts</key>
 	<string>Kurzbefehle</string>
 	<key>Shotnix Preferences</key>
 	<string>Shotnix-Einstellungen</string>
+	<key>Shotnix can't open this file</key>
+	<string>Shotnix kann diese Datei nicht öffnen</string>
+	<key>Shotnix can't save to that folder. Pick another place, like Desktop or Movies, and export again.</key>
+	<string>Shotnix kann nicht in diesem Ordner sichern. Wähle einen anderen Ort, etwa „Schreibtisch“ oder „Filme“, und exportiere erneut.</string>
 	<key>Shotnix can't write to the save folder. Choose another one in Settings → Screenshots.</key>
 	<string>Shotnix kann nicht in den Speicherordner schreiben. Wähle einen anderen in „Einstellungen“ → „Bildschirmfotos“.</string>
 	<key>Shotnix could not write the file to:
@@ -1044,6 +1640,10 @@
 %@</string>
 	<key>Shotnix is ready to use!</key>
 	<string>Shotnix ist startklar!</string>
+	<key>Shotnix is still cleaning up the voice</key>
+	<string>Shotnix bereinigt noch die Stimme</string>
+	<key>Shotnix is still transcribing</key>
+	<string>Shotnix transkribiert noch</string>
 	<key>Shotnix isn't allowed to record the screen. Turn it on in System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording.</key>
 	<string>Shotnix darf den Bildschirm nicht aufzeichnen. Aktiviere es in „Systemeinstellungen“ → „Datenschutz &amp; Sicherheit“ → „Aufnahme von Bildschirm &amp; Systemaudio“.</string>
 	<key>Shotnix lives here — setup continues next launch</key>
@@ -1060,6 +1660,8 @@ Aktiviere sie unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherhei
 	<string>Shotnix schließt diese Vorgänge vor dem Beenden ab.</string>
 	<key>Shotnix – Capture History</key>
 	<string>Shotnix – Verlauf</string>
+	<key>Show</key>
+	<string>Anzeigen</string>
 	<key>Show Desktop Icons</key>
 	<string>Schreibtischsymbole einblenden</string>
 	<key>Show Editor</key>
@@ -1070,6 +1672,10 @@ Aktiviere sie unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherhei
 	<string>Video-Editor zeigen</string>
 	<key>Show cursor</key>
 	<string>Zeiger anzeigen</string>
+	<key>Show for the whole video</key>
+	<string>Im ganzen Video zeigen</string>
+	<key>Show in Finder</key>
+	<string>Im Finder zeigen</string>
 	<key>Show keyboard shortcuts</key>
 	<string>Tastaturkurzbefehle anzeigen</string>
 	<key>Show menu bar icon</key>
@@ -1078,6 +1684,12 @@ Aktiviere sie unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherhei
 	<string>Nur eine Art von Bildschirmfotos zeigen</string>
 	<key>Show the whole screenshot again</key>
 	<string>Wieder das ganze Bildschirmfoto zeigen</string>
+	<key>Shows what can be removed — data of recordings Shotnix can't find, unused footage and pictures, old clipboard exports — and asks before removing it</key>
+	<string>Zeigt, was entfernt werden kann – Daten von Aufnahmen, die Shotnix nicht findet, ungenutztes Material und Bilder, alte Exporte für die Zwischenablage – und fragt, bevor etwas entfernt wird</string>
+	<key>Side by side</key>
+	<string>Nebeneinander</string>
+	<key>Silky</key>
+	<string>Seidig</string>
 	<key>Silver</key>
 	<string>Silber</string>
 	<key>Size</key>
@@ -1086,22 +1698,52 @@ Aktiviere sie unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherhei
 	<string>Einrichtung überspringen</string>
 	<key>Skipping frames</key>
 	<string>Bilder fallen aus</string>
+	<key>Sky</key>
+	<string>Himmel</string>
 	<key>Sky Wash</key>
 	<string>Himmelsschleier</string>
+	<key>Slow</key>
+	<string>Langsam</string>
+	<key>Small</key>
+	<string>Klein</string>
+	<key>Smallest files, great for docs and chat</key>
+	<string>Kleinste Dateien, ideal für Dokumente und Chats</string>
+	<key>Smooth</key>
+	<string>Sanft</string>
+	<key>Social</key>
+	<string>Social Media</string>
+	<key>Social feeds</key>
+	<string>Social-Media-Feeds</string>
 	<key>Solid Color</key>
 	<string>Einfarbig</string>
 	<key>Sounds</key>
 	<string>Töne</string>
 	<key>Space Gray</key>
 	<string>Space Grau</string>
+	<key>Speech recognition is turned off for Shotnix in System Settings → Privacy &amp; Security → Speech Recognition. Turn it on, then try again.</key>
+	<string>Die Spracherkennung ist für Shotnix unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherheit“ → „Spracherkennung“ deaktiviert. Aktiviere sie und versuche es erneut.</string>
+	<key>Speech recognition isn't available on this Mac right now. Try again in a moment.</key>
+	<string>Die Spracherkennung ist auf diesem Mac gerade nicht verfügbar. Versuche es gleich noch einmal.</string>
+	<key>Speed Up Idle works on Shotnix recordings — it watches the pointer</key>
+	<string>„Leerlauf beschleunigen“ funktioniert mit Shotnix-Aufnahmen – es beobachtet den Zeiger</string>
 	<key>Split at Playhead</key>
 	<string>An der Abspielposition teilen</string>
+	<key>Split the video (S) to make cuts; each can dissolve or dip to black.</key>
+	<string>Teile das Video (S), um Schnitte zu setzen; jeder kann überblenden oder schwarz abblenden.</string>
+	<key>Spoken word</key>
+	<string>Gesprochenes Wort</string>
 	<key>Spotlight</key>
 	<string>Fokus</string>
 	<key>Spotlight shape</key>
 	<string>Form des Fokus</string>
 	<key>Star on GitHub</key>
 	<string>Stern auf GitHub</string>
+	<key>Start Over</key>
+	<string>Neu beginnen</string>
+	<key>Start over from the original recording?</key>
+	<string>Mit der Originalaufnahme neu beginnen?</string>
+	<key>Start the song at</key>
+	<string>Song beginnt bei</string>
 	<key>Startup</key>
 	<string>Start</string>
 	<key>Step %lld</key>
@@ -1122,10 +1764,18 @@ Aktiviere sie unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherhei
 	<string>Speicher</string>
 	<key>Strength</key>
 	<string>Stärke</string>
+	<key>Studio</key>
+	<string>Studio</string>
 	<key>Style</key>
 	<string>Stil</string>
 	<key>Subject</key>
 	<string>Betreff</string>
+	<key>Subtitle</key>
+	<string>Untertitel</string>
+	<key>Subtitles file</key>
+	<string>Untertiteldatei</string>
+	<key>Sunset</key>
+	<string>Sonnenuntergang</string>
 	<key>Sunset Coral</key>
 	<string>Abendkoralle</string>
 	<key>Support</key>
@@ -1138,12 +1788,16 @@ Aktiviere sie unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherhei
 	<string>Der Systemton konnte nicht aufgezeichnet werden. Versuche es ohne Systemton erneut.</string>
 	<key>Table copied — paste it into a spreadsheet</key>
 	<string>Tabelle kopiert – setze sie in eine Tabellenkalkulation ein</string>
+	<key>Tag</key>
+	<string>Hinterlegung</string>
 	<key>Tahoe Ice</key>
 	<string>Tahoe-Eis</string>
 	<key>Take a Test Screenshot</key>
 	<string>Test-Bildschirmfoto aufnehmen</string>
 	<key>Take your first screenshot</key>
 	<string>Dein erstes Bildschirmfoto aufnehmen</string>
+	<key>Tangerine</key>
+	<string>Mandarine</string>
 	<key>Template</key>
 	<string>Vorlage</string>
 	<key>Text</key>
@@ -1162,34 +1816,90 @@ Aktiviere sie unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherhei
 	<string>Textgröße</string>
 	<key>Text: %@</key>
 	<string>Text: %@</string>
+	<key>Thanks for watching</key>
+	<string>Danke fürs Zuschauen</string>
 	<key>That display isn't available anymore.</key>
 	<string>Dieser Bildschirm ist nicht mehr verfügbar.</string>
 	<key>That display or window isn't available anymore.</key>
 	<string>Dieser Bildschirm oder dieses Fenster ist nicht mehr verfügbar.</string>
+	<key>That drive is read-only. Pick another place to save, then export again.</key>
+	<string>Dieses Laufwerk ist schreibgeschützt. Wähle einen anderen Ort zum Sichern und exportiere erneut.</string>
+	<key>That part is only a title card — include a moment of the video to export it.</key>
+	<string>Dieser Teil ist nur eine Titelkarte – nimm einen Moment des Videos mit auf, um ihn zu exportieren.</string>
+	<key>That part of the timeline is only a title card. Include a moment of the video in the range, then export again.</key>
+	<string>Dieser Teil der Zeitleiste ist nur eine Titelkarte. Nimm einen Moment des Videos in den Bereich auf und exportiere erneut.</string>
+	<key>That video is empty</key>
+	<string>Dieses Video ist leer</string>
 	<key>That window closed before recording could start.</key>
 	<string>Das Fenster wurde geschlossen, bevor die Aufzeichnung beginnen konnte.</string>
 	<key>The camera couldn't start.</key>
 	<string>Die Kamera konnte nicht gestartet werden.</string>
 	<key>The camera stopped. The recording continues without it.</key>
 	<string>Die Kamera wurde gestoppt. Die Aufzeichnung läuft ohne Kamera weiter.</string>
+	<key>The export carries on in the background (Esc)</key>
+	<string>Der Export läuft im Hintergrund weiter (Esc)</string>
+	<key>The export stopped unexpectedly (%@). Try again — if it keeps happening, export at a lower resolution or in H.264.</key>
+	<string>Der Export wurde unerwartet beendet (%@). Versuche es erneut – wenn das weiterhin passiert, exportiere mit niedrigerer Auflösung oder in H.264.</string>
 	<key>The menu bar icon is Shotnix's main entry point. While it is hidden, open Shotnix again from Finder, Launchpad, or Spotlight to bring these Preferences back.</key>
 	<string>Über das Symbol in der Menüleiste erreichst du Shotnix. Solange es ausgeblendet ist, öffne Shotnix erneut über den Finder, das Launchpad oder Spotlight, um diese Einstellungen wieder aufzurufen.</string>
 	<key>The microphone couldn't start, so this recording has no mic.</key>
 	<string>Das Mikrofon konnte nicht gestartet werden, daher hat diese Aufnahme keinen Mikrofonton.</string>
 	<key>The microphone stopped working. The recording continues without it.</key>
 	<string>Das Mikrofon funktioniert nicht mehr. Die Aufzeichnung läuft ohne Mikrofon weiter.</string>
+	<key>The picture's file is gone — choose it again with Replace.</key>
+	<string>Die Bilddatei fehlt – wähle sie mit „Ersetzen“ erneut aus.</string>
 	<key>The recording couldn't be finished — saved the first %@.</key>
 	<string>Die Aufnahme konnte nicht abgeschlossen werden – die ersten %@ sind gesichert.</string>
+	<key>The recording's file can't be found — it may have been moved or deleted. Put it back and export again.</key>
+	<string>Die Datei der Aufnahme wurde nicht gefunden – sie wurde eventuell bewegt oder gelöscht. Lege sie zurück und exportiere erneut.</string>
 	<key>The save panel did not return a destination. Please try saving again.</key>
 	<string>Das Sichern-Fenster hat keinen Speicherort zurückgegeben. Bitte versuche es erneut.</string>
 	<key>The screenshot has no image data.</key>
 	<string>Das Bildschirmfoto enthält keine Bilddaten.</string>
+	<key>The selected file has no video track. Choose a video file instead.</key>
+	<string>Die ausgewählte Datei hat keine Videospur. Wähle stattdessen eine Videodatei.</string>
 	<key>The selection stays on screen to adjust — drag its edges, nudge it with the arrow keys, then press Return. Hold ⇧ as you release to capture right away.</key>
 	<string>Die Auswahl bleibt zum Anpassen auf dem Bildschirm – ziehe an den Rändern, verschiebe sie mit den Pfeiltasten und drücke dann den Zeilenschalter. Halte beim Loslassen ⇧ gedrückt, um sofort aufzunehmen.</string>
+	<key>The song is shorter than the video</key>
+	<string>Der Song ist kürzer als das Video</string>
+	<key>The song's file is gone — choose it again with Replace.</key>
+	<string>Die Songdatei fehlt – wähle sie mit „Ersetzen“ erneut aus.</string>
+	<key>The timeline is empty. Restore a clip, then export again.</key>
+	<string>Die Zeitleiste ist leer. Stelle einen Clip wieder her und exportiere erneut.</string>
+	<key>The video encoder is busy — another app may be recording or exporting. Wait a moment and try again, or choose H.264.</key>
+	<string>Der Video-Encoder ist belegt – eventuell zeichnet oder exportiert gerade eine andere App. Warte einen Moment und versuche es erneut, oder wähle H.264.</string>
+	<key>The video's own recording can't be removed</key>
+	<string>Die eigene Aufnahme des Videos kann nicht entfernt werden</string>
+	<key>The voice track is empty, so there's nothing to clean up. Turn off Enhance voice to keep the original sound.</key>
+	<string>Die Sprachspur ist leer, es gibt also nichts zu bereinigen. Deaktiviere „Stimme verbessern“, um den Originalton zu behalten.</string>
 	<key>The window you're recording closed. Stop when you're ready — the recording keeps going.</key>
 	<string>Das aufgezeichnete Fenster wurde geschlossen. Stoppe, wenn du so weit bist – die Aufzeichnung läuft weiter.</string>
+	<key>There are no captions to translate yet. Transcribe or add captions first.</key>
+	<string>Es gibt noch keine Untertitel zum Übersetzen. Transkribiere zuerst oder füge Untertitel hinzu.</string>
+	<key>There isn't enough free space on this disk: this export needs about %@ and %@ is free. Free up some space (empty the Trash, delete old recordings) or export to another drive.</key>
+	<string>Auf dieser Festplatte ist nicht genug Speicherplatz frei: Dieser Export braucht etwa %@, frei sind %@. Gib Speicherplatz frei (Papierkorb leeren, alte Aufnahmen löschen) oder exportiere auf ein anderes Laufwerk.</string>
+	<key>There isn't enough free space on “%@”: this export needs about %@ and %@ is free. Free up some space (empty the Trash, delete old recordings) or export to another drive.</key>
+	<string>Auf „%@“ ist nicht genug Speicherplatz frei: Dieser Export braucht etwa %@, frei sind %@. Gib Speicherplatz frei (Papierkorb leeren, alte Aufnahmen löschen) oder exportiere auf ein anderes Laufwerk.</string>
+	<key>There's already a zoom here</key>
+	<string>Hier gibt es bereits einen Zoom</string>
+	<key>There's no video in this file</key>
+	<string>Diese Datei enthält kein Video</string>
+	<key>Thin</key>
+	<string>Dünn</string>
+	<key>This GIF is too long for its size — it would need about %@ of memory. Pick a smaller size or fewer frames per second, export part of the video, or choose MP4.</key>
+	<string>Dieses GIF ist für seine Größe zu lang – es bräuchte etwa %@ Arbeitsspeicher. Wähle eine kleinere Größe oder weniger Bilder pro Sekunde, exportiere einen Teil des Videos oder wähle MP4.</string>
+	<key>This Mac can't translate between these languages. Pick another language.</key>
+	<string>Dieser Mac kann nicht zwischen diesen Sprachen übersetzen. Wähle eine andere Sprache.</string>
 	<key>This Week</key>
 	<string>Diese Woche</string>
+	<key>This recording has no sound to transcribe. You can still type captions yourself.</key>
+	<string>Diese Aufnahme hat keinen Ton zum Transkribieren. Du kannst Untertitel aber selbst eingeben.</string>
+	<key>This recording has no voice to duck under</key>
+	<string>Diese Aufnahme hat keine Stimme, unter der die Musik leiser werden könnte</string>
+	<key>This video is copy-protected and can't be exported.</key>
+	<string>Dieses Video ist kopiergeschützt und kann nicht exportiert werden.</string>
+	<key>This video isn't there anymore</key>
+	<string>Dieses Video ist nicht mehr da</string>
 	<key>Three quick steps and you're capturing.</key>
 	<string>Drei kurze Schritte, dann kann es losgehen.</string>
 	<key>Tide Glass</key>
@@ -1202,18 +1912,52 @@ Aktiviere sie unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherhei
 	<string>Bei der Aufnahme mit Timer wählst du zuerst den Bereich, dann läuft ein Countdown bis zur Aufnahme – Zeit, um Menüs oder Hover-Zustände zu öffnen. Esc bricht ab.</string>
 	<key>Timeline</key>
 	<string>Zeitleiste</string>
+	<key>Timing</key>
+	<string>Timing</string>
+	<key>Title</key>
+	<string>Titel</string>
 	<key>To</key>
 	<string>An</string>
 	<key>Today</key>
 	<string>Heute</string>
+	<key>Too long for a GIF at this size — it would need about %@ of memory. Make it lighter, export a part, or choose MP4.</key>
+	<string>Zu lang für ein GIF in dieser Größe – es bräuchte etwa %@ Arbeitsspeicher. Mach es sparsamer, exportiere einen Teil oder wähle MP4.</string>
+	<key>Too short for an intro and outro</key>
+	<string>Zu kurz für Intro und Outro</string>
 	<key>Tools</key>
 	<string>Werkzeuge</string>
+	<key>Top</key>
+	<string>Oben</string>
+	<key>Top left</key>
+	<string>Oben links</string>
+	<key>Top right</key>
+	<string>Oben rechts</string>
+	<key>Transcribe Again</key>
+	<string>Erneut transkribieren</string>
+	<key>Transcribe again?</key>
+	<string>Erneut transkribieren?</string>
+	<key>Transcribe the narration to search its words</key>
+	<string>Transkribiere den gesprochenen Text, um darin zu suchen</string>
+	<key>Transcribing “%@”</key>
+	<string>„%@“ wird transkribiert</string>
+	<key>Transcript and captions removed — ⌘Z to undo</key>
+	<string>Transkript und Untertitel entfernt – ⌘Z zum Widerrufen</string>
+	<key>Transition in</key>
+	<string>Übergang davor</string>
+	<key>Transitions</key>
+	<string>Übergänge</string>
+	<key>Translate</key>
+	<string>Übersetzen</string>
 	<key>Try it right now — Capture Area is also in the menu bar.</key>
 	<string>Probier es gleich aus – „Bereich aufnehmen“ findest du auch in der Menüleiste.</string>
+	<key>Turn Off Click Sounds</key>
+	<string>Klickgeräusche ausschalten</string>
 	<key>Type here…</key>
 	<string>Hier tippen …</string>
 	<key>URL</key>
 	<string>URL</string>
+	<key>Under the voice</key>
+	<string>Unter der Stimme</string>
 	<key>Undo</key>
 	<string>Widerrufen</string>
 	<key>Undo Timeline Edit</key>
@@ -1232,22 +1976,50 @@ Aktiviere sie unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherhei
 	<string>Version %@</string>
 	<key>Video</key>
 	<string>Video</string>
+	<key>Video copied</key>
+	<string>Video kopiert</string>
+	<key>Video data</key>
+	<string>Videodaten</string>
+	<key>Video data uses %@</key>
+	<string>Videodaten belegen %@</string>
+	<key>Video exported</key>
+	<string>Video exportiert</string>
+	<key>Violet</key>
+	<string>Violett</string>
 	<key>Violet Bloom</key>
 	<string>Veilchenblüte</string>
+	<key>Voice enhanced — background noise removed</key>
+	<string>Stimme verbessert – Hintergrundgeräusche entfernt</string>
+	<key>Voice enhancement isn't available on this Mac. Turn off Enhance voice to keep the original sound.</key>
+	<string>Die Stimmverbesserung ist auf diesem Mac nicht verfügbar. Deaktiviere „Stimme verbessern“, um den Originalton zu behalten.</string>
+	<key>Voice enhancement stopped partway. Turn Enhance voice off and on again to retry.</key>
+	<string>Die Stimmverbesserung wurde unterbrochen. Schalte „Stimme verbessern“ aus und wieder ein, um es erneut zu versuchen.</string>
+	<key>Volume</key>
+	<string>Lautstärke</string>
+	<key>Waiting…</key>
+	<string>Warten …</string>
 	<key>Warning</key>
 	<string>Warnung</string>
+	<key>Web</key>
+	<string>Web</string>
 	<key>Website</key>
 	<string>Website</string>
+	<key>Welcome</key>
+	<string>Willkommen</string>
 	<key>Welcome to Shotnix</key>
 	<string>Willkommen bei Shotnix</string>
 	<key>What's New</key>
 	<string>Neuigkeiten</string>
 	<key>White</key>
 	<string>Weiß</string>
+	<key>Whole video</key>
+	<string>Ganzes Video</string>
 	<key>Wi-Fi</key>
 	<string>WLAN</string>
 	<key>Wi-Fi QR found</key>
 	<string>QR-Code mit WLAN gefunden</string>
+	<key>Wide</key>
+	<string>Breit</string>
 	<key>Window</key>
 	<string>Fenster</string>
 	<key>Window Capture</key>
@@ -1266,8 +2038,12 @@ Aktiviere sie unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherhei
 	<string>Gestern</string>
 	<key>You're all set — Shotnix lives here</key>
 	<string>Alles bereit – Shotnix findest du hier</string>
+	<key>YouTube, presentations</key>
+	<string>YouTube, Präsentationen</string>
 	<key>Your Mac can't keep up with this recording and is skipping frames. Balanced quality or 30 fps will help.</key>
 	<string>Dein Mac kommt bei dieser Aufzeichnung nicht mit und lässt Bilder aus. Die Qualität „Ausgewogen“ oder 30 fps helfen.</string>
+	<key>Your Mac ran low on memory. Close some apps or pick a lower resolution, then export again.</key>
+	<string>Dein Mac hat zu wenig Arbeitsspeicher. Schließe einige Apps oder wähle eine niedrigere Auflösung und exportiere erneut.</string>
 	<key>Your camera is recorded as its own layer: a live bubble shows while you record (it never appears in the screen capture), and the editor lets you move, resize, and restyle it — or hide it — afterwards.</key>
 	<string>Deine Kamera wird als eigene Ebene aufgezeichnet: Während der Aufzeichnung siehst du eine Live-Blase (sie erscheint nie in der Bildschirmaufnahme), und im Editor kannst du sie danach verschieben, skalieren und neu gestalten – oder ausblenden.</string>
 	<key>Your disk filled up — saved the first %@.</key>
@@ -1276,12 +2052,24 @@ Aktiviere sie unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherhei
 	<string>Dein Speicherplatz ist fast aufgebraucht, daher wurde die Aufzeichnung beendet. Die Aufnahme ist gesichert.</string>
 	<key>Your disk is full, so the recording couldn't be saved.</key>
 	<string>Dein Speicherplatz ist voll, daher konnte die Aufnahme nicht gesichert werden.</string>
+	<key>Your disk is full. Free up some space (empty the Trash, delete old recordings) or export to another drive, then try again.</key>
+	<string>Deine Festplatte ist voll. Gib Speicherplatz frei (Papierkorb leeren, alte Aufnahmen löschen) oder exportiere auf ein anderes Laufwerk und versuche es erneut.</string>
 	<key>Your edits will be lost if you close without saving or copying them.</key>
 	<string>Deine Änderungen gehen verloren, wenn du schließt, ohne sie zu sichern oder zu kopieren.</string>
+	<key>Your text</key>
+	<string>Dein Text</string>
 	<key>Zoom</key>
 	<string>Zoom</string>
+	<key>Zoom removed — ⌘Z to undo</key>
+	<string>Zoom entfernt – ⌘Z zum Widerrufen</string>
 	<key>a table</key>
 	<string>eine Tabelle</string>
+	<key>captions burned in</key>
+	<string>eingebrannte Untertitel</string>
+	<key>intro card</key>
+	<string>Intro-Karte</string>
+	<key>macOS downloads %@ once, then translates right here — nothing is uploaded.</key>
+	<string>macOS lädt %@ einmalig und übersetzt dann direkt hier – nichts wird hochgeladen.</string>
 	<key>macOS screenshot shortcuts (⌘⇧3, ⌘⇧4, ⌘⇧5) conflict with Shotnix.
 
 Disable them so Shotnix owns the capture shortcuts and screenshots do not double-trigger.
@@ -1294,20 +2082,44 @@ Deaktiviere sie, damit Shotnix die Aufnahme-Kurzbefehle übernimmt und Bildschir
 Du kannst Apples Kurzbefehle jederzeit unter „Systemeinstellungen“ → „Tastatur“ → „Tastaturkurzbefehle“ → „Bildschirmfotos“ wieder aktivieren.</string>
 	<key>mic</key>
 	<string>Mikro</string>
+	<key>music</key>
+	<string>Musik</string>
 	<key>no audio</key>
 	<string>Kein Ton</string>
+	<key>no captions in the picture</key>
+	<string>keine Untertitel im Bild</string>
+	<key>no end card</key>
+	<string>keine Endkarte</string>
+	<key>outro card</key>
+	<string>Outro-Karte</string>
+	<key>pointer</key>
+	<string>Zeiger</string>
 	<key>sys+mic</key>
 	<string>Sys.+Mikro</string>
 	<key>system</key>
 	<string>System</string>
+	<key>the video</key>
+	<string>das Video</string>
+	<key>this recording</key>
+	<string>diese Aufnahme</string>
 	<key>up to %@ GB/min</key>
 	<string>bis zu %@ GB/Min.</string>
 	<key>up to %@ MB/min</key>
 	<string>bis zu %@ MB/Min.</string>
 	<key>© 2026 Shotnix Contributors</key>
 	<string>© 2026 Shotnix-Mitwirkende</string>
+	<key>“%@” (was in %@)</key>
+	<string>„%@“ (war in %@)</string>
+	<key>“%@” can't be found. Put it back where it was, or remove it from this video (Style → Recordings), then export again.</key>
+	<string>„%@“ wurde nicht gefunden. Lege die Datei an ihren Ort zurück oder entferne sie aus diesem Video („Stil“ → „Aufnahmen“) und exportiere erneut.</string>
+	<key>“%@” can't be read — it may be damaged, still being saved, or in a format this Mac can't play. Remove it from this video (Style → Recordings), or put a working copy in its place, then export again.</key>
+	<string>„%@“ kann nicht gelesen werden – die Datei ist eventuell beschädigt, wird noch gesichert oder hat ein Format, das dieser Mac nicht abspielen kann. Entferne sie aus diesem Video („Stil“ → „Aufnahmen“) oder ersetze sie durch eine funktionierende Kopie und exportiere erneut.</string>
 	<key>“%@” found in %lld of %lld captures</key>
 	<string>„%1$@“ in %2$lld von %3$lld Bildschirmfotos gefunden</string>
+	<key>“Made with Shotnix” end card (2s)</key>
+	<string>Endkarte „Made with Shotnix“ (2 s)</string>
+	<key>⇧-drag on the timeline to select a part first.</key>
+	<string>Markiere zuerst einen Teil, indem du auf der Zeitleiste mit ⇧ ziehst.</string>
 	<key>✓ Copied to clipboard</key>
 	<string>✓ In die Zwischenablage kopiert</string>
 	<key>✓ Saved screenshot</key>

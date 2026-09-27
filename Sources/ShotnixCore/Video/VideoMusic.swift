@@ -453,7 +453,7 @@ extension VideoEditorModel {
         panel.canChooseDirectories = false
         panel.allowsMultipleSelection = false
         panel.allowedContentTypes = [.audio]
-        panel.message = "Choose a song to play under the video"
+        panel.message = L("Choose a song to play under the video")
         guard panel.runModal() == .OK, let url = panel.url else { return }
         Task { await addMusic(from: url) }
     }
@@ -463,14 +463,14 @@ extension VideoEditorModel {
         let asset = AVURLAsset(url: url)
         guard let tracks = try? await asset.loadTracks(withMediaType: .audio), !tracks.isEmpty,
               let duration = try? await asset.load(.duration).seconds, duration.isFinite, duration > 0.5 else {
-            showNotice("Couldn't read that audio file", symbol: "exclamationmark.triangle.fill")
+            showNotice(L("Couldn't read that audio file"), symbol: "exclamationmark.triangle.fill")
             return
         }
         let stored: URL
         do {
             stored = try await Task.detached(priority: .userInitiated) { try VideoAssetStore.importFile(url) }.value
         } catch {
-            showNotice("Couldn't add that song — \(error.localizedDescription)", symbol: "exclamationmark.triangle.fill")
+            showNotice(L("Couldn't add that song — \(error.localizedDescription)"), symbol: "exclamationmark.triangle.fill")
             return
         }
         var music = VideoMusicTrack(path: stored.path, name: url.lastPathComponent, duration: duration)
@@ -485,12 +485,12 @@ extension VideoEditorModel {
         }
         mutate { $0.music = music }
         inspectorTab = .audio
-        showNotice("Music added — it dips while you talk", symbol: "music.note")
+        showNotice(L("Music added — it dips while you talk"), symbol: "music.note")
     }
 
     func removeMusic() {
         mutate { $0.music = nil }
-        showNotice("Music removed — ⌘Z to undo", symbol: "trash")
+        showNotice(L("Music removed — ⌘Z to undo"), symbol: "trash")
     }
 
     func updateMusic(coalesce: String? = nil, _ change: (inout VideoMusicTrack) -> Void) {
@@ -512,7 +512,7 @@ struct VideoMusicSection: View {
     @ObservedObject var model: VideoEditorModel
 
     var body: some View {
-        VideoInspectorSection("Music") {
+        VideoInspectorSection(L("Music")) {
             if let music = model.project.music {
                 HStack(spacing: 10) {
                     Image(systemName: "music.note")
@@ -532,57 +532,57 @@ struct VideoMusicSection: View {
                     }
                     Spacer(minLength: 0)
                     Menu {
-                        Button("Replace…") { model.chooseMusic() }
+                        Button(L("Replace…")) { model.chooseMusic() }
                         Divider()
-                        Button("Remove Music", role: .destructive) { model.removeMusic() }
+                        Button(L("Remove Music"), role: .destructive) { model.removeMusic() }
                     } label: {
                         Image(systemName: "ellipsis").frame(width: 26, height: 24)
                     }
                     .menuStyle(.borderlessButton)
                     .menuIndicator(.hidden)
                     .fixedSize()
-                    .accessibilityLabel("Music options")
+                    .accessibilityLabel(L("Music options"))
                 }
                 if !FileManager.default.fileExists(atPath: music.path) {
-                    Label("The song's file is gone — choose it again with Replace.", systemImage: "exclamationmark.triangle.fill")
+                    Label(L("The song's file is gone — choose it again with Replace."), systemImage: "exclamationmark.triangle.fill")
                         .font(.system(size: 10.5, weight: .medium))
                         .foregroundStyle(Color.orange)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 VideoSliderRow(
-                    title: "Volume",
+                    title: L("Volume"),
                     value: Binding(get: { music.volume }, set: { value in model.updateMusic(coalesce: "music-volume") { $0.volume = value } }),
                     range: VideoMusicTrack.volumeRange,
                     defaultValue: 0.35,
-                    format: { "\(Int(($0 * 100).rounded()))%" },
+                    format: { VideoEditorModel.formatPercent($0) },
                     onEditingEnded: { model.endGesture() }
                 )
                 VideoToggleRow(
-                    title: "Lower under your voice",
-                    detail: model.hasAudio ? "Dips while you talk, comes back in the pauses" : "This recording has no voice to duck under",
+                    title: L("Lower under your voice"),
+                    detail: model.hasAudio ? L("Dips while you talk, comes back in the pauses") : L("This recording has no voice to duck under"),
                     isOn: Binding(get: { music.ducking }, set: { value in model.updateMusic { $0.ducking = value } })
                 )
                 if music.ducking {
                     VideoSliderRow(
-                        title: "Under the voice",
+                        title: L("Under the voice"),
                         value: Binding(get: { music.duckLevel }, set: { value in model.updateMusic(coalesce: "music-duck") { $0.duckLevel = value } }),
                         range: 0...1,
                         defaultValue: 0.3,
-                        format: { "\(Int(($0 * 100).rounded()))%" },
+                        format: { VideoEditorModel.formatPercent($0) },
                         onEditingEnded: { model.endGesture() }
                     )
                 }
                 HStack(spacing: 12) {
-                    compactSlider("Fade in", value: music.fadeIn) { value in model.updateMusic(coalesce: "music-fade-in") { $0.fadeIn = value } }
-                    compactSlider("Fade out", value: music.fadeOut) { value in model.updateMusic(coalesce: "music-fade-out") { $0.fadeOut = value } }
+                    compactSlider(L("Fade in"), value: music.fadeIn) { value in model.updateMusic(coalesce: "music-fade-in") { $0.fadeIn = value } }
+                    compactSlider(L("Fade out"), value: music.fadeOut) { value in model.updateMusic(coalesce: "music-fade-out") { $0.fadeOut = value } }
                 }
                 VideoToggleRow(
-                    title: "Loop to fill",
-                    detail: music.playableLength < model.timelineDuration ? "The song is shorter than the video" : nil,
+                    title: L("Loop to fill"),
+                    detail: music.playableLength < model.timelineDuration ? L("The song is shorter than the video") : nil,
                     isOn: Binding(get: { music.loops }, set: { value in model.updateMusic { $0.loops = value } })
                 )
                 VideoSliderRow(
-                    title: "Start the song at",
+                    title: L("Start the song at"),
                     value: Binding(get: { music.startOffset }, set: { value in model.updateMusic(coalesce: "music-offset") { $0.startOffset = value.rounded() } }),
                     range: 0...max(music.duration - 1, 1),
                     defaultValue: 0,
@@ -593,11 +593,11 @@ struct VideoMusicSection: View {
                 Button {
                     model.chooseMusic()
                 } label: {
-                    Label("Add Music…", systemImage: "music.note")
+                    Label(L("Add Music…"), systemImage: "music.note")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(VideoSecondaryButtonStyle())
-                Text("A song under the whole video — it loops to fill, fades in and out, and dips while you talk. Use music you have the rights to.")
+                Text(L("A song under the whole video — it loops to fill, fades in and out, and dips while you talk. Use music you have the rights to."))
                     .font(.system(size: 10.5))
                     .foregroundStyle(VideoEditorTheme.textTertiary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -611,7 +611,7 @@ struct VideoMusicSection: View {
             value: Binding(get: { value }, set: { set(($0 * 2).rounded() / 2) }),
             range: VideoMusicTrack.fadeRange,
             defaultValue: nil,
-            format: { String(format: "%.1fs", $0) },
+            format: { VideoEditorModel.formatTenths($0) },
             onEditingEnded: { model.endGesture() }
         )
     }
@@ -674,7 +674,7 @@ struct VideoMusicLane: View, Equatable {
             }
             if frame.width > 60 {
                 inner.draw(
-                    Text("\(Image(systemName: "music.note")) \(music.name)")
+                    Text("\(Image(systemName: "music.note")) \(music.name)") // l10n-ignore: a symbol and the song's file name
                         .font(.system(size: 10, weight: .semibold))
                         .foregroundColor(.white.opacity(0.92)),
                     at: CGPoint(x: frame.minX + 8, y: size.height / 2),
@@ -688,14 +688,14 @@ struct VideoMusicLane: View, Equatable {
             model.seek(to: geometry.time(location.x))
             model.showMusicSettings()
         }
-        .help("Music — click to change its volume, fades, and ducking")
+        .help(L("Music — click to change its volume, fades, and ducking"))
         // The lane is drawn: VoiceOver gets it as one element.
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(model.musicAccessibilityLabel)
         .accessibilityAddTraits(.isButton)
-        .accessibilityHint("Opens its volume, fades, and ducking in Audio")
+        .accessibilityHint(L("Opens its volume, fades, and ducking in Audio"))
         .accessibilityAction { model.showMusicSettings() }
-        .accessibilityAction(named: "Remove Music") { model.removeMusic() }
+        .accessibilityAction(named: L("Remove Music")) { model.removeMusic() }
     }
 }
 

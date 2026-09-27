@@ -29,8 +29,9 @@ enum VideoExportFiles {
         return values?.volumeAvailableCapacity.map(Int64.init)
     }
 
-    static func volumeName(at url: URL) -> String {
-        (try? url.deletingLastPathComponent().resourceValues(forKeys: [.volumeLocalizedNameKey]).volumeLocalizedName) ?? "this disk"
+    /// The disk's name as Finder shows it (nil: can't tell).
+    static func volumeName(at url: URL) -> String? {
+        try? url.deletingLastPathComponent().resourceValues(forKeys: [.volumeLocalizedNameKey]).volumeLocalizedName
     }
 
     /// Stops before starting when the estimate can't fit.
@@ -38,8 +39,15 @@ enum VideoExportFiles {
         guard let free = available ?? availableBytes(at: url) else { return }
         let margin: Int64 = 50_000_000
         guard free < needed + margin else { return }
+        let neededSize = ByteCountFormatter.string(fromByteCount: needed, countStyle: .file)
+        let freeSize = ByteCountFormatter.string(fromByteCount: max(free, 0), countStyle: .file)
+        if let volume = volumeName(at: url) {
+            throw VideoDemoExportError.exportFailed(
+                L("There isn't enough free space on “\(volume)”: this export needs about \(neededSize) and \(freeSize) is free. Free up some space (empty the Trash, delete old recordings) or export to another drive.")
+            )
+        }
         throw VideoDemoExportError.exportFailed(
-            "There isn't enough free space on “\(volumeName(at: url))”: this export needs about \(ByteCountFormatter.string(fromByteCount: needed, countStyle: .file)) and \(ByteCountFormatter.string(fromByteCount: max(free, 0), countStyle: .file)) is free. Free up some space (empty the Trash, delete old recordings) or export to another drive."
+            L("There isn't enough free space on this disk: this export needs about \(neededSize) and \(freeSize) is free. Free up some space (empty the Trash, delete old recordings) or export to another drive.")
         )
     }
 
@@ -197,7 +205,7 @@ enum VideoExportFailure {
         if let export = error as? VideoDemoExportError {
             switch export {
             case .system(let underlying): return message(for: underlying as NSError, fallback: underlying.localizedDescription)
-            case .cancelled: return "Export cancelled."
+            case .cancelled: return L("Export cancelled.")
             default: return export.localizedDescription
             }
         }
@@ -207,13 +215,14 @@ enum VideoExportFailure {
     private static func message(for error: NSError, fallback: String) -> String {
         if let known = known(error) { return known }
         if let underlying = error.userInfo[NSUnderlyingErrorKey] as? NSError, let known = known(underlying) { return known }
-        return "The export stopped unexpectedly (\(fallback)). Try again — if it keeps happening, export at a lower resolution or in H.264."
+        return L("The export stopped unexpectedly (\(fallback)). Try again — if it keeps happening, export at a lower resolution or in H.264.")
     }
 
-    static let diskFull = "Your disk is full. Free up some space (empty the Trash, delete old recordings) or export to another drive, then try again."
-    static let noPermission = "Shotnix can't save to that folder. Pick another place, like Desktop or Movies, and export again."
-    static let readOnly = "That drive is read-only. Pick another place to save, then export again."
-    static let missingSource = "The recording's file can't be found — it may have been moved or deleted. Put it back and export again."
+    // Computed, so each message is in the language in use right now.
+    static var diskFull: String { L("Your disk is full. Free up some space (empty the Trash, delete old recordings) or export to another drive, then try again.") }
+    static var noPermission: String { L("Shotnix can't save to that folder. Pick another place, like Desktop or Movies, and export again.") }
+    static var readOnly: String { L("That drive is read-only. Pick another place to save, then export again.") }
+    static var missingSource: String { L("The recording's file can't be found — it may have been moved or deleted. Put it back and export again.") }
 
     private static func known(_ error: NSError) -> String? {
         switch error.domain {
@@ -236,13 +245,13 @@ enum VideoExportFailure {
         case AVFoundationErrorDomain:
             switch AVError.Code(rawValue: error.code) {
             case .diskFull?: return diskFull
-            case .outOfMemory?: return "Your Mac ran low on memory. Close some apps or pick a lower resolution, then export again."
+            case .outOfMemory?: return L("Your Mac ran low on memory. Close some apps or pick a lower resolution, then export again.")
             case .encoderNotFound?, .encoderTemporarilyUnavailable?:
-                return "The video encoder is busy — another app may be recording or exporting. Wait a moment and try again, or choose H.264."
+                return L("The video encoder is busy — another app may be recording or exporting. Wait a moment and try again, or choose H.264.")
             case .decoderNotFound?, .decoderTemporarilyUnavailable?, .decodeFailed?, .invalidSourceMedia?, .fileFailedToParse?, .fileFormatNotRecognized?:
-                return "Part of the recording couldn't be read — the file may be damaged. Try exporting a shorter part of the video."
-            case .contentIsProtected?: return "This video is copy-protected and can't be exported."
-            case .fileAlreadyExists?: return "A file with that name is in the way. Pick another name and export again."
+                return L("Part of the recording couldn't be read — the file may be damaged. Try exporting a shorter part of the video.")
+            case .contentIsProtected?: return L("This video is copy-protected and can't be exported.")
+            case .fileAlreadyExists?: return L("A file with that name is in the way. Pick another name and export again.")
             default: return nil
             }
         default:
@@ -319,14 +328,18 @@ final class VideoExportQueue: ObservableObject {
         /// What it's doing, in words.
         var statusText: String {
             switch state {
-            case .queued: return "Waiting…"
-            case .enhancingVoice(let value): return "Cleaning up your voice… \(Int((value * 100).rounded()))%"
-            case .running(.preparing): return "Preparing…"
-            case .running(.balancingLoudness): return "Balancing loudness…"
-            case .running(.rendering(let value)): return toClipboard ? "Rendering for the clipboard… \(Int((value * 100).rounded()))%" : "Exporting… \(Int((value * 100).rounded()))%"
-            case .finished(let bytes): return toClipboard ? "On your clipboard · \(VideoEditorModel.formatBytes(bytes))" : "Exported · \(VideoEditorModel.formatBytes(bytes))"
+            case .queued: return L("Waiting…")
+            case .enhancingVoice(let value): return L("Cleaning up your voice… \(Int((value * 100).rounded()))%")
+            case .running(.preparing): return L("Preparing…")
+            case .running(.balancingLoudness): return L("Balancing loudness…")
+            case .running(.rendering(let value)):
+                let percent = Int((value * 100).rounded())
+                return toClipboard ? L("Rendering for the clipboard… \(percent)%") : L("Exporting… \(percent)%")
+            case .finished(let bytes):
+                let size = VideoEditorModel.formatBytes(bytes)
+                return toClipboard ? L("On your clipboard · \(size)") : L("Exported · \(size)")
             case .failed(let message): return message
-            case .cancelled: return "Cancelled"
+            case .cancelled: return L("Cancelled")
             }
         }
     }
@@ -346,8 +359,8 @@ final class VideoExportQueue: ObservableObject {
     @discardableResult
     func enqueue(project: VideoDemoProject, recording: VideoDemoRecordingMetadata?, settings: VideoExportSettings, range: VideoExportRange = .whole, destination: URL, toClipboard: Bool) -> Job {
         let job = Job(project: project, recording: recording, settings: settings, range: range, destination: destination, toClipboard: toClipboard)
-        let name = toClipboard ? "a video for the clipboard" : "“\(destination.lastPathComponent)”"
-        job.token = AppTermination.begin("Exporting \(name)", asksBeforeQuit: true) { [weak job] done in
+        let description = toClipboard ? L("Exporting a video for the clipboard") : L("Exporting “\(destination.lastPathComponent)”")
+        job.token = AppTermination.begin(description, asksBeforeQuit: true) { [weak job] done in
             // "Finish and Quit": the export finishes first.
             guard let job, !job.isDone else { return done() }
             job.quitWaiters.append(done)
@@ -438,7 +451,7 @@ final class VideoExportQueue: ObservableObject {
                 VideoDemoRecentExportStore.add(exportURL: job.destination, sourceURL: job.project.sourceURL)
                 job.subtitlesURL = writeSubtitles(for: job)
             }
-            if voiceFailed { job.note = "Exported without Enhance voice — it couldn't finish." }
+            if voiceFailed { job.note = L("Exported without Enhance voice — it couldn't finish.") }
             finish(job, .finished(bytes: bytes))
         } catch {
             var cancelled = job.cancelRequested
@@ -561,7 +574,7 @@ extension VideoEditorModel {
                     return
                 case .cancelled:
                     if shown { self.exportPhase = .idle }
-                    self.showNotice("Export cancelled", symbol: "xmark.circle")
+                    self.showNotice(L("Export cancelled"), symbol: "xmark.circle")
                     return
                 default:
                     if case .exporting(_, let started, let destination, let clipboard) = self.exportPhase, destination == job.destination {
@@ -625,7 +638,7 @@ private struct VideoExportStatusChip: View {
                         .monospacedDigit()
                         .lineLimit(1)
                     if waiting > 0 {
-                        Text("+\(waiting)")
+                        Text(verbatim: "+\(waiting)")
                             .font(.system(size: 10, weight: .bold))
                             .padding(.horizontal, 5)
                             .frame(height: 16)
@@ -639,8 +652,8 @@ private struct VideoExportStatusChip: View {
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .help(job.toClipboard ? "Copy to clipboard — \(job.statusText)" : "\(job.destination.lastPathComponent) — \(job.statusText)")
-            .accessibilityLabel("Export: \(job.statusText)")
+            .help(tooltip)
+            .accessibilityLabel(L("Export: \(job.statusText)"))
             actions
         }
         .padding(.trailing, 2)
@@ -653,16 +666,23 @@ private struct VideoExportStatusChip: View {
         return false
     }
 
+    private var tooltip: String {
+        let status = job.statusText
+        return job.toClipboard ? L("Copy to clipboard — \(status)") : "\(job.destination.lastPathComponent) — \(status)"
+    }
+
     private var label: String {
         switch job.state {
-        case .queued: return "Waiting…"
-        case .enhancingVoice: return "Cleaning up voice…"
-        case .running(.preparing): return "Preparing…"
-        case .running(.balancingLoudness): return "Balancing loudness…"
-        case .running(.rendering(let value)): return "\(job.toClipboard ? "Copying" : "Exporting") \(Int((value * 100).rounded()))%"
-        case .finished: return job.toClipboard ? "Copied" : "Exported"
-        case .failed: return "Export failed"
-        case .cancelled: return "Cancelled"
+        case .queued: return L("Waiting…")
+        case .enhancingVoice: return L("Cleaning up voice…")
+        case .running(.preparing): return L("Preparing…")
+        case .running(.balancingLoudness): return L("Balancing loudness…")
+        case .running(.rendering(let value)):
+            let percent = Int((value * 100).rounded())
+            return job.toClipboard ? L("Copying \(percent)%") : L("Exporting \(percent)%")
+        case .finished: return job.toClipboard ? L("Copied") : L("Exported")
+        case .failed: return L("Export failed")
+        case .cancelled: return L("Cancelled")
         }
     }
 
@@ -705,8 +725,8 @@ private struct VideoExportStatusChip: View {
                 Image(systemName: "folder").frame(width: 24, height: 24)
             }
             .buttonStyle(VideoToolButtonStyle())
-            .help("Show in Finder")
-            .accessibilityLabel("Show in Finder")
+            .help(L("Show in Finder"))
+            .accessibilityLabel(L("Show in Finder"))
         }
         Button {
             if job.isDone {
@@ -718,8 +738,8 @@ private struct VideoExportStatusChip: View {
             Image(systemName: "xmark").font(.system(size: 9.5, weight: .bold)).frame(width: 22, height: 24)
         }
         .buttonStyle(VideoToolButtonStyle())
-        .help(job.isDone ? "Dismiss" : "Cancel this export")
-        .accessibilityLabel(job.isDone ? "Dismiss" : "Cancel export")
+        .help(job.isDone ? L("Dismiss") : L("Cancel this export"))
+        .accessibilityLabel(job.isDone ? L("Dismiss") : L("Cancel export"))
     }
 }
 
@@ -748,7 +768,7 @@ private struct VideoExportJobRow: View {
         HStack(spacing: 9) {
             icon
             VStack(alignment: .leading, spacing: 3) {
-                Text(job.toClipboard ? "Copy to clipboard" : job.destination.lastPathComponent)
+                Text(job.toClipboard ? L("Copy to clipboard") : job.destination.lastPathComponent)
                     .font(.system(size: 11.5, weight: .semibold))
                     .foregroundStyle(.white)
                     .lineLimit(1)
@@ -807,8 +827,8 @@ private struct VideoExportJobRow: View {
                     Image(systemName: "folder").frame(width: 24, height: 24)
                 }
                 .buttonStyle(VideoToolButtonStyle())
-                .help("Show in Finder")
-                .accessibilityLabel("Show in Finder")
+                .help(L("Show in Finder"))
+                .accessibilityLabel(L("Show in Finder"))
             }
             Button {
                 if job.isDone {
@@ -820,8 +840,8 @@ private struct VideoExportJobRow: View {
                 Image(systemName: "xmark").font(.system(size: 10, weight: .bold)).frame(width: 24, height: 24)
             }
             .buttonStyle(VideoToolButtonStyle())
-            .help(job.isDone ? "Dismiss" : "Cancel this export")
-            .accessibilityLabel(job.isDone ? "Dismiss" : "Cancel export")
+            .help(job.isDone ? L("Dismiss") : L("Cancel this export"))
+            .accessibilityLabel(job.isDone ? L("Dismiss") : L("Cancel export"))
         }
         .font(.system(size: 11.5, weight: .semibold))
         .foregroundStyle(.white)
@@ -845,13 +865,13 @@ struct VideoShareButton: View {
             if compact {
                 Image(systemName: "square.and.arrow.up").frame(width: 24, height: 24)
             } else {
-                Label("Share", systemImage: "square.and.arrow.up").frame(maxWidth: .infinity)
+                Label(L("Share"), systemImage: "square.and.arrow.up").frame(maxWidth: .infinity)
             }
         }
         .buttonStyle(ShareStyle(compact: compact))
         .background(VideoShareAnchor(box: anchor))
-        .help("Share — Mail, Messages, AirDrop…")
-        .accessibilityLabel("Share")
+        .help(L("Share — Mail, Messages, AirDrop…"))
+        .accessibilityLabel(L("Share"))
     }
 
     private struct ShareStyle: ButtonStyle {
@@ -948,7 +968,7 @@ private struct VideoExportCompletionView: View {
                 .font(.system(size: 22))
                 .foregroundStyle(failed ? Color.orange : Color.green)
             VStack(alignment: .leading, spacing: 4) {
-                Text(failed ? "Export failed" : (job.toClipboard ? "Video copied" : "Video exported"))
+                Text(failed ? L("Export failed") : (job.toClipboard ? L("Video copied") : L("Video exported")))
                     .font(.system(size: 13, weight: .bold))
                 Text(failed ? job.statusText : job.destination.lastPathComponent)
                     .font(.system(size: 11, weight: .medium))
@@ -958,11 +978,13 @@ private struct VideoExportCompletionView: View {
                 if !failed, !job.toClipboard {
                     HStack(spacing: 8) {
                         VideoShareButton(url: job.destination)
-                        Button("Show in Finder") {
+                        Button(L("Show in Finder")) {
                             NSWorkspace.shared.activateFileViewerSelecting([job.destination])
                             close()
                         }
                         .controlSize(.small)
+                        // Its whole name; Share takes the room that's left.
+                        .fixedSize()
                     }
                 }
             }
@@ -972,7 +994,7 @@ private struct VideoExportCompletionView: View {
             }
             .buttonStyle(.plain)
             .foregroundStyle(.secondary)
-            .accessibilityLabel("Close")
+            .accessibilityLabel(L("Close"))
         }
         .padding(14)
         .frame(width: 360, height: 96, alignment: .topLeading)

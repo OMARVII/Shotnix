@@ -89,7 +89,7 @@ enum VideoVoiceEnhancer {
 
         var errorDescription: String? {
             switch self {
-            case .unavailable: return "Voice enhancement isn't available on this Mac."
+            case .unavailable: return L("Voice enhancement isn't available on this Mac. Turn off Enhance voice to keep the original sound.")
             case .failed(let message): return message
             }
         }
@@ -155,7 +155,7 @@ enum VideoVoiceEnhancer {
             progress(min(start.seconds / duration, 1) * 0.15)
         }
         let rawLength = raw.length
-        guard rawLength > 0 else { throw Failure.failed("The voice track is empty.") }
+        guard rawLength > 0 else { throw Failure.failed(L("The voice track is empty, so there's nothing to clean up. Turn off Enhance voice to keep the original sound.")) }
         let input = try AVAudioFile(forReading: rawURL, commonFormat: .pcmFormatFloat32, interleaved: false)
 
         // 2. Isolation → rumble filter → compressor, rendered offline.
@@ -249,9 +249,9 @@ enum VideoVoiceEnhancer {
             case .insufficientDataFromInputNode, .cannotDoInCurrentContext:
                 continue
             case .error:
-                throw Failure.failed("Voice enhancement failed while processing.")
+                throw Failure.failed(L("Voice enhancement stopped partway. Turn Enhance voice off and on again to retry."))
             @unknown default:
-                throw Failure.failed("Voice enhancement failed while processing.")
+                throw Failure.failed(L("Voice enhancement stopped partway. Turn Enhance voice off and on again to retry."))
             }
             progress(0.15 + 0.85 * Double(engine.manualRenderingSampleTime) / Double(max(total, 1)))
         }

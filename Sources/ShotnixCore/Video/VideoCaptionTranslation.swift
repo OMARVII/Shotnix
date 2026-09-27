@@ -137,7 +137,7 @@ extension VideoEditorModel {
             project.captionTracks.translations.append(translation)
             project.captionTracks.active = translation.language
         }
-        showNotice("Captions translated to \(VideoCaptionTranslation.displayName(translation.language))", symbol: "globe")
+        showNotice(L("Captions translated to \(VideoCaptionTranslation.displayName(translation.language))"), symbol: "globe")
     }
 
     func showCaptionTrack(_ language: String?) {
@@ -177,21 +177,21 @@ private struct VideoCaptionTranslationControls: View {
     private var tracks: VideoCaptionTracks { model.project.captionTracks }
 
     var body: some View {
-        VideoInspectorSection("Languages") {
+        VideoInspectorSection(L("Languages")) {
             if !tracks.translations.isEmpty {
                 HStack(spacing: 10) {
-                    Text("Show")
+                    Text(L("Show"))
                         .font(.system(size: 12, weight: .medium))
                         .foregroundStyle(VideoEditorTheme.textPrimary)
                         .frame(width: 58, alignment: .leading)
                     Menu {
-                        Button(VideoCaptionTranslation.displayName(model.captionSourceLanguage) + " (original)") { model.showCaptionTrack(nil) }
+                        Button(originalTitle) { model.showCaptionTrack(nil) }
                         Divider()
                         ForEach(tracks.translations) { translation in
                             Button(VideoCaptionTranslation.displayName(translation.language)) { model.showCaptionTrack(translation.language) }
                         }
                     } label: {
-                        Text(tracks.active.map(VideoCaptionTranslation.displayName) ?? VideoCaptionTranslation.displayName(model.captionSourceLanguage) + " (original)")
+                        Text(tracks.active.map(VideoCaptionTranslation.displayName) ?? originalTitle)
                             .font(.system(size: 11.5, weight: .medium))
                     }
                     .menuStyle(.borderlessButton)
@@ -205,14 +205,14 @@ private struct VideoCaptionTranslationControls: View {
                         }
                         .buttonStyle(.plain)
                         .foregroundStyle(VideoEditorTheme.textTertiary)
-                        .help("Remove this translation")
-                        .accessibilityLabel("Remove translation")
+                        .help(L("Remove this translation"))
+                        .accessibilityLabel(L("Remove translation"))
                     }
                 }
                 if let active = tracks.active, let translation = tracks.translations.first(where: { $0.language == active }) {
                     let stale = translation.staleCount(for: model.project.captions)
                     if stale > 0 {
-                        Label("\(stale) line\(stale == 1 ? "" : "s") changed since translating", systemImage: "exclamationmark.circle")
+                        Label(L("\(stale) lines changed since translating"), systemImage: "exclamationmark.circle")
                             .font(.system(size: 10.5, weight: .medium))
                             .foregroundStyle(Color.orange.opacity(0.9))
                     }
@@ -224,7 +224,7 @@ private struct VideoCaptionTranslationControls: View {
                         Button(VideoCaptionTranslation.displayName(language)) { target = language }
                     }
                 } label: {
-                    Text(target.isEmpty ? "Choose a language" : VideoCaptionTranslation.displayName(target))
+                    Text(target.isEmpty ? L("Choose a language") : VideoCaptionTranslation.displayName(target))
                         .font(.system(size: 11.5, weight: .medium))
                 }
                 .menuStyle(.borderlessButton)
@@ -237,7 +237,7 @@ private struct VideoCaptionTranslationControls: View {
                     if running {
                         ProgressView().controlSize(.small)
                     } else {
-                        Label("Translate", systemImage: "globe")
+                        Label(L("Translate"), systemImage: "globe")
                     }
                 }
                 .buttonStyle(VideoSecondaryButtonStyle())
@@ -258,12 +258,17 @@ private struct VideoCaptionTranslationControls: View {
         }
     }
 
+    /// "English (original)": the captions as transcribed.
+    private var originalTitle: String {
+        L("\(VideoCaptionTranslation.displayName(model.captionSourceLanguage)) (original)")
+    }
+
     private var detail: String {
         if let error { return error }
         switch readiness {
-        case .unsupported?: return "This Mac can't translate between these languages."
-        case .needsDownload?: return "macOS downloads \(VideoCaptionTranslation.displayName(target)) once, then translates right here — nothing is uploaded."
-        default: return "A second caption track you can show, burn in, or save as subtitles. Translated on this Mac — nothing is uploaded."
+        case .unsupported?: return L("This Mac can't translate between these languages. Pick another language.")
+        case .needsDownload?: return L("macOS downloads \(VideoCaptionTranslation.displayName(target)) once, then translates right here — nothing is uploaded.")
+        default: return L("A second caption track you can show, burn in, or save as subtitles. Translated on this Mac — nothing is uploaded.")
         }
     }
 
@@ -297,7 +302,7 @@ private struct VideoCaptionTranslationControls: View {
         do {
             let translation = try await VideoCaptionTranslator.translate(model.project.captions, into: target, session: session)
             guard !translation.lines.isEmpty else {
-                error = "Nothing to translate."
+                error = L("There are no captions to translate yet. Transcribe or add captions first.")
                 return
             }
             model.storeTranslation(translation)
@@ -305,7 +310,7 @@ private struct VideoCaptionTranslationControls: View {
         } catch is CancellationError {
             // Left the tab: nothing changes.
         } catch {
-            self.error = "Couldn't translate: \(error.localizedDescription)"
+            self.error = L("Couldn't translate (\(error.localizedDescription)). Try again, or pick another language.")
         }
     }
 }

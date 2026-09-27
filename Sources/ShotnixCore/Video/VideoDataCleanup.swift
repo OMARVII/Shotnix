@@ -310,30 +310,32 @@ enum VideoDataCleanup {
             func size(_ urls: [URL]) -> String {
                 ByteCountFormatter.string(fromByteCount: urls.reduce(0) { $0 + VideoDataCleanup.bytes(of: $1) }, countStyle: .file)
             }
-            func count(_ n: Int, _ one: String, _ many: String) -> String { "\(n) \(n == 1 ? one : many)" }
             var lines: [String] = []
             if !missingRecordings.isEmpty {
                 let names = missingRecordings.prefix(8).map { recording -> String in
                     let folder = URL(fileURLWithPath: recording.path).deletingLastPathComponent().lastPathComponent
-                    return "“\(recording.name)” (was in \(folder))"
+                    return L("“\(recording.name)” (was in \(folder))")
                 }
-                let more = missingRecordings.count > 8 ? ", and \(missingRecordings.count - 8) more" : ""
-                lines.append("• Edits, recording details, and camera footage of \(count(missingRecordings.count, "recording", "recordings")) Shotnix can't find (\(size(missingRecordings.flatMap(\.dataFiles)))): \(names.joined(separator: ", "))\(more)")
+                // Names joined two at a time (Chinese uses "、").
+                var list = names.dropFirst().reduce(names[0]) { L("\($0), \($1)") }
+                if missingRecordings.count > 8 { list = L("\(list), and \(missingRecordings.count - 8) more") }
+                let dataSize = size(missingRecordings.flatMap(\.dataFiles))
+                lines.append(L("• Edits, recording details, and camera footage of \(missingRecordings.count) recordings Shotnix can't find (\(dataSize)): \(list)"))
             }
             if !unusedCameraFootage.isEmpty {
-                lines.append("• Camera footage no recording uses — \(count(unusedCameraFootage.count, "file", "files")), \(size(unusedCameraFootage))")
+                lines.append(L("• Camera footage no recording uses — \(unusedCameraFootage.count) files, \(size(unusedCameraFootage))"))
             }
             if !unusedVoice.isEmpty {
-                lines.append("• Cleaned-up voice of recordings not found or changed since — \(count(unusedVoice.count, "file", "files")), \(size(unusedVoice))")
+                lines.append(L("• Cleaned-up voice of recordings not found or changed since — \(unusedVoice.count) files, \(size(unusedVoice))"))
             }
             if !unusedAssets.isEmpty {
-                lines.append("• Pictures and songs no video uses — \(count(unusedAssets.count, "file", "files")), \(size(unusedAssets))")
+                lines.append(L("• Pictures and songs no video uses — \(unusedAssets.count) files, \(size(unusedAssets))"))
             }
             if !oldClipboardExports.isEmpty {
-                lines.append("• Clipboard exports older than a day — \(count(oldClipboardExports.count, "file", "files")), \(size(oldClipboardExports))")
+                lines.append(L("• Clipboard exports older than a day — \(oldClipboardExports.count) files, \(size(oldClipboardExports))"))
             }
             if !staleIDNotes.isEmpty {
-                lines.append("• \(count(staleIDNotes.count, "small note", "small notes")) about recordings that are gone")
+                lines.append(L("• \(staleIDNotes.count) small notes about recordings that are gone"))
             }
             return lines.joined(separator: "\n")
         }
@@ -490,23 +492,25 @@ struct VideoDataSettingsRow: View {
     var body: some View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 2) {
-                Text(usage.map { "Video data uses \(ByteCountFormatter.string(fromByteCount: $0, countStyle: .file))" } ?? "Video data")
+                Text(usage.map { L("Video data uses \(ByteCountFormatter.string(fromByteCount: $0, countStyle: .file))") } ?? L("Video data"))
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(Color.white.opacity(0.88))
                     .lineLimit(1)
-                Text(result ?? "Camera footage, cleaned-up voice, drafts, and clipboard exports")
+                Text(result ?? L("Camera footage, cleaned-up voice, drafts, and clipboard exports"))
                     .font(.system(size: 11, weight: .medium))
                     .foregroundStyle(Color.white.opacity(0.45))
-                    .lineLimit(1)
+                    // Longer languages take a second line.
+                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             Spacer(minLength: 12)
             if working {
                 ProgressView().controlSize(.small)
             }
-            Button("Clean Up…") { cleanUp() }
+            Button(L("Clean Up…")) { cleanUp() }
                 .controlSize(.small)
                 .disabled(working)
-                .help("Shows what can be removed — data of recordings Shotnix can't find, unused footage and pictures, old clipboard exports — and asks before removing it")
+                .help(L("Shows what can be removed — data of recordings Shotnix can't find, unused footage and pictures, old clipboard exports — and asks before removing it"))
         }
         .frame(maxWidth: .infinity, minHeight: 50, alignment: .leading)
         .padding(.horizontal, 12)
@@ -517,6 +521,16 @@ struct VideoDataSettingsRow: View {
         usage = await Task.detached(priority: .utility) { VideoDataCleanup.usage() }.value
     }
 
+    /// Says exactly what goes before anything does.
+    static func confirmation(for plan: VideoDataCleanup.Plan) -> NSAlert {
+        let alert = NSAlert()
+        alert.messageText = L("Remove \(ByteCountFormatter.string(fromByteCount: plan.bytes, countStyle: .file)) of video data?")
+        alert.informativeText = plan.summary + "\n\n" + L("Recordings in the Trash or on a drive that isn't plugged in keep their data. This can't be undone.")
+        alert.addButton(withTitle: L("Remove"))
+        alert.addButton(withTitle: L("Cancel"))
+        return alert
+    }
+
     private func cleanUp() {
         working = true
         result = nil
@@ -525,22 +539,16 @@ struct VideoDataSettingsRow: View {
             let plan = await Task.detached(priority: .userInitiated) { VideoDataCleanup.plan(inUse: inUse) }.value
             guard !plan.isEmpty else {
                 working = false
-                result = "Nothing to clean up — everything belongs to recordings you still have"
+                result = L("Nothing to clean up — everything belongs to recordings you still have")
                 return
             }
-            // Says exactly what goes before anything does.
-            let alert = NSAlert()
-            alert.messageText = "Remove \(ByteCountFormatter.string(fromByteCount: plan.bytes, countStyle: .file)) of video data?"
-            alert.informativeText = plan.summary + "\n\nRecordings in the Trash or on a drive that isn't plugged in keep their data. This can't be undone."
-            alert.addButton(withTitle: "Remove")
-            alert.addButton(withTitle: "Cancel")
-            guard alert.runModal() == .alertFirstButtonReturn else {
+            guard Self.confirmation(for: plan).runModal() == .alertFirstButtonReturn else {
                 working = false
                 return
             }
             let report = await Task.detached(priority: .userInitiated) { VideoDataCleanup.perform(plan) }.value
             working = false
-            result = "Freed \(ByteCountFormatter.string(fromByteCount: report.freedBytes, countStyle: .file)) (\(report.removedFiles) file\(report.removedFiles == 1 ? "" : "s"))"
+            result = L("Freed \(ByteCountFormatter.string(fromByteCount: report.freedBytes, countStyle: .file)) (\(report.removedFiles) files)")
             await measure()
         }
     }

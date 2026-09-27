@@ -471,17 +471,17 @@ enum VideoDemoExportError: LocalizedError {
         case .system(let error):
             return error.localizedDescription
         case .missingVideoTrack:
-            return "The selected file has no video track."
+            return L("The selected file has no video track. Choose a video file instead.")
         case .invalidTrim:
-            return "The timeline is empty."
+            return L("The timeline is empty. Restore a clip, then export again.")
         case .cannotCreateCompositionTrack:
-            return "Could not prepare the video composition."
+            return L("Couldn't prepare the video. Export again; if it keeps happening, restart Shotnix.")
         case .cannotCreateExportSession:
-            return "Could not start the export."
+            return L("Couldn't start the export. Export again; if it keeps happening, restart Shotnix.")
         case .exportFailed(let message):
             return message
         case .cancelled:
-            return "Export cancelled."
+            return L("Export cancelled.")
         }
     }
 }

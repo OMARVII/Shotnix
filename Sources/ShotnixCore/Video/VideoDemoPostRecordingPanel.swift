@@ -29,7 +29,17 @@ final class VideoDemoPostRecordingPanel: NSPanel {
         self.openHandler = openHandler
         self.videoURL = videoURL
 
-        let frame = NSRect(x: 0, y: 0, width: 342, height: 112)
+        // Buttons as wide as their words need (never narrower than the
+        // English layout); the panel grows to hold longer languages.
+        let edit = Self.button(title: L("Edit Video"), symbol: "film.stack", minWidth: 112)
+        let reveal = Self.button(title: L("Reveal"), symbol: "folder", minWidth: 84)
+        let copy = Self.button(title: L("Copy Path"), symbol: "doc.on.doc", minWidth: 98)
+        var x: CGFloat = 16
+        for button in [edit, reveal, copy] {
+            button.frame.origin = NSPoint(x: x, y: 16)
+            x += button.frame.width + 8
+        }
+        let frame = NSRect(x: 0, y: 0, width: max(342, x - 8 + 16), height: 112)
         super.init(
             contentRect: frame,
             styleMask: [.borderless, .nonactivatingPanel],
@@ -56,21 +66,22 @@ final class VideoDemoPostRecordingPanel: NSPanel {
         root.layer?.borderColor = NSColor.white.withAlphaComponent(0.12).cgColor
         contentView = root
 
-        let title = NSTextField(labelWithString: "Recording saved")
+        let title = NSTextField(labelWithString: L("Recording saved"))
         title.font = .systemFont(ofSize: 13, weight: .bold)
         title.textColor = .white.withAlphaComponent(0.92)
-        title.frame = NSRect(x: 16, y: 76, width: 190, height: 18)
+        title.lineBreakMode = .byTruncatingTail
+        title.frame = NSRect(x: 16, y: 76, width: frame.width - 16 - 40, height: 18)
         root.addSubview(title)
 
         // With the overlay timeout set to "Never" this is the only way out.
         let close = NSButton(frame: NSRect(x: frame.width - 34, y: frame.height - 34, width: 22, height: 22))
         close.isBordered = false
         close.title = ""
-        close.image = NSImage(systemSymbolName: "xmark.circle.fill", accessibilityDescription: "Close")?
+        close.image = NSImage(systemSymbolName: "xmark.circle.fill", accessibilityDescription: L("Close"))?
             .withSymbolConfiguration(NSImage.SymbolConfiguration(pointSize: 14, weight: .semibold))
         close.imagePosition = .imageOnly
         close.contentTintColor = .white.withAlphaComponent(0.5)
-        close.toolTip = "Close (Esc)"
+        close.toolTip = L("Close (Esc)")
         close.target = self
         close.action = #selector(closeTapped)
         root.addSubview(close)
@@ -79,20 +90,17 @@ final class VideoDemoPostRecordingPanel: NSPanel {
         detail.font = .systemFont(ofSize: 10.5, weight: .semibold)
         detail.textColor = .white.withAlphaComponent(0.48)
         detail.lineBreakMode = .byTruncatingMiddle
-        detail.frame = NSRect(x: 16, y: 58, width: 310, height: 16)
+        detail.frame = NSRect(x: 16, y: 58, width: frame.width - 32, height: 16)
         root.addSubview(detail)
 
-        let edit = button(title: "Edit Video", symbol: "film.stack", x: 16, width: 112)
         edit.target = self
         edit.action = #selector(editVideo)
         root.addSubview(edit)
 
-        let reveal = button(title: "Reveal", symbol: "folder", x: 136, width: 84)
         reveal.target = self
         reveal.action = #selector(revealFile)
         root.addSubview(reveal)
 
-        let copy = button(title: "Copy Path", symbol: "doc.on.doc", x: 228, width: 98)
         copy.target = self
         copy.action = #selector(copyPath)
         root.addSubview(copy)
@@ -167,8 +175,8 @@ final class VideoDemoPostRecordingPanel: NSPanel {
         scheduleAutoClose()
     }
 
-    private func button(title: String, symbol: String, x: CGFloat, width: CGFloat) -> NSButton {
-        let button = NSButton(frame: NSRect(x: x, y: 16, width: width, height: 30))
+    private static func button(title: String, symbol: String, minWidth: CGFloat) -> NSButton {
+        let button = NSButton(frame: NSRect(x: 0, y: 0, width: minWidth, height: 30))
         button.title = title
         button.font = .systemFont(ofSize: 11, weight: .bold)
         button.bezelStyle = .regularSquare
@@ -180,6 +188,9 @@ final class VideoDemoPostRecordingPanel: NSPanel {
         let config = NSImage.SymbolConfiguration(pointSize: 11, weight: .bold)
         button.image = NSImage(systemSymbolName: symbol, accessibilityDescription: nil)?.withSymbolConfiguration(config)
         button.imagePosition = .imageLeading
+        // Room for the symbol, the words, and a margin on each side.
+        let needed = ceil(button.intrinsicContentSize.width) + 16
+        button.frame.size.width = max(minWidth, needed)
         return button
     }
 

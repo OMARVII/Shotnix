@@ -14,14 +14,14 @@ struct VideoWebcamSettings: Codable, Equatable {
 
         var title: String {
             switch self {
-            case .topLeft: return "Top left"
-            case .top: return "Top"
-            case .topRight: return "Top right"
-            case .left: return "Left"
-            case .right: return "Right"
-            case .bottomLeft: return "Bottom left"
-            case .bottom: return "Bottom"
-            case .bottomRight: return "Bottom right"
+            case .topLeft: return L("Top left")
+            case .top: return L("Top")
+            case .topRight: return L("Top right")
+            case .left: return L("Left")
+            case .right: return L("Right")
+            case .bottomLeft: return L("Bottom left")
+            case .bottom: return L("Bottom")
+            case .bottomRight: return L("Bottom right")
             }
         }
 
@@ -57,10 +57,10 @@ struct VideoWebcamSettings: Codable, Equatable {
         var id: String { rawValue }
         var title: String {
             switch self {
-            case .circle: return "Circle"
-            case .square: return "Rounded"
-            case .rectangle: return "Wide"
-            case .cutout: return "Cutout"
+            case .circle: return L("Circle")
+            case .square: return L("Rounded")
+            case .rectangle: return L("Wide")
+            case .cutout: return L("Cutout")
             }
         }
 
@@ -84,9 +84,9 @@ struct VideoWebcamSettings: Codable, Equatable {
         var id: String { rawValue }
         var title: String {
             switch self {
-            case .original: return "Original"
-            case .blur: return "Blur"
-            case .remove: return "Remove"
+            case .original: return L("Original")
+            case .blur: return L("Blur")
+            case .remove: return L("Remove")
             }
         }
     }
@@ -137,17 +137,17 @@ struct VideoCameraLayoutRegion: Codable, Equatable, Identifiable {
         var id: String { rawValue }
         var title: String {
             switch self {
-            case .fullscreen: return "Full camera"
-            case .sideBySide: return "Side by side"
-            case .hidden: return "Camera hidden"
+            case .fullscreen: return L("Full camera")
+            case .sideBySide: return L("Side by side")
+            case .hidden: return L("Camera hidden")
             }
         }
         /// For narrow buttons.
         var shortTitle: String {
             switch self {
-            case .fullscreen: return "Full camera"
-            case .sideBySide: return "Side by side"
-            case .hidden: return "Hidden"
+            case .fullscreen: return L("Full camera")
+            case .sideBySide: return L("Side by side")
+            case .hidden: return L("Hidden")
             }
         }
         var symbol: String {
@@ -220,9 +220,9 @@ enum VideoTextSize: String, Codable, CaseIterable, Identifiable {
     var id: String { rawValue }
     var title: String {
         switch self {
-        case .small: return "S"
-        case .medium: return "M"
-        case .large: return "L"
+        case .small: return L("S")
+        case .medium: return L("M")
+        case .large: return L("L")
         }
     }
     /// Font height as a fraction of the output's short side.
@@ -239,7 +239,7 @@ enum VideoTextPosition: String, Codable, CaseIterable, Identifiable {
     case bottom, top
 
     var id: String { rawValue }
-    var title: String { self == .bottom ? "Bottom" : "Top" }
+    var title: String { self == .bottom ? L("Bottom") : L("Top") }
 }
 
 struct VideoCaptionStyle: Codable, Equatable {
@@ -356,6 +356,8 @@ extension VideoDemoProject {
 /// Turns key presses into shortcut labels — and ignores plain typing, so
 /// passwords and messages never end up in a recording.
 enum VideoKeystrokeFormatter {
+    // Keycap legends drawn into the video, as printed on the keys (kept
+    // as they are in every language).
     private static let specialKeys: [UInt16: String] = [
         36: "↩", 76: "↩", 48: "⇥", 49: "Space", 51: "⌫", 117: "⌦", 53: "esc",
         123: "←", 124: "→", 125: "↓", 126: "↑", 115: "↖", 119: "↘", 116: "⇞", 121: "⇟",

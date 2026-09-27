@@ -2,6 +2,22 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>%@, and %lld more</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%2$#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%1$@ et %2$lld autre</string>
+			<key>other</key>
+			<string>%1$@ et %2$lld autres</string>
+		</dict>
+	</dict>
 	<key>%lld QR codes found</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -146,6 +162,22 @@
 			<string>%lld lignes</string>
 		</dict>
 	</dict>
+	<key>%lld lines changed since translating</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld ligne modifiée depuis la traduction</string>
+			<key>other</key>
+			<string>%lld lignes modifiées depuis la traduction</string>
+		</dict>
+	</dict>
 	<key>%lld lines · found %@</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -176,6 +208,22 @@
 			<string>%lld lien</string>
 			<key>other</key>
 			<string>%lld liens</string>
+		</dict>
+	</dict>
+	<key>%lld recorded clicks — in the preview and the export</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld clic enregistré — dans l’aperçu et l’exportation</string>
+			<key>other</key>
+			<string>%lld clics enregistrés — dans l’aperçu et l’exportation</string>
 		</dict>
 	</dict>
 	<key>%lld saved captures · drag any card to Finder · right-click for more actions</key>
@@ -242,6 +290,70 @@
 			<string>%lld secondes</string>
 		</dict>
 	</dict>
+	<key>Auto zoom applied — %lld zooms follow your clicks</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Zoom auto appliqué — %lld zoom suit vos clics</string>
+			<key>other</key>
+			<string>Zoom auto appliqué — %lld zooms suivent vos clics</string>
+		</dict>
+	</dict>
+	<key>Auto zoom — %lld zooms</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Zoom auto — %lld zoom</string>
+			<key>other</key>
+			<string>Zoom auto — %lld zooms</string>
+		</dict>
+	</dict>
+	<key>Captions ready — %lld lines</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Sous-titres prêts — %lld ligne</string>
+			<key>other</key>
+			<string>Sous-titres prêts — %lld lignes</string>
+		</dict>
+	</dict>
+	<key>Cut %lld words — ⌘Z to undo</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld mot coupé — ⌘Z pour annuler</string>
+			<key>other</key>
+			<string>%lld mots coupés — ⌘Z pour annuler</string>
+		</dict>
+	</dict>
 	<key>Delete %lld Captures?</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -272,6 +384,22 @@
 			<string>Les captures supprimées en attente dans la corbeille de l’historique et les fichiers qu’aucune capture n’utilise sont définitivement supprimés, ainsi que %lld capture au-delà de la limite de votre historique. Le reste de votre historique est conservé.</string>
 			<key>other</key>
 			<string>Les captures supprimées en attente dans la corbeille de l’historique et les fichiers qu’aucune capture n’utilise sont définitivement supprimés, ainsi que %lld captures au-delà de la limite de votre historique. Le reste de votre historique est conservé.</string>
+		</dict>
+	</dict>
+	<key>Freed %@ (%lld files)</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%2$#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Espace libéré : %1$@ (%2$lld fichier)</string>
+			<key>other</key>
+			<string>Espace libéré : %1$@ (%2$lld fichiers)</string>
 		</dict>
 	</dict>
 	<key>History uses %@ (%lld captures)</key>
@@ -434,6 +562,70 @@
 			<string>Prêt · %lld raccourcis facultatifs désactivés</string>
 		</dict>
 	</dict>
+	<key>Removed %lld filler words — %@ shorter</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld mot de remplissage supprimé — %@ de moins</string>
+			<key>other</key>
+			<string>%lld mots de remplissage supprimés — %@ de moins</string>
+		</dict>
+	</dict>
+	<key>Removed %lld zooms — ⌘Z to undo</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld zoom supprimé — ⌘Z pour annuler</string>
+			<key>other</key>
+			<string>%lld zooms supprimés — ⌘Z pour annuler</string>
+		</dict>
+	</dict>
+	<key>Restored %lld cuts — %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld coupe restaurée — %@</string>
+			<key>other</key>
+			<string>%lld coupes restaurées — %@</string>
+		</dict>
+	</dict>
+	<key>Restored %lld words</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld mot restauré</string>
+			<key>other</key>
+			<string>%lld mots restaurés</string>
+		</dict>
+	</dict>
 	<key>Scrolling capture reached its maximum length (%lld points) and finished.</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -464,6 +656,70 @@
 			<string>La capture défilante s’est arrêtée après %lld minute.</string>
 			<key>other</key>
 			<string>La capture défilante s’est arrêtée après %lld minutes.</string>
+		</dict>
+	</dict>
+	<key>Shortened %lld pauses — %@ shorter</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld pause raccourcie — %@ de moins</string>
+			<key>other</key>
+			<string>%lld pauses raccourcies — %@ de moins</string>
+		</dict>
+	</dict>
+	<key>Sped up %lld idle moments — saved %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld temps mort accéléré — %@ gagnées</string>
+			<key>other</key>
+			<string>%lld temps morts accélérés — %@ gagnées</string>
+		</dict>
+	</dict>
+	<key>Sped up %lld idle moments — saved %@ · check any typing</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld temps mort accéléré — %@ gagnées · vérifiez les passages de saisie</string>
+			<key>other</key>
+			<string>%lld temps morts accélérés — %@ gagnées · vérifiez les passages de saisie</string>
+		</dict>
+	</dict>
+	<key>This replaces all %lld caption lines, including any you edited or typed, with a new transcript in %@.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Cela remplace %lld ligne de sous-titres, même si vous l’avez modifiée ou saisie, par une nouvelle transcription en %@.</string>
+			<key>other</key>
+			<string>Cela remplace les %lld lignes de sous-titres, y compris celles que vous avez modifiées ou saisies, par une nouvelle transcription en %@.</string>
 		</dict>
 	</dict>
 	<key>You have unsaved edits in %lld screenshots.</key>
@@ -512,6 +768,102 @@
 			<string>Votre disque est presque plein. Dans environ %lld seconde, l’enregistrement s’arrêtera et sera sauvegardé.</string>
 			<key>other</key>
 			<string>Votre disque est presque plein. Dans environ %lld secondes, l’enregistrement s’arrêtera et sera sauvegardé.</string>
+		</dict>
+	</dict>
+	<key>• %lld small notes about recordings that are gone</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>• %lld petite note sur un enregistrement disparu</string>
+			<key>other</key>
+			<string>• %lld petites notes sur des enregistrements disparus</string>
+		</dict>
+	</dict>
+	<key>• Camera footage no recording uses — %lld files, %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>• Séquences de caméra qu’aucun enregistrement n’utilise — %lld fichier, %@</string>
+			<key>other</key>
+			<string>• Séquences de caméra qu’aucun enregistrement n’utilise — %lld fichiers, %@</string>
+		</dict>
+	</dict>
+	<key>• Cleaned-up voice of recordings not found or changed since — %lld files, %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>• Voix nettoyée d’enregistrements introuvables ou modifiés depuis — %lld fichier, %@</string>
+			<key>other</key>
+			<string>• Voix nettoyée d’enregistrements introuvables ou modifiés depuis — %lld fichiers, %@</string>
+		</dict>
+	</dict>
+	<key>• Clipboard exports older than a day — %lld files, %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>• Exportations pour le presse-papiers de plus d’un jour — %lld fichier, %@</string>
+			<key>other</key>
+			<string>• Exportations pour le presse-papiers de plus d’un jour — %lld fichiers, %@</string>
+		</dict>
+	</dict>
+	<key>• Edits, recording details, and camera footage of %lld recordings Shotnix can't find (%@): %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>• Modifications, détails et séquences de caméra de %lld enregistrement que Shotnix ne trouve pas (%@) : %@</string>
+			<key>other</key>
+			<string>• Modifications, détails et séquences de caméra de %lld enregistrements que Shotnix ne trouve pas (%@) : %@</string>
+		</dict>
+	</dict>
+	<key>• Pictures and songs no video uses — %lld files, %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>• Images et morceaux qu’aucune vidéo n’utilise — %lld fichier, %@</string>
+			<key>other</key>
+			<string>• Images et morceaux qu’aucune vidéo n’utilise — %lld fichiers, %@</string>
 		</dict>
 	</dict>
 </dict>

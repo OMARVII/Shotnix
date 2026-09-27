@@ -10,8 +10,8 @@ struct VideoExportSettings: Equatable {
         var id: String { rawValue }
         var title: String {
             switch self {
-            case .mp4: return "MP4"
-            case .gif: return "GIF"
+            case .mp4: return "MP4" // l10n-ignore: a format name
+            case .gif: return "GIF" // l10n-ignore: a format name
             }
         }
     }
@@ -42,16 +42,16 @@ struct VideoExportSettings: Equatable {
         var id: String { rawValue }
         var title: String {
             switch self {
-            case .web: return "Web"
-            case .social: return "Social"
-            case .studio: return "Studio"
+            case .web: return L("Web")
+            case .social: return L("Social")
+            case .studio: return L("Studio")
             }
         }
         var detail: String {
             switch self {
-            case .web: return "Smallest files, great for docs and chat"
-            case .social: return "Crisp and compact — the best default"
-            case .studio: return "Maximum detail for further editing"
+            case .web: return L("Smallest files, great for docs and chat")
+            case .social: return L("Crisp and compact — the best default")
+            case .studio: return L("Maximum detail for further editing")
             }
         }
         /// Bits per pixel per frame at 30 fps (H.264).
@@ -77,8 +77,8 @@ struct VideoExportSettings: Equatable {
         }
         var detail: String {
             switch self {
-            case .h264: return "Plays everywhere"
-            case .hevc: return "About 35% smaller — plays on Apple devices and most phones; some browsers and Windows PCs can't play it without an extra codec"
+            case .h264: return L("Plays everywhere")
+            case .hevc: return L("About \(35)% smaller — plays on Apple devices and most phones; some browsers and Windows PCs can't play it without an extra codec")
             }
         }
     }
@@ -91,9 +91,9 @@ struct VideoExportSettings: Equatable {
         var id: Int { rawValue }
         var title: String {
             switch self {
-            case .small: return "Small"
-            case .medium: return "Medium"
-            case .large: return "Large"
+            case .small: return L("Small")
+            case .medium: return L("Medium")
+            case .large: return L("Large")
             }
         }
     }

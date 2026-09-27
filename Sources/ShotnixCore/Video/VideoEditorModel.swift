@@ -74,17 +74,17 @@ struct VideoLoadFailure: Equatable {
 
     var title: String {
         switch kind {
-        case .missing: return "This video isn't there anymore"
-        case .noVideo: return "There's no video in this file"
-        case .unreadable: return "Shotnix can't open this file"
+        case .missing: return L("This video isn't there anymore")
+        case .noVideo: return L("There's no video in this file")
+        case .unreadable: return L("Shotnix can't open this file")
         }
     }
 
     var message: String {
         switch kind {
-        case .missing: return "It was moved, renamed, or deleted. Open it from where it is now."
-        case .noVideo: return "It only has sound, or nothing at all. Shotnix edits screen recordings and other videos."
-        case .unreadable: return "It may be damaged, still being saved, or in a format this Mac can't play. MP4 and MOV videos work best."
+        case .missing: return L("It was moved, renamed, or deleted. Open it from where it is now.")
+        case .noVideo: return L("It only has sound, or nothing at all. Shotnix edits screen recordings and other videos.")
+        case .unreadable: return L("It may be damaged, still being saved, or in a format this Mac can't play. MP4 and MOV videos work best.")
         }
     }
 }
@@ -499,9 +499,9 @@ final class VideoEditorModel: ObservableObject {
             playback.seek(to: 0, fast: false)
             saveDraftNow()
             if isFresh, !project.zoomRegions.isEmpty {
-                showNotice("Auto zoom applied — \(project.zoomRegions.count) zoom\(project.zoomRegions.count == 1 ? "" : "s") follow your clicks", symbol: "sparkles")
+                showNotice(L("Auto zoom applied — \(project.zoomRegions.count) zooms follow your clicks"), symbol: "sparkles")
             } else if restoredDraft {
-                showNotice("Picked up where you left off", symbol: "clock.arrow.circlepath")
+                showNotice(L("Picked up where you left off"), symbol: "clock.arrow.circlepath")
             }
             Task { await loadThumbnails() }
             Task { await loadWaveform() }
@@ -954,7 +954,7 @@ final class VideoEditorModel: ObservableObject {
         if isPlaying {
             shuttleRate = min(shuttleRate * 2, 4)
             playback.setRate(shuttleRate)
-            showNotice("Playing \(Int(shuttleRate))×", symbol: "forward.fill")
+            showNotice(L("Playing \(Int(shuttleRate))×"), symbol: "forward.fill")
         } else {
             playback.play()
         }
@@ -987,15 +987,15 @@ final class VideoEditorModel: ObservableObject {
         }
         if let newID {
             selection = .clip(newID)
-            showNotice("Split", symbol: "scissors")
+            showNotice(L("Clip split"), symbol: "scissors")
         } else {
-            showNotice("Move the playhead inside a clip to split", symbol: "scissors")
+            showNotice(L("Move the playhead inside a clip to split"), symbol: "scissors")
         }
     }
 
     func deleteClip(_ id: UUID) {
         guard segments.count > 1 else {
-            showNotice("A video needs at least one clip", symbol: "exclamationmark.triangle")
+            showNotice(L("A video needs at least one clip"), symbol: "exclamationmark.triangle")
             return
         }
         let anchor = segments.first(where: { $0.id == id })?.timelineStart ?? clock.time
@@ -1005,7 +1005,7 @@ final class VideoEditorModel: ObservableObject {
         }
         selection = next.map { .clip($0) } ?? .none
         seek(to: min(anchor, max(timelineDuration - 0.01, 0)))
-        showNotice("Clip removed — ⌘Z to undo", symbol: "trash")
+        showNotice(L("Clip removed — ⌘Z to undo"), symbol: "trash")
     }
 
     func deleteRange(_ range: VideoDemoTimelineRange) {
@@ -1015,12 +1015,12 @@ final class VideoEditorModel: ObservableObject {
             next = project.deleteTimelineRange(start: normalized.start, end: normalized.end, totalDuration: sourceDuration)
         }
         if next == nil {
-            showNotice("A video needs at least one clip", symbol: "exclamationmark.triangle")
+            showNotice(L("A video needs at least one clip"), symbol: "exclamationmark.triangle")
             return
         }
         selection = .none
         seek(to: min(normalized.start, max(timelineDuration - 0.01, 0)))
-        showNotice("Removed \(Self.format(normalized.duration)) — ⌘Z to undo", symbol: "scissors")
+        showNotice(L("Removed \(Self.format(normalized.duration)) — ⌘Z to undo"), symbol: "scissors")
     }
 
     // MARK: Range actions
@@ -1159,7 +1159,7 @@ final class VideoEditorModel: ObservableObject {
             }
         }
         selection = .clip(segment.id)
-        showNotice(leading ? "Clip now starts here" : "Clip now ends here", symbol: leading ? "arrow.left.to.line" : "arrow.right.to.line")
+        showNotice(leading ? L("Clip now starts here") : L("Clip now ends here"), symbol: leading ? "arrow.left.to.line" : "arrow.right.to.line")
     }
 
     /// Material cut between two clips (or before the first / after the last).
@@ -1211,7 +1211,7 @@ final class VideoEditorModel: ObservableObject {
         mutate(label: "Restore Cut") { project in
             project.restoreSourceRange(gap.sourceStart...gap.sourceEnd, totalDuration: sourceDuration)
         }
-        showNotice("Restored \(Self.format(gap.duration))", symbol: "arrow.uturn.backward")
+        showNotice(L("Restored \(Self.format(gap.duration))"), symbol: "arrow.uturn.backward")
     }
 
     /// Moves a clip to another place in the video.
@@ -1221,7 +1221,7 @@ final class VideoEditorModel: ObservableObject {
         guard moved else { return }
         selection = .clip(id)
         if let segment = segments.first(where: { $0.id == id }) { seek(to: segment.timelineStart) }
-        showNotice("Clip moved — ⌘Z to undo", symbol: "arrow.left.arrow.right")
+        showNotice(L("Clip moved — ⌘Z to undo"), symbol: "arrow.left.arrow.right")
     }
 
     /// Several cuts back at once (one undo step).
@@ -1233,7 +1233,7 @@ final class VideoEditorModel: ObservableObject {
             }
         }
         let total = gaps.reduce(0) { $0 + $1.duration }
-        showNotice("Restored \(gaps.count) cuts — \(Self.format(total))", symbol: "arrow.uturn.backward")
+        showNotice(L("Restored \(gaps.count) cuts — \(Self.format(total))"), symbol: "arrow.uturn.backward")
     }
 
     // MARK: Zooms
@@ -1313,7 +1313,7 @@ final class VideoEditorModel: ObservableObject {
     func addZoom(at time: Double, length: Double = 3) -> UUID? {
         let gap = zoomGap(around: time)
         guard gap.upperBound - gap.lowerBound >= VideoZoomRegion.minimumDuration else {
-            showNotice("There's already a zoom here", symbol: "plus.magnifyingglass")
+            showNotice(L("There's already a zoom here"), symbol: "plus.magnifyingglass")
             return nil
         }
         var start = max(time - 0.2, gap.lowerBound)
@@ -1390,19 +1390,19 @@ final class VideoEditorModel: ObservableObject {
             project.zoomRegions.removeAll { $0.id == id }
         }
         if selection == .zoom(id) { selection = .none }
-        showNotice("Zoom removed — ⌘Z to undo", symbol: "trash")
+        showNotice(L("Zoom removed — ⌘Z to undo"), symbol: "trash")
     }
 
     /// Back to the recording as it was made: every edit goes (one undo
     /// brings them all back).
     func startOver() {
         let alert = NSAlert()
-        alert.messageText = "Start over from the original recording?"
+        alert.messageText = L("Start over from the original recording?")
         alert.informativeText = project.hasAppendedSources
-            ? "Every cut, zoom, annotation, caption, and style change on this video is removed — the recordings you added stay. You can undo this."
-            : "Every cut, zoom, annotation, caption, and style change on this video is removed. You can undo this."
-        alert.addButton(withTitle: "Start Over")
-        alert.addButton(withTitle: "Cancel")
+            ? L("Every cut, zoom, annotation, caption, and style change on this video is removed — the recordings you added stay. You can undo this.")
+            : L("Every cut, zoom, annotation, caption, and style change on this video is removed. You can undo this.")
+        alert.addButton(withTitle: L("Start Over"))
+        alert.addButton(withTitle: L("Cancel"))
         guard alert.runModal() == .alertFirstButtonReturn else { return }
         Task {
             // Every added recording's own data first (read off the main thread).
@@ -1436,7 +1436,7 @@ final class VideoEditorModel: ObservableObject {
         selection = .none
         mutate(label: "Start Over") { $0 = fresh }
         endGesture()
-        showNotice("Back to the original recording — ⌘Z to undo", symbol: "arrow.counterclockwise")
+        showNotice(L("Back to the original recording — ⌘Z to undo"), symbol: "arrow.counterclockwise")
     }
 
     /// A copy of an annotation, nudged so both are visible, on top.
@@ -1454,7 +1454,7 @@ final class VideoEditorModel: ObservableObject {
             project.overlayEffects = VideoDemoProject.normalizedEffectLayers(project.overlayEffects)
         }
         selection = .overlay(copy.id)
-        showNotice("Duplicated", symbol: "plus.square.on.square")
+        showNotice(L("Duplicated"), symbol: "plus.square.on.square")
     }
 
     func duplicateZoom(_ id: UUID) {
@@ -1463,7 +1463,7 @@ final class VideoEditorModel: ObservableObject {
         let length = range.upperBound - range.lowerBound
         let gap = zoomGap(around: range.upperBound + 0.01)
         guard gap.upperBound - gap.lowerBound >= length * 0.5 else {
-            showNotice("No room after this zoom", symbol: "plus.square.on.square")
+            showNotice(L("No room after this zoom"), symbol: "plus.square.on.square")
             return
         }
         let start = gap.lowerBound + 0.1
@@ -1488,7 +1488,7 @@ final class VideoEditorModel: ObservableObject {
             }
             project.defaultZoomScale = scale
         }
-        showNotice("All zooms set to \(Self.formatScale(scale))", symbol: "plus.magnifyingglass")
+        showNotice(L("All zooms set to \(Self.formatScale(scale))"), symbol: "plus.magnifyingglass")
     }
 
     func autoZoom() {
@@ -1500,7 +1500,7 @@ final class VideoEditorModel: ObservableObject {
             speed: project.zoomSpeed
         )
         guard !generated.isEmpty else {
-            showNotice(project.clickEvents.isEmpty ? "No clicks were recorded — add zooms by hand" : "No clicks left on the timeline", symbol: "sparkles")
+            showNotice(project.clickEvents.isEmpty ? L("No clicks were recorded — add zooms by hand") : L("No clicks left on the timeline"), symbol: "sparkles")
             return
         }
         mutate(label: "Auto Zoom") { project in
@@ -1512,7 +1512,7 @@ final class VideoEditorModel: ObservableObject {
             project.zoomRegions = (manual + kept).sorted { $0.start < $1.start }
         }
         selection = .none
-        showNotice("Auto zoom — \(project.zoomRegions.count) zoom\(project.zoomRegions.count == 1 ? "" : "s")", symbol: "sparkles")
+        showNotice(L("Auto zoom — \(project.zoomRegions.count) zooms"), symbol: "sparkles")
     }
 
     func removeAllZooms() {
@@ -1522,7 +1522,7 @@ final class VideoEditorModel: ObservableObject {
             project.zoomRegions.removeAll()
         }
         if case .zoom = selection { selection = .none }
-        showNotice("Removed \(count) zoom\(count == 1 ? "" : "s") — ⌘Z to undo", symbol: "trash")
+        showNotice(L("Removed \(count) zooms — ⌘Z to undo"), symbol: "trash")
     }
 
     // MARK: Overlays
@@ -1549,7 +1549,8 @@ final class VideoEditorModel: ObservableObject {
             y: kind == .text ? 0.14 : 0.5,
             width: kind == .text ? 0.5 : (kind == .arrow ? 0.18 : 0.3),
             height: kind == .text ? 0.09 : (kind == .arrow ? 0.18 : (kind == .spotlight ? 0.3 : 0.2)),
-            text: kind == .text ? "Your text" : kind.title,
+            // A placeholder the user types over: in their language.
+            text: kind == .text ? L("Your text") : kind.title,
             color: VideoOverlayStyleMemory.color(for: kind),
             thickness: VideoOverlayStyleMemory.thickness(for: kind)
         )
@@ -1691,7 +1692,7 @@ final class VideoEditorModel: ObservableObject {
             project.overlayEffects = VideoDemoProject.normalizedEffectLayers(project.overlayEffects)
         }
         if selection == .overlay(id) { selection = .none }
-        showNotice("Removed — ⌘Z to undo", symbol: "trash")
+        showNotice(L("Removed — ⌘Z to undo"), symbol: "trash")
     }
 
     // MARK: Clicks
@@ -1712,7 +1713,7 @@ final class VideoEditorModel: ObservableObject {
             project.clickEvents.removeAll { $0.id == id }
         }
         if selection == .click(id) { selection = .none }
-        showNotice("Click removed — ⌘Z to undo", symbol: "trash")
+        showNotice(L("Click removed — ⌘Z to undo"), symbol: "trash")
     }
 
     // MARK: Delete / Escape
@@ -1752,7 +1753,7 @@ final class VideoEditorModel: ObservableObject {
 
     func saveStyleAsDefault() {
         VideoStylePreset.saveAsDefault(project.style)
-        showNotice("Saved — new recordings will use this look", symbol: "checkmark.circle.fill")
+        showNotice(L("Saved — new recordings will use this look"), symbol: "checkmark.circle.fill")
     }
 
     /// Back to the built-in Shotnix look.
@@ -1760,7 +1761,7 @@ final class VideoEditorModel: ObservableObject {
         mutate(label: "Reset Look") { project in
             project.apply(style: .factory)
         }
-        showNotice("Reset to the Shotnix look", symbol: "arrow.counterclockwise")
+        showNotice(L("Back to the Shotnix look"), symbol: "arrow.counterclockwise")
     }
 
     var styleMatchesDefault: Bool {
@@ -1825,12 +1826,12 @@ final class VideoEditorModel: ObservableObject {
         // telling a quiet screen from a busy one — it would speed up
         // everything.
         guard !project.cursorSamples.isEmpty || seesScreenChanges else {
-            showNotice("Speed Up Idle works on Shotnix recordings — it watches the pointer", symbol: "hare")
+            showNotice(L("Speed Up Idle works on Shotnix recordings — it watches the pointer"), symbol: "hare")
             return
         }
         let ranges = idleRanges()
         guard !ranges.isEmpty else {
-            showNotice("No idle moments found — nice and tight", symbol: "hare")
+            showNotice(L("No idle moments found — nice and tight"), symbol: "hare")
             return
         }
         var saved = 0.0
@@ -1846,13 +1847,13 @@ final class VideoEditorModel: ObservableObject {
                 }
             }
         }
-        let summary = "Sped up \(ranges.count) idle moment\(ranges.count == 1 ? "" : "s") — saved \(Self.format(saved))"
+        let savedTime = Self.format(saved)
         if seesScreenChanges {
-            showNotice(summary, symbol: "hare.fill")
+            showNotice(L("Sped up \(ranges.count) idle moments — saved \(savedTime)"), symbol: "hare.fill")
         } else {
             // Recordings from before the recorder watched the screen can't
             // tell typing from waiting.
-            showNotice(summary + " · check any typing", symbol: "hare.fill", duration: 4)
+            showNotice(L("Sped up \(ranges.count) idle moments — saved \(savedTime) · check any typing"), symbol: "hare.fill", duration: 4)
         }
     }
 
@@ -1908,6 +1909,14 @@ final class VideoEditorModel: ObservableObject {
         return nil
     }
 
+    /// The same, as the title of the "close anyway?" question — a whole
+    /// sentence, so every language can word it.
+    var runningJobTitle: String? {
+        if captionTask != nil { return L("Shotnix is still transcribing") }
+        if voiceJob != nil { return L("Shotnix is still cleaning up the voice") }
+        return nil
+    }
+
     /// The window closed: nothing keeps working (or writing to the
     /// clipboard) unseen — except exports, which finish and say so.
     func stop() {
@@ -1954,7 +1963,7 @@ final class VideoEditorModel: ObservableObject {
     /// One name for everything made from this recording — the video and
     /// its subtitles side by side ("Demo (edited).mp4", "Demo (edited).srt",
     /// which players pair up) — never the recording's own file name.
-    var exportBaseName: String { "\(recordingName) (edited)" }
+    var exportBaseName: String { L("\(recordingName) (edited)") }
 
     /// Where the recording is now: a bookmark follows it through renames
     /// and moves.
@@ -2006,7 +2015,7 @@ final class VideoEditorModel: ObservableObject {
     func copyExport(_ url: URL) {
         NSPasteboard.general.clearContents()
         NSPasteboard.general.writeObjects([url as NSURL])
-        showNotice("Copied — paste it anywhere", symbol: "doc.on.doc")
+        showNotice(L("Copied — paste it anywhere"), symbol: "doc.on.doc")
     }
 
     func revealSource() {
@@ -2019,7 +2028,7 @@ final class VideoEditorModel: ObservableObject {
         guard let image = previewRenderer.snapshot(size: size) else { return }
         NSPasteboard.general.clearContents()
         NSPasteboard.general.writeObjects([image])
-        showNotice("Frame copied", symbol: "photo.on.rectangle")
+        showNotice(L("Frame copied"), symbol: "photo.on.rectangle")
     }
 
     // MARK: Thumbnails & waveform
@@ -2122,12 +2131,37 @@ final class VideoEditorModel: ObservableObject {
 
     // MARK: Formatting
 
-    /// "4.2s", "42s", "1:05".
+    /// "4.2s", "42s", "1:05": seconds the way the language writes them
+    /// ("4,2 s", "4.2 秒"); a minute or more is a timecode, kept plain.
     static func format(_ seconds: Double) -> String {
         let safe = max(seconds, 0)
-        if safe < 10 { return String(format: "%.1fs", safe) }
-        if safe < 60 { return String(format: "%.0fs", safe) }
+        if safe < 10 { return formatTenths(safe) }
+        if safe < 60 { return L("\(decimal(safe, digits: 0))s") }
         return String(format: "%d:%02d", Int(safe) / 60, Int(safe) % 60)
+    }
+
+    /// "1.5s", always to the tenth (fades and lengths set in tenths).
+    static func formatTenths(_ seconds: Double) -> String {
+        L("\(decimal(max(seconds, 0), digits: 1))s")
+    }
+
+    /// A number with the decimal mark of the language the text is in
+    /// (English "4.2" on any Mac, German and French "4,2").
+    private static func decimal(_ value: Double, digits: Int) -> String {
+        value.formatted(.number.precision(.fractionLength(digits)).grouping(.never).locale(Locale(identifier: textLanguage)))
+    }
+
+    /// The language L(…) shows ("en", "de", "zh-hans"): the one tests
+    /// picked (an .lproj folder), else the one macOS chose for Shotnix.
+    private static var textLanguage: String {
+        let bundle = L10n.bundle
+        if bundle.bundleURL.pathExtension == "lproj" { return bundle.bundleURL.deletingPathExtension().lastPathComponent }
+        return bundle.preferredLocalizations.first ?? "en"
+    }
+
+    /// "35%" (a slider's level) — "35 %" where the language spaces it.
+    static func formatPercent(_ fraction: Double) -> String {
+        L("\(Int((fraction * 100).rounded()))%")
     }
 
     static func timecode(_ seconds: Double) -> String {
@@ -2138,8 +2172,9 @@ final class VideoEditorModel: ObservableObject {
         return String(format: "%d:%02d.%d", minutes, whole, tenths)
     }
 
+    /// "2×", "1.5×" ("1,5×" in German and French).
     static func formatScale(_ scale: Double) -> String {
-        abs(scale - scale.rounded()) < 0.05 ? String(format: "%.0f×", scale) : String(format: "%.1f×", scale)
+        decimal(scale, digits: abs(scale - scale.rounded()) < 0.05 ? 0 : 1) + "×"
     }
 
     static func formatBytes(_ bytes: Int64) -> String {

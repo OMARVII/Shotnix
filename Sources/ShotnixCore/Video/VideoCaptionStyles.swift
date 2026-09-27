@@ -21,10 +21,10 @@ enum VideoCaptionPreset: String, Codable, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .classic: return "Classic"
-        case .outline: return "Bold outline"
-        case .minimal: return "Minimal"
-        case .highlight: return "Highlight"
+        case .classic: return L("Classic")
+        case .outline: return L("Bold outline")
+        case .minimal: return L("Minimal")
+        case .highlight: return L("Highlight")
         }
     }
 
@@ -195,7 +195,7 @@ enum VideoSubtitleFormat: String, CaseIterable, Identifiable {
     case vtt
 
     var id: String { rawValue }
-    var title: String { self == .srt ? ".srt (SubRip)" : ".vtt (WebVTT)" }
+    var title: String { self == .srt ? ".srt (SubRip)" : ".vtt (WebVTT)" } // l10n-ignore: format names
     var fileExtension: String { rawValue }
 }
 
@@ -265,9 +265,9 @@ extension VideoEditorModel {
         guard panel.runModal() == .OK, let url = panel.url else { return }
         do {
             try VideoCaptionBuilder.subtitles(format, project: project, segments: segments).write(to: url, atomically: true, encoding: .utf8)
-            showNotice("Saved \(url.lastPathComponent)", symbol: "checkmark.circle.fill")
+            showNotice(L("Saved \(url.lastPathComponent)"), symbol: "checkmark.circle.fill")
         } catch {
-            showNotice("Couldn't save the captions file", symbol: "exclamationmark.triangle.fill")
+            showNotice(L("Couldn't save the captions file"), symbol: "exclamationmark.triangle.fill")
         }
     }
 }
@@ -289,7 +289,7 @@ struct VideoCaptionPresetPicker: View {
             }
             if style.highlightWords {
                 HStack(spacing: 7) {
-                    Text(style.preset == .highlight ? "Tag" : "Spoken word")
+                    Text(style.preset == .highlight ? L("Tag") : L("Spoken word"))
                         .font(.system(size: 11.5, weight: .medium))
                         .foregroundStyle(VideoEditorTheme.textSecondary)
                         .fixedSize()
@@ -340,7 +340,7 @@ struct VideoCaptionPresetPicker: View {
         }
         .buttonStyle(.plain)
         .help(preset.title)
-        .accessibilityLabel("Caption style \(preset.title)")
+        .accessibilityLabel(L("Caption style \(preset.title)"))
     }
 
     private func swatch(_ color: VideoRGBA) -> some View {
@@ -356,7 +356,7 @@ struct VideoCaptionPresetPicker: View {
                 .overlay(Circle().strokeBorder(selected ? Color.white : Color.clear, lineWidth: 1.5))
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("Highlight color")
+        .accessibilityLabel(L("Highlight color"))
     }
 }
 
@@ -367,13 +367,16 @@ final class VideoCaptionPresetThumbnails {
     private var images: [String: NSImage] = [:]
 
     func image(for preset: VideoCaptionPreset, highlight: VideoRGBA?) -> NSImage? {
-        let key = "\(preset.rawValue)-\(highlight.map { "\($0.r)-\($0.g)-\($0.b)" } ?? "default")"
+        // A sample line in the user's language, its words separated by
+        // spaces (Chinese too: they're joined without them when drawn).
+        let sample = L("Captions look like this")
+        let key = "\(preset.rawValue)-\(highlight.map { "\($0.r)-\($0.g)-\($0.b)" } ?? "default")-\(sample)"
         if let cached = images[key] { return cached }
         var style = VideoCaptionStyle()
         style.preset = preset
         style.highlightColor = highlight
-        let words = ["Captions", "look", "like", "this"]
-        guard let cgImage = VideoCaptionDrawing.image(text: words.joined(separator: " "), words: words, spoken: 1, style: style, fontSize: 26, maxWidth: 400) else { return nil }
+        let words = sample.split(separator: " ").map(String.init)
+        guard let cgImage = VideoCaptionDrawing.image(text: VideoCaptionBuilder.joined(words), words: words, spoken: 1, style: style, fontSize: 26, maxWidth: 400) else { return nil }
         let image = NSImage(cgImage: cgImage, size: NSSize(width: cgImage.width / 2, height: cgImage.height / 2))
         images[key] = image
         return image
@@ -387,10 +390,10 @@ struct VideoSubtitlesButton: View {
     var body: some View {
         Menu {
             ForEach(VideoSubtitleFormat.allCases) { format in
-                Button("Save \(format.title)…") { model.exportSubtitles(format) }
+                Button(L("Save \(format.title)…")) { model.exportSubtitles(format) }
             }
         } label: {
-            Label("Save Subtitles", systemImage: "square.and.arrow.down")
+            Label(L("Save Subtitles"), systemImage: "square.and.arrow.down")
                 .font(.system(size: 12, weight: .semibold))
                 .frame(maxWidth: .infinity)
         } primaryAction: {
@@ -401,6 +404,6 @@ struct VideoSubtitlesButton: View {
         .frame(minHeight: 28)
         .background(RoundedRectangle(cornerRadius: 7, style: .continuous).fill(Color.white.opacity(0.06)))
         .overlay(RoundedRectangle(cornerRadius: 7, style: .continuous).strokeBorder(VideoEditorTheme.cardStroke, lineWidth: 1))
-        .help("A subtitles file for YouTube and web players (.srt), or for the web (.vtt) — follows your cuts")
+        .help(L("A subtitles file for YouTube and web players (.srt), or for the web (.vtt) — follows your cuts"))
     }
 }

@@ -87,11 +87,15 @@ struct VideoMeshWallpaper: Identifiable {
     }
 
     var id: String
-    var title: String
+    /// English, as in the catalog.
+    var name: String
     var base: [VideoRGBA]
     /// Degrees; 0 = left to right, 90 = top to bottom.
     var angle: Double
     var blobs: [Blob]
+
+    /// The name in the user's language.
+    var title: String { VideoBackgroundCatalog.localizedName(id: id) ?? name }
 
     var averageColor: VideoRGBA {
         let colors = base + blobs.map(\.color)
@@ -106,9 +110,13 @@ struct VideoMeshWallpaper: Identifiable {
 
 struct VideoGradientPreset: Identifiable {
     var id: String
-    var title: String
+    /// English, as in the catalog.
+    var name: String
     var colors: [VideoRGBA]
     var angle: Double
+
+    /// The name in the user's language.
+    var title: String { VideoBackgroundCatalog.localizedName(id: id) ?? name }
 
     var averageColor: VideoRGBA {
         let count = Double(max(colors.count, 1))
@@ -124,63 +132,63 @@ enum VideoBackgroundCatalog {
     static let defaultBackground: VideoBackground = .wallpaper("aurora")
 
     static let wallpapers: [VideoMeshWallpaper] = [
-        VideoMeshWallpaper(id: "aurora", title: "Aurora", base: [VideoRGBA(hex: 0x1B1B6B), VideoRGBA(hex: 0x3A1C71)], angle: 120, blobs: [
+        VideoMeshWallpaper(id: "aurora", name: "Aurora", base: [VideoRGBA(hex: 0x1B1B6B), VideoRGBA(hex: 0x3A1C71)], angle: 120, blobs: [
             .init(x: 0.15, y: 0.2, radius: 0.55, color: VideoRGBA(hex: 0x4F7CFF)),
             .init(x: 0.85, y: 0.15, radius: 0.5, color: VideoRGBA(hex: 0xC04BFF)),
             .init(x: 0.7, y: 0.9, radius: 0.6, color: VideoRGBA(hex: 0xFF6FB5)),
             .init(x: 0.2, y: 0.95, radius: 0.45, color: VideoRGBA(hex: 0x36D1DC)),
         ]),
-        VideoMeshWallpaper(id: "sunset", title: "Sunset", base: [VideoRGBA(hex: 0xFF7E5F), VideoRGBA(hex: 0x6A3093)], angle: 100, blobs: [
+        VideoMeshWallpaper(id: "sunset", name: "Sunset", base: [VideoRGBA(hex: 0xFF7E5F), VideoRGBA(hex: 0x6A3093)], angle: 100, blobs: [
             .init(x: 0.2, y: 0.15, radius: 0.55, color: VideoRGBA(hex: 0xFFC371)),
             .init(x: 0.9, y: 0.4, radius: 0.5, color: VideoRGBA(hex: 0xFF5E99)),
             .init(x: 0.35, y: 0.95, radius: 0.55, color: VideoRGBA(hex: 0x8E44AD)),
         ]),
-        VideoMeshWallpaper(id: "lagoon", title: "Lagoon", base: [VideoRGBA(hex: 0x0B486B), VideoRGBA(hex: 0x0F9B8E)], angle: 135, blobs: [
+        VideoMeshWallpaper(id: "lagoon", name: "Lagoon", base: [VideoRGBA(hex: 0x0B486B), VideoRGBA(hex: 0x0F9B8E)], angle: 135, blobs: [
             .init(x: 0.1, y: 0.1, radius: 0.5, color: VideoRGBA(hex: 0x2BC0E4)),
             .init(x: 0.9, y: 0.25, radius: 0.45, color: VideoRGBA(hex: 0x5EE7DF)),
             .init(x: 0.6, y: 0.95, radius: 0.6, color: VideoRGBA(hex: 0x1D5F9E)),
         ]),
-        VideoMeshWallpaper(id: "citrus", title: "Citrus", base: [VideoRGBA(hex: 0xF7B733), VideoRGBA(hex: 0xFC4A1A)], angle: 90, blobs: [
+        VideoMeshWallpaper(id: "citrus", name: "Citrus", base: [VideoRGBA(hex: 0xF7B733), VideoRGBA(hex: 0xFC4A1A)], angle: 90, blobs: [
             .init(x: 0.1, y: 0.2, radius: 0.5, color: VideoRGBA(hex: 0xFFE259)),
             .init(x: 0.85, y: 0.8, radius: 0.55, color: VideoRGBA(hex: 0xFF6A3D)),
             .init(x: 0.6, y: 0.1, radius: 0.4, color: VideoRGBA(hex: 0xFFB347)),
         ]),
-        VideoMeshWallpaper(id: "blossom", title: "Blossom", base: [VideoRGBA(hex: 0xFBC2EB), VideoRGBA(hex: 0xA6C1EE)], angle: 120, blobs: [
+        VideoMeshWallpaper(id: "blossom", name: "Blossom", base: [VideoRGBA(hex: 0xFBC2EB), VideoRGBA(hex: 0xA6C1EE)], angle: 120, blobs: [
             .init(x: 0.15, y: 0.25, radius: 0.5, color: VideoRGBA(hex: 0xFF9A9E)),
             .init(x: 0.85, y: 0.2, radius: 0.45, color: VideoRGBA(hex: 0xC2B6FF)),
             .init(x: 0.5, y: 0.95, radius: 0.55, color: VideoRGBA(hex: 0x9FD8FF)),
         ]),
-        VideoMeshWallpaper(id: "nebula", title: "Nebula", base: [VideoRGBA(hex: 0x0F0C29), VideoRGBA(hex: 0x24243E)], angle: 135, blobs: [
+        VideoMeshWallpaper(id: "nebula", name: "Nebula", base: [VideoRGBA(hex: 0x0F0C29), VideoRGBA(hex: 0x24243E)], angle: 135, blobs: [
             .init(x: 0.2, y: 0.3, radius: 0.5, color: VideoRGBA(hex: 0x6A11CB)),
             .init(x: 0.8, y: 0.7, radius: 0.55, color: VideoRGBA(hex: 0x2575FC)),
             .init(x: 0.95, y: 0.1, radius: 0.35, color: VideoRGBA(hex: 0xE94057)),
         ]),
-        VideoMeshWallpaper(id: "meadow", title: "Meadow", base: [VideoRGBA(hex: 0x134E5E), VideoRGBA(hex: 0x71B280)], angle: 110, blobs: [
+        VideoMeshWallpaper(id: "meadow", name: "Meadow", base: [VideoRGBA(hex: 0x134E5E), VideoRGBA(hex: 0x71B280)], angle: 110, blobs: [
             .init(x: 0.15, y: 0.15, radius: 0.5, color: VideoRGBA(hex: 0xA8E063)),
             .init(x: 0.85, y: 0.35, radius: 0.45, color: VideoRGBA(hex: 0x56AB2F)),
             .init(x: 0.45, y: 0.95, radius: 0.55, color: VideoRGBA(hex: 0x1D976C)),
         ]),
-        VideoMeshWallpaper(id: "ember", title: "Ember", base: [VideoRGBA(hex: 0x200122), VideoRGBA(hex: 0x6F0000)], angle: 130, blobs: [
+        VideoMeshWallpaper(id: "ember", name: "Ember", base: [VideoRGBA(hex: 0x200122), VideoRGBA(hex: 0x6F0000)], angle: 130, blobs: [
             .init(x: 0.2, y: 0.8, radius: 0.55, color: VideoRGBA(hex: 0xF12711)),
             .init(x: 0.85, y: 0.25, radius: 0.5, color: VideoRGBA(hex: 0xF5AF19)),
             .init(x: 0.5, y: 0.2, radius: 0.35, color: VideoRGBA(hex: 0xB31217)),
         ]),
-        VideoMeshWallpaper(id: "glacier", title: "Glacier", base: [VideoRGBA(hex: 0xE0EAFC), VideoRGBA(hex: 0xCFDEF3)], angle: 100, blobs: [
+        VideoMeshWallpaper(id: "glacier", name: "Glacier", base: [VideoRGBA(hex: 0xE0EAFC), VideoRGBA(hex: 0xCFDEF3)], angle: 100, blobs: [
             .init(x: 0.15, y: 0.2, radius: 0.5, color: VideoRGBA(hex: 0xA1C4FD)),
             .init(x: 0.9, y: 0.75, radius: 0.55, color: VideoRGBA(hex: 0xC2E9FB)),
             .init(x: 0.6, y: 0.05, radius: 0.35, color: VideoRGBA(hex: 0xD4C1FF)),
         ]),
-        VideoMeshWallpaper(id: "midnight", title: "Midnight", base: [VideoRGBA(hex: 0x0F2027), VideoRGBA(hex: 0x203A43)], angle: 125, blobs: [
+        VideoMeshWallpaper(id: "midnight", name: "Midnight", base: [VideoRGBA(hex: 0x0F2027), VideoRGBA(hex: 0x203A43)], angle: 125, blobs: [
             .init(x: 0.85, y: 0.15, radius: 0.5, color: VideoRGBA(hex: 0x2C5364)),
             .init(x: 0.15, y: 0.9, radius: 0.5, color: VideoRGBA(hex: 0x1A2980)),
             .init(x: 0.62, y: 0.58, radius: 0.5, color: VideoRGBA(hex: 0x26D0CE, alpha: 0.28)),
         ]),
-        VideoMeshWallpaper(id: "peach", title: "Peach", base: [VideoRGBA(hex: 0xFFDDE1), VideoRGBA(hex: 0xFFC3A0)], angle: 110, blobs: [
+        VideoMeshWallpaper(id: "peach", name: "Peach", base: [VideoRGBA(hex: 0xFFDDE1), VideoRGBA(hex: 0xFFC3A0)], angle: 110, blobs: [
             .init(x: 0.1, y: 0.8, radius: 0.5, color: VideoRGBA(hex: 0xFFAFBD)),
             .init(x: 0.9, y: 0.2, radius: 0.45, color: VideoRGBA(hex: 0xFFD89B)),
             .init(x: 0.55, y: 0.45, radius: 0.35, color: VideoRGBA(hex: 0xFDEFF9)),
         ]),
-        VideoMeshWallpaper(id: "orchid", title: "Orchid", base: [VideoRGBA(hex: 0x41295A), VideoRGBA(hex: 0x2F0743)], angle: 140, blobs: [
+        VideoMeshWallpaper(id: "orchid", name: "Orchid", base: [VideoRGBA(hex: 0x41295A), VideoRGBA(hex: 0x2F0743)], angle: 140, blobs: [
             .init(x: 0.8, y: 0.2, radius: 0.55, color: VideoRGBA(hex: 0xDA22FF)),
             .init(x: 0.2, y: 0.85, radius: 0.5, color: VideoRGBA(hex: 0x9733EE)),
             .init(x: 0.1, y: 0.1, radius: 0.35, color: VideoRGBA(hex: 0xFF61D2)),
@@ -188,21 +196,21 @@ enum VideoBackgroundCatalog {
     ]
 
     static let gradients: [VideoGradientPreset] = [
-        VideoGradientPreset(id: "sky", title: "Sky", colors: [VideoRGBA(hex: 0x56CCF2), VideoRGBA(hex: 0x2F80ED)], angle: 135),
-        VideoGradientPreset(id: "violet", title: "Violet", colors: [VideoRGBA(hex: 0x8E2DE2), VideoRGBA(hex: 0x4A00E0)], angle: 135),
-        VideoGradientPreset(id: "flamingo", title: "Flamingo", colors: [VideoRGBA(hex: 0xF857A6), VideoRGBA(hex: 0xFF5858)], angle: 135),
-        VideoGradientPreset(id: "tangerine", title: "Tangerine", colors: [VideoRGBA(hex: 0xF2994A), VideoRGBA(hex: 0xF2C94C)], angle: 135),
-        VideoGradientPreset(id: "emerald", title: "Emerald", colors: [VideoRGBA(hex: 0x11998E), VideoRGBA(hex: 0x38EF7D)], angle: 135),
-        VideoGradientPreset(id: "dusk", title: "Dusk", colors: [VideoRGBA(hex: 0x2C3E50), VideoRGBA(hex: 0xFD746C)], angle: 135),
-        VideoGradientPreset(id: "iris", title: "Iris", colors: [VideoRGBA(hex: 0x667EEA), VideoRGBA(hex: 0x764BA2)], angle: 135),
-        VideoGradientPreset(id: "mist", title: "Mist", colors: [VideoRGBA(hex: 0xF5F7FA), VideoRGBA(hex: 0xC3CFE2)], angle: 135),
+        VideoGradientPreset(id: "sky", name: "Sky", colors: [VideoRGBA(hex: 0x56CCF2), VideoRGBA(hex: 0x2F80ED)], angle: 135),
+        VideoGradientPreset(id: "violet", name: "Violet", colors: [VideoRGBA(hex: 0x8E2DE2), VideoRGBA(hex: 0x4A00E0)], angle: 135),
+        VideoGradientPreset(id: "flamingo", name: "Flamingo", colors: [VideoRGBA(hex: 0xF857A6), VideoRGBA(hex: 0xFF5858)], angle: 135),
+        VideoGradientPreset(id: "tangerine", name: "Tangerine", colors: [VideoRGBA(hex: 0xF2994A), VideoRGBA(hex: 0xF2C94C)], angle: 135),
+        VideoGradientPreset(id: "emerald", name: "Emerald", colors: [VideoRGBA(hex: 0x11998E), VideoRGBA(hex: 0x38EF7D)], angle: 135),
+        VideoGradientPreset(id: "dusk", name: "Dusk", colors: [VideoRGBA(hex: 0x2C3E50), VideoRGBA(hex: 0xFD746C)], angle: 135),
+        VideoGradientPreset(id: "iris", name: "Iris", colors: [VideoRGBA(hex: 0x667EEA), VideoRGBA(hex: 0x764BA2)], angle: 135),
+        VideoGradientPreset(id: "mist", name: "Mist", colors: [VideoRGBA(hex: 0xF5F7FA), VideoRGBA(hex: 0xC3CFE2)], angle: 135),
         // Legacy presets (earlier drafts reference these ids).
-        VideoGradientPreset(id: "graphite", title: "Graphite", colors: [VideoRGBA(0.05, 0.052, 0.06), VideoRGBA(0.12, 0.12, 0.14)], angle: 135),
-        VideoGradientPreset(id: "ocean", title: "Ocean", colors: [VideoRGBA(0.02, 0.10, 0.16), VideoRGBA(0.00, 0.24, 0.30)], angle: 135),
-        VideoGradientPreset(id: "plum", title: "Plum", colors: [VideoRGBA(0.14, 0.08, 0.18), VideoRGBA(0.24, 0.12, 0.24)], angle: 135),
-        VideoGradientPreset(id: "linen", title: "Linen", colors: [VideoRGBA(0.91, 0.86, 0.76), VideoRGBA(0.80, 0.76, 0.67)], angle: 135),
-        VideoGradientPreset(id: "pure", title: "Pure", colors: [VideoRGBA(1, 1, 1), VideoRGBA(0.90, 0.91, 0.93)], angle: 135),
-        VideoGradientPreset(id: "mint", title: "Mint", colors: [VideoRGBA(0.72, 0.92, 0.84), VideoRGBA(0.32, 0.62, 0.72)], angle: 135),
+        VideoGradientPreset(id: "graphite", name: "Graphite", colors: [VideoRGBA(0.05, 0.052, 0.06), VideoRGBA(0.12, 0.12, 0.14)], angle: 135),
+        VideoGradientPreset(id: "ocean", name: "Ocean", colors: [VideoRGBA(0.02, 0.10, 0.16), VideoRGBA(0.00, 0.24, 0.30)], angle: 135),
+        VideoGradientPreset(id: "plum", name: "Plum", colors: [VideoRGBA(0.14, 0.08, 0.18), VideoRGBA(0.24, 0.12, 0.24)], angle: 135),
+        VideoGradientPreset(id: "linen", name: "Linen", colors: [VideoRGBA(0.91, 0.86, 0.76), VideoRGBA(0.80, 0.76, 0.67)], angle: 135),
+        VideoGradientPreset(id: "pure", name: "Pure", colors: [VideoRGBA(1, 1, 1), VideoRGBA(0.90, 0.91, 0.93)], angle: 135),
+        VideoGradientPreset(id: "mint", name: "Mint", colors: [VideoRGBA(0.72, 0.92, 0.84), VideoRGBA(0.32, 0.62, 0.72)], angle: 135),
     ]
 
     static let colors: [VideoRGBA] = [
@@ -226,6 +234,40 @@ enum VideoBackgroundCatalog {
 
     static func gradient(id: String) -> VideoGradientPreset? {
         gradients.first { $0.id == id }
+    }
+
+    /// A wallpaper's or gradient's name in the user's language (nil: not
+    /// a built-in one).
+    static func localizedName(id: String) -> String? {
+        switch id {
+        case "aurora": return L("Aurora")
+        case "sunset": return L("Sunset")
+        case "lagoon": return L("Lagoon")
+        case "citrus": return L("Citrus")
+        case "blossom": return L("Blossom")
+        case "nebula": return L("Nebula")
+        case "meadow": return L("Meadow")
+        case "ember": return L("Ember")
+        case "glacier": return L("Glacier")
+        case "midnight": return L("Midnight")
+        case "peach": return L("Peach")
+        case "orchid": return L("Orchid")
+        case "sky": return L("Sky")
+        case "violet": return L("Violet")
+        case "flamingo": return L("Flamingo")
+        case "tangerine": return L("Tangerine")
+        case "emerald": return L("Emerald")
+        case "dusk": return L("Dusk")
+        case "iris": return L("Iris")
+        case "mist": return L("Mist")
+        case "graphite": return L("Graphite")
+        case "ocean": return L("Ocean")
+        case "plum": return L("Plum")
+        case "linen": return L("Linen")
+        case "pure": return L("Pure")
+        case "mint": return L("Mint")
+        default: return nil
+        }
     }
 
     /// Gradients shown in the picker (legacy ids stay decodable but hidden).

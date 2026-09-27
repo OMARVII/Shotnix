@@ -10,11 +10,11 @@ struct VideoCaptionJob: Equatable {
     var started = Date()
 
     var title: String {
-        if error != nil { return "Couldn't make captions" }
+        if error != nil { return L("Couldn't make captions") }
         switch stage {
-        case .preparing: return "Getting ready…"
-        case .downloading: return "Downloading the language model…"
-        case .transcribing: return "Listening…"
+        case .preparing: return L("Getting ready…")
+        case .downloading: return L("Downloading the language model…")
+        case .transcribing: return L("Listening…")
         }
     }
 
@@ -60,7 +60,7 @@ extension VideoEditorModel {
         let locale = Locale.current
         if let title = locale.localizedString(forIdentifier: locale.identifier(.bcp47)), !title.isEmpty { return title }
         if let code = locale.language.languageCode?.identifier, let title = locale.localizedString(forLanguageCode: code) { return title }
-        return "English"
+        return L("English")
     }
 
     /// Transcribes the narration on this Mac and lays it out as captions.
@@ -87,7 +87,7 @@ extension VideoEditorModel {
         // Quitting asks, then lets the transcript finish (it lands in the
         // draft); Cancel stops it.
         AppTermination.end(captionQuitToken)
-        captionQuitToken = AppTermination.begin("Transcribing “\(project.sourceURL.deletingPathExtension().lastPathComponent)”", asksBeforeQuit: true) { [weak self] done in
+        captionQuitToken = AppTermination.begin(L("Transcribing “\(project.sourceURL.deletingPathExtension().lastPathComponent)”"), asksBeforeQuit: true) { [weak self] done in
             if self?.captionTask == nil { done() }
         }
         captionTask = Task { [weak self] in
@@ -117,7 +117,7 @@ extension VideoEditorModel {
                 }
                 self.captionJob = nil
                 self.validateSelection()
-                self.showNotice("Captions ready — \(lines.count) line\(lines.count == 1 ? "" : "s")", symbol: "captions.bubble.fill")
+                self.showNotice(L("Captions ready — \(lines.count) lines"), symbol: "captions.bubble.fill")
             } catch {
                 guard let self, self.captionToken == token else { return }
                 self.captionTask = nil
@@ -172,10 +172,10 @@ extension VideoEditorModel {
             return
         }
         let alert = NSAlert()
-        alert.messageText = "Transcribe again?"
-        alert.informativeText = "This replaces all \(project.captions.count) caption line\(project.captions.count == 1 ? "" : "s"), including any you edited or typed, with a new transcript in \(captionLanguageTitle)."
-        alert.addButton(withTitle: "Transcribe Again")
-        alert.addButton(withTitle: "Cancel")
+        alert.messageText = L("Transcribe again?")
+        alert.informativeText = L("This replaces all \(project.captions.count) caption lines, including any you edited or typed, with a new transcript in \(captionLanguageTitle).")
+        alert.addButton(withTitle: L("Transcribe Again"))
+        alert.addButton(withTitle: L("Cancel"))
         guard alert.runModal() == .alertFirstButtonReturn else { return }
         captionJob = nil
         generateCaptions()
@@ -316,14 +316,15 @@ extension VideoEditorModel {
     func deleteCaption(_ id: UUID) {
         mutate { $0.captions.removeAll { $0.id == id } }
         if selection == .caption(id) { selection = .none }
-        showNotice("Caption removed", symbol: "trash")
+        showNotice(L("Caption removed"), symbol: "trash")
     }
 
     /// Adds an empty line at the playhead, ready to type.
     func addCaptionAtPlayhead() {
         let start = placementSourceTime(forTimeline: clock.time)
         let nextStart = project.captions.map(\.start).filter { $0 > start + 0.05 }.min() ?? sourceDuration
-        let line = VideoCaptionLine(start: start, end: max(min(start + 2.5, nextStart), start + 0.5), text: "New caption")
+        // A placeholder the user types over: in their language.
+        let line = VideoCaptionLine(start: start, end: max(min(start + 2.5, nextStart), start + 0.5), text: L("New caption"))
         mutate { project in
             project.captions.append(line)
             project.captions.sort { $0.start < $1.start }
@@ -338,7 +339,7 @@ extension VideoEditorModel {
             $0.transcriptLanguage = nil
         }
         if case .caption = selection { selection = .none }
-        showNotice("Transcript and captions removed — ⌘Z to undo", symbol: "trash")
+        showNotice(L("Transcript and captions removed — ⌘Z to undo"), symbol: "trash")
     }
 
     func selectCaption(_ id: UUID) {
@@ -393,10 +394,10 @@ extension VideoEditorModel {
         var ok = true
         mutate(label: kept.count == 1 ? "Cut Word" : "Cut Words") { ok = $0.removeSourceRanges(ranges, totalDuration: sourceDuration) }
         guard ok else {
-            showNotice("A video needs at least one clip", symbol: "exclamationmark.triangle")
+            showNotice(L("A video needs at least one clip"), symbol: "exclamationmark.triangle")
             return
         }
-        showNotice("Cut \(kept.count) word\(kept.count == 1 ? "" : "s") — ⌘Z to undo", symbol: "scissors")
+        showNotice(L("Cut \(kept.count) words — ⌘Z to undo"), symbol: "scissors")
     }
 
     /// Puts cut words back.
@@ -406,7 +407,7 @@ extension VideoEditorModel {
         mutate(label: indices.count == 1 ? "Restore Word" : "Restore Words") { project in
             for range in ranges { project.restoreSourceRange(range, totalDuration: sourceDuration) }
         }
-        showNotice("Restored \(indices.count) word\(indices.count == 1 ? "" : "s")", symbol: "arrow.uturn.backward")
+        showNotice(L("Restored \(indices.count) words"), symbol: "arrow.uturn.backward")
     }
 
     /// Shortens one silence to a short breath.
@@ -419,11 +420,11 @@ extension VideoEditorModel {
         guard end - start > 0.05 else { return }
         if !isIncluded(sourceTime: (start + end) / 2) {
             mutate(label: "Restore Pause") { $0.restoreSourceRange(start...end, totalDuration: sourceDuration) }
-            showNotice("Pause restored", symbol: "arrow.uturn.backward")
+            showNotice(L("Pause restored"), symbol: "arrow.uturn.backward")
             return
         }
         mutate(label: "Shorten Pause") { $0.removeSourceRanges([start...end], totalDuration: sourceDuration) }
-        showNotice("Pause shortened", symbol: "scissors")
+        showNotice(L("Pause shortened"), symbol: "scissors")
     }
 
     var fillerRanges: [ClosedRange<Double>] {
@@ -441,30 +442,32 @@ extension VideoEditorModel {
     func removeFillers() {
         let ranges = fillerRanges
         guard !ranges.isEmpty else {
-            showNotice("No ums or uhs left", symbol: "checkmark.circle")
+            showNotice(L("No ums or uhs left"), symbol: "checkmark.circle")
             return
         }
         let count = fillerCount
         let before = timelineDuration
         mutate(label: "Remove Ums") { $0.removeSourceRanges(ranges, totalDuration: sourceDuration) }
-        showNotice("Removed \(count) filler word\(count == 1 ? "" : "s") — \(Self.format(max(before - timelineDuration, 0))) shorter", symbol: "wand.and.stars")
+        let shorter = Self.format(max(before - timelineDuration, 0))
+        showNotice(L("Removed \(count) filler words — \(shorter) shorter"), symbol: "wand.and.stars")
     }
 
     func shortenPauses() {
         let ranges = pauseRanges
         guard !ranges.isEmpty else {
-            showNotice("No long pauses to shorten", symbol: "checkmark.circle")
+            showNotice(L("No long pauses to shorten"), symbol: "checkmark.circle")
             return
         }
         let before = timelineDuration
         mutate(label: "Shorten Pauses") { $0.removeSourceRanges(ranges, totalDuration: sourceDuration) }
-        showNotice("Shortened \(ranges.count) pause\(ranges.count == 1 ? "" : "s") — \(Self.format(max(before - timelineDuration, 0))) shorter", symbol: "wand.and.stars")
+        let shorter = Self.format(max(before - timelineDuration, 0))
+        showNotice(L("Shortened \(ranges.count) pauses — \(shorter) shorter"), symbol: "wand.and.stars")
     }
 
     /// ⌘F from anywhere: the Captions tab, on its transcript, find bar open.
     func findInTranscript() {
         guard hasTranscript else {
-            showNotice("Transcribe the narration to search its words", symbol: "magnifyingglass")
+            showNotice(L("Transcribe the narration to search its words"), symbol: "magnifyingglass")
             return
         }
         inspectorTab = .captions
@@ -495,7 +498,7 @@ extension VideoEditorModel {
     func togglePreviewMute() {
         previewMuted.toggle()
         showNotice(
-            previewMuted ? "Preview muted — the export keeps its sound" : "Preview sound on",
+            previewMuted ? L("Preview muted — the export keeps its sound") : L("Preview sound on"),
             symbol: previewMuted ? "speaker.slash.fill" : "speaker.wave.2.fill"
         )
     }
@@ -504,10 +507,10 @@ extension VideoEditorModel {
     /// (nil when it won't).
     var exportSoundWarning: String? {
         guard hasAudio else { return nil }
-        if project.audio.muted { return "Mute video is on (Audio tab) — this export will have no sound." }
+        if project.audio.muted { return L("Mute video is on (Audio tab) — this export will have no sound.") }
         let kinds = audioKinds + project.sources.filter { !$0.isPrimary }.flatMap(\.audioKinds)
-        if project.audio.isSilent(kinds: kinds) { return "Every sound level is at 0 (Audio tab) — this export will have no sound." }
-        if !segments.isEmpty, segments.allSatisfy(\.clip.muted) { return "Every clip is muted — this export will have no sound." }
+        if project.audio.isSilent(kinds: kinds) { return L("Every sound level is at 0 (Audio tab) — this export will have no sound.") }
+        if !segments.isEmpty, segments.allSatisfy(\.clip.muted) { return L("Every clip is muted — this export will have no sound.") }
         return nil
     }
 
@@ -546,7 +549,7 @@ extension VideoEditorModel {
         // quit stops it — unless an export is waiting for it. Registered
         // first, and ended with the work itself, editor or not.
         AppTermination.end(voiceQuitToken)
-        let token = AppTermination.begin("Cleaning up the voice in “\(project.sourceURL.deletingPathExtension().lastPathComponent)”", asksBeforeQuit: true) { [weak self] done in
+        let token = AppTermination.begin(L("Cleaning up the voice in “\(project.sourceURL.deletingPathExtension().lastPathComponent)”"), asksBeforeQuit: true) { [weak self] done in
             guard let self, self.voiceTask != nil else { return done() }
             if !self.isExporting { self.voiceTask?.cancel() }
         }
@@ -561,7 +564,7 @@ extension VideoEditorModel {
                 self.endVoiceQuitToken()
                 await self.refreshAudioSources()
                 if self.project.audio.enhanceVoice {
-                    self.showNotice("Voice enhanced — background noise removed", symbol: "waveform")
+                    self.showNotice(L("Voice enhanced — background noise removed"), symbol: "waveform")
                 }
                 return true
             } catch {
@@ -652,7 +655,7 @@ extension VideoEditorModel {
         let next = others.first(where: { $0.start >= start - 0.001 })?.start ?? sourceDuration
         let end = min(start + duration, next)
         guard end - start >= VideoCameraLayoutRegion.minimumDuration else {
-            showNotice("No room here — move the playhead", symbol: "exclamationmark.triangle")
+            showNotice(L("No room here — move the playhead"), symbol: "exclamationmark.triangle")
             return
         }
         let region = VideoCameraLayoutRegion(start: start, end: end, layout: layout)
@@ -671,7 +674,7 @@ extension VideoEditorModel {
         guard let first = segments.first, let last = segments.last, let span = sourceSpanOnTimeline else { return }
         let length = min(preferred, (timelineDuration - 1) / 2, (span.upperBound - span.lowerBound - 1) / 2)
         guard length >= VideoCameraLayoutRegion.minimumDuration else {
-            showNotice("Too short for an intro and outro", symbol: "exclamationmark.triangle")
+            showNotice(L("Too short for an intro and outro"), symbol: "exclamationmark.triangle")
             return
         }
         // Each stays in the clip that opens (or closes) the video — clips
@@ -686,7 +689,7 @@ extension VideoEditorModel {
             project.cameraLayouts.sort { $0.start < $1.start }
             project.webcam.visible = true
         }
-        showNotice("Full-screen camera for your intro and outro", symbol: "person.crop.rectangle")
+        showNotice(L("Full-screen camera for your intro and outro"), symbol: "person.crop.rectangle")
     }
 
     /// Moves/resizes a layout from timeline times; it slides against its
@@ -726,7 +729,7 @@ extension VideoEditorModel {
     func deleteCameraLayout(_ id: UUID) {
         mutate { $0.cameraLayouts.removeAll { $0.id == id } }
         if selection == .cameraLayout(id) { selection = .none }
-        showNotice("Camera layout removed", symbol: "trash")
+        showNotice(L("Camera layout removed"), symbol: "trash")
     }
 
     func selectCameraLayout(_ id: UUID) {
@@ -783,7 +786,7 @@ extension VideoEditorModel {
             if project.canReframe, !wasNarrow, canFollow { project.reframe = true }
         }
         if project.reframeActive, !wasNarrow {
-            showNotice("Filling the frame — the view follows your cursor", symbol: "arrow.left.and.right.square")
+            showNotice(L("Filling the frame — the view follows your cursor"), symbol: "arrow.left.and.right.square")
         }
     }
 }
@@ -794,7 +797,7 @@ extension VideoEditorModel {
     func deleteKeystroke(_ id: UUID) {
         mutate { $0.keystrokes.removeAll { $0.id == id } }
         if selection == .keystroke(id) { selection = .none }
-        showNotice("Shortcut hidden", symbol: "keyboard")
+        showNotice(L("Shortcut hidden"), symbol: "keyboard")
     }
 
     func selectKeystroke(_ id: UUID) {

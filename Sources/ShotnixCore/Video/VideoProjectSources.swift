@@ -758,7 +758,7 @@ extension VideoEditorModel {
         panel.canChooseDirectories = false
         panel.allowsMultipleSelection = false
         panel.allowedContentTypes = [.movie, .mpeg4Movie, .quickTimeMovie]
-        panel.message = "Choose a recording or video to add after this one"
+        panel.message = L("Choose a recording or video to add after this one")
         guard panel.runModal() == .OK, let url = panel.url else { return }
         Task { await appendVideo(url) }
     }
@@ -772,11 +772,11 @@ extension VideoEditorModel {
         do {
             tracks = try await VideoSourceTracks.load(url: canonical)
         } catch {
-            showNotice("Couldn't open that video — \(error.localizedDescription)", symbol: "exclamationmark.triangle.fill")
+            showNotice(L("Couldn't open that video — \(error.localizedDescription)"), symbol: "exclamationmark.triangle.fill")
             return false
         }
         guard tracks.duration > 0.2 else {
-            showNotice("That video is empty", symbol: "exclamationmark.triangle.fill")
+            showNotice(L("That video is empty"), symbol: "exclamationmark.triangle.fill")
             return false
         }
         // Its own data (the pointer path can be megabytes), read off the
@@ -813,7 +813,7 @@ extension VideoEditorModel {
         if let added, let time = segments.first(where: { $0.clip.sourceStart >= added.offset - 0.001 })?.timelineStart {
             seek(to: time)
         }
-        showNotice("Added \(canonical.lastPathComponent) — \(VideoEditorModel.format(tracks.duration))", symbol: "film.stack")
+        showNotice(L("Added \(canonical.lastPathComponent) — \(VideoEditorModel.format(tracks.duration))"), symbol: "film.stack")
         return true
     }
 
@@ -843,11 +843,11 @@ extension VideoEditorModel {
         var removed = false
         mutate { removed = $0.removeSource(id: id) }
         guard removed else {
-            showNotice("The video's own recording can't be removed", symbol: "exclamationmark.triangle")
+            showNotice(L("The video's own recording can't be removed"), symbol: "exclamationmark.triangle")
             return
         }
         Task { await reloadSources() }
-        showNotice("Recording removed — ⌘Z to undo", symbol: "trash")
+        showNotice(L("Recording removed — ⌘Z to undo"), symbol: "trash")
     }
 }
 
@@ -856,7 +856,7 @@ struct VideoSourcesSection: View {
     @ObservedObject var model: VideoEditorModel
 
     var body: some View {
-        VideoInspectorSection("Recordings") {
+        VideoInspectorSection(L("Recordings")) {
             if model.project.hasAppendedSources {
                 VStack(spacing: 4) {
                     ForEach(Array(model.project.sources.enumerated()), id: \.element.id) { index, source in
@@ -867,13 +867,13 @@ struct VideoSourcesSection: View {
             Button {
                 model.chooseVideoToAppend()
             } label: {
-                Label("Append Video…", systemImage: "film.stack")
+                Label(L("Append Video…"), systemImage: "film.stack")
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(VideoSecondaryButtonStyle())
             Text(model.project.hasAppendedSources
-                 ? "Each recording keeps its own pointer, clicks, and shortcuts. Reorder them here; cut and trim them on the timeline like any clip."
-                 : "Add another recording or video after this one — Shotnix recordings keep their pointer, clicks, and shortcuts.")
+                 ? L("Each recording keeps its own pointer, clicks, and shortcuts. Reorder them here; cut and trim them on the timeline like any clip.")
+                 : L("Add another recording or video after this one — Shotnix recordings keep their pointer, clicks, and shortcuts."))
                 .font(.system(size: 10.5))
                 .foregroundStyle(VideoEditorTheme.textTertiary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -883,7 +883,7 @@ struct VideoSourcesSection: View {
     private func row(_ source: VideoProjectSource, index: Int) -> some View {
         let missing = !source.isPrimary && VideoSourceLocator.resolve(source) == nil
         return HStack(spacing: 8) {
-            Text("\(index + 1)")
+            Text(String(index + 1))
                 .font(.system(size: 10.5, weight: .bold, design: .monospaced))
                 .foregroundStyle(VideoEditorTheme.textTertiary)
                 .frame(width: 14)
@@ -893,7 +893,7 @@ struct VideoSourcesSection: View {
                     .foregroundStyle(missing ? Color.orange : VideoEditorTheme.textPrimary)
                     .lineLimit(1)
                     .truncationMode(.middle)
-                Text(missing ? "File not found" : "\(VideoEditorModel.format(source.duration))\(source.hasPointer ? " · pointer" : "")\(source.isPrimary ? " · this recording" : "")")
+                Text(missing ? L("File not found") : details(of: source))
                     .font(.system(size: 10))
                     .foregroundStyle(VideoEditorTheme.textTertiary)
             }
@@ -903,27 +903,35 @@ struct VideoSourcesSection: View {
             }
             .buttonStyle(VideoToolButtonStyle())
             .disabled(index == 0)
-            .help("Move earlier")
-            .accessibilityLabel("Move \(source.name) earlier")
+            .help(L("Move earlier"))
+            .accessibilityLabel(L("Move \(source.name) earlier"))
             Button { model.moveSource(source.id, by: 1) } label: {
                 Image(systemName: "chevron.down").font(.system(size: 9.5, weight: .bold)).frame(width: 20, height: 20)
             }
             .buttonStyle(VideoToolButtonStyle())
             .disabled(index == model.project.sources.count - 1)
-            .help("Move later")
-            .accessibilityLabel("Move \(source.name) later")
+            .help(L("Move later"))
+            .accessibilityLabel(L("Move \(source.name) later"))
             if !source.isPrimary {
                 Button { model.removeSource(source.id) } label: {
                     Image(systemName: "xmark").font(.system(size: 9, weight: .bold)).frame(width: 20, height: 20)
                 }
                 .buttonStyle(VideoToolButtonStyle(destructive: true))
-                .help("Remove from this video")
-                .accessibilityLabel("Remove \(source.name)")
+                .help(L("Remove from this video"))
+                .accessibilityLabel(L("Remove \(source.name)"))
             }
         }
         .padding(.horizontal, 8)
         .frame(height: 38)
         .background(RoundedRectangle(cornerRadius: 7, style: .continuous).fill(VideoEditorTheme.card))
+    }
+
+    /// "0:42 · pointer · this recording": its length, and tags.
+    private func details(of source: VideoProjectSource) -> String {
+        var parts = [VideoEditorModel.format(source.duration)]
+        if source.hasPointer { parts.append(L("pointer")) }
+        if source.isPrimary { parts.append(L("this recording")) }
+        return parts.joined(separator: " · ")
     }
 }
 

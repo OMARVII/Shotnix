@@ -216,7 +216,8 @@ extension VideoEditorModel {
     var suggestedIntroTitle: String {
         let name = project.sourceURL.deletingPathExtension().lastPathComponent
         let looksLikeStamp = name.hasPrefix("Shotnix") || name.range(of: #"\d{4}-\d{2}-\d{2}"#, options: .regularExpression) != nil
-        return looksLikeStamp ? "Welcome" : name
+        // A first title the user edits: in their language.
+        return looksLikeStamp ? L("Welcome") : name
     }
 
     func setIntroEnabled(_ on: Bool) {
@@ -233,7 +234,7 @@ extension VideoEditorModel {
         setStyle { project in
             project.cards.outro.enabled = on
             if on, project.cards.outro.title.isEmpty, project.cards.outro.subtitle.isEmpty {
-                project.cards.outro.title = "Thanks for watching"
+                project.cards.outro.title = L("Thanks for watching")
             }
         }
         if on { seek(to: max(timelineDuration - 0.5, 0)) }
@@ -245,23 +246,23 @@ struct VideoTitleCardsSection: View {
     @ObservedObject var model: VideoEditorModel
 
     var body: some View {
-        VideoInspectorSection("Intro & outro") {
+        VideoInspectorSection(L("Intro & outro")) {
             cardEditor(
-                title: "Intro card",
-                detail: "Plays before the first clip",
+                title: L("Intro card"),
+                detail: L("Plays before the first clip"),
                 card: model.project.cards.intro,
                 keyPath: \.intro,
                 setEnabled: model.setIntroEnabled
             )
             Rectangle().fill(VideoEditorTheme.hairline).frame(height: 1)
             cardEditor(
-                title: "Outro card",
-                detail: "Plays after the last clip, before the end card",
+                title: L("Outro card"),
+                detail: L("Plays after the last clip, before the end card"),
                 card: model.project.cards.outro,
                 keyPath: \.outro,
                 setEnabled: model.setOutroEnabled
             )
-            Text("Cards use your background, and the timeline grows to fit them. The “Made with Shotnix” end card is separate — it's in the export options.")
+            Text(L("Cards use your background, and the timeline grows to fit them. The “Made with Shotnix” end card is separate — it's in the export options."))
                 .font(.system(size: 10.5))
                 .foregroundStyle(VideoEditorTheme.textTertiary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -273,23 +274,23 @@ struct VideoTitleCardsSection: View {
         VideoToggleRow(title: title, detail: detail, isOn: Binding(get: { card.enabled }, set: { setEnabled($0) }))
         if card.enabled {
             VStack(alignment: .leading, spacing: 8) {
-                field("Title", text: Binding(
+                field(L("Title"), text: Binding(
                     get: { model.project.cards[keyPath: keyPath].title },
                     set: { value in model.setStyle(coalesce: "card-title-\(title)") { $0.cards[keyPath: keyPath].title = value } }
                 ))
-                field("Subtitle", text: Binding(
+                field(L("Subtitle"), text: Binding(
                     get: { model.project.cards[keyPath: keyPath].subtitle },
                     set: { value in model.setStyle(coalesce: "card-subtitle-\(title)") { $0.cards[keyPath: keyPath].subtitle = value } }
                 ))
                 VideoSliderRow(
-                    title: "Length",
+                    title: L("Length"),
                     value: Binding(
                         get: { model.project.cards[keyPath: keyPath].duration },
                         set: { value in model.setStyle(coalesce: "card-length-\(title)") { $0.cards[keyPath: keyPath].duration = (value * 2).rounded() / 2 } }
                     ),
                     range: VideoTitleCard.durationRange,
                     defaultValue: 3,
-                    format: { String(format: "%.1fs", $0) },
+                    format: { VideoEditorModel.formatTenths($0) },
                     onEditingEnded: { model.endGesture() }
                 )
             }

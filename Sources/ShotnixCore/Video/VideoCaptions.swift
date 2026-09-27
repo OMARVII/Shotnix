@@ -183,13 +183,13 @@ enum VideoCaptionTranscriber {
 
         var errorDescription: String? {
             switch self {
-            case .noAudio: return "This recording has no sound to transcribe."
-            case .unsupportedLanguage(let name): return "\(name) isn't supported for captions on this Mac. Pick another language."
+            case .noAudio: return L("This recording has no sound to transcribe. You can still type captions yourself.")
+            case .unsupportedLanguage(let name): return L("\(name) isn't supported for captions on this Mac. Pick another language.")
             case .needsOnDeviceModel(let name):
-                return "\(name) can't be transcribed on this Mac without sending your voice to a server. To add it, turn on Dictation for \(name) in System Settings → Keyboard, or pick another language."
-            case .notAllowed: return "Speech recognition is turned off for Shotnix in System Settings → Privacy & Security → Speech Recognition."
-            case .unavailable: return "Speech recognition isn't available on this Mac right now."
-            case .nothingHeard: return "No speech was found in this recording."
+                return L("\(name) can't be transcribed on this Mac without sending your voice to a server. To add it, turn on Dictation for \(name) in System Settings → Keyboard, or pick another language.")
+            case .notAllowed: return L("Speech recognition is turned off for Shotnix in System Settings → Privacy & Security → Speech Recognition. Turn it on, then try again.")
+            case .unavailable: return L("Speech recognition isn't available on this Mac right now. Try again in a moment.")
+            case .nothingHeard: return L("No speech was found in this recording. If it has narration, check its level in the Audio tab, then try again.")
             }
         }
 

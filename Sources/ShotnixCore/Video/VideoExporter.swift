@@ -52,7 +52,7 @@ enum VideoDemoExporter {
         var musicOffset = 0.0
         if case .timeline(let span) = range {
             guard !project.isOnlyCard(span, totalDuration: total) else {
-                throw VideoDemoExportError.exportFailed("That part of the timeline is only a title card. Include a moment of the video in the range, then export again.")
+                throw VideoDemoExportError.exportFailed(L("That part of the timeline is only a title card. Include a moment of the video in the range, then export again."))
             }
             let trimmed = project.trimmed(toTimeline: span, totalDuration: total)
             project = trimmed.project
@@ -79,7 +79,7 @@ enum VideoDemoExporter {
         if project.hasAppendedSources {
             for added in project.sources where !added.isPrimary {
                 guard let url = VideoSourceLocator.resolve(added) else {
-                    throw VideoDemoExportError.exportFailed("“\(added.name)” can't be found. Put it back where it was, or remove it from this video (Style → Recordings), then export again.")
+                    throw VideoDemoExportError.exportFailed(L("“\(added.name)” can't be found. Put it back where it was, or remove it from this video (Style → Recordings), then export again."))
                 }
                 if let metadata = VideoDemoSidecarStore.load(for: url) { appendedMetadata[added.id] = metadata }
             }
@@ -87,7 +87,7 @@ enum VideoDemoExporter {
             // There but unreadable (damaged, not a video): say so, rather
             // than export its part as silent black.
             if let unreadable = project.sources.first(where: { added in !added.isPrimary && !(layout?.entries.contains { $0.source.id == added.id } ?? false) }) {
-                throw VideoDemoExportError.exportFailed("“\(unreadable.name)” can't be read — it may be damaged, still being saved, or in a format this Mac can't play. Remove it from this video (Style → Recordings), or put a working copy in its place, then export again.")
+                throw VideoDemoExportError.exportFailed(L("“\(unreadable.name)” can't be read — it may be damaged, still being saved, or in a format this Mac can't play. Remove it from this video (Style → Recordings), or put a working copy in its place, then export again."))
             }
             extras.layout = layout
         }
@@ -135,7 +135,8 @@ enum VideoDemoExporter {
         if settings.format == .gif {
             let working = settings.gifWorkingBytes(duration: timelineDuration, canvas: canvas)
             guard working <= VideoExportSettings.gifMemoryLimit else {
-                throw VideoDemoExportError.exportFailed("This GIF is too long for its size — it would need about \(ByteCountFormatter.string(fromByteCount: working, countStyle: .memory)) of memory. Pick a smaller size or fewer frames per second, export part of the video, or choose MP4.")
+                let memory = ByteCountFormatter.string(fromByteCount: working, countStyle: .memory)
+                throw VideoDemoExportError.exportFailed(L("This GIF is too long for its size — it would need about \(memory) of memory. Pick a smaller size or fewer frames per second, export part of the video, or choose MP4."))
             }
         }
         let estimate = settings.estimatedBytes(duration: timelineDuration, canvas: canvas, hasAudio: !edit.mixedAudioTracks.isEmpty)
@@ -283,7 +284,7 @@ enum VideoDemoExporter {
             kCVPixelBufferMetalCompatibilityKey as String: true,
         ])
         videoOutput.alwaysCopiesSampleData = false
-        guard reader.canAdd(videoOutput) else { throw VideoDemoExportError.exportFailed("Could not read the recording.") }
+        guard reader.canAdd(videoOutput) else { throw VideoDemoExportError.exportFailed(L("Couldn't read the recording. Check that its file is still there, then export again.")) }
         reader.add(videoOutput)
 
         var audioOutput: AVAssetReaderAudioMixOutput?
@@ -349,7 +350,7 @@ enum VideoDemoExporter {
             kCVPixelBufferIOSurfacePropertiesKey as String: [:] as [String: Any],
             kCVPixelBufferMetalCompatibilityKey as String: true,
         ])
-        guard writer.canAdd(videoInput) else { throw VideoDemoExportError.exportFailed("Could not configure the video encoder.") }
+        guard writer.canAdd(videoInput) else { throw VideoDemoExportError.exportFailed(L("Couldn't set up the video encoder. Choose H.264 or a lower resolution, then export again.")) }
         writer.add(videoInput)
 
         var audioInput: AVAssetWriterInput?
@@ -368,10 +369,10 @@ enum VideoDemoExporter {
         }
 
         guard reader.startReading() else {
-            throw reader.error.map { VideoDemoExportError.system($0) } ?? VideoDemoExportError.exportFailed("Could not read the recording.")
+            throw reader.error.map { VideoDemoExportError.system($0) } ?? VideoDemoExportError.exportFailed(L("Couldn't read the recording. Check that its file is still there, then export again."))
         }
         guard writer.startWriting() else {
-            throw writer.error.map { VideoDemoExportError.system($0) } ?? VideoDemoExportError.exportFailed("Could not write the video.")
+            throw writer.error.map { VideoDemoExportError.system($0) } ?? VideoDemoExportError.exportFailed(L("Couldn't write the video. Check that there's free space and that you can save to that folder, then export again."))
         }
         writer.startSession(atSourceTime: .zero)
 
@@ -597,11 +598,11 @@ enum VideoDemoExporter {
             }
             if reader.status == .failed {
                 writer.cancelWriting()
-                throw reader.error.map { VideoDemoExportError.system($0) } ?? VideoDemoExportError.exportFailed("Reading the recording failed.")
+                throw reader.error.map { VideoDemoExportError.system($0) } ?? VideoDemoExportError.exportFailed(L("Couldn't read the recording. Check that its file is still there, then export again."))
             }
             await writer.finishWriting()
             if writer.status != .completed {
-                throw writer.error.map { VideoDemoExportError.system($0) } ?? VideoDemoExportError.exportFailed("Writing the video failed.")
+                throw writer.error.map { VideoDemoExportError.system($0) } ?? VideoDemoExportError.exportFailed(L("Couldn't write the video. Check that there's free space and that you can save to that folder, then export again."))
             }
         }
 
@@ -747,10 +748,10 @@ enum VideoDemoExporter {
         ])
         output.alwaysCopiesSampleData = false
         var lastCameraFrame: VideoCameraFrame?
-        guard reader.canAdd(output) else { throw VideoDemoExportError.exportFailed("Could not read frames for the GIF.") }
+        guard reader.canAdd(output) else { throw VideoDemoExportError.exportFailed(L("Couldn't read the recording for the GIF. Try exporting a shorter part, or choose MP4.")) }
         reader.add(output)
         guard reader.startReading() else {
-            throw reader.error.map { VideoDemoExportError.system($0) } ?? VideoDemoExportError.exportFailed("Could not read frames for the GIF.")
+            throw reader.error.map { VideoDemoExportError.system($0) } ?? VideoDemoExportError.exportFailed(L("Couldn't read the recording for the GIF. Try exporting a shorter part, or choose MP4."))
         }
 
         // The reader delivers a frame for every started 1/fps (a partial last
@@ -758,7 +759,7 @@ enum VideoDemoExporter {
         // declared, so declare the upper bound (fewer is fine).
         let estimated = max(Int((duration * fps).rounded(.up)) + 1, 1)
         guard let destination = CGImageDestinationCreateWithURL(url as CFURL, UTType.gif.identifier as CFString, estimated, nil) else {
-            throw VideoDemoExportError.exportFailed("Could not create the GIF file.")
+            throw VideoDemoExportError.exportFailed(L("Couldn't create the GIF file. Check that you can save to that folder, then export again."))
         }
         CGImageDestinationSetProperties(destination, [
             kCGImagePropertyGIFDictionary: [kCGImagePropertyGIFLoopCount: 0],
@@ -806,10 +807,10 @@ enum VideoDemoExporter {
             }
         }
         if reader.status == .failed {
-            throw reader.error.map { VideoDemoExportError.system($0) } ?? VideoDemoExportError.exportFailed("Could not read frames for the GIF.")
+            throw reader.error.map { VideoDemoExportError.system($0) } ?? VideoDemoExportError.exportFailed(L("Couldn't read the recording for the GIF. Try exporting a shorter part, or choose MP4."))
         }
         guard written > 0, CGImageDestinationFinalize(destination) else {
-            throw VideoDemoExportError.exportFailed("Could not write the GIF.")
+            throw VideoDemoExportError.exportFailed(L("Couldn't write the GIF. Check that there's free space, or export a shorter part."))
         }
     }
 }
@@ -872,13 +873,14 @@ enum VideoEndCard {
             let iconRect = CGRect(x: size.width / 2 - iconSide / 2, y: size.height / 2 + 6 * unit - rise, width: iconSide, height: iconSide)
             icon.draw(in: iconRect)
         }
-        let title = NSAttributedString(string: "Made with Shotnix", attributes: [
+        // Burned into the video, in English like the brand.
+        let title = NSAttributedString(string: "Made with Shotnix", attributes: [ // l10n-ignore
             .font: NSFont.systemFont(ofSize: 54 * unit, weight: .bold),
             .foregroundColor: NSColor.white,
         ])
         let titleSize = title.size()
         title.draw(at: CGPoint(x: size.width / 2 - titleSize.width / 2, y: size.height / 2 - 70 * unit - rise))
-        let link = NSAttributedString(string: "shotnix.com — free & open source", attributes: [
+        let link = NSAttributedString(string: "shotnix.com — free & open source", attributes: [ // l10n-ignore
             .font: NSFont.systemFont(ofSize: 26 * unit, weight: .semibold),
             .foregroundColor: NSColor.white.withAlphaComponent(0.72),
         ])
