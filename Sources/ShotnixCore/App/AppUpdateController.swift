@@ -58,7 +58,7 @@ final class AppUpdateController: NSObject, SPUUpdaterDelegate {
 /// pointing, so the next shortcut isn't the one that lands mid-relaunch.
 @MainActor
 final class QuietUpdateInstaller {
-    static let idleSeconds: Double = 60
+    nonisolated static let idleSeconds: Double = 60
     private var install: (() -> Void)?
     private var timer: Timer?
 
