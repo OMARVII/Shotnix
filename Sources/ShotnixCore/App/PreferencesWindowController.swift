@@ -1065,7 +1065,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.26.0"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.26.1"
     
     var body: some View {
         PreferencesPane {
@@ -1109,6 +1109,11 @@ struct AboutSettingsView: View {
                 ScrollView {
                     // The release notes stay in English (l10n-ignore); everything around them is localized.
                     Text(verbatim: """
+                    Version 0.26.1
+                    • Exporting a long recording no longer fills your Mac's memory: an export uses about the same memory from start to finish
+                    • Automatic updates install on their own once Shotnix is idle, instead of waiting for you to quit
+                    • Recordings use the standard H.264 profile, so every player and website opens them
+
                     Version 0.26.0
                     • Shotnix speaks Russian and Ukrainian too, from the menu bar to the video editor, in Apple's own words
                     • Remove Ums catches Chinese, Russian, and Ukrainian hesitations (嗯, э, е)

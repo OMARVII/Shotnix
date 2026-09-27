@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.26.1-beta] - 2026-09-27
+
+### Fixed
+- **Exporting a long recording no longer runs out of memory.** Every frame of an export stayed in memory until the export ended, so a few minutes of Retina recording could fill the Mac's memory until macOS closed Shotnix, sometimes in the middle of a new recording. An export now uses about the same memory from its first frame to its last: a 5-minute 3010 × 1716 recording exports in 4K in under 1.5 GB. Edits are never lost this way: open the recording again and export.
+- **Automatic updates install on their own.** With automatic updates on, a downloaded update waited for Shotnix to quit, which a menu bar app rarely does. Shotnix now installs it once nothing is going on (no recording or export, no window open, and a minute without typing or clicking), then quits and reopens in a moment. On an older version, choose Check for Updates… in the Shotnix menu once to get here.
+- **Recordings play everywhere.** Screen recordings were saved in a rare H.264 profile (High 4:4:4 Predictive) that some players, browsers, and websites can't open, and came out larger than the quality setting planned. They now use the standard High profile, at the bitrate of the quality you picked.
+- **A long recording's timeline fills in faster.** The video editor reads its pictures in one pass through the recording instead of starting a decoder for each one, about a quarter faster for a 5-minute recording.
+
 ## [0.26.0-beta] - 2026-09-27
 
 ### Added
