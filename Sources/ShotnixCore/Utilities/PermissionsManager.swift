@@ -32,16 +32,12 @@ enum PermissionsManager {
         NSWorkspace.shared.open(url)
     }
 
-    /// Quits Shotnix and relaunches it via a detached shell so the stale
-    /// CGPreflight permission cache refreshes without a manual restart.
+    /// Quits Shotnix and opens it again, so the stale CGPreflight permission
+    /// cache refreshes without a manual restart. Unsaved edits ask first, and
+    /// a cancelled quit reopens nothing.
     @MainActor
     static func quitAndReopen() {
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/bin/sh")
-        // The bundle path is passed as $0 so no shell escaping is needed.
-        process.arguments = ["-c", "sleep 1; /usr/bin/open \"$0\"", Bundle.main.bundlePath]
-        try? process.run()
-        NSApp.terminate(nil)
+        AppRelaunch.restart()
     }
 
     /// Show an alert directing the user to System Settings if permission was denied.

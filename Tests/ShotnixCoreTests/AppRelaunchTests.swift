@@ -22,6 +22,17 @@ final class AppRelaunchTests: XCTestCase {
         XCTAssertEqual(configuration.arguments, ["--relaunched-from", String(ProcessInfo.processInfo.processIdentifier)])
     }
 
+    func testOnlyALanguageSwitchReopensSettings() throws {
+        var launches: [NSWorkspace.OpenConfiguration] = []
+        AppRelaunch.quitThenRelaunch(reopeningSettings: true) { AppRelaunch.launchNewInstanceIfRestarting { launches.append($0) } }
+        AppRelaunch.quitThenRelaunch { AppRelaunch.launchNewInstanceIfRestarting { launches.append($0) } }
+        let pid = String(ProcessInfo.processInfo.processIdentifier)
+        XCTAssertEqual(launches.map(\.arguments), [["--relaunched-from", pid, "--reopen-settings"], ["--relaunched-from", pid]], "Quit & Reopen for a permission just reopens")
+        XCTAssertTrue(AppRelaunch.reopensSettings(in: ["Shotnix", "--relaunched-from", "4242", "--reopen-settings"]))
+        XCTAssertFalse(AppRelaunch.reopensSettings(in: ["Shotnix", "--relaunched-from", "4242"]))
+        XCTAssertFalse(AppRelaunch.reopensSettings(in: ["Shotnix", "--reopen-settings"]), "only a restart")
+    }
+
     func testACancelledQuitLeavesNoRestartBehind() {
         AppRelaunch.quitThenRelaunch {
             // Cancel or Keep Working: terminate returns and Shotnix keeps running.

@@ -73,8 +73,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         return .terminateLater
     }
 
-    /// Quitting is certain now: when it's a restart (a new language), the new
-    /// Shotnix starts, and waits for this one to exit.
+    /// Quitting is certain now: when it's a restart (a new language or a new
+    /// permission), the new Shotnix starts, and waits for this one to exit.
     func applicationWillTerminate(_ notification: Notification) {
         AppRelaunch.launchNewInstanceIfRestarting()
     }
@@ -166,7 +166,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             // fires for an already-running app, so with the status item hidden
             // a fresh launch would otherwise be completely invisible. After a
             // restart for a new language, Settings comes back where it was.
-            if !Settings.showMenuBarIcon || AppRelaunch.previousInstance() != nil {
+            if !Settings.showMenuBarIcon || AppRelaunch.reopensSettings() {
                 PreferencesWindowController.shared.show(tab: .general)
             }
         }

@@ -1,7 +1,7 @@
 import AppKit
 
-/// Restarts Shotnix, to switch languages (Settings → General). It quits the
-/// normal way, so unsaved screenshot edits and running work ask first and can
+/// Restarts Shotnix: to switch languages (Settings → General), or so macOS
+/// applies a new permission. It quits the normal way, so unsaved screenshot edits and running work ask first and can
 /// cancel it. Only once quitting is certain (applicationWillTerminate) does a
 /// new Shotnix start, and that one waits for this one to exit before it sets
 /// anything up: two never run side by side (hotkeys, the menu bar icon,
@@ -10,42 +10,47 @@ import AppKit
 enum AppRelaunch {
     /// Tells the new Shotnix which process to wait for.
     static let previousInstanceArgument = "--relaunched-from"
+    /// Tells the new Shotnix to open Settings → General again.
+    static let reopenSettingsArgument = "--reopen-settings"
 
     /// Set while a restart's quit is under way.
     private(set) static var isRestarting = false
+    private static var reopensSettingsAfterRestart = false
 
     /// Quits Shotnix, then starts it again. A cancelled quit changes nothing.
-    static func restart() {
+    static func restart(reopeningSettings: Bool = false) {
         // A run loop callout, not the caller's main-queue block: while such a
         // block runs, the main queue waits, and the quit waits on main-queue
         // work (an editor's save prompt answers there, running work too).
         RunLoop.main.perform {
-            MainActor.assumeIsolated { quitThenRelaunch() }
+            MainActor.assumeIsolated { quitThenRelaunch(reopeningSettings: reopeningSettings) }
         }
     }
 
     /// `terminate` returns only when the quit was cancelled, as
     /// `NSApplication.terminate(_:)` does.
-    static func quitThenRelaunch(terminate: @MainActor () -> Void = { NSApp.terminate(nil) }) {
+    static func quitThenRelaunch(reopeningSettings: Bool = false, terminate: @MainActor () -> Void = { NSApp.terminate(nil) }) {
         isRestarting = true
+        reopensSettingsAfterRestart = reopeningSettings
         terminate()
         // Still running: the quit was cancelled. A later quit stays a quit.
         isRestarting = false
+        reopensSettingsAfterRestart = false
     }
 
     /// For applicationWillTerminate: starts the new Shotnix when quitting is
     /// part of a restart.
     static func launchNewInstanceIfRestarting(open: (NSWorkspace.OpenConfiguration) -> Void = launchNewInstance) {
         guard isRestarting else { return }
-        open(newInstanceConfiguration())
+        open(newInstanceConfiguration(reopeningSettings: reopensSettingsAfterRestart))
     }
 
     /// A second Shotnix although this one still runs (LaunchServices would
     /// otherwise just bring this one forward), told to wait for this one.
-    static func newInstanceConfiguration(replacing processIdentifier: pid_t = ProcessInfo.processInfo.processIdentifier) -> NSWorkspace.OpenConfiguration {
+    static func newInstanceConfiguration(replacing processIdentifier: pid_t = ProcessInfo.processInfo.processIdentifier, reopeningSettings: Bool = false) -> NSWorkspace.OpenConfiguration {
         let configuration = NSWorkspace.OpenConfiguration()
         configuration.createsNewApplicationInstance = true
-        configuration.arguments = [previousInstanceArgument, String(processIdentifier)]
+        configuration.arguments = [previousInstanceArgument, String(processIdentifier)] + (reopeningSettings ? [reopenSettingsArgument] : [])
         return configuration
     }
 
@@ -71,6 +76,12 @@ enum AppRelaunch {
               arguments.indices.contains(index + 1),
               let process = pid_t(arguments[index + 1]), process > 0 else { return nil }
         return process
+    }
+
+    /// Whether this Shotnix was restarted to switch languages, so Settings
+    /// comes back where it was.
+    static func reopensSettings(in arguments: [String] = CommandLine.arguments) -> Bool {
+        previousInstance(in: arguments) != nil && arguments.contains(reopenSettingsArgument)
     }
 
     /// Returns once the Shotnix this one replaces has exited, or after

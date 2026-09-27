@@ -578,7 +578,7 @@ struct GeneralSettingsView: View {
         alert.addButton(withTitle: L("Restart Now"))
         alert.addButton(withTitle: L("Later")).keyEquivalent = "\u{1b}"
         if alert.runModal() == .alertFirstButtonReturn {
-            AppRelaunch.restart()
+            AppRelaunch.restart(reopeningSettings: true)
         }
     }
 
