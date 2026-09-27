@@ -40,3 +40,4 @@ notary-log*.plist
 CLAUDE.md
 RELEASE_GUIDE.md
 RELEASE_PLAN.md
+__pycache__/

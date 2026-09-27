@@ -23,6 +23,13 @@ system. When a term isn't here, look at how Apple's own apps say it.
   differs between languages. Use one string with placeholders.
 - Keep every placeholder (`%@`, `%lld`, `%.1f`). To reorder, number them
   (`%1$@`, `%2$@`). A plural needs an `other` form; Chinese has only `other`.
+- A string that changes with a count gets plural forms, and holds exactly one
+  integer (`%lld`), which decides the form; other placeholders are fine
+  (`Saved %@ in %lld files`). Two counts: split it into two strings.
+- Numbers interpolated as `Int` get the language's separators (1.000 in
+  German). Pixel sizes and other codes: pass `String(value)` to keep digits plain.
+- Dates: `formatted(date:time:)` and `Date.FormatStyle` follow the language;
+  never a fixed `DateFormatter.dateFormat` in the UI.
 
 ## Style
 
