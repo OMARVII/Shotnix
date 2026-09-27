@@ -16,12 +16,12 @@ Kostenlos und Open Source. Nativ, nur rund 11 MB groß, und deine Aufnahmen verl
 
 [English](README.md) · **Deutsch** · [Français](README.fr.md) · [简体中文](README.zh-CN.md) · [Русский](README.ru.md) · [Українська](README.uk.md)
 
-<a href="https://shotnix.com/media/shotnix-editor-playback.mp4"><img src="assets/readme/hero.avif" width="100%" alt="Der Video-Editor von Shotnix spielt eine Demo ab: Die Vorschau zoomt auf jeden Klick, Untertitel leuchten Wort für Wort auf, ein Tastaturkurzbefehl wird eingeblendet, und die Abspielposition wandert über eine Zeitleiste mit Untertiteln, Zooms und Clips." /></a>
+<a href="https://shotnix.com/media/shotnix-editor-playback.mp4"><img src="assets/readme/hero.webp" width="100%" alt="Der Video-Editor von Shotnix spielt eine Demo ab: Die Vorschau ist auf einen Klick gezoomt, ein Untertitel leuchtet Wort für Wort auf, und die Zeitleiste darunter enthält Untertitel, Zooms und Clips." /></a>
 
 <sub>Der Video-Editor von Shotnix mit einer Demo aus einer einzigen, ganz normalen Bildschirmaufnahme: Zooms auf die Klicks, ein flüssiger Zeiger, Untertitel aus dem gesprochenen Text und der eingeblendete Kurzbefehl.</sub>
 
-<a href="https://shotnix.com/media/shotnix-editor-playback.mp4"><b>▶ In voller Qualität ansehen (Retina, 60 fps)</b></a><br/>
-<sub>Die Animation oben ist komprimiert, damit diese Seite schnell lädt. Shotnix exportiert bis 4K mit 60 fps.</sub>
+<a href="https://shotnix.com/media/shotnix-editor-playback.mp4"><b>▶ Demo ansehen (Retina, 60 fps)</b></a><br/>
+<sub>Shotnix exportiert bis 4K mit 60 fps.</sub>
 
 </div>
 

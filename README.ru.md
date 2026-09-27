@@ -16,12 +16,12 @@
 
 [English](README.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [简体中文](README.zh-CN.md) · **Русский** · [Українська](README.uk.md)
 
-<a href="https://shotnix.com/media/shotnix-editor-playback.mp4"><img src="assets/readme/hero.avif" width="100%" alt="Видеоредактор Shotnix воспроизводит демо: предпросмотр приближается к каждому нажатию, субтитры подсвечиваются слово за словом, на экране появляется сочетание клавиш, а указатель воспроизведения движется по шкале времени с субтитрами, увеличениями и клипами." /></a>
+<a href="https://shotnix.com/media/shotnix-editor-playback.mp4"><img src="assets/readme/hero.webp" width="100%" alt="Видеоредактор Shotnix воспроизводит демо: предпросмотр приближен к нажатию, субтитр подсвечивается слово за словом, а на шкале времени ниже — субтитры, увеличения и клипы." /></a>
 
 <sub>Видеоредактор Shotnix с демо, собранным из одной обычной записи экрана: увеличение в местах нажатий, плавный указатель, субтитры из речи и сочетания клавиш на экране.</sub>
 
-<a href="https://shotnix.com/media/shotnix-editor-playback.mp4"><b>▶ Смотреть в полном качестве (Retina, 60 fps)</b></a><br/>
-<sub>Анимация выше сжата, чтобы страница быстро загружалась. Shotnix экспортирует видео в разрешении до 4K с частотой 60 fps.</sub>
+<a href="https://shotnix.com/media/shotnix-editor-playback.mp4"><b>▶ Смотреть демо (Retina, 60 fps)</b></a><br/>
+<sub>Shotnix экспортирует видео в разрешении до 4K с частотой 60 fps.</sub>
 
 </div>
 

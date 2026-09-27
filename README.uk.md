@@ -16,12 +16,12 @@
 
 [English](README.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [简体中文](README.zh-CN.md) · [Русский](README.ru.md) · **Українська**
 
-<a href="https://shotnix.com/media/shotnix-editor-playback.mp4"><img src="assets/readme/hero.avif" width="100%" alt="Відеоредактор Shotnix відтворює демо: перегляд наближається до кожного клацання, субтитри підсвічуються слово за словом, з’являється клавіатурне скорочення, а покажчик відтворення рухається шкалою часу із субтитрами, наближеннями й кліпами." /></a>
+<a href="https://shotnix.com/media/shotnix-editor-playback.mp4"><img src="assets/readme/hero.webp" width="100%" alt="Відеоредактор Shotnix відтворює демо: перегляд наближено до клацання, субтитр підсвічується слово за словом, а на шкалі часу нижче — субтитри, наближення й кліпи." /></a>
 
 <sub>Відеоредактор Shotnix відтворює демо, зроблене з одного звичайного запису екрана: наближення в місцях клацань, плавний курсор, субтитри з озвучення й натиснуте скорочення на екрані.</sub>
 
-<a href="https://shotnix.com/media/shotnix-editor-playback.mp4"><b>▶ Дивитися в повній якості (Retina, 60 fps)</b></a><br/>
-<sub>Анімацію вище стиснуто, щоб сторінка швидко завантажувалася. Shotnix експортує відео до 4K із частотою 60 fps.</sub>
+<a href="https://shotnix.com/media/shotnix-editor-playback.mp4"><b>▶ Дивитися демо (Retina, 60 fps)</b></a><br/>
+<sub>Shotnix експортує відео до 4K із частотою 60 fps.</sub>
 
 </div>
 

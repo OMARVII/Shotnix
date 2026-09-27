@@ -16,12 +16,12 @@
 
 [English](README.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · **简体中文** · [Русский](README.ru.md) · [Українська](README.uk.md)
 
-<a href="https://shotnix.com/media/shotnix-editor-playback.mp4"><img src="assets/readme/hero.avif" width="100%" alt="Shotnix 视频编辑器正在播放一段演示：预览画面随每次点按放大，字幕逐词亮起，屏幕上显示快捷键，播放头沿着由字幕、缩放和片段组成的时间线移动。" /></a>
+<a href="https://shotnix.com/media/shotnix-editor-playback.mp4"><img src="assets/readme/hero.webp" width="100%" alt="Shotnix 视频编辑器正在播放一段演示：预览画面放大到一次点按，字幕逐词亮起，下方的时间线上是字幕、缩放和片段。" /></a>
 
 <sub>Shotnix 视频编辑器正在播放的演示，由一段普通录屏制作而成：点按处自动缩放，指针平滑移动，字幕来自解说，按下的快捷键也显示在屏幕上。</sub>
 
-<a href="https://shotnix.com/media/shotnix-editor-playback.mp4"><b>▶ 观看原画质视频（Retina，60 fps）</b></a><br/>
-<sub>为了让页面更快加载，上方动图经过压缩。Shotnix 最高可导出 4K、60 fps 的视频。</sub>
+<a href="https://shotnix.com/media/shotnix-editor-playback.mp4"><b>▶ 观看演示视频（Retina，60 fps）</b></a><br/>
+<sub>Shotnix 最高可导出 4K、60 fps 的视频。</sub>
 
 </div>
 
