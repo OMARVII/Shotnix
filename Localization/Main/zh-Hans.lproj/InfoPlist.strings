@@ -1,0 +1,5 @@
+"NSCameraUsageDescription" = "当你为录制打开摄像头时，Shotnix 会同时录制摄像头和屏幕。";
+"NSHumanReadableCopyright" = "Copyright © 2026 Shotnix Contributors。MIT 许可证。";
+"NSMicrophoneUsageDescription" = "当你为屏幕录制打开麦克风声音时，Shotnix 需要访问麦克风。";
+"NSScreenCaptureUsageDescription" = "Shotnix 需要屏幕录制权限才能截屏和录制屏幕。";
+"NSSpeechRecognitionUsageDescription" = "Shotnix 会在这台 Mac 上转写你的录制内容，以生成字幕。";

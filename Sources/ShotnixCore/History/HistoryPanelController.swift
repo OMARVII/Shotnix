@@ -45,7 +45,7 @@ final class HistoryPanelController: NSObject {
             backing: .buffered,
             defer: false
         )
-        p.title = "Shotnix - Capture History"
+        p.title = L("Shotnix – Capture History")
         p.titleVisibility = .hidden
         p.titlebarAppearsTransparent = true
         p.isOpaque = false
@@ -93,13 +93,13 @@ final class HistoryPanelController: NSObject {
         let header = NSView(frame: NSRect(x: 0, y: 532, width: 920, height: 108))
         header.autoresizingMask = [.width, .minYMargin]
 
-        let eyebrow = NSTextField(labelWithString: "SHOTNIX LIBRARY")
+        let eyebrow = NSTextField(labelWithString: L("SHOTNIX LIBRARY"))
         eyebrow.font = .monospacedSystemFont(ofSize: 11, weight: .semibold)
         eyebrow.textColor = NSColor.controlAccentColor.withAlphaComponent(0.92)
         eyebrow.frame = NSRect(x: 28, y: 70, width: 240, height: 16)
         header.addSubview(eyebrow)
 
-        let title = NSTextField(labelWithString: "Capture History")
+        let title = NSTextField(labelWithString: L("Capture History"))
         title.font = .systemFont(ofSize: 26, weight: .bold)
         title.textColor = NSColor.white.withAlphaComponent(0.94)
         title.frame = NSRect(x: 28, y: 34, width: 360, height: 34)
@@ -112,32 +112,32 @@ final class HistoryPanelController: NSObject {
         header.addSubview(count)
         countLabel = count
 
-        let clearBtn = HistoryActionButton(title: "Clear All", variant: .destructive, target: self, action: #selector(clearAll))
+        let clearBtn = HistoryActionButton(title: L("Clear All"), variant: .destructive, target: self, action: #selector(clearAll))
         clearBtn.frame = NSRect(x: 770, y: 42, width: 118, height: 34)
         clearBtn.autoresizingMask = [.minXMargin]
-        clearBtn.toolTip = "Delete every saved capture"
+        clearBtn.toolTip = L("Delete every saved capture")
         header.addSubview(clearBtn)
 
         // Capture-type filter, next to search.
         let typeFilter = NSPopUpButton(frame: NSRect(x: 392, y: 44, width: 120, height: 30), pullsDown: false)
         typeFilter.autoresizingMask = [.minXMargin]
         typeFilter.appearance = NSAppearance(named: .darkAqua)
-        typeFilter.addItem(withTitle: "All Captures")
+        typeFilter.addItem(withTitle: L("All Captures"))
         for type in CaptureType.allCases {
             typeFilter.addItem(withTitle: type.title)
             typeFilter.lastItem?.representedObject = type.rawValue
         }
         typeFilter.target = self
         typeFilter.action = #selector(typeFilterChanged(_:))
-        typeFilter.toolTip = "Show one kind of capture"
-        typeFilter.setAccessibilityLabel("Capture type")
+        typeFilter.toolTip = L("Show one kind of capture")
+        typeFilter.setAccessibilityLabel(L("Capture type"))
         header.addSubview(typeFilter)
         typeFilterButton = typeFilter
 
         // Live text search: matches OCR-recognized text and the capture date.
         let search = NSSearchField(frame: NSRect(x: 520, y: 44, width: 230, height: 30))
         search.autoresizingMask = [.minXMargin]
-        search.placeholderString = "Search text in captures"
+        search.placeholderString = L("Search text in captures")
         search.font = .systemFont(ofSize: 13)
         search.appearance = NSAppearance(named: .darkAqua)
         search.focusRingType = .none
@@ -183,7 +183,7 @@ final class HistoryPanelController: NSObject {
         cv.onCopy = { [weak self] in self?.copySelection() }
         cv.onType = { [weak self] event in self?.searchByTyping(event) ?? false }
         cv.onFind = { [weak self] in self?.focusSearchField() }
-        cv.setAccessibilityLabel("Captures")
+        cv.setAccessibilityLabel(L("Captures"))
 
         // One-time "star us" line, only while the nudge is live (see StarNudge).
         let bannerHeight: CGFloat = StarNudge.shouldShowInHistoryPanel ? Self.nudgeBannerHeight : 0
@@ -233,7 +233,7 @@ final class HistoryPanelController: NSObject {
         star.frame = NSRect(x: 16, y: 9, width: 20, height: 20)
         banner.addSubview(star)
 
-        let message = NSTextField(labelWithString: "Enjoying Shotnix? Star it on GitHub so more people find it.")
+        let message = NSTextField(labelWithString: L("Enjoying Shotnix? Star it on GitHub so more people find it."))
         message.font = .systemFont(ofSize: 13, weight: .medium)
         message.textColor = NSColor.white.withAlphaComponent(0.88)
         message.lineBreakMode = .byTruncatingTail
@@ -241,12 +241,12 @@ final class HistoryPanelController: NSObject {
         message.autoresizingMask = [.width]
         banner.addSubview(message)
 
-        let dismiss = HistoryActionButton(title: "Not now", variant: .secondary, target: self, action: #selector(starNudgeDismissClicked))
+        let dismiss = HistoryActionButton(title: L("Not now"), variant: .secondary, target: self, action: #selector(starNudgeDismissClicked))
         dismiss.frame = NSRect(x: frame.width - 14 - 84, y: 5, width: 84, height: 28)
         dismiss.autoresizingMask = [.minXMargin]
         banner.addSubview(dismiss)
 
-        let starButton = HistoryActionButton(title: "Star on GitHub", variant: .primary, target: self, action: #selector(starNudgeStarClicked))
+        let starButton = HistoryActionButton(title: L("Star on GitHub"), variant: .primary, target: self, action: #selector(starNudgeStarClicked))
         starButton.frame = NSRect(x: dismiss.frame.minX - 8 - 126, y: 5, width: 126, height: 28)
         starButton.autoresizingMask = [.minXMargin]
         banner.addSubview(starButton)
@@ -298,7 +298,7 @@ final class HistoryPanelController: NSObject {
         icon.contentTintColor = NSColor.controlAccentColor.withAlphaComponent(0.86)
         stack.addSubview(icon)
 
-        let title = NSTextField(labelWithString: "No captures yet")
+        let title = NSTextField(labelWithString: L("No captures yet"))
         title.font = .systemFont(ofSize: 18, weight: .bold)
         title.textColor = NSColor.white.withAlphaComponent(0.92)
         title.alignment = .center
@@ -312,7 +312,7 @@ final class HistoryPanelController: NSObject {
         subtitle.frame = NSRect(x: 24, y: 56, width: 312, height: 18)
         stack.addSubview(subtitle)
 
-        let hint = NSTextField(labelWithString: "Captured screenshots will appear here instantly")
+        let hint = NSTextField(labelWithString: L("Captured screenshots will appear here instantly"))
         hint.font = .systemFont(ofSize: 12, weight: .regular)
         hint.textColor = NSColor.white.withAlphaComponent(0.36)
         hint.alignment = .center
@@ -338,32 +338,36 @@ final class HistoryPanelController: NSObject {
     }
 
     private func updateHeader() {
-        let total = sections.reduce(0) { $0 + $1.items.count }
-        let query = trimmedSearchQuery
-        let kind = typeFilter.map { "\($0.title.lowercased()) " } ?? ""
-        if !query.isEmpty || typeFilter != nil {
-            let all = historyManager?.items.count ?? 0
-            let matchText = query.isEmpty ? "" : " \u{201C}\(query)\u{201D}"
-            if total == 0 {
-                countLabel?.stringValue = query.isEmpty ? "No \(kind)captures" : "No \(kind)captures match\(matchText)"
-            } else {
-                let verb = query.isEmpty ? "" : (total == 1 ? " matches" : " match")
-                countLabel?.stringValue = "\(total) of \(all) \(kind)\(total == 1 ? "capture" : "captures")\(verb)\(matchText)"
-            }
-            return
+        countLabel?.stringValue = Self.headerText(
+            shown: sections.reduce(0) { $0 + $1.items.count },
+            total: historyManager?.items.count ?? 0,
+            query: trimmedSearchQuery,
+            filtered: typeFilter != nil
+        )
+    }
+
+    /// The line under the title. Whole sentences, so every language can order
+    /// its words (the type filter's own menu already names the type).
+    nonisolated static func headerText(shown: Int, total: Int, query: String, filtered: Bool) -> String {
+        if !query.isEmpty {
+            return shown == 0
+                ? L("No captures contain \u{201C}\(query)\u{201D}")
+                : L("\u{201C}\(query)\u{201D} found in \(shown) of \(total) captures")
         }
-        let captureWord = total == 1 ? "capture" : "captures"
-        countLabel?.stringValue = total == 0
-            ? "No saved captures yet"
-            : "\(total) saved \(captureWord) · drag any card to Finder · right-click for more actions"
+        if filtered {
+            return shown == 0 ? L("No captures of this type") : L("\(shown) of \(total) captures")
+        }
+        return shown == 0
+            ? L("No saved captures yet")
+            : L("\(shown) saved captures · drag any card to Finder · right-click for more actions")
     }
 
     /// Empty-state line naming the user's real Capture Area shortcut.
     static func emptyStateHint(captureAreaShortcut: String?) -> String {
         if let captureAreaShortcut {
-            return "Press \(captureAreaShortcut) to take your first screenshot"
+            return L("Press \(captureAreaShortcut) to take your first screenshot")
         }
-        return "Choose Capture Area in the Shotnix menu to start"
+        return L("Choose Capture Area in the Shotnix menu to start")
     }
 
     // MARK: - Search
@@ -484,7 +488,7 @@ final class HistoryPanelController: NSObject {
     /// Copies off the main thread and says so — the grid gives no other sign.
     func copy(_ item: HistoryItem) {
         ImageExporter.copyToClipboardAsync(image: item.fullImage) { [weak self] copied in
-            ToastWindow.show(message: copied ? "✓ Copied to clipboard" : "Could not copy this capture", on: self?.panel?.screen)
+            ToastWindow.show(message: copied ? L("✓ Copied to clipboard") : L("Could not copy this capture"), on: self?.panel?.screen)
         }
     }
 
@@ -512,10 +516,10 @@ final class HistoryPanelController: NSObject {
         }
 
         sections = []
-        if !today.isEmpty { sections.append(Section(title: "Today", items: today)) }
-        if !yesterday.isEmpty { sections.append(Section(title: "Yesterday", items: yesterday)) }
-        if !thisWeek.isEmpty { sections.append(Section(title: "This Week", items: thisWeek)) }
-        if !older.isEmpty { sections.append(Section(title: "Older", items: older)) }
+        if !today.isEmpty { sections.append(Section(title: L("Today"), items: today)) }
+        if !yesterday.isEmpty { sections.append(Section(title: L("Yesterday"), items: yesterday)) }
+        if !thisWeek.isEmpty { sections.append(Section(title: L("This Week"), items: thisWeek)) }
+        if !older.isEmpty { sections.append(Section(title: L("Older"), items: older)) }
     }
 
     // MARK: - Reload
@@ -567,10 +571,10 @@ final class HistoryPanelController: NSObject {
         let ids = items.map(\.id).sorted { (order[$0] ?? 0) < (order[$1] ?? 0) }
         // The manager's change notification reflows the grid — no manual reload.
         manager.delete(items)
-        let actionName = items.count == 1 ? "Delete Screenshot" : "Delete Screenshots"
+        let actionName = items.count == 1 ? L("Delete Screenshot") : L("Delete Screenshots")
         registerUndoRestoring(ids, actionName: actionName)
         ToastWindow.show(
-            message: items.count == 1 ? "Screenshot deleted — click or press ⌘Z to undo" : "\(items.count) screenshots deleted — click or press ⌘Z to undo",
+            message: L("\(items.count) screenshots deleted — click or press ⌘Z to undo"),
             duration: 5.0,
             on: panel?.screen
         ) { [weak self] in
@@ -627,20 +631,20 @@ final class HistoryPanelController: NSObject {
     @objc private func clearAll() {
         guard let manager = historyManager, !manager.items.isEmpty else { return }
         let alert = NSAlert()
-        alert.messageText = "Clear History?"
-        alert.informativeText = "All captures are moved to Shotnix's trash and permanently deleted after 7 days."
-        alert.addButton(withTitle: "Delete All")
-        alert.addButton(withTitle: "Cancel")
+        alert.messageText = L("Clear History?")
+        alert.informativeText = L("All captures are moved to Shotnix’s trash and permanently deleted after \(7) days.")
+        alert.addButton(withTitle: L("Delete All"))
+        alert.addButton(withTitle: L("Cancel"))
         guard alert.runModal() == .alertFirstButtonReturn else { return }
         let ids = manager.items.map(\.id)
         manager.deleteAll()
-        registerUndoRestoring(ids, actionName: "Clear History")
+        registerUndoRestoring(ids, actionName: L("Clear History"))
         ToastWindow.show(
-            message: "History cleared — click or press ⌘Z to undo",
+            message: L("History cleared — click or press ⌘Z to undo"),
             duration: 5.0,
             on: panel?.screen
         ) { [weak self] in
-            self?.restore(ids, actionName: "Clear History")
+            self?.restore(ids, actionName: L("Clear History"))
         }
     }
 }
@@ -859,8 +863,8 @@ final class HistoryCollectionItem: NSCollectionViewItem {
     private let thumbView = NSImageView()
     private let dateLabel = NSTextField(labelWithString: "")
     private let detailLabel = NSTextField(labelWithString: "")
-    private let copyBtn = HistoryActionButton(title: "Copy", variant: .secondary, target: nil, action: nil)
-    private let editBtn = HistoryActionButton(title: "Edit", variant: .primary, target: nil, action: nil)
+    private let copyBtn = HistoryActionButton(title: L("Copy"), variant: .secondary, target: nil, action: nil)
+    private let editBtn = HistoryActionButton(title: L("Edit"), variant: .primary, target: nil, action: nil)
 
     override func loadView() {
         let container = NSView(frame: NSRect(x: 0, y: 0, width: 190, height: 238))
@@ -901,13 +905,13 @@ final class HistoryCollectionItem: NSCollectionViewItem {
         copyBtn.frame = NSRect(x: 14, y: 7, width: 74, height: 24)
         copyBtn.target = self
         copyBtn.action = #selector(copyImage)
-        copyBtn.toolTip = "Copy capture to clipboard"
+        copyBtn.toolTip = L("Copy capture to clipboard")
         container.addSubview(copyBtn)
 
         editBtn.frame = NSRect(x: 102, y: 7, width: 74, height: 24)
         editBtn.target = self
         editBtn.action = #selector(editImage)
-        editBtn.toolTip = "Open in annotation editor"
+        editBtn.toolTip = L("Open in annotation editor")
         container.addSubview(editBtn)
 
         self.view = container
@@ -922,12 +926,13 @@ final class HistoryCollectionItem: NSCollectionViewItem {
         self.historyManager = historyManager
         dateLabel.stringValue = item.createdAt.formatted(date: .abbreviated, time: .shortened)
         cardView.isSelected = isSelected
-        let kind = item.captureType.map { "\($0.title) capture" } ?? "Capture"
-        thumbView.setAccessibilityLabel("\(kind), \(item.createdAt.formatted(date: .abbreviated, time: .shortened))")
+        let date = item.createdAt.formatted(date: .abbreviated, time: .shortened)
+        let kind = item.captureType?.title
+        thumbView.setAccessibilityLabel(kind.map { L("\($0) capture, \(date)") } ?? L("Capture, \(date)"))
         thumbView.setAccessibilityRole(.image)
         view.setAccessibilityElement(true)
         view.setAccessibilityRole(.group)
-        view.setAccessibilityLabel("\(kind) from \(item.createdAt.formatted(date: .abbreviated, time: .shortened))")
+        view.setAccessibilityLabel(kind.map { L("\($0) capture from \(date)") } ?? L("Capture from \(date)"))
         if let cached = historyManager.cachedThumbnail(for: item) {
             thumbView.image = cached
             detailLabel.stringValue = detailText(for: item, thumbnail: cached)
@@ -978,15 +983,17 @@ final class HistoryCollectionItem: NSCollectionViewItem {
 
     private func detailText(for item: HistoryItem, thumbnail: NSImage?) -> String {
         // A stitched capture is taller than its selection; its size isn't the rect's.
-        if item.captureType == .scrolling { return "Scrolling capture" }
-        let kind = item.captureType?.title ?? "Saved"
+        if item.captureType == .scrolling { return L("Scrolling capture") }
+        let kind = item.captureType?.title ?? L("Saved")
+        // Sizes as plain digits (no thousands separator), like pixel sizes everywhere.
+        func pixels(_ value: CGFloat) -> String { String(Int(value.rounded())) }
         if let rect = item.captureRect?.cgRect {
-            return String(format: "\(kind) · %.0f x %.0f", rect.width, rect.height)
+            return L("\(kind) · \(pixels(rect.width)) × \(pixels(rect.height))")
         }
         // No stored rect: size comes from the thumbnail — but never decode one
         // from disk here; the async load refreshes this label when it arrives.
-        guard let size = thumbnail?.size, size.width > 0, size.height > 0 else { return item.captureType == nil ? "Saved capture" : kind }
-        return String(format: "\(kind) · %.0f x %.0f image", size.width, size.height)
+        guard let size = thumbnail?.size, size.width > 0, size.height > 0 else { return item.captureType == nil ? L("Saved capture") : kind }
+        return L("\(kind) · \(pixels(size.width)) × \(pixels(size.height)) image")
     }
 
     // MARK: Hover
@@ -1044,14 +1051,14 @@ final class HistoryCollectionItem: NSCollectionViewItem {
         guard historyItem != nil else { return }
         ShotnixContextMenu.show(
             sections: [
-                ShotnixMenuSection(id: "history.capture", title: "Capture", actions: [
-                    ShotnixMenuAction(id: "history.copy", title: "Copy", symbolName: "doc.on.doc", role: .primary) { [weak self] in self?.copyImage() },
-                    ShotnixMenuAction(id: "history.edit", title: "Edit", symbolName: "pencil") { [weak self] in self?.editImage() },
-                    ShotnixMenuAction(id: "history.save", title: "Save As", symbolName: "square.and.arrow.down") { [weak self] in self?.saveImage() },
-                    ShotnixMenuAction(id: "history.pin", title: "Pin to Screen", symbolName: "pin") { [weak self] in self?.pinImage() },
+                ShotnixMenuSection(id: "history.capture", title: L("Capture"), actions: [
+                    ShotnixMenuAction(id: "history.copy", title: L("Copy"), symbolName: "doc.on.doc", role: .primary) { [weak self] in self?.copyImage() },
+                    ShotnixMenuAction(id: "history.edit", title: L("Edit"), symbolName: "pencil") { [weak self] in self?.editImage() },
+                    ShotnixMenuAction(id: "history.save", title: L("Save As…"), symbolName: "square.and.arrow.down") { [weak self] in self?.saveImage() },
+                    ShotnixMenuAction(id: "history.pin", title: L("Pin to Screen"), symbolName: "pin") { [weak self] in self?.pinImage() },
                 ]),
-                ShotnixMenuSection(id: "history.manage", title: "Manage", actions: [
-                    ShotnixMenuAction(id: "history.delete", title: "Delete", symbolName: "trash", role: .destructive) { [weak self] in self?.deleteItem() },
+                ShotnixMenuSection(id: "history.manage", title: L("Manage"), actions: [
+                    ShotnixMenuAction(id: "history.delete", title: L("Delete"), symbolName: "trash", role: .destructive) { [weak self] in self?.deleteItem() },
                 ])
             ],
             at: event,

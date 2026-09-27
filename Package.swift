@@ -3,6 +3,9 @@ import PackageDescription
 
 let package = Package(
     name: "Shotnix",
+    // English strings are the keys; translations live in
+    // Localization/Localizable.xcstrings (see scripts/localize.py).
+    defaultLocalization: "en",
     platforms: [.macOS(.v13)],
     dependencies: [
         // Vendored (MIT, from sindresorhus/KeyboardShortcuts 2.4.x) with one

@@ -1,0 +1,77 @@
+{
+  "Capture All Displays": {
+    "de": "Alle Bildschirme aufnehmen",
+    "fr": "Capturer tous les écrans",
+    "zh-Hans": "捕捉所有显示器"
+  },
+  "Capture Area": {
+    "de": "Bereich aufnehmen",
+    "fr": "Capturer une zone",
+    "zh-Hans": "捕捉区域"
+  },
+  "Capture Fullscreen": {
+    "de": "Vollbild aufnehmen",
+    "fr": "Capturer le plein écran",
+    "zh-Hans": "捕捉全屏"
+  },
+  "Capture Fullscreen Alt": {
+    "de": "Vollbild aufnehmen (Alternative)",
+    "fr": "Capturer le plein écran (autre)",
+    "zh-Hans": "捕捉全屏（备用）"
+  },
+  "Capture Previous Area": {
+    "de": "Vorherigen Bereich aufnehmen",
+    "fr": "Capturer la zone précédente",
+    "zh-Hans": "捕捉上一个区域"
+  },
+  "Capture Window": {
+    "de": "Fenster aufnehmen",
+    "fr": "Capturer une fenêtre",
+    "zh-Hans": "捕捉窗口"
+  },
+  "OCR / Capture Text": {
+    "de": "Text erfassen (OCR)",
+    "fr": "Capturer du texte (OCR)",
+    "zh-Hans": "提取文字（OCR）"
+  },
+  "Open Command Center": {
+    "de": "Kommandozentrale öffnen",
+    "fr": "Ouvrir le centre de commande",
+    "zh-Hans": "打开命令中心"
+  },
+  "Pause / Resume Recording": {
+    "de": "Aufzeichnung pausieren/fortsetzen",
+    "fr": "Suspendre/reprendre l’enregistrement",
+    "zh-Hans": "暂停/继续录制"
+  },
+  "Record Area": {
+    "de": "Bereich aufzeichnen",
+    "fr": "Enregistrer une zone",
+    "zh-Hans": "录制区域"
+  },
+  "Record Fullscreen": {
+    "de": "Vollbild aufzeichnen",
+    "fr": "Enregistrer le plein écran",
+    "zh-Hans": "录制全屏"
+  },
+  "Record Window": {
+    "de": "Fenster aufzeichnen",
+    "fr": "Enregistrer une fenêtre",
+    "zh-Hans": "录制窗口"
+  },
+  "Scrolling Capture": {
+    "de": "Scroll-Aufnahme",
+    "fr": "Capture défilante",
+    "zh-Hans": "滚动截屏"
+  },
+  "Stop Recording": {
+    "de": "Aufzeichnung stoppen",
+    "fr": "Arrêter l’enregistrement",
+    "zh-Hans": "停止录制"
+  },
+  "Timed Capture": {
+    "de": "Aufnahme mit Timer",
+    "fr": "Capture avec minuteur",
+    "zh-Hans": "定时截屏"
+  }
+}

@@ -1,0 +1,5 @@
+"NSCameraUsageDescription" = "Shotnix records your camera alongside the screen when you turn the camera on for a recording.";
+"NSHumanReadableCopyright" = "Copyright © 2026 Shotnix Contributors. MIT License.";
+"NSMicrophoneUsageDescription" = "Shotnix needs microphone access when you enable microphone audio for screen recordings.";
+"NSScreenCaptureUsageDescription" = "Shotnix needs screen recording permission to capture screenshots and screen recordings.";
+"NSSpeechRecognitionUsageDescription" = "Shotnix transcribes your recordings on this Mac to create captions.";

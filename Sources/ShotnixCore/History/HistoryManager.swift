@@ -30,13 +30,13 @@ enum HistoryRetention: String, CaseIterable {
 
     var title: String {
         switch self {
-        case .forever: return "Forever"
-        case .days7: return "7 days"
-        case .days30: return "30 days"
-        case .days90: return "90 days"
-        case .items100: return "Last 100 captures"
-        case .items500: return "Last 500 captures"
-        case .items1000: return "Last 1,000 captures"
+        case .forever: return L("Forever")
+        case .days7: return L("\(7) days")
+        case .days30: return L("\(30) days")
+        case .days90: return L("\(90) days")
+        case .items100: return L("Last \(100) captures")
+        case .items500: return L("Last \(500) captures")
+        case .items1000: return L("Last \(1000) captures")
         }
     }
 
@@ -352,7 +352,7 @@ final class HistoryManager: ObservableObject {
         // Quitting or relaunching for an update waits for these writes, so a
         // capture or an edit saved right before ⌘Q still reaches History.
         if fileWork == nil {
-            fileWork = AppTermination.begin("Saving captures to History") { [weak self] done in
+            fileWork = AppTermination.begin(L("Saving captures to History")) { [weak self] done in
                 Task { @MainActor in
                     await self?.waitForPendingFileOperations()
                     done()

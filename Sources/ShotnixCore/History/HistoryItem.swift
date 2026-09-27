@@ -11,11 +11,11 @@ enum CaptureType: String, Codable, CaseIterable {
 
     var title: String {
         switch self {
-        case .area: return "Area"
-        case .window: return "Window"
-        case .fullscreen: return "Fullscreen"
-        case .scrolling: return "Scrolling"
-        case .text: return "Text"
+        case .area: return L("Area")
+        case .window: return L("Window")
+        case .fullscreen: return L("Fullscreen")
+        case .scrolling: return L("Scrolling")
+        case .text: return L("Text")
         }
     }
 }

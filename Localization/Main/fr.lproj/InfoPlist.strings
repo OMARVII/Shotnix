@@ -1,0 +1,5 @@
+"NSCameraUsageDescription" = "Shotnix enregistre votre caméra en même temps que l’écran lorsque vous activez la caméra pour un enregistrement.";
+"NSHumanReadableCopyright" = "Copyright © 2026 Shotnix Contributors. Licence MIT.";
+"NSMicrophoneUsageDescription" = "Shotnix a besoin d’accéder au micro lorsque vous activez le son du micro pour les enregistrements de l’écran.";
+"NSScreenCaptureUsageDescription" = "Shotnix a besoin de l’autorisation d’enregistrement de l’écran pour réaliser des captures et des enregistrements d’écran.";
+"NSSpeechRecognitionUsageDescription" = "Shotnix transcrit vos enregistrements sur ce Mac pour créer des sous-titres.";

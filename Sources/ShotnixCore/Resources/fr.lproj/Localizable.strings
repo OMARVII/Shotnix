@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>%@ capture from %@</key>
+	<string>Capture (%1$@) du %2$@</string>
+	<key>%@ capture, %@</key>
+	<string>Capture (%1$@), %2$@</string>
+	<key>%@ · %@ × %@ image</key>
+	<string>%@ · image %@ × %@</string>
+	<key>%lld of %lld captures</key>
+	<string>%lld captures sur %lld</string>
+	<key>All Captures</key>
+	<string>Toutes les captures</string>
+	<key>All captures are moved to Shotnix’s trash and permanently deleted after %lld days.</key>
+	<string>Toutes les captures sont placées dans la corbeille de Shotnix et définitivement supprimées après %lld jours.</string>
+	<key>Area</key>
+	<string>Zone</string>
+	<key>Cancel</key>
+	<string>Annuler</string>
+	<key>Capture</key>
+	<string>Capture</string>
+	<key>Capture All Displays</key>
+	<string>Capturer tous les écrans</string>
+	<key>Capture Area</key>
+	<string>Capturer une zone</string>
+	<key>Capture Fullscreen</key>
+	<string>Capturer le plein écran</string>
+	<key>Capture Fullscreen Alt</key>
+	<string>Capturer le plein écran (autre)</string>
+	<key>Capture History</key>
+	<string>Historique des captures</string>
+	<key>Capture Previous Area</key>
+	<string>Capturer la zone précédente</string>
+	<key>Capture Window</key>
+	<string>Capturer une fenêtre</string>
+	<key>Capture from %@</key>
+	<string>Capture du %@</string>
+	<key>Capture type</key>
+	<string>Type de capture</string>
+	<key>Capture, %@</key>
+	<string>Capture, %@</string>
+	<key>Captured screenshots will appear here instantly</key>
+	<string>Vos captures apparaîtront ici instantanément</string>
+	<key>Captures</key>
+	<string>Captures</string>
+	<key>Choose Capture Area in the Shotnix menu to start</key>
+	<string>Choisissez « Capturer une zone » dans le menu Shotnix pour commencer</string>
+	<key>Clear All</key>
+	<string>Tout effacer</string>
+	<key>Clear History</key>
+	<string>Effacer l’historique</string>
+	<key>Clear History?</key>
+	<string>Effacer l’historique ?</string>
+	<key>Copy</key>
+	<string>Copier</string>
+	<key>Copy capture to clipboard</key>
+	<string>Copier la capture dans le presse-papiers</string>
+	<key>Could not copy this capture</key>
+	<string>Impossible de copier cette capture</string>
+	<key>Delete</key>
+	<string>Supprimer</string>
+	<key>Delete All</key>
+	<string>Tout supprimer</string>
+	<key>Delete Screenshot</key>
+	<string>Supprimer la capture</string>
+	<key>Delete Screenshots</key>
+	<string>Supprimer les captures</string>
+	<key>Delete every saved capture</key>
+	<string>Supprimer toutes les captures enregistrées</string>
+	<key>Edit</key>
+	<string>Modifier</string>
+	<key>Enjoying Shotnix? Star it on GitHub so more people find it.</key>
+	<string>Vous aimez Shotnix ? Ajoutez une étoile sur GitHub pour que plus de monde le découvre.</string>
+	<key>Forever</key>
+	<string>Pour toujours</string>
+	<key>Fullscreen</key>
+	<string>Plein écran</string>
+	<key>History cleared — click or press ⌘Z to undo</key>
+	<string>Historique effacé — cliquez ou appuyez sur ⌘Z pour annuler</string>
+	<key>Manage</key>
+	<string>Gérer</string>
+	<key>No captures contain “%@”</key>
+	<string>Aucune capture ne contient « %@ »</string>
+	<key>No captures of this type</key>
+	<string>Aucune capture de ce type</string>
+	<key>No captures yet</key>
+	<string>Aucune capture pour l’instant</string>
+	<key>No saved captures yet</key>
+	<string>Aucune capture enregistrée pour l’instant</string>
+	<key>Not now</key>
+	<string>Plus tard</string>
+	<key>OCR / Capture Text</key>
+	<string>Capturer du texte (OCR)</string>
+	<key>Older</key>
+	<string>Plus ancien</string>
+	<key>Open Command Center</key>
+	<string>Ouvrir le centre de commande</string>
+	<key>Open in annotation editor</key>
+	<string>Ouvrir dans l’éditeur de captures</string>
+	<key>Pause / Resume Recording</key>
+	<string>Suspendre/reprendre l’enregistrement</string>
+	<key>Pin to Screen</key>
+	<string>Épingler à l’écran</string>
+	<key>Press %@ to take your first screenshot</key>
+	<string>Appuyez sur %@ pour faire votre première capture</string>
+	<key>Record Area</key>
+	<string>Enregistrer une zone</string>
+	<key>Record Fullscreen</key>
+	<string>Enregistrer le plein écran</string>
+	<key>Record Window</key>
+	<string>Enregistrer une fenêtre</string>
+	<key>SHOTNIX LIBRARY</key>
+	<string>BIBLIOTHÈQUE SHOTNIX</string>
+	<key>Save As…</key>
+	<string>Enregistrer sous…</string>
+	<key>Saved</key>
+	<string>Enregistrée</string>
+	<key>Saved capture</key>
+	<string>Capture enregistrée</string>
+	<key>Saving captures to History</key>
+	<string>Enregistrement des captures dans l’historique</string>
+	<key>Scrolling</key>
+	<string>Défilement</string>
+	<key>Scrolling Capture</key>
+	<string>Capture défilante</string>
+	<key>Scrolling capture</key>
+	<string>Capture défilante</string>
+	<key>Search text in captures</key>
+	<string>Rechercher du texte dans les captures</string>
+	<key>Shotnix – Capture History</key>
+	<string>Shotnix – Historique des captures</string>
+	<key>Show one kind of capture</key>
+	<string>Afficher un seul type de capture</string>
+	<key>Star on GitHub</key>
+	<string>Mettre une étoile sur GitHub</string>
+	<key>Stop Recording</key>
+	<string>Arrêter l’enregistrement</string>
+	<key>Text</key>
+	<string>Texte</string>
+	<key>This Week</key>
+	<string>Cette semaine</string>
+	<key>Timed Capture</key>
+	<string>Capture avec minuteur</string>
+	<key>Today</key>
+	<string>Aujourd’hui</string>
+	<key>Window</key>
+	<string>Fenêtre</string>
+	<key>Yesterday</key>
+	<string>Hier</string>
+	<key>“%@” found in %lld of %lld captures</key>
+	<string>« %1$@ » trouvé dans %2$lld captures sur %3$lld</string>
+	<key>✓ Copied to clipboard</key>
+	<string>✓ Copié dans le presse-papiers</string>
+</dict>
+</plist>

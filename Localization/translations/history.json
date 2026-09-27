@@ -1,0 +1,302 @@
+{
+  "%@ capture from %@": {
+    "comment": "VoiceOver: capture type, then its date",
+    "de": "Bildschirmfoto: %1$@ vom %2$@",
+    "fr": "Capture (%1$@) du %2$@",
+    "zh-Hans": "%2$@ 的%1$@截屏"
+  },
+  "%@ capture, %@": {
+    "comment": "VoiceOver: capture type, then its date",
+    "de": "Bildschirmfoto: %1$@, %2$@",
+    "fr": "Capture (%1$@), %2$@",
+    "zh-Hans": "%1$@截屏，%2$@"
+  },
+  "%@ · %@ × %@ image": {
+    "de": "%@ · Bild %@ × %@",
+    "fr": "%@ · image %@ × %@",
+    "zh-Hans": "%@ · %@ × %@ 图像"
+  },
+  "%lld of %lld captures": {
+    "de": "%lld von %lld Bildschirmfotos",
+    "fr": "%lld captures sur %lld",
+    "zh-Hans": "%2$lld 张截屏中的 %1$lld 张"
+  },
+  "%lld saved captures · drag any card to Finder · right-click for more actions": {
+    "de": {
+      "one": "%lld gesichertes Bildschirmfoto · Karten in den Finder ziehen · Rechtsklick für mehr",
+      "other": "%lld gesicherte Bildschirmfotos · Karten in den Finder ziehen · Rechtsklick für mehr"
+    },
+    "en": {
+      "one": "%lld saved capture · drag any card to Finder · right-click for more actions",
+      "other": "%lld saved captures · drag any card to Finder · right-click for more actions"
+    },
+    "fr": {
+      "one": "%lld capture enregistrée · faites glisser une carte vers le Finder · clic droit pour plus d’actions",
+      "other": "%lld captures enregistrées · faites glisser une carte vers le Finder · clic droit pour plus d’actions"
+    },
+    "zh-Hans": "已存储 %lld 张截屏 · 可将卡片拖到“访达” · 右键点按查看更多操作"
+  },
+  "%lld screenshots deleted — click or press ⌘Z to undo": {
+    "de": {
+      "one": "Bildschirmfoto gelöscht – klicken oder ⌘Z drücken zum Widerrufen",
+      "other": "%lld Bildschirmfotos gelöscht – klicken oder ⌘Z drücken zum Widerrufen"
+    },
+    "en": {
+      "one": "Screenshot deleted — click or press ⌘Z to undo",
+      "other": "%lld screenshots deleted — click or press ⌘Z to undo"
+    },
+    "fr": {
+      "one": "Capture supprimée — cliquez ou appuyez sur ⌘Z pour annuler",
+      "other": "%lld captures supprimées — cliquez ou appuyez sur ⌘Z pour annuler"
+    },
+    "zh-Hans": "已删除 %lld 张截屏 — 点按或按下 ⌘Z 撤销"
+  },
+  "All Captures": {
+    "de": "Alle Bildschirmfotos",
+    "fr": "Toutes les captures",
+    "zh-Hans": "所有截屏"
+  },
+  "All captures are moved to Shotnix’s trash and permanently deleted after %lld days.": {
+    "de": "Alle Bildschirmfotos werden in den Papierkorb von Shotnix gelegt und nach %lld Tagen endgültig gelöscht.",
+    "fr": "Toutes les captures sont placées dans la corbeille de Shotnix et définitivement supprimées après %lld jours.",
+    "zh-Hans": "所有截屏都会移到 Shotnix 的废纸篓，并在 %lld 天后永久删除。"
+  },
+  "Capture": {
+    "comment": "A screenshot in History (menu section, and a card's kind when its type is unknown)",
+    "de": "Bildschirmfoto",
+    "fr": "Capture",
+    "zh-Hans": "截屏"
+  },
+  "Capture History": {
+    "de": "Verlauf",
+    "fr": "Historique des captures",
+    "zh-Hans": "截屏历史记录"
+  },
+  "Capture from %@": {
+    "de": "Bildschirmfoto vom %@",
+    "fr": "Capture du %@",
+    "zh-Hans": "%@ 的截屏"
+  },
+  "Capture type": {
+    "de": "Aufnahmeart",
+    "fr": "Type de capture",
+    "zh-Hans": "截屏类型"
+  },
+  "Capture, %@": {
+    "de": "Bildschirmfoto, %@",
+    "fr": "Capture, %@",
+    "zh-Hans": "截屏，%@"
+  },
+  "Captured screenshots will appear here instantly": {
+    "de": "Neue Bildschirmfotos erscheinen hier sofort",
+    "fr": "Vos captures apparaîtront ici instantanément",
+    "zh-Hans": "新的截屏会立即显示在这里"
+  },
+  "Captures": {
+    "de": "Bildschirmfotos",
+    "fr": "Captures",
+    "zh-Hans": "截屏"
+  },
+  "Choose Capture Area in the Shotnix menu to start": {
+    "de": "Wähle „Bereich aufnehmen“ im Shotnix-Menü, um loszulegen",
+    "fr": "Choisissez « Capturer une zone » dans le menu Shotnix pour commencer",
+    "zh-Hans": "在 Shotnix 菜单中选择“捕捉区域”即可开始"
+  },
+  "Clear All": {
+    "de": "Alle löschen",
+    "fr": "Tout effacer",
+    "zh-Hans": "全部清除"
+  },
+  "Clear History": {
+    "de": "Verlauf löschen",
+    "fr": "Effacer l’historique",
+    "zh-Hans": "清除历史记录"
+  },
+  "Clear History?": {
+    "de": "Verlauf löschen?",
+    "fr": "Effacer l’historique ?",
+    "zh-Hans": "要清除历史记录吗？"
+  },
+  "Copy capture to clipboard": {
+    "de": "Bildschirmfoto in die Zwischenablage kopieren",
+    "fr": "Copier la capture dans le presse-papiers",
+    "zh-Hans": "将截屏拷贝到剪贴板"
+  },
+  "Could not copy this capture": {
+    "de": "Dieses Bildschirmfoto konnte nicht kopiert werden",
+    "fr": "Impossible de copier cette capture",
+    "zh-Hans": "无法拷贝此截屏"
+  },
+  "Delete All": {
+    "de": "Alle löschen",
+    "fr": "Tout supprimer",
+    "zh-Hans": "全部删除"
+  },
+  "Delete Screenshot": {
+    "de": "Bildschirmfoto löschen",
+    "fr": "Supprimer la capture",
+    "zh-Hans": "删除截屏"
+  },
+  "Delete Screenshots": {
+    "de": "Bildschirmfotos löschen",
+    "fr": "Supprimer les captures",
+    "zh-Hans": "删除截屏"
+  },
+  "Delete every saved capture": {
+    "de": "Alle gesicherten Bildschirmfotos löschen",
+    "fr": "Supprimer toutes les captures enregistrées",
+    "zh-Hans": "删除所有已存储的截屏"
+  },
+  "Enjoying Shotnix? Star it on GitHub so more people find it.": {
+    "de": "Gefällt dir Shotnix? Gib ihm einen Stern auf GitHub, damit mehr Leute es finden.",
+    "fr": "Vous aimez Shotnix ? Ajoutez une étoile sur GitHub pour que plus de monde le découvre.",
+    "zh-Hans": "喜欢 Shotnix 吗？在 GitHub 上加个星标，让更多人发现它。"
+  },
+  "Forever": {
+    "de": "Für immer",
+    "fr": "Pour toujours",
+    "zh-Hans": "永久"
+  },
+  "History cleared — click or press ⌘Z to undo": {
+    "de": "Verlauf gelöscht – klicken oder ⌘Z drücken zum Widerrufen",
+    "fr": "Historique effacé — cliquez ou appuyez sur ⌘Z pour annuler",
+    "zh-Hans": "历史记录已清除 — 点按或按下 ⌘Z 撤销"
+  },
+  "Last %lld captures": {
+    "de": {
+      "one": "Letztes Bildschirmfoto",
+      "other": "Letzte %lld Bildschirmfotos"
+    },
+    "en": {
+      "one": "Last capture",
+      "other": "Last %lld captures"
+    },
+    "fr": {
+      "one": "Dernière capture",
+      "other": "%lld dernières captures"
+    },
+    "zh-Hans": "最近 %lld 张截屏"
+  },
+  "Manage": {
+    "de": "Verwalten",
+    "fr": "Gérer",
+    "zh-Hans": "管理"
+  },
+  "No captures contain “%@”": {
+    "de": "Kein Bildschirmfoto enthält „%@“",
+    "fr": "Aucune capture ne contient « %@ »",
+    "zh-Hans": "没有截屏包含“%@”"
+  },
+  "No captures of this type": {
+    "de": "Keine Bildschirmfotos dieser Art",
+    "fr": "Aucune capture de ce type",
+    "zh-Hans": "没有此类截屏"
+  },
+  "No captures yet": {
+    "de": "Noch keine Bildschirmfotos",
+    "fr": "Aucune capture pour l’instant",
+    "zh-Hans": "还没有截屏"
+  },
+  "No saved captures yet": {
+    "de": "Noch keine gesicherten Bildschirmfotos",
+    "fr": "Aucune capture enregistrée pour l’instant",
+    "zh-Hans": "还没有已存储的截屏"
+  },
+  "Not now": {
+    "de": "Nicht jetzt",
+    "fr": "Plus tard",
+    "zh-Hans": "以后再说"
+  },
+  "Older": {
+    "de": "Älter",
+    "fr": "Plus ancien",
+    "zh-Hans": "更早"
+  },
+  "Open in annotation editor": {
+    "de": "Im Bildschirmfoto-Editor öffnen",
+    "fr": "Ouvrir dans l’éditeur de captures",
+    "zh-Hans": "在截屏编辑器中打开"
+  },
+  "Pin to Screen": {
+    "de": "Auf dem Bildschirm anheften",
+    "fr": "Épingler à l’écran",
+    "zh-Hans": "贴到屏幕"
+  },
+  "Press %@ to take your first screenshot": {
+    "de": "Drücke %@ für dein erstes Bildschirmfoto",
+    "fr": "Appuyez sur %@ pour faire votre première capture",
+    "zh-Hans": "按下 %@ 截取你的第一张截屏"
+  },
+  "SHOTNIX LIBRARY": {
+    "de": "SHOTNIX-BIBLIOTHEK",
+    "fr": "BIBLIOTHÈQUE SHOTNIX",
+    "zh-Hans": "SHOTNIX 资源库"
+  },
+  "Saved": {
+    "comment": "A History card's kind when its capture type is unknown",
+    "de": "Gesichert",
+    "fr": "Enregistrée",
+    "zh-Hans": "已存储"
+  },
+  "Saved capture": {
+    "de": "Gesichertes Bildschirmfoto",
+    "fr": "Capture enregistrée",
+    "zh-Hans": "已存储的截屏"
+  },
+  "Saving captures to History": {
+    "de": "Bildschirmfotos werden im Verlauf gesichert",
+    "fr": "Enregistrement des captures dans l’historique",
+    "zh-Hans": "正在将截屏存储到历史记录"
+  },
+  "Scrolling": {
+    "comment": "A capture type, shown in History",
+    "de": "Scroll-Aufnahme",
+    "fr": "Défilement",
+    "zh-Hans": "滚动"
+  },
+  "Scrolling capture": {
+    "de": "Scroll-Aufnahme",
+    "fr": "Capture défilante",
+    "zh-Hans": "滚动截屏"
+  },
+  "Search text in captures": {
+    "de": "Text in Bildschirmfotos suchen",
+    "fr": "Rechercher du texte dans les captures",
+    "zh-Hans": "搜索截屏中的文字"
+  },
+  "Shotnix – Capture History": {
+    "de": "Shotnix – Verlauf",
+    "fr": "Shotnix – Historique des captures",
+    "zh-Hans": "Shotnix – 截屏历史记录"
+  },
+  "Show one kind of capture": {
+    "de": "Nur eine Art von Bildschirmfotos zeigen",
+    "fr": "Afficher un seul type de capture",
+    "zh-Hans": "只显示一种截屏"
+  },
+  "Star on GitHub": {
+    "de": "Stern auf GitHub",
+    "fr": "Mettre une étoile sur GitHub",
+    "zh-Hans": "在 GitHub 上加星标"
+  },
+  "This Week": {
+    "de": "Diese Woche",
+    "fr": "Cette semaine",
+    "zh-Hans": "本周"
+  },
+  "Today": {
+    "de": "Heute",
+    "fr": "Aujourd’hui",
+    "zh-Hans": "今天"
+  },
+  "Yesterday": {
+    "de": "Gestern",
+    "fr": "Hier",
+    "zh-Hans": "昨天"
+  },
+  "“%@” found in %lld of %lld captures": {
+    "de": "„%1$@“ in %2$lld von %3$lld Bildschirmfotos gefunden",
+    "fr": "« %1$@ » trouvé dans %2$lld captures sur %3$lld",
+    "zh-Hans": "在 %3$lld 张截屏中的 %2$lld 张里找到“%1$@”"
+  }
+}

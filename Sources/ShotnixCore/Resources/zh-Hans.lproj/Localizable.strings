@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>%@ capture from %@</key>
+	<string>%2$@ 的%1$@截屏</string>
+	<key>%@ capture, %@</key>
+	<string>%1$@截屏，%2$@</string>
+	<key>%@ · %@ × %@ image</key>
+	<string>%@ · %@ × %@ 图像</string>
+	<key>%lld days</key>
+	<string>%lld 天</string>
+	<key>%lld of %lld captures</key>
+	<string>%2$lld 张截屏中的 %1$lld 张</string>
+	<key>%lld saved captures · drag any card to Finder · right-click for more actions</key>
+	<string>已存储 %lld 张截屏 · 可将卡片拖到“访达” · 右键点按查看更多操作</string>
+	<key>%lld screenshots deleted — click or press ⌘Z to undo</key>
+	<string>已删除 %lld 张截屏 — 点按或按下 ⌘Z 撤销</string>
+	<key>All Captures</key>
+	<string>所有截屏</string>
+	<key>All captures are moved to Shotnix’s trash and permanently deleted after %lld days.</key>
+	<string>所有截屏都会移到 Shotnix 的废纸篓，并在 %lld 天后永久删除。</string>
+	<key>Area</key>
+	<string>区域</string>
+	<key>Cancel</key>
+	<string>取消</string>
+	<key>Capture</key>
+	<string>截屏</string>
+	<key>Capture All Displays</key>
+	<string>捕捉所有显示器</string>
+	<key>Capture Area</key>
+	<string>捕捉区域</string>
+	<key>Capture Fullscreen</key>
+	<string>捕捉全屏</string>
+	<key>Capture Fullscreen Alt</key>
+	<string>捕捉全屏（备用）</string>
+	<key>Capture History</key>
+	<string>截屏历史记录</string>
+	<key>Capture Previous Area</key>
+	<string>捕捉上一个区域</string>
+	<key>Capture Window</key>
+	<string>捕捉窗口</string>
+	<key>Capture from %@</key>
+	<string>%@ 的截屏</string>
+	<key>Capture type</key>
+	<string>截屏类型</string>
+	<key>Capture, %@</key>
+	<string>截屏，%@</string>
+	<key>Captured screenshots will appear here instantly</key>
+	<string>新的截屏会立即显示在这里</string>
+	<key>Captures</key>
+	<string>截屏</string>
+	<key>Choose Capture Area in the Shotnix menu to start</key>
+	<string>在 Shotnix 菜单中选择“捕捉区域”即可开始</string>
+	<key>Clear All</key>
+	<string>全部清除</string>
+	<key>Clear History</key>
+	<string>清除历史记录</string>
+	<key>Clear History?</key>
+	<string>要清除历史记录吗？</string>
+	<key>Copy</key>
+	<string>拷贝</string>
+	<key>Copy capture to clipboard</key>
+	<string>将截屏拷贝到剪贴板</string>
+	<key>Could not copy this capture</key>
+	<string>无法拷贝此截屏</string>
+	<key>Delete</key>
+	<string>删除</string>
+	<key>Delete All</key>
+	<string>全部删除</string>
+	<key>Delete Screenshot</key>
+	<string>删除截屏</string>
+	<key>Delete Screenshots</key>
+	<string>删除截屏</string>
+	<key>Delete every saved capture</key>
+	<string>删除所有已存储的截屏</string>
+	<key>Edit</key>
+	<string>编辑</string>
+	<key>Enjoying Shotnix? Star it on GitHub so more people find it.</key>
+	<string>喜欢 Shotnix 吗？在 GitHub 上加个星标，让更多人发现它。</string>
+	<key>Forever</key>
+	<string>永久</string>
+	<key>Fullscreen</key>
+	<string>全屏</string>
+	<key>History cleared — click or press ⌘Z to undo</key>
+	<string>历史记录已清除 — 点按或按下 ⌘Z 撤销</string>
+	<key>Last %lld captures</key>
+	<string>最近 %lld 张截屏</string>
+	<key>Manage</key>
+	<string>管理</string>
+	<key>No captures contain “%@”</key>
+	<string>没有截屏包含“%@”</string>
+	<key>No captures of this type</key>
+	<string>没有此类截屏</string>
+	<key>No captures yet</key>
+	<string>还没有截屏</string>
+	<key>No saved captures yet</key>
+	<string>还没有已存储的截屏</string>
+	<key>Not now</key>
+	<string>以后再说</string>
+	<key>OCR / Capture Text</key>
+	<string>提取文字（OCR）</string>
+	<key>Older</key>
+	<string>更早</string>
+	<key>Open Command Center</key>
+	<string>打开命令中心</string>
+	<key>Open in annotation editor</key>
+	<string>在截屏编辑器中打开</string>
+	<key>Pause / Resume Recording</key>
+	<string>暂停/继续录制</string>
+	<key>Pin to Screen</key>
+	<string>贴到屏幕</string>
+	<key>Press %@ to take your first screenshot</key>
+	<string>按下 %@ 截取你的第一张截屏</string>
+	<key>Record Area</key>
+	<string>录制区域</string>
+	<key>Record Fullscreen</key>
+	<string>录制全屏</string>
+	<key>Record Window</key>
+	<string>录制窗口</string>
+	<key>SHOTNIX LIBRARY</key>
+	<string>SHOTNIX 资源库</string>
+	<key>Save As…</key>
+	<string>存储为…</string>
+	<key>Saved</key>
+	<string>已存储</string>
+	<key>Saved capture</key>
+	<string>已存储的截屏</string>
+	<key>Saving captures to History</key>
+	<string>正在将截屏存储到历史记录</string>
+	<key>Scrolling</key>
+	<string>滚动</string>
+	<key>Scrolling Capture</key>
+	<string>滚动截屏</string>
+	<key>Scrolling capture</key>
+	<string>滚动截屏</string>
+	<key>Search text in captures</key>
+	<string>搜索截屏中的文字</string>
+	<key>Shotnix – Capture History</key>
+	<string>Shotnix – 截屏历史记录</string>
+	<key>Show one kind of capture</key>
+	<string>只显示一种截屏</string>
+	<key>Star on GitHub</key>
+	<string>在 GitHub 上加星标</string>
+	<key>Stop Recording</key>
+	<string>停止录制</string>
+	<key>Text</key>
+	<string>文字</string>
+	<key>This Week</key>
+	<string>本周</string>
+	<key>Timed Capture</key>
+	<string>定时截屏</string>
+	<key>Today</key>
+	<string>今天</string>
+	<key>Window</key>
+	<string>窗口</string>
+	<key>Yesterday</key>
+	<string>昨天</string>
+	<key>“%@” found in %lld of %lld captures</key>
+	<string>在 %3$lld 张截屏中的 %2$lld 张里找到“%1$@”</string>
+	<key>✓ Copied to clipboard</key>
+	<string>✓ 已拷贝到剪贴板</string>
+</dict>
+</plist>

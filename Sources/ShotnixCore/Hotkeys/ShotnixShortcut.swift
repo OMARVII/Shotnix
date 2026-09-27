@@ -28,21 +28,21 @@ enum ShotnixShortcut: CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .captureArea: return "Capture Area"
-        case .captureWindow: return "Capture Window"
-        case .captureFullscreenNative: return "Capture Fullscreen"
-        case .captureFullscreenFallback: return "Capture Fullscreen Alt"
-        case .captureAllDisplays: return "Capture All Displays"
-        case .capturePreviousArea: return "Capture Previous Area"
-        case .captureTimed: return "Timed Capture"
-        case .captureText: return "OCR / Capture Text"
-        case .captureScrolling: return "Scrolling Capture"
-        case .openCommandCenter: return "Open Command Center"
-        case .recordArea: return "Record Area"
-        case .recordWindow: return "Record Window"
-        case .recordFullscreen: return "Record Fullscreen"
-        case .stopRecording: return "Stop Recording"
-        case .pauseRecording: return "Pause / Resume Recording"
+        case .captureArea: return L("Capture Area")
+        case .captureWindow: return L("Capture Window")
+        case .captureFullscreenNative: return L("Capture Fullscreen")
+        case .captureFullscreenFallback: return L("Capture Fullscreen Alt")
+        case .captureAllDisplays: return L("Capture All Displays")
+        case .capturePreviousArea: return L("Capture Previous Area")
+        case .captureTimed: return L("Timed Capture")
+        case .captureText: return L("OCR / Capture Text")
+        case .captureScrolling: return L("Scrolling Capture")
+        case .openCommandCenter: return L("Open Command Center")
+        case .recordArea: return L("Record Area")
+        case .recordWindow: return L("Record Window")
+        case .recordFullscreen: return L("Record Fullscreen")
+        case .stopRecording: return L("Stop Recording")
+        case .pauseRecording: return L("Pause / Resume Recording")
         }
     }
 

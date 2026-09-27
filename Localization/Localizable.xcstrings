@@ -1,0 +1,2218 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "" : {},
+    "%@ %@" : {},
+    "%@ (This Mac)" : {},
+    "%@ capture from %@" : {
+      "comment" : "VoiceOver: capture type, then its date",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildschirmfoto: %1$@ vom %2$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capture (%1$@) du %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@ 的%1$@截屏"
+          }
+        }
+      }
+    },
+    "%@ capture, %@" : {
+      "comment" : "VoiceOver: capture type, then its date",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildschirmfoto: %1$@, %2$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capture (%1$@), %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@截屏，%2$@"
+          }
+        }
+      }
+    },
+    "%@ card — click to edit it in Style" : {},
+    "%@ earlier" : {},
+    "%@ later" : {},
+    "%@ of recording plays in %@." : {},
+    "%@ speed" : {},
+    "%@ transition" : {},
+    "%@ · %@ × %@" : {},
+    "%@ · %@ × %@ image" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · Bild %@ × %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · image %@ × %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · %@ × %@ 图像"
+          }
+        }
+      }
+    },
+    "%@ – %@" : {},
+    "%@ — %@" : {},
+    "%@ — click to change" : {},
+    "%@ → %@" : {},
+    "%@%@%@" : {},
+    "%lld" : {},
+    "%lld cuts here (%@ removed) — click to restore some or all" : {},
+    "%lld cuts, %@ removed" : {},
+    "%lld days" : {
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Tag"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Tage"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld day"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld days"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld jour"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld jours"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 天"
+          }
+        }
+      }
+    },
+    "%lld line%@ changed since translating" : {},
+    "%lld of %lld captures" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld von %lld Bildschirmfotos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld captures sur %lld"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$lld 张截屏中的 %1$lld 张"
+          }
+        }
+      }
+    },
+    "%lld saved captures · drag any card to Finder · right-click for more actions" : {
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld gesichertes Bildschirmfoto · Karten in den Finder ziehen · Rechtsklick für mehr"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld gesicherte Bildschirmfotos · Karten in den Finder ziehen · Rechtsklick für mehr"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld saved capture · drag any card to Finder · right-click for more actions"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld saved captures · drag any card to Finder · right-click for more actions"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld capture enregistrée · faites glisser une carte vers le Finder · clic droit pour plus d’actions"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld captures enregistrées · faites glisser une carte vers le Finder · clic droit pour plus d’actions"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已存储 %lld 张截屏 · 可将卡片拖到“访达” · 右键点按查看更多操作"
+          }
+        }
+      }
+    },
+    "%lld screenshots deleted — click or press ⌘Z to undo" : {
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Bildschirmfoto gelöscht – klicken oder ⌘Z drücken zum Widerrufen"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Bildschirmfotos gelöscht – klicken oder ⌘Z drücken zum Widerrufen"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Screenshot deleted — click or press ⌘Z to undo"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld screenshots deleted — click or press ⌘Z to undo"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Capture supprimée — cliquez ou appuyez sur ⌘Z pour annuler"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld captures supprimées — cliquez ou appuyez sur ⌘Z pour annuler"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已删除 %lld 张截屏 — 点按或按下 ⌘Z 撤销"
+          }
+        }
+      }
+    },
+    "%lld%%" : {},
+    "+%lld" : {},
+    "/" : {},
+    "0.1s earlier" : {},
+    "0.1s later" : {},
+    "A cut — click to add a transition" : {},
+    "A song under the whole video — it loops to fill, fades in and out, and dips while you talk. Use music you have the rights to." : {},
+    "A subtitles file for YouTube and web players (.srt), or for the web (.vtt) — follows your cuts" : {},
+    "Add Music…" : {},
+    "Add a caption at the playhead" : {},
+    "Add another recording or video after this one — Shotnix recordings keep their pointer, clicks, and shortcuts." : {},
+    "Add “%@” at the playhead" : {},
+    "Adjust to move it half a second" : {},
+    "Aim by Hand" : {},
+    "Aim by hand" : {},
+    "All Captures" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Bildschirmfotos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toutes les captures"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "所有截屏"
+          }
+        }
+      }
+    },
+    "All captures are moved to Shotnix’s trash and permanently deleted after %lld days." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Bildschirmfotos werden in den Papierkorb von Shotnix gelegt und nach %lld Tagen endgültig gelöscht."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toutes les captures sont placées dans la corbeille de Shotnix et définitivement supprimées après %lld jours."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "所有截屏都会移到 Shotnix 的废纸篓，并在 %lld 天后永久删除。"
+          }
+        }
+      }
+    },
+    "All commands (⌘K)" : {},
+    "Allow Access…" : {},
+    "Any color…" : {},
+    "Append Video…" : {},
+    "Applies at every cut. Click a cut's marker on the timeline, or select a clip, to choose one for that cut only." : {},
+    "Apply to all zooms" : {},
+    "Area" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bereich"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zone"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "区域"
+          }
+        }
+      }
+    },
+    "Arrow head" : {},
+    "Arrow tail" : {},
+    "Aspect ratio" : {},
+    "At playhead" : {},
+    "Auto Zoom" : {},
+    "Automatic" : {},
+    "Back" : {},
+    "Behind you" : {},
+    "Between clips" : {},
+    "Burn captions into the video" : {},
+    "Camera follows your cursor" : {},
+    "Camera footage is missing" : {},
+    "Camera layouts" : {},
+    "Camera layouts — drag to move, drag an edge to retime, click to change" : {},
+    "Camera — drag to move it, click for options" : {},
+    "Cancel" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abbrechen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annuler"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消"
+          }
+        }
+      }
+    },
+    "Cancel export" : {},
+    "Cancel this export" : {},
+    "Caption" : {},
+    "Caption style %@" : {},
+    "Captions" : {},
+    "Capture" : {
+      "comment" : "A screenshot in History (menu section, and a card's kind when its type is unknown)",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildschirmfoto"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capture"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截屏"
+          }
+        }
+      }
+    },
+    "Capture All Displays" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Bildschirme aufnehmen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capturer tous les écrans"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "捕捉所有显示器"
+          }
+        }
+      }
+    },
+    "Capture Area" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bereich aufnehmen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capturer une zone"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "捕捉区域"
+          }
+        }
+      }
+    },
+    "Capture Fullscreen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vollbild aufnehmen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capturer le plein écran"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "捕捉全屏"
+          }
+        }
+      }
+    },
+    "Capture Fullscreen Alt" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vollbild aufnehmen (Alternative)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capturer le plein écran (autre)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "捕捉全屏（备用）"
+          }
+        }
+      }
+    },
+    "Capture History" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlauf"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Historique des captures"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截屏历史记录"
+          }
+        }
+      }
+    },
+    "Capture Previous Area" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorherigen Bereich aufnehmen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capturer la zone précédente"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "捕捉上一个区域"
+          }
+        }
+      }
+    },
+    "Capture Window" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fenster aufnehmen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capturer une fenêtre"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "捕捉窗口"
+          }
+        }
+      }
+    },
+    "Capture from %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildschirmfoto vom %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capture du %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 的截屏"
+          }
+        }
+      }
+    },
+    "Capture type" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufnahmeart"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Type de capture"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截屏类型"
+          }
+        }
+      }
+    },
+    "Capture · Record · Updates" : {},
+    "Capture, %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildschirmfoto, %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capture, %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截屏，%@"
+          }
+        }
+      }
+    },
+    "Captured screenshots will appear here instantly" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neue Bildschirmfotos erscheinen hier sofort"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vos captures apparaîtront ici instantanément"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新的截屏会立即显示在这里"
+          }
+        }
+      }
+    },
+    "Captures" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildschirmfotos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Captures"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截屏"
+          }
+        }
+      }
+    },
+    "Cards use your background, and the timeline grows to fit them. The “Made with Shotnix” end card is separate — it's in the export options." : {},
+    "Center" : {},
+    "Check for Updates" : {},
+    "Choose Capture Area in the Shotnix menu to start" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle „Bereich aufnehmen“ im Shotnix-Menü, um loszulegen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisissez « Capturer une zone » dans le menu Shotnix pour commencer"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 Shotnix 菜单中选择“捕捉区域”即可开始"
+          }
+        }
+      }
+    },
+    "Choose Image…" : {},
+    "Choose..." : {},
+    "Clean Up…" : {},
+    "Cleaning Up…" : {},
+    "Cleaning up your voice first… %lld%%" : {},
+    "Cleaning up your voice…" : {},
+    "Clear All" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle löschen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tout effacer"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全部清除"
+          }
+        }
+      }
+    },
+    "Clear History" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlauf löschen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effacer l’historique"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清除历史记录"
+          }
+        }
+      }
+    },
+    "Clear History?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlauf löschen?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effacer l’historique ?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "要清除历史记录吗？"
+          }
+        }
+      }
+    },
+    "Click to add a zoom — or press Z at the playhead" : {},
+    "Clicks" : {},
+    "Clicks — drag one to retime it, ⌫ removes the selected one" : {},
+    "Clip %lld" : {},
+    "Close" : {},
+    "Close (Esc)" : {},
+    "Color" : {},
+    "Command Center" : {},
+    "Commands" : {},
+    "Copy" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopieren"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copier"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拷贝"
+          }
+        }
+      }
+    },
+    "Copy capture to clipboard" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildschirmfoto in die Zwischenablage kopieren"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copier la capture dans le presse-papiers"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将截屏拷贝到剪贴板"
+          }
+        }
+      }
+    },
+    "Copy to clipboard — %@" : {},
+    "Could not copy this capture" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieses Bildschirmfoto konnte nicht kopiert werden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de copier cette capture"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法拷贝此截屏"
+          }
+        }
+      }
+    },
+    "Couldn't open this video" : {},
+    "Crop" : {},
+    "Crop the recording — trim away toolbars or empty space" : {},
+    "Cropped" : {},
+    "Custom" : {},
+    "Custom color" : {},
+    "Cut this part" : {},
+    "Cut, no transition" : {},
+    "Delete" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Löschen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除"
+          }
+        }
+      }
+    },
+    "Delete (⌫)" : {},
+    "Delete All" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle löschen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tout supprimer"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全部删除"
+          }
+        }
+      }
+    },
+    "Delete Clip" : {},
+    "Delete Screenshot" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildschirmfoto löschen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer la capture"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除截屏"
+          }
+        }
+      }
+    },
+    "Delete Screenshots" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildschirmfotos löschen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer les captures"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除截屏"
+          }
+        }
+      }
+    },
+    "Delete Zoom" : {},
+    "Delete every saved capture" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle gesicherten Bildschirmfotos löschen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer toutes les captures enregistrées"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除所有已存储的截屏"
+          }
+        }
+      }
+    },
+    "Delete selection" : {},
+    "Delete selection (⌫)" : {},
+    "Dismiss" : {},
+    "Dismiss tips" : {},
+    "Done" : {},
+    "Done (Esc)" : {},
+    "Double-click to show the recording in Finder" : {},
+    "Drag one of them on the timeline to move them all together; ⌫ removes them all. ⇧- or ⌘-click adds or takes one out." : {},
+    "Drag the block on the Camera lane to move it, or its edges to change how long it lasts. Each change eases in and out." : {},
+    "Drag the frame on the preview to aim; drag its corners to zoom in or out." : {},
+    "Drag to change where this clip ends" : {},
+    "Drag to change where this clip starts" : {},
+    "Drag to move this clip to another place in the video" : {},
+    "Drag to move where the arrow starts" : {},
+    "Drag to move; drag a corner to resize" : {},
+    "Drag to point the arrow" : {},
+    "Duplicate" : {},
+    "Each recording keeps its own pointer, clicks, and shortcuts. Reorder them here; cut and trim them on the timeline like any clip." : {},
+    "Edit" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bearbeiten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modifier"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "编辑"
+          }
+        }
+      }
+    },
+    "End here" : {},
+    "Enjoying Shotnix? Star it on GitHub so more people find it." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gefällt dir Shotnix? Gib ihm einen Stern auf GitHub, damit mehr Leute es finden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous aimez Shotnix ? Ajoutez une étoile sur GitHub pour que plus de monde le découvre."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "喜欢 Shotnix 吗？在 GitHub 上加个星标，让更多人发现它。"
+          }
+        }
+      }
+    },
+    "Everything is ready" : {},
+    "Export" : {},
+    "Export (⌘E)" : {},
+    "Export and put the file on the clipboard — paste it into Slack, Mail, or Finder" : {},
+    "Export failed" : {},
+    "Export: %@" : {},
+    "Export…" : {},
+    "File not found" : {},
+    "Fill the Frame, Follow the Cursor" : {},
+    "Follow Cursor" : {},
+    "Follows cursor" : {},
+    "Forever" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für immer"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour toujours"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "永久"
+          }
+        }
+      }
+    },
+    "From your Mac" : {},
+    "Full camera for intro & outro" : {},
+    "Full frame (no background)" : {},
+    "Fullscreen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vollbild"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plein écran"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全屏"
+          }
+        }
+      }
+    },
+    "Hide" : {},
+    "Hide tips (bring them back from ⌘K or the shortcuts list)" : {},
+    "Hide — the export keeps going (Esc)" : {},
+    "Highlight color" : {},
+    "History cleared — click or press ⌘Z to undo" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlauf gelöscht – klicken oder ⌘Z drücken zum Widerrufen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Historique effacé — cliquez ou appuyez sur ⌘Z pour annuler"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "历史记录已清除 — 点按或按下 ⌘Z 撤销"
+          }
+        }
+      }
+    },
+    "Hover the zoom track and click to add a zoom, or press Z at the playhead. Drag a zoom to move it; drag its edges to change how long it lasts." : {},
+    "Inspector tabs" : {},
+    "It was recorded into the pixels, so it can't be resized or smoothed. New recordings capture an editable cursor by default (Settings → Recording)." : {},
+    "Jump here" : {},
+    "Keep Editing" : {},
+    "Keep editing — the words appear here when Shotnix is done listening." : {},
+    "Keyboard Shortcuts" : {},
+    "Keyboard shortcuts" : {},
+    "Keyboard shortcuts (?)" : {},
+    "Keyboard shortcuts — click one to select it, ⌫ hides it" : {},
+    "Language" : {},
+    "Last %lld captures" : {
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Letztes Bildschirmfoto"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Letzte %lld Bildschirmfotos"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Last capture"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Last %lld captures"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Dernière capture"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld dernières captures"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最近 %lld 张截屏"
+          }
+        }
+      }
+    },
+    "Listens on this Mac — nothing is uploaded" : {},
+    "MIT License — Free and open source" : {},
+    "Make it lighter: %@, %lld fps" : {},
+    "Manage" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verwalten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gérer"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "管理"
+          }
+        }
+      }
+    },
+    "More" : {},
+    "More caption options" : {},
+    "More tips" : {},
+    "Move %@ earlier" : {},
+    "Move %@ later" : {},
+    "Move Earlier" : {},
+    "Move Later" : {},
+    "Move earlier" : {},
+    "Move later" : {},
+    "Music options" : {},
+    "Music — click to change its volume, fades, and ducking" : {},
+    "Mute Clip" : {},
+    "Mute preview" : {},
+    "Mute the preview (M) — the export keeps its sound" : {},
+    "New recordings use this look" : {},
+    "No background" : {},
+    "No background — text only" : {},
+    "No camera in this recording" : {},
+    "No captures contain “%@”" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Bildschirmfoto enthält „%@“"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune capture ne contient « %@ »"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有截屏包含“%@”"
+          }
+        }
+      }
+    },
+    "No captures of this type" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Bildschirmfotos dieser Art"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune capture de ce type"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有此类截屏"
+          }
+        }
+      }
+    },
+    "No captures yet" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch keine Bildschirmfotos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune capture pour l’instant"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "还没有截屏"
+          }
+        }
+      }
+    },
+    "No clicks were recorded, so add zooms by hand: hover the zoom track and click." : {},
+    "No cursor data in this video" : {},
+    "No saved captures yet" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch keine gesicherten Bildschirmfotos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune capture enregistrée pour l’instant"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "还没有已存储的截屏"
+          }
+        }
+      }
+    },
+    "None in this recording. Turn on “Show keyboard shortcuts” in Settings → Recording and every ⌘ shortcut you press appears as keycaps. Plain typing is never recorded." : {},
+    "Not for this video" : {},
+    "Not now" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht jetzt"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus tard"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以后再说"
+          }
+        }
+      }
+    },
+    "OCR / Capture Text" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text erfassen (OCR)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capturer du texte (OCR)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提取文字（OCR）"
+          }
+        }
+      }
+    },
+    "Older" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Älter"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus ancien"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更早"
+          }
+        }
+      }
+    },
+    "Open Another Video…" : {},
+    "Open Command Center" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kommandozentrale öffnen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir le centre de commande"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开命令中心"
+          }
+        }
+      }
+    },
+    "Open Privacy Settings" : {},
+    "Open Recording Settings…" : {},
+    "Open in annotation editor" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im Bildschirmfoto-Editor öffnen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir dans l’éditeur de captures"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在截屏编辑器中打开"
+          }
+        }
+      }
+    },
+    "Opens its title and length in Style" : {},
+    "Opens its volume, fades, and ducking in Audio" : {},
+    "Or drag it on the preview. Images stay put while the camera zooms." : {},
+    "Or drag its bar on the timeline." : {},
+    "Or drag the bubble on the video — it snaps to the nearest spot." : {},
+    "Or type one at the playhead" : {},
+    "Pause" : {},
+    "Pause (Space)" : {},
+    "Pause / Resume Recording" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufzeichnung pausieren/fortsetzen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suspendre/reprendre l’enregistrement"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暂停/继续录制"
+          }
+        }
+      }
+    },
+    "Pin to Screen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf dem Bildschirm anheften"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Épingler à l’écran"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "贴到屏幕"
+          }
+        }
+      }
+    },
+    "Plans zooms around your %lld click%@. Zooms you placed by hand are kept." : {},
+    "Play" : {},
+    "Play (Space)" : {},
+    "Plays or pauses. Use Option-arrow keys to select what's on the timeline." : {},
+    "Position" : {},
+    "Preparing your video…" : {},
+    "Press %@ to take your first screenshot" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drücke %@ für dein erstes Bildschirmfoto"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appuyez sur %@ pour faire votre première capture"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按下 %@ 截取你的第一张截屏"
+          }
+        }
+      }
+    },
+    "Pressed at %@. Press ⌫ to hide it from the video — handy for a stray ⌘Tab." : {},
+    "Re-enable Apple's ⌘⇧3/4/5 screenshot shortcuts" : {},
+    "Record Area" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bereich aufzeichnen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrer une zone"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "录制区域"
+          }
+        }
+      }
+    },
+    "Record Fullscreen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vollbild aufzeichnen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrer le plein écran"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "录制全屏"
+          }
+        }
+      }
+    },
+    "Record Window" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fenster aufzeichnen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrer une fenêtre"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "录制窗口"
+          }
+        }
+      }
+    },
+    "Recorded at %@. Drag its dot on the timeline to retime it; ripples and Auto Zoom follow." : {},
+    "Recordings made with Shotnix capture the pointer so it can be smoothed, resized, and hidden." : {},
+    "Redo" : {},
+    "Redo %@" : {},
+    "Redo %@ (⇧⌘Z)" : {},
+    "Redo (⇧⌘Z)" : {},
+    "Remove %@" : {},
+    "Remove %@ Card" : {},
+    "Remove Music" : {},
+    "Remove Transcript & Captions" : {},
+    "Remove all %lld" : {},
+    "Remove all zooms" : {},
+    "Remove caption" : {},
+    "Remove from this video" : {},
+    "Remove this caption" : {},
+    "Remove this translation" : {},
+    "Remove translation" : {},
+    "Removed %@ — click to restore" : {},
+    "Removed parts can be restored from the yellow marker on the timeline." : {},
+    "Replace…" : {},
+    "Reset" : {},
+    "Reset %@" : {},
+    "Reset Defaults" : {},
+    "Reset to the Shotnix look" : {},
+    "Restore %@ at %@" : {},
+    "Restore %@ cut at %@" : {},
+    "Restore All %lld" : {},
+    "Restore Apple Shortcuts" : {},
+    "Reveal" : {},
+    "Reveal in Finder" : {},
+    "SHOTNIX LIBRARY" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SHOTNIX-BIBLIOTHEK"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BIBLIOTHÈQUE SHOTNIX"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SHOTNIX 资源库"
+          }
+        }
+      }
+    },
+    "Save %@…" : {},
+    "Save As…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sichern unter …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrer sous…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "存储为…"
+          }
+        }
+      }
+    },
+    "Save Subtitles" : {},
+    "Saved" : {
+      "comment" : "A History card's kind when its capture type is unknown",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gesichert"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrée"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已存储"
+          }
+        }
+      }
+    },
+    "Saved capture" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gesichertes Bildschirmfoto"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capture enregistrée"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已存储的截屏"
+          }
+        }
+      }
+    },
+    "Saves the background, frame, cursor, and zoom style." : {},
+    "Saving captures to History" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildschirmfotos werden im Verlauf gesichert"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrement des captures dans l’historique"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在将截屏存储到历史记录"
+          }
+        }
+      }
+    },
+    "Scrolling" : {
+      "comment" : "A capture type, shown in History",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scroll-Aufnahme"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Défilement"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "滚动"
+          }
+        }
+      }
+    },
+    "Scrolling Capture" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scroll-Aufnahme"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capture défilante"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "滚动截屏"
+          }
+        }
+      }
+    },
+    "Scrolling capture" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scroll-Aufnahme"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capture défilante"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "滚动截屏"
+          }
+        }
+      }
+    },
+    "Search commands" : {},
+    "Search text in captures" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text in Bildschirmfotos suchen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rechercher du texte dans les captures"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "搜索截屏中的文字"
+          }
+        }
+      }
+    },
+    "Select a clip on the timeline to mute it or fade it in and out." : {},
+    "Select words and press ⌫ to cut them from the video — ⌫ again on crossed-out words puts them back. Click a word to jump there; ⌘F finds." : {},
+    "Selected %@" : {},
+    "Set the %@ point to the playhead (%@)" : {},
+    "Share" : {},
+    "Share — Mail, Messages, AirDrop…" : {},
+    "Shotnix" : {},
+    "Shotnix listens to the recording right on this Mac — nothing is uploaded. Then cut the video by deleting words, remove ums and long pauses in one click, and add captions." : {},
+    "Shotnix – Capture History" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shotnix – Verlauf"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shotnix – Historique des captures"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shotnix – 截屏历史记录"
+          }
+        }
+      }
+    },
+    "Show" : {},
+    "Show Folder in Finder" : {},
+    "Show background" : {},
+    "Show for the whole video" : {},
+    "Show in Finder" : {},
+    "Show more of the timeline" : {},
+    "Show one kind of capture" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nur eine Art von Bildschirmfotos zeigen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher un seul type de capture"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "只显示一种截屏"
+          }
+        }
+      }
+    },
+    "Show the timeline in more detail" : {},
+    "Show tips under the video again" : {},
+    "Shows what can be removed — data of recordings Shotnix can't find, unused footage and pictures, old clipboard exports — and asks before removing it" : {},
+    "Shuffle the background" : {},
+    "Size" : {},
+    "Speed" : {},
+    "Split at Playhead" : {},
+    "Split at playhead" : {},
+    "Split the video (S) to make cuts; each can dissolve or dip to black." : {},
+    "Spoken word" : {},
+    "Star on GitHub" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stern auf GitHub"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mettre une étoile sur GitHub"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 GitHub 上加星标"
+          }
+        }
+      }
+    },
+    "Start at the playhead" : {},
+    "Start here" : {},
+    "Stop Recording" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufzeichnung stoppen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arrêter l’enregistrement"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停止录制"
+          }
+        }
+      }
+    },
+    "Subtitles file" : {},
+    "Swap the arrow's head and tail" : {},
+    "Switch the camera to full screen for talking points, or put it side by side with the screen — at the playhead. Each shows on the Camera lane." : {},
+    "Tag" : {},
+    "Text" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Texte"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文字"
+          }
+        }
+      }
+    },
+    "The camera keeps your cursor in view and glides after it." : {},
+    "The cursor is part of this video" : {},
+    "The export carries on in the background (Esc)" : {},
+    "The picture's file is gone — choose it again with Replace." : {},
+    "The song's file is gone — choose it again with Replace." : {},
+    "This Week" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Woche"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette semaine"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本周"
+          }
+        }
+      }
+    },
+    "This recording has no sound" : {},
+    "This recording has no sound. Turn on the microphone before recording to narrate it." : {},
+    "This video was recorded with your camera, but “%@” isn't in %@ anymore. Put it back there and open the video again to get the camera bubble back." : {},
+    "Timed Capture" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufnahme mit Timer"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capture avec minuteur"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "定时截屏"
+          }
+        }
+      }
+    },
+    "Timeline scale" : {},
+    "Timeline scale (pinch, or ⌘-scroll)" : {},
+    "Tips" : {},
+    "Today" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heute"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aujourd’hui"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今天"
+          }
+        }
+      }
+    },
+    "Tools" : {},
+    "Transcribe" : {},
+    "Transcribe Again…" : {},
+    "Transcribe…" : {},
+    "Translate" : {},
+    "Trim the clip's end to the playhead (O)" : {},
+    "Trim the clip's start to the playhead (I)" : {},
+    "Try Again" : {},
+    "Turn On" : {},
+    "Turn around" : {},
+    "Turn on the camera in the recording bar before you record, and your face appears here as a bubble you can place, resize, and restyle." : {},
+    "Turn on the microphone or system audio before recording to capture sound." : {},
+    "Turn the video's sound back on" : {},
+    "Undo" : {},
+    "Undo %@" : {},
+    "Undo %@ (⌘Z)" : {},
+    "Undo (⌘Z)" : {},
+    "Unmute Clip" : {},
+    "Unmute preview" : {},
+    "Unmute the preview (M)" : {},
+    "Use for new recordings" : {},
+    "Use this color" : {},
+    "Use this level for every zoom" : {},
+    "Version %@" : {},
+    "Version 0.24.1\n• The screenshot editor's toolbar sits straight: a clicked tool no longer stays shrunk toward a corner, every tool has even room on all sides, and hover matches the selection's rounded shape\n• Buttons on History cards and the capture thumbnail spring back after a click, and toasts, badges, and the countdown grow from their center\n\nVersion 0.24.0\n• Heads-up: Esc no longer stops a recording from other apps; press ⌃⌘Esc, or Esc while Shotnix is in front. New installs leave ⌘⇧S and ⌘⇧O free for other apps (yours stay if you use them). Recordings move to 60 fps once; pick 30 again in Settings if you prefer it\n• Screenshot editor: Spotlight, callouts, a freehand highlighter, rounded rectangles, text in any size and weight, crop you can undo, full-resolution saves on any display, and it asks before closing or quitting with unsaved edits\n• Blur and pixelate now fully cover what's under them, with a strength slider\n• Adjust a selection before the shot (hold ⇧ as you let go), Capture All Displays, and scrolling capture that stitches pages cleanly\n• Text recognition keeps columns and tables, finds links, and lets you choose languages\n• History keeps captures as long as you choose, shows its size, filters by type, and supports keyboard selection, ⌘Z undo, and type-to-search\n• Recording: pause and resume, discard, a countdown, crash-safe recordings, window recordings that follow the window, HEVC on 5K and larger displays, and no Shotnix toasts or HUD in your recordings\n• Video editor: background music, logos and image overlays, title cards, transitions, several recordings in one video, caption looks and on-device translation, and exports that run in the background\n• M now mutes only the preview, captions use your voice only, Shorten Pauses leaves typing alone, and clicking an annotation on the video selects it\n• Fixed: screenshots taken in the same second overwriting each other, microphone dropouts shifting the audio, the display sleeping mid-recording, and much more\n\nVersion 0.23.1\n• Recordings default to 60 fps, so scrolling, animations, and video stay smooth in 60 fps exports. If you picked 30 fps, Shotnix keeps it\n• Captions keep sentences together: when a long sentence splits across two lines, its last word no longer rides along into the next sentence\n\nVersion 0.23.0\n• The video editor is rebuilt: a big preview, a tabbed inspector, and a full-width timeline — and one renderer for preview and export, so what you see is exactly what you export\n• Zooms are blocks on the Zoom track: drag to move, drag an edge to resize; the camera follows your cursor or aims by hand, and Auto Zoom lands before each click\n• The real macOS cursor, redrawn smooth at any size with click effects — plus backgrounds, padding, rounded corners, and shadows\n• Annotations (text, arrows, highlights, blur) live in a dock above the preview, in any color and line weight\n• Your camera as its own layer: bubble shapes, background blur or removal, a cutout look, and full-camera or side-by-side layouts\n• Captions and edit-by-text, made on your Mac: cut the video by deleting words, remove ums and long pauses in one click, save subtitles\n• Cleaner sound: separate voice and computer levels, Enhance voice, and even loudness on export\n• Vertical videos that follow your cursor, crop, and export to MP4 or GIF — or straight to the clipboard\n• The timed-capture countdown is redesigned\n• Fixed: installing updates on macOS 26, recordings losing their data when renamed or moved, recording colors, and exports that looked lighter than the preview\n\nVersion 0.22.0\n• Post-capture thumbnails now stack: take several screenshots in a row and they pile into a tidy column, each new capture landing on top. Dismiss any card and the ones above drop down smoothly. Five per screen; the oldest bows out beyond that\n• Swiping a thumbnail away now visibly slides it off screen (the slide animation silently never ran before)\n\nVersion 0.21.1\n• The Select tool in the screenshot editor now uses a proper pointer icon, so it reads as Select at a glance\n• Fixed: switching tools while a text box was still open no longer drops a surprise text annotation on your next click — the text commits the moment you switch tools\n\nVersion 0.21.0\n• The video timeline is redesigned as a pro editing surface — labeled zoom blocks you drag to retime (\"1.8×\"), color-coded callout pills spanning exactly when they're on screen, click dots, and the clip strip anchoring the bottom\n• Callouts are fully editable: drag them on the video itself with resize handles, drag their pill in time, drag an edge to set when they appear and disappear, and drag up or down to move between lanes — every gesture is one undo step\n• Overlapping callouts stack into lanes automatically, drags are smooth with clean snapping, and recorded clicks can be retimed or deleted right on the timeline\n• New preview mute button (or press M) silences the editor while you review — export audio is untouched\n• Annotation editor: grab and move any drawn shape with any tool, hover shows what's draggable, resize from the handles, and double-click text to edit it\n• Fixed: a freeze when pressing ⌘X/⌘C with the post-capture thumbnail focused, blurry area recordings, screenshots of Shotnix's own windows, and capture feedback now appears before you move the mouse\n\nVersion 0.20.5\n• Menu bar full? Shotnix now notices when macOS hides its icon: a heads-up toast, relaunching the app opens the menu as a floating panel, and a new assignable Open Command Center shortcut works without the icon\n\nVersion 0.20.4\n• Command center opens instantly with a quick settle animation, collapses Health to one line when all is well, shows full-width warning tiles with real badges, hides rows that can't be used, and scrolls bar-free\n• Exported cursor now follows the recorded timeline exactly — no more drift out of sync with clicks and zooms\n• Export save panel suggests a clean file name\n\nVersion 0.20.3\n• The Health tile no longer warns about shortcuts you chose not to set — Timed Capture and Recording shortcuts are optional, and a fresh install now shows green\n\nVersion 0.20.2\n• The post-capture thumbnail now fills the whole card — small captures zoom to fill, and small text renders noticeably crisper\n• The thumbnail floats a bit higher on screen, clear of the Dock\n\nVersion 0.20.1\n• Smoother auto-zoom — the camera no longer darts: every move gets a real duration, nearby clicks share one held shot, back-to-back shots glide directly between focus points, and zoom-outs are one smooth motion\n• Preview and export now share a single zoom camera — the point you pick genuinely centers, and black beyond the frame is impossible\n\nVersion 0.20.0\n• Recordings open already produced — auto-zoom follows your recorded clicks with zero editing, ready to export (toggle in Preferences → Recording)\n• GIF export — pick MP4 or GIF in the export panel, with frame rate and size options that are remembered\n• Exports now match the preview exactly: gradient backgrounds, background blur, rounded corners, and text sizing\n• Zoom never shows black beyond the video edge — the camera clamps to the frame\n• Optional \"Made with Shotnix\" end card on MP4 exports\n\nVersion 0.19.2\n• A one-time ask to star Shotnix on GitHub after your tenth screenshot — a clickable toast, then a dismissible line in the history panel. Choose once and it never returns\n\nVersion 0.19.1\n• Fixed the app crashing instantly on launch on many Macs — app resources are now located correctly inside the app package\n\nVersion 0.19.0\n• True window capture — isolated windows with optional shadow and transparent padding, nothing overlapping bakes in\n• Timed capture with a cancellable 3/5/10s countdown, and hold Space to move a selection while dragging\n• History search — find captures by the text inside them — plus undo delete with a 7-day trash\n• Setup checklist onboarding, a menu bar recording timer (click to stop), and instant ⌘⇧3 with no display chooser\n• Faster everywhere: instant crosshair, ~80ms quicker shutter, no focus stealing, smoother recording, history scrolling, and editor scrubbing\n\nVersion 0.18.1\n• Fixed black screenshots and recordings on external displays — captures on secondary monitors now grab the correct screen\n\nVersion 0.18.0\n• Recording hotkeys — assign shortcuts to start and stop recording, and Escape stops a recording in progress\n• Multi-display polish — fullscreen capture asks which display (or all), and overlays, toasts, and pins appear on the screen you captured\n• Custom file names — template with date/time tokens and live preview in Screenshots settings\n• Copy Text from the post-capture overlay, and click the save toast to reveal the file in Finder\n• Annotation editor — canvas zoom, Shift/Option drawing constraints, arrow-key nudging, and it remembers your tool, color, and line width\n• Reliability — interrupted recordings are saved instead of lost, failed text extraction no longer clears your clipboard, and barcode scanning goes beyond QR\n\nVersion 0.17.4\n• Cursor polish: adjustable cursor size, click spotlight, and motion-blur trail on fast moves\n• Editors now stay reachable — open a photo or video editor and Shotnix gets a Dock icon and ⌘-Tab entry so you can always switch back\n\nVersion 0.17.3\n• Premium effects: text labels, arrows, highlights, blur boxes, and exported callout layers\n• Auto zoom presets, effect lane markers, smoother cursor interpolation, and social export polish\n\nVersion 0.17.2\n• Per-segment speed controls: 0.5x, 1x, 1.5x, and 2x\n• Clip mute plus fade-in/fade-out controls while preserving recorded audio tracks\n\nVersion 0.17.1\n• Proper clip timeline with split at playhead, delete, ripple delete, undo/redo, and selected clip trim\n• Export now stitches multi-segment compositions with cuts, speed, audio, cursor, and zoom mapping\n\nVersion 0.17.0\n• Video Demo Editor foundation with preview stage, frame presets, backgrounds, trim, and MP4 export\n• Video timeline now supports split, delete, ripple, selected clip trim, and stitched MP4 export\n• Timeline UI now uses a ruler, video/audio track, zoom lane, trim handles, and full-height playhead\n• Recordings can open directly into the video editor\n• Command Center can open a video file or reopen the last recording\n\nVersion 0.16.0\n• New Command Center replaces the plain menu bar dropdown\n• Health status now surfaces permissions, shortcuts, updates, save folder, and version\n• Quick Access, History, and pinned screenshot menus now share the premium HUD style\n\nVersion 0.15.4\n• Quick Access thumbnails now show the full screenshot with a premium blurred backdrop\n• DisplayLink still screenshots now retry through a stream capture path when the still image path returns black\n• Shortcut preferences now scroll cleanly and keep Reset Defaults reachable\n\nVersion 0.15.3\n• Screenshot captures now play a bundled Shotnix capture sound reliably\n• The capture sound is packaged with the app bundle for signed releases\n\nVersion 0.15.2\n• Quick Access thumbnail drag-and-drop now exports reliably to Finder and other apps\n• Copy and Save buttons keep responding while thumbnail drag remains available from non-button areas\n\nVersion 0.15.1\n• Annotation editor windows now open larger by default to reduce immediate scrolling\n• Editor sizing stays capped to the visible screen for smaller or accessibility-scaled displays\n• Crop confirmation now stays fully visible in the toolbar\n\nVersion 0.15.0\n• First-run onboarding now guides Screen Recording and Apple screenshot shortcut setup\n• Shotnix can disable conflicting macOS screenshot shortcuts and confirms when setup is ready\n• The quick-access thumbnail now defaults to the left side on fresh installs\n\nVersion 0.14.1\n• Overlay Save now writes to the configured Save Location immediately\n• Save uses the same quick confirmation experience as Copy\n• Record Window now captures the selected window more sharply\n\nVersion 0.14.0\n• New screenshots copy to the clipboard by default\n• Added a Screenshots preference to disable automatic clipboard copying\n\nVersion 0.13.0-beta\n• Redesigned Capture History with premium dark-glass styling\n• More compact four-column capture cards with smoother preview framing\n• Refined history panel spacing, hover states, and card borders\n\nVersion 0.12.0-beta\n• Custom image backdrops and generated image presets for presentation-ready exports\n• Refined annotation editor chrome, toolbar spacing, and background popovers\n• Numbered markers and color swatches render cleanly in the editor\n\nVersion 0.11.0-beta\n• Per-image Backdrop controls for presentation-ready screenshot exports\n• Annotation editor now previews styled backgrounds exactly as saved\n• Save panels, editor restore, and local signing are more reliable\n\nVersion 0.10.2-beta\n• Record Window now shows premium preview cards with app icons and target details\n• Desktop/backstop windows are filtered out of the picker\n• Select controls no longer crowd the right scrollbar edge\n\nVersion 0.10.1\n• Back-to-back recordings and screenshots no longer get stuck after stopping recording\n• Screen recordings preserve Retina scale for sharper MP4 output\n\nVersion 0.10.0-beta\n• Record an area, selected window, or fullscreen display\n• Configure system audio, microphone, cursor, quality, and FPS before recording\n• Live recording HUD with timer, stop control, audio state, and mic level feedback\n• Record Window now uses a selectable window picker instead of a blocking overlay\n\nVersion 0.9.9-beta\n• QR code scanning from a selected screen area\n• Smart QR results for links, email, phone, SMS, Wi-Fi, and plain text\n\nVersion 0.9.8-beta\n• About now includes Website, GitHub, and Report Issue links\n• First-launch welcome copy now better reflects the full capture workflow\n\nVersion 0.9.7-beta\n• Closing a Shotnix window no longer drops the app from Cmd-Tab when other windows remain open\n• Annotation editor toolbar no longer overlaps the traffic light buttons\n• Arrow annotations render cleanly — shaft now stops at the arrowhead instead of overlapping it\n\nVersion 0.9.6-beta\n• ⌘⇧3 fullscreen capture alias\n• Fixed annotation move undo correctness\n• Hide desktop icons while capturing now works during capture flows\n• Safer WebP fallback and release signing cleanup\n• Performance polish for annotation, overlay, history, and scrolling capture\n\nVersion 0.9.5-beta\n• Premium branding, app icon, menu bar icon, and first-launch welcome screen\n• Adaptive colors and haptic feedback\n• Premium DMG installer branding\n\nVersion 0.9.2-beta\n• WebP export support (macOS 14+)\n• First-launch onboarding with permission guide\n• After-capture auto-actions (auto-copy, auto-save)\n• Fixed multi-display capture coordinates\n• Screenshot colors now match display calibration exactly\n\nVersion 0.9.1-beta\n• Pixel-perfect screenshot quality (fixed CoreGraphics resampling blur)\n• Correct DPI metadata for Retina captures\n• Timestamped filenames — \"Shotnix 2026-04-12 at 10.30.48\"\n• Auto-disable conflicting macOS screenshot shortcuts on first launch\n• Fixed windows not coming to front (preferences, history, annotation)\n• Crash guards for empty screen arrays and async cleanup races\n\nVersion 0.9.0-beta\n• Area, window, and fullscreen capture\n• Scrolling capture for long content\n• OCR text recognition (⌘⇧O)\n• Full annotation editor\n• Quick access overlay with drag-and-drop\n• Pin screenshots to desktop\n• Capture history with grid browser\n• Global hotkeys (⌘⇧3/4/5/6/7)\n• Launch at login support\n• Full settings window" : {},
+    "Video copied" : {},
+    "Video data" : {},
+    "Video data uses %@" : {},
+    "Video exported" : {},
+    "Video preview" : {},
+    "What's New" : {},
+    "Window" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fenster"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fenêtre"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "窗口"
+          }
+        }
+      }
+    },
+    "Yesterday" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gestern"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hier"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "昨天"
+          }
+        }
+      }
+    },
+    "Your narration can become captions — then cut the video by editing its words." : {},
+    "Your video's background shows behind you — found on this Mac, frame by frame." : {},
+    "Your words, as text" : {},
+    "Zoom" : {},
+    "Zoom Level" : {},
+    "Zoom to %@ (key %@)" : {},
+    "Zoom — drag to move, drag an edge to resize, click to edit" : {},
+    "© 2026 Shotnix Contributors" : {},
+    "· aim by hand" : {},
+    "· drag to aim" : {},
+    "· follows cursor" : {},
+    "“%@” found in %lld of %lld captures" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%1$@“ in %2$lld von %3$lld Bildschirmfotos gefunden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "« %1$@ » trouvé dans %2$lld captures sur %3$lld"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 %3$lld 张截屏中的 %2$lld 张里找到“%1$@”"
+          }
+        }
+      }
+    },
+    "≈ %@" : {},
+    "✓ Copied to clipboard" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✓ In die Zwischenablage kopiert"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✓ Copié dans le presse-papiers"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✓ 已拷贝到剪贴板"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

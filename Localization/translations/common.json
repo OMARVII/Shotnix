@@ -1,0 +1,67 @@
+{
+  "%lld days": {
+    "de": {
+      "one": "%lld Tag",
+      "other": "%lld Tage"
+    },
+    "en": {
+      "one": "%lld day",
+      "other": "%lld days"
+    },
+    "fr": {
+      "one": "%lld jour",
+      "other": "%lld jours"
+    },
+    "zh-Hans": "%lld 天"
+  },
+  "Area": {
+    "de": "Bereich",
+    "fr": "Zone",
+    "zh-Hans": "区域"
+  },
+  "Cancel": {
+    "de": "Abbrechen",
+    "fr": "Annuler",
+    "zh-Hans": "取消"
+  },
+  "Copy": {
+    "de": "Kopieren",
+    "fr": "Copier",
+    "zh-Hans": "拷贝"
+  },
+  "Delete": {
+    "de": "Löschen",
+    "fr": "Supprimer",
+    "zh-Hans": "删除"
+  },
+  "Edit": {
+    "de": "Bearbeiten",
+    "fr": "Modifier",
+    "zh-Hans": "编辑"
+  },
+  "Fullscreen": {
+    "de": "Vollbild",
+    "fr": "Plein écran",
+    "zh-Hans": "全屏"
+  },
+  "Save As…": {
+    "de": "Sichern unter …",
+    "fr": "Enregistrer sous…",
+    "zh-Hans": "存储为…"
+  },
+  "Text": {
+    "de": "Text",
+    "fr": "Texte",
+    "zh-Hans": "文字"
+  },
+  "Window": {
+    "de": "Fenster",
+    "fr": "Fenêtre",
+    "zh-Hans": "窗口"
+  },
+  "✓ Copied to clipboard": {
+    "de": "✓ In die Zwischenablage kopiert",
+    "fr": "✓ Copié dans le presse-papiers",
+    "zh-Hans": "✓ 已拷贝到剪贴板"
+  }
+}

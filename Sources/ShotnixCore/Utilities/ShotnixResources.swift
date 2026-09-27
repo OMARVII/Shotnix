@@ -28,6 +28,7 @@ enum ShotnixResources {
             Bundle.main.resourceURL,                                // .app: Contents/Resources (build-app.sh)
             Bundle.main.bundleURL,                                  // CLI-style flat layout
             Bundle.main.executableURL?.deletingLastPathComponent(), // swift build dev layout (.build/…/release)
+            Bundle(for: ShotnixResourcesAnchor.self).bundleURL.deletingLastPathComponent(), // swift test (.build/…/debug)
         ]
         for candidate in candidates {
             if let url = candidate?.appendingPathComponent(name),
@@ -38,3 +39,6 @@ enum ShotnixResources {
         return nil
     }
 }
+
+/// A class in this module, so `Bundle(for:)` finds the bundle it's linked into.
+private final class ShotnixResourcesAnchor {}

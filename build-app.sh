@@ -59,6 +59,20 @@ if [ -f "$SCRIPT_DIR/THIRD_PARTY_NOTICES.md" ]; then
     cp "$SCRIPT_DIR/THIRD_PARTY_NOTICES.md" "$APP_BUNDLE/Contents/Resources/THIRD_PARTY_NOTICES.md"
 fi
 
+# The app's own languages (translated permission prompts). These .lproj folders
+# are also how macOS knows Shotnix is localized: it then lists Shotnix under
+# per-app languages and shows system panels in the same language. The app's
+# strings live in the ShotnixCore resource bundle (scripts/localize.py).
+for lproj in "$SCRIPT_DIR"/Localization/Main/*.lproj; do
+    [ -d "$lproj" ] && ditto "$lproj" "$APP_BUNDLE/Contents/Resources/$(basename "$lproj")"
+done
+# The app's strings, also in the main bundle: SwiftUI looks up plain
+# Text("…") literals there. L("…") reads the same files from the ShotnixCore
+# resource bundle, which is also what tests see.
+for lproj in "$SCRIPT_DIR"/Sources/ShotnixCore/Resources/*.lproj; do
+    [ -d "$lproj" ] && ditto "$lproj" "$APP_BUNDLE/Contents/Resources/$(basename "$lproj")"
+done
+
 # Copy SPM-generated resource bundles (capture sound, KeyboardShortcuts localizations, etc.)
 while IFS= read -r bundle; do
     bundle_name="$(basename "$bundle")"
