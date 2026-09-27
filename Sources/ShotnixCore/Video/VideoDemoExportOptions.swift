@@ -103,7 +103,7 @@ struct VideoExportSettings: Equatable {
     var fps: Int = 60
     var quality: Quality = .social
     var codec: Codec = .h264
-    var endCard: Bool = true
+    var endCard: Bool = false
     var gifSize: GIFSize = .medium
     var gifFPS: Int = 15
     /// Draw the captions into the picture (independent of the preview).

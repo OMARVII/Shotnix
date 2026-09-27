@@ -401,12 +401,12 @@ enum Settings {
     }
 
     /// Appends the short "Made with Shotnix" outro to MP4 exports.
+    /// The "Made with Shotnix" end card is opt-in. It used to be on unless
+    /// turned off, and every export saved the setting ("videoExportEndCard"),
+    /// so that key can't tell who chose it: this one starts everyone off.
     static var videoExportEndCard: Bool {
-        get {
-            if defaults.object(forKey: "videoExportEndCard") == nil { return true }
-            return defaults.bool(forKey: "videoExportEndCard")
-        }
-        set { defaults.set(newValue, forKey: "videoExportEndCard") }
+        get { defaults.bool(forKey: "videoExportEndCardOn") }
+        set { defaults.set(newValue, forKey: "videoExportEndCardOn") }
     }
 
     /// Auto-generate click-following zooms when a fresh recording opens in the

@@ -66,6 +66,24 @@ final class VideoExportTests: XCTestCase {
         XCTAssertFalse(reported.isEmpty)
     }
 
+    /// The end card is opt-in, also for anyone whose old setting was saved
+    /// on (every export used to save it).
+    func testEndCardIsOptIn() throws {
+        let suiteName = "ShotnixCoreTests.EndCard.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        Settings.defaults = defaults
+        defer {
+            Settings.defaults = .standard
+            defaults.removePersistentDomain(forName: suiteName)
+        }
+        XCTAssertFalse(VideoExportSettings().endCard)
+        XCTAssertFalse(Settings.videoExportEndCard, "a fresh install")
+        defaults.set(true, forKey: "videoExportEndCard")
+        XCTAssertFalse(Settings.videoExportEndCard, "the old key doesn't turn it on")
+        Settings.videoExportEndCard = true
+        XCTAssertTrue(Settings.videoExportEndCard, "switching it on sticks")
+    }
+
     func testEndCardExtendsTheVideo() async throws {
         let (_, project, metadata) = try await source(seconds: 1.5)
         let output = directory.appendingPathComponent("card.mp4")
