@@ -97,6 +97,7 @@ final class LocalizationTests: XCTestCase {
             "de": ("Bereich aufnehmen", "Bereich aufzeichnen", "Verlauf löschen?"),
             "fr": ("Capturer une zone", "Enregistrer une zone", "Effacer l’historique\u{00A0}?"),
             "zh-Hans": ("捕捉区域", "录制区域", "要清除历史记录吗？"),
+            "ru": ("Снять область", "Записать область", "Очистить историю?"),
         ]
         for (language, strings) in expected {
             L10n.use(language)
@@ -121,6 +122,13 @@ final class LocalizationTests: XCTestCase {
         XCTAssertEqual(L("\(3) screenshots deleted — click or press ⌘Z to undo"), "3 captures supprimées — cliquez ou appuyez sur ⌘Z pour annuler")
         L10n.use("zh-Hans")
         XCTAssertEqual(L("\(1) days"), "1 天", "Chinese has one form")
+        L10n.use("ru")
+        XCTAssertEqual(L("\(1) days"), "1 день")
+        XCTAssertEqual(L("\(3) days"), "3 дня")
+        XCTAssertEqual(HistoryRetention.days7.title, "7 дней")
+        XCTAssertEqual(L("\(21) days"), "21 день", "Russian: 21 takes the one form")
+        XCTAssertEqual(HistoryRetention.items1000.title, "Последние 1\u{00A0}000 снимков", "numbers use the language's separators")
+        XCTAssertEqual(L("\(1) screenshots deleted — click or press ⌘Z to undo"), "1 снимок удален — нажмите сюда или ⌘Z, чтобы отменить")
     }
 
     func testTranslationsCanReorderPlaceholders() {

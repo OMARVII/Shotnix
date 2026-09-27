@@ -1,0 +1,176 @@
+{
+  "%@ capture from %@" : {
+    "ru" : "Снимок (%@) от %@"
+  },
+  "%@ capture, %@" : {
+    "ru" : "Снимок (%@), %@"
+  },
+  "%@ · %@ × %@ image" : {
+    "ru" : "%@ · изображение %@ × %@"
+  },
+  "%lld of %lld captures" : {
+    "ru" : "Снимков: %lld из %lld"
+  },
+  "%lld saved captures · drag any card to Finder · right-click for more actions" : {
+    "ru" : {
+      "few" : "%lld сохраненных снимка · перетяните карточку в Finder · другие действия — в контекстном меню",
+      "many" : "%lld сохраненных снимков · перетяните карточку в Finder · другие действия — в контекстном меню",
+      "one" : "%lld сохраненный снимок · перетяните карточку в Finder · другие действия — в контекстном меню",
+      "other" : "%lld сохраненного снимка · перетяните карточку в Finder · другие действия — в контекстном меню"
+    }
+  },
+  "%lld screenshots deleted — click or press ⌘Z to undo" : {
+    "ru" : {
+      "few" : "%lld снимка удалены — нажмите сюда или ⌘Z, чтобы отменить",
+      "many" : "%lld снимков удалено — нажмите сюда или ⌘Z, чтобы отменить",
+      "one" : "%lld снимок удален — нажмите сюда или ⌘Z, чтобы отменить",
+      "other" : "%lld снимка удалено — нажмите сюда или ⌘Z, чтобы отменить"
+    }
+  },
+  "All Captures" : {
+    "ru" : "Все снимки"
+  },
+  "All captures are moved to Shotnix’s trash and permanently deleted after %lld days." : {
+    "ru" : "Все снимки перемещаются в корзину Shotnix и безвозвратно удаляются через %lld дней."
+  },
+  "Capture" : {
+    "ru" : "Снимок"
+  },
+  "Capture History" : {
+    "ru" : "История снимков"
+  },
+  "Capture from %@" : {
+    "ru" : "Снимок от %@"
+  },
+  "Capture type" : {
+    "ru" : "Тип снимка"
+  },
+  "Capture, %@" : {
+    "ru" : "Снимок, %@"
+  },
+  "Captured screenshots will appear here instantly" : {
+    "ru" : "Новые снимки экрана сразу появятся здесь"
+  },
+  "Captures" : {
+    "ru" : "Снимки"
+  },
+  "Choose Capture Area in the Shotnix menu to start" : {
+    "ru" : "Чтобы начать, выберите «Снять область» в меню Shotnix"
+  },
+  "Clear All" : {
+    "ru" : "Удалить все"
+  },
+  "Clear History" : {
+    "ru" : "Очистить историю"
+  },
+  "Clear History?" : {
+    "ru" : "Очистить историю?"
+  },
+  "Copy capture to clipboard" : {
+    "ru" : "Скопировать снимок в буфер обмена"
+  },
+  "Could not copy this capture" : {
+    "ru" : "Не удалось скопировать этот снимок"
+  },
+  "Delete All" : {
+    "ru" : "Удалить все"
+  },
+  "Delete Screenshot" : {
+    "ru" : "Удалить снимок экрана"
+  },
+  "Delete Screenshots" : {
+    "ru" : "Удалить снимки экрана"
+  },
+  "Delete every saved capture" : {
+    "ru" : "Удалить все сохраненные снимки"
+  },
+  "Enjoying Shotnix? Star it on GitHub so more people find it." : {
+    "ru" : "Нравится Shotnix? Поставьте звезду на GitHub, чтобы о нем узнало больше людей."
+  },
+  "Forever" : {
+    "ru" : "Бессрочно"
+  },
+  "History cleared — click or press ⌘Z to undo" : {
+    "ru" : "История очищена — нажмите сюда или ⌘Z, чтобы отменить"
+  },
+  "Last %lld captures" : {
+    "ru" : {
+      "few" : "Последние %lld снимка",
+      "many" : "Последние %lld снимков",
+      "one" : "Последний %lld снимок",
+      "other" : "Последние %lld снимка"
+    }
+  },
+  "Manage" : {
+    "ru" : "Управление"
+  },
+  "No captures contain “%@”" : {
+    "ru" : "Нет снимков с текстом «%@»"
+  },
+  "No captures of this type" : {
+    "ru" : "Нет снимков этого типа"
+  },
+  "No captures yet" : {
+    "ru" : "Снимков пока нет"
+  },
+  "No saved captures yet" : {
+    "ru" : "Сохраненных снимков пока нет"
+  },
+  "Not now" : {
+    "ru" : "Не сейчас"
+  },
+  "Older" : {
+    "ru" : "Ранее"
+  },
+  "Open in annotation editor" : {
+    "ru" : "Открыть в редакторе снимков"
+  },
+  "Pin to Screen" : {
+    "ru" : "Закрепить на экране"
+  },
+  "Press %@ to take your first screenshot" : {
+    "ru" : "Нажмите %@, чтобы сделать первый снимок экрана"
+  },
+  "SHOTNIX LIBRARY" : {
+    "ru" : "МЕДИАТЕКА SHOTNIX"
+  },
+  "Saved" : {
+    "ru" : "Сохраненный"
+  },
+  "Saved capture" : {
+    "ru" : "Сохраненный снимок"
+  },
+  "Saving captures to History" : {
+    "ru" : "Сохранение снимков в историю"
+  },
+  "Scrolling" : {
+    "ru" : "С прокруткой"
+  },
+  "Scrolling capture" : {
+    "ru" : "Снимок с прокруткой"
+  },
+  "Search text in captures" : {
+    "ru" : "Поиск текста в снимках"
+  },
+  "Shotnix – Capture History" : {
+    "ru" : "Shotnix — история снимков"
+  },
+  "Show one kind of capture" : {
+    "ru" : "Показать снимки одного типа"
+  },
+  "Star on GitHub" : {
+    "ru" : "Поставить звезду"
+  },
+  "This Week" : {
+    "ru" : "На этой неделе"
+  },
+  "Today" : {
+    "ru" : "Сегодня"
+  },
+  "Yesterday" : {
+    "ru" : "Вчера"
+  },
+  "“%@” found in %lld of %lld captures" : {
+    "ru" : "Снимков с «%@»: %lld из %lld"
+  }
+}

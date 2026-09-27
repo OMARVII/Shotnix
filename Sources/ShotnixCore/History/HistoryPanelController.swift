@@ -907,19 +907,31 @@ final class HistoryCollectionItem: NSCollectionViewItem {
         detailLabel.frame = NSRect(x: 14, y: 33, width: 162, height: 13)
         container.addSubview(detailLabel)
 
-        copyBtn.frame = NSRect(x: 14, y: 7, width: 74, height: 24)
+        let (copyWidth, editWidth) = Self.buttonWidths(copy: copyBtn.title, edit: editBtn.title)
+        copyBtn.frame = NSRect(x: 14, y: 7, width: copyWidth, height: 24)
         copyBtn.target = self
         copyBtn.action = #selector(copyImage)
         copyBtn.toolTip = L("Copy capture to clipboard")
         container.addSubview(copyBtn)
 
-        editBtn.frame = NSRect(x: 102, y: 7, width: 74, height: 24)
+        editBtn.frame = NSRect(x: 14 + copyWidth + 14, y: 7, width: editWidth, height: 24)
         editBtn.target = self
         editBtn.action = #selector(editImage)
         editBtn.toolTip = L("Open in annotation editor")
         container.addSubview(editBtn)
 
         self.view = container
+    }
+
+    /// Copy and Edit share the card's 148 pt: 74 each as designed, split by
+    /// need when a title wants more than that (Скопировать).
+    nonisolated static func buttonWidths(copy: String, edit: String) -> (CGFloat, CGFloat) {
+        let font = NSFont.systemFont(ofSize: 12, weight: .semibold)
+        let copyNeeds = TextFitting.width(of: copy, font: font) + 10
+        let editNeeds = TextFitting.width(of: edit, font: font) + 10
+        guard copyNeeds > 74 || editNeeds > 74 else { return (74, 74) }
+        let spare = max(0, 148 - copyNeeds - editNeeds)
+        return (floor(copyNeeds + spare / 2), ceil(editNeeds + spare / 2))
     }
 
     override var isSelected: Bool {

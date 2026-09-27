@@ -1,0 +1,1465 @@
+{
+  "%@ (edited)" : {
+    "ru" : "%@ (изменено)"
+  },
+  "%@ (original)" : {
+    "ru" : "%@ (оригинал)"
+  },
+  "%@ can't be transcribed on this Mac without sending your voice to a server. To add it, turn on Dictation for %@ in System Settings → Keyboard, or pick another language." : {
+    "ru" : "Язык «%@» нельзя расшифровать на этом Mac, не отправляя ваш голос на сервер. Чтобы добавить его, включите диктовку для языка «%@» в разделе Системные настройки → Клавиатура или выберите другой язык."
+  },
+  "%@ isn't supported for captions on this Mac. Pick another language." : {
+    "ru" : "Язык «%@» не поддерживается для субтитров на этом Mac. Выберите другой язык."
+  },
+  "%@ transition" : {
+    "ru" : "Переход: %@"
+  },
+  "%@ · on your clipboard — paste it anywhere" : {
+    "ru" : "%@ · в буфере обмена — вставьте куда угодно"
+  },
+  "%@ — click to change" : {
+    "ru" : "%@ — нажмите, чтобы изменить"
+  },
+  "%@ → %@ — the part you ⇧-dragged on the timeline" : {
+    "ru" : "%@ → %@ — фрагмент, выделенный на шкале времени с ⇧"
+  },
+  "%@, %@" : {
+    "ru" : "%@, %@"
+  },
+  "%@, and %lld more" : {
+    "ru" : {
+      "few" : "%@ и еще %lld",
+      "many" : "%@ и еще %lld",
+      "one" : "%@ и еще %lld",
+      "other" : "%@ и еще %lld"
+    }
+  },
+  "%@s" : {
+    "ru" : "%@ с"
+  },
+  "%@–%@ only" : {
+    "ru" : "только %@–%@"
+  },
+  "%lld lines changed since translating" : {
+    "ru" : {
+      "few" : "%lld строки изменены после перевода",
+      "many" : "%lld строк изменено после перевода",
+      "one" : "%lld строка изменена после перевода",
+      "other" : "%lld строки изменено после перевода"
+    }
+  },
+  "%lld recorded clicks — in the preview and the export" : {
+    "ru" : {
+      "few" : "%lld записанных нажатия — в предпросмотре и при экспорте",
+      "many" : "%lld записанных нажатий — в предпросмотре и при экспорте",
+      "one" : "%lld записанное нажатие — в предпросмотре и при экспорте",
+      "other" : "%lld записанного нажатия — в предпросмотре и при экспорте"
+    }
+  },
+  "%lld%%" : {
+    "ru" : "%lld %%"
+  },
+  "A 2-second “Made with Shotnix” outro on your background — your own outro card is in Style" : {
+    "ru" : "Двухсекундная концовка «Made with Shotnix» на вашем фоне — собственный финальный титр находится во вкладке «Стиль»"
+  },
+  "A big GIF — about %@ and %@ of memory to make. A smaller size, fewer fps, or MP4 is lighter." : {
+    "ru" : "Большой GIF — около %@, и для создания нужно %@ памяти. Меньший размер, меньше fps или MP4 — легче."
+  },
+  "A clean picture plus a subtitles file to upload." : {
+    "ru" : "Чистое изображение плюс файл субтитров для загрузки."
+  },
+  "A cut — click to add a transition" : {
+    "ru" : "Склейка — нажмите, чтобы добавить переход"
+  },
+  "A file with that name is in the way. Pick another name and export again." : {
+    "ru" : "Файл с таким именем уже существует. Выберите другое имя и экспортируйте снова."
+  },
+  "A second caption track you can show, burn in, or save as subtitles. Translated on this Mac — nothing is uploaded." : {
+    "ru" : "Вторая дорожка субтитров, которую можно показать, встроить в видео или сохранить как файл субтитров. Перевод выполняется на этом Mac — ничего не отправляется в сеть."
+  },
+  "A song under the whole video — it loops to fill, fades in and out, and dips while you talk. Use music you have the rights to." : {
+    "ru" : "Песня на фоне всего видео — она повторяется до конца, плавно нарастает и затухает и приглушается, пока вы говорите. Используйте музыку, на которую у вас есть права."
+  },
+  "A subtitles file for YouTube and web players (.srt), or for the web (.vtt) — follows your cuts" : {
+    "ru" : "Файл субтитров для YouTube и веб-плееров (.srt) или для веба (.vtt) — учитывает ваш монтаж"
+  },
+  "A video needs at least one clip" : {
+    "ru" : "В видео должен быть хотя бы один клип"
+  },
+  "About %lld min left" : {
+    "ru" : "Осталось около %lld мин"
+  },
+  "About %lld%% smaller — plays on Apple devices and most phones; some browsers and Windows PCs can't play it without an extra codec" : {
+    "ru" : "Примерно на %lld %% меньше — воспроизводится на устройствах Apple и большинстве телефонов; некоторым браузерам и ПК с Windows нужен дополнительный кодек"
+  },
+  "About %llds left" : {
+    "ru" : "Осталось около %lld с"
+  },
+  "Add Image or Logo…" : {
+    "ru" : "Добавить изображение или логотип…"
+  },
+  "Add Intro Card" : {
+    "ru" : "Добавить начальный титр"
+  },
+  "Add Music…" : {
+    "ru" : "Добавить музыку…"
+  },
+  "Add Outro Card" : {
+    "ru" : "Добавить финальный титр"
+  },
+  "Add another recording or video after this one — Shotnix recordings keep their pointer, clicks, and shortcuts." : {
+    "ru" : "Добавьте после этой записи другую запись или видео — записи Shotnix сохраняют свой указатель, нажатия и сочетания клавиш."
+  },
+  "Added %@ — %@" : {
+    "ru" : "Добавлено: %@ — %@"
+  },
+  "All zooms set to %@" : {
+    "ru" : "Для всех увеличений задано %@"
+  },
+  "Almost done" : {
+    "ru" : "Почти готово"
+  },
+  "Append Video…" : {
+    "ru" : "Добавить видео в конец…"
+  },
+  "Applies at every cut. Click a cut's marker on the timeline, or select a clip, to choose one for that cut only." : {
+    "ru" : "Применяется к каждой склейке. Чтобы выбрать переход только для одной склейки, нажмите ее метку на шкале времени или выберите клип."
+  },
+  "Arrow" : {
+    "ru" : "Стрелка"
+  },
+  "At playhead" : {
+    "ru" : "Текущее время"
+  },
+  "Aurora" : {
+    "ru" : "Сияние"
+  },
+  "Auto" : {
+    "ru" : "Авто"
+  },
+  "Auto zoom applied — %lld zooms follow your clicks" : {
+    "ru" : {
+      "few" : "Автомасштаб применен — %lld увеличения следуют за вашими нажатиями",
+      "many" : "Автомасштаб применен — %lld увеличений следуют за вашими нажатиями",
+      "one" : "Автомасштаб применен — %lld увеличение следует за вашими нажатиями",
+      "other" : "Автомасштаб применен — %lld увеличения следуют за вашими нажатиями"
+    }
+  },
+  "Auto zoom — %lld zooms" : {
+    "ru" : {
+      "few" : "Автомасштаб — %lld увеличения",
+      "many" : "Автомасштаб — %lld увеличений",
+      "one" : "Автомасштаб — %lld увеличение",
+      "other" : "Автомасштаб — %lld увеличения"
+    }
+  },
+  "Back" : {
+    "ru" : "Назад"
+  },
+  "Back to the Shotnix look" : {
+    "ru" : "Вернуть стиль Shotnix"
+  },
+  "Back to the original recording — ⌘Z to undo" : {
+    "ru" : "Возврат к исходной записи — ⌘Z, чтобы отменить"
+  },
+  "Balancing loudness…" : {
+    "ru" : "Выравнивание громкости…"
+  },
+  "Between clips" : {
+    "ru" : "Между клипами"
+  },
+  "Blossom" : {
+    "ru" : "Цветение"
+  },
+  "Blur" : {
+    "ru" : "Размытие"
+  },
+  "Bold" : {
+    "ru" : "Жирный"
+  },
+  "Bold outline" : {
+    "ru" : "Жирный контур"
+  },
+  "Bottom" : {
+    "ru" : "Внизу"
+  },
+  "Bottom left" : {
+    "ru" : "Внизу слева"
+  },
+  "Bottom right" : {
+    "ru" : "Внизу справа"
+  },
+  "Burn captions into the video" : {
+    "ru" : "Встроить субтитры в видео"
+  },
+  "Camera footage, cleaned-up voice, drafts, and clipboard exports" : {
+    "ru" : "Записи с камеры, очищенный голос, черновики и экспорты в буфер обмена"
+  },
+  "Camera hidden" : {
+    "ru" : "Камера скрыта"
+  },
+  "Camera layout removed" : {
+    "ru" : "Расположение камеры удалено"
+  },
+  "Cancel export" : {
+    "ru" : "Отменить экспорт"
+  },
+  "Cancel this export" : {
+    "ru" : "Отменить этот экспорт"
+  },
+  "Cancelled" : {
+    "ru" : "Отменено"
+  },
+  "Caption removed" : {
+    "ru" : "Субтитр удален"
+  },
+  "Caption style %@" : {
+    "ru" : "Стиль субтитров «%@»"
+  },
+  "Captions" : {
+    "ru" : "Субтитры"
+  },
+  "Captions are drawn into the picture, and a subtitles file is saved next to the video." : {
+    "ru" : "Субтитры встраиваются в изображение, а рядом с видео сохраняется файл субтитров."
+  },
+  "Captions are drawn into the picture." : {
+    "ru" : "Субтитры встраиваются в изображение."
+  },
+  "Captions are hidden in the editor (Captions tab → Show captions)." : {
+    "ru" : "Субтитры скрыты в редакторе (вкладка «Субтитры» → «Показывать субтитры»)."
+  },
+  "Captions look like this" : {
+    "ru" : "Субтитры выглядят так"
+  },
+  "Captions ready — %lld lines" : {
+    "ru" : {
+      "few" : "Субтитры готовы — %lld строки",
+      "many" : "Субтитры готовы — %lld строк",
+      "one" : "Субтитры готовы — %lld строка",
+      "other" : "Субтитры готовы — %lld строки"
+    }
+  },
+  "Captions translated to %@" : {
+    "ru" : "Субтитры переведены на %@"
+  },
+  "Cards use your background, and the timeline grows to fit them. The “Made with Shotnix” end card is separate — it's in the export options." : {
+    "ru" : "Титры используют ваш фон, а шкала времени удлиняется, чтобы их вместить. Финальная заставка «Made with Shotnix» — отдельно: она в параметрах экспорта."
+  },
+  "Center" : {
+    "ru" : "По центру"
+  },
+  "Choose a language" : {
+    "ru" : "Выберите язык"
+  },
+  "Choose a logo, watermark, or screenshot to place on the video" : {
+    "ru" : "Выберите логотип, водяной знак или снимок экрана, чтобы разместить его на видео"
+  },
+  "Choose a recording or video to add after this one" : {
+    "ru" : "Выберите запись или видео, которое нужно добавить после этого"
+  },
+  "Choose a song to play under the video" : {
+    "ru" : "Выберите песню для фона видео"
+  },
+  "Circle" : {
+    "ru" : "Круг"
+  },
+  "Citrus" : {
+    "ru" : "Цитрус"
+  },
+  "Classic" : {
+    "ru" : "Классический"
+  },
+  "Clean Up…" : {
+    "ru" : "Убрать лишнее…"
+  },
+  "Cleaning up the voice in “%@”" : {
+    "ru" : "Очистка голоса в «%@»"
+  },
+  "Cleaning up voice…" : {
+    "ru" : "Очистка голоса…"
+  },
+  "Cleaning up your voice first… %lld%%" : {
+    "ru" : "Сначала очистка голоса… %lld %%"
+  },
+  "Cleaning up your voice… %lld%%" : {
+    "ru" : "Очистка голоса… %lld %%"
+  },
+  "Click removed — ⌘Z to undo" : {
+    "ru" : "Нажатие удалено — ⌘Z, чтобы отменить"
+  },
+  "Click sounds" : {
+    "ru" : "Звуки нажатий"
+  },
+  "Click volume" : {
+    "ru" : "Громкость нажатий"
+  },
+  "Clip moved — ⌘Z to undo" : {
+    "ru" : "Клип перемещен — ⌘Z, чтобы отменить"
+  },
+  "Clip now ends here" : {
+    "ru" : "Теперь клип заканчивается здесь"
+  },
+  "Clip now starts here" : {
+    "ru" : "Теперь клип начинается здесь"
+  },
+  "Clip removed — ⌘Z to undo" : {
+    "ru" : "Клип удален — ⌘Z, чтобы отменить"
+  },
+  "Clip split" : {
+    "ru" : "Клип разделен"
+  },
+  "Close" : {
+    "ru" : "Закрыть"
+  },
+  "Close (Esc)" : {
+    "ru" : "Закрыть (Esc)"
+  },
+  "Copied" : {
+    "ru" : "Скопировано"
+  },
+  "Copied to clipboard" : {
+    "ru" : "Скопировано в буфер обмена"
+  },
+  "Copied — paste it anywhere" : {
+    "ru" : "Скопировано — вставьте куда угодно"
+  },
+  "Copy Path" : {
+    "ru" : "Скопировать путь"
+  },
+  "Copy to clipboard" : {
+    "ru" : "Скопировать в буфер обмена"
+  },
+  "Copy to clipboard — %@" : {
+    "ru" : "Скопировать в буфер обмена — %@"
+  },
+  "Copying %lld%%" : {
+    "ru" : "Копирование %lld %%"
+  },
+  "Couldn't add that song — %@" : {
+    "ru" : "Не удалось добавить песню — %@"
+  },
+  "Couldn't create the GIF file. Check that you can save to that folder, then export again." : {
+    "ru" : "Не удалось создать файл GIF. Проверьте, можно ли сохранять в эту папку, и экспортируйте снова."
+  },
+  "Couldn't make captions" : {
+    "ru" : "Не удалось создать субтитры"
+  },
+  "Couldn't make the click sound. Turn off Click sounds (Audio tab), then export again." : {
+    "ru" : "Не удалось создать звук нажатия. Выключите «Звуки нажатий» (вкладка «Аудио») и экспортируйте снова."
+  },
+  "Couldn't open that image" : {
+    "ru" : "Не удалось открыть изображение"
+  },
+  "Couldn't open that video — %@" : {
+    "ru" : "Не удалось открыть видео — %@"
+  },
+  "Couldn't prepare the video. Export again; if it keeps happening, restart Shotnix." : {
+    "ru" : "Не удалось подготовить видео. Экспортируйте снова; если ошибка повторится, перезапустите Shotnix."
+  },
+  "Couldn't read that audio file" : {
+    "ru" : "Не удалось прочитать аудиофайл"
+  },
+  "Couldn't read the recording for the GIF. Try exporting a shorter part, or choose MP4." : {
+    "ru" : "Не удалось прочитать запись для GIF. Попробуйте экспортировать фрагмент покороче или выберите MP4."
+  },
+  "Couldn't read the recording. Check that its file is still there, then export again." : {
+    "ru" : "Не удалось прочитать запись. Проверьте, на месте ли ее файл, и экспортируйте снова."
+  },
+  "Couldn't save the captions file" : {
+    "ru" : "Не удалось сохранить файл субтитров"
+  },
+  "Couldn't set up the video encoder. Choose H.264 or a lower resolution, then export again." : {
+    "ru" : "Не удалось настроить видеокодер. Выберите H.264 или более низкое разрешение и экспортируйте снова."
+  },
+  "Couldn't start the export. Export again; if it keeps happening, restart Shotnix." : {
+    "ru" : "Не удалось начать экспорт. Экспортируйте снова; если ошибка повторится, перезапустите Shotnix."
+  },
+  "Couldn't translate (%@). Try again, or pick another language." : {
+    "ru" : "Не удалось перевести (%@). Повторите попытку или выберите другой язык."
+  },
+  "Couldn't write the GIF. Check that there's free space, or export a shorter part." : {
+    "ru" : "Не удалось записать GIF. Проверьте, есть ли свободное место, или экспортируйте фрагмент покороче."
+  },
+  "Couldn't write the video. Check that there's free space and that you can save to that folder, then export again." : {
+    "ru" : "Не удалось записать видео. Проверьте, есть ли свободное место и можно ли сохранять в эту папку, и экспортируйте снова."
+  },
+  "Crisp and compact — the best default" : {
+    "ru" : "Четко и компактно — лучший вариант по умолчанию"
+  },
+  "Cut %lld words — ⌘Z to undo" : {
+    "ru" : {
+      "few" : "Вырезано %lld слова — ⌘Z, чтобы отменить",
+      "many" : "Вырезано %lld слов — ⌘Z, чтобы отменить",
+      "one" : "Вырезано %lld слово — ⌘Z, чтобы отменить",
+      "other" : "Вырезано %lld слова — ⌘Z, чтобы отменить"
+    }
+  },
+  "Cut, no transition" : {
+    "ru" : "Склейка без перехода"
+  },
+  "Cutout" : {
+    "ru" : "Силуэт"
+  },
+  "Dip to black" : {
+    "ru" : "Затемнение"
+  },
+  "Dips while you talk, comes back in the pauses" : {
+    "ru" : "Приглушается, когда вы говорите, и возвращается в паузах"
+  },
+  "Dismiss" : {
+    "ru" : "Скрыть"
+  },
+  "Dissolve" : {
+    "ru" : "Растворение"
+  },
+  "Dissolve Between Clips" : {
+    "ru" : "Растворение между клипами"
+  },
+  "Docs, slides" : {
+    "ru" : "Документы, слайды"
+  },
+  "Done" : {
+    "ru" : "Готово"
+  },
+  "Downloading the language model…" : {
+    "ru" : "Загрузка языковой модели…"
+  },
+  "Drag to move; drag a corner to resize" : {
+    "ru" : "Перетяните, чтобы переместить; тяните за угол, чтобы изменить размер"
+  },
+  "Duplicated" : {
+    "ru" : "Продублировано"
+  },
+  "Dusk" : {
+    "ru" : "Сумерки"
+  },
+  "Each recording keeps its own pointer, clicks, and shortcuts. Reorder them here; cut and trim them on the timeline like any clip." : {
+    "ru" : "Каждая запись сохраняет свой указатель, нажатия и сочетания клавиш. Меняйте их порядок здесь, а вырезайте и подрезайте на шкале времени, как любой клип."
+  },
+  "Edit Video" : {
+    "ru" : "Редактировать видео"
+  },
+  "Ellipse" : {
+    "ru" : "Эллипс"
+  },
+  "Ember" : {
+    "ru" : "Жар"
+  },
+  "Emerald" : {
+    "ru" : "Изумруд"
+  },
+  "Encoding" : {
+    "ru" : "Кодек"
+  },
+  "End card" : {
+    "ru" : "Финальная заставка"
+  },
+  "English" : {
+    "ru" : "Английский"
+  },
+  "Estimating…" : {
+    "ru" : "Оценка…"
+  },
+  "Every clip is muted — this export will have no sound." : {
+    "ru" : "Звук всех клипов выключен — экспорт будет без звука."
+  },
+  "Every cut, zoom, annotation, caption, and style change on this video is removed — the recordings you added stay. You can undo this." : {
+    "ru" : "Все вырезки, увеличения, разметка, субтитры и изменения стиля в этом видео будут удалены — добавленные записи останутся. Это действие можно отменить."
+  },
+  "Every cut, zoom, annotation, caption, and style change on this video is removed. You can undo this." : {
+    "ru" : "Все вырезки, увеличения, разметка, субтитры и изменения стиля в этом видео будут удалены. Это действие можно отменить."
+  },
+  "Every sound level is at 0 (Audio tab) — this export will have no sound." : {
+    "ru" : "Все уровни звука на нуле (вкладка «Аудио») — экспорт будет без звука."
+  },
+  "Export" : {
+    "ru" : "Экспорт"
+  },
+  "Export and put the file on the clipboard — paste it into Slack, Mail, or Finder" : {
+    "ru" : "Экспортировать и поместить файл в буфер обмена — вставьте его в Slack, Почту или Finder"
+  },
+  "Export cancelled" : {
+    "ru" : "Экспорт отменен"
+  },
+  "Export cancelled." : {
+    "ru" : "Экспорт отменен."
+  },
+  "Export complete" : {
+    "ru" : "Экспорт завершен"
+  },
+  "Export failed" : {
+    "ru" : "Не удалось экспортировать"
+  },
+  "Export: %@" : {
+    "ru" : "Экспорт: %@"
+  },
+  "Exported" : {
+    "ru" : "Экспортировано"
+  },
+  "Exported without Enhance voice — it couldn't finish." : {
+    "ru" : "Экспортировано без улучшения голоса — обработка не завершилась."
+  },
+  "Exported · %@" : {
+    "ru" : "Экспортировано · %@"
+  },
+  "Exporting %lld%%" : {
+    "ru" : "Экспорт %lld %%"
+  },
+  "Exporting a video for the clipboard" : {
+    "ru" : "Экспорт видео для буфера обмена"
+  },
+  "Exporting “%@”" : {
+    "ru" : "Экспорт «%@»"
+  },
+  "Exporting…" : {
+    "ru" : "Экспорт…"
+  },
+  "Exporting… %lld%%" : {
+    "ru" : "Экспорт… %lld %%"
+  },
+  "Export…" : {
+    "ru" : "Экспортировать…"
+  },
+  "Fade in" : {
+    "ru" : "Нарастание"
+  },
+  "Fade in from black" : {
+    "ru" : "Появление из черного"
+  },
+  "Fade out" : {
+    "ru" : "Затухание"
+  },
+  "Fade out to black" : {
+    "ru" : "Уход в черный"
+  },
+  "File not found" : {
+    "ru" : "Файл не найден"
+  },
+  "Filling the frame — the view follows your cursor" : {
+    "ru" : "Кадр заполнен — вид следует за указателем"
+  },
+  "Flamingo" : {
+    "ru" : "Фламинго"
+  },
+  "Frame copied" : {
+    "ru" : "Кадр скопирован"
+  },
+  "Frame rate" : {
+    "ru" : "Частота кадров"
+  },
+  "Freed %@ (%lld files)" : {
+    "ru" : {
+      "few" : "Освобождено %@ (%lld файла)",
+      "many" : "Освобождено %@ (%lld файлов)",
+      "one" : "Освобождено %@ (%lld файл)",
+      "other" : "Освобождено %@ (%lld файла)"
+    }
+  },
+  "Full camera" : {
+    "ru" : "Во весь кадр"
+  },
+  "Full-screen camera for your intro and outro" : {
+    "ru" : "Камера во вступлении и концовке"
+  },
+  "GIFs embed anywhere — READMEs, pull requests, docs. Keep them short: they get big fast." : {
+    "ru" : "GIF можно встроить куда угодно — в README, пул-реквесты, документацию. Делайте их короткими: они быстро становятся большими."
+  },
+  "Getting ready…" : {
+    "ru" : "Подготовка…"
+  },
+  "Glacier" : {
+    "ru" : "Ледник"
+  },
+  "Graphite" : {
+    "ru" : "Графитовый"
+  },
+  "Hard Cuts Between Clips" : {
+    "ru" : "Жесткие склейки между клипами"
+  },
+  "Hard cut" : {
+    "ru" : "Жесткая склейка"
+  },
+  "Hidden" : {
+    "ru" : "Скрыта"
+  },
+  "Hide — the export keeps going (Esc)" : {
+    "ru" : "Скрыть — экспорт продолжится (Esc)"
+  },
+  "Highlight" : {
+    "ru" : "Выделение"
+  },
+  "Highlight color" : {
+    "ru" : "Цвет выделения"
+  },
+  "Image" : {
+    "ru" : "Изображение"
+  },
+  "In" : {
+    "ru" : "Начало"
+  },
+  "In & out" : {
+    "ru" : "Начало и конец"
+  },
+  "In earlier" : {
+    "ru" : "Начало раньше"
+  },
+  "In later" : {
+    "ru" : "Начало позже"
+  },
+  "Includes: %@" : {
+    "ru" : "Включает: %@"
+  },
+  "Instagram, LinkedIn" : {
+    "ru" : "Instagram, LinkedIn"
+  },
+  "Instant" : {
+    "ru" : "Мгновенно"
+  },
+  "Intro & outro" : {
+    "ru" : "Вступление и концовка"
+  },
+  "Intro card" : {
+    "ru" : "Начальный титр"
+  },
+  "Iris" : {
+    "ru" : "Ирис"
+  },
+  "It may be damaged, still being saved, or in a format this Mac can't play. MP4 and MOV videos work best." : {
+    "ru" : "Возможно, файл поврежден, еще сохраняется или имеет формат, который этот Mac не может воспроизвести. Лучше всего подходят видео MP4 и MOV."
+  },
+  "It only has sound, or nothing at all. Shotnix edits screen recordings and other videos." : {
+    "ru" : "В нем есть только звук или вообще ничего. Shotnix редактирует записи экрана и другие видео."
+  },
+  "It was moved, renamed, or deleted. Open it from where it is now." : {
+    "ru" : "Файл был перемещен, переименован или удален. Откройте его из нового места."
+  },
+  "Keep Editing" : {
+    "ru" : "Продолжить работу"
+  },
+  "L" : {
+    "ru" : "L"
+  },
+  "Lagoon" : {
+    "ru" : "Лагуна"
+  },
+  "Languages" : {
+    "ru" : "Языки"
+  },
+  "Large" : {
+    "ru" : "Большой"
+  },
+  "Larger than the recording — text may look softer than at a lower resolution." : {
+    "ru" : "Больше, чем запись, — текст может выглядеть мягче, чем при более низком разрешении."
+  },
+  "Left" : {
+    "ru" : "Слева"
+  },
+  "Length" : {
+    "ru" : "Длительность"
+  },
+  "Light" : {
+    "ru" : "Слегка"
+  },
+  "Linen" : {
+    "ru" : "Лен"
+  },
+  "Listening…" : {
+    "ru" : "Прослушивание…"
+  },
+  "Loop to fill" : {
+    "ru" : "Повторять до конца"
+  },
+  "Lower under your voice" : {
+    "ru" : "Приглушать под голос"
+  },
+  "M" : {
+    "ru" : "M"
+  },
+  "Make it lighter: %@, %@ fps" : {
+    "ru" : "Облегчить: %@, %@ fps"
+  },
+  "Match the recording" : {
+    "ru" : "Как в записи"
+  },
+  "Maximum detail for further editing" : {
+    "ru" : "Максимум деталей для дальнейшего монтажа"
+  },
+  "Meadow" : {
+    "ru" : "Луг"
+  },
+  "Medium" : {
+    "ru" : "Средний"
+  },
+  "Midnight" : {
+    "ru" : "Полночь"
+  },
+  "Minimal" : {
+    "ru" : "Минимальный"
+  },
+  "Mint" : {
+    "ru" : "Мята"
+  },
+  "Mist" : {
+    "ru" : "Туман"
+  },
+  "Move %@ earlier" : {
+    "ru" : "Сдвинуть «%@» раньше"
+  },
+  "Move %@ later" : {
+    "ru" : "Сдвинуть «%@» позже"
+  },
+  "Move earlier" : {
+    "ru" : "Раньше"
+  },
+  "Move later" : {
+    "ru" : "Позже"
+  },
+  "Move the playhead inside a clip to split" : {
+    "ru" : "Поставьте указатель воспроизведения внутрь клипа, чтобы разделить его"
+  },
+  "Music" : {
+    "ru" : "Музыка"
+  },
+  "Music added — it dips while you talk" : {
+    "ru" : "Музыка добавлена — она приглушается, пока вы говорите"
+  },
+  "Music options" : {
+    "ru" : "Параметры музыки"
+  },
+  "Music removed — ⌘Z to undo" : {
+    "ru" : "Музыка удалена — ⌘Z, чтобы отменить"
+  },
+  "Music — click to change its volume, fades, and ducking" : {
+    "ru" : "Музыка — нажмите, чтобы изменить громкость, нарастание, затухание и приглушение"
+  },
+  "Mute video is on (Audio tab) — this export will have no sound." : {
+    "ru" : "Звук видео выключен (вкладка «Аудио») — экспорт будет без звука."
+  },
+  "Nebula" : {
+    "ru" : "Туманность"
+  },
+  "New caption" : {
+    "ru" : "Новый субтитр"
+  },
+  "No captions in the picture — add a subtitles file to upload them separately." : {
+    "ru" : "Субтитров в изображении нет — добавьте файл субтитров, чтобы загрузить их отдельно."
+  },
+  "No clicks left on the timeline" : {
+    "ru" : "На шкале времени не осталось нажатий"
+  },
+  "No clicks were recorded in this video" : {
+    "ru" : "В этом видео нажатия не записаны"
+  },
+  "No clicks were recorded — add zooms by hand" : {
+    "ru" : "Нажатия не записаны — добавьте увеличения вручную"
+  },
+  "No idle moments found — nice and tight" : {
+    "ru" : "Простоев не найдено — все плотно"
+  },
+  "No long pauses to shorten" : {
+    "ru" : "Нет длинных пауз для сокращения"
+  },
+  "No room after this zoom" : {
+    "ru" : "После этого увеличения нет места"
+  },
+  "No room here — move the playhead" : {
+    "ru" : "Здесь нет места — переместите указатель воспроизведения"
+  },
+  "No speech was found in this recording. If it has narration, check its level in the Audio tab, then try again." : {
+    "ru" : "В этой записи не найдено речи. Если в ней есть голос, проверьте его уровень во вкладке «Аудио» и повторите попытку."
+  },
+  "No ums or uhs left" : {
+    "ru" : "Слов-паразитов не осталось"
+  },
+  "None" : {
+    "ru" : "Нет"
+  },
+  "Nothing to clean up — everything belongs to recordings you still have" : {
+    "ru" : "Убирать нечего — все данные относятся к вашим записям"
+  },
+  "Ocean" : {
+    "ru" : "Океан"
+  },
+  "Of the frame's width." : {
+    "ru" : "От ширины кадра."
+  },
+  "Off" : {
+    "ru" : "Выкл."
+  },
+  "On your clipboard · %@" : {
+    "ru" : "В буфере обмена · %@"
+  },
+  "Only %@ free on your disk — this may not fit. Free up space or save to another drive." : {
+    "ru" : "На диске свободно только %@ — этого может не хватить. Освободите место или сохраните на другой диск."
+  },
+  "Opacity" : {
+    "ru" : "Непрозрачность"
+  },
+  "Opens its volume, fades, and ducking in Audio" : {
+    "ru" : "Открывает громкость, нарастание, затухание и приглушение во вкладке «Аудио»"
+  },
+  "Or drag it on the preview. Images stay put while the camera zooms." : {
+    "ru" : "Или перетяните его в предпросмотре. Изображения остаются на месте, пока камера приближается."
+  },
+  "Or drag its bar on the timeline." : {
+    "ru" : "Или перетяните его полосу на шкале времени."
+  },
+  "Orchid" : {
+    "ru" : "Орхидея"
+  },
+  "Original" : {
+    "ru" : "Оригинал"
+  },
+  "Out" : {
+    "ru" : "Конец"
+  },
+  "Out earlier" : {
+    "ru" : "Конец раньше"
+  },
+  "Out later" : {
+    "ru" : "Конец позже"
+  },
+  "Outro card" : {
+    "ru" : "Финальный титр"
+  },
+  "Part of the recording couldn't be read — the file may be damaged. Try exporting a shorter part of the video." : {
+    "ru" : "Не удалось прочитать часть записи — возможно, файл поврежден. Попробуйте экспортировать фрагмент видео покороче."
+  },
+  "Pause restored" : {
+    "ru" : "Пауза восстановлена"
+  },
+  "Pause shortened" : {
+    "ru" : "Пауза сокращена"
+  },
+  "Peach" : {
+    "ru" : "Персик"
+  },
+  "Picked up where you left off" : {
+    "ru" : "Продолжаем с того места, где вы остановились"
+  },
+  "Play" : {
+    "ru" : "Воспроизвести"
+  },
+  "Play Click Sounds" : {
+    "ru" : "Воспроизводить звуки нажатий"
+  },
+  "Play a click on each click" : {
+    "ru" : "Щелчок при каждом нажатии"
+  },
+  "Playing %lld×" : {
+    "ru" : "Воспроизведение %lld×"
+  },
+  "Plays after the last clip, before the end card" : {
+    "ru" : "Воспроизводится после последнего клипа, перед финальной заставкой"
+  },
+  "Plays before the first clip" : {
+    "ru" : "Воспроизводится перед первым клипом"
+  },
+  "Plays everywhere" : {
+    "ru" : "Воспроизводится везде"
+  },
+  "Plum" : {
+    "ru" : "Слива"
+  },
+  "Position" : {
+    "ru" : "Положение"
+  },
+  "Preparing to copy…" : {
+    "ru" : "Подготовка к копированию…"
+  },
+  "Preparing…" : {
+    "ru" : "Подготовка…"
+  },
+  "Press" : {
+    "ru" : "Нажим"
+  },
+  "Preview muted — the export keeps its sound" : {
+    "ru" : "Звук предпросмотра выключен — при экспорте звук сохранится"
+  },
+  "Preview sound on" : {
+    "ru" : "Звук предпросмотра включен"
+  },
+  "Pure" : {
+    "ru" : "Чистый"
+  },
+  "Quality" : {
+    "ru" : "Качество"
+  },
+  "Quick" : {
+    "ru" : "Быстро"
+  },
+  "Range" : {
+    "ru" : "Диапазон"
+  },
+  "Recording removed — ⌘Z to undo" : {
+    "ru" : "Запись удалена — ⌘Z, чтобы отменить"
+  },
+  "Recording saved" : {
+    "ru" : "Запись сохранена"
+  },
+  "Recordings" : {
+    "ru" : "Записи"
+  },
+  "Recordings in the Trash or on a drive that isn't plugged in keep their data. This can't be undone." : {
+    "ru" : "Записи в Корзине или на неподключенном диске сохранят свои данные. Это действие нельзя отменить."
+  },
+  "Rectangle" : {
+    "ru" : "Прямоугольник"
+  },
+  "Reels, TikTok, Shorts" : {
+    "ru" : "Reels, TikTok, Shorts"
+  },
+  "Regular" : {
+    "ru" : "Обычный"
+  },
+  "Remove" : {
+    "ru" : "Удалить"
+  },
+  "Remove %@" : {
+    "ru" : "Удалить «%@»"
+  },
+  "Remove %@ of video data?" : {
+    "ru" : "Удалить %@ видеоданных?"
+  },
+  "Remove Intro Card" : {
+    "ru" : "Удалить начальный титр"
+  },
+  "Remove Music" : {
+    "ru" : "Удалить музыку"
+  },
+  "Remove Outro Card" : {
+    "ru" : "Удалить финальный титр"
+  },
+  "Remove from this video" : {
+    "ru" : "Удалить из этого видео"
+  },
+  "Remove this translation" : {
+    "ru" : "Удалить этот перевод"
+  },
+  "Remove translation" : {
+    "ru" : "Удалить перевод"
+  },
+  "Removed %@ — ⌘Z to undo" : {
+    "ru" : "Вырезано %@ — ⌘Z, чтобы отменить"
+  },
+  "Removed %lld filler words — %@ shorter" : {
+    "ru" : {
+      "few" : "Удалено %lld слова-паразита — на %@ короче",
+      "many" : "Удалено %lld слов-паразитов — на %@ короче",
+      "one" : "Удалено %lld слово-паразит — на %@ короче",
+      "other" : "Удалено %lld слова-паразита — на %@ короче"
+    }
+  },
+  "Removed %lld zooms — ⌘Z to undo" : {
+    "ru" : {
+      "few" : "Удалено %lld увеличения — ⌘Z, чтобы отменить",
+      "many" : "Удалено %lld увеличений — ⌘Z, чтобы отменить",
+      "one" : "Удалено %lld увеличение — ⌘Z, чтобы отменить",
+      "other" : "Удалено %lld увеличения — ⌘Z, чтобы отменить"
+    }
+  },
+  "Removed — ⌘Z to undo" : {
+    "ru" : "Удалено — ⌘Z, чтобы отменить"
+  },
+  "Rendering for the clipboard… %lld%%" : {
+    "ru" : "Рендеринг для буфера обмена… %lld %%"
+  },
+  "Rendering, then copying to your clipboard" : {
+    "ru" : "Рендеринг, затем копирование в буфер обмена"
+  },
+  "Replace Music…" : {
+    "ru" : "Заменить музыку…"
+  },
+  "Replace…" : {
+    "ru" : "Заменить…"
+  },
+  "Resolution" : {
+    "ru" : "Разрешение"
+  },
+  "Restored %@" : {
+    "ru" : "Восстановлено %@"
+  },
+  "Restored %lld cuts — %@" : {
+    "ru" : {
+      "few" : "Восстановлено %lld фрагмента — %@",
+      "many" : "Восстановлено %lld фрагментов — %@",
+      "one" : "Восстановлен %lld фрагмент — %@",
+      "other" : "Восстановлено %lld фрагмента — %@"
+    }
+  },
+  "Restored %lld words" : {
+    "ru" : {
+      "few" : "Восстановлено %lld слова",
+      "many" : "Восстановлено %lld слов",
+      "one" : "Восстановлено %lld слово",
+      "other" : "Восстановлено %lld слова"
+    }
+  },
+  "Reveal" : {
+    "ru" : "Показать"
+  },
+  "Reveal in Finder" : {
+    "ru" : "Показать в Finder"
+  },
+  "Right" : {
+    "ru" : "Справа"
+  },
+  "Ripple" : {
+    "ru" : "Волна"
+  },
+  "Rounded" : {
+    "ru" : "Квадрат"
+  },
+  "S" : {
+    "ru" : "S"
+  },
+  "Save %@…" : {
+    "ru" : "Сохранить %@…"
+  },
+  "Save Subtitles" : {
+    "ru" : "Сохранить субтитры"
+  },
+  "Save Subtitles (.vtt)…" : {
+    "ru" : "Сохранить субтитры (.vtt)…"
+  },
+  "Saved %@" : {
+    "ru" : "Сохранено: %@"
+  },
+  "Saved — new recordings will use this look" : {
+    "ru" : "Сохранено — новые записи будут использовать этот стиль"
+  },
+  "Selection" : {
+    "ru" : "Выделение"
+  },
+  "Set the in point to the playhead (%@)" : {
+    "ru" : "Задать начало по указателю воспроизведения (%@)"
+  },
+  "Set the out point to the playhead (%@)" : {
+    "ru" : "Задать конец по указателю воспроизведения (%@)"
+  },
+  "Share" : {
+    "ru" : "Поделиться"
+  },
+  "Share — Mail, Messages, AirDrop…" : {
+    "ru" : "Поделиться — Почта, Сообщения, AirDrop…"
+  },
+  "Shortcut hidden" : {
+    "ru" : "Сочетание скрыто"
+  },
+  "Shortened %lld pauses — %@ shorter" : {
+    "ru" : {
+      "few" : "Сокращено %lld паузы — на %@ короче",
+      "many" : "Сокращено %lld пауз — на %@ короче",
+      "one" : "Сокращена %lld пауза — на %@ короче",
+      "other" : "Сокращено %lld паузы — на %@ короче"
+    }
+  },
+  "Shotnix can't open this file" : {
+    "ru" : "Shotnix не может открыть этот файл"
+  },
+  "Shotnix can't save to that folder. Pick another place, like Desktop or Movies, and export again." : {
+    "ru" : "Shotnix не может сохранить файл в эту папку. Выберите другое место, например «Рабочий стол» или «Фильмы», и экспортируйте снова."
+  },
+  "Shotnix is still cleaning up the voice" : {
+    "ru" : "Shotnix еще очищает голос"
+  },
+  "Shotnix is still transcribing" : {
+    "ru" : "Shotnix еще расшифровывает речь"
+  },
+  "Show" : {
+    "ru" : "Показывать"
+  },
+  "Show for the whole video" : {
+    "ru" : "Показывать все время"
+  },
+  "Show in Finder" : {
+    "ru" : "Показать в Finder"
+  },
+  "Shows what can be removed — data of recordings Shotnix can't find, unused footage and pictures, old clipboard exports — and asks before removing it" : {
+    "ru" : "Показывает, что можно удалить: данные записей, которые Shotnix не может найти, неиспользуемые записи с камеры и изображения, старые экспорты в буфер обмена, — и спрашивает перед удалением"
+  },
+  "Side by side" : {
+    "ru" : "Рядом"
+  },
+  "Silky" : {
+    "ru" : "Очень плавно"
+  },
+  "Size" : {
+    "ru" : "Размер"
+  },
+  "Sky" : {
+    "ru" : "Небо"
+  },
+  "Slow" : {
+    "ru" : "Медленно"
+  },
+  "Small" : {
+    "ru" : "Маленький"
+  },
+  "Smallest files, great for docs and chat" : {
+    "ru" : "Самые маленькие файлы — для документов и чатов"
+  },
+  "Smooth" : {
+    "ru" : "Плавно"
+  },
+  "Social" : {
+    "ru" : "Соцсети"
+  },
+  "Social feeds" : {
+    "ru" : "Ленты соцсетей"
+  },
+  "Sped up %lld idle moments — saved %@" : {
+    "ru" : {
+      "few" : "Ускорено %lld простоя — сэкономлено %@",
+      "many" : "Ускорено %lld простоев — сэкономлено %@",
+      "one" : "Ускорен %lld простой — сэкономлено %@",
+      "other" : "Ускорено %lld простоя — сэкономлено %@"
+    }
+  },
+  "Sped up %lld idle moments — saved %@ · check any typing" : {
+    "ru" : {
+      "few" : "Ускорено %lld простоя — сэкономлено %@ · проверьте места с набором текста",
+      "many" : "Ускорено %lld простоев — сэкономлено %@ · проверьте места с набором текста",
+      "one" : "Ускорен %lld простой — сэкономлено %@ · проверьте места с набором текста",
+      "other" : "Ускорено %lld простоя — сэкономлено %@ · проверьте места с набором текста"
+    }
+  },
+  "Speech recognition is turned off for Shotnix in System Settings → Privacy & Security → Speech Recognition. Turn it on, then try again." : {
+    "ru" : "Распознавание речи выключено для Shotnix в разделе Системные настройки → Конфиденциальность и безопасность → Распознавание речи. Включите его и повторите попытку."
+  },
+  "Speech recognition isn't available on this Mac right now. Try again in a moment." : {
+    "ru" : "Распознавание речи сейчас недоступно на этом Mac. Повторите попытку чуть позже."
+  },
+  "Speed Up Idle works on Shotnix recordings — it watches the pointer" : {
+    "ru" : "«Ускорить простои» работает с записями Shotnix — функция отслеживает указатель"
+  },
+  "Split the video (S) to make cuts; each can dissolve or dip to black." : {
+    "ru" : "Разделите видео (S), чтобы сделать склейки; к каждой можно применить растворение или затемнение."
+  },
+  "Spoken word" : {
+    "ru" : "Цвет слова"
+  },
+  "Spotlight" : {
+    "ru" : "Прожектор"
+  },
+  "Start Over" : {
+    "ru" : "Начать заново"
+  },
+  "Start over from the original recording?" : {
+    "ru" : "Начать заново с исходной записи?"
+  },
+  "Start the song at" : {
+    "ru" : "Начало песни с"
+  },
+  "Studio" : {
+    "ru" : "Студия"
+  },
+  "Subtitle" : {
+    "ru" : "Подзаголовок"
+  },
+  "Subtitles file" : {
+    "ru" : "Файл субтитров"
+  },
+  "Sunset" : {
+    "ru" : "Закат"
+  },
+  "Tag" : {
+    "ru" : "Плашка"
+  },
+  "Tangerine" : {
+    "ru" : "Мандарин"
+  },
+  "Thanks for watching" : {
+    "ru" : "Спасибо за просмотр"
+  },
+  "That drive is read-only. Pick another place to save, then export again." : {
+    "ru" : "Этот диск доступен только для чтения. Выберите другое место для сохранения и экспортируйте снова."
+  },
+  "That part is only a title card — include a moment of the video to export it." : {
+    "ru" : "Этот фрагмент — только титр. Включите в него часть видео, чтобы экспортировать."
+  },
+  "That part of the timeline is only a title card. Include a moment of the video in the range, then export again." : {
+    "ru" : "Этот участок шкалы времени — только титр. Включите в диапазон часть видео и экспортируйте снова."
+  },
+  "That video is empty" : {
+    "ru" : "Это видео пустое"
+  },
+  "The export carries on in the background (Esc)" : {
+    "ru" : "Экспорт продолжится в фоне (Esc)"
+  },
+  "The export stopped unexpectedly (%@). Try again — if it keeps happening, export at a lower resolution or in H.264." : {
+    "ru" : "Экспорт неожиданно остановился (%@). Повторите попытку — если ошибка повторится, экспортируйте в более низком разрешении или в H.264."
+  },
+  "The picture's file is gone — choose it again with Replace." : {
+    "ru" : "Файл изображения пропал — выберите его снова с помощью «Заменить»."
+  },
+  "The recording's file can't be found — it may have been moved or deleted. Put it back and export again." : {
+    "ru" : "Файл записи не найден — возможно, его переместили или удалили. Верните его на место и экспортируйте снова."
+  },
+  "The selected file has no video track. Choose a video file instead." : {
+    "ru" : "В выбранном файле нет видеодорожки. Выберите видеофайл."
+  },
+  "The song is shorter than the video" : {
+    "ru" : "Песня короче видео"
+  },
+  "The song's file is gone — choose it again with Replace." : {
+    "ru" : "Файл песни пропал — выберите его снова с помощью «Заменить»."
+  },
+  "The timeline is empty. Restore a clip, then export again." : {
+    "ru" : "Шкала времени пуста. Восстановите клип и экспортируйте снова."
+  },
+  "The video encoder is busy — another app may be recording or exporting. Wait a moment and try again, or choose H.264." : {
+    "ru" : "Видеокодер занят — возможно, другое приложение записывает или экспортирует видео. Подождите немного и повторите попытку или выберите H.264."
+  },
+  "The video's own recording can't be removed" : {
+    "ru" : "Исходную запись видео удалить нельзя"
+  },
+  "The voice track is empty, so there's nothing to clean up. Turn off Enhance voice to keep the original sound." : {
+    "ru" : "Голосовая дорожка пуста, поэтому очищать нечего. Выключите «Улучшение голоса», чтобы сохранить исходный звук."
+  },
+  "There are no captions to translate yet. Transcribe or add captions first." : {
+    "ru" : "Субтитров для перевода пока нет. Сначала расшифруйте речь или добавьте субтитры."
+  },
+  "There isn't enough free space on this disk: this export needs about %@ and %@ is free. Free up some space (empty the Trash, delete old recordings) or export to another drive." : {
+    "ru" : "На этом диске недостаточно свободного места: для экспорта нужно около %@, а свободно %@. Освободите место (очистите Корзину, удалите старые записи) или экспортируйте на другой диск."
+  },
+  "There isn't enough free space on “%@”: this export needs about %@ and %@ is free. Free up some space (empty the Trash, delete old recordings) or export to another drive." : {
+    "ru" : "На диске «%@» недостаточно свободного места: для экспорта нужно около %@, а свободно %@. Освободите место (очистите Корзину, удалите старые записи) или экспортируйте на другой диск."
+  },
+  "There's already a zoom here" : {
+    "ru" : "Здесь уже есть увеличение"
+  },
+  "There's no video in this file" : {
+    "ru" : "В этом файле нет видео"
+  },
+  "Thin" : {
+    "ru" : "Тонкий"
+  },
+  "This GIF is too long for its size — it would need about %@ of memory. Pick a smaller size or fewer frames per second, export part of the video, or choose MP4." : {
+    "ru" : "Этот GIF слишком длинный для такого размера — понадобится около %@ памяти. Выберите меньший размер или меньше кадров в секунду, экспортируйте часть видео или выберите MP4."
+  },
+  "This Mac can't translate between these languages. Pick another language." : {
+    "ru" : "Этот Mac не может переводить между этими языками. Выберите другой язык."
+  },
+  "This recording has no sound to transcribe. You can still type captions yourself." : {
+    "ru" : "В этой записи нет звука для расшифровки. Субтитры можно ввести вручную."
+  },
+  "This recording has no voice to duck under" : {
+    "ru" : "В этой записи нет голоса, под который можно приглушать музыку"
+  },
+  "This replaces all %lld caption lines, including any you edited or typed, with a new transcript in %@." : {
+    "ru" : {
+      "few" : "Все строки субтитров (%lld), включая измененные и введенные вами, будут заменены новой расшифровкой на языке «%@».",
+      "many" : "Все строки субтитров (%lld), включая измененные и введенные вами, будут заменены новой расшифровкой на языке «%@».",
+      "one" : "Все строки субтитров (%lld), включая измененные и введенные вами, будут заменены новой расшифровкой на языке «%@».",
+      "other" : "Все строки субтитров (%lld), включая измененные и введенные вами, будут заменены новой расшифровкой на языке «%@»."
+    }
+  },
+  "This video is copy-protected and can't be exported." : {
+    "ru" : "Это видео защищено от копирования, и его нельзя экспортировать."
+  },
+  "This video isn't there anymore" : {
+    "ru" : "Этого видео больше нет"
+  },
+  "Timing" : {
+    "ru" : "Время"
+  },
+  "Title" : {
+    "ru" : "Заголовок"
+  },
+  "Too long for a GIF at this size — it would need about %@ of memory. Make it lighter, export a part, or choose MP4." : {
+    "ru" : "Слишком длинно для GIF такого размера — понадобится около %@ памяти. Облегчите файл, экспортируйте часть или выберите MP4."
+  },
+  "Too short for an intro and outro" : {
+    "ru" : "Слишком коротко для вступления и концовки"
+  },
+  "Top" : {
+    "ru" : "Вверху"
+  },
+  "Top left" : {
+    "ru" : "Вверху слева"
+  },
+  "Top right" : {
+    "ru" : "Вверху справа"
+  },
+  "Transcribe Again" : {
+    "ru" : "Расшифровать заново"
+  },
+  "Transcribe again?" : {
+    "ru" : "Расшифровать заново?"
+  },
+  "Transcribe the narration to search its words" : {
+    "ru" : "Расшифруйте речь, чтобы искать по ее словам"
+  },
+  "Transcribing “%@”" : {
+    "ru" : "Расшифровка «%@»"
+  },
+  "Transcript and captions removed — ⌘Z to undo" : {
+    "ru" : "Расшифровка и субтитры удалены — ⌘Z, чтобы отменить"
+  },
+  "Transition in" : {
+    "ru" : "Переход в начале"
+  },
+  "Transitions" : {
+    "ru" : "Переходы"
+  },
+  "Translate" : {
+    "ru" : "Перевести"
+  },
+  "Turn Off Click Sounds" : {
+    "ru" : "Выключить звуки нажатий"
+  },
+  "Under the voice" : {
+    "ru" : "Под голосом"
+  },
+  "Video copied" : {
+    "ru" : "Видео скопировано"
+  },
+  "Video data" : {
+    "ru" : "Видеоданные"
+  },
+  "Video data uses %@" : {
+    "ru" : "Видеоданные занимают %@"
+  },
+  "Video exported" : {
+    "ru" : "Видео экспортировано"
+  },
+  "Violet" : {
+    "ru" : "Фиалка"
+  },
+  "Voice enhanced — background noise removed" : {
+    "ru" : "Голос улучшен — фоновый шум удален"
+  },
+  "Voice enhancement isn't available on this Mac. Turn off Enhance voice to keep the original sound." : {
+    "ru" : "Улучшение голоса недоступно на этом Mac. Выключите «Улучшение голоса», чтобы сохранить исходный звук."
+  },
+  "Voice enhancement stopped partway. Turn Enhance voice off and on again to retry." : {
+    "ru" : "Улучшение голоса прервалось. Выключите и снова включите «Улучшение голоса», чтобы повторить попытку."
+  },
+  "Volume" : {
+    "ru" : "Громкость"
+  },
+  "Waiting…" : {
+    "ru" : "Ожидание…"
+  },
+  "Web" : {
+    "ru" : "Веб"
+  },
+  "Welcome" : {
+    "ru" : "Добро пожаловать"
+  },
+  "Whole video" : {
+    "ru" : "Все видео"
+  },
+  "Wide" : {
+    "ru" : "Прямоугольник"
+  },
+  "YouTube, presentations" : {
+    "ru" : "YouTube, презентации"
+  },
+  "Your Mac ran low on memory. Close some apps or pick a lower resolution, then export again." : {
+    "ru" : "На Mac не хватает памяти. Закройте некоторые приложения или выберите более низкое разрешение и экспортируйте снова."
+  },
+  "Your disk is full. Free up some space (empty the Trash, delete old recordings) or export to another drive, then try again." : {
+    "ru" : "Диск заполнен. Освободите место (очистите Корзину, удалите старые записи) или экспортируйте на другой диск и повторите попытку."
+  },
+  "Your text" : {
+    "ru" : "Ваш текст"
+  },
+  "Zoom removed — ⌘Z to undo" : {
+    "ru" : "Увеличение удалено — ⌘Z, чтобы отменить"
+  },
+  "captions burned in" : {
+    "ru" : "встроенные субтитры"
+  },
+  "intro card" : {
+    "ru" : "начальный титр"
+  },
+  "macOS downloads %@ once, then translates right here — nothing is uploaded." : {
+    "ru" : "macOS один раз скачает язык «%@», а затем будет переводить прямо здесь — ничего не отправляется в сеть."
+  },
+  "music" : {
+    "ru" : "музыка"
+  },
+  "no captions in the picture" : {
+    "ru" : "без субтитров в изображении"
+  },
+  "no end card" : {
+    "ru" : "без финальной заставки"
+  },
+  "outro card" : {
+    "ru" : "финальный титр"
+  },
+  "pointer" : {
+    "ru" : "указатель"
+  },
+  "the video" : {
+    "ru" : "видео"
+  },
+  "this recording" : {
+    "ru" : "эта запись"
+  },
+  "“%@” (was in %@)" : {
+    "ru" : "«%@» (ранее в %@)"
+  },
+  "“%@” can't be found. Put it back where it was, or remove it from this video (Style → Recordings), then export again." : {
+    "ru" : "Не удается найти «%@». Верните файл на место или удалите его из этого видео (Стиль → Записи) и экспортируйте снова."
+  },
+  "“%@” can't be read — it may be damaged, still being saved, or in a format this Mac can't play. Remove it from this video (Style → Recordings), or put a working copy in its place, then export again." : {
+    "ru" : "Не удается прочитать «%@» — возможно, файл поврежден, еще сохраняется или имеет формат, который этот Mac не может воспроизвести. Удалите его из этого видео (Стиль → Записи) или замените рабочей копией и экспортируйте снова."
+  },
+  "“Made with Shotnix” end card (2s)" : {
+    "ru" : "финальная заставка «Made with Shotnix» (2 с)"
+  },
+  "• %lld small notes about recordings that are gone" : {
+    "ru" : {
+      "few" : "• %lld небольшие заметки о записях, которых больше нет",
+      "many" : "• %lld небольших заметок о записях, которых больше нет",
+      "one" : "• %lld небольшая заметка о записи, которой больше нет",
+      "other" : "• %lld небольшой заметки о записях, которых больше нет"
+    }
+  },
+  "• Camera footage no recording uses — %lld files, %@" : {
+    "ru" : {
+      "few" : "• Записи с камеры, которые не использует ни одна запись, — %lld файла, %@",
+      "many" : "• Записи с камеры, которые не использует ни одна запись, — %lld файлов, %@",
+      "one" : "• Записи с камеры, которые не использует ни одна запись, — %lld файл, %@",
+      "other" : "• Записи с камеры, которые не использует ни одна запись, — %lld файла, %@"
+    }
+  },
+  "• Cleaned-up voice of recordings not found or changed since — %lld files, %@" : {
+    "ru" : {
+      "few" : "• Очищенный голос записей, которые не найдены или изменились, — %lld файла, %@",
+      "many" : "• Очищенный голос записей, которые не найдены или изменились, — %lld файлов, %@",
+      "one" : "• Очищенный голос записей, которые не найдены или изменились, — %lld файл, %@",
+      "other" : "• Очищенный голос записей, которые не найдены или изменились, — %lld файла, %@"
+    }
+  },
+  "• Clipboard exports older than a day — %lld files, %@" : {
+    "ru" : {
+      "few" : "• Экспорты в буфер обмена старше суток — %lld файла, %@",
+      "many" : "• Экспорты в буфер обмена старше суток — %lld файлов, %@",
+      "one" : "• Экспорты в буфер обмена старше суток — %lld файл, %@",
+      "other" : "• Экспорты в буфер обмена старше суток — %lld файла, %@"
+    }
+  },
+  "• Edits, recording details, and camera footage of %lld recordings Shotnix can't find (%@): %@" : {
+    "ru" : {
+      "few" : "• Правки, сведения о записях и записи с камеры для %lld записей, которые Shotnix не может найти (%@): %@",
+      "many" : "• Правки, сведения о записях и записи с камеры для %lld записей, которые Shotnix не может найти (%@): %@",
+      "one" : "• Правки, сведения о записи и записи с камеры для %lld записи, которую Shotnix не может найти (%@): %@",
+      "other" : "• Правки, сведения о записях и записи с камеры для %lld записи, которую Shotnix не может найти (%@): %@"
+    }
+  },
+  "• Pictures and songs no video uses — %lld files, %@" : {
+    "ru" : {
+      "few" : "• Изображения и песни, которые не использует ни одно видео, — %lld файла, %@",
+      "many" : "• Изображения и песни, которые не использует ни одно видео, — %lld файлов, %@",
+      "one" : "• Изображения и песни, которые не использует ни одно видео, — %lld файл, %@",
+      "other" : "• Изображения и песни, которые не использует ни одно видео, — %lld файла, %@"
+    }
+  },
+  "⇧-drag on the timeline to select a part first." : {
+    "ru" : "Сначала выделите фрагмент, перетянув с ⇧ по шкале времени."
+  }
+}

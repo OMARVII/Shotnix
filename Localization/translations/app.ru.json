@@ -1,0 +1,1242 @@
+{
+  "%@ (%@)" : {
+    "ru" : "%@ (%@)"
+  },
+  "%@ area" : {
+    "ru" : "%@ область"
+  },
+  "%@ fullscreen" : {
+    "ru" : "%@ весь экран"
+  },
+  "%@ pt" : {
+    "ru" : "%@ пт"
+  },
+  "%@ window" : {
+    "ru" : "%@ окно"
+  },
+  "%@ — Shotnix lives in your menu bar" : {
+    "ru" : "%@ — Shotnix находится в строке меню"
+  },
+  "%lld annotations" : {
+    "ru" : {
+      "few" : "%lld элемента разметки",
+      "many" : "%lld элементов разметки",
+      "one" : "%lld элемент разметки",
+      "other" : "%lld элемента разметки"
+    }
+  },
+  "%lld annotations, %@ selected" : {
+    "ru" : {
+      "few" : "%lld элемента разметки, выбрано: %@",
+      "many" : "%lld элементов разметки, выбрано: %@",
+      "one" : "%lld элемент разметки, выбрано: %@",
+      "other" : "%lld элемента разметки, выбрано: %@"
+    }
+  },
+  "%lld annotations, %@ selected, cropping" : {
+    "ru" : {
+      "few" : "%lld элемента разметки, выбрано: %@, обрезка",
+      "many" : "%lld элементов разметки, выбрано: %@, обрезка",
+      "one" : "%lld элемент разметки, выбрано: %@, обрезка",
+      "other" : "%lld элемента разметки, выбрано: %@, обрезка"
+    }
+  },
+  "%lld annotations, cropping" : {
+    "ru" : {
+      "few" : "%lld элемента разметки, обрезка",
+      "many" : "%lld элементов разметки, обрезка",
+      "one" : "%lld элемент разметки, обрезка",
+      "other" : "%lld элемента разметки, обрезка"
+    }
+  },
+  "%lld seconds" : {
+    "ru" : {
+      "few" : "%lld секунды",
+      "many" : "%lld секунд",
+      "one" : "%lld секунда",
+      "other" : "%lld секунды"
+    }
+  },
+  "%lld%%" : {
+    "ru" : "%lld %%"
+  },
+  "%lld/%lld configured" : {
+    "ru" : "Настроено: %lld из %lld"
+  },
+  "About" : {
+    "ru" : "О программе"
+  },
+  "About Shotnix" : {
+    "ru" : "О программе Shotnix"
+  },
+  "Accuracy" : {
+    "ru" : "Режим"
+  },
+  "Accurate" : {
+    "ru" : "Точный"
+  },
+  "Advanced Tools" : {
+    "ru" : "Дополнительные инструменты"
+  },
+  "After Capture" : {
+    "ru" : "После снимка"
+  },
+  "All configured" : {
+    "ru" : "Все настроено"
+  },
+  "Allow Access…" : {
+    "ru" : "Разрешить доступ…"
+  },
+  "Allow Screen Recording" : {
+    "ru" : "Разрешить запись экрана"
+  },
+  "Amber Fold" : {
+    "ru" : "Янтарная складка"
+  },
+  "Annotate Last Screenshot" : {
+    "ru" : "Разметить последний снимок"
+  },
+  "Annotation" : {
+    "ru" : "Разметка"
+  },
+  "Annotation text" : {
+    "ru" : "Текст разметки"
+  },
+  "Annotation tools" : {
+    "ru" : "Инструменты разметки"
+  },
+  "Apple Shortcuts" : {
+    "ru" : "Сочетания клавиш Apple"
+  },
+  "Apple screenshot shortcuts disabled." : {
+    "ru" : "Сочетания клавиш Apple для снимков экрана отключены."
+  },
+  "Apple screenshot shortcuts disabled. Shotnix shortcuts are now active." : {
+    "ru" : "Сочетания клавиш Apple для снимков экрана отключены. Теперь работают сочетания клавиш Shotnix."
+  },
+  "Apple screenshot shortcuts restored." : {
+    "ru" : "Сочетания клавиш Apple для снимков экрана восстановлены."
+  },
+  "Apple's screenshot shortcuts still own ⌘⇧3/4/5 — captures can double-trigger." : {
+    "ru" : "⌘⇧3/4/5 по-прежнему заняты сочетаниями Apple для снимков экрана — снимок может сработать дважды."
+  },
+  "Apple's shortcuts are out of the way." : {
+    "ru" : "Сочетания клавиш Apple больше не мешают."
+  },
+  "Apply" : {
+    "ru" : "Применить"
+  },
+  "Apply background to this image" : {
+    "ru" : "Применить фон к этому изображению"
+  },
+  "Apply crop" : {
+    "ru" : "Применить обрезку"
+  },
+  "Apply the crop (Return)" : {
+    "ru" : "Применить обрезку (Return)"
+  },
+  "Aqua Marble" : {
+    "ru" : "Бирюзовый мрамор"
+  },
+  "Arrow" : {
+    "ru" : "Стрелка"
+  },
+  "Audio" : {
+    "ru" : "Аудио"
+  },
+  "Aurora Blue" : {
+    "ru" : "Синее сияние"
+  },
+  "Auto-dismiss overlay" : {
+    "ru" : "Автоскрытие миниатюры"
+  },
+  "Auto-save folder" : {
+    "ru" : "Папка автосохранения"
+  },
+  "Auto-zoom new recordings" : {
+    "ru" : "Автомасштаб для новых записей"
+  },
+  "Automatic" : {
+    "ru" : "Автоматически"
+  },
+  "Automatic detects each capture's language; pick languages when it guesses wrong. Accurate reads small text best — Fast answers sooner but knows fewer languages. Used by Capture Text, Copy Text, and History search." : {
+    "ru" : "«Автоматически» определяет язык каждого снимка; если язык определяется неверно, выберите языки вручную. «Точный» режим лучше распознает мелкий текст, а «Быстрый» работает быстрее, но знает меньше языков. Используется в функциях «Распознать текст», «Скопировать текст» и в поиске по истории."
+  },
+  "Background" : {
+    "ru" : "Фон"
+  },
+  "Balanced" : {
+    "ru" : "Среднее"
+  },
+  "Black" : {
+    "ru" : "Черный"
+  },
+  "Blue" : {
+    "ru" : "Синий"
+  },
+  "Blur" : {
+    "ru" : "Размытие"
+  },
+  "Blurred area" : {
+    "ru" : "Размытая область"
+  },
+  "Bold" : {
+    "ru" : "Жирный"
+  },
+  "Bone" : {
+    "ru" : "Слоновая кость"
+  },
+  "Bring All to Front" : {
+    "ru" : "Все окна — на передний план"
+  },
+  "Callout" : {
+    "ru" : "Выноска"
+  },
+  "Callout: %@" : {
+    "ru" : "Выноска: %@"
+  },
+  "Camera" : {
+    "ru" : "Камера"
+  },
+  "Canyon Silk" : {
+    "ru" : "Шелк каньона"
+  },
+  "Capture Text" : {
+    "ru" : "Распознать текст"
+  },
+  "Capture Text and Scrolling Capture come without shortcuts, so ⌘⇧O and ⌘⇧S keep meaning Open and Save As in your other apps — click a field to set your own. Pressing the Scrolling Capture shortcut again finishes a scrolling capture." : {
+    "ru" : "У функций «Распознать текст» и «Снимок с прокруткой» нет сочетаний клавиш по умолчанию, чтобы ⌘⇧O и ⌘⇧S по-прежнему означали «Открыть» и «Сохранить как» в других приложениях, — нажмите поле, чтобы задать свое сочетание. Повторное нажатие сочетания для снимка с прокруткой завершает его."
+  },
+  "Capture immediately after selecting" : {
+    "ru" : "Снимать сразу после выделения"
+  },
+  "Capture · Record · Updates" : {
+    "ru" : "Снимки · Запись · Обновления"
+  },
+  "Captures stay in History until you delete them, unless you pick a limit here. Clean Up empties History's trash (deleted captures you could still undo) and removes files no capture uses anymore." : {
+    "ru" : "Снимки хранятся в истории, пока вы их не удалите, если здесь не задан лимит. «Убрать лишнее» очищает корзину истории (удаленные снимки, которые еще можно вернуть) и удаляет файлы, которые больше не использует ни один снимок."
+  },
+  "Carbon Arc" : {
+    "ru" : "Угольная дуга"
+  },
+  "Check" : {
+    "ru" : "Проверить"
+  },
+  "Check for Updates" : {
+    "ru" : "Проверить обновления"
+  },
+  "Choose a writable folder for auto-save." : {
+    "ru" : "Выберите папку для автосохранения, доступную для записи."
+  },
+  "Choose a writable folder." : {
+    "ru" : "Выберите папку, доступную для записи."
+  },
+  "Choose folder" : {
+    "ru" : "Выбрать папку"
+  },
+  "Choose what happens immediately after taking a screenshot." : {
+    "ru" : "Выберите, что происходит сразу после снимка экрана."
+  },
+  "Choose..." : {
+    "ru" : "Выбрать…"
+  },
+  "Clay" : {
+    "ru" : "Глина"
+  },
+  "Clean Up" : {
+    "ru" : "Убрать лишнее"
+  },
+  "Clean Up History?" : {
+    "ru" : "Убрать лишнее из истории?"
+  },
+  "Clean Up lists what it would remove — the data of recordings Shotnix can't find, camera footage and pictures nothing uses, and clipboard exports older than a day — and asks first. On its own, Shotnix only removes clipboard exports older than a day; the data of your recordings stays until you clean it up here." : {
+    "ru" : "«Убрать лишнее» сначала показывает, что будет удалено: данные записей, которые Shotnix не может найти, неиспользуемые записи с камеры и изображения, а также экспорты в буфер обмена старше суток, — и спрашивает подтверждения. Автоматически Shotnix удаляет только экспорты в буфер обмена старше суток; данные ваших записей остаются, пока вы не удалите их здесь."
+  },
+  "Clean Up…" : {
+    "ru" : "Убрать лишнее…"
+  },
+  "Cleaning Up…" : {
+    "ru" : "Удаление лишнего…"
+  },
+  "Click an annotation to edit it" : {
+    "ru" : "Нажмите объект, чтобы изменить его"
+  },
+  "Click to add the next step" : {
+    "ru" : "Нажмите, чтобы добавить следующий шаг"
+  },
+  "Clipboard" : {
+    "ru" : "Буфер обмена"
+  },
+  "Close Window" : {
+    "ru" : "Закрыть окно"
+  },
+  "Coastal Haze" : {
+    "ru" : "Прибрежная дымка"
+  },
+  "Cobalt Drapes" : {
+    "ru" : "Кобальтовые шторы"
+  },
+  "Color" : {
+    "ru" : "Цвет"
+  },
+  "Command Center" : {
+    "ru" : "Командный центр"
+  },
+  "Conflict detected" : {
+    "ru" : "Обнаружен конфликт"
+  },
+  "Copied to clipboard" : {
+    "ru" : "Скопировано в буфер обмена"
+  },
+  "Copy (⌘C)" : {
+    "ru" : "Скопировать (⌘C)"
+  },
+  "Copy screenshots to clipboard" : {
+    "ru" : "Копировать снимки в буфер обмена"
+  },
+  "Could Not Disable Apple Shortcuts" : {
+    "ru" : "Не удалось отключить сочетания клавиш Apple"
+  },
+  "Could Not Save Screenshot" : {
+    "ru" : "Не удалось сохранить снимок экрана"
+  },
+  "Could not encode screenshot as PNG." : {
+    "ru" : "Не удалось закодировать снимок экрана в PNG."
+  },
+  "Could not encode the screenshot." : {
+    "ru" : "Не удалось закодировать снимок экрана."
+  },
+  "Could not restore Apple shortcuts." : {
+    "ru" : "Не удалось восстановить сочетания клавиш Apple."
+  },
+  "Couldn't copy the screenshot. Try again, or save it instead." : {
+    "ru" : "Не удалось скопировать снимок экрана. Повторите попытку или сохраните его."
+  },
+  "Couldn't save the screenshot to %@. Click to check the save folder." : {
+    "ru" : "Не удалось сохранить снимок экрана в папку «%@». Нажмите, чтобы проверить папку для сохранения."
+  },
+  "Couldn't save the screenshot: Shotnix can't write to %@. Click to choose another save folder." : {
+    "ru" : "Не удалось сохранить снимок экрана: Shotnix не может записывать в папку «%@». Нажмите, чтобы выбрать другую папку для сохранения."
+  },
+  "Couldn't save the screenshot: it could not be encoded as %@." : {
+    "ru" : "Не удалось сохранить снимок экрана: его невозможно закодировать в формат %@."
+  },
+  "Couldn't save the screenshot: the disk is full. Free up space or pick another save folder." : {
+    "ru" : "Не удалось сохранить снимок экрана: диск заполнен. Освободите место или выберите другую папку для сохранения."
+  },
+  "Countdown" : {
+    "ru" : "Обратный отсчет"
+  },
+  "Crimson Ridge" : {
+    "ru" : "Багряный хребет"
+  },
+  "Crop" : {
+    "ru" : "Обрезка"
+  },
+  "Custom color" : {
+    "ru" : "Свой цвет"
+  },
+  "Custom color #%@" : {
+    "ru" : "Свой цвет #%@"
+  },
+  "Custom: %@" : {
+    "ru" : "Свое изображение: %@"
+  },
+  "Custom…" : {
+    "ru" : "Другой…"
+  },
+  "Cut" : {
+    "ru" : "Вырезать"
+  },
+  "Delete %lld Captures?" : {
+    "ru" : {
+      "few" : "Удалить %lld снимка?",
+      "many" : "Удалить %lld снимков?",
+      "one" : "Удалить %lld снимок?",
+      "other" : "Удалить %lld снимка?"
+    }
+  },
+  "Delete Captures" : {
+    "ru" : "Удалить снимки"
+  },
+  "Delete Selection" : {
+    "ru" : "Удалить выбранное"
+  },
+  "Deleted captures waiting in History's trash and files no capture uses are removed for good, along with %lld captures past your History limit. The rest of your history stays." : {
+    "ru" : {
+      "few" : "Снимки из корзины истории и файлы, которые не использует ни один снимок, будут удалены безвозвратно, как и %lld снимка сверх лимита истории. Остальная история сохранится.",
+      "many" : "Снимки из корзины истории и файлы, которые не использует ни один снимок, будут удалены безвозвратно, как и %lld снимков сверх лимита истории. Остальная история сохранится.",
+      "one" : "Снимки из корзины истории и файлы, которые не использует ни один снимок, будут удалены безвозвратно, как и %lld снимок сверх лимита истории. Остальная история сохранится.",
+      "other" : "Снимки из корзины истории и файлы, которые не использует ни один снимок, будут удалены безвозвратно, как и %lld снимка сверх лимита истории. Остальная история сохранится."
+    }
+  },
+  "Deleted captures waiting in History's trash and files no capture uses are removed for good. The captures in your history stay." : {
+    "ru" : "Снимки из корзины истории и файлы, которые не использует ни один снимок, будут удалены безвозвратно. Снимки в истории сохранятся."
+  },
+  "Desert Violet" : {
+    "ru" : "Фиалка пустыни"
+  },
+  "Directory where screenshots are saved if Auto-Save is enabled." : {
+    "ru" : "Папка, в которую сохраняются снимки экрана, если включено автосохранение."
+  },
+  "Disable Apple Shortcuts" : {
+    "ru" : "Отключить сочетания клавиш Apple"
+  },
+  "Disabled" : {
+    "ru" : "Выключены"
+  },
+  "Discard Changes" : {
+    "ru" : "Отменить изменения"
+  },
+  "Do you want to review them before quitting?" : {
+    "ru" : "Хотите просмотреть их перед завершением?"
+  },
+  "Don't Ask Again" : {
+    "ru" : "Больше не спрашивать"
+  },
+  "Don't Save" : {
+    "ru" : "Не сохранять"
+  },
+  "Done" : {
+    "ru" : "Готово"
+  },
+  "Draw with the selected tool. Tool shortcuts: V select, A arrow, R rectangle, T text, O callout, H highlighter, B blur, P pixelate, S spotlight, C crop." : {
+    "ru" : "Рисуйте выбранным инструментом. Клавиши инструментов: V — выбор, A — стрелка, R — прямоугольник, T — текст, O — выноска, H — маркер, B — размытие, P — пикселизация, S — прожектор, C — обрезка."
+  },
+  "Drawing" : {
+    "ru" : "Рисунок"
+  },
+  "Edit Last Recording" : {
+    "ru" : "Редактировать последнюю запись"
+  },
+  "Editable cursor" : {
+    "ru" : "Редактируемый указатель"
+  },
+  "Editable cursor records the pointer separately so the editor can smooth it, resize it, and keep it crisp when zoomed — the video editor adds it back on export (the raw recording file has no pointer). Auto-zoom makes a fresh recording open already produced: the camera zooms to follow your clicks. Keyboard shortcuts records only ⌘, ⌃ and ⌥ combos (plus Esc and F-keys) so the editor can show them as keycaps — plain typing is never recorded; macOS asks for Accessibility access. High quality is the default; Max keeps more detail but creates larger files. The countdown gives you a moment after pressing Record; Esc cancels it. Stop a recording with %@ from any app — plain Esc stays with the app you're recording." : {
+    "ru" : "«Редактируемый указатель» записывает указатель отдельно, чтобы редактор мог сглаживать его, менять размер и сохранять четкость при увеличении, — видеоредактор добавляет его обратно при экспорте (в исходном файле записи указателя нет). С автомасштабом новая запись открывается уже смонтированной: камера приближается вслед за вашими нажатиями. «Показывать сочетания клавиш» записывает только комбинации с ⌘, ⌃ и ⌥ (а также Esc и функциональные клавиши), чтобы редактор мог показать их в виде клавиш, — обычный набор текста никогда не записывается; macOS запросит доступ в разделе «Универсальный доступ». По умолчанию используется высокое качество; максимальное сохраняет больше деталей, но файлы получаются крупнее. Обратный отсчет дает вам время после нажатия кнопки «Записать»; Esc отменяет его. Остановить запись из любого приложения можно сочетанием %@ — обычная клавиша Esc остается за приложением, которое вы записываете."
+  },
+  "Ellipse" : {
+    "ru" : "Эллипс"
+  },
+  "Ember Fog" : {
+    "ru" : "Тлеющий туман"
+  },
+  "Enable Shotnix in System Settings → Privacy & Security → Screen & System Audio Recording, then quit and reopen Shotnix so macOS applies the permission." : {
+    "ru" : "Откройте Системные настройки → Конфиденциальность и безопасность → Запись экрана и системного звука и включите Shotnix. Затем завершите и снова откройте Shotnix, чтобы разрешение вступило в силу."
+  },
+  "Enable Shotnix in System Settings, then relaunch so macOS applies it." : {
+    "ru" : "Включите Shotnix в Системных настройках и перезапустите приложение, чтобы разрешение вступило в силу."
+  },
+  "Enabled" : {
+    "ru" : "Включены"
+  },
+  "Enjoying Shotnix? Click to star it on GitHub ★" : {
+    "ru" : "Нравится Shotnix? Нажмите, чтобы поставить звезду на GitHub ★"
+  },
+  "Everything is ready" : {
+    "ru" : "Все готово"
+  },
+  "Export Format" : {
+    "ru" : "Формат экспорта"
+  },
+  "Fast" : {
+    "ru" : "Быстрый"
+  },
+  "File" : {
+    "ru" : "Файл"
+  },
+  "File Name" : {
+    "ru" : "Имя файла"
+  },
+  "Filled Rectangle" : {
+    "ru" : "Закрашенный прямоугольник"
+  },
+  "Filled rectangle" : {
+    "ru" : "Закрашенный прямоугольник"
+  },
+  "Filled rounded rectangle" : {
+    "ru" : "Закрашенный скругленный прямоугольник"
+  },
+  "Finish and Quit" : {
+    "ru" : "Дождаться и завершить"
+  },
+  "Fix" : {
+    "ru" : "Исправить"
+  },
+  "Format" : {
+    "ru" : "Формат"
+  },
+  "Frame rate" : {
+    "ru" : "Частота кадров"
+  },
+  "Free up ⌘⇧ shortcuts · optional" : {
+    "ru" : "Освободить сочетания ⌘⇧ · необязательно"
+  },
+  "Freed %@" : {
+    "ru" : "Освобождено %@"
+  },
+  "Freehand Draw" : {
+    "ru" : "Рисование от руки"
+  },
+  "Freehand Highlighter" : {
+    "ru" : "Маркер от руки"
+  },
+  "Freehand highlight" : {
+    "ru" : "Выделение от руки"
+  },
+  "Full screen: %@" : {
+    "ru" : "Весь экран: %@"
+  },
+  "General" : {
+    "ru" : "Основные"
+  },
+  "Gradient" : {
+    "ru" : "Градиент"
+  },
+  "Grant Screen Recording first, then try it here." : {
+    "ru" : "Сначала разрешите запись экрана, затем попробуйте здесь."
+  },
+  "Granted — captures, recordings, and OCR are ready." : {
+    "ru" : "Разрешено — снимки, записи и OCR готовы к работе."
+  },
+  "Graphite" : {
+    "ru" : "Графитовый"
+  },
+  "Green" : {
+    "ru" : "Зеленый"
+  },
+  "Health" : {
+    "ru" : "Состояние"
+  },
+  "Hide Desktop Icons" : {
+    "ru" : "Скрыть значки рабочего стола"
+  },
+  "Hide Icon" : {
+    "ru" : "Скрыть значок"
+  },
+  "Hide desktop icons while capturing" : {
+    "ru" : "Скрывать значки рабочего стола при съемке"
+  },
+  "Hide the Menu Bar Icon?" : {
+    "ru" : "Скрыть значок в строке меню?"
+  },
+  "High" : {
+    "ru" : "Высокое"
+  },
+  "Highlight" : {
+    "ru" : "Выделение"
+  },
+  "Highlighter" : {
+    "ru" : "Маркер"
+  },
+  "History" : {
+    "ru" : "История"
+  },
+  "History uses %@ (%lld captures)" : {
+    "ru" : {
+      "few" : "История занимает %@ (%lld снимка)",
+      "many" : "История занимает %@ (%lld снимков)",
+      "one" : "История занимает %@ (%lld снимок)",
+      "other" : "История занимает %@ (%lld снимка)"
+    }
+  },
+  "History uses … (%lld captures)" : {
+    "ru" : {
+      "few" : "История занимает … (%lld снимка)",
+      "many" : "История занимает … (%lld снимков)",
+      "one" : "История занимает … (%lld снимок)",
+      "other" : "История занимает … (%lld снимка)"
+    }
+  },
+  "History was already tidy" : {
+    "ru" : "В истории нет ничего лишнего"
+  },
+  "Hotkeys are system-wide and active while Shotnix is running. The ⌘⇧3 default works best after Apple's screenshot shortcut is disabled." : {
+    "ru" : "Сочетания клавиш работают во всей системе, пока открыт Shotnix. Сочетание ⌘⇧3 по умолчанию работает лучше всего, если отключить сочетание Apple для снимков экрана."
+  },
+  "How strongly blur and pixelate hide what's under them" : {
+    "ru" : "Насколько сильно размытие и пикселизация скрывают содержимое"
+  },
+  "Image" : {
+    "ru" : "Изображение"
+  },
+  "JPEG Quality" : {
+    "ru" : "Качество JPEG"
+  },
+  "Keep Working" : {
+    "ru" : "Продолжить работу"
+  },
+  "Keep captures" : {
+    "ru" : "Хранить снимки"
+  },
+  "Keeping 30 days removes %lld older captures from History now. This can't be undone." : {
+    "ru" : {
+      "few" : "Вариант «30 дней» сразу удалит из истории %lld более старых снимка. Это действие нельзя отменить.",
+      "many" : "Вариант «30 дней» сразу удалит из истории %lld более старых снимков. Это действие нельзя отменить.",
+      "one" : "Вариант «30 дней» сразу удалит из истории %lld более старый снимок. Это действие нельзя отменить.",
+      "other" : "Вариант «30 дней» сразу удалит из истории %lld более старого снимка. Это действие нельзя отменить."
+    }
+  },
+  "Keeping 7 days removes %lld older captures from History now. This can't be undone." : {
+    "ru" : {
+      "few" : "Вариант «7 дней» сразу удалит из истории %lld более старых снимка. Это действие нельзя отменить.",
+      "many" : "Вариант «7 дней» сразу удалит из истории %lld более старых снимков. Это действие нельзя отменить.",
+      "one" : "Вариант «7 дней» сразу удалит из истории %lld более старый снимок. Это действие нельзя отменить.",
+      "other" : "Вариант «7 дней» сразу удалит из истории %lld более старого снимка. Это действие нельзя отменить."
+    }
+  },
+  "Keeping 90 days removes %lld older captures from History now. This can't be undone." : {
+    "ru" : {
+      "few" : "Вариант «90 дней» сразу удалит из истории %lld более старых снимка. Это действие нельзя отменить.",
+      "many" : "Вариант «90 дней» сразу удалит из истории %lld более старых снимков. Это действие нельзя отменить.",
+      "one" : "Вариант «90 дней» сразу удалит из истории %lld более старый снимок. Это действие нельзя отменить.",
+      "other" : "Вариант «90 дней» сразу удалит из истории %lld более старого снимка. Это действие нельзя отменить."
+    }
+  },
+  "Keeping last 1,000 captures removes %lld older captures from History now. This can't be undone." : {
+    "ru" : {
+      "few" : "Вариант «Последние 1 000 снимков» сразу удалит из истории %lld более старых снимка. Это действие нельзя отменить.",
+      "many" : "Вариант «Последние 1 000 снимков» сразу удалит из истории %lld более старых снимков. Это действие нельзя отменить.",
+      "one" : "Вариант «Последние 1 000 снимков» сразу удалит из истории %lld более старый снимок. Это действие нельзя отменить.",
+      "other" : "Вариант «Последние 1 000 снимков» сразу удалит из истории %lld более старого снимка. Это действие нельзя отменить."
+    }
+  },
+  "Keeping last 100 captures removes %lld older captures from History now. This can't be undone." : {
+    "ru" : {
+      "few" : "Вариант «Последние 100 снимков» сразу удалит из истории %lld более старых снимка. Это действие нельзя отменить.",
+      "many" : "Вариант «Последние 100 снимков» сразу удалит из истории %lld более старых снимков. Это действие нельзя отменить.",
+      "one" : "Вариант «Последние 100 снимков» сразу удалит из истории %lld более старый снимок. Это действие нельзя отменить.",
+      "other" : "Вариант «Последние 100 снимков» сразу удалит из истории %lld более старого снимка. Это действие нельзя отменить."
+    }
+  },
+  "Keeping last 500 captures removes %lld older captures from History now. This can't be undone." : {
+    "ru" : {
+      "few" : "Вариант «Последние 500 снимков» сразу удалит из истории %lld более старых снимка. Это действие нельзя отменить.",
+      "many" : "Вариант «Последние 500 снимков» сразу удалит из истории %lld более старых снимков. Это действие нельзя отменить.",
+      "one" : "Вариант «Последние 500 снимков» сразу удалит из истории %lld более старый снимок. Это действие нельзя отменить.",
+      "other" : "Вариант «Последние 500 снимков» сразу удалит из истории %lld более старого снимка. Это действие нельзя отменить."
+    }
+  },
+  "Keyboard" : {
+    "ru" : "Клавиатура"
+  },
+  "Languages" : {
+    "ru" : "Языки"
+  },
+  "Later" : {
+    "ru" : "Позже"
+  },
+  "Launch Shotnix at login" : {
+    "ru" : "Открывать Shotnix при входе в систему"
+  },
+  "Lavender Glass" : {
+    "ru" : "Лавандовое стекло"
+  },
+  "Left" : {
+    "ru" : "Слева"
+  },
+  "Lime Signal" : {
+    "ru" : "Лаймовый сигнал"
+  },
+  "Line" : {
+    "ru" : "Линия"
+  },
+  "Line width" : {
+    "ru" : "Толщина линии"
+  },
+  "MIT License — Free and open source" : {
+    "ru" : "Лицензия MIT — бесплатно, с открытым исходным кодом"
+  },
+  "Max" : {
+    "ru" : "Максимальное"
+  },
+  "Menu Bar" : {
+    "ru" : "Строка меню"
+  },
+  "Menu bar is full, so macOS hid the Shotnix icon — %@ still captures. Click here for the menu." : {
+    "ru" : "Строка меню заполнена, поэтому macOS скрыла значок Shotnix — %@ по-прежнему делает снимки. Нажмите здесь, чтобы открыть меню."
+  },
+  "Menu bar is full, so macOS hid the Shotnix icon — your shortcuts still work. Click here for the menu." : {
+    "ru" : "Строка меню заполнена, поэтому macOS скрыла значок Shotnix — ваши сочетания клавиш по-прежнему работают. Нажмите здесь, чтобы открыть меню."
+  },
+  "Microphone" : {
+    "ru" : "Микрофон"
+  },
+  "Microphone recording requires macOS microphone permission. System audio excludes Shotnix sounds to avoid feedback." : {
+    "ru" : "Для записи с микрофона нужно разрешение macOS на доступ к микрофону. Системный звук не включает звуки Shotnix, чтобы избежать эха."
+  },
+  "Midnight Graphite" : {
+    "ru" : "Полуночный графит"
+  },
+  "Minimize" : {
+    "ru" : "Свернуть"
+  },
+  "Moss" : {
+    "ru" : "Мох"
+  },
+  "Moss Glow" : {
+    "ru" : "Сияние мха"
+  },
+  "Mute Clip" : {
+    "ru" : "Выключить звук клипа"
+  },
+  "Needed to capture the screen. macOS will ask once." : {
+    "ru" : "Нужно для съемки экрана. macOS спросит один раз."
+  },
+  "Neo Pop" : {
+    "ru" : "Неопоп"
+  },
+  "Never" : {
+    "ru" : "Никогда"
+  },
+  "New screenshots are copied automatically. Turn this off if you only want to use the overlay or history actions." : {
+    "ru" : "Новые снимки копируются автоматически. Выключите, если хотите пользоваться только миниатюрой или действиями в истории."
+  },
+  "Nice shot. You're all set." : {
+    "ru" : "Отличный снимок. Все готово."
+  },
+  "Night Current" : {
+    "ru" : "Ночное течение"
+  },
+  "No conflict" : {
+    "ru" : "Нет конфликтов"
+  },
+  "Numbered Steps" : {
+    "ru" : "Нумерованные шаги"
+  },
+  "OK" : {
+    "ru" : "OK"
+  },
+  "Off" : {
+    "ru" : "Выкл."
+  },
+  "Open History" : {
+    "ru" : "Открыть историю"
+  },
+  "Open Keyboard Settings" : {
+    "ru" : "Открыть настройки клавиатуры"
+  },
+  "Open Settings" : {
+    "ru" : "Открыть настройки"
+  },
+  "Open System Settings" : {
+    "ru" : "Открыть Системные настройки"
+  },
+  "Open System Settings → Keyboard → Keyboard Shortcuts → Screenshots and turn off the screenshot shortcuts manually." : {
+    "ru" : "Откройте Системные настройки → Клавиатура → Сочетания клавиш → Снимки экрана и выключите сочетания клавиш для снимков экрана вручную."
+  },
+  "Open Video Editor" : {
+    "ru" : "Открыть видеоредактор"
+  },
+  "Open editor after recording" : {
+    "ru" : "Открывать редактор после записи"
+  },
+  "Orange" : {
+    "ru" : "Оранжевый"
+  },
+  "Otherwise, Shotnix switches languages the next time it opens." : {
+    "ru" : "Иначе Shotnix сменит язык при следующем открытии."
+  },
+  "Overlay position" : {
+    "ru" : "Положение миниатюры"
+  },
+  "Padding" : {
+    "ru" : "Отступ"
+  },
+  "Paste" : {
+    "ru" : "Вставить"
+  },
+  "Pause Recording" : {
+    "ru" : "Приостановить запись"
+  },
+  "Pending" : {
+    "ru" : "Не выполнено"
+  },
+  "Permission needed" : {
+    "ru" : "Нужно разрешение"
+  },
+  "Pine Dusk" : {
+    "ru" : "Сосновые сумерки"
+  },
+  "Pixelate" : {
+    "ru" : "Пикселизация"
+  },
+  "Pixelated area" : {
+    "ru" : "Пикселизированная область"
+  },
+  "Play capture sound" : {
+    "ru" : "Воспроизводить звук при съемке"
+  },
+  "Polar Dawn" : {
+    "ru" : "Полярный рассвет"
+  },
+  "Porcelain" : {
+    "ru" : "Фарфор"
+  },
+  "Preferences" : {
+    "ru" : "Настройки"
+  },
+  "Preset" : {
+    "ru" : "Вариант"
+  },
+  "Press %@ anytime — or try it right now." : {
+    "ru" : "Нажмите %@ в любой момент — или попробуйте прямо сейчас."
+  },
+  "Preview" : {
+    "ru" : "Пример"
+  },
+  "Prism Sweep" : {
+    "ru" : "Призматическая волна"
+  },
+  "Privacy Policy" : {
+    "ru" : "Политика конфиденциальности"
+  },
+  "Purple" : {
+    "ru" : "Фиолетовый"
+  },
+  "Quality" : {
+    "ru" : "Качество"
+  },
+  "Quit & Reopen" : {
+    "ru" : "Завершить и открыть снова"
+  },
+  "Quit Shotnix" : {
+    "ru" : "Завершить Shotnix"
+  },
+  "Quit Shotnix?" : {
+    "ru" : "Завершить Shotnix?"
+  },
+  "Radius" : {
+    "ru" : "Радиус"
+  },
+  "Re-enable Apple's ⌘⇧3/4/5 screenshot shortcuts" : {
+    "ru" : "Снова включить сочетания клавиш Apple ⌘⇧3/4/5 для снимков экрана"
+  },
+  "Ready" : {
+    "ru" : "Готово"
+  },
+  "Ready · %lld optional off" : {
+    "ru" : {
+      "few" : "Готово · %lld дополнительных сочетания не задано",
+      "many" : "Готово · %lld дополнительных сочетаний не задано",
+      "one" : "Готово · %lld дополнительное сочетание не задано",
+      "other" : "Готово · %lld дополнительного сочетания не задано"
+    }
+  },
+  "Record" : {
+    "ru" : "Записать"
+  },
+  "Record camera" : {
+    "ru" : "Записывать камеру"
+  },
+  "Record microphone" : {
+    "ru" : "Записывать микрофон"
+  },
+  "Record system audio" : {
+    "ru" : "Записывать системный звук"
+  },
+  "Recording" : {
+    "ru" : "Запись"
+  },
+  "Recording paused — click to stop (%@)" : {
+    "ru" : "Запись приостановлена — нажмите, чтобы остановить (%@)"
+  },
+  "Recording shortcuts are unassigned by default — click a field to set one. Stop Recording also cancels recording setup. While recording, %@ always stops it, from any app." : {
+    "ru" : "Сочетания клавиш для записи по умолчанию не назначены — нажмите поле, чтобы задать свое. «Остановить запись» также отменяет подготовку к записи. Во время записи %@ всегда останавливает ее из любого приложения."
+  },
+  "Recording — click to stop (%@)" : {
+    "ru" : "Идет запись — нажмите, чтобы остановить (%@)"
+  },
+  "Recovered your interrupted recording “%@”. Click to open it." : {
+    "ru" : "Ваша прерванная запись «%@» восстановлена. Нажмите, чтобы открыть ее."
+  },
+  "Rectangle" : {
+    "ru" : "Прямоугольник"
+  },
+  "Red" : {
+    "ru" : "Красный"
+  },
+  "Redaction strength" : {
+    "ru" : "Степень скрытия"
+  },
+  "Redo" : {
+    "ru" : "Повторить"
+  },
+  "Redo Timeline Edit" : {
+    "ru" : "Повторить изменение шкалы времени"
+  },
+  "Releasing the mouse takes the shot. Hold ⇧ as you release to adjust the selection first — drag its edges, nudge it with the arrow keys, then press Return." : {
+    "ru" : "Снимок делается, когда вы отпускаете кнопку мыши. Удерживайте ⇧ при отпускании, чтобы сначала настроить выделение: перетяните его края, сдвиньте его клавишами со стрелками, затем нажмите Return."
+  },
+  "Report Issue" : {
+    "ru" : "Сообщить о проблеме"
+  },
+  "Reset" : {
+    "ru" : "Сбросить"
+  },
+  "Reset Defaults" : {
+    "ru" : "Восстановить стандартные"
+  },
+  "Reset crop" : {
+    "ru" : "Сбросить обрезку"
+  },
+  "Restart Now" : {
+    "ru" : "Перезапустить"
+  },
+  "Restart Shotnix to use %@?" : {
+    "ru" : "Перезапустить Shotnix, чтобы сменить язык на «%@»?"
+  },
+  "Restore Apple Shortcuts" : {
+    "ru" : "Восстановить сочетания клавиш Apple"
+  },
+  "Resume Recording" : {
+    "ru" : "Продолжить запись"
+  },
+  "Review Changes…" : {
+    "ru" : "Просмотреть изменения…"
+  },
+  "Right" : {
+    "ru" : "Справа"
+  },
+  "Rose Smoke" : {
+    "ru" : "Розовый дым"
+  },
+  "Rounded Corners (⌥R)" : {
+    "ru" : "Скругленные углы (⌥R)"
+  },
+  "Rounded corners" : {
+    "ru" : "Скругленные углы"
+  },
+  "Rounded rectangle" : {
+    "ru" : "Скругленный прямоугольник"
+  },
+  "Save" : {
+    "ru" : "Сохранить"
+  },
+  "Save (⌘S)" : {
+    "ru" : "Сохранить (⌘S)"
+  },
+  "Save Folder" : {
+    "ru" : "Папка для сохранения"
+  },
+  "Save Location" : {
+    "ru" : "Место сохранения"
+  },
+  "Save automatically" : {
+    "ru" : "Сохранять автоматически"
+  },
+  "Save changes to this screenshot?" : {
+    "ru" : "Сохранить изменения в этом снимке экрана?"
+  },
+  "Save folder updated." : {
+    "ru" : "Папка для сохранения обновлена."
+  },
+  "Saved to %@: %@" : {
+    "ru" : "Сохранено в папку «%@»: %@"
+  },
+  "Save…" : {
+    "ru" : "Сохранить…"
+  },
+  "Saving the recording" : {
+    "ru" : "Сохранение записи"
+  },
+  "Saving…" : {
+    "ru" : "Сохранение…"
+  },
+  "Scan QR Code" : {
+    "ru" : "Сканировать QR-код"
+  },
+  "Screen Recording" : {
+    "ru" : "Запись экрана"
+  },
+  "Screen Recording Permission Required" : {
+    "ru" : "Нужно разрешение на запись экрана"
+  },
+  "Screenshot Editor" : {
+    "ru" : "Редактор снимков"
+  },
+  "Screenshot canvas" : {
+    "ru" : "Холст снимка экрана"
+  },
+  "Screenshots" : {
+    "ru" : "Снимки экрана"
+  },
+  "Select" : {
+    "ru" : "Выбор"
+  },
+  "Select All" : {
+    "ru" : "Выбрать все"
+  },
+  "Selection" : {
+    "ru" : "Выделение"
+  },
+  "Set In to Playhead" : {
+    "ru" : "Задать начало по указателю воспроизведения"
+  },
+  "Set Out to Playhead" : {
+    "ru" : "Задать конец по указателю воспроизведения"
+  },
+  "Settings" : {
+    "ru" : "Настройки"
+  },
+  "Settings…" : {
+    "ru" : "Настройки…"
+  },
+  "Shadow" : {
+    "ru" : "Тень"
+  },
+  "Shadow and transparent padding" : {
+    "ru" : "Тень и прозрачный отступ"
+  },
+  "Shape" : {
+    "ru" : "Форма"
+  },
+  "Shortcut Conflict Detected" : {
+    "ru" : "Обнаружен конфликт сочетаний клавиш"
+  },
+  "Shortcuts" : {
+    "ru" : "Сочетания"
+  },
+  "Shotnix Preferences" : {
+    "ru" : "Настройки Shotnix"
+  },
+  "Shotnix could not write the file to:\n%@" : {
+    "ru" : "Shotnix не удалось записать файл в это место:\n%@"
+  },
+  "Shotnix is ready to use!" : {
+    "ru" : "Shotnix готов к работе!"
+  },
+  "Shotnix lives here — setup continues next launch" : {
+    "ru" : "Shotnix находится здесь — настройка продолжится при следующем запуске"
+  },
+  "Shotnix lives in your menu bar" : {
+    "ru" : "Shotnix находится в строке меню"
+  },
+  "Shotnix needs Screen Recording permission to capture your screen.\n\nPlease enable it in System Settings → Privacy & Security → Screen & System Audio Recording." : {
+    "ru" : "Чтобы снимать экран, Shotnix нужно разрешение на запись экрана.\n\nВключите его в разделе Системные настройки → Конфиденциальность и безопасность → Запись экрана и системного звука."
+  },
+  "Shotnix restarts to switch languages. You can also set it in System Settings → General → Language & Region → Applications." : {
+    "ru" : "Чтобы сменить язык, Shotnix перезапустится. Язык также можно выбрать в разделе Системные настройки → Основные → Язык и регион → Приложения."
+  },
+  "Shotnix will wrap these up before it quits." : {
+    "ru" : "Shotnix закончит их перед завершением."
+  },
+  "Show Desktop Icons" : {
+    "ru" : "Показать значки рабочего стола"
+  },
+  "Show Editor" : {
+    "ru" : "Показать редактор"
+  },
+  "Show Quick Access Overlay" : {
+    "ru" : "Показывать миниатюру быстрого доступа"
+  },
+  "Show Video Editor" : {
+    "ru" : "Показать видеоредактор"
+  },
+  "Show cursor" : {
+    "ru" : "Показывать указатель"
+  },
+  "Show keyboard shortcuts" : {
+    "ru" : "Показывать сочетания клавиш"
+  },
+  "Show menu bar icon" : {
+    "ru" : "Показывать значок в строке меню"
+  },
+  "Show the whole screenshot again" : {
+    "ru" : "Снова показать весь снимок"
+  },
+  "Silver" : {
+    "ru" : "Серебристый"
+  },
+  "Size" : {
+    "ru" : "Размер"
+  },
+  "Skip Setup" : {
+    "ru" : "Пропустить настройку"
+  },
+  "Sky Wash" : {
+    "ru" : "Небесная акварель"
+  },
+  "Solid Color" : {
+    "ru" : "Сплошной цвет"
+  },
+  "Sounds" : {
+    "ru" : "Звуки"
+  },
+  "Space Gray" : {
+    "ru" : "Серый космос"
+  },
+  "Split at Playhead" : {
+    "ru" : "Разделить по указателю воспроизведения"
+  },
+  "Spotlight" : {
+    "ru" : "Прожектор"
+  },
+  "Spotlight shape" : {
+    "ru" : "Форма прожектора"
+  },
+  "Startup" : {
+    "ru" : "Запуск"
+  },
+  "Step %lld" : {
+    "ru" : "Шаг %lld"
+  },
+  "Storage" : {
+    "ru" : "Хранилище"
+  },
+  "Strength" : {
+    "ru" : "Сила"
+  },
+  "Style" : {
+    "ru" : "Стиль"
+  },
+  "Sunset Coral" : {
+    "ru" : "Закатный коралл"
+  },
+  "Support" : {
+    "ru" : "Поддержка"
+  },
+  "System Default" : {
+    "ru" : "Как в системе"
+  },
+  "System Default (%@)" : {
+    "ru" : "Как в системе (%@)"
+  },
+  "Tahoe Ice" : {
+    "ru" : "Лед Тахо"
+  },
+  "Take a Test Screenshot" : {
+    "ru" : "Сделать пробный снимок"
+  },
+  "Take your first screenshot" : {
+    "ru" : "Сделать первый снимок экрана"
+  },
+  "Template" : {
+    "ru" : "Шаблон"
+  },
+  "Text Recognition" : {
+    "ru" : "Распознавание текста"
+  },
+  "Text size" : {
+    "ru" : "Размер текста"
+  },
+  "Text: %@" : {
+    "ru" : "Текст: %@"
+  },
+  "The menu bar icon is Shotnix's main entry point. While it is hidden, open Shotnix again from Finder, Launchpad, or Spotlight to bring these Preferences back." : {
+    "ru" : "Значок в строке меню — основной способ открыть Shotnix. Пока он скрыт, чтобы вернуться к этим настройкам, снова откройте Shotnix из Finder, Launchpad или Spotlight."
+  },
+  "The save panel did not return a destination. Please try saving again." : {
+    "ru" : "Окно сохранения не вернуло место назначения. Попробуйте сохранить еще раз."
+  },
+  "The screenshot has no image data." : {
+    "ru" : "В снимке экрана нет данных изображения."
+  },
+  "The selection stays on screen to adjust — drag its edges, nudge it with the arrow keys, then press Return. Hold ⇧ as you release to capture right away." : {
+    "ru" : "Выделение остается на экране для настройки: перетяните его края, сдвиньте его клавишами со стрелками, затем нажмите Return. Удерживайте ⇧ при отпускании, чтобы сделать снимок сразу."
+  },
+  "Three quick steps and you're capturing." : {
+    "ru" : "Три быстрых шага — и можно делать снимки."
+  },
+  "Tide Glass" : {
+    "ru" : "Приливное стекло"
+  },
+  "Timed Capture (%llds)" : {
+    "ru" : "Снимок с таймером (%lld с)"
+  },
+  "Timed Capture selects the area first, then counts down before the shot — time to open menus or hover states. Esc cancels." : {
+    "ru" : "При снимке с таймером вы сначала выделяете область, а затем перед снимком идет обратный отсчет — можно успеть открыть меню или навести указатель на элемент. Esc отменяет."
+  },
+  "Timeline" : {
+    "ru" : "Шкала времени"
+  },
+  "Tools" : {
+    "ru" : "Инструменты"
+  },
+  "Try it right now — Capture Area is also in the menu bar." : {
+    "ru" : "Попробуйте прямо сейчас — «Снять область» есть и в строке меню."
+  },
+  "Type here…" : {
+    "ru" : "Введите текст…"
+  },
+  "Undo" : {
+    "ru" : "Отменить"
+  },
+  "Undo Timeline Edit" : {
+    "ru" : "Отменить изменение шкалы времени"
+  },
+  "Updates" : {
+    "ru" : "Обновления"
+  },
+  "Upload Custom Image" : {
+    "ru" : "Выбрать свое изображение"
+  },
+  "Used for screenshots and recordings. Tokens: %y year, %m month, %d day, %H hour, %M minute, %S second. Leave empty to restore the default." : {
+    "ru" : "Используется для снимков экрана и записей. Переменные: %y — год, %m — месяц, %d — день, %H — час, %M — минута, %S — секунда. Оставьте поле пустым, чтобы восстановить шаблон по умолчанию."
+  },
+  "Utility" : {
+    "ru" : "Утилиты"
+  },
+  "Version" : {
+    "ru" : "Версия"
+  },
+  "Version %@" : {
+    "ru" : "Версия %@"
+  },
+  "Video" : {
+    "ru" : "Видео"
+  },
+  "Violet Bloom" : {
+    "ru" : "Лиловое цветение"
+  },
+  "Website" : {
+    "ru" : "Веб-сайт"
+  },
+  "Welcome to Shotnix" : {
+    "ru" : "Добро пожаловать в Shotnix"
+  },
+  "What's New" : {
+    "ru" : "Что нового"
+  },
+  "White" : {
+    "ru" : "Белый"
+  },
+  "Window Capture" : {
+    "ru" : "Снимки окон"
+  },
+  "Window captures are isolated — nothing overlapping shows through. With this on they get transparent padding and a soft drop shadow." : {
+    "ru" : "Окно снимается отдельно — то, что его перекрывает, не попадает в снимок. Если параметр включен, к снимку добавляются прозрачный отступ и мягкая тень."
+  },
+  "Writable" : {
+    "ru" : "Доступна для записи"
+  },
+  "Yellow" : {
+    "ru" : "Желтый"
+  },
+  "You have unsaved edits in %lld screenshots." : {
+    "ru" : {
+      "few" : "Есть несохраненные изменения в %lld снимках экрана.",
+      "many" : "Есть несохраненные изменения в %lld снимках экрана.",
+      "one" : "Есть несохраненные изменения в %lld снимке экрана.",
+      "other" : "Есть несохраненные изменения в %lld снимка экрана."
+    }
+  },
+  "You're all set — Shotnix lives here" : {
+    "ru" : "Все готово — Shotnix находится здесь"
+  },
+  "Your camera is recorded as its own layer: a live bubble shows while you record (it never appears in the screen capture), and the editor lets you move, resize, and restyle it — or hide it — afterwards." : {
+    "ru" : "Камера записывается отдельным слоем: во время записи видно окошко с изображением камеры (оно никогда не попадает в запись экрана), а в редакторе его потом можно переместить, изменить его размер и стиль — или скрыть."
+  },
+  "Your edits will be lost if you close without saving or copying them." : {
+    "ru" : "Ваши изменения будут потеряны, если закрыть окно, не сохранив и не скопировав их."
+  },
+  "Zoom" : {
+    "ru" : "Масштаб"
+  },
+  "macOS screenshot shortcuts (⌘⇧3, ⌘⇧4, ⌘⇧5) conflict with Shotnix.\n\nDisable them so Shotnix owns the capture shortcuts and screenshots do not double-trigger.\n\nYou can re-enable Apple's shortcuts anytime in System Settings → Keyboard → Keyboard Shortcuts → Screenshots." : {
+    "ru" : "Сочетания клавиш macOS для снимков экрана (⌘⇧3, ⌘⇧4, ⌘⇧5) конфликтуют с Shotnix.\n\nОтключите их, чтобы сочетания для снимков принадлежали Shotnix и снимки не срабатывали дважды.\n\nСочетания клавиш Apple можно снова включить в любой момент в разделе Системные настройки → Клавиатура → Сочетания клавиш → Снимки экрана."
+  },
+  "© 2026 Shotnix Contributors" : {
+    "ru" : "© 2026 Участники проекта Shotnix"
+  }
+}

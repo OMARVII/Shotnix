@@ -47,6 +47,7 @@ final class VideoEditorLocalizedSnapshotTests: XCTestCase {
     func testGerman() async throws { try await renderEveryState(in: "de") }
     func testFrench() async throws { try await renderEveryState(in: "fr") }
     func testChinese() async throws { try await renderEveryState(in: "zh-Hans") }
+    func testRussian() async throws { try await renderEveryState(in: "ru") }
     /// The same states in English, to set beside the others.
     func testEnglish() async throws { try await renderEveryState(in: "en") }
 
@@ -209,6 +210,7 @@ final class VideoEditorLocalizedSnapshotTests: XCTestCase {
         "de": ["Text", "Pfeil", "Markierung", "Weichzeichnen", "Fokus", "Bild"],
         "fr": ["Texte", "Flèche", "Surlignage", "Flouter", "Projecteur", "Image"],
         "zh-Hans": ["文字", "箭头", "高亮", "模糊", "聚光灯", "图像"],
+        "ru": ["Текст", "Стрелка", "Выделение", "Размытие", "Прожектор", "Изображение"],
     ]
 
     /// The command palette's rows, one per command in this language.

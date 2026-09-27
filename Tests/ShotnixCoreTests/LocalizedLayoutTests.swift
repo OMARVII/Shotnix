@@ -148,6 +148,21 @@ final class LocalizedLayoutTests: XCTestCase {
         L10n.use("de")
         XCTAssertGreaterThan(PreferencesTabStrip.tabWidth(fitting: 442), 74, "„Bildschirmfotos“ gets more room")
         XCTAssertEqual(PreferencesTabStrip.tabWidth(fitting: 402), 74, "never wider than the narrowest window allows")
+        L10n.use("ru")
+        XCTAssertGreaterThan(PreferencesTabStrip.tabWidth(fitting: 442), 74, "«Снимки экрана» gets more room")
+    }
+
+    func testHistoryCardButtonsFitEveryLanguage() {
+        let font = NSFont.systemFont(ofSize: 12, weight: .semibold)
+        L10n.use("en")
+        XCTAssertTrue(HistoryCollectionItem.buttonWidths(copy: L("Copy"), edit: L("Edit")) == (74, 74), "English looks exactly as designed")
+        for language in Self.languages {
+            L10n.use(language)
+            let (copy, edit) = HistoryCollectionItem.buttonWidths(copy: L("Copy"), edit: L("Edit"))
+            XCTAssertLessThanOrEqual(copy + edit, 148.5, "\(language): both stay on the card, 14 pt apart")
+            XCTAssertLessThanOrEqual(TextFitting.width(of: L("Copy"), font: font) + 8, copy, "\(language): “\(L("Copy"))” fits")
+            XCTAssertLessThanOrEqual(TextFitting.width(of: L("Edit"), font: font) + 8, edit, "\(language): “\(L("Edit"))” fits")
+        }
     }
 
     func testRenderSettingsInEveryLanguage() async throws {

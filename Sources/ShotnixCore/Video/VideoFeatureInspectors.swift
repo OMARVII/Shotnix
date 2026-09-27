@@ -5,6 +5,12 @@ extension VideoEditorTheme {
     static let caption = Color(red: 0.2, green: 0.74, blue: 0.68)
     static let keys = Color(red: 0.55, green: 0.62, blue: 0.78)
     static let camera = Color(red: 0.3, green: 0.62, blue: 1.0)
+
+    /// The title column of a row like Size · Position: 58 pt as designed,
+    /// wider when a translated title (Положение) needs more.
+    static func rowTitleWidth(_ titles: [String]) -> CGFloat {
+        max(58, TextFitting.widest(titles, font: .systemFont(ofSize: 12, weight: .medium)))
+    }
 }
 
 // MARK: - Annotation colors
@@ -326,7 +332,7 @@ struct VideoCaptionsInspector: View {
             Text(title)
                 .font(.system(size: 12, weight: .medium))
                 .foregroundStyle(VideoEditorTheme.textPrimary)
-                .frame(width: 58, alignment: .leading)
+                .frame(width: VideoEditorTheme.rowTitleWidth([L("Size"), L("Position")]), alignment: .leading)
             content()
         }
     }
@@ -544,7 +550,7 @@ struct VideoKeyboardSection: View {
                     Text(L("Size"))
                         .font(.system(size: 12, weight: .medium))
                         .foregroundStyle(VideoEditorTheme.textPrimary)
-                        .frame(width: 58, alignment: .leading)
+                        .frame(width: VideoEditorTheme.rowTitleWidth([L("Size"), L("Position")]), alignment: .leading)
                     VideoSegmented(options: VideoTextSize.allCases.map { ($0, $0.title) }, selection: binding(\.size))
                 }
                 .disabled(!model.project.keystrokeStyle.visible)
@@ -552,7 +558,7 @@ struct VideoKeyboardSection: View {
                     Text(L("Position"))
                         .font(.system(size: 12, weight: .medium))
                         .foregroundStyle(VideoEditorTheme.textPrimary)
-                        .frame(width: 58, alignment: .leading)
+                        .frame(width: VideoEditorTheme.rowTitleWidth([L("Size"), L("Position")]), alignment: .leading)
                     VideoSegmented(options: VideoTextPosition.allCases.map { ($0, $0.title) }, selection: binding(\.position))
                 }
                 .disabled(!model.project.keystrokeStyle.visible)

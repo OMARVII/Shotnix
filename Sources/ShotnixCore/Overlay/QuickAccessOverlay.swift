@@ -369,16 +369,15 @@ final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
 
         // ── Center pills (tight-fit white capsules) ──
         let pillH: CGFloat = 28
-        let pillFont = NSFont.systemFont(ofSize: 13, weight: .medium)
-        let pillAttrs: [NSAttributedString.Key: Any] = [
-            .foregroundColor: NSColor.black.withAlphaComponent(0.85),
-            .font: pillFont,
-        ]
-
         let pills: [(String, String, Selector)] = [
             (L("Copy"), L("Copy image to clipboard"), #selector(copyAction)),
             (L("Save"), L("Save screenshot to disk"), #selector(saveAction)),
             (L("Text"), L("Copy recognized text (OCR)"), #selector(copyTextAction)),
+        ]
+        let pillFont = NSFont.systemFont(ofSize: Self.pillFontSize(titles: pills.map(\.0), available: thumbW - 24), weight: .medium)
+        let pillAttrs: [NSAttributedString.Key: Any] = [
+            .foregroundColor: NSColor.black.withAlphaComponent(0.85),
+            .font: pillFont,
         ]
 
         // Measure each pill to fit text snugly. Longer words (Enregistrer)
@@ -434,6 +433,21 @@ final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
                 DispatchQueue.main.async { self?.animatedClose() }
             }
         }
+    }
+
+    /// The pills' title size: the design's 13 pt, or a little smaller (down to
+    /// 11) when the words don't fit `available` even at the tightest spacing
+    /// (Скопировать · Сохранить · Текст).
+    nonisolated static func pillFontSize(titles: [String], available: CGFloat) -> CGFloat {
+        let gaps = CGFloat(max(titles.count - 1, 0))
+        let room = available - CGFloat(titles.count) * 14 - gaps * 4
+        var size: CGFloat = 13
+        while size > 11 {
+            let font = NSFont.systemFont(ofSize: size, weight: .medium)
+            if titles.map({ TextFitting.width(of: $0, font: font) }).reduce(0, +) <= room { break }
+            size -= 0.5
+        }
+        return size
     }
 
     /// Padding inside each pill and the gap between them: the design's 28

@@ -1,0 +1,1486 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>%@, and %lld more</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%2$#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%1$@ и еще %2$lld</string>
+			<key>many</key>
+			<string>%1$@ и еще %2$lld</string>
+			<key>one</key>
+			<string>%1$@ и еще %2$lld</string>
+			<key>other</key>
+			<string>%1$@ и еще %2$lld</string>
+		</dict>
+	</dict>
+	<key>%lld QR codes found</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Найдено %lld QR-кода</string>
+			<key>many</key>
+			<string>Найдено %lld QR-кодов</string>
+			<key>one</key>
+			<string>Найден %lld QR-код</string>
+			<key>other</key>
+			<string>Найдено %lld QR-кода</string>
+		</dict>
+	</dict>
+	<key>%lld annotations</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld элемента разметки</string>
+			<key>many</key>
+			<string>%lld элементов разметки</string>
+			<key>one</key>
+			<string>%lld элемент разметки</string>
+			<key>other</key>
+			<string>%lld элемента разметки</string>
+		</dict>
+	</dict>
+	<key>%lld annotations, %@ selected</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld элемента разметки, выбрано: %@</string>
+			<key>many</key>
+			<string>%lld элементов разметки, выбрано: %@</string>
+			<key>one</key>
+			<string>%lld элемент разметки, выбрано: %@</string>
+			<key>other</key>
+			<string>%lld элемента разметки, выбрано: %@</string>
+		</dict>
+	</dict>
+	<key>%lld annotations, %@ selected, cropping</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld элемента разметки, выбрано: %@, обрезка</string>
+			<key>many</key>
+			<string>%lld элементов разметки, выбрано: %@, обрезка</string>
+			<key>one</key>
+			<string>%lld элемент разметки, выбрано: %@, обрезка</string>
+			<key>other</key>
+			<string>%lld элемента разметки, выбрано: %@, обрезка</string>
+		</dict>
+	</dict>
+	<key>%lld annotations, cropping</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld элемента разметки, обрезка</string>
+			<key>many</key>
+			<string>%lld элементов разметки, обрезка</string>
+			<key>one</key>
+			<string>%lld элемент разметки, обрезка</string>
+			<key>other</key>
+			<string>%lld элемента разметки, обрезка</string>
+		</dict>
+	</dict>
+	<key>%lld barcodes found</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Найдено %lld штрихкода</string>
+			<key>many</key>
+			<string>Найдено %lld штрихкодов</string>
+			<key>one</key>
+			<string>Найден %lld штрихкод</string>
+			<key>other</key>
+			<string>Найдено %lld штрихкода</string>
+		</dict>
+	</dict>
+	<key>%lld camera layouts</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld расположения камеры</string>
+			<key>many</key>
+			<string>%lld расположений камеры</string>
+			<key>one</key>
+			<string>%lld расположение камеры</string>
+			<key>other</key>
+			<string>%lld расположения камеры</string>
+		</dict>
+	</dict>
+	<key>%lld captions</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld субтитра</string>
+			<key>many</key>
+			<string>%lld субтитров</string>
+			<key>one</key>
+			<string>%lld субтитр</string>
+			<key>other</key>
+			<string>%lld субтитра</string>
+		</dict>
+	</dict>
+	<key>%lld clicks</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld нажатия</string>
+			<key>many</key>
+			<string>%lld нажатий</string>
+			<key>one</key>
+			<string>%lld нажатие</string>
+			<key>other</key>
+			<string>%lld нажатия</string>
+		</dict>
+	</dict>
+	<key>%lld clips</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld клипа</string>
+			<key>many</key>
+			<string>%lld клипов</string>
+			<key>one</key>
+			<string>%lld клип</string>
+			<key>other</key>
+			<string>%lld клипа</string>
+		</dict>
+	</dict>
+	<key>%lld cuts here (%@ removed) — click to restore some or all</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Здесь %lld вырезанных фрагмента (удалено %@) — нажмите, чтобы восстановить часть или все</string>
+			<key>many</key>
+			<string>Здесь %lld вырезанных фрагментов (удалено %@) — нажмите, чтобы восстановить часть или все</string>
+			<key>one</key>
+			<string>Здесь %lld вырезанный фрагмент (удалено %@) — нажмите, чтобы восстановить</string>
+			<key>other</key>
+			<string>Здесь %lld вырезанного фрагмента (удалено %@) — нажмите, чтобы восстановить часть или все</string>
+		</dict>
+	</dict>
+	<key>%lld cuts, %@ removed</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld вырезанных фрагмента, удалено %@</string>
+			<key>many</key>
+			<string>%lld вырезанных фрагментов, удалено %@</string>
+			<key>one</key>
+			<string>%lld вырезанный фрагмент, удалено %@</string>
+			<key>other</key>
+			<string>%lld вырезанного фрагмента, удалено %@</string>
+		</dict>
+	</dict>
+	<key>%lld days</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld дня</string>
+			<key>many</key>
+			<string>%lld дней</string>
+			<key>one</key>
+			<string>%lld день</string>
+			<key>other</key>
+			<string>%lld дня</string>
+		</dict>
+	</dict>
+	<key>%lld email addresses</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld адреса e-mail</string>
+			<key>many</key>
+			<string>%lld адресов e-mail</string>
+			<key>one</key>
+			<string>%lld адрес e-mail</string>
+			<key>other</key>
+			<string>%lld адреса e-mail</string>
+		</dict>
+	</dict>
+	<key>%lld lines</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld строки</string>
+			<key>many</key>
+			<string>%lld строк</string>
+			<key>one</key>
+			<string>%lld строка</string>
+			<key>other</key>
+			<string>%lld строки</string>
+		</dict>
+	</dict>
+	<key>%lld lines changed since translating</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld строки изменены после перевода</string>
+			<key>many</key>
+			<string>%lld строк изменено после перевода</string>
+			<key>one</key>
+			<string>%lld строка изменена после перевода</string>
+			<key>other</key>
+			<string>%lld строки изменено после перевода</string>
+		</dict>
+	</dict>
+	<key>%lld lines · found %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld строки · найдено: %@</string>
+			<key>many</key>
+			<string>%lld строк · найдено: %@</string>
+			<key>one</key>
+			<string>%lld строка · найдено: %@</string>
+			<key>other</key>
+			<string>%lld строки · найдено: %@</string>
+		</dict>
+	</dict>
+	<key>%lld links</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld ссылки</string>
+			<key>many</key>
+			<string>%lld ссылок</string>
+			<key>one</key>
+			<string>%lld ссылка</string>
+			<key>other</key>
+			<string>%lld ссылки</string>
+		</dict>
+	</dict>
+	<key>%lld parts</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld фрагмента</string>
+			<key>many</key>
+			<string>%lld фрагментов</string>
+			<key>one</key>
+			<string>%lld фрагмент</string>
+			<key>other</key>
+			<string>%lld фрагмента</string>
+		</dict>
+	</dict>
+	<key>%lld pressed — select one on the timeline and press ⌫ to hide it</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld сочетания — выберите одно из них на шкале времени и нажмите ⌫, чтобы скрыть его</string>
+			<key>many</key>
+			<string>%lld сочетаний — выберите одно из них на шкале времени и нажмите ⌫, чтобы скрыть его</string>
+			<key>one</key>
+			<string>%lld сочетание — выберите его на шкале времени и нажмите ⌫, чтобы скрыть</string>
+			<key>other</key>
+			<string>%lld сочетания — выберите одно из них на шкале времени и нажмите ⌫, чтобы скрыть его</string>
+		</dict>
+	</dict>
+	<key>%lld recorded clicks — in the preview and the export</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld записанных нажатия — в предпросмотре и при экспорте</string>
+			<key>many</key>
+			<string>%lld записанных нажатий — в предпросмотре и при экспорте</string>
+			<key>one</key>
+			<string>%lld записанное нажатие — в предпросмотре и при экспорте</string>
+			<key>other</key>
+			<string>%lld записанного нажатия — в предпросмотре и при экспорте</string>
+		</dict>
+	</dict>
+	<key>%lld saved captures · drag any card to Finder · right-click for more actions</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld сохраненных снимка · перетяните карточку в Finder · другие действия — в контекстном меню</string>
+			<key>many</key>
+			<string>%lld сохраненных снимков · перетяните карточку в Finder · другие действия — в контекстном меню</string>
+			<key>one</key>
+			<string>%lld сохраненный снимок · перетяните карточку в Finder · другие действия — в контекстном меню</string>
+			<key>other</key>
+			<string>%lld сохраненного снимка · перетяните карточку в Finder · другие действия — в контекстном меню</string>
+		</dict>
+	</dict>
+	<key>%lld screens</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld экрана</string>
+			<key>many</key>
+			<string>%lld экранов</string>
+			<key>one</key>
+			<string>%lld экран</string>
+			<key>other</key>
+			<string>%lld экрана</string>
+		</dict>
+	</dict>
+	<key>%lld screenshots deleted — click or press ⌘Z to undo</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld снимка удалены — нажмите сюда или ⌘Z, чтобы отменить</string>
+			<key>many</key>
+			<string>%lld снимков удалено — нажмите сюда или ⌘Z, чтобы отменить</string>
+			<key>one</key>
+			<string>%lld снимок удален — нажмите сюда или ⌘Z, чтобы отменить</string>
+			<key>other</key>
+			<string>%lld снимка удалено — нажмите сюда или ⌘Z, чтобы отменить</string>
+		</dict>
+	</dict>
+	<key>%lld seconds</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld секунды</string>
+			<key>many</key>
+			<string>%lld секунд</string>
+			<key>one</key>
+			<string>%lld секунда</string>
+			<key>other</key>
+			<string>%lld секунды</string>
+		</dict>
+	</dict>
+	<key>%lld selected</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Выбрано: %lld</string>
+			<key>many</key>
+			<string>Выбрано: %lld</string>
+			<key>one</key>
+			<string>Выбрано: %lld</string>
+			<key>other</key>
+			<string>Выбрано: %lld</string>
+		</dict>
+	</dict>
+	<key>%lld shortcuts</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld сочетания</string>
+			<key>many</key>
+			<string>%lld сочетаний</string>
+			<key>one</key>
+			<string>%lld сочетание</string>
+			<key>other</key>
+			<string>%lld сочетания</string>
+		</dict>
+	</dict>
+	<key>%lld zooms</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld увеличения</string>
+			<key>many</key>
+			<string>%lld увеличений</string>
+			<key>one</key>
+			<string>%lld увеличение</string>
+			<key>other</key>
+			<string>%lld увеличения</string>
+		</dict>
+	</dict>
+	<key>Auto zoom applied — %lld zooms follow your clicks</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Автомасштаб применен — %lld увеличения следуют за вашими нажатиями</string>
+			<key>many</key>
+			<string>Автомасштаб применен — %lld увеличений следуют за вашими нажатиями</string>
+			<key>one</key>
+			<string>Автомасштаб применен — %lld увеличение следует за вашими нажатиями</string>
+			<key>other</key>
+			<string>Автомасштаб применен — %lld увеличения следуют за вашими нажатиями</string>
+		</dict>
+	</dict>
+	<key>Auto zoom — %lld zooms</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Автомасштаб — %lld увеличения</string>
+			<key>many</key>
+			<string>Автомасштаб — %lld увеличений</string>
+			<key>one</key>
+			<string>Автомасштаб — %lld увеличение</string>
+			<key>other</key>
+			<string>Автомасштаб — %lld увеличения</string>
+		</dict>
+	</dict>
+	<key>Captions ready — %lld lines</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Субтитры готовы — %lld строки</string>
+			<key>many</key>
+			<string>Субтитры готовы — %lld строк</string>
+			<key>one</key>
+			<string>Субтитры готовы — %lld строка</string>
+			<key>other</key>
+			<string>Субтитры готовы — %lld строки</string>
+		</dict>
+	</dict>
+	<key>Cut %lld words — ⌘Z to undo</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Вырезано %lld слова — ⌘Z, чтобы отменить</string>
+			<key>many</key>
+			<string>Вырезано %lld слов — ⌘Z, чтобы отменить</string>
+			<key>one</key>
+			<string>Вырезано %lld слово — ⌘Z, чтобы отменить</string>
+			<key>other</key>
+			<string>Вырезано %lld слова — ⌘Z, чтобы отменить</string>
+		</dict>
+	</dict>
+	<key>Delete %lld Captures?</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Удалить %lld снимка?</string>
+			<key>many</key>
+			<string>Удалить %lld снимков?</string>
+			<key>one</key>
+			<string>Удалить %lld снимок?</string>
+			<key>other</key>
+			<string>Удалить %lld снимка?</string>
+		</dict>
+	</dict>
+	<key>Deleted captures waiting in History's trash and files no capture uses are removed for good, along with %lld captures past your History limit. The rest of your history stays.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Снимки из корзины истории и файлы, которые не использует ни один снимок, будут удалены безвозвратно, как и %lld снимка сверх лимита истории. Остальная история сохранится.</string>
+			<key>many</key>
+			<string>Снимки из корзины истории и файлы, которые не использует ни один снимок, будут удалены безвозвратно, как и %lld снимков сверх лимита истории. Остальная история сохранится.</string>
+			<key>one</key>
+			<string>Снимки из корзины истории и файлы, которые не использует ни один снимок, будут удалены безвозвратно, как и %lld снимок сверх лимита истории. Остальная история сохранится.</string>
+			<key>other</key>
+			<string>Снимки из корзины истории и файлы, которые не использует ни один снимок, будут удалены безвозвратно, как и %lld снимка сверх лимита истории. Остальная история сохранится.</string>
+		</dict>
+	</dict>
+	<key>Freed %@ (%lld files)</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%2$#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Освобождено %1$@ (%2$lld файла)</string>
+			<key>many</key>
+			<string>Освобождено %1$@ (%2$lld файлов)</string>
+			<key>one</key>
+			<string>Освобождено %1$@ (%2$lld файл)</string>
+			<key>other</key>
+			<string>Освобождено %1$@ (%2$lld файла)</string>
+		</dict>
+	</dict>
+	<key>History uses %@ (%lld captures)</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%2$#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>История занимает %1$@ (%2$lld снимка)</string>
+			<key>many</key>
+			<string>История занимает %1$@ (%2$lld снимков)</string>
+			<key>one</key>
+			<string>История занимает %1$@ (%2$lld снимок)</string>
+			<key>other</key>
+			<string>История занимает %1$@ (%2$lld снимка)</string>
+		</dict>
+	</dict>
+	<key>History uses … (%lld captures)</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>История занимает … (%lld снимка)</string>
+			<key>many</key>
+			<string>История занимает … (%lld снимков)</string>
+			<key>one</key>
+			<string>История занимает … (%lld снимок)</string>
+			<key>other</key>
+			<string>История занимает … (%lld снимка)</string>
+		</dict>
+	</dict>
+	<key>Keeping 30 days removes %lld older captures from History now. This can't be undone.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Вариант «30 дней» сразу удалит из истории %lld более старых снимка. Это действие нельзя отменить.</string>
+			<key>many</key>
+			<string>Вариант «30 дней» сразу удалит из истории %lld более старых снимков. Это действие нельзя отменить.</string>
+			<key>one</key>
+			<string>Вариант «30 дней» сразу удалит из истории %lld более старый снимок. Это действие нельзя отменить.</string>
+			<key>other</key>
+			<string>Вариант «30 дней» сразу удалит из истории %lld более старого снимка. Это действие нельзя отменить.</string>
+		</dict>
+	</dict>
+	<key>Keeping 7 days removes %lld older captures from History now. This can't be undone.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Вариант «7 дней» сразу удалит из истории %lld более старых снимка. Это действие нельзя отменить.</string>
+			<key>many</key>
+			<string>Вариант «7 дней» сразу удалит из истории %lld более старых снимков. Это действие нельзя отменить.</string>
+			<key>one</key>
+			<string>Вариант «7 дней» сразу удалит из истории %lld более старый снимок. Это действие нельзя отменить.</string>
+			<key>other</key>
+			<string>Вариант «7 дней» сразу удалит из истории %lld более старого снимка. Это действие нельзя отменить.</string>
+		</dict>
+	</dict>
+	<key>Keeping 90 days removes %lld older captures from History now. This can't be undone.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Вариант «90 дней» сразу удалит из истории %lld более старых снимка. Это действие нельзя отменить.</string>
+			<key>many</key>
+			<string>Вариант «90 дней» сразу удалит из истории %lld более старых снимков. Это действие нельзя отменить.</string>
+			<key>one</key>
+			<string>Вариант «90 дней» сразу удалит из истории %lld более старый снимок. Это действие нельзя отменить.</string>
+			<key>other</key>
+			<string>Вариант «90 дней» сразу удалит из истории %lld более старого снимка. Это действие нельзя отменить.</string>
+		</dict>
+	</dict>
+	<key>Keeping last 1,000 captures removes %lld older captures from History now. This can't be undone.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Вариант «Последние 1 000 снимков» сразу удалит из истории %lld более старых снимка. Это действие нельзя отменить.</string>
+			<key>many</key>
+			<string>Вариант «Последние 1 000 снимков» сразу удалит из истории %lld более старых снимков. Это действие нельзя отменить.</string>
+			<key>one</key>
+			<string>Вариант «Последние 1 000 снимков» сразу удалит из истории %lld более старый снимок. Это действие нельзя отменить.</string>
+			<key>other</key>
+			<string>Вариант «Последние 1 000 снимков» сразу удалит из истории %lld более старого снимка. Это действие нельзя отменить.</string>
+		</dict>
+	</dict>
+	<key>Keeping last 100 captures removes %lld older captures from History now. This can't be undone.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Вариант «Последние 100 снимков» сразу удалит из истории %lld более старых снимка. Это действие нельзя отменить.</string>
+			<key>many</key>
+			<string>Вариант «Последние 100 снимков» сразу удалит из истории %lld более старых снимков. Это действие нельзя отменить.</string>
+			<key>one</key>
+			<string>Вариант «Последние 100 снимков» сразу удалит из истории %lld более старый снимок. Это действие нельзя отменить.</string>
+			<key>other</key>
+			<string>Вариант «Последние 100 снимков» сразу удалит из истории %lld более старого снимка. Это действие нельзя отменить.</string>
+		</dict>
+	</dict>
+	<key>Keeping last 500 captures removes %lld older captures from History now. This can't be undone.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Вариант «Последние 500 снимков» сразу удалит из истории %lld более старых снимка. Это действие нельзя отменить.</string>
+			<key>many</key>
+			<string>Вариант «Последние 500 снимков» сразу удалит из истории %lld более старых снимков. Это действие нельзя отменить.</string>
+			<key>one</key>
+			<string>Вариант «Последние 500 снимков» сразу удалит из истории %lld более старый снимок. Это действие нельзя отменить.</string>
+			<key>other</key>
+			<string>Вариант «Последние 500 снимков» сразу удалит из истории %lld более старого снимка. Это действие нельзя отменить.</string>
+		</dict>
+	</dict>
+	<key>Last %lld captures</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Последние %lld снимка</string>
+			<key>many</key>
+			<string>Последние %lld снимков</string>
+			<key>one</key>
+			<string>Последний %lld снимок</string>
+			<key>other</key>
+			<string>Последние %lld снимка</string>
+		</dict>
+	</dict>
+	<key>Plans zooms around your %lld clicks. Zooms you placed by hand are kept.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Расставляет увеличения по %lld нажатиям. Увеличения, добавленные вручную, сохранятся.</string>
+			<key>many</key>
+			<string>Расставляет увеличения по %lld нажатиям. Увеличения, добавленные вручную, сохранятся.</string>
+			<key>one</key>
+			<string>Расставляет увеличения по %lld нажатию. Увеличения, добавленные вручную, сохранятся.</string>
+			<key>other</key>
+			<string>Расставляет увеличения по %lld нажатия. Увеличения, добавленные вручную, сохранятся.</string>
+		</dict>
+	</dict>
+	<key>Ready · %lld optional off</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Готово · %lld дополнительных сочетания не задано</string>
+			<key>many</key>
+			<string>Готово · %lld дополнительных сочетаний не задано</string>
+			<key>one</key>
+			<string>Готово · %lld дополнительное сочетание не задано</string>
+			<key>other</key>
+			<string>Готово · %lld дополнительного сочетания не задано</string>
+		</dict>
+	</dict>
+	<key>Redo Delete %lld Items</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Повторить удаление %lld объектов</string>
+			<key>many</key>
+			<string>Повторить удаление %lld объектов</string>
+			<key>one</key>
+			<string>Повторить удаление %lld объекта</string>
+			<key>other</key>
+			<string>Повторить удаление %lld объекта</string>
+		</dict>
+	</dict>
+	<key>Redo Move %lld Items</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Повторить перемещение %lld объектов</string>
+			<key>many</key>
+			<string>Повторить перемещение %lld объектов</string>
+			<key>one</key>
+			<string>Повторить перемещение %lld объекта</string>
+			<key>other</key>
+			<string>Повторить перемещение %lld объекта</string>
+		</dict>
+	</dict>
+	<key>Remove %lld ums</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Удалить %lld слова-паразита</string>
+			<key>many</key>
+			<string>Удалить %lld слов-паразитов</string>
+			<key>one</key>
+			<string>Удалить %lld слово-паразит</string>
+			<key>other</key>
+			<string>Удалить %lld слова-паразита</string>
+		</dict>
+	</dict>
+	<key>Removed %lld filler words — %@ shorter</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Удалено %lld слова-паразита — на %@ короче</string>
+			<key>many</key>
+			<string>Удалено %lld слов-паразитов — на %@ короче</string>
+			<key>one</key>
+			<string>Удалено %lld слово-паразит — на %@ короче</string>
+			<key>other</key>
+			<string>Удалено %lld слова-паразита — на %@ короче</string>
+		</dict>
+	</dict>
+	<key>Removed %lld items — ⌘Z to undo</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Удалено %lld объекта — ⌘Z, чтобы отменить</string>
+			<key>many</key>
+			<string>Удалено %lld объектов — ⌘Z, чтобы отменить</string>
+			<key>one</key>
+			<string>Удален %lld объект — ⌘Z, чтобы отменить</string>
+			<key>other</key>
+			<string>Удалено %lld объекта — ⌘Z, чтобы отменить</string>
+		</dict>
+	</dict>
+	<key>Removed %lld items — ⌘Z to undo (a video keeps at least one clip)</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Удалено %lld объекта — ⌘Z, чтобы отменить (в видео остается хотя бы один клип)</string>
+			<key>many</key>
+			<string>Удалено %lld объектов — ⌘Z, чтобы отменить (в видео остается хотя бы один клип)</string>
+			<key>one</key>
+			<string>Удален %lld объект — ⌘Z, чтобы отменить (в видео остается хотя бы один клип)</string>
+			<key>other</key>
+			<string>Удалено %lld объекта — ⌘Z, чтобы отменить (в видео остается хотя бы один клип)</string>
+		</dict>
+	</dict>
+	<key>Removed %lld zooms — ⌘Z to undo</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Удалено %lld увеличения — ⌘Z, чтобы отменить</string>
+			<key>many</key>
+			<string>Удалено %lld увеличений — ⌘Z, чтобы отменить</string>
+			<key>one</key>
+			<string>Удалено %lld увеличение — ⌘Z, чтобы отменить</string>
+			<key>other</key>
+			<string>Удалено %lld увеличения — ⌘Z, чтобы отменить</string>
+		</dict>
+	</dict>
+	<key>Restored %lld cuts — %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Восстановлено %lld фрагмента — %@</string>
+			<key>many</key>
+			<string>Восстановлено %lld фрагментов — %@</string>
+			<key>one</key>
+			<string>Восстановлен %lld фрагмент — %@</string>
+			<key>other</key>
+			<string>Восстановлено %lld фрагмента — %@</string>
+		</dict>
+	</dict>
+	<key>Restored %lld words</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Восстановлено %lld слова</string>
+			<key>many</key>
+			<string>Восстановлено %lld слов</string>
+			<key>one</key>
+			<string>Восстановлено %lld слово</string>
+			<key>other</key>
+			<string>Восстановлено %lld слова</string>
+		</dict>
+	</dict>
+	<key>Scrolling capture reached its maximum length (%lld points) and finished.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Снимок с прокруткой достиг максимальной длины (%lld пт) и завершен.</string>
+			<key>many</key>
+			<string>Снимок с прокруткой достиг максимальной длины (%lld пт) и завершен.</string>
+			<key>one</key>
+			<string>Снимок с прокруткой достиг максимальной длины (%lld пт) и завершен.</string>
+			<key>other</key>
+			<string>Снимок с прокруткой достиг максимальной длины (%lld пт) и завершен.</string>
+		</dict>
+	</dict>
+	<key>Scrolling capture stopped after %lld minutes.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Снимок с прокруткой остановлен через %lld минуты.</string>
+			<key>many</key>
+			<string>Снимок с прокруткой остановлен через %lld минут.</string>
+			<key>one</key>
+			<string>Снимок с прокруткой остановлен через %lld минуту.</string>
+			<key>other</key>
+			<string>Снимок с прокруткой остановлен через %lld минуты.</string>
+		</dict>
+	</dict>
+	<key>Shorten %lld pauses</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Сократить %lld паузы</string>
+			<key>many</key>
+			<string>Сократить %lld пауз</string>
+			<key>one</key>
+			<string>Сократить %lld паузу</string>
+			<key>other</key>
+			<string>Сократить %lld паузы</string>
+		</dict>
+	</dict>
+	<key>Shortened %lld pauses — %@ shorter</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Сокращено %lld паузы — на %@ короче</string>
+			<key>many</key>
+			<string>Сокращено %lld пауз — на %@ короче</string>
+			<key>one</key>
+			<string>Сокращена %lld пауза — на %@ короче</string>
+			<key>other</key>
+			<string>Сокращено %lld паузы — на %@ короче</string>
+		</dict>
+	</dict>
+	<key>Sped up %lld idle moments — saved %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Ускорено %lld простоя — сэкономлено %@</string>
+			<key>many</key>
+			<string>Ускорено %lld простоев — сэкономлено %@</string>
+			<key>one</key>
+			<string>Ускорен %lld простой — сэкономлено %@</string>
+			<key>other</key>
+			<string>Ускорено %lld простоя — сэкономлено %@</string>
+		</dict>
+	</dict>
+	<key>Sped up %lld idle moments — saved %@ · check any typing</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Ускорено %lld простоя — сэкономлено %@ · проверьте места с набором текста</string>
+			<key>many</key>
+			<string>Ускорено %lld простоев — сэкономлено %@ · проверьте места с набором текста</string>
+			<key>one</key>
+			<string>Ускорен %lld простой — сэкономлено %@ · проверьте места с набором текста</string>
+			<key>other</key>
+			<string>Ускорено %lld простоя — сэкономлено %@ · проверьте места с набором текста</string>
+		</dict>
+	</dict>
+	<key>This replaces all %lld caption lines, including any you edited or typed, with a new transcript in %@.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Все строки субтитров (%lld), включая измененные и введенные вами, будут заменены новой расшифровкой на языке «%@».</string>
+			<key>many</key>
+			<string>Все строки субтитров (%lld), включая измененные и введенные вами, будут заменены новой расшифровкой на языке «%@».</string>
+			<key>one</key>
+			<string>Все строки субтитров (%lld), включая измененные и введенные вами, будут заменены новой расшифровкой на языке «%@».</string>
+			<key>other</key>
+			<string>Все строки субтитров (%lld), включая измененные и введенные вами, будут заменены новой расшифровкой на языке «%@».</string>
+		</dict>
+	</dict>
+	<key>Undo Delete %lld Items</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Отменить удаление %lld объектов</string>
+			<key>many</key>
+			<string>Отменить удаление %lld объектов</string>
+			<key>one</key>
+			<string>Отменить удаление %lld объекта</string>
+			<key>other</key>
+			<string>Отменить удаление %lld объекта</string>
+		</dict>
+	</dict>
+	<key>Undo Move %lld Items</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Отменить перемещение %lld объектов</string>
+			<key>many</key>
+			<string>Отменить перемещение %lld объектов</string>
+			<key>one</key>
+			<string>Отменить перемещение %lld объекта</string>
+			<key>other</key>
+			<string>Отменить перемещение %lld объекта</string>
+		</dict>
+	</dict>
+	<key>You have unsaved edits in %lld screenshots.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Есть несохраненные изменения в %lld снимках экрана.</string>
+			<key>many</key>
+			<string>Есть несохраненные изменения в %lld снимках экрана.</string>
+			<key>one</key>
+			<string>Есть несохраненные изменения в %lld снимке экрана.</string>
+			<key>other</key>
+			<string>Есть несохраненные изменения в %lld снимка экрана.</string>
+		</dict>
+	</dict>
+	<key>Your disk is almost full. In about %lld minutes the recording stops and saves itself.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Диск почти заполнен. Примерно через %lld минуты запись остановится и сохранится.</string>
+			<key>many</key>
+			<string>Диск почти заполнен. Примерно через %lld минут запись остановится и сохранится.</string>
+			<key>one</key>
+			<string>Диск почти заполнен. Примерно через %lld минуту запись остановится и сохранится.</string>
+			<key>other</key>
+			<string>Диск почти заполнен. Примерно через %lld минуты запись остановится и сохранится.</string>
+		</dict>
+	</dict>
+	<key>Your disk is almost full. In about %lld seconds the recording stops and saves itself.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Диск почти заполнен. Примерно через %lld секунды запись остановится и сохранится.</string>
+			<key>many</key>
+			<string>Диск почти заполнен. Примерно через %lld секунд запись остановится и сохранится.</string>
+			<key>one</key>
+			<string>Диск почти заполнен. Примерно через %lld секунду запись остановится и сохранится.</string>
+			<key>other</key>
+			<string>Диск почти заполнен. Примерно через %lld секунды запись остановится и сохранится.</string>
+		</dict>
+	</dict>
+	<key>• %lld small notes about recordings that are gone</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>• %lld небольшие заметки о записях, которых больше нет</string>
+			<key>many</key>
+			<string>• %lld небольших заметок о записях, которых больше нет</string>
+			<key>one</key>
+			<string>• %lld небольшая заметка о записи, которой больше нет</string>
+			<key>other</key>
+			<string>• %lld небольшой заметки о записях, которых больше нет</string>
+		</dict>
+	</dict>
+	<key>• Camera footage no recording uses — %lld files, %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>• Записи с камеры, которые не использует ни одна запись, — %lld файла, %@</string>
+			<key>many</key>
+			<string>• Записи с камеры, которые не использует ни одна запись, — %lld файлов, %@</string>
+			<key>one</key>
+			<string>• Записи с камеры, которые не использует ни одна запись, — %lld файл, %@</string>
+			<key>other</key>
+			<string>• Записи с камеры, которые не использует ни одна запись, — %lld файла, %@</string>
+		</dict>
+	</dict>
+	<key>• Cleaned-up voice of recordings not found or changed since — %lld files, %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>• Очищенный голос записей, которые не найдены или изменились, — %lld файла, %@</string>
+			<key>many</key>
+			<string>• Очищенный голос записей, которые не найдены или изменились, — %lld файлов, %@</string>
+			<key>one</key>
+			<string>• Очищенный голос записей, которые не найдены или изменились, — %lld файл, %@</string>
+			<key>other</key>
+			<string>• Очищенный голос записей, которые не найдены или изменились, — %lld файла, %@</string>
+		</dict>
+	</dict>
+	<key>• Clipboard exports older than a day — %lld files, %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>• Экспорты в буфер обмена старше суток — %lld файла, %@</string>
+			<key>many</key>
+			<string>• Экспорты в буфер обмена старше суток — %lld файлов, %@</string>
+			<key>one</key>
+			<string>• Экспорты в буфер обмена старше суток — %lld файл, %@</string>
+			<key>other</key>
+			<string>• Экспорты в буфер обмена старше суток — %lld файла, %@</string>
+		</dict>
+	</dict>
+	<key>• Edits, recording details, and camera footage of %lld recordings Shotnix can't find (%@): %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>• Правки, сведения о записях и записи с камеры для %lld записей, которые Shotnix не может найти (%@): %@</string>
+			<key>many</key>
+			<string>• Правки, сведения о записях и записи с камеры для %lld записей, которые Shotnix не может найти (%@): %@</string>
+			<key>one</key>
+			<string>• Правки, сведения о записи и записи с камеры для %lld записи, которую Shotnix не может найти (%@): %@</string>
+			<key>other</key>
+			<string>• Правки, сведения о записях и записи с камеры для %lld записи, которую Shotnix не может найти (%@): %@</string>
+		</dict>
+	</dict>
+	<key>• Pictures and songs no video uses — %lld files, %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>• Изображения и песни, которые не использует ни одно видео, — %lld файла, %@</string>
+			<key>many</key>
+			<string>• Изображения и песни, которые не использует ни одно видео, — %lld файлов, %@</string>
+			<key>one</key>
+			<string>• Изображения и песни, которые не использует ни одно видео, — %lld файл, %@</string>
+			<key>other</key>
+			<string>• Изображения и песни, которые не использует ни одно видео, — %lld файла, %@</string>
+		</dict>
+	</dict>
+</dict>
+</plist>

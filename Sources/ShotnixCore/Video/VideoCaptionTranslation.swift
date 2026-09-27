@@ -183,7 +183,7 @@ private struct VideoCaptionTranslationControls: View {
                     Text(L("Show"))
                         .font(.system(size: 12, weight: .medium))
                         .foregroundStyle(VideoEditorTheme.textPrimary)
-                        .frame(width: 58, alignment: .leading)
+                        .frame(width: VideoEditorTheme.rowTitleWidth([L("Show")]), alignment: .leading)
                     Menu {
                         Button(originalTitle) { model.showCaptionTrack(nil) }
                         Divider()

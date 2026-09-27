@@ -1,0 +1,794 @@
+{
+  "%@ found" : {
+    "ru" : "Найдено: %@"
+  },
+  "%@ quality · %@" : {
+    "ru" : "Качество: %@ · %@"
+  },
+  "%@ · %@ px" : {
+    "ru" : "%@ · %@ пикс."
+  },
+  "%@ · %lld fps" : {
+    "ru" : "%@ · %lld fps"
+  },
+  "%@ × %@ px" : {
+    "ru" : "%@ × %@ пикс."
+  },
+  "%@, %@" : {
+    "ru" : "%@, %@"
+  },
+  "%@: %@" : {
+    "ru" : "%@: %@"
+  },
+  "%lld QR codes found" : {
+    "ru" : {
+      "few" : "Найдено %lld QR-кода",
+      "many" : "Найдено %lld QR-кодов",
+      "one" : "Найден %lld QR-код",
+      "other" : "Найдено %lld QR-кода"
+    }
+  },
+  "%lld barcodes found" : {
+    "ru" : {
+      "few" : "Найдено %lld штрихкода",
+      "many" : "Найдено %lld штрихкодов",
+      "one" : "Найден %lld штрихкод",
+      "other" : "Найдено %lld штрихкода"
+    }
+  },
+  "%lld email addresses" : {
+    "ru" : {
+      "few" : "%lld адреса e-mail",
+      "many" : "%lld адресов e-mail",
+      "one" : "%lld адрес e-mail",
+      "other" : "%lld адреса e-mail"
+    }
+  },
+  "%lld lines" : {
+    "ru" : {
+      "few" : "%lld строки",
+      "many" : "%lld строк",
+      "one" : "%lld строка",
+      "other" : "%lld строки"
+    }
+  },
+  "%lld lines · found %@" : {
+    "ru" : {
+      "few" : "%lld строки · найдено: %@",
+      "many" : "%lld строк · найдено: %@",
+      "one" : "%lld строка · найдено: %@",
+      "other" : "%lld строки · найдено: %@"
+    }
+  },
+  "%lld links" : {
+    "ru" : {
+      "few" : "%lld ссылки",
+      "many" : "%lld ссылок",
+      "one" : "%lld ссылка",
+      "other" : "%lld ссылки"
+    }
+  },
+  "%lld px · Esc or Done finishes" : {
+    "ru" : "%lld пикс. · Esc или «Готово» — завершить"
+  },
+  "%lld s" : {
+    "ru" : "%lld с"
+  },
+  "%lld screens" : {
+    "ru" : {
+      "few" : "%lld экрана",
+      "many" : "%lld экранов",
+      "one" : "%lld экран",
+      "other" : "%lld экрана"
+    }
+  },
+  "%lld seconds" : {
+    "ru" : {
+      "few" : "%lld секунды",
+      "many" : "%lld секунд",
+      "one" : "%lld секунда",
+      "other" : "%lld секунды"
+    }
+  },
+  "All Displays" : {
+    "ru" : "Все дисплеи"
+  },
+  "Allow Shotnix in Accessibility — shortcuts turn on by themselves." : {
+    "ru" : "Разрешите Shotnix доступ в разделе «Универсальный доступ» — сочетания клавиш включатся сами."
+  },
+  "App" : {
+    "ru" : "Приложение"
+  },
+  "Balanced" : {
+    "ru" : "Среднее"
+  },
+  "Barcode" : {
+    "ru" : "Штрихкод"
+  },
+  "Barcode copied to clipboard" : {
+    "ru" : "Штрихкод скопирован в буфер обмена"
+  },
+  "Barcodes" : {
+    "ru" : "Штрихкоды"
+  },
+  "Call" : {
+    "ru" : "Позвонить"
+  },
+  "Camera" : {
+    "ru" : "Камера"
+  },
+  "Camera access is off — allow Shotnix in System Settings → Privacy & Security → Camera." : {
+    "ru" : "Доступ к камере выключен — разрешите его для Shotnix в разделе Системные настройки → Конфиденциальность и безопасность → Камера."
+  },
+  "Camera disconnected" : {
+    "ru" : "Камера отключена"
+  },
+  "Camera disconnected." : {
+    "ru" : "Камера отключена."
+  },
+  "Camera disconnected. The recording continues without it." : {
+    "ru" : "Камера отключена. Запись продолжается без нее."
+  },
+  "Camera preview" : {
+    "ru" : "Предпросмотр камеры"
+  },
+  "Camera stopped" : {
+    "ru" : "Камера остановлена"
+  },
+  "Cancel Recording" : {
+    "ru" : "Отменить запись"
+  },
+  "Capture  ⏎" : {
+    "ru" : "Снять  ⏎"
+  },
+  "Capture failed" : {
+    "ru" : "Не удалось сделать снимок"
+  },
+  "Choose" : {
+    "ru" : "Выбрать"
+  },
+  "Choose screen" : {
+    "ru" : "Выбрать экран"
+  },
+  "Choose window" : {
+    "ru" : "Выбрать окно"
+  },
+  "Click a window to capture it  ·  Esc cancels" : {
+    "ru" : "Нажмите окно, чтобы снять его  ·  Esc — отмена"
+  },
+  "Click or press Esc to cancel" : {
+    "ru" : "Нажмите сюда или Esc, чтобы отменить"
+  },
+  "Close" : {
+    "ru" : "Закрыть"
+  },
+  "Close All Pins" : {
+    "ru" : "Закрыть все"
+  },
+  "Close Pin" : {
+    "ru" : "Закрыть"
+  },
+  "Compose Email" : {
+    "ru" : "Написать письмо"
+  },
+  "Copy %@" : {
+    "ru" : "Скопировать %@"
+  },
+  "Copy Text" : {
+    "ru" : "Скопировать текст"
+  },
+  "Copy as Table" : {
+    "ru" : "Скопировать как таблицу"
+  },
+  "Copy image to clipboard" : {
+    "ru" : "Скопировать изображение в буфер обмена"
+  },
+  "Copy recognized text (OCR)" : {
+    "ru" : "Скопировать распознанный текст (OCR)"
+  },
+  "Copy the rows tab-separated, ready to paste into a spreadsheet" : {
+    "ru" : "Скопировать строки с разделителями-табуляциями, чтобы вставить их в электронную таблицу"
+  },
+  "Could not copy the screenshot" : {
+    "ru" : "Не удалось скопировать снимок экрана"
+  },
+  "Could not list windows. Check permissions." : {
+    "ru" : "Не удалось получить список окон. Проверьте разрешения."
+  },
+  "Could not save the recording (%@)." : {
+    "ru" : "Не удалось сохранить запись (%@)."
+  },
+  "Could not save the recording." : {
+    "ru" : "Не удалось сохранить запись."
+  },
+  "Could not start recording (%@)." : {
+    "ru" : "Не удалось начать запись (%@)."
+  },
+  "Couldn't create the video file." : {
+    "ru" : "Не удалось создать видеофайл."
+  },
+  "Countdown" : {
+    "ru" : "Обратный отсчет"
+  },
+  "Cursor" : {
+    "ru" : "Указатель"
+  },
+  "Decoded details" : {
+    "ru" : "Расшифрованные данные"
+  },
+  "Discard" : {
+    "ru" : "Удалить"
+  },
+  "Discard recording" : {
+    "ru" : "Удалить запись"
+  },
+  "Discard this recording?" : {
+    "ru" : "Удалить эту запись?"
+  },
+  "Disk almost full" : {
+    "ru" : "Диск почти полон"
+  },
+  "Display" : {
+    "ru" : "Дисплей"
+  },
+  "Display %lld" : {
+    "ru" : "Дисплей %lld"
+  },
+  "Display %lld · Main" : {
+    "ru" : "Дисплей %lld · основной"
+  },
+  "Done" : {
+    "ru" : "Готово"
+  },
+  "Double-click to edit, or drag into another app. Command-C copies, Command-S saves, Escape dismisses." : {
+    "ru" : "Дважды нажмите, чтобы изменить, или перетяните в другое приложение. Command-C копирует, Command-S сохраняет, Escape закрывает."
+  },
+  "Drag edges or corners to resize  ·  Arrow keys nudge (⇧ ×10)  ·  Return captures  ·  Esc cancels" : {
+    "ru" : "Края и углы меняют размер  ·  Стрелки сдвигают (⇧ ×10)  ·  Return — снимок  ·  Esc — отмена"
+  },
+  "Drag to capture  ·  Hold ⇧ as you let go to adjust first  ·  Space moves  ·  Esc cancels" : {
+    "ru" : "Выделите область, чтобы снять  ·  ⇧ при отпускании — сначала настроить  ·  Пробел — сдвиг  ·  Esc — отмена"
+  },
+  "Drag to move. Press Command-C to copy, Escape to close." : {
+    "ru" : "Перетяните, чтобы переместить. Нажмите Command-C, чтобы скопировать, или Escape, чтобы закрыть."
+  },
+  "Drag to select, then adjust  ·  Hold ⇧ as you let go to capture right away  ·  Esc cancels" : {
+    "ru" : "Выделите область и настройте ее  ·  ⇧ при отпускании — снять сразу  ·  Esc — отмена"
+  },
+  "Editable Cursor" : {
+    "ru" : "Редактируемый указатель"
+  },
+  "Email" : {
+    "ru" : "E-mail"
+  },
+  "Email %@" : {
+    "ru" : "Написать на %@"
+  },
+  "Email QR found" : {
+    "ru" : "Найден QR-код с e-mail"
+  },
+  "Email address copied" : {
+    "ru" : "Адрес e-mail скопирован"
+  },
+  "Esc or Done finishes" : {
+    "ru" : "Esc или «Готово» — завершить"
+  },
+  "Estimated file size. Still screens take less." : {
+    "ru" : "Примерный размер файла. Статичное изображение занимает меньше."
+  },
+  "Estimated size %@" : {
+    "ru" : "Примерный размер: %@"
+  },
+  "Finish or cancel the current recording setup" : {
+    "ru" : "Завершите или отмените текущую подготовку к записи"
+  },
+  "Frame rate" : {
+    "ru" : "Частота кадров"
+  },
+  "Hidden network" : {
+    "ru" : "Скрытая сеть"
+  },
+  "High" : {
+    "ru" : "Высокое"
+  },
+  "Keep" : {
+    "ru" : "Оставить"
+  },
+  "Keyboard shortcuts are on" : {
+    "ru" : "Сочетания клавиш включены"
+  },
+  "Link" : {
+    "ru" : "Ссылка"
+  },
+  "Link QR found" : {
+    "ru" : "Найден QR-код со ссылкой"
+  },
+  "Link copied" : {
+    "ru" : "Ссылка скопирована"
+  },
+  "Links" : {
+    "ru" : "Ссылки"
+  },
+  "Links (%lld of %lld)" : {
+    "ru" : "Ссылки (%lld из %lld)"
+  },
+  "Max" : {
+    "ru" : "Максимальное"
+  },
+  "Maximum length reached" : {
+    "ru" : "Достигнута максимальная длина"
+  },
+  "Message" : {
+    "ru" : "Сообщение"
+  },
+  "Message QR found" : {
+    "ru" : "Найден QR-код с сообщением"
+  },
+  "Mic disconnected" : {
+    "ru" : "Микрофон отключен"
+  },
+  "Mic stopped" : {
+    "ru" : "Микрофон остановлен"
+  },
+  "Mic switched" : {
+    "ru" : "Микрофон сменился"
+  },
+  "Microphone" : {
+    "ru" : "Микрофон"
+  },
+  "Microphone access is off, so this recording has no mic." : {
+    "ru" : "Доступ к микрофону выключен, поэтому запись идет без микрофона."
+  },
+  "Microphone access is off. Allow Shotnix in System Settings → Privacy & Security → Microphone." : {
+    "ru" : "Доступ к микрофону выключен. Разрешите его для Shotnix в разделе Системные настройки → Конфиденциальность и безопасность → Микрофон."
+  },
+  "Microphone disconnected. Now recording from %@." : {
+    "ru" : "Микрофон отключен. Теперь запись идет с устройства «%@»."
+  },
+  "Microphone disconnected. The recording continues without it." : {
+    "ru" : "Микрофон отключен. Запись продолжается без него."
+  },
+  "Microphone level" : {
+    "ru" : "Уровень микрофона"
+  },
+  "More recording options" : {
+    "ru" : "Другие параметры записи"
+  },
+  "Network" : {
+    "ru" : "Сеть"
+  },
+  "No" : {
+    "ru" : "Нет"
+  },
+  "No barcode found in this selection" : {
+    "ru" : "В выделенной области не найден штрихкод"
+  },
+  "No camera connected" : {
+    "ru" : "Камера не подключена"
+  },
+  "No camera found." : {
+    "ru" : "Камера не найдена."
+  },
+  "No microphone connected" : {
+    "ru" : "Микрофон не подключен"
+  },
+  "No microphone is connected, so this recording has no mic." : {
+    "ru" : "Микрофон не подключен, поэтому запись идет без микрофона."
+  },
+  "No recordable windows found" : {
+    "ru" : "Нет окон, доступных для записи"
+  },
+  "No recording in progress" : {
+    "ru" : "Запись не идет"
+  },
+  "No sound from the microphone" : {
+    "ru" : "Нет звука с микрофона"
+  },
+  "No text found in this selection" : {
+    "ru" : "В выделенной области не найден текст"
+  },
+  "Not enough disk space to record." : {
+    "ru" : "Недостаточно места на диске для записи."
+  },
+  "Not enough free disk space for this recording: it needs about %@ free, and %@ is available. Free up some space and try again." : {
+    "ru" : "Недостаточно места на диске для этой записи: нужно около %@, а свободно %@. Освободите место и повторите попытку."
+  },
+  "Not enough free disk space for this recording: it needs about %@ free, and %@ is available. Free up space, or choose Balanced quality or 30 fps." : {
+    "ru" : "Недостаточно места на диске для этой записи: нужно около %@, а свободно %@. Освободите место или выберите качество «Среднее» либо 30 fps."
+  },
+  "Nothing was recorded — the screen didn't send any picture. Try again." : {
+    "ru" : "Ничего не записано — экран не передал изображение. Повторите попытку."
+  },
+  "Off" : {
+    "ru" : "Выкл."
+  },
+  "Open" : {
+    "ru" : "Открыть"
+  },
+  "Open %@" : {
+    "ru" : "Открыть %@"
+  },
+  "Open Editor After Recording" : {
+    "ru" : "Открывать редактор после записи"
+  },
+  "Open Link" : {
+    "ru" : "Открыть ссылку"
+  },
+  "Open Messages" : {
+    "ru" : "Открыть Сообщения"
+  },
+  "Password" : {
+    "ru" : "Пароль"
+  },
+  "Pause recording" : {
+    "ru" : "Приостановить запись"
+  },
+  "Pause recording (%@)" : {
+    "ru" : "Приостановить запись (%@)"
+  },
+  "Paused" : {
+    "ru" : "Пауза"
+  },
+  "Phone" : {
+    "ru" : "Телефон"
+  },
+  "Phone QR found" : {
+    "ru" : "Найден QR-код с номером телефона"
+  },
+  "Pin" : {
+    "ru" : "Закрепить"
+  },
+  "Pinned Screenshot" : {
+    "ru" : "Закрепленный снимок"
+  },
+  "Pinned screenshot" : {
+    "ru" : "Закрепленный снимок экрана"
+  },
+  "Preview the target, then continue to recording controls." : {
+    "ru" : "Проверьте предпросмотр и перейдите к управлению записью."
+  },
+  "QR Code" : {
+    "ru" : "QR-код"
+  },
+  "QR Codes" : {
+    "ru" : "QR-коды"
+  },
+  "QR copied to clipboard" : {
+    "ru" : "QR-код скопирован в буфер обмена"
+  },
+  "Quality" : {
+    "ru" : "Качество"
+  },
+  "Recognized Text" : {
+    "ru" : "Распознанный текст"
+  },
+  "Recognized text" : {
+    "ru" : "Распознанный текст"
+  },
+  "Record" : {
+    "ru" : "Записать"
+  },
+  "Record (Return)" : {
+    "ru" : "Записать (Return)"
+  },
+  "Recording" : {
+    "ru" : "Запись"
+  },
+  "Recording already in progress" : {
+    "ru" : "Запись уже идет"
+  },
+  "Recording canceled" : {
+    "ru" : "Запись отменена"
+  },
+  "Recording controls" : {
+    "ru" : "Управление записью"
+  },
+  "Recording discarded" : {
+    "ru" : "Запись удалена"
+  },
+  "Recording failed before saving." : {
+    "ru" : "Запись прервалась до сохранения."
+  },
+  "Recording keyboard shortcuts" : {
+    "ru" : "Записываются сочетания клавиш"
+  },
+  "Recording stopped early — saved what was captured." : {
+    "ru" : "Запись остановилась раньше времени — сохранено то, что успело записаться."
+  },
+  "Recording the camera" : {
+    "ru" : "Записывается камера"
+  },
+  "Recording time" : {
+    "ru" : "Время записи"
+  },
+  "Recording without the camera." : {
+    "ru" : "Запись идет без камеры."
+  },
+  "Records %@ × %@ pixels (%@ × %@ points)" : {
+    "ru" : "Запись %@ × %@ пикс. (%@ × %@ пт)"
+  },
+  "Records the pointer separately, so the editor can smooth it, resize it, and keep it crisp when zoomed." : {
+    "ru" : "Записывает указатель отдельно, чтобы редактор мог сглаживать его, менять размер и сохранять четкость при увеличении."
+  },
+  "Resize" : {
+    "ru" : "Изменить размер"
+  },
+  "Resume recording" : {
+    "ru" : "Продолжить запись"
+  },
+  "Resume recording (%@)" : {
+    "ru" : "Продолжить запись (%@)"
+  },
+  "Review the decoded email payload before copying." : {
+    "ru" : "Проверьте расшифрованные данные e-mail перед копированием."
+  },
+  "Review the decoded link before opening." : {
+    "ru" : "Проверьте расшифрованную ссылку перед открытием."
+  },
+  "Review the decoded link before opening: %@" : {
+    "ru" : "Проверьте расшифрованную ссылку перед открытием: %@"
+  },
+  "Review the decoded text before copying." : {
+    "ru" : "Проверьте расшифрованный текст перед копированием."
+  },
+  "Review the decoded values before copying or opening." : {
+    "ru" : "Проверьте расшифрованные значения перед копированием или открытием."
+  },
+  "Review the email details before composing." : {
+    "ru" : "Проверьте данные письма, прежде чем создать его."
+  },
+  "Review the message details before opening." : {
+    "ru" : "Проверьте данные сообщения перед открытием."
+  },
+  "Review the network details before copying." : {
+    "ru" : "Проверьте данные сети перед копированием."
+  },
+  "Review the phone number before opening." : {
+    "ru" : "Проверьте номер телефона перед звонком."
+  },
+  "Save" : {
+    "ru" : "Сохранить"
+  },
+  "Save screenshot to disk" : {
+    "ru" : "Сохранить снимок экрана на диск"
+  },
+  "Saved %@ to %@ — click to reveal in Finder" : {
+    "ru" : "Файл «%@» сохранен в папку «%@» — нажмите, чтобы показать в Finder"
+  },
+  "Saved to %@: %@" : {
+    "ru" : "Сохранено в папку «%@»: %@"
+  },
+  "Saving the last recording…" : {
+    "ru" : "Сохранение последней записи…"
+  },
+  "Saving the recording…" : {
+    "ru" : "Сохранение записи…"
+  },
+  "Saving the screen recording" : {
+    "ru" : "Сохранение записи экрана"
+  },
+  "Saving…" : {
+    "ru" : "Сохранение…"
+  },
+  "Screen recording didn't start in time. Try again." : {
+    "ru" : "Запись экрана не началась вовремя. Повторите попытку."
+  },
+  "Screenshot captured" : {
+    "ru" : "Снимок экрана сделан"
+  },
+  "Screenshot selection" : {
+    "ru" : "Выделение для снимка экрана"
+  },
+  "Screenshot thumbnail" : {
+    "ru" : "Миниатюра снимка экрана"
+  },
+  "Scroll down to capture" : {
+    "ru" : "Прокручивайте вниз, чтобы снять"
+  },
+  "Scroll down to capture more" : {
+    "ru" : "Прокручивайте дальше вниз"
+  },
+  "Scrolled too fast — scroll back up a little" : {
+    "ru" : "Слишком быстро — прокрутите немного назад"
+  },
+  "Scrolling capture controls" : {
+    "ru" : "Управление снимком с прокруткой"
+  },
+  "Scrolling capture failed" : {
+    "ru" : "Не удалось сделать снимок с прокруткой"
+  },
+  "Scrolling capture reached its maximum length (%lld points) and finished." : {
+    "ru" : {
+      "few" : "Снимок с прокруткой достиг максимальной длины (%lld пт) и завершен.",
+      "many" : "Снимок с прокруткой достиг максимальной длины (%lld пт) и завершен.",
+      "one" : "Снимок с прокруткой достиг максимальной длины (%lld пт) и завершен.",
+      "other" : "Снимок с прокруткой достиг максимальной длины (%lld пт) и завершен."
+    }
+  },
+  "Scrolling capture stopped after %lld minutes." : {
+    "ru" : {
+      "few" : "Снимок с прокруткой остановлен через %lld минуты.",
+      "many" : "Снимок с прокруткой остановлен через %lld минут.",
+      "one" : "Снимок с прокруткой остановлен через %lld минуту.",
+      "other" : "Снимок с прокруткой остановлен через %lld минуты."
+    }
+  },
+  "Security" : {
+    "ru" : "Безопасность"
+  },
+  "Select a window to record without blocking other apps" : {
+    "ru" : "Выберите окно для записи, не блокируя другие приложения"
+  },
+  "Select which display to record fullscreen" : {
+    "ru" : "Выберите дисплей для записи всего экрана"
+  },
+  "Selection %@ by %@ points" : {
+    "ru" : "Выделение %@ на %@ пт"
+  },
+  "Selection %@ by %@ points. Arrow keys move it, Return captures, Escape cancels." : {
+    "ru" : "Выделение %@ на %@ пт. Клавиши со стрелками перемещают его, Return делает снимок, Escape отменяет."
+  },
+  "Shotnix can't write to the save folder. Choose another one in Settings → Screenshots." : {
+    "ru" : "Shotnix не может записывать в папку для сохранения. Выберите другую в разделе Настройки → Снимки экрана."
+  },
+  "Shotnix isn't allowed to record the screen. Turn it on in System Settings → Privacy & Security → Screen & System Audio Recording." : {
+    "ru" : "Shotnix не разрешено записывать экран. Включите разрешение в разделе Системные настройки → Конфиденциальность и безопасность → Запись экрана и системного звука."
+  },
+  "Show keyboard shortcuts" : {
+    "ru" : "Показывать сочетания клавиш"
+  },
+  "Skipping frames" : {
+    "ru" : "Пропуск кадров"
+  },
+  "Still saving the last recording — try again in a moment." : {
+    "ru" : "Последняя запись еще сохраняется — повторите попытку чуть позже."
+  },
+  "Still saving the recording…" : {
+    "ru" : "Запись еще сохраняется…"
+  },
+  "Stitching…" : {
+    "ru" : "Склейка…"
+  },
+  "Stop recording" : {
+    "ru" : "Остановить запись"
+  },
+  "Stop recording (%@)" : {
+    "ru" : "Остановить запись (%@)"
+  },
+  "Subject" : {
+    "ru" : "Тема"
+  },
+  "System Default" : {
+    "ru" : "Как в системе"
+  },
+  "System audio" : {
+    "ru" : "Системный звук"
+  },
+  "System audio couldn't be recorded. Try again without system audio." : {
+    "ru" : "Не удалось записать системный звук. Попробуйте записать без него."
+  },
+  "Table copied — paste it into a spreadsheet" : {
+    "ru" : "Таблица скопирована — вставьте ее в электронную таблицу"
+  },
+  "Text QR found" : {
+    "ru" : "Найден QR-код с текстом"
+  },
+  "Text copied" : {
+    "ru" : "Текст скопирован"
+  },
+  "Text copied to clipboard" : {
+    "ru" : "Текст скопирован в буфер обмена"
+  },
+  "Text recognition failed" : {
+    "ru" : "Не удалось распознать текст"
+  },
+  "That display isn't available anymore." : {
+    "ru" : "Этот дисплей больше недоступен."
+  },
+  "That display or window isn't available anymore." : {
+    "ru" : "Этот дисплей или окно больше недоступны."
+  },
+  "That window closed before recording could start." : {
+    "ru" : "Окно закрылось до начала записи."
+  },
+  "The camera couldn't start." : {
+    "ru" : "Не удалось запустить камеру."
+  },
+  "The camera stopped. The recording continues without it." : {
+    "ru" : "Камера остановилась. Запись продолжается без нее."
+  },
+  "The microphone couldn't start, so this recording has no mic." : {
+    "ru" : "Не удалось запустить микрофон, поэтому запись идет без микрофона."
+  },
+  "The microphone stopped working. The recording continues without it." : {
+    "ru" : "Микрофон перестал работать. Запись продолжается без него."
+  },
+  "The recording couldn't be finished — saved the first %@." : {
+    "ru" : "Не удалось завершить запись — сохранены первые %@."
+  },
+  "The window you're recording closed. Stop when you're ready — the recording keeps going." : {
+    "ru" : "Записываемое окно закрылось. Остановите запись, когда будете готовы, — она продолжается."
+  },
+  "To" : {
+    "ru" : "Кому"
+  },
+  "URL" : {
+    "ru" : "URL"
+  },
+  "Warning" : {
+    "ru" : "Предупреждение"
+  },
+  "Wi-Fi" : {
+    "ru" : "Wi-Fi"
+  },
+  "Wi-Fi QR found" : {
+    "ru" : "Найден QR-код с Wi-Fi"
+  },
+  "Window capture" : {
+    "ru" : "Снимок окна"
+  },
+  "Window closed" : {
+    "ru" : "Окно закрыто"
+  },
+  "Yes" : {
+    "ru" : "Да"
+  },
+  "Your Mac can't keep up with this recording and is skipping frames. Balanced quality or 30 fps will help." : {
+    "ru" : "Ваш Mac не справляется с этой записью и пропускает кадры. Поможет качество «Среднее» или 30 fps."
+  },
+  "Your disk filled up — saved the first %@." : {
+    "ru" : "Диск заполнен — сохранены первые %@."
+  },
+  "Your disk is almost full, so the recording stopped. It's saved." : {
+    "ru" : "Диск почти заполнен, поэтому запись остановлена. Она сохранена."
+  },
+  "Your disk is almost full. In about %lld minutes the recording stops and saves itself." : {
+    "ru" : {
+      "few" : "Диск почти заполнен. Примерно через %lld минуты запись остановится и сохранится.",
+      "many" : "Диск почти заполнен. Примерно через %lld минут запись остановится и сохранится.",
+      "one" : "Диск почти заполнен. Примерно через %lld минуту запись остановится и сохранится.",
+      "other" : "Диск почти заполнен. Примерно через %lld минуты запись остановится и сохранится."
+    }
+  },
+  "Your disk is almost full. In about %lld seconds the recording stops and saves itself." : {
+    "ru" : {
+      "few" : "Диск почти заполнен. Примерно через %lld секунды запись остановится и сохранится.",
+      "many" : "Диск почти заполнен. Примерно через %lld секунд запись остановится и сохранится.",
+      "one" : "Диск почти заполнен. Примерно через %lld секунду запись остановится и сохранится.",
+      "other" : "Диск почти заполнен. Примерно через %lld секунды запись остановится и сохранится."
+    }
+  },
+  "Your disk is full, so the recording couldn't be saved." : {
+    "ru" : "Диск заполнен, поэтому запись не удалось сохранить."
+  },
+  "a table" : {
+    "ru" : "таблица"
+  },
+  "mic" : {
+    "ru" : "микр."
+  },
+  "no audio" : {
+    "ru" : "без звука"
+  },
+  "sys+mic" : {
+    "ru" : "сист.+микр."
+  },
+  "system" : {
+    "ru" : "система"
+  },
+  "up to %@ GB/min" : {
+    "ru" : "до %@ ГБ/мин"
+  },
+  "up to %@ MB/min" : {
+    "ru" : "до %@ МБ/мин"
+  },
+  "✓ Saved screenshot" : {
+    "ru" : "✓ Снимок экрана сохранен"
+  },
+  "✓ Text copied to clipboard" : {
+    "ru" : "✓ Текст скопирован в буфер обмена"
+  },
+  "✓ Text copied · %@ — click for options" : {
+    "ru" : "✓ Текст скопирован · %@ — нажмите, чтобы выбрать действие"
+  }
+}

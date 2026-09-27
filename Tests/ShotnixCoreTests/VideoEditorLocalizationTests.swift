@@ -74,6 +74,7 @@ final class VideoEditorLocalizationTests: XCTestCase {
             "de": ("Löschen des Zooms widerrufen", "Löschen des Zooms wiederholen", "Widerrufen"),
             "fr": ("Annuler la suppression du zoom", "Rétablir la suppression du zoom", "Annuler"),
             "zh-Hans": ("撤销删除缩放", "重做删除缩放", "撤销"),
+            "ru": ("Отменить удаление увеличения", "Повторить удаление увеличения", "Отменить"),
         ]
         for (language, phrases) in expected {
             L10n.use(language)
@@ -86,6 +87,10 @@ final class VideoEditorLocalizationTests: XCTestCase {
         XCTAssertEqual(VideoEditDescription.undoTitle("Move 1 Items"), "Verschieben von 1 Objekt widerrufen")
         XCTAssertEqual(VideoEditDescription.undoTitle("Move 3 Items"), "Verschieben von 3 Objekten widerrufen")
         XCTAssertEqual(VideoEditDescription.redoTitle("Delete 3 Items"), "Löschen von 3 Objekten wiederholen")
+        L10n.use("ru")
+        XCTAssertEqual(VideoEditDescription.undoTitle("Move 1 Items"), "Отменить перемещение 1 объекта")
+        XCTAssertEqual(VideoEditDescription.undoTitle("Move 3 Items"), "Отменить перемещение 3 объектов")
+        XCTAssertEqual(VideoEditDescription.redoTitle("Delete 5 Items"), "Повторить удаление 5 объектов")
         L10n.use("en")
         XCTAssertEqual(VideoEditDescription.undoTitle("Move 1 Items"), "Undo Move 1 Item", "one item reads right in English too")
         XCTAssertEqual(VideoEditDescription.undoTitle("Move 3 Items"), "Undo Move 3 Items")
@@ -155,6 +160,11 @@ final class VideoEditorLocalizationTests: XCTestCase {
         XCTAssertEqual(L("Remove \(1) ums"), "Supprimer 1 hésitation")
         L10n.use("zh-Hans")
         XCTAssertEqual(L("\(3) zooms"), "3 个缩放", "Chinese has one form")
+        L10n.use("ru")
+        XCTAssertEqual(L("\(1) zooms"), "1 увеличение")
+        XCTAssertEqual(L("\(3) zooms"), "3 увеличения")
+        XCTAssertEqual(L("\(5) zooms"), "5 увеличений")
+        XCTAssertEqual(L("Shorten \(22) pauses"), "Сократить 22 паузы")
     }
 
     func testPercentagesFollowTheLanguage() {
@@ -166,6 +176,8 @@ final class VideoEditorLocalizationTests: XCTestCase {
         XCTAssertEqual(VideoEditorFormat.percent(0.42), "42\u{202F}%")
         L10n.use("zh-Hans")
         XCTAssertEqual(VideoEditorFormat.percent(0.42), "42%")
+        L10n.use("ru")
+        XCTAssertEqual(VideoEditorFormat.percent(0.42), "42\u{00A0}%")
     }
 
     /// VoiceOver descriptions: each part a whole phrase, joined the way the

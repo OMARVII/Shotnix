@@ -1,0 +1,5 @@
+"NSCameraUsageDescription" = "Shotnix записує зображення з камери разом з екраном, коли ви вмикаєте камеру для запису.";
+"NSHumanReadableCopyright" = "Copyright © 2026 Shotnix Contributors. Ліцензія MIT.";
+"NSMicrophoneUsageDescription" = "Shotnix потрібен доступ до мікрофона, коли ви вмикаєте звук із мікрофона для запису екрана.";
+"NSScreenCaptureUsageDescription" = "Shotnix потрібен дозвіл на запис екрана, щоб робити знімки й записи екрана.";
+"NSSpeechRecognitionUsageDescription" = "Shotnix розшифровує ваші записи на цьому Mac, щоб створити субтитри.";

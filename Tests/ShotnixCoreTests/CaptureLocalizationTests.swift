@@ -222,6 +222,7 @@ final class CaptureLocalizationTests: XCTestCase {
             }
             if language == "en" {
                 XCTAssertEqual(pills.map { $0.frame.width }, pills.map { ceil($0.attributedTitle.size().width) + 28 }, "English keeps the designed padding")
+                XCTAssertEqual(QuickAccessWindow.pillFontSize(titles: titles, available: 216), 13, "and the designed 13 pt")
             }
             try snapshot(thumbnail, "\(language)/quick-access")
             thumbnail.closeFromCommand()

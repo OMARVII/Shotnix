@@ -1,0 +1,47 @@
+{
+  "Capture All Displays" : {
+    "ru" : "Снять все дисплеи"
+  },
+  "Capture Area" : {
+    "ru" : "Снять область"
+  },
+  "Capture Fullscreen" : {
+    "ru" : "Снять весь экран"
+  },
+  "Capture Fullscreen Alt" : {
+    "ru" : "Снять весь экран (другое сочетание)"
+  },
+  "Capture Previous Area" : {
+    "ru" : "Снять предыдущую область"
+  },
+  "Capture Window" : {
+    "ru" : "Снять окно"
+  },
+  "OCR / Capture Text" : {
+    "ru" : "Распознать текст (OCR)"
+  },
+  "Open Command Center" : {
+    "ru" : "Открыть командный центр"
+  },
+  "Pause / Resume Recording" : {
+    "ru" : "Приостановить/продолжить запись"
+  },
+  "Record Area" : {
+    "ru" : "Записать область"
+  },
+  "Record Fullscreen" : {
+    "ru" : "Записать весь экран"
+  },
+  "Record Window" : {
+    "ru" : "Записать окно"
+  },
+  "Scrolling Capture" : {
+    "ru" : "Снимок с прокруткой"
+  },
+  "Stop Recording" : {
+    "ru" : "Остановить запись"
+  },
+  "Timed Capture" : {
+    "ru" : "Снимок с таймером"
+  }
+}

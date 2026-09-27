@@ -195,6 +195,32 @@ Finder, GIF, MP4…) stay in Latin letters and aren't declined.
 | keyboard shortcut | сочетание клавиш | клавіатурне скорочення |
 | microphone / camera | микрофон / камера | мікрофон / камера |
 | system audio | системный звук | системний звук |
+| Settings tabs: General, Shortcuts, Screenshots, Recording, About | Основные, Сочетания (short: the tab strip is narrow), Снимки экрана, Запись, О программе | — |
+| capture (noun, an item in History) | снимок | — |
+| Scrolling Capture / Timed Capture | снимок с прокруткой / снимок с таймером | — |
+| Capture Text | Распознать текст | — |
+| Quick Access Overlay (the thumbnail after a capture) | миниатюра быстрого доступа (short: миниатюра) | — |
+| Command Center | командный центр | — |
+| Edit (the menu, and the button that opens the editor) | Правка | — |
+| System Default (microphone, camera, language) | Как в системе | — |
+| Clean Up (History and video data) / Clear History | Убрать лишнее / Очистить историю | — |
+| padding (around a screenshot or video) | отступ | — |
+| spotlight (tool) / numbered steps | прожектор / нумерованные шаги | — |
+| Undo X / Redo X (edit names) | Отменить / Повторить + noun: Отменить удаление увеличения | — |
+| click (noun) | нажатие | — |
+| zoom: the tab, lane and tool / one zoom on the timeline / Auto Zoom | Масштаб / увеличение (its bar: Масштаб 2×) / автомасштаб | — |
+| playhead | указатель воспроизведения | — |
+| cut: a removed part / the join between clips | вырезанный фрагмент / склейка | — |
+| intro / outro; intro card / outro card; end card | вступление / концовка; начальный титр / финальный титр; финальная заставка | — |
+| fade in / fade out; dissolve / dip to black | нарастание / затухание; растворение / затемнение | — |
+| camera bubble / camera layout | окошко камеры / расположение камеры | — |
+| filler words (ums) / idle moments | слова-паразиты / простои | — |
+| Enhance voice | улучшение голоса | — |
+| mute / unmute | выключить звук / включить звук | — |
+| preview (in the editor) | предпросмотр | — |
+| export (button, tab, section) / Export… | Экспорт / Экспортировать… | — |
+| recording quality: Balanced, High, Max | Среднее, Высокое, Максимальное | — |
+| px / pt (units) | пикс. / пт | — |
 
 macOS names, from System Settings on macOS 26:
 

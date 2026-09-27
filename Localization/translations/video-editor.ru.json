@@ -1,0 +1,2204 @@
+{
+  "%@ (This Mac)" : {
+    "ru" : "%@ (этот Mac)"
+  },
+  "%@ (⇧⌘Z)" : {
+    "ru" : "%@ (⇧⌘Z)"
+  },
+  "%@ (⌘Z)" : {
+    "ru" : "%@ (⌘Z)"
+  },
+  "%@ Zoom" : {
+    "ru" : "Масштаб %@"
+  },
+  "%@ long" : {
+    "ru" : "длительность %@"
+  },
+  "%@ of recording plays in %@." : {
+    "ru" : "%@ записи воспроизводится за %@."
+  },
+  "%@ speed" : {
+    "ru" : "скорость %@"
+  },
+  "%@ — %@" : {
+    "ru" : "%@ — %@"
+  },
+  "%lld annotations" : {
+    "ru" : {
+      "few" : "%lld элемента разметки",
+      "many" : "%lld элементов разметки",
+      "one" : "%lld элемент разметки",
+      "other" : "%lld элемента разметки"
+    }
+  },
+  "%lld camera layouts" : {
+    "ru" : {
+      "few" : "%lld расположения камеры",
+      "many" : "%lld расположений камеры",
+      "one" : "%lld расположение камеры",
+      "other" : "%lld расположения камеры"
+    }
+  },
+  "%lld captions" : {
+    "ru" : {
+      "few" : "%lld субтитра",
+      "many" : "%lld субтитров",
+      "one" : "%lld субтитр",
+      "other" : "%lld субтитра"
+    }
+  },
+  "%lld clicks" : {
+    "ru" : {
+      "few" : "%lld нажатия",
+      "many" : "%lld нажатий",
+      "one" : "%lld нажатие",
+      "other" : "%lld нажатия"
+    }
+  },
+  "%lld clips" : {
+    "ru" : {
+      "few" : "%lld клипа",
+      "many" : "%lld клипов",
+      "one" : "%lld клип",
+      "other" : "%lld клипа"
+    }
+  },
+  "%lld cuts here (%@ removed) — click to restore some or all" : {
+    "ru" : {
+      "few" : "Здесь %lld вырезанных фрагмента (удалено %@) — нажмите, чтобы восстановить часть или все",
+      "many" : "Здесь %lld вырезанных фрагментов (удалено %@) — нажмите, чтобы восстановить часть или все",
+      "one" : "Здесь %lld вырезанный фрагмент (удалено %@) — нажмите, чтобы восстановить",
+      "other" : "Здесь %lld вырезанного фрагмента (удалено %@) — нажмите, чтобы восстановить часть или все"
+    }
+  },
+  "%lld cuts, %@ removed" : {
+    "ru" : {
+      "few" : "%lld вырезанных фрагмента, удалено %@",
+      "many" : "%lld вырезанных фрагментов, удалено %@",
+      "one" : "%lld вырезанный фрагмент, удалено %@",
+      "other" : "%lld вырезанного фрагмента, удалено %@"
+    }
+  },
+  "%lld parts" : {
+    "ru" : {
+      "few" : "%lld фрагмента",
+      "many" : "%lld фрагментов",
+      "one" : "%lld фрагмент",
+      "other" : "%lld фрагмента"
+    }
+  },
+  "%lld pressed — select one on the timeline and press ⌫ to hide it" : {
+    "ru" : {
+      "few" : "%lld сочетания — выберите одно из них на шкале времени и нажмите ⌫, чтобы скрыть его",
+      "many" : "%lld сочетаний — выберите одно из них на шкале времени и нажмите ⌫, чтобы скрыть его",
+      "one" : "%lld сочетание — выберите его на шкале времени и нажмите ⌫, чтобы скрыть",
+      "other" : "%lld сочетания — выберите одно из них на шкале времени и нажмите ⌫, чтобы скрыть его"
+    }
+  },
+  "%lld selected" : {
+    "ru" : {
+      "few" : "Выбрано: %lld",
+      "many" : "Выбрано: %lld",
+      "one" : "Выбрано: %lld",
+      "other" : "Выбрано: %lld"
+    }
+  },
+  "%lld shortcuts" : {
+    "ru" : {
+      "few" : "%lld сочетания",
+      "many" : "%lld сочетаний",
+      "one" : "%lld сочетание",
+      "other" : "%lld сочетания"
+    }
+  },
+  "%lld zooms" : {
+    "ru" : {
+      "few" : "%lld увеличения",
+      "many" : "%lld увеличений",
+      "one" : "%lld увеличение",
+      "other" : "%lld увеличения"
+    }
+  },
+  "%lld%%" : {
+    "ru" : "%lld %%"
+  },
+  "%lld%% volume" : {
+    "ru" : "громкость %lld %%"
+  },
+  ", " : {
+    "ru" : ", "
+  },
+  ", %@ to %@" : {
+    "ru" : ", с %@ до %@"
+  },
+  ", at %@" : {
+    "ru" : ", в %@"
+  },
+  "0.1s earlier" : {
+    "ru" : "На 0,1 с раньше"
+  },
+  "0.1s later" : {
+    "ru" : "На 0,1 с позже"
+  },
+  "A hairline that separates dark recordings from the background" : {
+    "ru" : "Тонкая линия отделяет темные записи от фона"
+  },
+  "Add Arrow" : {
+    "ru" : "Добавить стрелку"
+  },
+  "Add Blur" : {
+    "ru" : "Добавить размытие"
+  },
+  "Add Caption Line at Playhead" : {
+    "ru" : "Добавить строку субтитров у указателя воспроизведения"
+  },
+  "Add Highlight" : {
+    "ru" : "Добавить выделение"
+  },
+  "Add Spotlight (Dim Around a Spot)" : {
+    "ru" : "Добавить прожектор (затемнить все вокруг)"
+  },
+  "Add Text" : {
+    "ru" : "Добавить текст"
+  },
+  "Add Zoom at Playhead" : {
+    "ru" : "Добавить увеличение у указателя воспроизведения"
+  },
+  "Add a caption at the playhead" : {
+    "ru" : "Добавить субтитр у указателя воспроизведения"
+  },
+  "Add a zoom at the playhead (Z)" : {
+    "ru" : "Добавить увеличение у указателя воспроизведения (Z)"
+  },
+  "Add arrow at the playhead (A)" : {
+    "ru" : "Добавить стрелку у указателя воспроизведения (A)"
+  },
+  "Add blur at the playhead (B)" : {
+    "ru" : "Добавить размытие у указателя воспроизведения (B)"
+  },
+  "Add highlight at the playhead (H)" : {
+    "ru" : "Добавить выделение у указателя воспроизведения (H)"
+  },
+  "Add image at the playhead" : {
+    "ru" : "Добавить изображение у указателя воспроизведения"
+  },
+  "Add spotlight at the playhead" : {
+    "ru" : "Добавить прожектор у указателя воспроизведения"
+  },
+  "Add text at the playhead (T)" : {
+    "ru" : "Добавить текст у указателя воспроизведения (T)"
+  },
+  "Add zoom at playhead" : {
+    "ru" : "Добавить увеличение у указателя воспроизведения"
+  },
+  "Add “%@” at the playhead" : {
+    "ru" : "Добавить «%@» у указателя воспроизведения"
+  },
+  "Adjust to move it half a second" : {
+    "ru" : "Регулируйте, чтобы сдвинуть на полсекунды"
+  },
+  "Aim by Hand" : {
+    "ru" : "Навести вручную"
+  },
+  "Aim by hand" : {
+    "ru" : "Вручную"
+  },
+  "All commands" : {
+    "ru" : "Все команды"
+  },
+  "All commands (⌘K)" : {
+    "ru" : "Все команды (⌘K)"
+  },
+  "Always show the arrow" : {
+    "ru" : "Всегда показывать стрелку"
+  },
+  "Annotation" : {
+    "ru" : "Разметка"
+  },
+  "Any color…" : {
+    "ru" : "Любой цвет…"
+  },
+  "Appearance" : {
+    "ru" : "Оформление"
+  },
+  "Apply to all zooms" : {
+    "ru" : "Применить ко всем увеличениям"
+  },
+  "Arrow head" : {
+    "ru" : "Наконечник стрелки"
+  },
+  "Arrow tail" : {
+    "ru" : "Хвост стрелки"
+  },
+  "Aspect Ratio %@ — %@" : {
+    "ru" : "Соотношение сторон %@ — %@"
+  },
+  "Aspect ratio" : {
+    "ru" : "Соотношение сторон"
+  },
+  "Audio" : {
+    "ru" : "Аудио"
+  },
+  "Auto Zoom" : {
+    "ru" : "Автомасштаб"
+  },
+  "Auto Zoom from Clicks" : {
+    "ru" : "Автомасштаб по нажатиям"
+  },
+  "Back · pause · faster" : {
+    "ru" : "Назад · пауза · быстрее"
+  },
+  "Background" : {
+    "ru" : "Фон"
+  },
+  "Background, padding, corners, shadow" : {
+    "ru" : "Фон, отступ, углы, тень"
+  },
+  "Behavior" : {
+    "ru" : "Поведение"
+  },
+  "Behind you" : {
+    "ru" : "Позади вас"
+  },
+  "Blur" : {
+    "ru" : "Размытие"
+  },
+  "Blurs fast camera moves the way a real camera does." : {
+    "ru" : "Размывает быстрые движения камеры, как настоящая камера."
+  },
+  "Camera" : {
+    "ru" : "Камера"
+  },
+  "Camera Side by Side at Playhead" : {
+    "ru" : "Камера рядом с экраном у указателя воспроизведения"
+  },
+  "Camera bubble" : {
+    "ru" : "Окошко камеры"
+  },
+  "Camera follows your cursor" : {
+    "ru" : "Камера следует за указателем"
+  },
+  "Camera footage is missing" : {
+    "ru" : "Запись с камеры не найдена"
+  },
+  "Camera layout" : {
+    "ru" : "Расположение камеры"
+  },
+  "Camera layout: %@" : {
+    "ru" : "Расположение камеры: %@"
+  },
+  "Camera layouts" : {
+    "ru" : "Расположения камеры"
+  },
+  "Camera layouts — drag to move, drag an edge to retime, click to change" : {
+    "ru" : "Расположения камеры — перетяните, чтобы сдвинуть; тяните за край, чтобы изменить длительность; нажмите, чтобы сменить"
+  },
+  "Camera — drag to move it, click for options" : {
+    "ru" : "Камера — перетяните, чтобы переместить; нажмите, чтобы открыть параметры"
+  },
+  "Caption" : {
+    "ru" : "Субтитр"
+  },
+  "Caption “%@”" : {
+    "ru" : "Субтитр «%@»"
+  },
+  "Captions" : {
+    "ru" : "Субтитры"
+  },
+  "Captions from your narration — and cut the video by editing its words" : {
+    "ru" : "Субтитры из вашей речи — и монтаж видео правкой текста"
+  },
+  "Captions tab" : {
+    "ru" : "Вкладка «Субтитры»"
+  },
+  "Center" : {
+    "ru" : "По центру"
+  },
+  "Choose Image…" : {
+    "ru" : "Выбрать изображение…"
+  },
+  "Cleaning up your voice…" : {
+    "ru" : "Очистка голоса…"
+  },
+  "Click" : {
+    "ru" : "Нажатие"
+  },
+  "Click a zoom" : {
+    "ru" : "Выберите увеличение"
+  },
+  "Click it on the video" : {
+    "ru" : "Нажмите объект в видео"
+  },
+  "Click to add a zoom — or press Z at the playhead" : {
+    "ru" : "Нажмите, чтобы добавить увеличение, — или нажмите Z у указателя воспроизведения"
+  },
+  "Clicks" : {
+    "ru" : "Нажатия"
+  },
+  "Clicks — drag one to retime it, ⌫ removes the selected one" : {
+    "ru" : "Нажатия — перетяните нажатие, чтобы сменить его время; ⌫ удаляет выбранное"
+  },
+  "Clip" : {
+    "ru" : "Клип"
+  },
+  "Clip %lld" : {
+    "ru" : "Клип %lld"
+  },
+  "Clip starts / ends here" : {
+    "ru" : "Клип начинается / заканчивается здесь"
+  },
+  "Close" : {
+    "ru" : "Закрыть"
+  },
+  "Close (Esc)" : {
+    "ru" : "Закрыть (Esc)"
+  },
+  "Closing the editor stops it." : {
+    "ru" : "Если закрыть редактор, процесс остановится."
+  },
+  "Color" : {
+    "ru" : "Цвет"
+  },
+  "Commands" : {
+    "ru" : "Команды"
+  },
+  "Computer sound" : {
+    "ru" : "Звук компьютера"
+  },
+  "Copy Current Frame" : {
+    "ru" : "Скопировать текущий кадр"
+  },
+  "Copy current frame" : {
+    "ru" : "Скопировать текущий кадр"
+  },
+  "Couldn't open this video" : {
+    "ru" : "Не удалось открыть это видео"
+  },
+  "Crop" : {
+    "ru" : "Обрезка"
+  },
+  "Crop the Recording…" : {
+    "ru" : "Обрезать запись…"
+  },
+  "Crop the recording — trim away toolbars or empty space" : {
+    "ru" : "Обрезать запись — убрать панели инструментов или пустое место"
+  },
+  "Cropped" : {
+    "ru" : "Обрезано"
+  },
+  "Cropped — cursor, zooms, and clicks follow" : {
+    "ru" : "Обрезано — указатель, увеличения и нажатия подстраиваются"
+  },
+  "Cursor" : {
+    "ru" : "Указатель"
+  },
+  "Cursor, clicks, and keyboard shortcuts" : {
+    "ru" : "Указатель, нажатия и сочетания клавиш"
+  },
+  "Custom" : {
+    "ru" : "Свой"
+  },
+  "Custom color" : {
+    "ru" : "Свой цвет"
+  },
+  "Cut filler words like um and uh" : {
+    "ru" : "Вырезать слова-паразиты вроде «э-э» и «м-м»"
+  },
+  "Cut from Video" : {
+    "ru" : "Вырезать из видео"
+  },
+  "Cut this part" : {
+    "ru" : "Вырезать этот фрагмент"
+  },
+  "Delete (⌫)" : {
+    "ru" : "Удалить (⌫)"
+  },
+  "Delete Clip" : {
+    "ru" : "Удалить клип"
+  },
+  "Delete Zoom" : {
+    "ru" : "Удалить увеличение"
+  },
+  "Delete selection" : {
+    "ru" : "Удалить выбранное"
+  },
+  "Delete selection (⌫)" : {
+    "ru" : "Удалить выбранное (⌫)"
+  },
+  "Deselect / close" : {
+    "ru" : "Снять выделение / закрыть"
+  },
+  "Dismiss" : {
+    "ru" : "Скрыть"
+  },
+  "Dismiss tips" : {
+    "ru" : "Скрыть подсказки"
+  },
+  "Done" : {
+    "ru" : "Готово"
+  },
+  "Done (Esc)" : {
+    "ru" : "Готово (Esc)"
+  },
+  "Double-click" : {
+    "ru" : "Двойное нажатие"
+  },
+  "Double-click text" : {
+    "ru" : "Двойное нажатие на текст"
+  },
+  "Double-click to show the recording in Finder" : {
+    "ru" : "Дважды нажмите, чтобы показать запись в Finder"
+  },
+  "Drag it on the preview to move it; drag a corner to resize. Its bar on the timeline sets when it shows." : {
+    "ru" : "Перетяните элемент в предпросмотре, чтобы переместить его; тяните за угол, чтобы изменить размер. Полоса элемента на шкале времени определяет, когда он виден."
+  },
+  "Drag it on the preview to move it; drag a corner to resize; double-click it to type. Its bar on the timeline sets when it shows." : {
+    "ru" : "Перетяните текст в предпросмотре, чтобы переместить его; тяните за угол, чтобы изменить размер; дважды нажмите, чтобы ввести текст. Полоса текста на шкале времени определяет, когда он виден."
+  },
+  "Drag one of them on the timeline to move them all together; ⌫ removes them all. ⇧- or ⌘-click adds or takes one out." : {
+    "ru" : "Перетяните любой из них на шкале времени, чтобы переместить все вместе; ⌫ удаляет все. Нажатие с ⇧ или ⌘ добавляет или исключает элемент."
+  },
+  "Drag the arrow on the preview to move it; drag its head or tail to point it anywhere. Its bar on the timeline sets when it shows." : {
+    "ru" : "Перетяните стрелку в предпросмотре, чтобы переместить ее; тяните за наконечник или хвост, чтобы направить ее куда угодно. Полоса стрелки на шкале времени определяет, когда она видна."
+  },
+  "Drag the block on the Camera lane to move it, or its edges to change how long it lasts. Each change eases in and out." : {
+    "ru" : "Перетяните блок на дорожке «Камера», чтобы переместить его, или его края, чтобы изменить длительность. Каждое переключение происходит плавно."
+  },
+  "Drag the box on the preview over anything private. Blur follows zooms and stays until its bar ends." : {
+    "ru" : "Перетяните рамку в предпросмотре на все, что нужно скрыть. Размытие следует за увеличениями и держится до конца своей полосы."
+  },
+  "Drag the frame on the preview to aim; drag its corners to zoom in or out." : {
+    "ru" : "Перетяните рамку в предпросмотре, чтобы навести ее; тяните за углы, чтобы увеличить или уменьшить."
+  },
+  "Drag the spot on the preview; drag a corner to resize it. Everything around it dims while its bar on the timeline runs." : {
+    "ru" : "Перетяните пятно в предпросмотре; тяните за угол, чтобы изменить его размер. Все вокруг затемняется, пока идет его полоса на шкале времени."
+  },
+  "Drag to change where this clip ends" : {
+    "ru" : "Перетяните, чтобы изменить конец клипа"
+  },
+  "Drag to change where this clip starts" : {
+    "ru" : "Перетяните, чтобы изменить начало клипа"
+  },
+  "Drag to move this clip to another place in the video" : {
+    "ru" : "Перетяните, чтобы переместить клип в другое место видео"
+  },
+  "Drag to move where the arrow starts" : {
+    "ru" : "Перетяните, чтобы сдвинуть начало стрелки"
+  },
+  "Drag to point the arrow" : {
+    "ru" : "Перетяните, чтобы направить стрелку"
+  },
+  "Duplicate" : {
+    "ru" : "Дублировать"
+  },
+  "Duplicate zoom or annotation" : {
+    "ru" : "Дублировать увеличение или элемент разметки"
+  },
+  "Edge highlight" : {
+    "ru" : "Обводка"
+  },
+  "Edit by text" : {
+    "ru" : "Монтаж по тексту"
+  },
+  "Editing" : {
+    "ru" : "Монтаж"
+  },
+  "End here" : {
+    "ru" : "Конец здесь"
+  },
+  "Ends" : {
+    "ru" : "Конец"
+  },
+  "Enhance Voice" : {
+    "ru" : "Улучшить голос"
+  },
+  "Enhance voice" : {
+    "ru" : "Улучшение голоса"
+  },
+  "Esc" : {
+    "ru" : "Esc"
+  },
+  "Even out loudness" : {
+    "ru" : "Выравнивание громкости"
+  },
+  "Exactly as recorded." : {
+    "ru" : "Точно как в записи."
+  },
+  "Export" : {
+    "ru" : "Экспорт"
+  },
+  "Export (⌘E)" : {
+    "ru" : "Экспорт (⌘E)"
+  },
+  "Export Video…" : {
+    "ru" : "Экспортировать видео…"
+  },
+  "Exports at the level video sites expect (−16 LUFS) without clipping" : {
+    "ru" : "Экспорт с уровнем громкости для видеосайтов (−16 LUFS) без перегрузки"
+  },
+  "Exports without sound — to quiet just the preview, press M" : {
+    "ru" : "Экспорт без звука — чтобы выключить звук только в предпросмотре, нажмите M"
+  },
+  "Export…" : {
+    "ru" : "Экспортировать…"
+  },
+  "Extra-fluid curves for slow, cinematic demos." : {
+    "ru" : "Особо плавные кривые для неспешных кинематографичных демо."
+  },
+  "Fade in" : {
+    "ru" : "Нарастание"
+  },
+  "Fade out" : {
+    "ru" : "Затухание"
+  },
+  "Fades out after a moment without movement" : {
+    "ru" : "Исчезает, если какое-то время не двигается"
+  },
+  "Fast-forward moments where nothing happens" : {
+    "ru" : "Ускорить моменты, где ничего не происходит"
+  },
+  "Fill the Frame, Follow the Cursor" : {
+    "ru" : "Заполнить кадр и следовать за указателем"
+  },
+  "Find in Transcript" : {
+    "ru" : "Найти в расшифровке"
+  },
+  "Find in the transcript" : {
+    "ru" : "Найти в расшифровке"
+  },
+  "Flip like a selfie" : {
+    "ru" : "Отразить, как на селфи"
+  },
+  "Follow Cursor" : {
+    "ru" : "Следовать за указателем"
+  },
+  "Follow cursor" : {
+    "ru" : "За указателем"
+  },
+  "Follows cursor" : {
+    "ru" : "За указателем"
+  },
+  "Frame" : {
+    "ru" : "Рамка"
+  },
+  "Framing" : {
+    "ru" : "Кадрирование"
+  },
+  "Free" : {
+    "ru" : "Произвольно"
+  },
+  "From your Mac" : {
+    "ru" : "С вашего Mac"
+  },
+  "Full Camera at Playhead" : {
+    "ru" : "Камера на весь кадр у указателя воспроизведения"
+  },
+  "Full Frame (No Background)" : {
+    "ru" : "Весь кадр (без фона)"
+  },
+  "Full camera for intro & outro" : {
+    "ru" : "Весь кадр во вступлении и концовке"
+  },
+  "Full frame (no background)" : {
+    "ru" : "Весь кадр (без фона)"
+  },
+  "Full-Camera Intro and Outro" : {
+    "ru" : "Вступление и концовка с камерой на весь кадр"
+  },
+  "General" : {
+    "ru" : "Основные"
+  },
+  "Gets out of the way during zoom moves" : {
+    "ru" : "Уступает место при увеличении"
+  },
+  "Glides without lagging behind — clicks still land exactly." : {
+    "ru" : "Плавно скользит без отставания — нажатия по-прежнему попадают точно."
+  },
+  "Go to End" : {
+    "ru" : "Перейти в конец"
+  },
+  "Go to Start" : {
+    "ru" : "Перейти в начало"
+  },
+  "Gradient" : {
+    "ru" : "Градиент"
+  },
+  "Hide" : {
+    "ru" : "Скрыть"
+  },
+  "Hide the move to Stop" : {
+    "ru" : "Скрыть движение к кнопке «Остановить»"
+  },
+  "Hide tips (bring them back from ⌘K or the shortcuts list)" : {
+    "ru" : "Скрыть подсказки (вернуть их можно через ⌘K или список сочетаний клавиш)"
+  },
+  "Hide when idle" : {
+    "ru" : "Скрывать при бездействии"
+  },
+  "Highlight words" : {
+    "ru" : "Подсветка слов"
+  },
+  "Home  End" : {
+    "ru" : "Home  End"
+  },
+  "Hover the Zoom track" : {
+    "ru" : "Наведите указатель на дорожку «Масштаб»"
+  },
+  "Hover the zoom track and click to add a zoom, or press Z at the playhead. Drag a zoom to move it; drag its edges to change how long it lasts." : {
+    "ru" : "Наведите указатель на дорожку «Масштаб» и нажмите, чтобы добавить увеличение, или нажмите Z у указателя воспроизведения. Перетяните увеличение, чтобы переместить его; тяните за края, чтобы изменить длительность."
+  },
+  "Image" : {
+    "ru" : "Изображение"
+  },
+  "Inspector tabs" : {
+    "ru" : "Вкладки инспектора"
+  },
+  "Intro" : {
+    "ru" : "Вступление"
+  },
+  "Intro card — click to edit it in Style" : {
+    "ru" : "Начальный титр — нажмите, чтобы изменить его во вкладке «Стиль»"
+  },
+  "Intro card “%@”, %@ to %@" : {
+    "ru" : "Начальный титр «%@», с %@ до %@"
+  },
+  "Intro card, %@ to %@" : {
+    "ru" : "Начальный титр, с %@ до %@"
+  },
+  "It was recorded into the pixels, so it can't be resized or smoothed. New recordings capture an editable cursor by default (Settings → Recording)." : {
+    "ru" : "Он записан прямо в изображение, поэтому нельзя изменить его размер или сгладить его. Новые записи по умолчанию сохраняют редактируемый указатель (Настройки → Запись)."
+  },
+  "Jump here" : {
+    "ru" : "Перейти сюда"
+  },
+  "Jump one second" : {
+    "ru" : "Перейти на секунду"
+  },
+  "Keep Editing" : {
+    "ru" : "Продолжить работу"
+  },
+  "Keep editing — the words appear here when Shotnix is done listening." : {
+    "ru" : "Продолжайте работу — слова появятся здесь, когда Shotnix закончит слушать."
+  },
+  "Keyboard Shortcuts" : {
+    "ru" : "Сочетания клавиш"
+  },
+  "Keyboard shortcuts" : {
+    "ru" : "Сочетания клавиш"
+  },
+  "Keyboard shortcuts (?)" : {
+    "ru" : "Сочетания клавиш (?)"
+  },
+  "Keyboard shortcuts — click one to select it, ⌫ hides it" : {
+    "ru" : "Сочетания клавиш — нажмите на одно, чтобы выбрать его; ⌫ скрывает его"
+  },
+  "Keys on screen" : {
+    "ru" : "Клавиши на экране"
+  },
+  "Language" : {
+    "ru" : "Язык"
+  },
+  "Layout" : {
+    "ru" : "Расположение"
+  },
+  "Layouts" : {
+    "ru" : "Расположения"
+  },
+  "Letterbox Instead of Following the Cursor" : {
+    "ru" : "Вписать с полосами вместо следования за указателем"
+  },
+  "Level" : {
+    "ru" : "Уровень"
+  },
+  "Lines · %lld" : {
+    "ru" : "Строки · %lld"
+  },
+  "Listens on this Mac — nothing is uploaded" : {
+    "ru" : "Работает на этом Mac — ничего не отправляется в сеть"
+  },
+  "Look" : {
+    "ru" : "Вид"
+  },
+  "Mirror" : {
+    "ru" : "Зеркальное отражение"
+  },
+  "More" : {
+    "ru" : "Еще"
+  },
+  "More caption options" : {
+    "ru" : "Другие параметры субтитров"
+  },
+  "More tips" : {
+    "ru" : "Еще подсказки"
+  },
+  "Motion" : {
+    "ru" : "Движение"
+  },
+  "Motion blur" : {
+    "ru" : "Размытие движения"
+  },
+  "Move Earlier" : {
+    "ru" : "Сдвинуть раньше"
+  },
+  "Move Later" : {
+    "ru" : "Сдвинуть позже"
+  },
+  "Move earlier" : {
+    "ru" : "Раньше"
+  },
+  "Move later" : {
+    "ru" : "Позже"
+  },
+  "Movement" : {
+    "ru" : "Движение"
+  },
+  "Music “%@”" : {
+    "ru" : "Музыка «%@»"
+  },
+  "Mute Clip" : {
+    "ru" : "Выключить звук клипа"
+  },
+  "Mute preview" : {
+    "ru" : "Выключить звук предпросмотра"
+  },
+  "Mute the Preview (the Export Keeps Its Sound)" : {
+    "ru" : "Выключить звук предпросмотра (при экспорте звук сохранится)"
+  },
+  "Mute the preview (M) — the export keeps its sound" : {
+    "ru" : "Выключить звук предпросмотра (M) — при экспорте звук сохранится"
+  },
+  "Mute the preview (or the selected clip)" : {
+    "ru" : "Выключить звук предпросмотра (или выбранного клипа)"
+  },
+  "Mute this clip" : {
+    "ru" : "Выключить звук этого клипа"
+  },
+  "Mute this part" : {
+    "ru" : "Выключить звук этого фрагмента"
+  },
+  "Mute video" : {
+    "ru" : "Выключить звук видео"
+  },
+  "Never switch to the text beam or the hand" : {
+    "ru" : "Не превращаться в текстовый курсор или руку"
+  },
+  "New recordings use this look" : {
+    "ru" : "Новые записи используют этот стиль"
+  },
+  "New zooms" : {
+    "ru" : "Новые увеличения"
+  },
+  "No Exports Yet" : {
+    "ru" : "Экспортов пока нет"
+  },
+  "No background" : {
+    "ru" : "Без фона"
+  },
+  "No background — text only" : {
+    "ru" : "Без фона — только текст"
+  },
+  "No camera in this recording" : {
+    "ru" : "В этой записи нет камеры"
+  },
+  "No clicks were recorded, so add zooms by hand: hover the zoom track and click." : {
+    "ru" : "Нажатия не записаны, поэтому добавьте увеличения вручную: наведите указатель на дорожку «Масштаб» и нажмите."
+  },
+  "No cursor data in this video" : {
+    "ru" : "В этом видео нет данных указателя"
+  },
+  "No music" : {
+    "ru" : "Без музыки"
+  },
+  "No pauses to shorten" : {
+    "ru" : "Нет пауз для сокращения"
+  },
+  "No ums" : {
+    "ru" : "Нет слов-паразитов"
+  },
+  "None in this recording. Turn on “Show keyboard shortcuts” in Settings → Recording and every ⌘ shortcut you press appears as keycaps. Plain typing is never recorded." : {
+    "ru" : "В этой записи их нет. Включите «Показывать сочетания клавиш» в разделе Настройки → Запись, и каждое нажатое сочетание с ⌘ появится в виде клавиш. Обычный набор текста никогда не записывается."
+  },
+  "Not for this video" : {
+    "ru" : "Не для этого видео"
+  },
+  "Open Another Video…" : {
+    "ru" : "Открыть другое видео…"
+  },
+  "Open Privacy Settings" : {
+    "ru" : "Открыть настройки конфиденциальности"
+  },
+  "Open Recording Settings…" : {
+    "ru" : "Открыть настройки записи…"
+  },
+  "Opens its title and length in Style" : {
+    "ru" : "Открывает его название и длительность во вкладке «Стиль»"
+  },
+  "Or drag the bubble on the video — it snaps to the nearest spot." : {
+    "ru" : "Или перетяните окошко по видео — оно притянется к ближайшему месту."
+  },
+  "Or type one at the playhead" : {
+    "ru" : "Или введите субтитр у указателя воспроизведения"
+  },
+  "Outro" : {
+    "ru" : "Концовка"
+  },
+  "Outro card — click to edit it in Style" : {
+    "ru" : "Финальный титр — нажмите, чтобы изменить его во вкладке «Стиль»"
+  },
+  "Outro card “%@”, %@ to %@" : {
+    "ru" : "Финальный титр «%@», с %@ до %@"
+  },
+  "Outro card, %@ to %@" : {
+    "ru" : "Финальный титр, с %@ до %@"
+  },
+  "Padding" : {
+    "ru" : "Отступ"
+  },
+  "Pause" : {
+    "ru" : "Пауза"
+  },
+  "Pause (Space)" : {
+    "ru" : "Пауза (пробел)"
+  },
+  "Placement" : {
+    "ru" : "Размещение"
+  },
+  "Plan zooms from your clicks — keeps zooms you placed by hand" : {
+    "ru" : "Расставить увеличения по вашим нажатиям — увеличения, добавленные вручную, сохранятся"
+  },
+  "Plans zooms around your %lld clicks. Zooms you placed by hand are kept." : {
+    "ru" : {
+      "few" : "Расставляет увеличения по %lld нажатиям. Увеличения, добавленные вручную, сохранятся.",
+      "many" : "Расставляет увеличения по %lld нажатиям. Увеличения, добавленные вручную, сохранятся.",
+      "one" : "Расставляет увеличения по %lld нажатию. Увеличения, добавленные вручную, сохранятся.",
+      "other" : "Расставляет увеличения по %lld нажатия. Увеличения, добавленные вручную, сохранятся."
+    }
+  },
+  "Play" : {
+    "ru" : "Воспроизвести"
+  },
+  "Play (Space)" : {
+    "ru" : "Воспроизвести (пробел)"
+  },
+  "Play / pause" : {
+    "ru" : "Воспроизведение / пауза"
+  },
+  "Play from Here" : {
+    "ru" : "Воспроизвести отсюда"
+  },
+  "Playback" : {
+    "ru" : "Воспроизведение"
+  },
+  "Plays or pauses. Use Option-arrow keys to select what's on the timeline." : {
+    "ru" : "Запускает или приостанавливает воспроизведение. Чтобы выбирать объекты на шкале времени, используйте Option и клавиши со стрелками."
+  },
+  "Position" : {
+    "ru" : "Положение"
+  },
+  "Preparing your video…" : {
+    "ru" : "Подготовка видео…"
+  },
+  "Pressed at %@. Press ⌫ to hide it from the video — handy for a stray ⌘Tab." : {
+    "ru" : "Нажато в %@. Нажмите ⌫, чтобы скрыть его в видео, — удобно для случайного ⌘Tab."
+  },
+  "Previous / next frame" : {
+    "ru" : "Предыдущий / следующий кадр"
+  },
+  "Recent Exports" : {
+    "ru" : "Недавние экспорты"
+  },
+  "Recorded at %@. Drag its dot on the timeline to retime it; ripples and Auto Zoom follow." : {
+    "ru" : "Записано в %@. Перетяните его точку на шкале времени, чтобы изменить время; волны и автомасштаб последуют за ней."
+  },
+  "Recordings made with Shotnix capture the pointer so it can be smoothed, resized, and hidden." : {
+    "ru" : "Записи, сделанные в Shotnix, сохраняют указатель отдельно, чтобы его можно было сгладить, увеличить или скрыть."
+  },
+  "Redo" : {
+    "ru" : "Повторить"
+  },
+  "Redo Add Arrow" : {
+    "ru" : "Повторить добавление стрелки"
+  },
+  "Redo Add Blur" : {
+    "ru" : "Повторить добавление размытия"
+  },
+  "Redo Add Camera Layout" : {
+    "ru" : "Повторить добавление расположения камеры"
+  },
+  "Redo Add Camera Layouts" : {
+    "ru" : "Повторить добавление расположений камеры"
+  },
+  "Redo Add Caption" : {
+    "ru" : "Повторить добавление субтитра"
+  },
+  "Redo Add Captions" : {
+    "ru" : "Повторить добавление субтитров"
+  },
+  "Redo Add Click" : {
+    "ru" : "Повторить добавление нажатия"
+  },
+  "Redo Add Clicks" : {
+    "ru" : "Повторить добавление нажатий"
+  },
+  "Redo Add Highlight" : {
+    "ru" : "Повторить добавление выделения"
+  },
+  "Redo Add Image" : {
+    "ru" : "Повторить добавление изображения"
+  },
+  "Redo Add Intro Card" : {
+    "ru" : "Повторить добавление начального титра"
+  },
+  "Redo Add Music" : {
+    "ru" : "Повторить добавление музыки"
+  },
+  "Redo Add Outro Card" : {
+    "ru" : "Повторить добавление финального титра"
+  },
+  "Redo Add Recording" : {
+    "ru" : "Повторить добавление записи"
+  },
+  "Redo Add Spotlight" : {
+    "ru" : "Повторить добавление прожектора"
+  },
+  "Redo Add Text" : {
+    "ru" : "Повторить добавление текста"
+  },
+  "Redo Add Zoom" : {
+    "ru" : "Повторить добавление увеличения"
+  },
+  "Redo Add Zooms" : {
+    "ru" : "Повторить добавление увеличений"
+  },
+  "Redo Annotation Change" : {
+    "ru" : "Повторить изменение элемента разметки"
+  },
+  "Redo Annotations" : {
+    "ru" : "Повторить изменение элементов разметки"
+  },
+  "Redo Arrow Style" : {
+    "ru" : "Повторить изменение стиля стрелки"
+  },
+  "Redo Aspect Ratio" : {
+    "ru" : "Повторить изменение соотношения сторон"
+  },
+  "Redo Auto Zoom" : {
+    "ru" : "Повторить автомасштаб"
+  },
+  "Redo Background" : {
+    "ru" : "Повторить изменение фона"
+  },
+  "Redo Blur Style" : {
+    "ru" : "Повторить изменение стиля размытия"
+  },
+  "Redo Camera Change" : {
+    "ru" : "Повторить изменение камеры"
+  },
+  "Redo Camera Layout Change" : {
+    "ru" : "Повторить изменение расположения камеры"
+  },
+  "Redo Camera Layouts" : {
+    "ru" : "Повторить изменение расположений камеры"
+  },
+  "Redo Caption Style" : {
+    "ru" : "Повторить изменение стиля субтитров"
+  },
+  "Redo Caption Translation" : {
+    "ru" : "Повторить перевод субтитров"
+  },
+  "Redo Captions" : {
+    "ru" : "Повторить изменение субтитров"
+  },
+  "Redo Click Sounds" : {
+    "ru" : "Повторить изменение звуков нажатий"
+  },
+  "Redo Clicks" : {
+    "ru" : "Повторить изменение нажатий"
+  },
+  "Redo Crop" : {
+    "ru" : "Повторить обрезку"
+  },
+  "Redo Cursor Change" : {
+    "ru" : "Повторить изменение указателя"
+  },
+  "Redo Cut" : {
+    "ru" : "Повторить вырезание"
+  },
+  "Redo Cut Word" : {
+    "ru" : "Повторить вырезание слова"
+  },
+  "Redo Cut Words" : {
+    "ru" : "Повторить вырезание слов"
+  },
+  "Redo Delete %lld Items" : {
+    "ru" : {
+      "few" : "Повторить удаление %lld объектов",
+      "many" : "Повторить удаление %lld объектов",
+      "one" : "Повторить удаление %lld объекта",
+      "other" : "Повторить удаление %lld объекта"
+    }
+  },
+  "Redo Delete Annotations" : {
+    "ru" : "Повторить удаление элементов разметки"
+  },
+  "Redo Delete Arrow" : {
+    "ru" : "Повторить удаление стрелки"
+  },
+  "Redo Delete Blur" : {
+    "ru" : "Повторить удаление размытия"
+  },
+  "Redo Delete Camera Layout" : {
+    "ru" : "Повторить удаление расположения камеры"
+  },
+  "Redo Delete Camera Layouts" : {
+    "ru" : "Повторить удаление расположений камеры"
+  },
+  "Redo Delete Caption" : {
+    "ru" : "Повторить удаление субтитра"
+  },
+  "Redo Delete Captions" : {
+    "ru" : "Повторить удаление субтитров"
+  },
+  "Redo Delete Click" : {
+    "ru" : "Повторить удаление нажатия"
+  },
+  "Redo Delete Clicks" : {
+    "ru" : "Повторить удаление нажатий"
+  },
+  "Redo Delete Clip" : {
+    "ru" : "Повторить удаление клипа"
+  },
+  "Redo Delete Clips" : {
+    "ru" : "Повторить удаление клипов"
+  },
+  "Redo Delete Highlight" : {
+    "ru" : "Повторить удаление выделения"
+  },
+  "Redo Delete Image" : {
+    "ru" : "Повторить удаление изображения"
+  },
+  "Redo Delete Spotlight" : {
+    "ru" : "Повторить удаление прожектора"
+  },
+  "Redo Delete Text" : {
+    "ru" : "Повторить удаление текста"
+  },
+  "Redo Delete Zoom" : {
+    "ru" : "Повторить удаление увеличения"
+  },
+  "Redo Delete Zooms" : {
+    "ru" : "Повторить удаление увеличений"
+  },
+  "Redo Edit Caption" : {
+    "ru" : "Повторить правку субтитра"
+  },
+  "Redo Edit Text" : {
+    "ru" : "Повторить правку текста"
+  },
+  "Redo Enhance Voice" : {
+    "ru" : "Повторить улучшение голоса"
+  },
+  "Redo Fade" : {
+    "ru" : "Повторить изменение нарастания и затухания"
+  },
+  "Redo Hide Shortcut" : {
+    "ru" : "Повторить скрытие сочетания"
+  },
+  "Redo Highlight Style" : {
+    "ru" : "Повторить изменение стиля выделения"
+  },
+  "Redo Image Style" : {
+    "ru" : "Повторить изменение стиля изображения"
+  },
+  "Redo Intro and Outro" : {
+    "ru" : "Повторить вступление и концовку"
+  },
+  "Redo Move %lld Items" : {
+    "ru" : {
+      "few" : "Повторить перемещение %lld объектов",
+      "many" : "Повторить перемещение %lld объектов",
+      "one" : "Повторить перемещение %lld объекта",
+      "other" : "Повторить перемещение %lld объекта"
+    }
+  },
+  "Redo Move Arrow" : {
+    "ru" : "Повторить перемещение стрелки"
+  },
+  "Redo Move Blur" : {
+    "ru" : "Повторить перемещение размытия"
+  },
+  "Redo Move Click" : {
+    "ru" : "Повторить перемещение нажатия"
+  },
+  "Redo Move Clip" : {
+    "ru" : "Повторить перемещение клипа"
+  },
+  "Redo Move Highlight" : {
+    "ru" : "Повторить перемещение выделения"
+  },
+  "Redo Move Image" : {
+    "ru" : "Повторить перемещение изображения"
+  },
+  "Redo Move Recording" : {
+    "ru" : "Повторить перемещение записи"
+  },
+  "Redo Move Spotlight" : {
+    "ru" : "Повторить перемещение прожектора"
+  },
+  "Redo Move Text" : {
+    "ru" : "Повторить перемещение текста"
+  },
+  "Redo Music Change" : {
+    "ru" : "Повторить изменение музыки"
+  },
+  "Redo Mute Clip" : {
+    "ru" : "Повторить выключение звука клипа"
+  },
+  "Redo Mute Part" : {
+    "ru" : "Повторить выключение звука фрагмента"
+  },
+  "Redo Mute Video" : {
+    "ru" : "Повторить выключение звука видео"
+  },
+  "Redo Remove All Zooms" : {
+    "ru" : "Повторить удаление всех увеличений"
+  },
+  "Redo Remove Captions" : {
+    "ru" : "Повторить удаление всех субтитров"
+  },
+  "Redo Remove Intro Card" : {
+    "ru" : "Повторить удаление начального титра"
+  },
+  "Redo Remove Music" : {
+    "ru" : "Повторить удаление музыки"
+  },
+  "Redo Remove Outro Card" : {
+    "ru" : "Повторить удаление финального титра"
+  },
+  "Redo Remove Recording" : {
+    "ru" : "Повторить удаление записи"
+  },
+  "Redo Remove Ums" : {
+    "ru" : "Повторить удаление слов-паразитов"
+  },
+  "Redo Replace Music" : {
+    "ru" : "Повторить замену музыки"
+  },
+  "Redo Reset Look" : {
+    "ru" : "Повторить сброс стиля"
+  },
+  "Redo Restore" : {
+    "ru" : "Повторить восстановление"
+  },
+  "Redo Restore Cut" : {
+    "ru" : "Повторить восстановление фрагмента"
+  },
+  "Redo Restore Cuts" : {
+    "ru" : "Повторить восстановление фрагментов"
+  },
+  "Redo Restore Pause" : {
+    "ru" : "Повторить восстановление паузы"
+  },
+  "Redo Restore Word" : {
+    "ru" : "Повторить восстановление слова"
+  },
+  "Redo Restore Words" : {
+    "ru" : "Повторить восстановление слов"
+  },
+  "Redo Shortcut Style" : {
+    "ru" : "Повторить изменение стиля сочетаний"
+  },
+  "Redo Shortcuts" : {
+    "ru" : "Повторить изменение сочетаний"
+  },
+  "Redo Shorten Pause" : {
+    "ru" : "Повторить сокращение паузы"
+  },
+  "Redo Shorten Pauses" : {
+    "ru" : "Повторить сокращение пауз"
+  },
+  "Redo Sound Change" : {
+    "ru" : "Повторить изменение звука"
+  },
+  "Redo Speed Change" : {
+    "ru" : "Повторить изменение скорости"
+  },
+  "Redo Speed Up Idle" : {
+    "ru" : "Повторить ускорение простоев"
+  },
+  "Redo Split" : {
+    "ru" : "Повторить разделение"
+  },
+  "Redo Spotlight Style" : {
+    "ru" : "Повторить изменение стиля прожектора"
+  },
+  "Redo Start Over" : {
+    "ru" : "Повторить возврат к исходной записи"
+  },
+  "Redo Style Change" : {
+    "ru" : "Повторить изменение стиля"
+  },
+  "Redo Text Style" : {
+    "ru" : "Повторить изменение стиля текста"
+  },
+  "Redo Title Card" : {
+    "ru" : "Повторить изменение титра"
+  },
+  "Redo Transcribe" : {
+    "ru" : "Повторить расшифровку"
+  },
+  "Redo Transitions" : {
+    "ru" : "Повторить изменение переходов"
+  },
+  "Redo Trim" : {
+    "ru" : "Повторить подрезку"
+  },
+  "Redo Unmute Clip" : {
+    "ru" : "Повторить включение звука клипа"
+  },
+  "Redo Unmute Part" : {
+    "ru" : "Повторить включение звука фрагмента"
+  },
+  "Redo Unmute Video" : {
+    "ru" : "Повторить включение звука видео"
+  },
+  "Redo Zoom Change" : {
+    "ru" : "Повторить изменение увеличения"
+  },
+  "Redo Zoom Level for All" : {
+    "ru" : "Повторить общий уровень увеличения"
+  },
+  "Redo Zooms" : {
+    "ru" : "Повторить изменение увеличений"
+  },
+  "Remove %lld ums" : {
+    "ru" : {
+      "few" : "Удалить %lld слова-паразита",
+      "many" : "Удалить %lld слов-паразитов",
+      "one" : "Удалить %lld слово-паразит",
+      "other" : "Удалить %lld слова-паразита"
+    }
+  },
+  "Remove All Zooms" : {
+    "ru" : "Удалить все увеличения"
+  },
+  "Remove Intro Card" : {
+    "ru" : "Удалить начальный титр"
+  },
+  "Remove Outro Card" : {
+    "ru" : "Удалить финальный титр"
+  },
+  "Remove Transcript & Captions" : {
+    "ru" : "Удалить расшифровку и субтитры"
+  },
+  "Remove Ums" : {
+    "ru" : "Удалить слова-паразиты"
+  },
+  "Remove all %lld" : {
+    "ru" : "Удалить все (%lld)"
+  },
+  "Remove all zooms" : {
+    "ru" : "Удалить все увеличения"
+  },
+  "Remove caption" : {
+    "ru" : "Удалить субтитр"
+  },
+  "Remove this caption" : {
+    "ru" : "Удалить этот субтитр"
+  },
+  "Removed %@ — click to restore" : {
+    "ru" : "Вырезано %@ — нажмите, чтобы восстановить"
+  },
+  "Removed %lld items — ⌘Z to undo" : {
+    "ru" : {
+      "few" : "Удалено %lld объекта — ⌘Z, чтобы отменить",
+      "many" : "Удалено %lld объектов — ⌘Z, чтобы отменить",
+      "one" : "Удален %lld объект — ⌘Z, чтобы отменить",
+      "other" : "Удалено %lld объекта — ⌘Z, чтобы отменить"
+    }
+  },
+  "Removed %lld items — ⌘Z to undo (a video keeps at least one clip)" : {
+    "ru" : {
+      "few" : "Удалено %lld объекта — ⌘Z, чтобы отменить (в видео остается хотя бы один клип)",
+      "many" : "Удалено %lld объектов — ⌘Z, чтобы отменить (в видео остается хотя бы один клип)",
+      "one" : "Удален %lld объект — ⌘Z, чтобы отменить (в видео остается хотя бы один клип)",
+      "other" : "Удалено %lld объекта — ⌘Z, чтобы отменить (в видео остается хотя бы один клип)"
+    }
+  },
+  "Removed parts can be restored from the yellow marker on the timeline." : {
+    "ru" : "Вырезанные фрагменты можно восстановить с помощью желтой метки на шкале времени."
+  },
+  "Removes background noise and hum, and evens out your level — processed on this Mac" : {
+    "ru" : "Убирает фоновый шум и гул и выравнивает громкость — обработка на этом Mac"
+  },
+  "Removes jitter, keeps it snappy." : {
+    "ru" : "Убирает дрожание, сохраняя отзывчивость."
+  },
+  "Reset" : {
+    "ru" : "Сбросить"
+  },
+  "Reset %@" : {
+    "ru" : "Сбросить: %@"
+  },
+  "Reset to the Shotnix Look" : {
+    "ru" : "Вернуть стиль Shotnix"
+  },
+  "Reset to the Shotnix look" : {
+    "ru" : "Вернуть стиль Shotnix"
+  },
+  "Restore" : {
+    "ru" : "Восстановить"
+  },
+  "Restore %@ at %@" : {
+    "ru" : "Восстановить %@ в %@"
+  },
+  "Restore %@ cut at %@" : {
+    "ru" : "Восстановить вырезанный фрагмент (%@) в %@"
+  },
+  "Restore All %lld" : {
+    "ru" : "Восстановить все (%lld)"
+  },
+  "Roundness" : {
+    "ru" : "Скругление"
+  },
+  "Save Subtitles (.srt)…" : {
+    "ru" : "Сохранить субтитры (.srt)…"
+  },
+  "Saves %@ — only silences where nothing happens on screen" : {
+    "ru" : "Экономит %@ — только паузы, когда на экране ничего не происходит"
+  },
+  "Saves %@ — silences where the pointer rests and nothing is clicked or pressed (this older recording can't see typing)" : {
+    "ru" : "Экономит %@ — паузы, когда указатель неподвижен и ничего не нажимается (в этой старой записи не виден набор текста)"
+  },
+  "Saves the background, frame, cursor, and zoom style." : {
+    "ru" : "Сохраняет фон, рамку, указатель и стиль увеличения."
+  },
+  "Search commands" : {
+    "ru" : "Поиск команд"
+  },
+  "Select a clip on the timeline to mute it or fade it in and out." : {
+    "ru" : "Выберите клип на шкале времени, чтобы выключить его звук или настроить нарастание и затухание."
+  },
+  "Select a range to cut" : {
+    "ru" : "Выделить фрагмент для вырезания"
+  },
+  "Select previous / next item" : {
+    "ru" : "Выбрать предыдущий / следующий объект"
+  },
+  "Select several items" : {
+    "ru" : "Выбрать несколько объектов"
+  },
+  "Select words and press ⌫ to cut them from the video — ⌫ again on crossed-out words puts them back. Click a word to jump there; ⌘F finds." : {
+    "ru" : "Выделите слова и нажмите ⌫, чтобы вырезать их из видео, — повторное ⌫ на зачеркнутых словах возвращает их. Нажмите слово, чтобы перейти к нему; ⌘F — поиск."
+  },
+  "Selected %@" : {
+    "ru" : "Выбрано: %@"
+  },
+  "Selected part" : {
+    "ru" : "Выбранный фрагмент"
+  },
+  "Shadow" : {
+    "ru" : "Тень"
+  },
+  "Shape" : {
+    "ru" : "Форма"
+  },
+  "Shortcut" : {
+    "ru" : "Сочетание клавиш"
+  },
+  "Shortcut %@" : {
+    "ru" : "Сочетание %@"
+  },
+  "Shorten %lld pauses" : {
+    "ru" : {
+      "few" : "Сократить %lld паузы",
+      "many" : "Сократить %lld пауз",
+      "one" : "Сократить %lld паузу",
+      "other" : "Сократить %lld паузы"
+    }
+  },
+  "Shorten Pauses" : {
+    "ru" : "Сократить паузы"
+  },
+  "Shortens every silence over a second (this video has no Shotnix pointer data to spot what happens on screen)" : {
+    "ru" : "Сокращает каждую паузу длиннее секунды (в этом видео нет данных указателя Shotnix, чтобы понять, что происходит на экране)"
+  },
+  "Shotnix is still cleaning up the voice" : {
+    "ru" : "Shotnix еще очищает голос"
+  },
+  "Shotnix is still transcribing" : {
+    "ru" : "Shotnix еще расшифровывает речь"
+  },
+  "Shotnix listens to the recording right on this Mac — nothing is uploaded. Then cut the video by deleting words, remove ums and long pauses in one click, and add captions." : {
+    "ru" : "Shotnix слушает запись прямо на этом Mac — ничего не отправляется в сеть. Затем можно монтировать видео, удаляя слова, одним нажатием убрать слова-паразиты и долгие паузы и добавить субтитры."
+  },
+  "Show Background" : {
+    "ru" : "Показать фон"
+  },
+  "Show Editor Tips" : {
+    "ru" : "Показать подсказки редактора"
+  },
+  "Show Folder in Finder" : {
+    "ru" : "Показать папку в Finder"
+  },
+  "Show Recent Export “%@” in Finder" : {
+    "ru" : "Показать недавний экспорт «%@» в Finder"
+  },
+  "Show Recording in Finder" : {
+    "ru" : "Показать запись в Finder"
+  },
+  "Show background" : {
+    "ru" : "Показать фон"
+  },
+  "Show camera" : {
+    "ru" : "Показывать камеру"
+  },
+  "Show captions" : {
+    "ru" : "Показывать субтитры"
+  },
+  "Show cursor" : {
+    "ru" : "Показывать указатель"
+  },
+  "Show in Finder" : {
+    "ru" : "Показать в Finder"
+  },
+  "Show in Finder — %@" : {
+    "ru" : "Показать в Finder — %@"
+  },
+  "Show more / less detail" : {
+    "ru" : "Больше / меньше деталей"
+  },
+  "Show more of the timeline" : {
+    "ru" : "Показать большую часть шкалы времени"
+  },
+  "Show shortcuts" : {
+    "ru" : "Показывать сочетания клавиш"
+  },
+  "Show the timeline in more detail" : {
+    "ru" : "Показать шкалу времени подробнее"
+  },
+  "Show tips under the video again" : {
+    "ru" : "Снова показывать подсказки под видео"
+  },
+  "Shrink while zoomed" : {
+    "ru" : "Уменьшать при увеличении"
+  },
+  "Shuffle Background" : {
+    "ru" : "Случайный фон"
+  },
+  "Shuffle the background" : {
+    "ru" : "Выбрать случайный фон"
+  },
+  "Silences over a second get shortened — except while you click, type, scroll, or move the pointer, so the demo itself is never cut" : {
+    "ru" : "Паузы длиннее секунды сокращаются — кроме моментов, когда вы нажимаете, печатаете, прокручиваете или двигаете указатель, чтобы сама демонстрация не пострадала"
+  },
+  "Silences over a second get shortened — except while you move the pointer, click, or press a shortcut" : {
+    "ru" : "Паузы длиннее секунды сокращаются — кроме моментов, когда вы двигаете указатель, нажимаете кнопку мыши или сочетание клавиш"
+  },
+  "Size" : {
+    "ru" : "Размер"
+  },
+  "Skips the dash to the Stop button at the end" : {
+    "ru" : "Пропускает рывок к кнопке «Остановить» в конце"
+  },
+  "Soft streaks on fast moves" : {
+    "ru" : "Мягкие шлейфы при быстрых движениях"
+  },
+  "Solid color" : {
+    "ru" : "Сплошной цвет"
+  },
+  "Sound" : {
+    "ru" : "Звук"
+  },
+  "Space" : {
+    "ru" : "Пробел"
+  },
+  "Speed" : {
+    "ru" : "Скорость"
+  },
+  "Speed Up Idle" : {
+    "ru" : "Ускорить простои"
+  },
+  "Speed Up Idle Moments" : {
+    "ru" : "Ускорить моменты простоя"
+  },
+  "Speed of this part" : {
+    "ru" : "Скорость этого фрагмента"
+  },
+  "Split" : {
+    "ru" : "Разделить"
+  },
+  "Split at Playhead" : {
+    "ru" : "Разделить по указателю воспроизведения"
+  },
+  "Split at playhead" : {
+    "ru" : "Разделить здесь"
+  },
+  "Split at the playhead (S)" : {
+    "ru" : "Разделить по указателю воспроизведения (S)"
+  },
+  "Start / end" : {
+    "ru" : "Начало / конец"
+  },
+  "Start Over from the Original Recording…" : {
+    "ru" : "Начать заново с исходной записи…"
+  },
+  "Start at the playhead" : {
+    "ru" : "Начать у указателя воспроизведения"
+  },
+  "Start here" : {
+    "ru" : "Начало здесь"
+  },
+  "Starts" : {
+    "ru" : "Начало"
+  },
+  "Stop Enhancing Voice" : {
+    "ru" : "Выключить улучшение голоса"
+  },
+  "Stop and Close" : {
+    "ru" : "Остановить и закрыть"
+  },
+  "Style" : {
+    "ru" : "Стиль"
+  },
+  "Swap the arrow's head and tail" : {
+    "ru" : "Поменять местами наконечник и хвост стрелки"
+  },
+  "Switch the camera to full screen for talking points, or put it side by side with the screen — at the playhead. Each shows on the Camera lane." : {
+    "ru" : "Переключите камеру на весь кадр для ключевых моментов или поставьте ее рядом с экраном — у указателя воспроизведения. Каждое переключение отображается на дорожке «Камера»."
+  },
+  "Tag color" : {
+    "ru" : "Цвет плашки"
+  },
+  "Text · highlight · arrow · blur" : {
+    "ru" : "Текст · выделение · стрелка · размытие"
+  },
+  "Text “%@”" : {
+    "ru" : "Текст «%@»"
+  },
+  "The camera keeps your cursor in view and glides after it." : {
+    "ru" : "Камера держит указатель в кадре и плавно следует за ним."
+  },
+  "The cursor is part of this video" : {
+    "ru" : "Указатель — часть этого видео"
+  },
+  "Thickness" : {
+    "ru" : "Толщина"
+  },
+  "This list" : {
+    "ru" : "Этот список"
+  },
+  "This recording has no sound" : {
+    "ru" : "В этой записи нет звука"
+  },
+  "This recording has no sound. Turn on the microphone before recording to narrate it." : {
+    "ru" : "В этой записи нет звука. Чтобы добавить комментарий, включите микрофон перед записью."
+  },
+  "This recording only has the arrow" : {
+    "ru" : "В этой записи есть только стрелка"
+  },
+  "This video was recorded with your camera, but “%@” isn't in %@ anymore. Put it back there and open the video again to get the camera bubble back." : {
+    "ru" : "Это видео записано с камерой, но файла «%@» больше нет в папке %@. Верните его туда и снова откройте видео, чтобы вернуть окошко камеры."
+  },
+  "Timeline" : {
+    "ru" : "Шкала времени"
+  },
+  "Timeline scale" : {
+    "ru" : "Масштаб шкалы времени"
+  },
+  "Timeline scale (pinch, or ⌘-scroll)" : {
+    "ru" : "Масштаб шкалы времени (сведение пальцев или ⌘ и прокрутка)"
+  },
+  "Timing" : {
+    "ru" : "Время"
+  },
+  "Tips" : {
+    "ru" : "Подсказки"
+  },
+  "Tools" : {
+    "ru" : "Инструменты"
+  },
+  "Transcribe" : {
+    "ru" : "Расшифровать"
+  },
+  "Transcribe Again…" : {
+    "ru" : "Расшифровать заново…"
+  },
+  "Transcribe Narration (Captions, Edit by Text)" : {
+    "ru" : "Расшифровать речь (субтитры, монтаж по тексту)"
+  },
+  "Transcribe…" : {
+    "ru" : "Расшифровать…"
+  },
+  "Transcript" : {
+    "ru" : "Расшифровка"
+  },
+  "Trim the clip's end to the playhead (O)" : {
+    "ru" : "Подрезать конец клипа по указателю воспроизведения (O)"
+  },
+  "Trim the clip's start to the playhead (I)" : {
+    "ru" : "Подрезать начало клипа по указателю воспроизведения (I)"
+  },
+  "Try Again" : {
+    "ru" : "Повторить попытку"
+  },
+  "Turn On" : {
+    "ru" : "Включить"
+  },
+  "Turn around" : {
+    "ru" : "Развернуть"
+  },
+  "Turn on the camera in the recording bar before you record, and your face appears here as a bubble you can place, resize, and restyle." : {
+    "ru" : "Перед записью включите камеру на панели записи — и ваше лицо появится здесь в окошке, которое можно перемещать, масштабировать и оформлять."
+  },
+  "Turn on the microphone or system audio before recording to capture sound." : {
+    "ru" : "Чтобы записать звук, перед записью включите микрофон или системный звук."
+  },
+  "Turn the video's sound back on" : {
+    "ru" : "Снова включить звук видео"
+  },
+  "Type in a text annotation" : {
+    "ru" : "Ввести текст в текстовый элемент"
+  },
+  "Undo" : {
+    "ru" : "Отменить"
+  },
+  "Undo / redo" : {
+    "ru" : "Отменить / повторить"
+  },
+  "Undo Add Arrow" : {
+    "ru" : "Отменить добавление стрелки"
+  },
+  "Undo Add Blur" : {
+    "ru" : "Отменить добавление размытия"
+  },
+  "Undo Add Camera Layout" : {
+    "ru" : "Отменить добавление расположения камеры"
+  },
+  "Undo Add Camera Layouts" : {
+    "ru" : "Отменить добавление расположений камеры"
+  },
+  "Undo Add Caption" : {
+    "ru" : "Отменить добавление субтитра"
+  },
+  "Undo Add Captions" : {
+    "ru" : "Отменить добавление субтитров"
+  },
+  "Undo Add Click" : {
+    "ru" : "Отменить добавление нажатия"
+  },
+  "Undo Add Clicks" : {
+    "ru" : "Отменить добавление нажатий"
+  },
+  "Undo Add Highlight" : {
+    "ru" : "Отменить добавление выделения"
+  },
+  "Undo Add Image" : {
+    "ru" : "Отменить добавление изображения"
+  },
+  "Undo Add Intro Card" : {
+    "ru" : "Отменить добавление начального титра"
+  },
+  "Undo Add Music" : {
+    "ru" : "Отменить добавление музыки"
+  },
+  "Undo Add Outro Card" : {
+    "ru" : "Отменить добавление финального титра"
+  },
+  "Undo Add Recording" : {
+    "ru" : "Отменить добавление записи"
+  },
+  "Undo Add Spotlight" : {
+    "ru" : "Отменить добавление прожектора"
+  },
+  "Undo Add Text" : {
+    "ru" : "Отменить добавление текста"
+  },
+  "Undo Add Zoom" : {
+    "ru" : "Отменить добавление увеличения"
+  },
+  "Undo Add Zooms" : {
+    "ru" : "Отменить добавление увеличений"
+  },
+  "Undo Annotation Change" : {
+    "ru" : "Отменить изменение элемента разметки"
+  },
+  "Undo Annotations" : {
+    "ru" : "Отменить изменение элементов разметки"
+  },
+  "Undo Arrow Style" : {
+    "ru" : "Отменить изменение стиля стрелки"
+  },
+  "Undo Aspect Ratio" : {
+    "ru" : "Отменить изменение соотношения сторон"
+  },
+  "Undo Auto Zoom" : {
+    "ru" : "Отменить автомасштаб"
+  },
+  "Undo Background" : {
+    "ru" : "Отменить изменение фона"
+  },
+  "Undo Blur Style" : {
+    "ru" : "Отменить изменение стиля размытия"
+  },
+  "Undo Camera Change" : {
+    "ru" : "Отменить изменение камеры"
+  },
+  "Undo Camera Layout Change" : {
+    "ru" : "Отменить изменение расположения камеры"
+  },
+  "Undo Camera Layouts" : {
+    "ru" : "Отменить изменение расположений камеры"
+  },
+  "Undo Caption Style" : {
+    "ru" : "Отменить изменение стиля субтитров"
+  },
+  "Undo Caption Translation" : {
+    "ru" : "Отменить перевод субтитров"
+  },
+  "Undo Captions" : {
+    "ru" : "Отменить изменение субтитров"
+  },
+  "Undo Click Sounds" : {
+    "ru" : "Отменить изменение звуков нажатий"
+  },
+  "Undo Clicks" : {
+    "ru" : "Отменить изменение нажатий"
+  },
+  "Undo Crop" : {
+    "ru" : "Отменить обрезку"
+  },
+  "Undo Cursor Change" : {
+    "ru" : "Отменить изменение указателя"
+  },
+  "Undo Cut" : {
+    "ru" : "Отменить вырезание"
+  },
+  "Undo Cut Word" : {
+    "ru" : "Отменить вырезание слова"
+  },
+  "Undo Cut Words" : {
+    "ru" : "Отменить вырезание слов"
+  },
+  "Undo Delete %lld Items" : {
+    "ru" : {
+      "few" : "Отменить удаление %lld объектов",
+      "many" : "Отменить удаление %lld объектов",
+      "one" : "Отменить удаление %lld объекта",
+      "other" : "Отменить удаление %lld объекта"
+    }
+  },
+  "Undo Delete Annotations" : {
+    "ru" : "Отменить удаление элементов разметки"
+  },
+  "Undo Delete Arrow" : {
+    "ru" : "Отменить удаление стрелки"
+  },
+  "Undo Delete Blur" : {
+    "ru" : "Отменить удаление размытия"
+  },
+  "Undo Delete Camera Layout" : {
+    "ru" : "Отменить удаление расположения камеры"
+  },
+  "Undo Delete Camera Layouts" : {
+    "ru" : "Отменить удаление расположений камеры"
+  },
+  "Undo Delete Caption" : {
+    "ru" : "Отменить удаление субтитра"
+  },
+  "Undo Delete Captions" : {
+    "ru" : "Отменить удаление субтитров"
+  },
+  "Undo Delete Click" : {
+    "ru" : "Отменить удаление нажатия"
+  },
+  "Undo Delete Clicks" : {
+    "ru" : "Отменить удаление нажатий"
+  },
+  "Undo Delete Clip" : {
+    "ru" : "Отменить удаление клипа"
+  },
+  "Undo Delete Clips" : {
+    "ru" : "Отменить удаление клипов"
+  },
+  "Undo Delete Highlight" : {
+    "ru" : "Отменить удаление выделения"
+  },
+  "Undo Delete Image" : {
+    "ru" : "Отменить удаление изображения"
+  },
+  "Undo Delete Spotlight" : {
+    "ru" : "Отменить удаление прожектора"
+  },
+  "Undo Delete Text" : {
+    "ru" : "Отменить удаление текста"
+  },
+  "Undo Delete Zoom" : {
+    "ru" : "Отменить удаление увеличения"
+  },
+  "Undo Delete Zooms" : {
+    "ru" : "Отменить удаление увеличений"
+  },
+  "Undo Edit Caption" : {
+    "ru" : "Отменить правку субтитра"
+  },
+  "Undo Edit Text" : {
+    "ru" : "Отменить правку текста"
+  },
+  "Undo Enhance Voice" : {
+    "ru" : "Отменить улучшение голоса"
+  },
+  "Undo Fade" : {
+    "ru" : "Отменить изменение нарастания и затухания"
+  },
+  "Undo Hide Shortcut" : {
+    "ru" : "Отменить скрытие сочетания"
+  },
+  "Undo Highlight Style" : {
+    "ru" : "Отменить изменение стиля выделения"
+  },
+  "Undo Image Style" : {
+    "ru" : "Отменить изменение стиля изображения"
+  },
+  "Undo Intro and Outro" : {
+    "ru" : "Отменить вступление и концовку"
+  },
+  "Undo Move %lld Items" : {
+    "ru" : {
+      "few" : "Отменить перемещение %lld объектов",
+      "many" : "Отменить перемещение %lld объектов",
+      "one" : "Отменить перемещение %lld объекта",
+      "other" : "Отменить перемещение %lld объекта"
+    }
+  },
+  "Undo Move Arrow" : {
+    "ru" : "Отменить перемещение стрелки"
+  },
+  "Undo Move Blur" : {
+    "ru" : "Отменить перемещение размытия"
+  },
+  "Undo Move Click" : {
+    "ru" : "Отменить перемещение нажатия"
+  },
+  "Undo Move Clip" : {
+    "ru" : "Отменить перемещение клипа"
+  },
+  "Undo Move Highlight" : {
+    "ru" : "Отменить перемещение выделения"
+  },
+  "Undo Move Image" : {
+    "ru" : "Отменить перемещение изображения"
+  },
+  "Undo Move Recording" : {
+    "ru" : "Отменить перемещение записи"
+  },
+  "Undo Move Spotlight" : {
+    "ru" : "Отменить перемещение прожектора"
+  },
+  "Undo Move Text" : {
+    "ru" : "Отменить перемещение текста"
+  },
+  "Undo Music Change" : {
+    "ru" : "Отменить изменение музыки"
+  },
+  "Undo Mute Clip" : {
+    "ru" : "Отменить выключение звука клипа"
+  },
+  "Undo Mute Part" : {
+    "ru" : "Отменить выключение звука фрагмента"
+  },
+  "Undo Mute Video" : {
+    "ru" : "Отменить выключение звука видео"
+  },
+  "Undo Remove All Zooms" : {
+    "ru" : "Отменить удаление всех увеличений"
+  },
+  "Undo Remove Captions" : {
+    "ru" : "Отменить удаление всех субтитров"
+  },
+  "Undo Remove Intro Card" : {
+    "ru" : "Отменить удаление начального титра"
+  },
+  "Undo Remove Music" : {
+    "ru" : "Отменить удаление музыки"
+  },
+  "Undo Remove Outro Card" : {
+    "ru" : "Отменить удаление финального титра"
+  },
+  "Undo Remove Recording" : {
+    "ru" : "Отменить удаление записи"
+  },
+  "Undo Remove Ums" : {
+    "ru" : "Отменить удаление слов-паразитов"
+  },
+  "Undo Replace Music" : {
+    "ru" : "Отменить замену музыки"
+  },
+  "Undo Reset Look" : {
+    "ru" : "Отменить сброс стиля"
+  },
+  "Undo Restore" : {
+    "ru" : "Отменить восстановление"
+  },
+  "Undo Restore Cut" : {
+    "ru" : "Отменить восстановление фрагмента"
+  },
+  "Undo Restore Cuts" : {
+    "ru" : "Отменить восстановление фрагментов"
+  },
+  "Undo Restore Pause" : {
+    "ru" : "Отменить восстановление паузы"
+  },
+  "Undo Restore Word" : {
+    "ru" : "Отменить восстановление слова"
+  },
+  "Undo Restore Words" : {
+    "ru" : "Отменить восстановление слов"
+  },
+  "Undo Shortcut Style" : {
+    "ru" : "Отменить изменение стиля сочетаний"
+  },
+  "Undo Shortcuts" : {
+    "ru" : "Отменить изменение сочетаний"
+  },
+  "Undo Shorten Pause" : {
+    "ru" : "Отменить сокращение паузы"
+  },
+  "Undo Shorten Pauses" : {
+    "ru" : "Отменить сокращение пауз"
+  },
+  "Undo Sound Change" : {
+    "ru" : "Отменить изменение звука"
+  },
+  "Undo Speed Change" : {
+    "ru" : "Отменить изменение скорости"
+  },
+  "Undo Speed Up Idle" : {
+    "ru" : "Отменить ускорение простоев"
+  },
+  "Undo Split" : {
+    "ru" : "Отменить разделение"
+  },
+  "Undo Spotlight Style" : {
+    "ru" : "Отменить изменение стиля прожектора"
+  },
+  "Undo Start Over" : {
+    "ru" : "Отменить возврат к исходной записи"
+  },
+  "Undo Style Change" : {
+    "ru" : "Отменить изменение стиля"
+  },
+  "Undo Text Style" : {
+    "ru" : "Отменить изменение стиля текста"
+  },
+  "Undo Title Card" : {
+    "ru" : "Отменить изменение титра"
+  },
+  "Undo Transcribe" : {
+    "ru" : "Отменить расшифровку"
+  },
+  "Undo Transitions" : {
+    "ru" : "Отменить изменение переходов"
+  },
+  "Undo Trim" : {
+    "ru" : "Отменить подрезку"
+  },
+  "Undo Unmute Clip" : {
+    "ru" : "Отменить включение звука клипа"
+  },
+  "Undo Unmute Part" : {
+    "ru" : "Отменить включение звука фрагмента"
+  },
+  "Undo Unmute Video" : {
+    "ru" : "Отменить включение звука видео"
+  },
+  "Undo Zoom Change" : {
+    "ru" : "Отменить изменение увеличения"
+  },
+  "Undo Zoom Level for All" : {
+    "ru" : "Отменить общий уровень увеличения"
+  },
+  "Undo Zooms" : {
+    "ru" : "Отменить изменение увеличений"
+  },
+  "Unmute Clip" : {
+    "ru" : "Включить звук клипа"
+  },
+  "Unmute preview" : {
+    "ru" : "Включить звук предпросмотра"
+  },
+  "Unmute the Preview" : {
+    "ru" : "Включить звук предпросмотра"
+  },
+  "Unmute the preview (M)" : {
+    "ru" : "Включить звук предпросмотра (M)"
+  },
+  "Use This Look for New Recordings" : {
+    "ru" : "Использовать этот стиль для новых записей"
+  },
+  "Use for new recordings" : {
+    "ru" : "Использовать для новых записей"
+  },
+  "Use this color" : {
+    "ru" : "Использовать этот цвет"
+  },
+  "Use this level for every zoom" : {
+    "ru" : "Для всех увеличений"
+  },
+  "Video preview" : {
+    "ru" : "Предпросмотр видео"
+  },
+  "Voice" : {
+    "ru" : "Голос"
+  },
+  "Volume" : {
+    "ru" : "Громкость"
+  },
+  "Wallpaper" : {
+    "ru" : "Обои"
+  },
+  "What was playing on your Mac" : {
+    "ru" : "То, что звучало на вашем Mac"
+  },
+  "Words light up as they're spoken" : {
+    "ru" : "Слова подсвечиваются по мере произнесения"
+  },
+  "Your look" : {
+    "ru" : "Ваш стиль"
+  },
+  "Your microphone" : {
+    "ru" : "Ваш микрофон"
+  },
+  "Your narration can become captions — then cut the video by editing its words." : {
+    "ru" : "Вашу речь можно превратить в субтитры — а затем монтировать видео, правя текст."
+  },
+  "Your narration can become captions — transcribe it here" : {
+    "ru" : "Вашу речь можно превратить в субтитры — расшифруйте ее здесь"
+  },
+  "Your video's background shows behind you — found on this Mac, frame by frame." : {
+    "ru" : "Фон вашего видео виден позади вас — он выделяется на этом Mac кадр за кадром."
+  },
+  "Your words, as text" : {
+    "ru" : "Ваши слова в виде текста"
+  },
+  "Zoom" : {
+    "ru" : "Масштаб"
+  },
+  "Zoom %@" : {
+    "ru" : "Увеличение %@"
+  },
+  "Zoom Level" : {
+    "ru" : "Уровень увеличения"
+  },
+  "Zoom in at the pointer" : {
+    "ru" : "Увеличить в точке указателя"
+  },
+  "Zoom level" : {
+    "ru" : "Уровень увеличения"
+  },
+  "Zoom level (zoom selected)" : {
+    "ru" : "Уровень увеличения (увеличение выбрано)"
+  },
+  "Zoom moves" : {
+    "ru" : "Движения камеры"
+  },
+  "Zoom to %@ (key %@)" : {
+    "ru" : "Увеличить до %@ (клавиша %@)"
+  },
+  "Zoom — drag to move, drag an edge to resize, click to edit" : {
+    "ru" : "Увеличение — перетяните, чтобы сдвинуть; тяните за край, чтобы изменить длину; нажмите, чтобы настроить"
+  },
+  "Zooms" : {
+    "ru" : "Увеличения"
+  },
+  "Zooms & annotations" : {
+    "ru" : "Увеличения и разметка"
+  },
+  "Zooms and annotations can be duplicated" : {
+    "ru" : "Дублировать можно только увеличения и разметку"
+  },
+  "add a zoom" : {
+    "ru" : "добавить увеличение"
+  },
+  "aim or resize it" : {
+    "ru" : "навести или изменить размер"
+  },
+  "all shortcuts" : {
+    "ru" : "все сочетания клавиш"
+  },
+  "cut by editing words" : {
+    "ru" : "монтаж правкой текста"
+  },
+  "dips under your voice" : {
+    "ru" : "приглушается под голос"
+  },
+  "every command" : {
+    "ru" : "все команды"
+  },
+  "export" : {
+    "ru" : "экспорт"
+  },
+  "follows the cursor" : {
+    "ru" : "следует за указателем"
+  },
+  "loops" : {
+    "ru" : "повторяется"
+  },
+  "mute the preview" : {
+    "ru" : "выключить звук предпросмотра"
+  },
+  "muted" : {
+    "ru" : "звук выключен"
+  },
+  "play" : {
+    "ru" : "воспроизвести"
+  },
+  "select a part to cut" : {
+    "ru" : "выделить фрагмент для вырезания"
+  },
+  "select it" : {
+    "ru" : "выбрать"
+  },
+  "split at the playhead" : {
+    "ru" : "разделить по указателю воспроизведения"
+  },
+  "step through the timeline" : {
+    "ru" : "шаг по шкале времени"
+  },
+  "text, highlight, arrow, blur" : {
+    "ru" : "текст, выделение, стрелка, размытие"
+  },
+  "trim to the playhead" : {
+    "ru" : "подрезать по указателю воспроизведения"
+  },
+  "type" : {
+    "ru" : "ввести текст"
+  },
+  "zoom the timeline" : {
+    "ru" : "масштаб шкалы времени"
+  },
+  "· aim by hand" : {
+    "ru" : "· вручную"
+  },
+  "· drag to aim" : {
+    "ru" : "· тяните, чтобы навести"
+  },
+  "· follows cursor" : {
+    "ru" : "· за указателем"
+  },
+  "⇧-drag" : {
+    "ru" : "⇧ + тянуть"
+  },
+  "⇧-drag the timeline" : {
+    "ru" : "⇧ + тянуть по шкале времени"
+  },
+  "⇧/⌘-click" : {
+    "ru" : "⇧/⌘-нажатие"
+  },
+  "⌘ scroll" : {
+    "ru" : "⌘-прокрутка"
+  },
+  "⌘-scroll" : {
+    "ru" : "⌘-прокрутка"
+  }
+}

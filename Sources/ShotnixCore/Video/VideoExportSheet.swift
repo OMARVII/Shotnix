@@ -521,23 +521,17 @@ struct VideoExportSheet: View {
                         .foregroundStyle(VideoEditorTheme.textSecondary)
                 }
             }
-            HStack(spacing: 8) {
-                if !copied {
-                    VideoShareButton(url: url)
-                    Button { model.revealExport(url) } label: {
-                        Label(L("Reveal"), systemImage: "folder").frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(VideoSecondaryButtonStyle())
-                    .help(L("Reveal in Finder"))
-                    Button { model.copyExport(url) } label: {
-                        Label(L("Copy"), systemImage: "doc.on.doc").frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(VideoSecondaryButtonStyle())
+            // One row as designed; two when a language's words don't fit
+            // side by side (Поделиться · Показать · Скопировать · Воспроизвести).
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 8) {
+                    finishedActionsLeading(url: url, copied: copied)
+                    finishedActionsTrailing(url: url, copied: copied)
                 }
-                Button { model.openExport(url) } label: {
-                    Label(L("Play"), systemImage: "play.fill").frame(maxWidth: .infinity)
+                VStack(spacing: 8) {
+                    HStack(spacing: 8) { finishedActionsLeading(url: url, copied: copied) }
+                    HStack(spacing: 8) { finishedActionsTrailing(url: url, copied: copied) }
                 }
-                .buttonStyle(VideoSecondaryButtonStyle())
             }
             Button {
                 close()
@@ -547,6 +541,34 @@ struct VideoExportSheet: View {
             .buttonStyle(VideoPrimaryButtonStyle())
             .keyboardShortcut(.defaultAction)
         }
+    }
+
+    /// Share and Reveal (not for a clipboard export).
+    @ViewBuilder
+    private func finishedActionsLeading(url: URL, copied: Bool) -> some View {
+        if !copied {
+            VideoShareButton(url: url)
+            Button { model.revealExport(url) } label: {
+                Label(L("Reveal"), systemImage: "folder").frame(maxWidth: .infinity)
+            }
+            .buttonStyle(VideoSecondaryButtonStyle())
+            .help(L("Reveal in Finder"))
+        }
+    }
+
+    /// Copy (not for a clipboard export) and Play.
+    @ViewBuilder
+    private func finishedActionsTrailing(url: URL, copied: Bool) -> some View {
+        if !copied {
+            Button { model.copyExport(url) } label: {
+                Label(L("Copy"), systemImage: "doc.on.doc").frame(maxWidth: .infinity)
+            }
+            .buttonStyle(VideoSecondaryButtonStyle())
+        }
+        Button { model.openExport(url) } label: {
+            Label(L("Play"), systemImage: "play.fill").frame(maxWidth: .infinity)
+        }
+        .buttonStyle(VideoSecondaryButtonStyle())
     }
 
     private func failedView(_ message: String) -> some View {
