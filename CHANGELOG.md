@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.25.0-beta] - 2026-09-27
+
+### Added
+- **Shotnix speaks German, French, and Simplified Chinese.** Every menu, window, and notice is translated: Settings, the welcome window, the screenshot editor, capture and recording, History, pins, text recognition and QR results, and the whole video editor, down to its undo names. The translations use the words macOS itself uses, including the exact names of System Settings panes, and Shotnix follows your Mac's language.
+- **Pick Shotnix's language in Settings → General.** Choose English, Deutsch, Français, or 简体中文 for Shotnix alone, or keep System Default. Shotnix offers to restart, asks about unsaved edits first, and comes back in the new language. It's the same setting as System Settings → General → Language & Region → Applications, so the two always agree.
+
+### Changed
+- **New text starts in your language.** New text annotations, captions, and title cards, and the "(edited)" name of exported copies, use Shotnix's language. Text you already have never changes.
+- **Clearer wording in English too.** The window chooser's button says Choose, the transition option is Hard cut, the menu's recording section is Recording, a Wi-Fi QR code shows "Hidden network: Yes", counts read right in the singular ("1 zoom follows your clicks"), and export and transcription errors say what to do next.
+
+### Fixed
+- **Toasts wrap between words** instead of breaking a word in the middle.
+- **Quit & Reopen after granting screen recording permission restarts safely.** It no longer reopens Shotnix when an unsaved edit cancels the quit, or misses when quitting takes a moment.
+- **Buttons that were cut off now fit:** the QR window's Compose Email and Open Messages, and the welcome window's rows after it asks for permission.
+
 ## [0.24.1-beta] - 2026-09-26
 
 ### Fixed

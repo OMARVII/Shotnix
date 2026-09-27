@@ -1065,7 +1065,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.24.1"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.25.0"
     
     var body: some View {
         PreferencesPane {
@@ -1109,6 +1109,11 @@ struct AboutSettingsView: View {
                 ScrollView {
                     // The release notes stay in English (l10n-ignore); everything around them is localized.
                     Text(verbatim: """
+                    Version 0.25.0
+                    • Shotnix speaks German, French, and Simplified Chinese: every menu, window, and notice, the screenshot editor, and the whole video editor, in the words macOS itself uses
+                    • Pick Shotnix's language in Settings → General; it restarts in the new language and asks about unsaved edits first
+                    • Toasts wrap between words, Quit & Reopen after granting permission restarts safely, and a few buttons that were cut off now fit
+
                     Version 0.24.1
                     • The screenshot editor's toolbar sits straight: a clicked tool no longer stays shrunk toward a corner, every tool has even room on all sides, and hover matches the selection's rounded shape
                     • Buttons on History cards and the capture thumbnail spring back after a click, and toasts, badges, and the countdown grow from their center
