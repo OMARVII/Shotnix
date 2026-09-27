@@ -34,6 +34,14 @@ enum VideoEditorTheme {
     }
 }
 
+/// Values the editor shows, written the way the user's language writes them.
+enum VideoEditorFormat {
+    /// A fraction as a percentage: "42%" ("42 %" in German and French).
+    static func percent(_ fraction: Double) -> String {
+        L("\(Int((fraction * 100).rounded()))%")
+    }
+}
+
 // MARK: - Buttons
 
 struct VideoToolButtonStyle: ButtonStyle {
@@ -204,8 +212,8 @@ struct VideoSliderRow: View {
                             .foregroundStyle(VideoEditorTheme.textTertiary)
                     }
                     .buttonStyle(.plain)
-                    .help("Reset")
-                    .accessibilityLabel("Reset \(title)")
+                    .help(L("Reset"))
+                    .accessibilityLabel(L("Reset \(title)"))
                 }
                 Text(format(value))
                     .font(.system(size: 11, weight: .semibold, design: .monospaced))
@@ -261,7 +269,7 @@ struct VideoSegmented<Value: Hashable>: View {
     @Binding var selection: Value
 
     var body: some View {
-        HStack(spacing: 2) {
+        VideoSegmentsLayout(spacing: 2) {
             ForEach(Array(options.enumerated()), id: \.offset) { _, option in
                 let selected = option.value == selection
                 Button {
@@ -294,6 +302,43 @@ struct VideoSegmented<Value: Hashable>: View {
             RoundedRectangle(cornerRadius: 8, style: .continuous)
                 .strokeBorder(VideoEditorTheme.cardStroke, lineWidth: 1)
         )
+    }
+}
+
+/// Segments side by side: equal while every title fits its share. When one
+/// doesn't (German and French run long), each segment gets its title's width
+/// and some room around it, and they share what's left; titles truncate only
+/// when even that doesn't fit.
+struct VideoSegmentsLayout: Layout {
+    var spacing: CGFloat
+    /// Room on each side of a title when widths follow the titles.
+    var titlePadding: CGFloat = 5
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let ideals = subviews.map { $0.sizeThatFits(.unspecified) }
+        let spacings = spacing * CGFloat(max(subviews.count - 1, 0))
+        let idealWidth = ideals.reduce(spacings) { $0 + $1.width + 2 * titlePadding }
+        return CGSize(width: proposal.width ?? idealWidth, height: ideals.map(\.height).max() ?? 0)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        guard !subviews.isEmpty else { return }
+        let count = CGFloat(subviews.count)
+        let available = max(bounds.width - spacing * (count - 1), 0)
+        let share = available / count
+        let titles = subviews.map { $0.sizeThatFits(.unspecified).width }
+        var widths = Array(repeating: share, count: subviews.count)
+        if titles.contains(where: { $0 > share }) {
+            let needed = titles.map { $0 + 2 * titlePadding }
+            let total = needed.reduce(0, +)
+            let extra = available - total
+            widths = extra >= 0 ? needed.map { $0 + extra / count } : needed.map { $0 * available / max(total, 1) }
+        }
+        var x = bounds.minX
+        for (index, subview) in subviews.enumerated() {
+            subview.place(at: CGPoint(x: x, y: bounds.midY), anchor: .leading, proposal: ProposedViewSize(width: widths[index], height: bounds.height))
+            x += widths[index] + spacing
+        }
     }
 }
 

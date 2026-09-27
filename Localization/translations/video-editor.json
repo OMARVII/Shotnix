@@ -1,0 +1,3767 @@
+{
+  "%@ (This Mac)": {
+    "comment": "Caption language menu: the Mac's own language",
+    "de": "%@ (dieser Mac)",
+    "fr": "%@ (ce Mac)",
+    "zh-Hans": "%@（这台 Mac）"
+  },
+  "%@ (⇧⌘Z)": {
+    "comment": "Tooltip: the Redo command, then its shortcut",
+    "de": "%@ (⇧⌘Z)",
+    "fr": "%@ (⇧⌘Z)",
+    "zh-Hans": "%@（⇧⌘Z）"
+  },
+  "%@ (⌘Z)": {
+    "comment": "Tooltip: the Undo command, then its shortcut",
+    "de": "%@ (⌘Z)",
+    "fr": "%@ (⌘Z)",
+    "zh-Hans": "%@（⌘Z）"
+  },
+  "%@ Zoom": {
+    "comment": "A zoom on the timeline with its level (2× Zoom)",
+    "de": "Zoom %@",
+    "fr": "Zoom %@",
+    "zh-Hans": "缩放 %@"
+  },
+  "%@ long": {
+    "comment": "VoiceOver: a clip's length",
+    "de": "%@ lang",
+    "fr": "durée %@",
+    "zh-Hans": "时长 %@"
+  },
+  "%@ of recording plays in %@.": {
+    "comment": "A clip at another speed: its length in the recording, then how long it plays",
+    "de": "%@ der Aufnahme laufen in %@ ab.",
+    "fr": "%@ d’enregistrement lus en %@.",
+    "zh-Hans": "%@ 的录制内容在 %@ 内播完。"
+  },
+  "%@ speed": {
+    "comment": "VoiceOver: a playback speed such as 2×",
+    "de": "Tempo %@",
+    "fr": "vitesse %@",
+    "zh-Hans": "速度 %@"
+  },
+  "%@ — %@": {
+    "comment": "An aspect ratio, then what it's for (16:9 — YouTube, presentations)",
+    "de": "%@ – %@",
+    "fr": "%@ — %@",
+    "zh-Hans": "%@ — %@"
+  },
+  "%lld annotations": {
+    "de": {
+      "one": "%lld Beschriftung",
+      "other": "%lld Beschriftungen"
+    },
+    "en": {
+      "one": "%lld annotation",
+      "other": "%lld annotations"
+    },
+    "fr": {
+      "one": "%lld annotation",
+      "other": "%lld annotations"
+    },
+    "zh-Hans": "%lld 个标注"
+  },
+  "%lld camera layouts": {
+    "de": {
+      "one": "%lld Kameralayout",
+      "other": "%lld Kameralayouts"
+    },
+    "en": {
+      "one": "%lld camera layout",
+      "other": "%lld camera layouts"
+    },
+    "fr": {
+      "one": "%lld disposition de caméra",
+      "other": "%lld dispositions de caméra"
+    },
+    "zh-Hans": "%lld 个摄像头布局"
+  },
+  "%lld captions": {
+    "de": "%lld Untertitel",
+    "en": {
+      "one": "%lld caption",
+      "other": "%lld captions"
+    },
+    "fr": {
+      "one": "%lld sous-titre",
+      "other": "%lld sous-titres"
+    },
+    "zh-Hans": "%lld 条字幕"
+  },
+  "%lld clicks": {
+    "de": {
+      "one": "%lld Klick",
+      "other": "%lld Klicks"
+    },
+    "en": {
+      "one": "%lld click",
+      "other": "%lld clicks"
+    },
+    "fr": {
+      "one": "%lld clic",
+      "other": "%lld clics"
+    },
+    "zh-Hans": "%lld 次点按"
+  },
+  "%lld clips": {
+    "de": {
+      "one": "%lld Clip",
+      "other": "%lld Clips"
+    },
+    "en": {
+      "one": "%lld clip",
+      "other": "%lld clips"
+    },
+    "fr": {
+      "one": "%lld clip",
+      "other": "%lld clips"
+    },
+    "zh-Hans": "%lld 个片段"
+  },
+  "%lld cuts here (%@ removed) — click to restore some or all": {
+    "de": {
+      "one": "%lld Schnitt hier (%@ entfernt) – klicken, um ihn wiederherzustellen",
+      "other": "%lld Schnitte hier (%@ entfernt) – klicken, um einige oder alle wiederherzustellen"
+    },
+    "en": {
+      "one": "%lld cut here (%@ removed) — click to restore it",
+      "other": "%lld cuts here (%@ removed) — click to restore some or all"
+    },
+    "fr": {
+      "one": "%lld coupe ici (%@ en moins) — cliquez pour la restaurer",
+      "other": "%lld coupes ici (%@ en moins) — cliquez pour en restaurer tout ou partie"
+    },
+    "zh-Hans": "此处有 %lld 处剪除（共移除 %@）— 点按以恢复部分或全部"
+  },
+  "%lld cuts, %@ removed": {
+    "de": {
+      "one": "%lld Schnitt, %@ entfernt",
+      "other": "%lld Schnitte, %@ entfernt"
+    },
+    "en": {
+      "one": "%lld cut, %@ removed",
+      "other": "%lld cuts, %@ removed"
+    },
+    "fr": {
+      "one": "%lld coupe, %@ en moins",
+      "other": "%lld coupes, %@ en moins"
+    },
+    "zh-Hans": "%lld 处剪除，共移除 %@"
+  },
+  "%lld parts": {
+    "de": {
+      "one": "%lld Abschnitt",
+      "other": "%lld Abschnitte"
+    },
+    "en": {
+      "one": "%lld part",
+      "other": "%lld parts"
+    },
+    "fr": {
+      "one": "%lld passage",
+      "other": "%lld passages"
+    },
+    "zh-Hans": "%lld 个部分"
+  },
+  "%lld pressed — select one on the timeline and press ⌫ to hide it": {
+    "comment": "The number of keyboard shortcuts pressed while recording",
+    "de": {
+      "one": "%lld gedrückt – wähle ihn in der Zeitleiste aus und drücke ⌫, um ihn auszublenden",
+      "other": "%lld gedrückt – wähle einen in der Zeitleiste aus und drücke ⌫, um ihn auszublenden"
+    },
+    "fr": {
+      "one": "%lld utilisé — sélectionnez-le dans la timeline et appuyez sur ⌫ pour le masquer",
+      "other": "%lld utilisés — sélectionnez-en un dans la timeline et appuyez sur ⌫ pour le masquer"
+    },
+    "zh-Hans": "已按下 %lld 个 — 在时间线上选择一个并按 ⌫ 即可隐藏"
+  },
+  "%lld selected": {
+    "de": "%lld ausgewählt",
+    "fr": {
+      "one": "%lld sélectionné",
+      "other": "%lld sélectionnés"
+    },
+    "zh-Hans": "已选择 %lld 项"
+  },
+  "%lld shortcuts": {
+    "de": {
+      "one": "%lld Kurzbefehl",
+      "other": "%lld Kurzbefehle"
+    },
+    "en": {
+      "one": "%lld shortcut",
+      "other": "%lld shortcuts"
+    },
+    "fr": {
+      "one": "%lld raccourci",
+      "other": "%lld raccourcis"
+    },
+    "zh-Hans": "%lld 个快捷键"
+  },
+  "%lld zooms": {
+    "de": {
+      "one": "%lld Zoom",
+      "other": "%lld Zooms"
+    },
+    "en": {
+      "one": "%lld zoom",
+      "other": "%lld zooms"
+    },
+    "fr": {
+      "one": "%lld zoom",
+      "other": "%lld zooms"
+    },
+    "zh-Hans": "%lld 个缩放"
+  },
+  "%lld%%": {
+    "comment": "A percentage",
+    "de": "%lld %%",
+    "fr": "%lld %%",
+    "zh-Hans": "%lld%%"
+  },
+  "%lld%% volume": {
+    "de": "Lautstärke %lld %%",
+    "fr": "volume %lld %%",
+    "zh-Hans": "音量 %lld%%"
+  },
+  ", ": {
+    "comment": "Separates the parts of a spoken description",
+    "de": ", ",
+    "fr": ", ",
+    "zh-Hans": "，"
+  },
+  ", %@ to %@": {
+    "comment": "Added to a spoken description: where it is on the timeline (two timecodes)",
+    "de": ", %@ bis %@",
+    "fr": ", de %@ à %@",
+    "zh-Hans": "，%@ 至 %@"
+  },
+  ", at %@": {
+    "comment": "Added to a spoken description: when it happens (a timecode)",
+    "de": ", bei %@",
+    "fr": ", à %@",
+    "zh-Hans": "，位于 %@"
+  },
+  "0.1s earlier": {
+    "de": "0,1 s früher",
+    "fr": "0,1 s plus tôt",
+    "zh-Hans": "提前 0.1 秒"
+  },
+  "0.1s later": {
+    "de": "0,1 s später",
+    "fr": "0,1 s plus tard",
+    "zh-Hans": "推后 0.1 秒"
+  },
+  "A hairline that separates dark recordings from the background": {
+    "de": "Eine feine Linie hebt dunkle Aufnahmen vom Hintergrund ab",
+    "fr": "Un filet fin détache les enregistrements sombres de l’arrière-plan",
+    "zh-Hans": "一条细线，将深色录制内容与背景分开"
+  },
+  "Add Arrow": {
+    "de": "Pfeil hinzufügen",
+    "fr": "Ajouter une flèche",
+    "zh-Hans": "添加箭头"
+  },
+  "Add Blur": {
+    "de": "Weichzeichnen hinzufügen",
+    "fr": "Ajouter un flou",
+    "zh-Hans": "添加模糊"
+  },
+  "Add Caption Line at Playhead": {
+    "de": "Untertitelzeile an der Abspielposition hinzufügen",
+    "fr": "Ajouter une ligne de sous-titre à la tête de lecture",
+    "zh-Hans": "在播放头处添加字幕行"
+  },
+  "Add Highlight": {
+    "de": "Markierung hinzufügen",
+    "fr": "Ajouter un surlignage",
+    "zh-Hans": "添加高亮"
+  },
+  "Add Spotlight (Dim Around a Spot)": {
+    "de": "Fokus hinzufügen (Umgebung abdunkeln)",
+    "fr": "Ajouter un projecteur (assombrir autour)",
+    "zh-Hans": "添加聚光灯（调暗周围）"
+  },
+  "Add Text": {
+    "de": "Text hinzufügen",
+    "fr": "Ajouter du texte",
+    "zh-Hans": "添加文字"
+  },
+  "Add Zoom at Playhead": {
+    "de": "Zoom an der Abspielposition hinzufügen",
+    "fr": "Ajouter un zoom à la tête de lecture",
+    "zh-Hans": "在播放头处添加缩放"
+  },
+  "Add a caption at the playhead": {
+    "de": "Untertitel an der Abspielposition hinzufügen",
+    "fr": "Ajouter un sous-titre à la tête de lecture",
+    "zh-Hans": "在播放头处添加字幕"
+  },
+  "Add a zoom at the playhead (Z)": {
+    "de": "Zoom an der Abspielposition hinzufügen (Z)",
+    "fr": "Ajouter un zoom à la tête de lecture (Z)",
+    "zh-Hans": "在播放头处添加缩放（Z）"
+  },
+  "Add arrow at the playhead (A)": {
+    "de": "Pfeil an der Abspielposition hinzufügen (A)",
+    "fr": "Ajouter une flèche à la tête de lecture (A)",
+    "zh-Hans": "在播放头处添加箭头（A）"
+  },
+  "Add blur at the playhead (B)": {
+    "de": "Weichzeichnen an der Abspielposition hinzufügen (B)",
+    "fr": "Ajouter un flou à la tête de lecture (B)",
+    "zh-Hans": "在播放头处添加模糊（B）"
+  },
+  "Add highlight at the playhead (H)": {
+    "de": "Markierung an der Abspielposition hinzufügen (H)",
+    "fr": "Ajouter un surlignage à la tête de lecture (H)",
+    "zh-Hans": "在播放头处添加高亮（H）"
+  },
+  "Add image at the playhead": {
+    "de": "Bild an der Abspielposition hinzufügen",
+    "fr": "Ajouter une image à la tête de lecture",
+    "zh-Hans": "在播放头处添加图像"
+  },
+  "Add spotlight at the playhead": {
+    "de": "Fokus an der Abspielposition hinzufügen",
+    "fr": "Ajouter un projecteur à la tête de lecture",
+    "zh-Hans": "在播放头处添加聚光灯"
+  },
+  "Add text at the playhead (T)": {
+    "de": "Text an der Abspielposition hinzufügen (T)",
+    "fr": "Ajouter du texte à la tête de lecture (T)",
+    "zh-Hans": "在播放头处添加文字（T）"
+  },
+  "Add zoom at playhead": {
+    "de": "Zoom an der Abspielposition hinzufügen",
+    "fr": "Ajouter un zoom à la tête de lecture",
+    "zh-Hans": "在播放头处添加缩放"
+  },
+  "Add “%@” at the playhead": {
+    "comment": "A camera layout's name",
+    "de": "„%@“ an der Abspielposition hinzufügen",
+    "fr": "Ajouter « %@ » à la tête de lecture",
+    "zh-Hans": "在播放头处添加“%@”"
+  },
+  "Adjust to move it half a second": {
+    "comment": "VoiceOver hint on a zoom or an annotation on the timeline",
+    "de": "Anpassen, um es um eine halbe Sekunde zu verschieben",
+    "fr": "Ajustez pour le déplacer d’une demi-seconde",
+    "zh-Hans": "调整可将其移动半秒"
+  },
+  "Aim by Hand": {
+    "de": "Von Hand ausrichten",
+    "fr": "Viser à la main",
+    "zh-Hans": "手动对准"
+  },
+  "Aim by hand": {
+    "de": "Von Hand ausrichten",
+    "fr": "Viser à la main",
+    "zh-Hans": "手动对准"
+  },
+  "All commands": {
+    "de": "Alle Befehle",
+    "fr": "Toutes les commandes",
+    "zh-Hans": "所有命令"
+  },
+  "All commands (⌘K)": {
+    "de": "Alle Befehle (⌘K)",
+    "fr": "Toutes les commandes (⌘K)",
+    "zh-Hans": "所有命令（⌘K）"
+  },
+  "Always show the arrow": {
+    "de": "Immer den Pfeil zeigen",
+    "fr": "Toujours afficher la flèche",
+    "zh-Hans": "始终显示箭头"
+  },
+  "Annotation": {
+    "de": "Beschriftung",
+    "fr": "Annotation",
+    "zh-Hans": "标注"
+  },
+  "Any color…": {
+    "de": "Beliebige Farbe …",
+    "fr": "Toute couleur…",
+    "zh-Hans": "任意颜色…"
+  },
+  "Appearance": {
+    "de": "Darstellung",
+    "fr": "Apparence",
+    "zh-Hans": "外观"
+  },
+  "Apply to all zooms": {
+    "de": "Auf alle Zooms anwenden",
+    "fr": "Appliquer à tous les zooms",
+    "zh-Hans": "应用到所有缩放"
+  },
+  "Arrow head": {
+    "de": "Pfeilspitze",
+    "fr": "Pointe de la flèche",
+    "zh-Hans": "箭头头部"
+  },
+  "Arrow tail": {
+    "de": "Pfeilende",
+    "fr": "Queue de la flèche",
+    "zh-Hans": "箭头尾部"
+  },
+  "Aspect Ratio %@ — %@": {
+    "comment": "Command: an aspect ratio, then what it's for",
+    "de": "Seitenverhältnis %@ – %@",
+    "fr": "Format %@ — %@",
+    "zh-Hans": "宽高比 %@ — %@"
+  },
+  "Aspect ratio": {
+    "de": "Seitenverhältnis",
+    "fr": "Format d’image",
+    "zh-Hans": "宽高比"
+  },
+  "Audio": {
+    "comment": "Inspector tab",
+    "de": "Audio",
+    "fr": "Audio",
+    "zh-Hans": "音频"
+  },
+  "Auto Zoom": {
+    "de": "Auto-Zoom",
+    "fr": "Zoom auto",
+    "zh-Hans": "自动缩放"
+  },
+  "Auto Zoom from Clicks": {
+    "de": "Auto-Zoom aus Klicks",
+    "fr": "Zoom automatique à partir des clics",
+    "zh-Hans": "根据点按自动缩放"
+  },
+  "Back · pause · faster": {
+    "de": "Zurück · Pause · Schneller",
+    "fr": "Arrière · pause · plus vite",
+    "zh-Hans": "后退 · 暂停 · 加快"
+  },
+  "Background": {
+    "de": "Hintergrund",
+    "fr": "Arrière-plan",
+    "zh-Hans": "背景"
+  },
+  "Background, padding, corners, shadow": {
+    "de": "Hintergrund, Rand, Ecken, Schatten",
+    "fr": "Arrière-plan, marge, coins, ombre",
+    "zh-Hans": "背景、边距、圆角、阴影"
+  },
+  "Behavior": {
+    "de": "Verhalten",
+    "fr": "Comportement",
+    "zh-Hans": "行为"
+  },
+  "Behind you": {
+    "comment": "Label for what shows behind you in the camera bubble",
+    "de": "Hinter dir",
+    "fr": "Derrière vous",
+    "zh-Hans": "身后"
+  },
+  "Blur": {
+    "comment": "How blurred the background is; also an annotation kind",
+    "de": "Weichzeichnen",
+    "fr": "Flouter",
+    "zh-Hans": "模糊"
+  },
+  "Blurs fast camera moves the way a real camera does.": {
+    "de": "Zeichnet schnelle Kamerabewegungen weich wie eine echte Kamera.",
+    "fr": "Floute les mouvements de caméra rapides, comme une vraie caméra.",
+    "zh-Hans": "像真实摄像机一样模糊快速的镜头移动。"
+  },
+  "Camera": {
+    "comment": "Inspector tab and section: the webcam",
+    "de": "Kamera",
+    "fr": "Caméra",
+    "zh-Hans": "摄像头"
+  },
+  "Camera Side by Side at Playhead": {
+    "de": "Kamera nebeneinander an der Abspielposition",
+    "fr": "Caméra côte à côte à la tête de lecture",
+    "zh-Hans": "在播放头处并排显示摄像头"
+  },
+  "Camera bubble": {
+    "de": "Kamerablase",
+    "fr": "Bulle de caméra",
+    "zh-Hans": "摄像头气泡"
+  },
+  "Camera follows your cursor": {
+    "de": "Kamera folgt deinem Zeiger",
+    "fr": "La caméra suit votre pointeur",
+    "zh-Hans": "镜头跟随你的指针"
+  },
+  "Camera footage is missing": {
+    "de": "Kameraaufnahme fehlt",
+    "fr": "Les images de la caméra sont introuvables",
+    "zh-Hans": "摄像头画面缺失"
+  },
+  "Camera layout": {
+    "de": "Kameralayout",
+    "fr": "Disposition de la caméra",
+    "zh-Hans": "摄像头布局"
+  },
+  "Camera layout: %@": {
+    "de": "Kameralayout: %@",
+    "fr": "Disposition de la caméra : %@",
+    "zh-Hans": "摄像头布局：%@"
+  },
+  "Camera layouts": {
+    "de": "Kameralayouts",
+    "fr": "Dispositions de caméra",
+    "zh-Hans": "摄像头布局"
+  },
+  "Camera layouts — drag to move, drag an edge to retime, click to change": {
+    "de": "Kameralayouts – ziehen zum Bewegen, Rand ziehen zum Ändern der Dauer, klicken zum Ändern",
+    "fr": "Dispositions de caméra — faites glisser pour déplacer, un bord pour ajuster la durée, cliquez pour changer",
+    "zh-Hans": "摄像头布局 — 拖移可移动，拖移边缘可调整时间，点按可更改"
+  },
+  "Camera — drag to move it, click for options": {
+    "de": "Kamera – ziehen zum Bewegen, klicken für Optionen",
+    "fr": "Caméra — faites-la glisser pour la déplacer, cliquez pour les options",
+    "zh-Hans": "摄像头 — 拖移可移动，点按可查看选项"
+  },
+  "Caption": {
+    "comment": "One caption line",
+    "de": "Untertitel",
+    "fr": "Sous-titre",
+    "zh-Hans": "字幕"
+  },
+  "Caption “%@”": {
+    "de": "Untertitel „%@“",
+    "fr": "Sous-titre « %@ »",
+    "zh-Hans": "字幕“%@”"
+  },
+  "Captions": {
+    "comment": "Inspector tab and lane: captions from the narration",
+    "de": "Untertitel",
+    "fr": "Sous-titres",
+    "zh-Hans": "字幕"
+  },
+  "Captions from your narration — and cut the video by editing its words": {
+    "de": "Untertitel aus deinem Kommentar – und das Video schneiden, indem du seine Wörter bearbeitest",
+    "fr": "Sous-titres tirés de votre narration — et montage de la vidéo par son texte",
+    "zh-Hans": "根据你的解说生成字幕 — 还能通过编辑文字来剪辑视频"
+  },
+  "Captions tab": {
+    "de": "Tab „Untertitel“",
+    "fr": "Onglet Sous-titres",
+    "zh-Hans": "“字幕”标签页"
+  },
+  "Center": {
+    "de": "Zentrieren",
+    "fr": "Centrer",
+    "zh-Hans": "居中"
+  },
+  "Choose Image…": {
+    "de": "Bild auswählen …",
+    "fr": "Choisir une image…",
+    "zh-Hans": "选择图像…"
+  },
+  "Cleaning up your voice…": {
+    "de": "Deine Stimme wird bereinigt …",
+    "fr": "Nettoyage de votre voix…",
+    "zh-Hans": "正在清理你的人声…"
+  },
+  "Click": {
+    "comment": "A recorded mouse click",
+    "de": "Klick",
+    "fr": "Clic",
+    "zh-Hans": "点按"
+  },
+  "Click a zoom": {
+    "de": "Auf einen Zoom klicken",
+    "fr": "Cliquer sur un zoom",
+    "zh-Hans": "点按缩放"
+  },
+  "Click it on the video": {
+    "de": "Im Video darauf klicken",
+    "fr": "Cliquer dessus dans la vidéo",
+    "zh-Hans": "在视频上点按它"
+  },
+  "Click to add a zoom — or press Z at the playhead": {
+    "de": "Klicke, um einen Zoom hinzuzufügen – oder drücke Z an der Abspielposition",
+    "fr": "Cliquez pour ajouter un zoom — ou appuyez sur Z à la tête de lecture",
+    "zh-Hans": "点按即可添加缩放 — 或在播放头处按下 Z"
+  },
+  "Clicks": {
+    "comment": "Section title and timeline lane: the recorded clicks",
+    "de": "Klicks",
+    "fr": "Clics",
+    "zh-Hans": "点按"
+  },
+  "Clicks — drag one to retime it, ⌫ removes the selected one": {
+    "de": "Klicks – ziehe einen, um seinen Zeitpunkt zu ändern; ⌫ entfernt den ausgewählten",
+    "fr": "Clics — faites-en glisser un pour le recaler, ⌫ supprime celui qui est sélectionné",
+    "zh-Hans": "点按 — 拖移可调整时间，按 ⌫ 可移除所选项"
+  },
+  "Clip": {
+    "de": "Clip",
+    "fr": "Clip",
+    "zh-Hans": "片段"
+  },
+  "Clip %lld": {
+    "de": "Clip %lld",
+    "fr": "Clip %lld",
+    "zh-Hans": "片段 %lld"
+  },
+  "Clip starts / ends here": {
+    "de": "Clip beginnt/endet hier",
+    "fr": "Le clip commence/finit ici",
+    "zh-Hans": "片段从此处开始/结束"
+  },
+  "Close": {
+    "de": "Schließen",
+    "fr": "Fermer",
+    "zh-Hans": "关闭"
+  },
+  "Close (Esc)": {
+    "de": "Schließen (Esc)",
+    "fr": "Fermer (Échap)",
+    "zh-Hans": "关闭（Esc）"
+  },
+  "Closing the editor stops it.": {
+    "de": "Wenn du den Editor schließt, wird der Vorgang abgebrochen.",
+    "fr": "Fermer l’éditeur l’interrompra.",
+    "zh-Hans": "关闭编辑器会停止此操作。"
+  },
+  "Color": {
+    "de": "Farbe",
+    "fr": "Couleur",
+    "zh-Hans": "颜色"
+  },
+  "Commands": {
+    "de": "Befehle",
+    "fr": "Commandes",
+    "zh-Hans": "命令"
+  },
+  "Computer sound": {
+    "de": "Systemton",
+    "fr": "Son de l’ordinateur",
+    "zh-Hans": "电脑声音"
+  },
+  "Copy Current Frame": {
+    "de": "Aktuelles Bild kopieren",
+    "fr": "Copier l’image actuelle",
+    "zh-Hans": "拷贝当前帧"
+  },
+  "Copy current frame": {
+    "de": "Aktuelles Bild kopieren",
+    "fr": "Copier l’image actuelle",
+    "zh-Hans": "拷贝当前帧"
+  },
+  "Couldn't open this video": {
+    "de": "Dieses Video konnte nicht geöffnet werden",
+    "fr": "Impossible d’ouvrir cette vidéo",
+    "zh-Hans": "无法打开此视频"
+  },
+  "Crop": {
+    "comment": "Toolbar button: crop the recording",
+    "de": "Beschneiden",
+    "fr": "Rogner",
+    "zh-Hans": "裁剪"
+  },
+  "Crop the Recording…": {
+    "de": "Aufnahme beschneiden …",
+    "fr": "Rogner l’enregistrement…",
+    "zh-Hans": "裁剪录制内容…"
+  },
+  "Crop the recording — trim away toolbars or empty space": {
+    "de": "Aufnahme beschneiden – Symbolleisten oder leere Flächen entfernen",
+    "fr": "Rogner l’enregistrement — retirer les barres d’outils ou les zones vides",
+    "zh-Hans": "裁剪录制内容 — 去掉工具栏或空白区域"
+  },
+  "Cropped": {
+    "comment": "Toolbar button when the recording is cropped",
+    "de": "Beschnitten",
+    "fr": "Rogné",
+    "zh-Hans": "已裁剪"
+  },
+  "Cropped — cursor, zooms, and clicks follow": {
+    "de": "Beschnitten – Zeiger, Zooms und Klicks passen sich an",
+    "fr": "Rogné — le pointeur, les zooms et les clics suivent",
+    "zh-Hans": "已裁剪 — 指针、缩放和点按会随之调整"
+  },
+  "Cursor": {
+    "comment": "Inspector tab and section: the mouse pointer in the recording",
+    "de": "Zeiger",
+    "fr": "Pointeur",
+    "zh-Hans": "指针"
+  },
+  "Cursor, clicks, and keyboard shortcuts": {
+    "de": "Zeiger, Klicks und Tastaturkurzbefehle",
+    "fr": "Pointeur, clics et raccourcis clavier",
+    "zh-Hans": "指针、点按和快捷键"
+  },
+  "Custom": {
+    "comment": "A color of your choosing",
+    "de": "Eigene",
+    "fr": "Personnalisée",
+    "zh-Hans": "自定"
+  },
+  "Custom color": {
+    "de": "Eigene Farbe",
+    "fr": "Couleur personnalisée",
+    "zh-Hans": "自定颜色"
+  },
+  "Cut filler words like um and uh": {
+    "de": "Füllwörter wie „äh“ und „ähm“ herausschneiden",
+    "fr": "Couper les mots de remplissage comme « euh » et « hum »",
+    "zh-Hans": "剪掉“嗯”“呃”之类的语气词"
+  },
+  "Cut from Video": {
+    "de": "Aus dem Video schneiden",
+    "fr": "Couper de la vidéo",
+    "zh-Hans": "从视频中剪掉"
+  },
+  "Cut this part": {
+    "de": "Abschnitt herausschneiden",
+    "fr": "Couper ce passage",
+    "zh-Hans": "剪掉这一段"
+  },
+  "Delete (⌫)": {
+    "de": "Löschen (⌫)",
+    "fr": "Supprimer (⌫)",
+    "zh-Hans": "删除（⌫）"
+  },
+  "Delete Clip": {
+    "de": "Clip löschen",
+    "fr": "Supprimer le clip",
+    "zh-Hans": "删除片段"
+  },
+  "Delete Zoom": {
+    "de": "Zoom löschen",
+    "fr": "Supprimer le zoom",
+    "zh-Hans": "删除缩放"
+  },
+  "Delete selection": {
+    "de": "Auswahl löschen",
+    "fr": "Supprimer la sélection",
+    "zh-Hans": "删除所选内容"
+  },
+  "Delete selection (⌫)": {
+    "de": "Auswahl löschen (⌫)",
+    "fr": "Supprimer la sélection (⌫)",
+    "zh-Hans": "删除所选内容（⌫）"
+  },
+  "Deselect / close": {
+    "de": "Auswahl aufheben/schließen",
+    "fr": "Désélectionner/fermer",
+    "zh-Hans": "取消选择/关闭"
+  },
+  "Dismiss": {
+    "de": "Ausblenden",
+    "fr": "Ignorer",
+    "zh-Hans": "忽略"
+  },
+  "Dismiss tips": {
+    "de": "Tipps ausblenden",
+    "fr": "Masquer les astuces",
+    "zh-Hans": "隐藏提示"
+  },
+  "Done": {
+    "de": "Fertig",
+    "fr": "Terminé",
+    "zh-Hans": "完成"
+  },
+  "Done (Esc)": {
+    "de": "Fertig (Esc)",
+    "fr": "Terminé (Échap)",
+    "zh-Hans": "完成（Esc）"
+  },
+  "Double-click": {
+    "de": "Doppelklick",
+    "fr": "Double-clic",
+    "zh-Hans": "连按两次"
+  },
+  "Double-click text": {
+    "de": "Doppelklick auf Text",
+    "fr": "Double-cliquer sur un texte",
+    "zh-Hans": "连按两次文字"
+  },
+  "Double-click to show the recording in Finder": {
+    "de": "Doppelklicken, um die Aufnahme im Finder zu zeigen",
+    "fr": "Double-cliquez pour afficher l’enregistrement dans le Finder",
+    "zh-Hans": "连按两次以在“访达”中显示录制内容"
+  },
+  "Drag it on the preview to move it; drag a corner to resize. Its bar on the timeline sets when it shows.": {
+    "de": "Ziehe das Element in der Vorschau, um es zu bewegen; ziehe an einer Ecke, um die Größe zu ändern. Sein Balken in der Zeitleiste bestimmt, wann es erscheint.",
+    "fr": "Faites glisser l’élément dans l’aperçu pour le déplacer ; faites glisser un coin pour le redimensionner. Sa barre dans la timeline définit quand il apparaît.",
+    "zh-Hans": "在预览中拖移即可移动；拖移某个角可调整大小。时间线上的条块决定它何时显示。"
+  },
+  "Drag it on the preview to move it; drag a corner to resize; double-click it to type. Its bar on the timeline sets when it shows.": {
+    "de": "Ziehe den Text in der Vorschau, um ihn zu bewegen; ziehe an einer Ecke, um die Größe zu ändern; doppelklicke, um zu tippen. Sein Balken in der Zeitleiste bestimmt, wann er erscheint.",
+    "fr": "Faites glisser le texte dans l’aperçu pour le déplacer ; faites glisser un coin pour le redimensionner ; double-cliquez pour saisir. Sa barre dans la timeline définit quand il apparaît.",
+    "zh-Hans": "在预览中拖移即可移动；拖移某个角可调整大小；连按两次即可输入文字。时间线上的条块决定它何时显示。"
+  },
+  "Drag one of them on the timeline to move them all together; ⌫ removes them all. ⇧- or ⌘-click adds or takes one out.": {
+    "de": "Ziehe eines davon in der Zeitleiste, um alle gemeinsam zu bewegen; ⌫ entfernt alle. ⇧- oder ⌘-Klick fügt eines hinzu oder nimmt es heraus.",
+    "fr": "Faites glisser l’un d’eux dans la timeline pour tous les déplacer ensemble ; ⌫ les supprime tous. Un clic avec ⇧ ou ⌘ en ajoute ou en retire un.",
+    "zh-Hans": "在时间线上拖移其中一项即可一起移动所有项目；按 ⌫ 会全部移除。按住 ⇧ 或 ⌘ 点按可添加或移除某一项。"
+  },
+  "Drag the arrow on the preview to move it; drag its head or tail to point it anywhere. Its bar on the timeline sets when it shows.": {
+    "de": "Ziehe den Pfeil in der Vorschau, um ihn zu bewegen; ziehe seine Spitze oder sein Ende, um ihn beliebig auszurichten. Sein Balken in der Zeitleiste bestimmt, wann er erscheint.",
+    "fr": "Faites glisser la flèche dans l’aperçu pour la déplacer ; faites glisser sa pointe ou sa queue pour l’orienter. Sa barre dans la timeline définit quand elle apparaît.",
+    "zh-Hans": "在预览中拖移箭头可移动它；拖移箭头的头部或尾部可指向任意位置。时间线上的条块决定它何时显示。"
+  },
+  "Drag the block on the Camera lane to move it, or its edges to change how long it lasts. Each change eases in and out.": {
+    "de": "Ziehe den Block in der Kameraspur, um ihn zu bewegen, oder an seinen Rändern, um seine Dauer zu ändern. Jeder Wechsel wird weich überblendet.",
+    "fr": "Faites glisser le bloc sur la piste Caméra pour le déplacer, ou ses bords pour modifier sa durée. Chaque changement se fait en douceur.",
+    "zh-Hans": "拖移“摄像头”轨道上的块可移动它，拖移其边缘可更改持续时间。每次切换都会平滑过渡。"
+  },
+  "Drag the box on the preview over anything private. Blur follows zooms and stays until its bar ends.": {
+    "de": "Ziehe das Feld in der Vorschau über alles Private. Die Weichzeichnung folgt Zooms und bleibt, bis ihr Balken endet.",
+    "fr": "Faites glisser le cadre dans l’aperçu sur tout élément privé. Le flou suit les zooms et reste jusqu’à la fin de sa barre.",
+    "zh-Hans": "在预览中将方框拖到任何隐私内容上。模糊效果会跟随缩放，并持续到其条块结束。"
+  },
+  "Drag the frame on the preview to aim; drag its corners to zoom in or out.": {
+    "de": "Ziehe den Rahmen in der Vorschau, um auszurichten; ziehe an seinen Ecken, um hinein- oder herauszuzoomen.",
+    "fr": "Faites glisser le cadre dans l’aperçu pour viser ; faites glisser ses coins pour zoomer ou dézoomer.",
+    "zh-Hans": "在预览中拖移画框即可对准；拖移其角可放大或缩小。"
+  },
+  "Drag the spot on the preview; drag a corner to resize it. Everything around it dims while its bar on the timeline runs.": {
+    "de": "Ziehe den Fokus in der Vorschau; ziehe an einer Ecke, um die Größe zu ändern. Alles darum herum wird abgedunkelt, solange sein Balken in der Zeitleiste läuft.",
+    "fr": "Faites glisser le projecteur dans l’aperçu ; faites glisser un coin pour le redimensionner. Tout ce qui l’entoure s’assombrit pendant sa barre dans la timeline.",
+    "zh-Hans": "在预览中拖移聚光区域；拖移某个角可调整其大小。在其时间线条块持续期间，周围的一切都会变暗。"
+  },
+  "Drag to change where this clip ends": {
+    "de": "Ziehen, um das Ende dieses Clips zu ändern",
+    "fr": "Faites glisser pour modifier la fin de ce clip",
+    "zh-Hans": "拖移可更改此片段的结尾"
+  },
+  "Drag to change where this clip starts": {
+    "de": "Ziehen, um den Anfang dieses Clips zu ändern",
+    "fr": "Faites glisser pour modifier le début de ce clip",
+    "zh-Hans": "拖移可更改此片段的开头"
+  },
+  "Drag to move this clip to another place in the video": {
+    "de": "Ziehen, um diesen Clip an eine andere Stelle im Video zu verschieben",
+    "fr": "Faites glisser pour déplacer ce clip ailleurs dans la vidéo",
+    "zh-Hans": "拖移可将此片段移到视频中的其他位置"
+  },
+  "Drag to move where the arrow starts": {
+    "de": "Ziehen, um den Anfang des Pfeils zu verschieben",
+    "fr": "Faites glisser pour déplacer le départ de la flèche",
+    "zh-Hans": "拖移以移动箭头起点"
+  },
+  "Drag to point the arrow": {
+    "de": "Ziehen, um den Pfeil auszurichten",
+    "fr": "Faites glisser pour orienter la flèche",
+    "zh-Hans": "拖移以调整箭头指向"
+  },
+  "Duplicate": {
+    "de": "Duplizieren",
+    "fr": "Dupliquer",
+    "zh-Hans": "复制"
+  },
+  "Duplicate zoom or annotation": {
+    "de": "Zoom oder Beschriftung duplizieren",
+    "fr": "Dupliquer un zoom ou une annotation",
+    "zh-Hans": "复制缩放或标注"
+  },
+  "Edge highlight": {
+    "de": "Randlinie",
+    "fr": "Liseré",
+    "zh-Hans": "边缘描边"
+  },
+  "Edit by text": {
+    "de": "Per Text bearbeiten",
+    "fr": "Montage par texte",
+    "zh-Hans": "按文字编辑"
+  },
+  "Editing": {
+    "de": "Bearbeiten",
+    "fr": "Montage",
+    "zh-Hans": "编辑"
+  },
+  "End here": {
+    "de": "Hier enden",
+    "fr": "Finir ici",
+    "zh-Hans": "到这里结束"
+  },
+  "Ends": {
+    "de": "Endet",
+    "fr": "Fin",
+    "zh-Hans": "结束"
+  },
+  "Enhance Voice": {
+    "de": "Stimme verbessern",
+    "fr": "Améliorer la voix",
+    "zh-Hans": "增强人声"
+  },
+  "Enhance voice": {
+    "de": "Stimme verbessern",
+    "fr": "Améliorer la voix",
+    "zh-Hans": "增强人声"
+  },
+  "Esc": {
+    "comment": "The Escape key",
+    "de": "Esc",
+    "fr": "Échap",
+    "zh-Hans": "Esc"
+  },
+  "Even out loudness": {
+    "de": "Lautheit angleichen",
+    "fr": "Égaliser le volume sonore",
+    "zh-Hans": "统一响度"
+  },
+  "Exactly as recorded.": {
+    "de": "Genau wie aufgezeichnet.",
+    "fr": "Exactement comme enregistré.",
+    "zh-Hans": "与录制时完全一致。"
+  },
+  "Export": {
+    "comment": "Toolbar button, section title, and shortcut description",
+    "de": "Exportieren",
+    "fr": "Exporter",
+    "zh-Hans": "导出"
+  },
+  "Export (⌘E)": {
+    "de": "Exportieren (⌘E)",
+    "fr": "Exporter (⌘E)",
+    "zh-Hans": "导出（⌘E）"
+  },
+  "Export Video…": {
+    "de": "Video exportieren …",
+    "fr": "Exporter la vidéo…",
+    "zh-Hans": "导出视频…"
+  },
+  "Exports at the level video sites expect (−16 LUFS) without clipping": {
+    "de": "Exportiert mit dem Pegel, den Videoportale erwarten (−16 LUFS), ohne Übersteuerung",
+    "fr": "Exporte au niveau attendu par les sites vidéo (−16 LUFS), sans saturation",
+    "zh-Hans": "按视频网站要求的音量导出（−16 LUFS），不会削波"
+  },
+  "Exports without sound — to quiet just the preview, press M": {
+    "de": "Exportiert ohne Ton – um nur die Vorschau stummzuschalten, drücke M",
+    "fr": "Exporte sans son — pour couper uniquement l’aperçu, appuyez sur M",
+    "zh-Hans": "导出时不含声音 — 若只想让预览静音，请按 M"
+  },
+  "Export…": {
+    "de": "Exportieren …",
+    "fr": "Exporter…",
+    "zh-Hans": "导出…"
+  },
+  "Extra-fluid curves for slow, cinematic demos.": {
+    "de": "Extra flüssige Kurven für langsame, filmische Demos.",
+    "fr": "Courbes extra-fluides pour des démos lentes et cinématographiques.",
+    "zh-Hans": "超流畅的曲线，适合慢节奏、电影感的演示。"
+  },
+  "Fade in": {
+    "de": "Einblenden",
+    "fr": "Fondu d’entrée",
+    "zh-Hans": "淡入"
+  },
+  "Fade out": {
+    "de": "Ausblenden",
+    "fr": "Fondu de sortie",
+    "zh-Hans": "淡出"
+  },
+  "Fades out after a moment without movement": {
+    "de": "Blendet nach kurzer Zeit ohne Bewegung aus",
+    "fr": "Disparaît après un moment sans mouvement",
+    "zh-Hans": "片刻不移动后淡出"
+  },
+  "Fast-forward moments where nothing happens": {
+    "de": "Momente, in denen nichts passiert, im Zeitraffer zeigen",
+    "fr": "Accélérer les moments où rien ne se passe",
+    "zh-Hans": "快进没有动静的时刻"
+  },
+  "Fill the Frame, Follow the Cursor": {
+    "de": "Bild füllen und dem Zeiger folgen",
+    "fr": "Remplir le cadre et suivre le pointeur",
+    "zh-Hans": "填满画面并跟随指针"
+  },
+  "Find in Transcript": {
+    "de": "Im Transkript suchen",
+    "fr": "Rechercher dans la transcription",
+    "zh-Hans": "在文字稿中查找"
+  },
+  "Find in the transcript": {
+    "de": "Im Transkript suchen",
+    "fr": "Rechercher dans la transcription",
+    "zh-Hans": "在文字稿中查找"
+  },
+  "Flip like a selfie": {
+    "de": "Wie ein Selfie umdrehen",
+    "fr": "Inverser comme un selfie",
+    "zh-Hans": "像自拍一样翻转"
+  },
+  "Follow Cursor": {
+    "de": "Zeiger folgen",
+    "fr": "Suivre le pointeur",
+    "zh-Hans": "跟随指针"
+  },
+  "Follow cursor": {
+    "de": "Zeiger folgen",
+    "fr": "Suivre le pointeur",
+    "zh-Hans": "跟随指针"
+  },
+  "Follows cursor": {
+    "de": "Folgt dem Zeiger",
+    "fr": "Suit le pointeur",
+    "zh-Hans": "跟随指针"
+  },
+  "Frame": {
+    "comment": "Section: padding, roundness, and shadow around the video",
+    "de": "Rahmen",
+    "fr": "Cadre",
+    "zh-Hans": "边框"
+  },
+  "Framing": {
+    "de": "Bildausschnitt",
+    "fr": "Cadrage",
+    "zh-Hans": "取景"
+  },
+  "Free": {
+    "comment": "Crop aspect: any shape",
+    "de": "Frei",
+    "fr": "Libre",
+    "zh-Hans": "自由"
+  },
+  "From your Mac": {
+    "de": "Von deinem Mac",
+    "fr": "De votre Mac",
+    "zh-Hans": "来自你的 Mac"
+  },
+  "Full Camera at Playhead": {
+    "de": "Kamera im Vollbild an der Abspielposition",
+    "fr": "Caméra en plein écran à la tête de lecture",
+    "zh-Hans": "在播放头处使用全屏摄像头"
+  },
+  "Full Frame (No Background)": {
+    "de": "Ganzes Bild (ohne Hintergrund)",
+    "fr": "Plein cadre (sans arrière-plan)",
+    "zh-Hans": "全画面（无背景）"
+  },
+  "Full camera for intro & outro": {
+    "de": "Kamera im Vollbild für Intro & Outro",
+    "fr": "Caméra plein écran pour l’intro et la fin",
+    "zh-Hans": "片头和片尾使用全屏摄像头"
+  },
+  "Full frame (no background)": {
+    "de": "Ganzes Bild (ohne Hintergrund)",
+    "fr": "Plein cadre (sans arrière-plan)",
+    "zh-Hans": "全画面（无背景）"
+  },
+  "Full-Camera Intro and Outro": {
+    "de": "Intro und Outro mit Kamera im Vollbild",
+    "fr": "Intro et fin avec caméra en plein écran",
+    "zh-Hans": "全屏摄像头片头和片尾"
+  },
+  "General": {
+    "de": "Allgemein",
+    "fr": "Général",
+    "zh-Hans": "通用"
+  },
+  "Gets out of the way during zoom moves": {
+    "de": "Macht während Zooms Platz",
+    "fr": "S’efface pendant les mouvements de zoom",
+    "zh-Hans": "缩放时自动让开"
+  },
+  "Glides without lagging behind — clicks still land exactly.": {
+    "de": "Gleitet ohne Verzögerung – Klicks sitzen trotzdem genau.",
+    "fr": "Glisse sans traîner — les clics restent précis.",
+    "zh-Hans": "流畅跟随、毫不拖沓 — 点按位置依然精准。"
+  },
+  "Go to End": {
+    "de": "Zum Ende",
+    "fr": "Aller à la fin",
+    "zh-Hans": "前往结尾"
+  },
+  "Go to Start": {
+    "de": "Zum Anfang",
+    "fr": "Aller au début",
+    "zh-Hans": "前往开头"
+  },
+  "Gradient": {
+    "de": "Farbverlauf",
+    "fr": "Dégradé",
+    "zh-Hans": "渐变"
+  },
+  "Hide": {
+    "de": "Ausblenden",
+    "fr": "Masquer",
+    "zh-Hans": "隐藏"
+  },
+  "Hide the move to Stop": {
+    "de": "Weg zu „Stoppen“ ausblenden",
+    "fr": "Masquer le trajet vers Arrêter",
+    "zh-Hans": "隐藏移向“停止”的动作"
+  },
+  "Hide tips (bring them back from ⌘K or the shortcuts list)": {
+    "de": "Tipps ausblenden (über ⌘K oder die Kurzbefehlsliste wieder einblenden)",
+    "fr": "Masquer les astuces (réaffichez-les avec ⌘K ou la liste des raccourcis)",
+    "zh-Hans": "隐藏提示（可通过 ⌘K 或快捷键列表重新显示）"
+  },
+  "Hide when idle": {
+    "de": "Bei Stillstand ausblenden",
+    "fr": "Masquer à l’arrêt",
+    "zh-Hans": "静止时隐藏"
+  },
+  "Highlight words": {
+    "de": "Wörter hervorheben",
+    "fr": "Surligner les mots",
+    "zh-Hans": "高亮字词"
+  },
+  "Home  End": {
+    "comment": "The Home and End keys (two spaces between them)",
+    "de": "Pos1  Ende",
+    "fr": "Début  Fin",
+    "zh-Hans": "Home  End"
+  },
+  "Hover the Zoom track": {
+    "de": "Auf die Zoomspur zeigen",
+    "fr": "Survoler la piste Zoom",
+    "zh-Hans": "悬停在缩放轨道上"
+  },
+  "Hover the zoom track and click to add a zoom, or press Z at the playhead. Drag a zoom to move it; drag its edges to change how long it lasts.": {
+    "de": "Zeige auf die Zoomspur und klicke, um einen Zoom hinzuzufügen, oder drücke Z an der Abspielposition. Ziehe einen Zoom, um ihn zu bewegen; ziehe an seinen Rändern, um seine Dauer zu ändern.",
+    "fr": "Survolez la piste de zoom et cliquez pour ajouter un zoom, ou appuyez sur Z à la tête de lecture. Faites glisser un zoom pour le déplacer ; faites glisser ses bords pour modifier sa durée.",
+    "zh-Hans": "将指针悬停在缩放轨道上并点按即可添加缩放，或在播放头处按下 Z。拖移缩放可移动它；拖移其边缘可更改持续时间。"
+  },
+  "Image": {
+    "comment": "Background kind (your own picture), and the image annotation",
+    "de": "Bild",
+    "fr": "Image",
+    "zh-Hans": "图像"
+  },
+  "Inspector tabs": {
+    "de": "Inspektor-Tabs",
+    "fr": "Onglets de l’inspecteur",
+    "zh-Hans": "检查器标签页"
+  },
+  "Intro": {
+    "comment": "The intro title card on the timeline",
+    "de": "Intro",
+    "fr": "Intro",
+    "zh-Hans": "片头"
+  },
+  "Intro card — click to edit it in Style": {
+    "de": "Intro-Karte – klicke, um sie in „Stil“ zu bearbeiten",
+    "fr": "Carton d’intro — cliquez pour le modifier dans Style",
+    "zh-Hans": "片头卡 — 点按以在“样式”中编辑"
+  },
+  "Intro card “%@”, %@ to %@": {
+    "comment": "VoiceOver: the card's title, then where it is",
+    "de": "Intro-Karte „%@“, %@ bis %@",
+    "fr": "Carton d’intro « %@ », de %@ à %@",
+    "zh-Hans": "片头卡“%@”，%@ 至 %@"
+  },
+  "Intro card, %@ to %@": {
+    "de": "Intro-Karte, %@ bis %@",
+    "fr": "Carton d’intro, de %@ à %@",
+    "zh-Hans": "片头卡，%@ 至 %@"
+  },
+  "It was recorded into the pixels, so it can't be resized or smoothed. New recordings capture an editable cursor by default (Settings → Recording).": {
+    "de": "Er wurde direkt ins Bild aufgezeichnet und lässt sich daher nicht vergrößern oder glätten. Neue Aufnahmen zeichnen standardmäßig einen bearbeitbaren Zeiger auf („Einstellungen“ → „Aufzeichnung“).",
+    "fr": "Il a été enregistré dans l’image : impossible de le redimensionner ou de le lisser. Les nouveaux enregistrements capturent par défaut un pointeur modifiable (Réglages → Enregistrement).",
+    "zh-Hans": "指针已录入画面像素中，因此无法调整大小或平滑处理。新录制内容默认会捕捉可编辑的指针（“设置”→“录制”）。"
+  },
+  "Jump here": {
+    "de": "Hierher springen",
+    "fr": "Aller ici",
+    "zh-Hans": "跳转到这里"
+  },
+  "Jump one second": {
+    "de": "Eine Sekunde springen",
+    "fr": "Sauter d’une seconde",
+    "zh-Hans": "跳转一秒"
+  },
+  "Keep Editing": {
+    "de": "Weiter bearbeiten",
+    "fr": "Continuer l’édition",
+    "zh-Hans": "继续编辑"
+  },
+  "Keep editing — the words appear here when Shotnix is done listening.": {
+    "de": "Bearbeite ruhig weiter – die Wörter erscheinen hier, sobald Shotnix fertig zugehört hat.",
+    "fr": "Continuez à modifier — les mots apparaîtront ici quand Shotnix aura fini d’écouter.",
+    "zh-Hans": "你可以继续编辑 — Shotnix 听完后，字词会显示在这里。"
+  },
+  "Keyboard Shortcuts": {
+    "de": "Tastaturkurzbefehle",
+    "fr": "Raccourcis clavier",
+    "zh-Hans": "快捷键"
+  },
+  "Keyboard shortcuts": {
+    "de": "Tastaturkurzbefehle",
+    "fr": "Raccourcis clavier",
+    "zh-Hans": "快捷键"
+  },
+  "Keyboard shortcuts (?)": {
+    "de": "Tastaturkurzbefehle (?)",
+    "fr": "Raccourcis clavier (?)",
+    "zh-Hans": "快捷键（?）"
+  },
+  "Keyboard shortcuts — click one to select it, ⌫ hides it": {
+    "de": "Tastaturkurzbefehle – klicke auf einen, um ihn auszuwählen; ⌫ blendet ihn aus",
+    "fr": "Raccourcis clavier — cliquez sur l’un d’eux pour le sélectionner, ⌫ le masque",
+    "zh-Hans": "快捷键 — 点按即可选择，按 ⌫ 可隐藏"
+  },
+  "Keys on screen": {
+    "de": "Tasten im Bild",
+    "fr": "Touches à l’écran",
+    "zh-Hans": "屏幕按键"
+  },
+  "Language": {
+    "de": "Sprache",
+    "fr": "Langue",
+    "zh-Hans": "语言"
+  },
+  "Layout": {
+    "de": "Layout",
+    "fr": "Disposition",
+    "zh-Hans": "布局"
+  },
+  "Layouts": {
+    "de": "Layouts",
+    "fr": "Dispositions",
+    "zh-Hans": "布局"
+  },
+  "Letterbox Instead of Following the Cursor": {
+    "de": "Mit Rändern einpassen statt dem Zeiger folgen",
+    "fr": "Ajouter des bandes au lieu de suivre le pointeur",
+    "zh-Hans": "加黑边，不跟随指针"
+  },
+  "Level": {
+    "de": "Stufe",
+    "fr": "Niveau",
+    "zh-Hans": "级别"
+  },
+  "Lines · %lld": {
+    "comment": "Section title with the number of caption lines",
+    "de": "Zeilen · %lld",
+    "fr": "Lignes · %lld",
+    "zh-Hans": "字幕行 · %lld"
+  },
+  "Listens on this Mac — nothing is uploaded": {
+    "de": "Hört auf diesem Mac zu – nichts wird hochgeladen",
+    "fr": "L’écoute se fait sur ce Mac — rien n’est envoyé",
+    "zh-Hans": "在这台 Mac 上识别 — 不会上传任何内容"
+  },
+  "Look": {
+    "comment": "Section: how captions look",
+    "de": "Aussehen",
+    "fr": "Apparence",
+    "zh-Hans": "外观"
+  },
+  "Mirror": {
+    "de": "Spiegeln",
+    "fr": "Miroir",
+    "zh-Hans": "镜像"
+  },
+  "More": {
+    "de": "Mehr",
+    "fr": "Plus",
+    "zh-Hans": "更多"
+  },
+  "More caption options": {
+    "de": "Weitere Untertiteloptionen",
+    "fr": "Autres options de sous-titres",
+    "zh-Hans": "更多字幕选项"
+  },
+  "More tips": {
+    "de": "Weitere Tipps",
+    "fr": "Plus d’astuces",
+    "zh-Hans": "更多提示"
+  },
+  "Motion": {
+    "comment": "Section: how the zoom camera moves",
+    "de": "Bewegung",
+    "fr": "Mouvement",
+    "zh-Hans": "运动"
+  },
+  "Motion blur": {
+    "de": "Bewegungsunschärfe",
+    "fr": "Flou de mouvement",
+    "zh-Hans": "动态模糊"
+  },
+  "Move Earlier": {
+    "de": "Nach vorn verschieben",
+    "fr": "Déplacer plus tôt",
+    "zh-Hans": "向前移动"
+  },
+  "Move Later": {
+    "de": "Nach hinten verschieben",
+    "fr": "Déplacer plus tard",
+    "zh-Hans": "向后移动"
+  },
+  "Move earlier": {
+    "de": "Nach vorn",
+    "fr": "Plus tôt",
+    "zh-Hans": "前移"
+  },
+  "Move later": {
+    "de": "Nach hinten",
+    "fr": "Plus tard",
+    "zh-Hans": "后移"
+  },
+  "Movement": {
+    "comment": "Section: how the pointer moves",
+    "de": "Bewegung",
+    "fr": "Mouvement",
+    "zh-Hans": "移动"
+  },
+  "Music “%@”": {
+    "de": "Musik „%@“",
+    "fr": "Musique « %@ »",
+    "zh-Hans": "音乐“%@”"
+  },
+  "Mute Clip": {
+    "de": "Clip stummschalten",
+    "fr": "Couper le son du clip",
+    "zh-Hans": "将片段静音"
+  },
+  "Mute preview": {
+    "de": "Vorschau stummschalten",
+    "fr": "Couper le son de l’aperçu",
+    "zh-Hans": "将预览静音"
+  },
+  "Mute the Preview (the Export Keeps Its Sound)": {
+    "de": "Vorschau stummschalten (der Export behält den Ton)",
+    "fr": "Couper le son de l’aperçu (l’export garde le son)",
+    "zh-Hans": "将预览静音（导出内容保留声音）"
+  },
+  "Mute the preview (M) — the export keeps its sound": {
+    "de": "Vorschau stummschalten (M) – der Export behält den Ton",
+    "fr": "Couper le son de l’aperçu (M) — l’export garde le son",
+    "zh-Hans": "将预览静音（M）— 导出内容保留声音"
+  },
+  "Mute the preview (or the selected clip)": {
+    "de": "Vorschau (oder ausgewählten Clip) stummschalten",
+    "fr": "Couper le son de l’aperçu (ou du clip sélectionné)",
+    "zh-Hans": "将预览（或所选片段）静音"
+  },
+  "Mute this clip": {
+    "de": "Diesen Clip stummschalten",
+    "fr": "Couper le son de ce clip",
+    "zh-Hans": "将此片段静音"
+  },
+  "Mute this part": {
+    "de": "Diesen Abschnitt stummschalten",
+    "fr": "Couper le son de ce passage",
+    "zh-Hans": "将此部分静音"
+  },
+  "Mute video": {
+    "de": "Video stummschalten",
+    "fr": "Couper le son de la vidéo",
+    "zh-Hans": "视频静音"
+  },
+  "Never switch to the text beam or the hand": {
+    "de": "Nie zum Textcursor oder zur Hand wechseln",
+    "fr": "Ne jamais passer au curseur de texte ni à la main",
+    "zh-Hans": "从不切换为文本光标或手形"
+  },
+  "New recordings use this look": {
+    "de": "Neue Aufnahmen verwenden diesen Stil",
+    "fr": "Les nouveaux enregistrements utilisent ce style",
+    "zh-Hans": "新录制内容会使用此风格"
+  },
+  "New zooms": {
+    "de": "Neue Zooms",
+    "fr": "Nouveaux zooms",
+    "zh-Hans": "新缩放"
+  },
+  "No Exports Yet": {
+    "de": "Noch keine Exporte",
+    "fr": "Aucune exportation",
+    "zh-Hans": "尚无导出内容"
+  },
+  "No background": {
+    "de": "Kein Hintergrund",
+    "fr": "Aucun arrière-plan",
+    "zh-Hans": "无背景"
+  },
+  "No background — text only": {
+    "de": "Kein Hintergrund – nur Text",
+    "fr": "Aucun arrière-plan — texte seul",
+    "zh-Hans": "无背景 — 仅文字"
+  },
+  "No camera in this recording": {
+    "de": "Keine Kamera in dieser Aufnahme",
+    "fr": "Aucune caméra dans cet enregistrement",
+    "zh-Hans": "此录制内容中没有摄像头画面"
+  },
+  "No clicks were recorded, so add zooms by hand: hover the zoom track and click.": {
+    "de": "Es wurden keine Klicks aufgezeichnet – füge Zooms von Hand hinzu: Zeige auf die Zoomspur und klicke.",
+    "fr": "Aucun clic n’a été enregistré : ajoutez des zooms à la main en survolant la piste de zoom puis en cliquant.",
+    "zh-Hans": "没有录制到点按，请手动添加缩放：将指针悬停在缩放轨道上并点按。"
+  },
+  "No cursor data in this video": {
+    "de": "Keine Zeigerdaten in diesem Video",
+    "fr": "Aucune donnée de pointeur dans cette vidéo",
+    "zh-Hans": "此视频中没有指针数据"
+  },
+  "No music": {
+    "de": "Keine Musik",
+    "fr": "Aucune musique",
+    "zh-Hans": "没有音乐"
+  },
+  "No pauses to shorten": {
+    "de": "Keine Pausen zum Kürzen",
+    "fr": "Aucune pause à raccourcir",
+    "zh-Hans": "没有可缩短的停顿"
+  },
+  "No ums": {
+    "de": "Keine Füllwörter",
+    "fr": "Aucune hésitation",
+    "zh-Hans": "没有语气词"
+  },
+  "None in this recording. Turn on “Show keyboard shortcuts” in Settings → Recording and every ⌘ shortcut you press appears as keycaps. Plain typing is never recorded.": {
+    "de": "Keine in dieser Aufnahme. Aktiviere „Tastaturkurzbefehle anzeigen“ in „Einstellungen“ → „Aufzeichnung“, dann erscheint jeder ⌘-Kurzbefehl, den du drückst, als Tastenkappe. Normales Tippen wird nie aufgezeichnet.",
+    "fr": "Aucun dans cet enregistrement. Activez « Afficher les raccourcis clavier » dans Réglages → Enregistrement : chaque raccourci ⌘ que vous utilisez apparaît sous forme de touches. La saisie ordinaire n’est jamais enregistrée.",
+    "zh-Hans": "此录制内容中没有。在“设置”→“录制”中打开“显示快捷键”后，你按下的每个 ⌘ 快捷键都会以按键形式显示。普通打字永远不会被录制。"
+  },
+  "Not for this video": {
+    "de": "Nicht für dieses Video",
+    "fr": "Pas pour cette vidéo",
+    "zh-Hans": "此视频不需要"
+  },
+  "Open Another Video…": {
+    "de": "Anderes Video öffnen …",
+    "fr": "Ouvrir une autre vidéo…",
+    "zh-Hans": "打开其他视频…"
+  },
+  "Open Privacy Settings": {
+    "de": "„Datenschutz & Sicherheit“ öffnen",
+    "fr": "Ouvrir Confidentialité et sécurité",
+    "zh-Hans": "打开“隐私与安全性”"
+  },
+  "Open Recording Settings…": {
+    "de": "Aufzeichnungseinstellungen öffnen …",
+    "fr": "Ouvrir les réglages d’enregistrement…",
+    "zh-Hans": "打开录制设置…"
+  },
+  "Opens its title and length in Style": {
+    "de": "Öffnet Titel und Länge in „Stil“",
+    "fr": "Ouvre son titre et sa durée dans Style",
+    "zh-Hans": "在“样式”中打开其标题和时长"
+  },
+  "Or drag the bubble on the video — it snaps to the nearest spot.": {
+    "de": "Oder ziehe die Blase im Video – sie rastet an der nächsten Position ein.",
+    "fr": "Ou faites glisser la bulle sur la vidéo — elle s’aimante à l’emplacement le plus proche.",
+    "zh-Hans": "也可以在视频上拖移气泡 — 它会吸附到最近的位置。"
+  },
+  "Or type one at the playhead": {
+    "de": "Oder einen an der Abspielposition eintippen",
+    "fr": "Ou en saisir un à la tête de lecture",
+    "zh-Hans": "或在播放头处手动输入一条"
+  },
+  "Outro": {
+    "comment": "The outro title card on the timeline",
+    "de": "Outro",
+    "fr": "Fin",
+    "zh-Hans": "片尾"
+  },
+  "Outro card — click to edit it in Style": {
+    "de": "Outro-Karte – klicke, um sie in „Stil“ zu bearbeiten",
+    "fr": "Carton de fin — cliquez pour le modifier dans Style",
+    "zh-Hans": "片尾卡 — 点按以在“样式”中编辑"
+  },
+  "Outro card “%@”, %@ to %@": {
+    "comment": "VoiceOver: the card's title, then where it is",
+    "de": "Outro-Karte „%@“, %@ bis %@",
+    "fr": "Carton de fin « %@ », de %@ à %@",
+    "zh-Hans": "片尾卡“%@”，%@ 至 %@"
+  },
+  "Outro card, %@ to %@": {
+    "de": "Outro-Karte, %@ bis %@",
+    "fr": "Carton de fin, de %@ à %@",
+    "zh-Hans": "片尾卡，%@ 至 %@"
+  },
+  "Padding": {
+    "de": "Rand",
+    "fr": "Marge",
+    "zh-Hans": "边距"
+  },
+  "Pause": {
+    "de": "Pausieren",
+    "fr": "Pause",
+    "zh-Hans": "暂停"
+  },
+  "Pause (Space)": {
+    "de": "Pausieren (Leertaste)",
+    "fr": "Pause (Espace)",
+    "zh-Hans": "暂停（空格键）"
+  },
+  "Placement": {
+    "de": "Platzierung",
+    "fr": "Placement",
+    "zh-Hans": "位置"
+  },
+  "Plan zooms from your clicks — keeps zooms you placed by hand": {
+    "de": "Zooms aus deinen Klicks planen – von Hand gesetzte Zooms bleiben erhalten",
+    "fr": "Prévoir des zooms d’après vos clics — les zooms placés à la main sont conservés",
+    "zh-Hans": "根据你的点按规划缩放 — 保留你手动放置的缩放"
+  },
+  "Plans zooms around your %lld clicks. Zooms you placed by hand are kept.": {
+    "de": {
+      "one": "Plant Zooms um deinen Klick. Von Hand gesetzte Zooms bleiben erhalten.",
+      "other": "Plant Zooms um deine %lld Klicks. Von Hand gesetzte Zooms bleiben erhalten."
+    },
+    "en": {
+      "one": "Plans zooms around your %lld click. Zooms you placed by hand are kept.",
+      "other": "Plans zooms around your %lld clicks. Zooms you placed by hand are kept."
+    },
+    "fr": {
+      "one": "Prévoit des zooms autour de votre clic. Les zooms placés à la main sont conservés.",
+      "other": "Prévoit des zooms autour de vos %lld clics. Les zooms placés à la main sont conservés."
+    },
+    "zh-Hans": "根据你的 %lld 次点按规划缩放。你手动放置的缩放会保留。"
+  },
+  "Play": {
+    "de": "Abspielen",
+    "fr": "Lire",
+    "zh-Hans": "播放"
+  },
+  "Play (Space)": {
+    "de": "Abspielen (Leertaste)",
+    "fr": "Lire (Espace)",
+    "zh-Hans": "播放（空格键）"
+  },
+  "Play / pause": {
+    "de": "Abspielen/Pausieren",
+    "fr": "Lecture/pause",
+    "zh-Hans": "播放/暂停"
+  },
+  "Play from Here": {
+    "de": "Ab hier abspielen",
+    "fr": "Lire à partir d’ici",
+    "zh-Hans": "从这里播放"
+  },
+  "Playback": {
+    "de": "Wiedergabe",
+    "fr": "Lecture",
+    "zh-Hans": "播放"
+  },
+  "Plays or pauses. Use Option-arrow keys to select what's on the timeline.": {
+    "de": "Spielt ab oder pausiert. Mit der Wahltaste und den Pfeiltasten wählst du aus, was in der Zeitleiste liegt.",
+    "fr": "Lance ou met en pause la lecture. Utilisez Option et les touches fléchées pour sélectionner les éléments de la timeline.",
+    "zh-Hans": "播放或暂停。使用 Option 键和箭头键可选择时间线上的内容。"
+  },
+  "Position": {
+    "de": "Position",
+    "fr": "Position",
+    "zh-Hans": "位置"
+  },
+  "Preparing your video…": {
+    "de": "Dein Video wird vorbereitet …",
+    "fr": "Préparation de votre vidéo…",
+    "zh-Hans": "正在准备你的视频…"
+  },
+  "Pressed at %@. Press ⌫ to hide it from the video — handy for a stray ⌘Tab.": {
+    "de": "Gedrückt bei %@. Drücke ⌫, um ihn im Video auszublenden – praktisch bei einem versehentlichen ⌘Tab.",
+    "fr": "Utilisé à %@. Appuyez sur ⌫ pour le masquer dans la vidéo — pratique pour un ⌘Tab accidentel.",
+    "zh-Hans": "按下于 %@。按下 ⌫ 可在视频中隐藏它 — 适合处理误按的 ⌘Tab。"
+  },
+  "Previous / next frame": {
+    "de": "Vorheriges/nächstes Bild",
+    "fr": "Image précédente/suivante",
+    "zh-Hans": "上一帧/下一帧"
+  },
+  "Recent Exports": {
+    "de": "Letzte Exporte",
+    "fr": "Exportations récentes",
+    "zh-Hans": "最近导出"
+  },
+  "Recorded at %@. Drag its dot on the timeline to retime it; ripples and Auto Zoom follow.": {
+    "de": "Aufgezeichnet bei %@. Ziehe seinen Punkt in der Zeitleiste, um den Zeitpunkt zu ändern; Wellen und Auto-Zoom folgen.",
+    "fr": "Enregistré à %@. Faites glisser son point dans la timeline pour le recaler ; les ondes et le zoom auto suivent.",
+    "zh-Hans": "录制于 %@。在时间线上拖移它的圆点即可调整时间；波纹和自动缩放会随之更新。"
+  },
+  "Recordings made with Shotnix capture the pointer so it can be smoothed, resized, and hidden.": {
+    "de": "Mit Shotnix erstellte Aufnahmen zeichnen den Zeiger separat auf, damit er geglättet, vergrößert und ausgeblendet werden kann.",
+    "fr": "Les enregistrements réalisés avec Shotnix capturent le pointeur pour qu’il puisse être lissé, redimensionné et masqué.",
+    "zh-Hans": "使用 Shotnix 录制的内容会单独捕捉指针，以便平滑、调整大小和隐藏。"
+  },
+  "Redo": {
+    "comment": "The Redo command when there's nothing named to redo",
+    "de": "Wiederholen",
+    "fr": "Rétablir",
+    "zh-Hans": "重做"
+  },
+  "Redo Add Arrow": {
+    "de": "Hinzufügen des Pfeils wiederholen",
+    "fr": "Rétablir l’ajout de la flèche",
+    "zh-Hans": "重做添加箭头"
+  },
+  "Redo Add Blur": {
+    "de": "Hinzufügen der Weichzeichnung wiederholen",
+    "fr": "Rétablir l’ajout du flou",
+    "zh-Hans": "重做添加模糊"
+  },
+  "Redo Add Camera Layout": {
+    "de": "Hinzufügen des Kameralayouts wiederholen",
+    "fr": "Rétablir l’ajout de la disposition de caméra",
+    "zh-Hans": "重做添加摄像头布局"
+  },
+  "Redo Add Camera Layouts": {
+    "de": "Hinzufügen der Kameralayouts wiederholen",
+    "fr": "Rétablir l’ajout des dispositions de caméra",
+    "zh-Hans": "重做添加摄像头布局"
+  },
+  "Redo Add Caption": {
+    "de": "Hinzufügen des Untertitels wiederholen",
+    "fr": "Rétablir l’ajout du sous-titre",
+    "zh-Hans": "重做添加字幕"
+  },
+  "Redo Add Captions": {
+    "de": "Hinzufügen der Untertitel wiederholen",
+    "fr": "Rétablir l’ajout des sous-titres",
+    "zh-Hans": "重做添加字幕"
+  },
+  "Redo Add Click": {
+    "de": "Hinzufügen des Klicks wiederholen",
+    "fr": "Rétablir l’ajout du clic",
+    "zh-Hans": "重做添加点按"
+  },
+  "Redo Add Clicks": {
+    "de": "Hinzufügen der Klicks wiederholen",
+    "fr": "Rétablir l’ajout des clics",
+    "zh-Hans": "重做添加点按"
+  },
+  "Redo Add Highlight": {
+    "de": "Hinzufügen der Markierung wiederholen",
+    "fr": "Rétablir l’ajout du surlignage",
+    "zh-Hans": "重做添加高亮"
+  },
+  "Redo Add Image": {
+    "de": "Hinzufügen des Bilds wiederholen",
+    "fr": "Rétablir l’ajout de l’image",
+    "zh-Hans": "重做添加图像"
+  },
+  "Redo Add Intro Card": {
+    "de": "Hinzufügen der Intro-Karte wiederholen",
+    "fr": "Rétablir l’ajout du carton d’intro",
+    "zh-Hans": "重做添加片头卡"
+  },
+  "Redo Add Music": {
+    "de": "Hinzufügen der Musik wiederholen",
+    "fr": "Rétablir l’ajout de la musique",
+    "zh-Hans": "重做添加音乐"
+  },
+  "Redo Add Outro Card": {
+    "de": "Hinzufügen der Outro-Karte wiederholen",
+    "fr": "Rétablir l’ajout du carton de fin",
+    "zh-Hans": "重做添加片尾卡"
+  },
+  "Redo Add Recording": {
+    "de": "Hinzufügen der Aufnahme wiederholen",
+    "fr": "Rétablir l’ajout de l’enregistrement",
+    "zh-Hans": "重做添加录制内容"
+  },
+  "Redo Add Spotlight": {
+    "de": "Hinzufügen des Fokus wiederholen",
+    "fr": "Rétablir l’ajout du projecteur",
+    "zh-Hans": "重做添加聚光灯"
+  },
+  "Redo Add Text": {
+    "de": "Hinzufügen des Texts wiederholen",
+    "fr": "Rétablir l’ajout du texte",
+    "zh-Hans": "重做添加文字"
+  },
+  "Redo Add Zoom": {
+    "de": "Hinzufügen des Zooms wiederholen",
+    "fr": "Rétablir l’ajout du zoom",
+    "zh-Hans": "重做添加缩放"
+  },
+  "Redo Add Zooms": {
+    "de": "Hinzufügen der Zooms wiederholen",
+    "fr": "Rétablir l’ajout des zooms",
+    "zh-Hans": "重做添加缩放"
+  },
+  "Redo Annotation Change": {
+    "de": "Beschriftungsänderung wiederholen",
+    "fr": "Rétablir la modification de l’annotation",
+    "zh-Hans": "重做标注更改"
+  },
+  "Redo Annotations": {
+    "de": "Änderung der Beschriftungen wiederholen",
+    "fr": "Rétablir la modification des annotations",
+    "zh-Hans": "重做标注更改"
+  },
+  "Redo Arrow Style": {
+    "de": "Stiländerung des Pfeils wiederholen",
+    "fr": "Rétablir la modification du style de la flèche",
+    "zh-Hans": "重做箭头样式更改"
+  },
+  "Redo Aspect Ratio": {
+    "de": "Änderung des Seitenverhältnisses wiederholen",
+    "fr": "Rétablir la modification du format",
+    "zh-Hans": "重做宽高比更改"
+  },
+  "Redo Auto Zoom": {
+    "de": "Auto-Zoom wiederholen",
+    "fr": "Rétablir le zoom automatique",
+    "zh-Hans": "重做自动缩放"
+  },
+  "Redo Background": {
+    "de": "Hintergrundänderung wiederholen",
+    "fr": "Rétablir la modification de l’arrière-plan",
+    "zh-Hans": "重做背景更改"
+  },
+  "Redo Blur Style": {
+    "de": "Stiländerung der Weichzeichnung wiederholen",
+    "fr": "Rétablir la modification du style du flou",
+    "zh-Hans": "重做模糊样式更改"
+  },
+  "Redo Camera Change": {
+    "de": "Kameraänderung wiederholen",
+    "fr": "Rétablir la modification de la caméra",
+    "zh-Hans": "重做摄像头更改"
+  },
+  "Redo Camera Layout Change": {
+    "de": "Änderung des Kameralayouts wiederholen",
+    "fr": "Rétablir la modification de la disposition de caméra",
+    "zh-Hans": "重做摄像头布局更改"
+  },
+  "Redo Camera Layouts": {
+    "de": "Änderung der Kameralayouts wiederholen",
+    "fr": "Rétablir la modification des dispositions de caméra",
+    "zh-Hans": "重做摄像头布局更改"
+  },
+  "Redo Caption Style": {
+    "de": "Änderung des Untertitelstils wiederholen",
+    "fr": "Rétablir la modification du style des sous-titres",
+    "zh-Hans": "重做字幕样式更改"
+  },
+  "Redo Caption Translation": {
+    "de": "Untertitelübersetzung wiederholen",
+    "fr": "Rétablir la traduction des sous-titres",
+    "zh-Hans": "重做字幕翻译"
+  },
+  "Redo Captions": {
+    "de": "Änderung der Untertitel wiederholen",
+    "fr": "Rétablir la modification des sous-titres",
+    "zh-Hans": "重做字幕更改"
+  },
+  "Redo Click Sounds": {
+    "de": "Änderung der Klickgeräusche wiederholen",
+    "fr": "Rétablir la modification des sons de clic",
+    "zh-Hans": "重做点按音效更改"
+  },
+  "Redo Clicks": {
+    "de": "Änderung der Klicks wiederholen",
+    "fr": "Rétablir la modification des clics",
+    "zh-Hans": "重做点按更改"
+  },
+  "Redo Crop": {
+    "de": "Beschneiden wiederholen",
+    "fr": "Rétablir le rognage",
+    "zh-Hans": "重做裁剪"
+  },
+  "Redo Cursor Change": {
+    "de": "Zeigeränderung wiederholen",
+    "fr": "Rétablir la modification du pointeur",
+    "zh-Hans": "重做指针更改"
+  },
+  "Redo Cut": {
+    "de": "Schnitt wiederholen",
+    "fr": "Rétablir la coupe",
+    "zh-Hans": "重做剪除"
+  },
+  "Redo Cut Word": {
+    "de": "Herausschneiden des Worts wiederholen",
+    "fr": "Rétablir la coupe du mot",
+    "zh-Hans": "重做剪掉字词"
+  },
+  "Redo Cut Words": {
+    "de": "Herausschneiden der Wörter wiederholen",
+    "fr": "Rétablir la coupe des mots",
+    "zh-Hans": "重做剪掉字词"
+  },
+  "Redo Delete %lld Items": {
+    "comment": "Redo command: several items deleted at once",
+    "de": {
+      "one": "Löschen von %lld Objekt wiederholen",
+      "other": "Löschen von %lld Objekten wiederholen"
+    },
+    "en": {
+      "one": "Redo Delete %lld Item",
+      "other": "Redo Delete %lld Items"
+    },
+    "fr": {
+      "one": "Rétablir la suppression de %lld élément",
+      "other": "Rétablir la suppression de %lld éléments"
+    },
+    "zh-Hans": "重做删除 %lld 个项目"
+  },
+  "Redo Delete Annotations": {
+    "de": "Löschen der Beschriftungen wiederholen",
+    "fr": "Rétablir la suppression des annotations",
+    "zh-Hans": "重做删除标注"
+  },
+  "Redo Delete Arrow": {
+    "de": "Löschen des Pfeils wiederholen",
+    "fr": "Rétablir la suppression de la flèche",
+    "zh-Hans": "重做删除箭头"
+  },
+  "Redo Delete Blur": {
+    "de": "Löschen der Weichzeichnung wiederholen",
+    "fr": "Rétablir la suppression du flou",
+    "zh-Hans": "重做删除模糊"
+  },
+  "Redo Delete Camera Layout": {
+    "de": "Löschen des Kameralayouts wiederholen",
+    "fr": "Rétablir la suppression de la disposition de caméra",
+    "zh-Hans": "重做删除摄像头布局"
+  },
+  "Redo Delete Camera Layouts": {
+    "de": "Löschen der Kameralayouts wiederholen",
+    "fr": "Rétablir la suppression des dispositions de caméra",
+    "zh-Hans": "重做删除摄像头布局"
+  },
+  "Redo Delete Caption": {
+    "de": "Löschen des Untertitels wiederholen",
+    "fr": "Rétablir la suppression du sous-titre",
+    "zh-Hans": "重做删除字幕"
+  },
+  "Redo Delete Captions": {
+    "de": "Löschen der Untertitel wiederholen",
+    "fr": "Rétablir la suppression des sous-titres",
+    "zh-Hans": "重做删除字幕"
+  },
+  "Redo Delete Click": {
+    "de": "Löschen des Klicks wiederholen",
+    "fr": "Rétablir la suppression du clic",
+    "zh-Hans": "重做删除点按"
+  },
+  "Redo Delete Clicks": {
+    "de": "Löschen der Klicks wiederholen",
+    "fr": "Rétablir la suppression des clics",
+    "zh-Hans": "重做删除点按"
+  },
+  "Redo Delete Clip": {
+    "de": "Löschen des Clips wiederholen",
+    "fr": "Rétablir la suppression du clip",
+    "zh-Hans": "重做删除片段"
+  },
+  "Redo Delete Clips": {
+    "de": "Löschen der Clips wiederholen",
+    "fr": "Rétablir la suppression des clips",
+    "zh-Hans": "重做删除片段"
+  },
+  "Redo Delete Highlight": {
+    "de": "Löschen der Markierung wiederholen",
+    "fr": "Rétablir la suppression du surlignage",
+    "zh-Hans": "重做删除高亮"
+  },
+  "Redo Delete Image": {
+    "de": "Löschen des Bilds wiederholen",
+    "fr": "Rétablir la suppression de l’image",
+    "zh-Hans": "重做删除图像"
+  },
+  "Redo Delete Spotlight": {
+    "de": "Löschen des Fokus wiederholen",
+    "fr": "Rétablir la suppression du projecteur",
+    "zh-Hans": "重做删除聚光灯"
+  },
+  "Redo Delete Text": {
+    "de": "Löschen des Texts wiederholen",
+    "fr": "Rétablir la suppression du texte",
+    "zh-Hans": "重做删除文字"
+  },
+  "Redo Delete Zoom": {
+    "de": "Löschen des Zooms wiederholen",
+    "fr": "Rétablir la suppression du zoom",
+    "zh-Hans": "重做删除缩放"
+  },
+  "Redo Delete Zooms": {
+    "de": "Löschen der Zooms wiederholen",
+    "fr": "Rétablir la suppression des zooms",
+    "zh-Hans": "重做删除缩放"
+  },
+  "Redo Edit Caption": {
+    "de": "Untertitelbearbeitung wiederholen",
+    "fr": "Rétablir la modification du sous-titre",
+    "zh-Hans": "重做编辑字幕"
+  },
+  "Redo Edit Text": {
+    "de": "Textbearbeitung wiederholen",
+    "fr": "Rétablir la modification du texte",
+    "zh-Hans": "重做编辑文字"
+  },
+  "Redo Enhance Voice": {
+    "de": "Stimmverbesserung wiederholen",
+    "fr": "Rétablir l’amélioration de la voix",
+    "zh-Hans": "重做增强人声"
+  },
+  "Redo Fade": {
+    "de": "Ein- und Ausblenden wiederholen",
+    "fr": "Rétablir le fondu",
+    "zh-Hans": "重做淡入淡出"
+  },
+  "Redo Hide Shortcut": {
+    "de": "Ausblenden des Kurzbefehls wiederholen",
+    "fr": "Rétablir le masquage du raccourci",
+    "zh-Hans": "重做隐藏快捷键"
+  },
+  "Redo Highlight Style": {
+    "de": "Stiländerung der Markierung wiederholen",
+    "fr": "Rétablir la modification du style du surlignage",
+    "zh-Hans": "重做高亮样式更改"
+  },
+  "Redo Image Style": {
+    "de": "Stiländerung des Bilds wiederholen",
+    "fr": "Rétablir la modification du style de l’image",
+    "zh-Hans": "重做图像样式更改"
+  },
+  "Redo Intro and Outro": {
+    "de": "Kamera für Intro und Outro wiederholen",
+    "fr": "Rétablir la caméra pour l’intro et la fin",
+    "zh-Hans": "重做摄像头片头和片尾"
+  },
+  "Redo Move %lld Items": {
+    "comment": "Redo command: several items moved together on the timeline",
+    "de": {
+      "one": "Verschieben von %lld Objekt wiederholen",
+      "other": "Verschieben von %lld Objekten wiederholen"
+    },
+    "en": {
+      "one": "Redo Move %lld Item",
+      "other": "Redo Move %lld Items"
+    },
+    "fr": {
+      "one": "Rétablir le déplacement de %lld élément",
+      "other": "Rétablir le déplacement de %lld éléments"
+    },
+    "zh-Hans": "重做移动 %lld 个项目"
+  },
+  "Redo Move Arrow": {
+    "de": "Verschieben des Pfeils wiederholen",
+    "fr": "Rétablir le déplacement de la flèche",
+    "zh-Hans": "重做移动箭头"
+  },
+  "Redo Move Blur": {
+    "de": "Verschieben der Weichzeichnung wiederholen",
+    "fr": "Rétablir le déplacement du flou",
+    "zh-Hans": "重做移动模糊"
+  },
+  "Redo Move Click": {
+    "de": "Verschieben des Klicks wiederholen",
+    "fr": "Rétablir le déplacement du clic",
+    "zh-Hans": "重做移动点按"
+  },
+  "Redo Move Clip": {
+    "de": "Verschieben des Clips wiederholen",
+    "fr": "Rétablir le déplacement du clip",
+    "zh-Hans": "重做移动片段"
+  },
+  "Redo Move Highlight": {
+    "de": "Verschieben der Markierung wiederholen",
+    "fr": "Rétablir le déplacement du surlignage",
+    "zh-Hans": "重做移动高亮"
+  },
+  "Redo Move Image": {
+    "de": "Verschieben des Bilds wiederholen",
+    "fr": "Rétablir le déplacement de l’image",
+    "zh-Hans": "重做移动图像"
+  },
+  "Redo Move Recording": {
+    "de": "Verschieben der Aufnahme wiederholen",
+    "fr": "Rétablir le déplacement de l’enregistrement",
+    "zh-Hans": "重做移动录制内容"
+  },
+  "Redo Move Spotlight": {
+    "de": "Verschieben des Fokus wiederholen",
+    "fr": "Rétablir le déplacement du projecteur",
+    "zh-Hans": "重做移动聚光灯"
+  },
+  "Redo Move Text": {
+    "de": "Verschieben des Texts wiederholen",
+    "fr": "Rétablir le déplacement du texte",
+    "zh-Hans": "重做移动文字"
+  },
+  "Redo Music Change": {
+    "de": "Musikänderung wiederholen",
+    "fr": "Rétablir la modification de la musique",
+    "zh-Hans": "重做音乐更改"
+  },
+  "Redo Mute Clip": {
+    "de": "Stummschalten des Clips wiederholen",
+    "fr": "Rétablir la coupure du son du clip",
+    "zh-Hans": "重做片段静音"
+  },
+  "Redo Mute Part": {
+    "de": "Stummschalten des Abschnitts wiederholen",
+    "fr": "Rétablir la coupure du son du passage",
+    "zh-Hans": "重做部分静音"
+  },
+  "Redo Mute Video": {
+    "de": "Stummschalten des Videos wiederholen",
+    "fr": "Rétablir la coupure du son de la vidéo",
+    "zh-Hans": "重做视频静音"
+  },
+  "Redo Remove All Zooms": {
+    "de": "Entfernen aller Zooms wiederholen",
+    "fr": "Rétablir la suppression de tous les zooms",
+    "zh-Hans": "重做移除所有缩放"
+  },
+  "Redo Remove Captions": {
+    "de": "Entfernen der Untertitel wiederholen",
+    "fr": "Rétablir la suppression des sous-titres",
+    "zh-Hans": "重做移除字幕"
+  },
+  "Redo Remove Intro Card": {
+    "de": "Entfernen der Intro-Karte wiederholen",
+    "fr": "Rétablir la suppression du carton d’intro",
+    "zh-Hans": "重做移除片头卡"
+  },
+  "Redo Remove Music": {
+    "de": "Entfernen der Musik wiederholen",
+    "fr": "Rétablir la suppression de la musique",
+    "zh-Hans": "重做移除音乐"
+  },
+  "Redo Remove Outro Card": {
+    "de": "Entfernen der Outro-Karte wiederholen",
+    "fr": "Rétablir la suppression du carton de fin",
+    "zh-Hans": "重做移除片尾卡"
+  },
+  "Redo Remove Recording": {
+    "de": "Entfernen der Aufnahme wiederholen",
+    "fr": "Rétablir la suppression de l’enregistrement",
+    "zh-Hans": "重做移除录制内容"
+  },
+  "Redo Remove Ums": {
+    "de": "Entfernen der Füllwörter wiederholen",
+    "fr": "Rétablir la suppression des mots de remplissage",
+    "zh-Hans": "重做移除语气词"
+  },
+  "Redo Replace Music": {
+    "de": "Ersetzen der Musik wiederholen",
+    "fr": "Rétablir le remplacement de la musique",
+    "zh-Hans": "重做替换音乐"
+  },
+  "Redo Reset Look": {
+    "de": "Zurücksetzen des Stils wiederholen",
+    "fr": "Rétablir la réinitialisation du style",
+    "zh-Hans": "重做重置风格"
+  },
+  "Redo Restore": {
+    "de": "Wiederherstellen wiederholen",
+    "fr": "Rétablir la restauration",
+    "zh-Hans": "重做恢复"
+  },
+  "Redo Restore Cut": {
+    "de": "Wiederherstellen des Schnitts wiederholen",
+    "fr": "Rétablir la restauration de la coupe",
+    "zh-Hans": "重做恢复剪除部分"
+  },
+  "Redo Restore Cuts": {
+    "de": "Wiederherstellen der Schnitte wiederholen",
+    "fr": "Rétablir la restauration des coupes",
+    "zh-Hans": "重做恢复剪除部分"
+  },
+  "Redo Restore Pause": {
+    "de": "Wiederherstellen der Pause wiederholen",
+    "fr": "Rétablir la restauration de la pause",
+    "zh-Hans": "重做恢复停顿"
+  },
+  "Redo Restore Word": {
+    "de": "Wiederherstellen des Worts wiederholen",
+    "fr": "Rétablir la restauration du mot",
+    "zh-Hans": "重做恢复字词"
+  },
+  "Redo Restore Words": {
+    "de": "Wiederherstellen der Wörter wiederholen",
+    "fr": "Rétablir la restauration des mots",
+    "zh-Hans": "重做恢复字词"
+  },
+  "Redo Shortcut Style": {
+    "de": "Änderung des Kurzbefehlstils wiederholen",
+    "fr": "Rétablir la modification du style des raccourcis",
+    "zh-Hans": "重做快捷键样式更改"
+  },
+  "Redo Shortcuts": {
+    "de": "Änderung der Kurzbefehle wiederholen",
+    "fr": "Rétablir la modification des raccourcis",
+    "zh-Hans": "重做快捷键更改"
+  },
+  "Redo Shorten Pause": {
+    "de": "Kürzen der Pause wiederholen",
+    "fr": "Rétablir le raccourcissement de la pause",
+    "zh-Hans": "重做缩短停顿"
+  },
+  "Redo Shorten Pauses": {
+    "de": "Kürzen der Pausen wiederholen",
+    "fr": "Rétablir le raccourcissement des pauses",
+    "zh-Hans": "重做缩短停顿"
+  },
+  "Redo Sound Change": {
+    "de": "Tonänderung wiederholen",
+    "fr": "Rétablir la modification du son",
+    "zh-Hans": "重做声音更改"
+  },
+  "Redo Speed Change": {
+    "de": "Tempoänderung wiederholen",
+    "fr": "Rétablir la modification de la vitesse",
+    "zh-Hans": "重做速度更改"
+  },
+  "Redo Speed Up Idle": {
+    "de": "Beschleunigen des Leerlaufs wiederholen",
+    "fr": "Rétablir l’accélération des temps morts",
+    "zh-Hans": "重做加速空闲片段"
+  },
+  "Redo Split": {
+    "de": "Teilen wiederholen",
+    "fr": "Rétablir la scission",
+    "zh-Hans": "重做分割"
+  },
+  "Redo Spotlight Style": {
+    "de": "Stiländerung des Fokus wiederholen",
+    "fr": "Rétablir la modification du style du projecteur",
+    "zh-Hans": "重做聚光灯样式更改"
+  },
+  "Redo Start Over": {
+    "de": "Neubeginn mit dem Original wiederholen",
+    "fr": "Rétablir le retour à l’original",
+    "zh-Hans": "重做从头开始"
+  },
+  "Redo Style Change": {
+    "de": "Stiländerung wiederholen",
+    "fr": "Rétablir la modification du style",
+    "zh-Hans": "重做样式更改"
+  },
+  "Redo Text Style": {
+    "de": "Stiländerung des Texts wiederholen",
+    "fr": "Rétablir la modification du style du texte",
+    "zh-Hans": "重做文字样式更改"
+  },
+  "Redo Title Card": {
+    "de": "Änderung der Titelkarte wiederholen",
+    "fr": "Rétablir la modification du carton de titre",
+    "zh-Hans": "重做标题卡更改"
+  },
+  "Redo Transcribe": {
+    "de": "Transkribieren wiederholen",
+    "fr": "Rétablir la transcription",
+    "zh-Hans": "重做转录"
+  },
+  "Redo Transitions": {
+    "de": "Änderung der Übergänge wiederholen",
+    "fr": "Rétablir la modification des transitions",
+    "zh-Hans": "重做转场更改"
+  },
+  "Redo Trim": {
+    "de": "Trimmen wiederholen",
+    "fr": "Rétablir l’ajustement",
+    "zh-Hans": "重做修剪"
+  },
+  "Redo Unmute Clip": {
+    "de": "Aufheben der Clip-Stummschaltung wiederholen",
+    "fr": "Rétablir le rétablissement du son du clip",
+    "zh-Hans": "重做取消片段静音"
+  },
+  "Redo Unmute Part": {
+    "de": "Aufheben der Abschnitts-Stummschaltung wiederholen",
+    "fr": "Rétablir le rétablissement du son du passage",
+    "zh-Hans": "重做取消部分静音"
+  },
+  "Redo Unmute Video": {
+    "de": "Aufheben der Video-Stummschaltung wiederholen",
+    "fr": "Rétablir le rétablissement du son de la vidéo",
+    "zh-Hans": "重做取消视频静音"
+  },
+  "Redo Zoom Change": {
+    "de": "Zoomänderung wiederholen",
+    "fr": "Rétablir la modification du zoom",
+    "zh-Hans": "重做缩放更改"
+  },
+  "Redo Zoom Level for All": {
+    "de": "Einheitliche Zoomstufe wiederholen",
+    "fr": "Rétablir le niveau de zoom commun",
+    "zh-Hans": "重做统一缩放级别"
+  },
+  "Redo Zooms": {
+    "de": "Änderung der Zooms wiederholen",
+    "fr": "Rétablir la modification des zooms",
+    "zh-Hans": "重做缩放更改"
+  },
+  "Remove %lld ums": {
+    "comment": "Cut filler words (um, uh) from the video",
+    "de": {
+      "one": "%lld Füllwort entfernen",
+      "other": "%lld Füllwörter entfernen"
+    },
+    "en": {
+      "one": "Remove %lld um",
+      "other": "Remove %lld ums"
+    },
+    "fr": {
+      "one": "Supprimer %lld hésitation",
+      "other": "Supprimer %lld hésitations"
+    },
+    "zh-Hans": "移除 %lld 个语气词"
+  },
+  "Remove All Zooms": {
+    "de": "Alle Zooms entfernen",
+    "fr": "Supprimer tous les zooms",
+    "zh-Hans": "移除所有缩放"
+  },
+  "Remove Intro Card": {
+    "de": "Intro-Karte entfernen",
+    "fr": "Supprimer le carton d’intro",
+    "zh-Hans": "移除片头卡"
+  },
+  "Remove Outro Card": {
+    "de": "Outro-Karte entfernen",
+    "fr": "Supprimer le carton de fin",
+    "zh-Hans": "移除片尾卡"
+  },
+  "Remove Transcript & Captions": {
+    "de": "Transkript und Untertitel entfernen",
+    "fr": "Supprimer la transcription et les sous-titres",
+    "zh-Hans": "移除文字稿和字幕"
+  },
+  "Remove Ums": {
+    "comment": "Command: cut filler words (um, uh) from the video",
+    "de": "Füllwörter entfernen",
+    "fr": "Supprimer les mots de remplissage",
+    "zh-Hans": "移除语气词"
+  },
+  "Remove all %lld": {
+    "de": "Alle entfernen (%lld)",
+    "fr": "Tout supprimer (%lld)",
+    "zh-Hans": "全部移除（%lld）"
+  },
+  "Remove all zooms": {
+    "de": "Alle Zooms entfernen",
+    "fr": "Supprimer tous les zooms",
+    "zh-Hans": "移除所有缩放"
+  },
+  "Remove caption": {
+    "de": "Untertitel entfernen",
+    "fr": "Supprimer le sous-titre",
+    "zh-Hans": "移除字幕"
+  },
+  "Remove this caption": {
+    "de": "Diesen Untertitel entfernen",
+    "fr": "Supprimer ce sous-titre",
+    "zh-Hans": "移除此字幕"
+  },
+  "Removed %@ — click to restore": {
+    "comment": "A cut on the timeline: how long the removed part was",
+    "de": "%@ entfernt – klicken zum Wiederherstellen",
+    "fr": "Passage de %@ supprimé — cliquez pour le restaurer",
+    "zh-Hans": "已移除 %@ — 点按以恢复"
+  },
+  "Removed %lld items — ⌘Z to undo": {
+    "de": {
+      "one": "%lld Objekt entfernt – ⌘Z zum Widerrufen",
+      "other": "%lld Objekte entfernt – ⌘Z zum Widerrufen"
+    },
+    "en": {
+      "one": "Removed %lld item — ⌘Z to undo",
+      "other": "Removed %lld items — ⌘Z to undo"
+    },
+    "fr": {
+      "one": "%lld élément supprimé — ⌘Z pour annuler",
+      "other": "%lld éléments supprimés — ⌘Z pour annuler"
+    },
+    "zh-Hans": "已移除 %lld 个项目 — 按 ⌘Z 撤销"
+  },
+  "Removed %lld items — ⌘Z to undo (a video keeps at least one clip)": {
+    "de": {
+      "one": "%lld Objekt entfernt – ⌘Z zum Widerrufen (ein Video behält mindestens einen Clip)",
+      "other": "%lld Objekte entfernt – ⌘Z zum Widerrufen (ein Video behält mindestens einen Clip)"
+    },
+    "en": {
+      "one": "Removed %lld item — ⌘Z to undo (a video keeps at least one clip)",
+      "other": "Removed %lld items — ⌘Z to undo (a video keeps at least one clip)"
+    },
+    "fr": {
+      "one": "%lld élément supprimé — ⌘Z pour annuler (une vidéo garde au moins un clip)",
+      "other": "%lld éléments supprimés — ⌘Z pour annuler (une vidéo garde au moins un clip)"
+    },
+    "zh-Hans": "已移除 %lld 个项目 — 按 ⌘Z 撤销（视频至少保留一个片段）"
+  },
+  "Removed parts can be restored from the yellow marker on the timeline.": {
+    "de": "Entfernte Abschnitte lassen sich über die gelbe Markierung in der Zeitleiste wiederherstellen.",
+    "fr": "Les passages supprimés peuvent être restaurés depuis le repère jaune de la timeline.",
+    "zh-Hans": "已移除的部分可通过时间线上的黄色标记恢复。"
+  },
+  "Removes background noise and hum, and evens out your level — processed on this Mac": {
+    "de": "Entfernt Hintergrundgeräusche und Brummen und gleicht deinen Pegel aus – direkt auf diesem Mac",
+    "fr": "Supprime le bruit de fond et le ronflement, et égalise votre niveau — traité sur ce Mac",
+    "zh-Hans": "去除背景噪音和嗡嗡声，并平衡你的音量 — 在这台 Mac 上处理"
+  },
+  "Removes jitter, keeps it snappy.": {
+    "de": "Entfernt Zittern, bleibt aber flott.",
+    "fr": "Supprime les tremblements, reste réactif.",
+    "zh-Hans": "去除抖动，保持灵敏。"
+  },
+  "Reset": {
+    "de": "Zurücksetzen",
+    "fr": "Réinitialiser",
+    "zh-Hans": "重置"
+  },
+  "Reset %@": {
+    "comment": "VoiceOver: the reset button next to a slider (its name)",
+    "de": "%@ zurücksetzen",
+    "fr": "Réinitialiser %@",
+    "zh-Hans": "重置%@"
+  },
+  "Reset to the Shotnix Look": {
+    "de": "Auf den Shotnix-Stil zurücksetzen",
+    "fr": "Rétablir le style Shotnix",
+    "zh-Hans": "恢复为 Shotnix 风格"
+  },
+  "Reset to the Shotnix look": {
+    "de": "Auf den Shotnix-Stil zurücksetzen",
+    "fr": "Rétablir le style Shotnix",
+    "zh-Hans": "恢复为 Shotnix 风格"
+  },
+  "Restore": {
+    "de": "Wiederherstellen",
+    "fr": "Restaurer",
+    "zh-Hans": "恢复"
+  },
+  "Restore %@ at %@": {
+    "comment": "Menu item: how long the cut is, then where it is (a timecode)",
+    "de": "%1$@ bei %2$@ wiederherstellen",
+    "fr": "Restaurer %1$@ à %2$@",
+    "zh-Hans": "恢复 %2$@ 处的 %1$@"
+  },
+  "Restore %@ cut at %@": {
+    "comment": "VoiceOver: how long the cut is, then where it is (a timecode)",
+    "de": "Schnitt von %1$@ bei %2$@ wiederherstellen",
+    "fr": "Restaurer la coupe de %1$@ à %2$@",
+    "zh-Hans": "恢复位于 %2$@ 的 %1$@ 剪除部分"
+  },
+  "Restore All %lld": {
+    "de": "Alle %lld wiederherstellen",
+    "fr": "Tout restaurer (%lld)",
+    "zh-Hans": "全部恢复（%lld）"
+  },
+  "Roundness": {
+    "de": "Rundung",
+    "fr": "Arrondi",
+    "zh-Hans": "圆角"
+  },
+  "Save Subtitles (.srt)…": {
+    "de": "Untertitel sichern (.srt) …",
+    "fr": "Enregistrer les sous-titres (.srt)…",
+    "zh-Hans": "存储字幕（.srt）…"
+  },
+  "Saves %@ — only silences where nothing happens on screen": {
+    "de": "Spart %@ – nur Stille, in der auf dem Bildschirm nichts passiert",
+    "fr": "Gagne %@ — uniquement les silences où rien ne se passe à l’écran",
+    "zh-Hans": "节省 %@ — 仅限屏幕上无任何动静的静音部分"
+  },
+  "Saves %@ — silences where the pointer rests and nothing is clicked or pressed (this older recording can't see typing)": {
+    "de": "Spart %@ – Stille, in der der Zeiger ruht und nichts geklickt oder gedrückt wird (diese ältere Aufnahme erkennt kein Tippen)",
+    "fr": "Gagne %@ — silences où le pointeur est immobile et où rien n’est cliqué ni pressé (cet ancien enregistrement ne détecte pas la saisie)",
+    "zh-Hans": "节省 %@ — 指针静止且没有点按或按键的静音部分（这个较早的录制内容无法识别打字）"
+  },
+  "Saves the background, frame, cursor, and zoom style.": {
+    "de": "Sichert Hintergrund, Rahmen, Zeiger und Zoomstil.",
+    "fr": "Enregistre l’arrière-plan, le cadre, le pointeur et le style de zoom.",
+    "zh-Hans": "会存储背景、边框、指针和缩放样式。"
+  },
+  "Search commands": {
+    "de": "Befehle suchen",
+    "fr": "Rechercher des commandes",
+    "zh-Hans": "搜索命令"
+  },
+  "Select a clip on the timeline to mute it or fade it in and out.": {
+    "de": "Wähle einen Clip in der Zeitleiste aus, um ihn stummzuschalten oder ein- und auszublenden.",
+    "fr": "Sélectionnez un clip dans la timeline pour couper son son ou lui appliquer un fondu.",
+    "zh-Hans": "在时间线上选择一个片段即可将其静音或设置淡入淡出。"
+  },
+  "Select a range to cut": {
+    "de": "Bereich zum Schneiden auswählen",
+    "fr": "Sélectionner un passage à couper",
+    "zh-Hans": "选择要剪掉的范围"
+  },
+  "Select previous / next item": {
+    "de": "Vorheriges/nächstes Objekt auswählen",
+    "fr": "Sélectionner l’élément précédent/suivant",
+    "zh-Hans": "选择上一个/下一个项目"
+  },
+  "Select several items": {
+    "de": "Mehrere Objekte auswählen",
+    "fr": "Sélectionner plusieurs éléments",
+    "zh-Hans": "选择多个项目"
+  },
+  "Select words and press ⌫ to cut them from the video — ⌫ again on crossed-out words puts them back. Click a word to jump there; ⌘F finds.": {
+    "de": "Wähle Wörter aus und drücke ⌫, um sie aus dem Video zu schneiden – ⌫ auf durchgestrichenen Wörtern holt sie zurück. Klicke auf ein Wort, um dorthin zu springen; ⌘F sucht.",
+    "fr": "Sélectionnez des mots et appuyez sur ⌫ pour les couper de la vidéo — ⌫ sur des mots barrés les rétablit. Cliquez sur un mot pour y aller ; ⌘F pour rechercher.",
+    "zh-Hans": "选择字词并按下 ⌫ 即可将其从视频中剪掉 — 在带删除线的字词上再按 ⌫ 可恢复。点按字词可跳转到该处；按 ⌘F 可查找。"
+  },
+  "Selected %@": {
+    "comment": "What's selected (or how long the selected part is)",
+    "de": "Ausgewählt: %@",
+    "fr": "Sélection : %@",
+    "zh-Hans": "已选择：%@"
+  },
+  "Selected part": {
+    "de": "Ausgewählter Abschnitt",
+    "fr": "Passage sélectionné",
+    "zh-Hans": "所选部分"
+  },
+  "Shadow": {
+    "de": "Schatten",
+    "fr": "Ombre",
+    "zh-Hans": "阴影"
+  },
+  "Shape": {
+    "de": "Form",
+    "fr": "Forme",
+    "zh-Hans": "形状"
+  },
+  "Shortcut": {
+    "comment": "A keyboard shortcut shown in the video",
+    "de": "Kurzbefehl",
+    "fr": "Raccourci",
+    "zh-Hans": "快捷键"
+  },
+  "Shortcut %@": {
+    "de": "Kurzbefehl %@",
+    "fr": "Raccourci %@",
+    "zh-Hans": "快捷键 %@"
+  },
+  "Shorten %lld pauses": {
+    "de": {
+      "one": "%lld Pause kürzen",
+      "other": "%lld Pausen kürzen"
+    },
+    "en": {
+      "one": "Shorten %lld pause",
+      "other": "Shorten %lld pauses"
+    },
+    "fr": {
+      "one": "Raccourcir %lld pause",
+      "other": "Raccourcir %lld pauses"
+    },
+    "zh-Hans": "缩短 %lld 处停顿"
+  },
+  "Shorten Pauses": {
+    "de": "Pausen kürzen",
+    "fr": "Raccourcir les pauses",
+    "zh-Hans": "缩短停顿"
+  },
+  "Shortens every silence over a second (this video has no Shotnix pointer data to spot what happens on screen)": {
+    "de": "Kürzt jede Stille über einer Sekunde (dieses Video hat keine Shotnix-Zeigerdaten, um zu erkennen, was auf dem Bildschirm passiert)",
+    "fr": "Raccourcit chaque silence de plus d’une seconde (cette vidéo n’a pas de données de pointeur Shotnix pour repérer ce qui se passe à l’écran)",
+    "zh-Hans": "缩短每段超过一秒的静音（此视频没有 Shotnix 指针数据，无法识别屏幕上发生了什么）"
+  },
+  "Shotnix is still cleaning up the voice": {
+    "de": "Shotnix bereinigt noch die Stimme",
+    "fr": "Shotnix est encore en train de nettoyer la voix",
+    "zh-Hans": "Shotnix 仍在清理人声"
+  },
+  "Shotnix is still transcribing": {
+    "de": "Shotnix transkribiert noch",
+    "fr": "Shotnix est encore en train de transcrire",
+    "zh-Hans": "Shotnix 仍在转录"
+  },
+  "Shotnix listens to the recording right on this Mac — nothing is uploaded. Then cut the video by deleting words, remove ums and long pauses in one click, and add captions.": {
+    "de": "Shotnix hört sich die Aufnahme direkt auf diesem Mac an – nichts wird hochgeladen. Danach schneidest du das Video, indem du Wörter löschst, entfernst Füllwörter und lange Pausen mit einem Klick und fügst Untertitel hinzu.",
+    "fr": "Shotnix écoute l’enregistrement directement sur ce Mac — rien n’est envoyé. Coupez ensuite la vidéo en supprimant des mots, retirez les hésitations et les longues pauses en un clic, et ajoutez des sous-titres.",
+    "zh-Hans": "Shotnix 直接在这台 Mac 上听取录制内容 — 不会上传任何内容。然后你可以通过删除字词来剪辑视频，一键移除语气词和长停顿，并添加字幕。"
+  },
+  "Show Background": {
+    "de": "Hintergrund zeigen",
+    "fr": "Afficher l’arrière-plan",
+    "zh-Hans": "显示背景"
+  },
+  "Show Editor Tips": {
+    "de": "Editor-Tipps zeigen",
+    "fr": "Afficher les astuces de l’éditeur",
+    "zh-Hans": "显示编辑器提示"
+  },
+  "Show Folder in Finder": {
+    "de": "Ordner im Finder zeigen",
+    "fr": "Afficher le dossier dans le Finder",
+    "zh-Hans": "在“访达”中显示文件夹"
+  },
+  "Show Recent Export “%@” in Finder": {
+    "de": "Letzten Export „%@“ im Finder zeigen",
+    "fr": "Afficher l’export récent « %@ » dans le Finder",
+    "zh-Hans": "在“访达”中显示最近导出的“%@”"
+  },
+  "Show Recording in Finder": {
+    "de": "Aufnahme im Finder zeigen",
+    "fr": "Afficher l’enregistrement dans le Finder",
+    "zh-Hans": "在“访达”中显示录制内容"
+  },
+  "Show background": {
+    "de": "Hintergrund zeigen",
+    "fr": "Afficher l’arrière-plan",
+    "zh-Hans": "显示背景"
+  },
+  "Show camera": {
+    "de": "Kamera anzeigen",
+    "fr": "Afficher la caméra",
+    "zh-Hans": "显示摄像头"
+  },
+  "Show captions": {
+    "de": "Untertitel anzeigen",
+    "fr": "Afficher les sous-titres",
+    "zh-Hans": "显示字幕"
+  },
+  "Show cursor": {
+    "de": "Zeiger anzeigen",
+    "fr": "Afficher le pointeur",
+    "zh-Hans": "显示指针"
+  },
+  "Show in Finder": {
+    "de": "Im Finder zeigen",
+    "fr": "Afficher dans le Finder",
+    "zh-Hans": "在“访达”中显示"
+  },
+  "Show in Finder — %@": {
+    "comment": "Tooltip: a file path",
+    "de": "Im Finder zeigen – %@",
+    "fr": "Afficher dans le Finder — %@",
+    "zh-Hans": "在“访达”中显示 — %@"
+  },
+  "Show more / less detail": {
+    "de": "Mehr/weniger Details zeigen",
+    "fr": "Afficher plus/moins de détails",
+    "zh-Hans": "显示更多/更少细节"
+  },
+  "Show more of the timeline": {
+    "de": "Mehr von der Zeitleiste zeigen",
+    "fr": "Afficher plus de la timeline",
+    "zh-Hans": "显示更多时间线"
+  },
+  "Show shortcuts": {
+    "de": "Kurzbefehle anzeigen",
+    "fr": "Afficher les raccourcis",
+    "zh-Hans": "显示快捷键"
+  },
+  "Show the timeline in more detail": {
+    "de": "Zeitleiste detaillierter zeigen",
+    "fr": "Afficher la timeline plus en détail",
+    "zh-Hans": "更详细地显示时间线"
+  },
+  "Show tips under the video again": {
+    "de": "Tipps unter dem Video wieder zeigen",
+    "fr": "Réafficher les astuces sous la vidéo",
+    "zh-Hans": "重新在视频下方显示提示"
+  },
+  "Shrink while zoomed": {
+    "de": "Beim Zoomen verkleinern",
+    "fr": "Réduire pendant les zooms",
+    "zh-Hans": "缩放时缩小"
+  },
+  "Shuffle Background": {
+    "de": "Zufälliger Hintergrund",
+    "fr": "Arrière-plan aléatoire",
+    "zh-Hans": "随机背景"
+  },
+  "Shuffle the background": {
+    "de": "Zufälligen Hintergrund wählen",
+    "fr": "Choisir un arrière-plan au hasard",
+    "zh-Hans": "随机选择背景"
+  },
+  "Silences over a second get shortened — except while you click, type, scroll, or move the pointer, so the demo itself is never cut": {
+    "de": "Stille über einer Sekunde wird gekürzt – außer während du klickst, tippst, scrollst oder den Zeiger bewegst, damit die Demo selbst nie geschnitten wird",
+    "fr": "Les silences de plus d’une seconde sont raccourcis — sauf pendant que vous cliquez, tapez, faites défiler ou déplacez le pointeur, pour que la démo elle-même ne soit jamais coupée",
+    "zh-Hans": "超过一秒的静音会被缩短 — 点按、打字、滚动或移动指针时除外，因此演示本身不会被剪掉"
+  },
+  "Silences over a second get shortened — except while you move the pointer, click, or press a shortcut": {
+    "de": "Stille über einer Sekunde wird gekürzt – außer während du den Zeiger bewegst, klickst oder einen Kurzbefehl drückst",
+    "fr": "Les silences de plus d’une seconde sont raccourcis — sauf pendant que vous déplacez le pointeur, cliquez ou utilisez un raccourci",
+    "zh-Hans": "超过一秒的静音会被缩短 — 移动指针、点按或按下快捷键时除外"
+  },
+  "Size": {
+    "de": "Größe",
+    "fr": "Taille",
+    "zh-Hans": "大小"
+  },
+  "Skips the dash to the Stop button at the end": {
+    "de": "Überspringt am Ende die schnelle Bewegung zur Stopptaste",
+    "fr": "Ignore le déplacement rapide vers le bouton Arrêter à la fin",
+    "zh-Hans": "略过结尾时快速移向“停止”按钮的动作"
+  },
+  "Soft streaks on fast moves": {
+    "de": "Weiche Schlieren bei schnellen Bewegungen",
+    "fr": "Traînées douces sur les mouvements rapides",
+    "zh-Hans": "快速移动时产生柔和拖影"
+  },
+  "Solid color": {
+    "de": "Einfarbig",
+    "fr": "Couleur unie",
+    "zh-Hans": "纯色"
+  },
+  "Sound": {
+    "comment": "Inspector tab tooltip and section title",
+    "de": "Ton",
+    "fr": "Son",
+    "zh-Hans": "声音"
+  },
+  "Space": {
+    "comment": "The space bar, as a keyboard shortcut",
+    "de": "Leertaste",
+    "fr": "Espace",
+    "zh-Hans": "空格键"
+  },
+  "Speed": {
+    "de": "Tempo",
+    "fr": "Vitesse",
+    "zh-Hans": "速度"
+  },
+  "Speed Up Idle": {
+    "de": "Leerlauf beschleunigen",
+    "fr": "Accélérer les temps morts",
+    "zh-Hans": "加速空闲片段"
+  },
+  "Speed Up Idle Moments": {
+    "de": "Leerlauf beschleunigen",
+    "fr": "Accélérer les temps morts",
+    "zh-Hans": "加速空闲片段"
+  },
+  "Speed of this part": {
+    "de": "Tempo dieses Abschnitts",
+    "fr": "Vitesse de ce passage",
+    "zh-Hans": "此部分的速度"
+  },
+  "Split": {
+    "de": "Teilen",
+    "fr": "Scinder",
+    "zh-Hans": "分割"
+  },
+  "Split at Playhead": {
+    "de": "An der Abspielposition teilen",
+    "fr": "Scinder à la tête de lecture",
+    "zh-Hans": "在播放头处分割"
+  },
+  "Split at playhead": {
+    "de": "An der Abspielposition teilen",
+    "fr": "Scinder à la tête de lecture",
+    "zh-Hans": "在播放头处分割"
+  },
+  "Split at the playhead (S)": {
+    "de": "An der Abspielposition teilen (S)",
+    "fr": "Scinder à la tête de lecture (S)",
+    "zh-Hans": "在播放头处分割（S）"
+  },
+  "Start / end": {
+    "de": "Anfang/Ende",
+    "fr": "Début/fin",
+    "zh-Hans": "开头/结尾"
+  },
+  "Start Over from the Original Recording…": {
+    "de": "Mit der Originalaufnahme neu beginnen …",
+    "fr": "Recommencer à partir de l’enregistrement d’origine…",
+    "zh-Hans": "从原始录制内容重新开始…"
+  },
+  "Start at the playhead": {
+    "de": "An der Abspielposition beginnen",
+    "fr": "Commencer à la tête de lecture",
+    "zh-Hans": "从播放头处开始"
+  },
+  "Start here": {
+    "de": "Hier beginnen",
+    "fr": "Commencer ici",
+    "zh-Hans": "从这里开始"
+  },
+  "Starts": {
+    "de": "Beginnt",
+    "fr": "Début",
+    "zh-Hans": "开始"
+  },
+  "Stop Enhancing Voice": {
+    "de": "Stimmverbesserung beenden",
+    "fr": "Arrêter l’amélioration de la voix",
+    "zh-Hans": "停止增强人声"
+  },
+  "Stop and Close": {
+    "de": "Stoppen und schließen",
+    "fr": "Arrêter et fermer",
+    "zh-Hans": "停止并关闭"
+  },
+  "Style": {
+    "comment": "Inspector tab: background, frame, cards, transitions",
+    "de": "Stil",
+    "fr": "Style",
+    "zh-Hans": "样式"
+  },
+  "Swap the arrow's head and tail": {
+    "de": "Spitze und Ende des Pfeils tauschen",
+    "fr": "Intervertir la pointe et la queue de la flèche",
+    "zh-Hans": "交换箭头的头尾"
+  },
+  "Switch the camera to full screen for talking points, or put it side by side with the screen — at the playhead. Each shows on the Camera lane.": {
+    "de": "Schalte die Kamera für Kernaussagen ins Vollbild oder zeige sie neben dem Bildschirm – an der Abspielposition. Jeder Wechsel erscheint in der Kameraspur.",
+    "fr": "Passez la caméra en plein écran pour les points clés, ou placez-la côte à côte avec l’écran — à la tête de lecture. Chaque changement apparaît sur la piste Caméra.",
+    "zh-Hans": "在播放头处将摄像头切换为全屏以讲解要点，或与屏幕并排显示。每次切换都会显示在“摄像头”轨道上。"
+  },
+  "Tag color": {
+    "comment": "The color of the box behind a text annotation",
+    "de": "Hintergrundfarbe",
+    "fr": "Couleur de l’étiquette",
+    "zh-Hans": "标签颜色"
+  },
+  "Text · highlight · arrow · blur": {
+    "de": "Text · Markierung · Pfeil · Weichzeichnen",
+    "fr": "Texte · surlignage · flèche · flou",
+    "zh-Hans": "文字 · 高亮 · 箭头 · 模糊"
+  },
+  "Text “%@”": {
+    "de": "Text „%@“",
+    "fr": "Texte « %@ »",
+    "zh-Hans": "文字“%@”"
+  },
+  "The camera keeps your cursor in view and glides after it.": {
+    "de": "Die Kamera behält deinen Zeiger im Bild und gleitet ihm nach.",
+    "fr": "La caméra garde votre pointeur dans le cadre et le suit en douceur.",
+    "zh-Hans": "镜头会让指针保持在画面中，并平滑地跟随它。"
+  },
+  "The cursor is part of this video": {
+    "de": "Der Zeiger ist Teil dieses Videos",
+    "fr": "Le pointeur fait partie de cette vidéo",
+    "zh-Hans": "指针已录入此视频"
+  },
+  "Thickness": {
+    "de": "Stärke",
+    "fr": "Épaisseur",
+    "zh-Hans": "粗细"
+  },
+  "This list": {
+    "de": "Diese Liste",
+    "fr": "Cette liste",
+    "zh-Hans": "此列表"
+  },
+  "This recording has no sound": {
+    "de": "Diese Aufnahme hat keinen Ton",
+    "fr": "Cet enregistrement n’a pas de son",
+    "zh-Hans": "此录制内容没有声音"
+  },
+  "This recording has no sound. Turn on the microphone before recording to narrate it.": {
+    "de": "Diese Aufnahme hat keinen Ton. Schalte vor der Aufzeichnung das Mikrofon ein, um sie zu kommentieren.",
+    "fr": "Cet enregistrement n’a pas de son. Activez le micro avant d’enregistrer pour le commenter.",
+    "zh-Hans": "此录制内容没有声音。录制前打开麦克风即可进行解说。"
+  },
+  "This recording only has the arrow": {
+    "de": "Diese Aufnahme enthält nur den Pfeil",
+    "fr": "Cet enregistrement ne contient que la flèche",
+    "zh-Hans": "此录制内容只有箭头"
+  },
+  "This video was recorded with your camera, but “%@” isn't in %@ anymore. Put it back there and open the video again to get the camera bubble back.": {
+    "comment": "The camera file's name, then the folder it was in",
+    "de": "Dieses Video wurde mit deiner Kamera aufgezeichnet, aber „%@“ ist nicht mehr in %@. Lege die Datei zurück und öffne das Video erneut, um die Kamerablase zurückzubekommen.",
+    "fr": "Cette vidéo a été enregistrée avec votre caméra, mais « %@ » ne se trouve plus dans %@. Remettez-le à cet endroit et rouvrez la vidéo pour retrouver la bulle de caméra.",
+    "zh-Hans": "此视频录制时使用了摄像头，但“%@”已不在 %@ 中。请将它放回原处并重新打开视频，即可恢复摄像头气泡。"
+  },
+  "Timeline": {
+    "de": "Zeitleiste",
+    "fr": "Timeline",
+    "zh-Hans": "时间线"
+  },
+  "Timeline scale": {
+    "de": "Zeitleistenmaßstab",
+    "fr": "Échelle de la timeline",
+    "zh-Hans": "时间线缩放比例"
+  },
+  "Timeline scale (pinch, or ⌘-scroll)": {
+    "de": "Zeitleistenmaßstab (Zusammenziehen oder ⌘-Scrollen)",
+    "fr": "Échelle de la timeline (pincer ou ⌘-défiler)",
+    "zh-Hans": "时间线缩放比例（捏合或按住 ⌘ 滚动）"
+  },
+  "Timing": {
+    "de": "Timing",
+    "fr": "Minutage",
+    "zh-Hans": "时间"
+  },
+  "Tips": {
+    "de": "Tipps",
+    "fr": "Astuces",
+    "zh-Hans": "提示"
+  },
+  "Tools": {
+    "de": "Werkzeuge",
+    "fr": "Outils",
+    "zh-Hans": "工具"
+  },
+  "Transcribe": {
+    "de": "Transkribieren",
+    "fr": "Transcrire",
+    "zh-Hans": "转录"
+  },
+  "Transcribe Again…": {
+    "de": "Erneut transkribieren …",
+    "fr": "Transcrire à nouveau…",
+    "zh-Hans": "重新转录…"
+  },
+  "Transcribe Narration (Captions, Edit by Text)": {
+    "de": "Kommentar transkribieren (Untertitel, per Text bearbeiten)",
+    "fr": "Transcrire la narration (sous-titres, montage par le texte)",
+    "zh-Hans": "转录解说（字幕、按文字编辑）"
+  },
+  "Transcribe…": {
+    "de": "Transkribieren …",
+    "fr": "Transcrire…",
+    "zh-Hans": "转录…"
+  },
+  "Transcript": {
+    "de": "Transkript",
+    "fr": "Transcription",
+    "zh-Hans": "文字稿"
+  },
+  "Trim the clip's end to the playhead (O)": {
+    "de": "Clipende auf die Abspielposition trimmen (O)",
+    "fr": "Ajuster la fin du clip à la tête de lecture (O)",
+    "zh-Hans": "将片段结尾修剪到播放头（O）"
+  },
+  "Trim the clip's start to the playhead (I)": {
+    "de": "Clipanfang auf die Abspielposition trimmen (I)",
+    "fr": "Ajuster le début du clip à la tête de lecture (I)",
+    "zh-Hans": "将片段开头修剪到播放头（I）"
+  },
+  "Try Again": {
+    "de": "Erneut versuchen",
+    "fr": "Réessayer",
+    "zh-Hans": "重试"
+  },
+  "Turn On": {
+    "de": "Einschalten",
+    "fr": "Activer",
+    "zh-Hans": "打开"
+  },
+  "Turn around": {
+    "de": "Umdrehen",
+    "fr": "Inverser",
+    "zh-Hans": "反转方向"
+  },
+  "Turn on the camera in the recording bar before you record, and your face appears here as a bubble you can place, resize, and restyle.": {
+    "de": "Schalte vor der Aufzeichnung die Kamera in der Aufzeichnungsleiste ein – dann erscheint dein Gesicht hier als Blase, die du platzieren, skalieren und neu gestalten kannst.",
+    "fr": "Activez la caméra dans la barre d’enregistrement avant d’enregistrer : votre visage apparaîtra ici dans une bulle que vous pourrez placer, redimensionner et personnaliser.",
+    "zh-Hans": "录制前在录制栏中打开摄像头，你的脸就会以气泡形式显示在这里，你可以调整它的位置、大小和样式。"
+  },
+  "Turn on the microphone or system audio before recording to capture sound.": {
+    "de": "Schalte vor der Aufzeichnung das Mikrofon oder den Systemton ein, um Ton aufzuzeichnen.",
+    "fr": "Activez le micro ou le son de l’ordinateur avant l’enregistrement pour capturer le son.",
+    "zh-Hans": "录制前打开麦克风或电脑声音即可录制声音。"
+  },
+  "Turn the video's sound back on": {
+    "de": "Ton des Videos wieder einschalten",
+    "fr": "Réactiver le son de la vidéo",
+    "zh-Hans": "重新打开视频声音"
+  },
+  "Type in a text annotation": {
+    "de": "In einer Textbeschriftung tippen",
+    "fr": "Saisir du texte dans une annotation",
+    "zh-Hans": "在文字标注中输入"
+  },
+  "Undo": {
+    "comment": "The Undo command when there's nothing named to undo",
+    "de": "Widerrufen",
+    "fr": "Annuler",
+    "zh-Hans": "撤销"
+  },
+  "Undo / redo": {
+    "de": "Widerrufen/Wiederholen",
+    "fr": "Annuler/Rétablir",
+    "zh-Hans": "撤销/重做"
+  },
+  "Undo Add Arrow": {
+    "de": "Hinzufügen des Pfeils widerrufen",
+    "fr": "Annuler l’ajout de la flèche",
+    "zh-Hans": "撤销添加箭头"
+  },
+  "Undo Add Blur": {
+    "de": "Hinzufügen der Weichzeichnung widerrufen",
+    "fr": "Annuler l’ajout du flou",
+    "zh-Hans": "撤销添加模糊"
+  },
+  "Undo Add Camera Layout": {
+    "de": "Hinzufügen des Kameralayouts widerrufen",
+    "fr": "Annuler l’ajout de la disposition de caméra",
+    "zh-Hans": "撤销添加摄像头布局"
+  },
+  "Undo Add Camera Layouts": {
+    "de": "Hinzufügen der Kameralayouts widerrufen",
+    "fr": "Annuler l’ajout des dispositions de caméra",
+    "zh-Hans": "撤销添加摄像头布局"
+  },
+  "Undo Add Caption": {
+    "de": "Hinzufügen des Untertitels widerrufen",
+    "fr": "Annuler l’ajout du sous-titre",
+    "zh-Hans": "撤销添加字幕"
+  },
+  "Undo Add Captions": {
+    "de": "Hinzufügen der Untertitel widerrufen",
+    "fr": "Annuler l’ajout des sous-titres",
+    "zh-Hans": "撤销添加字幕"
+  },
+  "Undo Add Click": {
+    "de": "Hinzufügen des Klicks widerrufen",
+    "fr": "Annuler l’ajout du clic",
+    "zh-Hans": "撤销添加点按"
+  },
+  "Undo Add Clicks": {
+    "de": "Hinzufügen der Klicks widerrufen",
+    "fr": "Annuler l’ajout des clics",
+    "zh-Hans": "撤销添加点按"
+  },
+  "Undo Add Highlight": {
+    "de": "Hinzufügen der Markierung widerrufen",
+    "fr": "Annuler l’ajout du surlignage",
+    "zh-Hans": "撤销添加高亮"
+  },
+  "Undo Add Image": {
+    "de": "Hinzufügen des Bilds widerrufen",
+    "fr": "Annuler l’ajout de l’image",
+    "zh-Hans": "撤销添加图像"
+  },
+  "Undo Add Intro Card": {
+    "de": "Hinzufügen der Intro-Karte widerrufen",
+    "fr": "Annuler l’ajout du carton d’intro",
+    "zh-Hans": "撤销添加片头卡"
+  },
+  "Undo Add Music": {
+    "de": "Hinzufügen der Musik widerrufen",
+    "fr": "Annuler l’ajout de la musique",
+    "zh-Hans": "撤销添加音乐"
+  },
+  "Undo Add Outro Card": {
+    "de": "Hinzufügen der Outro-Karte widerrufen",
+    "fr": "Annuler l’ajout du carton de fin",
+    "zh-Hans": "撤销添加片尾卡"
+  },
+  "Undo Add Recording": {
+    "de": "Hinzufügen der Aufnahme widerrufen",
+    "fr": "Annuler l’ajout de l’enregistrement",
+    "zh-Hans": "撤销添加录制内容"
+  },
+  "Undo Add Spotlight": {
+    "de": "Hinzufügen des Fokus widerrufen",
+    "fr": "Annuler l’ajout du projecteur",
+    "zh-Hans": "撤销添加聚光灯"
+  },
+  "Undo Add Text": {
+    "de": "Hinzufügen des Texts widerrufen",
+    "fr": "Annuler l’ajout du texte",
+    "zh-Hans": "撤销添加文字"
+  },
+  "Undo Add Zoom": {
+    "de": "Hinzufügen des Zooms widerrufen",
+    "fr": "Annuler l’ajout du zoom",
+    "zh-Hans": "撤销添加缩放"
+  },
+  "Undo Add Zooms": {
+    "de": "Hinzufügen der Zooms widerrufen",
+    "fr": "Annuler l’ajout des zooms",
+    "zh-Hans": "撤销添加缩放"
+  },
+  "Undo Annotation Change": {
+    "de": "Beschriftungsänderung widerrufen",
+    "fr": "Annuler la modification de l’annotation",
+    "zh-Hans": "撤销标注更改"
+  },
+  "Undo Annotations": {
+    "de": "Änderung der Beschriftungen widerrufen",
+    "fr": "Annuler la modification des annotations",
+    "zh-Hans": "撤销标注更改"
+  },
+  "Undo Arrow Style": {
+    "de": "Stiländerung des Pfeils widerrufen",
+    "fr": "Annuler la modification du style de la flèche",
+    "zh-Hans": "撤销箭头样式更改"
+  },
+  "Undo Aspect Ratio": {
+    "de": "Änderung des Seitenverhältnisses widerrufen",
+    "fr": "Annuler la modification du format",
+    "zh-Hans": "撤销宽高比更改"
+  },
+  "Undo Auto Zoom": {
+    "de": "Auto-Zoom widerrufen",
+    "fr": "Annuler le zoom automatique",
+    "zh-Hans": "撤销自动缩放"
+  },
+  "Undo Background": {
+    "de": "Hintergrundänderung widerrufen",
+    "fr": "Annuler la modification de l’arrière-plan",
+    "zh-Hans": "撤销背景更改"
+  },
+  "Undo Blur Style": {
+    "de": "Stiländerung der Weichzeichnung widerrufen",
+    "fr": "Annuler la modification du style du flou",
+    "zh-Hans": "撤销模糊样式更改"
+  },
+  "Undo Camera Change": {
+    "de": "Kameraänderung widerrufen",
+    "fr": "Annuler la modification de la caméra",
+    "zh-Hans": "撤销摄像头更改"
+  },
+  "Undo Camera Layout Change": {
+    "de": "Änderung des Kameralayouts widerrufen",
+    "fr": "Annuler la modification de la disposition de caméra",
+    "zh-Hans": "撤销摄像头布局更改"
+  },
+  "Undo Camera Layouts": {
+    "de": "Änderung der Kameralayouts widerrufen",
+    "fr": "Annuler la modification des dispositions de caméra",
+    "zh-Hans": "撤销摄像头布局更改"
+  },
+  "Undo Caption Style": {
+    "de": "Änderung des Untertitelstils widerrufen",
+    "fr": "Annuler la modification du style des sous-titres",
+    "zh-Hans": "撤销字幕样式更改"
+  },
+  "Undo Caption Translation": {
+    "de": "Untertitelübersetzung widerrufen",
+    "fr": "Annuler la traduction des sous-titres",
+    "zh-Hans": "撤销字幕翻译"
+  },
+  "Undo Captions": {
+    "de": "Änderung der Untertitel widerrufen",
+    "fr": "Annuler la modification des sous-titres",
+    "zh-Hans": "撤销字幕更改"
+  },
+  "Undo Click Sounds": {
+    "de": "Änderung der Klickgeräusche widerrufen",
+    "fr": "Annuler la modification des sons de clic",
+    "zh-Hans": "撤销点按音效更改"
+  },
+  "Undo Clicks": {
+    "de": "Änderung der Klicks widerrufen",
+    "fr": "Annuler la modification des clics",
+    "zh-Hans": "撤销点按更改"
+  },
+  "Undo Crop": {
+    "de": "Beschneiden widerrufen",
+    "fr": "Annuler le rognage",
+    "zh-Hans": "撤销裁剪"
+  },
+  "Undo Cursor Change": {
+    "de": "Zeigeränderung widerrufen",
+    "fr": "Annuler la modification du pointeur",
+    "zh-Hans": "撤销指针更改"
+  },
+  "Undo Cut": {
+    "de": "Schnitt widerrufen",
+    "fr": "Annuler la coupe",
+    "zh-Hans": "撤销剪除"
+  },
+  "Undo Cut Word": {
+    "de": "Herausschneiden des Worts widerrufen",
+    "fr": "Annuler la coupe du mot",
+    "zh-Hans": "撤销剪掉字词"
+  },
+  "Undo Cut Words": {
+    "de": "Herausschneiden der Wörter widerrufen",
+    "fr": "Annuler la coupe des mots",
+    "zh-Hans": "撤销剪掉字词"
+  },
+  "Undo Delete %lld Items": {
+    "comment": "Undo command: several items deleted at once",
+    "de": {
+      "one": "Löschen von %lld Objekt widerrufen",
+      "other": "Löschen von %lld Objekten widerrufen"
+    },
+    "en": {
+      "one": "Undo Delete %lld Item",
+      "other": "Undo Delete %lld Items"
+    },
+    "fr": {
+      "one": "Annuler la suppression de %lld élément",
+      "other": "Annuler la suppression de %lld éléments"
+    },
+    "zh-Hans": "撤销删除 %lld 个项目"
+  },
+  "Undo Delete Annotations": {
+    "de": "Löschen der Beschriftungen widerrufen",
+    "fr": "Annuler la suppression des annotations",
+    "zh-Hans": "撤销删除标注"
+  },
+  "Undo Delete Arrow": {
+    "de": "Löschen des Pfeils widerrufen",
+    "fr": "Annuler la suppression de la flèche",
+    "zh-Hans": "撤销删除箭头"
+  },
+  "Undo Delete Blur": {
+    "de": "Löschen der Weichzeichnung widerrufen",
+    "fr": "Annuler la suppression du flou",
+    "zh-Hans": "撤销删除模糊"
+  },
+  "Undo Delete Camera Layout": {
+    "de": "Löschen des Kameralayouts widerrufen",
+    "fr": "Annuler la suppression de la disposition de caméra",
+    "zh-Hans": "撤销删除摄像头布局"
+  },
+  "Undo Delete Camera Layouts": {
+    "de": "Löschen der Kameralayouts widerrufen",
+    "fr": "Annuler la suppression des dispositions de caméra",
+    "zh-Hans": "撤销删除摄像头布局"
+  },
+  "Undo Delete Caption": {
+    "de": "Löschen des Untertitels widerrufen",
+    "fr": "Annuler la suppression du sous-titre",
+    "zh-Hans": "撤销删除字幕"
+  },
+  "Undo Delete Captions": {
+    "de": "Löschen der Untertitel widerrufen",
+    "fr": "Annuler la suppression des sous-titres",
+    "zh-Hans": "撤销删除字幕"
+  },
+  "Undo Delete Click": {
+    "de": "Löschen des Klicks widerrufen",
+    "fr": "Annuler la suppression du clic",
+    "zh-Hans": "撤销删除点按"
+  },
+  "Undo Delete Clicks": {
+    "de": "Löschen der Klicks widerrufen",
+    "fr": "Annuler la suppression des clics",
+    "zh-Hans": "撤销删除点按"
+  },
+  "Undo Delete Clip": {
+    "de": "Löschen des Clips widerrufen",
+    "fr": "Annuler la suppression du clip",
+    "zh-Hans": "撤销删除片段"
+  },
+  "Undo Delete Clips": {
+    "de": "Löschen der Clips widerrufen",
+    "fr": "Annuler la suppression des clips",
+    "zh-Hans": "撤销删除片段"
+  },
+  "Undo Delete Highlight": {
+    "de": "Löschen der Markierung widerrufen",
+    "fr": "Annuler la suppression du surlignage",
+    "zh-Hans": "撤销删除高亮"
+  },
+  "Undo Delete Image": {
+    "de": "Löschen des Bilds widerrufen",
+    "fr": "Annuler la suppression de l’image",
+    "zh-Hans": "撤销删除图像"
+  },
+  "Undo Delete Spotlight": {
+    "de": "Löschen des Fokus widerrufen",
+    "fr": "Annuler la suppression du projecteur",
+    "zh-Hans": "撤销删除聚光灯"
+  },
+  "Undo Delete Text": {
+    "de": "Löschen des Texts widerrufen",
+    "fr": "Annuler la suppression du texte",
+    "zh-Hans": "撤销删除文字"
+  },
+  "Undo Delete Zoom": {
+    "de": "Löschen des Zooms widerrufen",
+    "fr": "Annuler la suppression du zoom",
+    "zh-Hans": "撤销删除缩放"
+  },
+  "Undo Delete Zooms": {
+    "de": "Löschen der Zooms widerrufen",
+    "fr": "Annuler la suppression des zooms",
+    "zh-Hans": "撤销删除缩放"
+  },
+  "Undo Edit Caption": {
+    "de": "Untertitelbearbeitung widerrufen",
+    "fr": "Annuler la modification du sous-titre",
+    "zh-Hans": "撤销编辑字幕"
+  },
+  "Undo Edit Text": {
+    "de": "Textbearbeitung widerrufen",
+    "fr": "Annuler la modification du texte",
+    "zh-Hans": "撤销编辑文字"
+  },
+  "Undo Enhance Voice": {
+    "de": "Stimmverbesserung widerrufen",
+    "fr": "Annuler l’amélioration de la voix",
+    "zh-Hans": "撤销增强人声"
+  },
+  "Undo Fade": {
+    "de": "Ein- und Ausblenden widerrufen",
+    "fr": "Annuler le fondu",
+    "zh-Hans": "撤销淡入淡出"
+  },
+  "Undo Hide Shortcut": {
+    "de": "Ausblenden des Kurzbefehls widerrufen",
+    "fr": "Annuler le masquage du raccourci",
+    "zh-Hans": "撤销隐藏快捷键"
+  },
+  "Undo Highlight Style": {
+    "de": "Stiländerung der Markierung widerrufen",
+    "fr": "Annuler la modification du style du surlignage",
+    "zh-Hans": "撤销高亮样式更改"
+  },
+  "Undo Image Style": {
+    "de": "Stiländerung des Bilds widerrufen",
+    "fr": "Annuler la modification du style de l’image",
+    "zh-Hans": "撤销图像样式更改"
+  },
+  "Undo Intro and Outro": {
+    "de": "Kamera für Intro und Outro widerrufen",
+    "fr": "Annuler la caméra pour l’intro et la fin",
+    "zh-Hans": "撤销摄像头片头和片尾"
+  },
+  "Undo Move %lld Items": {
+    "comment": "Undo command: several items moved together on the timeline",
+    "de": {
+      "one": "Verschieben von %lld Objekt widerrufen",
+      "other": "Verschieben von %lld Objekten widerrufen"
+    },
+    "en": {
+      "one": "Undo Move %lld Item",
+      "other": "Undo Move %lld Items"
+    },
+    "fr": {
+      "one": "Annuler le déplacement de %lld élément",
+      "other": "Annuler le déplacement de %lld éléments"
+    },
+    "zh-Hans": "撤销移动 %lld 个项目"
+  },
+  "Undo Move Arrow": {
+    "de": "Verschieben des Pfeils widerrufen",
+    "fr": "Annuler le déplacement de la flèche",
+    "zh-Hans": "撤销移动箭头"
+  },
+  "Undo Move Blur": {
+    "de": "Verschieben der Weichzeichnung widerrufen",
+    "fr": "Annuler le déplacement du flou",
+    "zh-Hans": "撤销移动模糊"
+  },
+  "Undo Move Click": {
+    "de": "Verschieben des Klicks widerrufen",
+    "fr": "Annuler le déplacement du clic",
+    "zh-Hans": "撤销移动点按"
+  },
+  "Undo Move Clip": {
+    "de": "Verschieben des Clips widerrufen",
+    "fr": "Annuler le déplacement du clip",
+    "zh-Hans": "撤销移动片段"
+  },
+  "Undo Move Highlight": {
+    "de": "Verschieben der Markierung widerrufen",
+    "fr": "Annuler le déplacement du surlignage",
+    "zh-Hans": "撤销移动高亮"
+  },
+  "Undo Move Image": {
+    "de": "Verschieben des Bilds widerrufen",
+    "fr": "Annuler le déplacement de l’image",
+    "zh-Hans": "撤销移动图像"
+  },
+  "Undo Move Recording": {
+    "de": "Verschieben der Aufnahme widerrufen",
+    "fr": "Annuler le déplacement de l’enregistrement",
+    "zh-Hans": "撤销移动录制内容"
+  },
+  "Undo Move Spotlight": {
+    "de": "Verschieben des Fokus widerrufen",
+    "fr": "Annuler le déplacement du projecteur",
+    "zh-Hans": "撤销移动聚光灯"
+  },
+  "Undo Move Text": {
+    "de": "Verschieben des Texts widerrufen",
+    "fr": "Annuler le déplacement du texte",
+    "zh-Hans": "撤销移动文字"
+  },
+  "Undo Music Change": {
+    "de": "Musikänderung widerrufen",
+    "fr": "Annuler la modification de la musique",
+    "zh-Hans": "撤销音乐更改"
+  },
+  "Undo Mute Clip": {
+    "de": "Stummschalten des Clips widerrufen",
+    "fr": "Annuler la coupure du son du clip",
+    "zh-Hans": "撤销片段静音"
+  },
+  "Undo Mute Part": {
+    "de": "Stummschalten des Abschnitts widerrufen",
+    "fr": "Annuler la coupure du son du passage",
+    "zh-Hans": "撤销部分静音"
+  },
+  "Undo Mute Video": {
+    "de": "Stummschalten des Videos widerrufen",
+    "fr": "Annuler la coupure du son de la vidéo",
+    "zh-Hans": "撤销视频静音"
+  },
+  "Undo Remove All Zooms": {
+    "de": "Entfernen aller Zooms widerrufen",
+    "fr": "Annuler la suppression de tous les zooms",
+    "zh-Hans": "撤销移除所有缩放"
+  },
+  "Undo Remove Captions": {
+    "de": "Entfernen der Untertitel widerrufen",
+    "fr": "Annuler la suppression des sous-titres",
+    "zh-Hans": "撤销移除字幕"
+  },
+  "Undo Remove Intro Card": {
+    "de": "Entfernen der Intro-Karte widerrufen",
+    "fr": "Annuler la suppression du carton d’intro",
+    "zh-Hans": "撤销移除片头卡"
+  },
+  "Undo Remove Music": {
+    "de": "Entfernen der Musik widerrufen",
+    "fr": "Annuler la suppression de la musique",
+    "zh-Hans": "撤销移除音乐"
+  },
+  "Undo Remove Outro Card": {
+    "de": "Entfernen der Outro-Karte widerrufen",
+    "fr": "Annuler la suppression du carton de fin",
+    "zh-Hans": "撤销移除片尾卡"
+  },
+  "Undo Remove Recording": {
+    "de": "Entfernen der Aufnahme widerrufen",
+    "fr": "Annuler la suppression de l’enregistrement",
+    "zh-Hans": "撤销移除录制内容"
+  },
+  "Undo Remove Ums": {
+    "de": "Entfernen der Füllwörter widerrufen",
+    "fr": "Annuler la suppression des mots de remplissage",
+    "zh-Hans": "撤销移除语气词"
+  },
+  "Undo Replace Music": {
+    "de": "Ersetzen der Musik widerrufen",
+    "fr": "Annuler le remplacement de la musique",
+    "zh-Hans": "撤销替换音乐"
+  },
+  "Undo Reset Look": {
+    "de": "Zurücksetzen des Stils widerrufen",
+    "fr": "Annuler la réinitialisation du style",
+    "zh-Hans": "撤销重置风格"
+  },
+  "Undo Restore": {
+    "de": "Wiederherstellen widerrufen",
+    "fr": "Annuler la restauration",
+    "zh-Hans": "撤销恢复"
+  },
+  "Undo Restore Cut": {
+    "de": "Wiederherstellen des Schnitts widerrufen",
+    "fr": "Annuler la restauration de la coupe",
+    "zh-Hans": "撤销恢复剪除部分"
+  },
+  "Undo Restore Cuts": {
+    "de": "Wiederherstellen der Schnitte widerrufen",
+    "fr": "Annuler la restauration des coupes",
+    "zh-Hans": "撤销恢复剪除部分"
+  },
+  "Undo Restore Pause": {
+    "de": "Wiederherstellen der Pause widerrufen",
+    "fr": "Annuler la restauration de la pause",
+    "zh-Hans": "撤销恢复停顿"
+  },
+  "Undo Restore Word": {
+    "de": "Wiederherstellen des Worts widerrufen",
+    "fr": "Annuler la restauration du mot",
+    "zh-Hans": "撤销恢复字词"
+  },
+  "Undo Restore Words": {
+    "de": "Wiederherstellen der Wörter widerrufen",
+    "fr": "Annuler la restauration des mots",
+    "zh-Hans": "撤销恢复字词"
+  },
+  "Undo Shortcut Style": {
+    "de": "Änderung des Kurzbefehlstils widerrufen",
+    "fr": "Annuler la modification du style des raccourcis",
+    "zh-Hans": "撤销快捷键样式更改"
+  },
+  "Undo Shortcuts": {
+    "de": "Änderung der Kurzbefehle widerrufen",
+    "fr": "Annuler la modification des raccourcis",
+    "zh-Hans": "撤销快捷键更改"
+  },
+  "Undo Shorten Pause": {
+    "de": "Kürzen der Pause widerrufen",
+    "fr": "Annuler le raccourcissement de la pause",
+    "zh-Hans": "撤销缩短停顿"
+  },
+  "Undo Shorten Pauses": {
+    "de": "Kürzen der Pausen widerrufen",
+    "fr": "Annuler le raccourcissement des pauses",
+    "zh-Hans": "撤销缩短停顿"
+  },
+  "Undo Sound Change": {
+    "de": "Tonänderung widerrufen",
+    "fr": "Annuler la modification du son",
+    "zh-Hans": "撤销声音更改"
+  },
+  "Undo Speed Change": {
+    "de": "Tempoänderung widerrufen",
+    "fr": "Annuler la modification de la vitesse",
+    "zh-Hans": "撤销速度更改"
+  },
+  "Undo Speed Up Idle": {
+    "de": "Beschleunigen des Leerlaufs widerrufen",
+    "fr": "Annuler l’accélération des temps morts",
+    "zh-Hans": "撤销加速空闲片段"
+  },
+  "Undo Split": {
+    "de": "Teilen widerrufen",
+    "fr": "Annuler la scission",
+    "zh-Hans": "撤销分割"
+  },
+  "Undo Spotlight Style": {
+    "de": "Stiländerung des Fokus widerrufen",
+    "fr": "Annuler la modification du style du projecteur",
+    "zh-Hans": "撤销聚光灯样式更改"
+  },
+  "Undo Start Over": {
+    "de": "Neubeginn mit dem Original widerrufen",
+    "fr": "Annuler le retour à l’original",
+    "zh-Hans": "撤销从头开始"
+  },
+  "Undo Style Change": {
+    "de": "Stiländerung widerrufen",
+    "fr": "Annuler la modification du style",
+    "zh-Hans": "撤销样式更改"
+  },
+  "Undo Text Style": {
+    "de": "Stiländerung des Texts widerrufen",
+    "fr": "Annuler la modification du style du texte",
+    "zh-Hans": "撤销文字样式更改"
+  },
+  "Undo Title Card": {
+    "de": "Änderung der Titelkarte widerrufen",
+    "fr": "Annuler la modification du carton de titre",
+    "zh-Hans": "撤销标题卡更改"
+  },
+  "Undo Transcribe": {
+    "de": "Transkribieren widerrufen",
+    "fr": "Annuler la transcription",
+    "zh-Hans": "撤销转录"
+  },
+  "Undo Transitions": {
+    "de": "Änderung der Übergänge widerrufen",
+    "fr": "Annuler la modification des transitions",
+    "zh-Hans": "撤销转场更改"
+  },
+  "Undo Trim": {
+    "de": "Trimmen widerrufen",
+    "fr": "Annuler l’ajustement",
+    "zh-Hans": "撤销修剪"
+  },
+  "Undo Unmute Clip": {
+    "de": "Aufheben der Clip-Stummschaltung widerrufen",
+    "fr": "Annuler le rétablissement du son du clip",
+    "zh-Hans": "撤销取消片段静音"
+  },
+  "Undo Unmute Part": {
+    "de": "Aufheben der Abschnitts-Stummschaltung widerrufen",
+    "fr": "Annuler le rétablissement du son du passage",
+    "zh-Hans": "撤销取消部分静音"
+  },
+  "Undo Unmute Video": {
+    "de": "Aufheben der Video-Stummschaltung widerrufen",
+    "fr": "Annuler le rétablissement du son de la vidéo",
+    "zh-Hans": "撤销取消视频静音"
+  },
+  "Undo Zoom Change": {
+    "de": "Zoomänderung widerrufen",
+    "fr": "Annuler la modification du zoom",
+    "zh-Hans": "撤销缩放更改"
+  },
+  "Undo Zoom Level for All": {
+    "de": "Einheitliche Zoomstufe widerrufen",
+    "fr": "Annuler le niveau de zoom commun",
+    "zh-Hans": "撤销统一缩放级别"
+  },
+  "Undo Zooms": {
+    "de": "Änderung der Zooms widerrufen",
+    "fr": "Annuler la modification des zooms",
+    "zh-Hans": "撤销缩放更改"
+  },
+  "Unmute Clip": {
+    "de": "Stummschaltung des Clips aufheben",
+    "fr": "Réactiver le son du clip",
+    "zh-Hans": "取消片段静音"
+  },
+  "Unmute preview": {
+    "de": "Stummschaltung der Vorschau aufheben",
+    "fr": "Réactiver le son de l’aperçu",
+    "zh-Hans": "取消预览静音"
+  },
+  "Unmute the Preview": {
+    "de": "Stummschaltung der Vorschau aufheben",
+    "fr": "Réactiver le son de l’aperçu",
+    "zh-Hans": "取消预览静音"
+  },
+  "Unmute the preview (M)": {
+    "de": "Stummschaltung der Vorschau aufheben (M)",
+    "fr": "Réactiver le son de l’aperçu (M)",
+    "zh-Hans": "取消预览静音（M）"
+  },
+  "Use This Look for New Recordings": {
+    "de": "Diesen Stil für neue Aufnahmen verwenden",
+    "fr": "Utiliser ce style pour les nouveaux enregistrements",
+    "zh-Hans": "为新录制内容使用此风格"
+  },
+  "Use for new recordings": {
+    "de": "Für neue Aufnahmen verwenden",
+    "fr": "Utiliser par défaut",
+    "zh-Hans": "用于新录制内容"
+  },
+  "Use this color": {
+    "de": "Diese Farbe verwenden",
+    "fr": "Utiliser cette couleur",
+    "zh-Hans": "使用此颜色"
+  },
+  "Use this level for every zoom": {
+    "de": "Diese Stufe für alle Zooms verwenden",
+    "fr": "Utiliser ce niveau pour tous les zooms",
+    "zh-Hans": "将此级别用于所有缩放"
+  },
+  "Video preview": {
+    "de": "Videovorschau",
+    "fr": "Aperçu vidéo",
+    "zh-Hans": "视频预览"
+  },
+  "Voice": {
+    "de": "Stimme",
+    "fr": "Voix",
+    "zh-Hans": "人声"
+  },
+  "Volume": {
+    "de": "Lautstärke",
+    "fr": "Volume",
+    "zh-Hans": "音量"
+  },
+  "Wallpaper": {
+    "comment": "Background kind: the built-in wallpapers",
+    "de": "Hintergrundbild",
+    "fr": "Fond d’écran",
+    "zh-Hans": "墙纸"
+  },
+  "What was playing on your Mac": {
+    "de": "Was auf deinem Mac zu hören war",
+    "fr": "Ce qui était diffusé sur votre Mac",
+    "zh-Hans": "你的 Mac 上播放的声音"
+  },
+  "Words light up as they're spoken": {
+    "de": "Wörter leuchten auf, während sie gesprochen werden",
+    "fr": "Les mots s’allument au fil de la parole",
+    "zh-Hans": "说到哪个词，哪个词就会亮起"
+  },
+  "Your look": {
+    "comment": "Section: the background, frame, cursor, and zoom style saved for new recordings",
+    "de": "Dein Stil",
+    "fr": "Votre style",
+    "zh-Hans": "你的风格"
+  },
+  "Your microphone": {
+    "de": "Dein Mikrofon",
+    "fr": "Votre micro",
+    "zh-Hans": "你的麦克风"
+  },
+  "Your narration can become captions — then cut the video by editing its words.": {
+    "de": "Dein Kommentar kann Untertitel werden – dann schneidest du das Video per Text.",
+    "fr": "Votre narration peut devenir des sous-titres — puis montez la vidéo par le texte.",
+    "zh-Hans": "你的解说可以变成字幕 — 然后通过编辑文字来剪辑视频。"
+  },
+  "Your narration can become captions — transcribe it here": {
+    "de": "Dein Kommentar kann zu Untertiteln werden – transkribiere ihn hier",
+    "fr": "Votre narration peut devenir des sous-titres — transcrivez-la ici",
+    "zh-Hans": "你的解说可以变成字幕 — 在这里转录"
+  },
+  "Your video's background shows behind you — found on this Mac, frame by frame.": {
+    "de": "Der Hintergrund deines Videos erscheint hinter dir – Bild für Bild auf diesem Mac freigestellt.",
+    "fr": "L’arrière-plan de votre vidéo apparaît derrière vous — détouré sur ce Mac, image par image.",
+    "zh-Hans": "视频背景会显示在你身后 — 在这台 Mac 上逐帧识别。"
+  },
+  "Your words, as text": {
+    "de": "Deine Worte als Text",
+    "fr": "Vos paroles, en texte",
+    "zh-Hans": "把你的话变成文字"
+  },
+  "Zoom": {
+    "comment": "Inspector tab, tool, and a zoom on the timeline (noun)",
+    "de": "Zoom",
+    "fr": "Zoom",
+    "zh-Hans": "缩放"
+  },
+  "Zoom %@": {
+    "comment": "VoiceOver: a zoom and its level",
+    "de": "Zoom %@",
+    "fr": "Zoom %@",
+    "zh-Hans": "缩放 %@"
+  },
+  "Zoom Level": {
+    "de": "Zoomstufe",
+    "fr": "Niveau de zoom",
+    "zh-Hans": "缩放级别"
+  },
+  "Zoom in at the pointer": {
+    "de": "Am Zeiger hineinzoomen",
+    "fr": "Zoomer sur le pointeur",
+    "zh-Hans": "在指针处放大"
+  },
+  "Zoom level": {
+    "de": "Zoomstufe",
+    "fr": "Niveau de zoom",
+    "zh-Hans": "缩放级别"
+  },
+  "Zoom level (zoom selected)": {
+    "de": "Zoomstufe (Zoom ausgewählt)",
+    "fr": "Niveau de zoom (zoom sélectionné)",
+    "zh-Hans": "缩放级别（选中缩放时）"
+  },
+  "Zoom moves": {
+    "de": "Zoombewegungen",
+    "fr": "Mouvements de zoom",
+    "zh-Hans": "缩放效果"
+  },
+  "Zoom to %@ (key %@)": {
+    "comment": "A zoom level such as 2×, then the number key that sets it",
+    "de": "Auf %@ zoomen (Taste %@)",
+    "fr": "Zoomer à %@ (touche %@)",
+    "zh-Hans": "缩放到 %@（按键 %@）"
+  },
+  "Zoom — drag to move, drag an edge to resize, click to edit": {
+    "de": "Zoom – ziehen zum Bewegen, Rand ziehen zum Ändern der Dauer, klicken zum Bearbeiten",
+    "fr": "Zoom — faites glisser pour le déplacer, un bord pour le redimensionner, cliquez pour le modifier",
+    "zh-Hans": "缩放 — 拖移可移动，拖移边缘可调整长度，点按可编辑"
+  },
+  "Zooms": {
+    "de": "Zooms",
+    "fr": "Zooms",
+    "zh-Hans": "缩放"
+  },
+  "Zooms & annotations": {
+    "de": "Zooms & Beschriftungen",
+    "fr": "Zooms et annotations",
+    "zh-Hans": "缩放和标注"
+  },
+  "Zooms and annotations can be duplicated": {
+    "de": "Nur Zooms und Beschriftungen lassen sich duplizieren",
+    "fr": "Seuls les zooms et les annotations peuvent être dupliqués",
+    "zh-Hans": "只能复制缩放和标注"
+  },
+  "add a zoom": {
+    "de": "Zoom hinzufügen",
+    "fr": "ajouter un zoom",
+    "zh-Hans": "添加缩放"
+  },
+  "aim or resize it": {
+    "de": "ausrichten oder Größe ändern",
+    "fr": "le viser ou le redimensionner",
+    "zh-Hans": "对准或调整大小"
+  },
+  "all shortcuts": {
+    "de": "alle Kurzbefehle",
+    "fr": "tous les raccourcis",
+    "zh-Hans": "所有快捷键"
+  },
+  "cut by editing words": {
+    "de": "per Text schneiden",
+    "fr": "couper en modifiant le texte",
+    "zh-Hans": "通过编辑文字剪辑"
+  },
+  "dips under your voice": {
+    "de": "wird unter deiner Stimme leiser",
+    "fr": "s’atténue sous votre voix",
+    "zh-Hans": "人声出现时自动降低"
+  },
+  "every command": {
+    "de": "alle Befehle",
+    "fr": "toutes les commandes",
+    "zh-Hans": "所有命令"
+  },
+  "export": {
+    "comment": "Tip, after ⌘E",
+    "de": "exportieren",
+    "fr": "exporter",
+    "zh-Hans": "导出"
+  },
+  "follows the cursor": {
+    "de": "folgt dem Zeiger",
+    "fr": "suit le pointeur",
+    "zh-Hans": "跟随指针"
+  },
+  "loops": {
+    "de": "wiederholt sich",
+    "fr": "en boucle",
+    "zh-Hans": "循环播放"
+  },
+  "mute the preview": {
+    "de": "Vorschau stummschalten",
+    "fr": "couper le son de l’aperçu",
+    "zh-Hans": "预览静音"
+  },
+  "muted": {
+    "de": "stummgeschaltet",
+    "fr": "son coupé",
+    "zh-Hans": "已静音"
+  },
+  "play": {
+    "comment": "Tip, after the key: what Space does",
+    "de": "abspielen",
+    "fr": "lire",
+    "zh-Hans": "播放"
+  },
+  "select a part to cut": {
+    "de": "Abschnitt zum Schneiden wählen",
+    "fr": "choisir un passage à couper",
+    "zh-Hans": "选择要剪掉的部分"
+  },
+  "select it": {
+    "de": "auswählen",
+    "fr": "le sélectionner",
+    "zh-Hans": "选中它"
+  },
+  "split at the playhead": {
+    "de": "an der Abspielposition teilen",
+    "fr": "scinder à la tête de lecture",
+    "zh-Hans": "在播放头处分割"
+  },
+  "step through the timeline": {
+    "de": "durch die Zeitleiste springen",
+    "fr": "parcourir la timeline",
+    "zh-Hans": "逐项浏览时间线"
+  },
+  "text, highlight, arrow, blur": {
+    "de": "Text, Markierung, Pfeil, Weichzeichnen",
+    "fr": "texte, surlignage, flèche, flou",
+    "zh-Hans": "文字、高亮、箭头、模糊"
+  },
+  "trim to the playhead": {
+    "de": "bis zur Abspielposition trimmen",
+    "fr": "ajuster à la tête de lecture",
+    "zh-Hans": "修剪到播放头"
+  },
+  "type": {
+    "comment": "Tip, after “Double-click text”: type in it",
+    "de": "tippen",
+    "fr": "saisir",
+    "zh-Hans": "输入"
+  },
+  "zoom the timeline": {
+    "de": "Zeitleiste zoomen",
+    "fr": "zoomer dans la timeline",
+    "zh-Hans": "缩放时间线"
+  },
+  "· aim by hand": {
+    "de": "· von Hand ausgerichtet",
+    "fr": "· visée à la main",
+    "zh-Hans": "· 手动对准"
+  },
+  "· drag to aim": {
+    "de": "· zum Ausrichten ziehen",
+    "fr": "· faites glisser pour viser",
+    "zh-Hans": "· 拖移以对准"
+  },
+  "· follows cursor": {
+    "de": "· folgt dem Zeiger",
+    "fr": "· suit le pointeur",
+    "zh-Hans": "· 跟随指针"
+  },
+  "⇧-drag": {
+    "comment": "Drag with Shift held (keep the symbol)",
+    "de": "⇧-Ziehen",
+    "fr": "⇧-glisser",
+    "zh-Hans": "⇧-拖移"
+  },
+  "⇧-drag the timeline": {
+    "de": "⇧-Ziehen in der Zeitleiste",
+    "fr": "⇧-glisser dans la timeline",
+    "zh-Hans": "按住 ⇧ 拖移时间线"
+  },
+  "⇧/⌘-click": {
+    "comment": "Click with Shift or Command held (keep the symbols)",
+    "de": "⇧/⌘-Klick",
+    "fr": "⇧/⌘-clic",
+    "zh-Hans": "⇧/⌘-点按"
+  },
+  "⌘ scroll": {
+    "comment": "Scroll with Command held (keep the symbol)",
+    "de": "⌘ Scrollen",
+    "fr": "⌘ défiler",
+    "zh-Hans": "⌘ 滚动"
+  },
+  "⌘-scroll": {
+    "comment": "Scroll with Command held (keep the symbol)",
+    "de": "⌘-Scrollen",
+    "fr": "⌘-défiler",
+    "zh-Hans": "⌘-滚动"
+  }
+}

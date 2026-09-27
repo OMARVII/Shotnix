@@ -98,6 +98,102 @@
 			<string>%lld barcodes found</string>
 		</dict>
 	</dict>
+	<key>%lld camera layouts</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld camera layout</string>
+			<key>other</key>
+			<string>%lld camera layouts</string>
+		</dict>
+	</dict>
+	<key>%lld captions</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld caption</string>
+			<key>other</key>
+			<string>%lld captions</string>
+		</dict>
+	</dict>
+	<key>%lld clicks</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld click</string>
+			<key>other</key>
+			<string>%lld clicks</string>
+		</dict>
+	</dict>
+	<key>%lld clips</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld clip</string>
+			<key>other</key>
+			<string>%lld clips</string>
+		</dict>
+	</dict>
+	<key>%lld cuts here (%@ removed) — click to restore some or all</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld cut here (%@ removed) — click to restore it</string>
+			<key>other</key>
+			<string>%lld cuts here (%@ removed) — click to restore some or all</string>
+		</dict>
+	</dict>
+	<key>%lld cuts, %@ removed</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld cut, %@ removed</string>
+			<key>other</key>
+			<string>%lld cuts, %@ removed</string>
+		</dict>
+	</dict>
 	<key>%lld days</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -194,6 +290,22 @@
 			<string>%lld links</string>
 		</dict>
 	</dict>
+	<key>%lld parts</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld part</string>
+			<key>other</key>
+			<string>%lld parts</string>
+		</dict>
+	</dict>
 	<key>%lld recorded clicks — in the preview and the export</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -272,6 +384,38 @@
 			<string>%lld second</string>
 			<key>other</key>
 			<string>%lld seconds</string>
+		</dict>
+	</dict>
+	<key>%lld shortcuts</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld shortcut</string>
+			<key>other</key>
+			<string>%lld shortcuts</string>
+		</dict>
+	</dict>
+	<key>%lld zooms</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld zoom</string>
+			<key>other</key>
+			<string>%lld zooms</string>
 		</dict>
 	</dict>
 	<key>Auto zoom applied — %lld zooms follow your clicks</key>
@@ -530,6 +674,70 @@
 			<string>Last %lld captures</string>
 		</dict>
 	</dict>
+	<key>Plans zooms around your %lld clicks. Zooms you placed by hand are kept.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Plans zooms around your %lld click. Zooms you placed by hand are kept.</string>
+			<key>other</key>
+			<string>Plans zooms around your %lld clicks. Zooms you placed by hand are kept.</string>
+		</dict>
+	</dict>
+	<key>Redo Delete %lld Items</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Redo Delete %lld Item</string>
+			<key>other</key>
+			<string>Redo Delete %lld Items</string>
+		</dict>
+	</dict>
+	<key>Redo Move %lld Items</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Redo Move %lld Item</string>
+			<key>other</key>
+			<string>Redo Move %lld Items</string>
+		</dict>
+	</dict>
+	<key>Remove %lld ums</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Remove %lld um</string>
+			<key>other</key>
+			<string>Remove %lld ums</string>
+		</dict>
+	</dict>
 	<key>Removed %lld filler words — %@ shorter</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -544,6 +752,38 @@
 			<string>Removed %lld filler word — %@ shorter</string>
 			<key>other</key>
 			<string>Removed %lld filler words — %@ shorter</string>
+		</dict>
+	</dict>
+	<key>Removed %lld items — ⌘Z to undo</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Removed %lld item — ⌘Z to undo</string>
+			<key>other</key>
+			<string>Removed %lld items — ⌘Z to undo</string>
+		</dict>
+	</dict>
+	<key>Removed %lld items — ⌘Z to undo (a video keeps at least one clip)</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Removed %lld item — ⌘Z to undo (a video keeps at least one clip)</string>
+			<key>other</key>
+			<string>Removed %lld items — ⌘Z to undo (a video keeps at least one clip)</string>
 		</dict>
 	</dict>
 	<key>Removed %lld zooms — ⌘Z to undo</key>
@@ -626,6 +866,22 @@
 			<string>Scrolling capture stopped after %lld minutes.</string>
 		</dict>
 	</dict>
+	<key>Shorten %lld pauses</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Shorten %lld pause</string>
+			<key>other</key>
+			<string>Shorten %lld pauses</string>
+		</dict>
+	</dict>
 	<key>Shortened %lld pauses — %@ shorter</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -688,6 +944,38 @@
 			<string>This replaces %lld caption line, even if you edited or typed it, with a new transcript in %@.</string>
 			<key>other</key>
 			<string>This replaces all %lld caption lines, including any you edited or typed, with a new transcript in %@.</string>
+		</dict>
+	</dict>
+	<key>Undo Delete %lld Items</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Undo Delete %lld Item</string>
+			<key>other</key>
+			<string>Undo Delete %lld Items</string>
+		</dict>
+	</dict>
+	<key>Undo Move %lld Items</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Undo Move %lld Item</string>
+			<key>other</key>
+			<string>Undo Move %lld Items</string>
 		</dict>
 	</dict>
 	<key>You have unsaved edits in %lld screenshots.</key>

@@ -108,7 +108,7 @@ struct VideoTimelineHoverLayer: View {
             if showsZoomHint, !hover.overZoomTrack {
                 HStack(spacing: 6) {
                     Image(systemName: "plus.magnifyingglass")
-                    Text("Click to add a zoom — or press Z at the playhead")
+                    Text(L("Click to add a zoom — or press Z at the playhead"))
                 }
                 .font(.system(size: 11, weight: .medium))
                 .foregroundStyle(VideoEditorTheme.textTertiary)
@@ -156,7 +156,7 @@ struct VideoTimelineHoverLayer: View {
         if length >= VideoZoomRegion.minimumDuration {
             HStack(spacing: 4) {
                 Image(systemName: "plus")
-                Text("Zoom")
+                Text(L("Zoom"))
             }
             .font(.system(size: 11, weight: .bold))
             .foregroundStyle(Color.white.opacity(0.8))
@@ -265,7 +265,7 @@ struct VideoCaptionLane: View, Equatable {
         .gesture(dragGesture)
         // Drawn chips have no views: VoiceOver gets one element for each.
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Captions")
+        .accessibilityLabel(L("Captions"))
         .accessibilityChildren {
             ZStack(alignment: .topLeading) {
                 ForEach(items, id: \.id) { item in
@@ -274,10 +274,10 @@ struct VideoCaptionLane: View, Equatable {
                         .frame(width: frame.width, height: frame.height)
                         .offset(x: frame.minX)
                         .accessibilityElement()
-                        .accessibilityLabel("Caption “\(item.text)”" + VideoEditorModel.spokenSpan(item.start, item.end))
+                        .accessibilityLabel(L("Caption “\(item.text)”") + VideoEditorModel.spokenSpan(item.start, item.end))
                         .accessibilityAddTraits(selectedIDs.contains(item.id) ? [.isButton, .isSelected] : .isButton)
                         .accessibilityAction { model.selectCaption(item.id) }
-                        .accessibilityAction(named: "Delete") { model.deleteCaption(item.id) }
+                        .accessibilityAction(named: L("Delete")) { model.deleteCaption(item.id) }
                 }
             }
         }
@@ -443,9 +443,9 @@ struct VideoKeysLane: View, Equatable {
                     }
                 }
         )
-        .help("Keyboard shortcuts — click one to select it, ⌫ hides it")
+        .help(L("Keyboard shortcuts — click one to select it, ⌫ hides it"))
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Keyboard shortcuts")
+        .accessibilityLabel(L("Keyboard shortcuts"))
         .accessibilityChildren {
             ZStack(alignment: .topLeading) {
                 ForEach(items, id: \.id) { item in
@@ -454,10 +454,10 @@ struct VideoKeysLane: View, Equatable {
                         .frame(width: frame.width, height: frame.height)
                         .offset(x: frame.minX)
                         .accessibilityElement()
-                        .accessibilityLabel("Shortcut \(item.label)" + VideoEditorModel.spokenSpan(item.time, item.time))
+                        .accessibilityLabel(L("Shortcut \(item.label)") + VideoEditorModel.spokenSpan(item.time, item.time))
                         .accessibilityAddTraits(selectedIDs.contains(item.id) ? [.isButton, .isSelected] : .isButton)
                         .accessibilityAction { model.selectKeystroke(item.id) }
-                        .accessibilityAction(named: "Hide") { model.deleteKeystroke(item.id) }
+                        .accessibilityAction(named: L("Hide")) { model.deleteKeystroke(item.id) }
                 }
             }
         }
@@ -563,9 +563,9 @@ struct VideoClickLane: View, Equatable {
                     }
                 }
         )
-        .help("Clicks — drag one to retime it, ⌫ removes the selected one")
+        .help(L("Clicks — drag one to retime it, ⌫ removes the selected one"))
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Clicks")
+        .accessibilityLabel(L("Clicks"))
         .accessibilityChildren {
             ZStack(alignment: .topLeading) {
                 ForEach(items, id: \.id) { item in
@@ -573,13 +573,13 @@ struct VideoClickLane: View, Equatable {
                         .frame(width: 14, height: M.clickLaneHeight)
                         .offset(x: geometry.x(item.time) - 7)
                         .accessibilityElement()
-                        .accessibilityLabel("Click" + VideoEditorModel.spokenSpan(item.time, item.time))
+                        .accessibilityLabel(L("Click") + VideoEditorModel.spokenSpan(item.time, item.time))
                         .accessibilityAddTraits(selectedIDs.contains(item.id) ? [.isButton, .isSelected] : .isButton)
                         .accessibilityAction {
                             model.selection = .click(item.id)
                             model.seek(to: item.time)
                         }
-                        .accessibilityAction(named: "Delete") { model.deleteClick(item.id) }
+                        .accessibilityAction(named: L("Delete")) { model.deleteClick(item.id) }
                 }
             }
         }
@@ -653,7 +653,7 @@ struct VideoCameraLayoutLane: View, Equatable {
                     var inner = context
                     inner.clip(to: Path(frame.insetBy(dx: 5, dy: 0)))
                     inner.draw(
-                        Text("\(Image(systemName: item.layout.symbol)) \(frame.width > 90 ? item.layout.title : "")")
+                        (Text(Image(systemName: item.layout.symbol)) + Text(verbatim: frame.width > 90 ? " \(item.layout.title)" : " "))
                             .font(.system(size: 10, weight: .semibold))
                             .foregroundColor(.white),
                         at: CGPoint(x: frame.minX + 7, y: frame.midY),
@@ -717,9 +717,9 @@ struct VideoCameraLayoutLane: View, Equatable {
                     }
                 }
         )
-        .help("Camera layouts — drag to move, drag an edge to retime, click to change")
+        .help(L("Camera layouts — drag to move, drag an edge to retime, click to change"))
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Camera layouts")
+        .accessibilityLabel(L("Camera layouts"))
         .accessibilityChildren {
             ZStack(alignment: .topLeading) {
                 ForEach(items, id: \.id) { item in
@@ -728,13 +728,13 @@ struct VideoCameraLayoutLane: View, Equatable {
                         .frame(width: frame.width, height: frame.height)
                         .offset(x: frame.minX)
                         .accessibilityElement()
-                        .accessibilityLabel("Camera layout: \(item.layout.title)" + VideoEditorModel.spokenSpan(item.start, item.end))
+                        .accessibilityLabel(L("Camera layout: \(item.layout.title)") + VideoEditorModel.spokenSpan(item.start, item.end))
                         .accessibilityAddTraits(selectedIDs.contains(item.id) ? [.isButton, .isSelected] : .isButton)
                         .accessibilityAction {
                             model.selectCameraLayout(item.id)
                             model.inspectorTab = .camera
                         }
-                        .accessibilityAction(named: "Delete") { model.deleteCameraLayout(item.id) }
+                        .accessibilityAction(named: L("Delete")) { model.deleteCameraLayout(item.id) }
                 }
             }
         }

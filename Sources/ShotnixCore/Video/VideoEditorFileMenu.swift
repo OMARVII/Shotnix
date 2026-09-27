@@ -8,20 +8,20 @@ final class VideoEditorFileMenu: NSObject, NSMenuDelegate, NSMenuItemValidation 
     static let shared = VideoEditorFileMenu()
 
     private weak var exportItem: NSMenuItem?
-    private let recentMenu = NSMenu(title: "Recent Exports")
+    private let recentMenu = NSMenu(title: L("Recent Exports"))
     private var keyWindowObserver: NSObjectProtocol?
 
     /// Adds the editor's items to `menu` as their own section.
     func addItems(to menu: NSMenu) {
         if !menu.items.isEmpty { menu.addItem(.separator()) }
-        let export = NSMenuItem(title: "Export Video…", action: #selector(exportVideo(_:)), keyEquivalent: "")
+        let export = NSMenuItem(title: L("Export Video…"), action: #selector(exportVideo(_:)), keyEquivalent: "")
         export.target = self
         menu.addItem(export)
         exportItem = export
-        let subtitles = NSMenuItem(title: "Save Subtitles (.srt)…", action: #selector(saveSubtitles(_:)), keyEquivalent: "")
+        let subtitles = NSMenuItem(title: L("Save Subtitles (.srt)…"), action: #selector(saveSubtitles(_:)), keyEquivalent: "")
         subtitles.target = self
         menu.addItem(subtitles)
-        let recent = NSMenuItem(title: "Recent Exports", action: nil, keyEquivalent: "")
+        let recent = NSMenuItem(title: L("Recent Exports"), action: nil, keyEquivalent: "")
         recentMenu.delegate = self
         recent.submenu = recentMenu
         menu.addItem(recent)
@@ -72,7 +72,7 @@ final class VideoEditorFileMenu: NSObject, NSMenuDelegate, NSMenuItemValidation 
             .filter { FileManager.default.fileExists(atPath: $0.exportPath) }
             .sorted { ($0.sourcePath == source ? 0 : 1, -$0.exportedAt.timeIntervalSince1970) < ($1.sourcePath == source ? 0 : 1, -$1.exportedAt.timeIntervalSince1970) }
         guard !exports.isEmpty else {
-            let none = NSMenuItem(title: "No Exports Yet", action: nil, keyEquivalent: "")
+            let none = NSMenuItem(title: L("No Exports Yet"), action: nil, keyEquivalent: "")
             none.isEnabled = false
             menu.addItem(none)
             return
@@ -81,7 +81,7 @@ final class VideoEditorFileMenu: NSObject, NSMenuDelegate, NSMenuItemValidation 
             let item = NSMenuItem(title: export.exportURL.lastPathComponent, action: #selector(revealExport(_:)), keyEquivalent: "")
             item.target = self
             item.representedObject = export.exportPath
-            item.toolTip = "Show in Finder — \(export.exportPath)"
+            item.toolTip = L("Show in Finder — \(export.exportPath)")
             menu.addItem(item)
         }
     }

@@ -68,8 +68,8 @@ struct VideoOverlayColorPicker: View {
             .contentShape(Circle())
         }
         .buttonStyle(.plain)
-        .help(clear ? "No background — text only" : "Use this color")
-        .accessibilityLabel(clear ? "No background" : "Color")
+        .help(clear ? L("No background — text only") : L("Use this color"))
+        .accessibilityLabel(clear ? L("No background") : L("Color"))
     }
 }
 
@@ -102,8 +102,8 @@ struct VideoCustomColorSwatch: View {
             .contentShape(Circle())
         }
         .buttonStyle(.plain)
-        .help("Any color…")
-        .accessibilityLabel("Custom color")
+        .help(L("Any color…"))
+        .accessibilityLabel(L("Custom color"))
     }
 }
 
@@ -150,7 +150,7 @@ struct VideoScriptInspector: View {
             }
         } else {
             VStack(alignment: .leading, spacing: 0) {
-                VideoSegmented(options: [("transcript", "Edit by text"), ("captions", "Captions")], selection: $mode)
+                VideoSegmented(options: [("transcript", L("Edit by text")), ("captions", L("Captions"))], selection: $mode)
                     .padding(.horizontal, 16)
                     .padding(.top, 14)
                 if let error = model.captionJob?.error {
@@ -168,8 +168,8 @@ struct VideoScriptInspector: View {
                         }
                         .buttonStyle(.plain)
                         .foregroundStyle(VideoEditorTheme.textSecondary)
-                        .help("Dismiss")
-                        .accessibilityLabel("Dismiss")
+                        .help(L("Dismiss"))
+                        .accessibilityLabel(L("Dismiss"))
                     }
                     .padding(.horizontal, 16)
                     .padding(.top, 10)
@@ -203,27 +203,27 @@ struct VideoTranscriptPanel: View {
             // One per row: their counts ("Shorten 12 pauses") need the width.
             VStack(spacing: 6) {
                 cleanup(
-                    title: fillers > 0 ? "Remove \(fillers) um\(fillers == 1 ? "" : "s")" : "No ums",
+                    title: fillers > 0 ? L("Remove \(fillers) ums") : L("No ums"),
                     symbol: "wand.and.stars",
-                    help: "Cut filler words like um and uh",
+                    help: L("Cut filler words like um and uh"),
                     enabled: fillers > 0,
                     action: model.removeFillers
                 )
                 cleanup(
-                    title: pauses.isEmpty ? "No pauses to shorten" : "Shorten \(pauses.count) pause\(pauses.count == 1 ? "" : "s")",
+                    title: pauses.isEmpty ? L("No pauses to shorten") : L("Shorten \(pauses.count) pauses"),
                     symbol: "forward.end",
                     help: model.project.cursorSamples.isEmpty && !model.seesScreenChanges
-                        ? "Shortens every silence over a second (this video has no Shotnix pointer data to spot what happens on screen)"
+                        ? L("Shortens every silence over a second (this video has no Shotnix pointer data to spot what happens on screen)")
                         : !model.seesScreenChanges
-                        ? (pauses.isEmpty ? "Silences over a second get shortened — except while you move the pointer, click, or press a shortcut" : "Saves \(VideoEditorModel.format(pauseSeconds)) — silences where the pointer rests and nothing is clicked or pressed (this older recording can't see typing)")
+                        ? (pauses.isEmpty ? L("Silences over a second get shortened — except while you move the pointer, click, or press a shortcut") : L("Saves \(VideoEditorModel.format(pauseSeconds)) — silences where the pointer rests and nothing is clicked or pressed (this older recording can't see typing)"))
                         : pauses.isEmpty
-                        ? "Silences over a second get shortened — except while you click, type, scroll, or move the pointer, so the demo itself is never cut"
-                        : "Saves \(VideoEditorModel.format(pauseSeconds)) — only silences where nothing happens on screen",
+                        ? L("Silences over a second get shortened — except while you click, type, scroll, or move the pointer, so the demo itself is never cut")
+                        : L("Saves \(VideoEditorModel.format(pauseSeconds)) — only silences where nothing happens on screen"),
                     enabled: !pauses.isEmpty,
                     action: model.shortenPauses
                 )
             }
-            Text("Select words and press ⌫ to cut them from the video — ⌫ again on crossed-out words puts them back. Click a word to jump there; ⌘F finds.")
+            Text(L("Select words and press ⌫ to cut them from the video — ⌫ again on crossed-out words puts them back. Click a word to jump there; ⌘F finds."))
                 .font(.system(size: 10.5))
                 .foregroundStyle(VideoEditorTheme.textTertiary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -265,21 +265,21 @@ struct VideoCaptionsInspector: View {
                 generateCard
             }
             if !model.project.captions.isEmpty {
-                VideoInspectorSection("Look") {
-                    VideoToggleRow(title: "Show captions", isOn: binding(\.visible))
-                    VideoToggleRow(title: "Highlight words", detail: "Words light up as they're spoken", isOn: binding(\.highlightWords))
+                VideoInspectorSection(L("Look")) {
+                    VideoToggleRow(title: L("Show captions"), isOn: binding(\.visible))
+                    VideoToggleRow(title: L("Highlight words"), detail: L("Words light up as they're spoken"), isOn: binding(\.highlightWords))
                     // Caption looks (VideoCaptionStyles.swift).
                     VideoCaptionPresetPicker(model: model)
-                    labeled("Size") {
+                    labeled(L("Size")) {
                         VideoSegmented(options: VideoTextSize.allCases.map { ($0, $0.title) }, selection: binding(\.size))
                     }
-                    labeled("Position") {
+                    labeled(L("Position")) {
                         VideoSegmented(options: VideoTextPosition.allCases.map { ($0, $0.title) }, selection: binding(\.position))
                     }
                 }
                 .disabled(model.captionJob != nil)
 
-                VideoInspectorSection("Lines · \(model.project.captions.count)", trailing: {
+                VideoInspectorSection(L("Lines · \(model.project.captions.count)"), trailing: {
                     Button {
                         model.addCaptionAtPlayhead()
                     } label: {
@@ -288,7 +288,7 @@ struct VideoCaptionsInspector: View {
                             .frame(width: 22, height: 20)
                     }
                     .buttonStyle(VideoToolButtonStyle())
-                    .help("Add a caption at the playhead")
+                    .help(L("Add a caption at the playhead"))
                 }) {
                     VideoCaptionLinesList(model: model, clock: model.clock)
                 }
@@ -300,12 +300,12 @@ struct VideoCaptionsInspector: View {
                     // .srt or .vtt (VideoCaptionStyles.swift).
                     VideoSubtitlesButton(model: model)
                     Menu {
-                        Button(model.hasTranscript ? "Transcribe Again…" : "Transcribe…") { model.transcribeAgain() }
+                        Button(model.hasTranscript ? L("Transcribe Again…") : L("Transcribe…")) { model.transcribeAgain() }
                             .disabled(model.captionTask != nil)
-                        Menu("Language") { languageItems }
+                        Menu(L("Language")) { languageItems }
                             .disabled(model.captionTask != nil)
                         Divider()
-                        Button("Remove Transcript & Captions", role: .destructive) { model.clearCaptions() }
+                        Button(L("Remove Transcript & Captions"), role: .destructive) { model.clearCaptions() }
                     } label: {
                         Image(systemName: "ellipsis")
                             .frame(width: 30, height: 26)
@@ -313,8 +313,8 @@ struct VideoCaptionsInspector: View {
                     .menuStyle(.borderlessButton)
                     .menuIndicator(.hidden)
                     .fixedSize()
-                    .help("More")
-                    .accessibilityLabel("More caption options")
+                    .help(L("More"))
+                    .accessibilityLabel(L("More caption options"))
                 }
             }
         }
@@ -334,12 +334,12 @@ struct VideoCaptionsInspector: View {
     @ViewBuilder
     private var generateCard: some View {
         VideoCard {
-            Label("Your words, as text", systemImage: "text.quote")
+            Label(L("Your words, as text"), systemImage: "text.quote")
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(VideoEditorTheme.textPrimary)
             Text(model.hasAudio
-                 ? "Shotnix listens to the recording right on this Mac — nothing is uploaded. Then cut the video by deleting words, remove ums and long pauses in one click, and add captions."
-                 : "This recording has no sound. Turn on the microphone before recording to narrate it.")
+                 ? L("Shotnix listens to the recording right on this Mac — nothing is uploaded. Then cut the video by deleting words, remove ums and long pauses in one click, and add captions.")
+                 : L("This recording has no sound. Turn on the microphone before recording to narrate it."))
                 .font(.system(size: 11))
                 .foregroundStyle(VideoEditorTheme.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -354,7 +354,7 @@ struct VideoCaptionsInspector: View {
                         // The time spent always moves, even while the
                         // recognizer hasn't said how far it is.
                         TimelineView(.periodic(from: .now, by: 1)) { context in
-                            Text([job.fraction.map { "\(Int(($0 * 100).rounded()))%" }, job.elapsed(at: context.date)].compactMap { $0 }.joined(separator: " · "))
+                            Text([job.fraction.map { VideoEditorFormat.percent($0) }, job.elapsed(at: context.date)].compactMap { $0 }.joined(separator: " · "))
                                 .font(.system(size: 11, weight: .semibold, design: .monospaced))
                                 .foregroundStyle(VideoEditorTheme.textSecondary)
                         }
@@ -364,11 +364,11 @@ struct VideoCaptionsInspector: View {
                     } else {
                         ProgressView().progressViewStyle(.linear).tint(VideoEditorTheme.caption)
                     }
-                    Text("Keep editing — the words appear here when Shotnix is done listening.")
+                    Text(L("Keep editing — the words appear here when Shotnix is done listening."))
                         .font(.system(size: 10.5))
                         .foregroundStyle(VideoEditorTheme.textTertiary)
                         .fixedSize(horizontal: false, vertical: true)
-                    Button("Cancel") { model.cancelCaptions() }
+                    Button(L("Cancel")) { model.cancelCaptions() }
                         .buttonStyle(VideoSecondaryButtonStyle())
                 }
             } else {
@@ -380,7 +380,7 @@ struct VideoCaptionsInspector: View {
                         .foregroundStyle(Color.orange)
                         .fixedSize(horizontal: false, vertical: true)
                     if job.needsPrivacySettings {
-                        Button("Open Privacy Settings") {
+                        Button(L("Open Privacy Settings")) {
                             if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_SpeechRecognition") {
                                 NSWorkspace.shared.open(url)
                             }
@@ -389,7 +389,7 @@ struct VideoCaptionsInspector: View {
                     }
                 }
                 HStack(spacing: 8) {
-                    Text("Language")
+                    Text(L("Language"))
                         .font(.system(size: 11.5, weight: .medium))
                         .foregroundStyle(VideoEditorTheme.textSecondary)
                     Spacer()
@@ -407,7 +407,7 @@ struct VideoCaptionsInspector: View {
                     // Typed lines get replaced: that asks first.
                     model.transcribeAgain()
                 } label: {
-                    Label(model.captionJob?.error != nil ? "Try Again" : "Transcribe", systemImage: "waveform.badge.magnifyingglass")
+                    Label(model.captionJob?.error != nil ? L("Try Again") : L("Transcribe"), systemImage: "waveform.badge.magnifyingglass")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(VideoPrimaryButtonStyle())
@@ -416,14 +416,14 @@ struct VideoCaptionsInspector: View {
                     Button {
                         model.captionJob = nil
                     } label: {
-                        Text("Dismiss").frame(maxWidth: .infinity)
+                        Text(L("Dismiss")).frame(maxWidth: .infinity)
                     }
                     .buttonStyle(VideoSecondaryButtonStyle())
                 } else if model.project.captions.isEmpty {
                     Button {
                         model.addCaptionAtPlayhead()
                     } label: {
-                        Text("Or type one at the playhead")
+                        Text(L("Or type one at the playhead"))
                             .font(.system(size: 11, weight: .medium))
                             .foregroundStyle(VideoEditorTheme.textSecondary)
                             .frame(maxWidth: .infinity)
@@ -436,7 +436,7 @@ struct VideoCaptionsInspector: View {
 
     @ViewBuilder
     private var languageItems: some View {
-        Button("\(VideoEditorModel.systemLanguageTitle) (This Mac)") {
+        Button(L("\(VideoEditorModel.systemLanguageTitle) (This Mac)")) {
             model.captionLanguage = ""
         }
         if !model.captionLanguages.isEmpty {
@@ -482,8 +482,8 @@ private struct VideoCaptionRow: View {
                     .padding(.top, 3)
             }
             .buttonStyle(.plain)
-            .help("Jump here")
-            TextField("Caption", text: Binding(get: { line.text }, set: { model.updateCaption(line.id, text: $0) }), axis: .vertical)
+            .help(L("Jump here"))
+            TextField(L("Caption"), text: Binding(get: { line.text }, set: { model.updateCaption(line.id, text: $0) }), axis: .vertical)
                 .textFieldStyle(.plain)
                 .font(.system(size: 12))
                 .foregroundStyle(VideoEditorTheme.textPrimary)
@@ -499,8 +499,8 @@ private struct VideoCaptionRow: View {
                         .frame(width: 16, height: 16)
                 }
                 .buttonStyle(.plain)
-                .help("Remove this caption")
-                .accessibilityLabel("Remove caption")
+                .help(L("Remove this caption"))
+                .accessibilityLabel(L("Remove caption"))
             }
         }
         .padding(.horizontal, 8)
@@ -524,24 +524,24 @@ struct VideoKeyboardSection: View {
     }
 
     var body: some View {
-        VideoInspectorSection("Keys on screen") {
+        VideoInspectorSection(L("Keys on screen")) {
             if model.project.keystrokes.isEmpty {
-                Text("None in this recording. Turn on “Show keyboard shortcuts” in Settings → Recording and every ⌘ shortcut you press appears as keycaps. Plain typing is never recorded.")
+                Text(L("None in this recording. Turn on “Show keyboard shortcuts” in Settings → Recording and every ⌘ shortcut you press appears as keycaps. Plain typing is never recorded."))
                     .font(.system(size: 10.5))
                     .foregroundStyle(VideoEditorTheme.textTertiary)
                     .fixedSize(horizontal: false, vertical: true)
-                Button("Open Recording Settings…") {
+                Button(L("Open Recording Settings…")) {
                     PreferencesWindowController.shared.show(tab: .recording)
                 }
                 .buttonStyle(VideoSecondaryButtonStyle())
             } else {
                 VideoToggleRow(
-                    title: "Show shortcuts",
-                    detail: "\(model.project.keystrokes.count) pressed — select one on the timeline and press ⌫ to hide it",
+                    title: L("Show shortcuts"),
+                    detail: L("\(model.project.keystrokes.count) pressed — select one on the timeline and press ⌫ to hide it"),
                     isOn: binding(\.visible)
                 )
                 HStack(spacing: 10) {
-                    Text("Size")
+                    Text(L("Size"))
                         .font(.system(size: 12, weight: .medium))
                         .foregroundStyle(VideoEditorTheme.textPrimary)
                         .frame(width: 58, alignment: .leading)
@@ -549,7 +549,7 @@ struct VideoKeyboardSection: View {
                 }
                 .disabled(!model.project.keystrokeStyle.visible)
                 HStack(spacing: 10) {
-                    Text("Position")
+                    Text(L("Position"))
                         .font(.system(size: 12, weight: .medium))
                         .foregroundStyle(VideoEditorTheme.textPrimary)
                         .frame(width: 58, alignment: .leading)
@@ -576,15 +576,15 @@ struct VideoCameraInspector: View {
                 // Recorded with a camera, but its file moved or was deleted
                 // (and no added recording brings one).
                 VideoCard {
-                    Label("Camera footage is missing", systemImage: "exclamationmark.triangle.fill")
+                    Label(L("Camera footage is missing"), systemImage: "exclamationmark.triangle.fill")
                         .font(.system(size: 12, weight: .semibold))
                         .foregroundStyle(VideoEditorTheme.textPrimary)
-                    Text("This video was recorded with your camera, but “\(missing.lastPathComponent)” isn't in \(missing.deletingLastPathComponent().lastPathComponent) anymore. Put it back there and open the video again to get the camera bubble back.")
+                    Text(L("This video was recorded with your camera, but “\(missing.lastPathComponent)” isn't in \(missing.deletingLastPathComponent().lastPathComponent) anymore. Put it back there and open the video again to get the camera bubble back."))
                         .font(.system(size: 11))
                         .foregroundStyle(VideoEditorTheme.textSecondary)
                         .fixedSize(horizontal: false, vertical: true)
                     if FileManager.default.fileExists(atPath: missing.deletingLastPathComponent().path) {
-                        Button("Show Folder in Finder") {
+                        Button(L("Show Folder in Finder")) {
                             NSWorkspace.shared.open(missing.deletingLastPathComponent())
                         }
                         .buttonStyle(VideoSecondaryButtonStyle())
@@ -592,20 +592,20 @@ struct VideoCameraInspector: View {
                 }
             } else if !model.hasCameraInAnyRecording {
                 VideoCard {
-                    Label("No camera in this recording", systemImage: "video.slash")
+                    Label(L("No camera in this recording"), systemImage: "video.slash")
                         .font(.system(size: 12, weight: .semibold))
                         .foregroundStyle(VideoEditorTheme.textPrimary)
-                    Text("Turn on the camera in the recording bar before you record, and your face appears here as a bubble you can place, resize, and restyle.")
+                    Text(L("Turn on the camera in the recording bar before you record, and your face appears here as a bubble you can place, resize, and restyle."))
                         .font(.system(size: 11))
                         .foregroundStyle(VideoEditorTheme.textSecondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
             } else {
-                VideoInspectorSection("Camera") {
-                    VideoToggleRow(title: "Show camera", isOn: binding(\.visible))
+                VideoInspectorSection(L("Camera")) {
+                    VideoToggleRow(title: L("Show camera"), isOn: binding(\.visible))
                     VideoSegmented(options: VideoWebcamSettings.Shape.allCases.map { ($0, $0.title) }, selection: binding(\.shape))
                     HStack(spacing: 10) {
-                        Text("Behind you")
+                        Text(L("Behind you"))
                             .font(.system(size: 12, weight: .medium))
                             .foregroundStyle(VideoEditorTheme.textPrimary)
                             .fixedSize()
@@ -613,39 +613,39 @@ struct VideoCameraInspector: View {
                     }
                     .disabled(model.project.webcam.shape == .cutout)
                     if model.project.webcam.shape == .cutout || model.project.webcam.backdrop == .remove {
-                        Text("Your video's background shows behind you — found on this Mac, frame by frame.")
+                        Text(L("Your video's background shows behind you — found on this Mac, frame by frame."))
                             .font(.system(size: 10.5))
                             .foregroundStyle(VideoEditorTheme.textTertiary)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     VideoSliderRow(
-                        title: "Size",
+                        title: L("Size"),
                         value: binding(\.size, coalesce: "webcam-size"),
                         range: VideoWebcamSettings.sizeRange,
                         defaultValue: VideoWebcamSettings().size,
-                        format: { "\(Int(($0 * 100).rounded()))%" },
+                        format: { VideoEditorFormat.percent($0) },
                         onEditingEnded: { model.endGesture() }
                     )
                 }
                 .disabled(false)
 
-                VideoInspectorSection("Position") {
+                VideoInspectorSection(L("Position")) {
                     VideoAnchorPicker(selection: binding(\.anchor))
-                    Text("Or drag the bubble on the video — it snaps to the nearest spot.")
+                    Text(L("Or drag the bubble on the video — it snaps to the nearest spot."))
                         .font(.system(size: 10.5))
                         .foregroundStyle(VideoEditorTheme.textTertiary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 .disabled(!model.project.webcam.visible)
 
-                VideoInspectorSection("Behavior") {
-                    VideoToggleRow(title: "Mirror", detail: "Flip like a selfie", isOn: binding(\.mirror))
-                    VideoToggleRow(title: "Shrink while zoomed", detail: "Gets out of the way during zoom moves", isOn: binding(\.shrinkWhenZoomed))
+                VideoInspectorSection(L("Behavior")) {
+                    VideoToggleRow(title: L("Mirror"), detail: L("Flip like a selfie"), isOn: binding(\.mirror))
+                    VideoToggleRow(title: L("Shrink while zoomed"), detail: L("Gets out of the way during zoom moves"), isOn: binding(\.shrinkWhenZoomed))
                 }
                 .disabled(!model.project.webcam.visible)
 
-                VideoInspectorSection("Layouts") {
-                    Text("Switch the camera to full screen for talking points, or put it side by side with the screen — at the playhead. Each shows on the Camera lane.")
+                VideoInspectorSection(L("Layouts")) {
+                    Text(L("Switch the camera to full screen for talking points, or put it side by side with the screen — at the playhead. Each shows on the Camera lane."))
                         .font(.system(size: 10.5))
                         .foregroundStyle(VideoEditorTheme.textTertiary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -656,19 +656,19 @@ struct VideoCameraInspector: View {
                             } label: {
                                 VStack(spacing: 4) {
                                     Image(systemName: layout.symbol).font(.system(size: 14, weight: .semibold))
-                                    Text(layout.shortTitle).font(.system(size: 10, weight: .semibold)).lineLimit(1)
+                                    Text(layout.shortTitle).font(.system(size: 10, weight: .semibold)).lineLimit(1).minimumScaleFactor(0.75)
                                 }
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 50)
                             }
                             .buttonStyle(VideoSecondaryButtonStyle())
-                            .help("Add “\(layout.title)” at the playhead")
+                            .help(L("Add “\(layout.title)” at the playhead"))
                         }
                     }
                     Button {
                         model.addCameraIntroOutro()
                     } label: {
-                        Label("Full camera for intro & outro", systemImage: "person.crop.rectangle.badge.plus")
+                        Label(L("Full camera for intro & outro"), systemImage: "person.crop.rectangle.badge.plus")
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(VideoSecondaryButtonStyle())

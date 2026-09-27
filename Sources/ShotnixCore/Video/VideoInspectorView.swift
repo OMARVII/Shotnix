@@ -96,8 +96,11 @@ struct VideoInspectorView: View {
                         Image(systemName: tab.symbol)
                             .font(.system(size: 14, weight: .semibold))
                             .frame(height: 17)
+                        // Never wraps: a longer name ("Untertitel") takes a
+                        // little room from the others.
                         Text(tab.title)
                             .font(.system(size: 10, weight: .semibold))
+                            .fixedSize()
                     }
                     .foregroundStyle(selected ? VideoEditorTheme.textPrimary : VideoEditorTheme.textSecondary)
                     .frame(maxWidth: .infinity)
@@ -119,7 +122,7 @@ struct VideoInspectorView: View {
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .help(tab == .captions && model.suggestsTranscript ? "Your narration can become captions — transcribe it here" : tab.help)
+                .help(tab == .captions && model.suggestsTranscript ? L("Your narration can become captions — transcribe it here") : tab.help)
                 .accessibilityLabel(tab.title)
                 .accessibilityHint(tab.help)
                 .accessibilityAddTraits(selected ? [.isSelected, .isButton] : .isButton)
@@ -127,7 +130,7 @@ struct VideoInspectorView: View {
         }
         .padding(8)
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Inspector tabs")
+        .accessibilityLabel(L("Inspector tabs"))
     }
 }
 
@@ -146,7 +149,7 @@ struct VideoBackgroundInspector: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 22) {
-            VideoInspectorSection("Background", trailing: {
+            VideoInspectorSection(L("Background"), trailing: {
                 Button {
                     model.shuffleBackground()
                 } label: {
@@ -155,26 +158,26 @@ struct VideoBackgroundInspector: View {
                         .foregroundStyle(VideoEditorTheme.textSecondary)
                 }
                 .buttonStyle(.plain)
-                .help("Shuffle the background")
-                .accessibilityLabel("Shuffle the background")
+                .help(L("Shuffle the background"))
+                .accessibilityLabel(L("Shuffle the background"))
             }) {
-                VideoSegmented(options: [(.wallpaper, "Wallpaper"), (.gradient, "Gradient"), (.color, "Color"), (.image, "Image")], selection: $kind)
+                VideoSegmented(options: [(.wallpaper, L("Wallpaper")), (.gradient, L("Gradient")), (.color, L("Color")), (.image, L("Image"))], selection: $kind)
                 swatchGrid
                 if showsBlur {
                     VideoSliderRow(
-                        title: "Blur",
+                        title: L("Blur"),
                         value: Binding(get: { project.backgroundBlur }, set: { value in model.setStyle(coalesce: "bg-blur") { $0.backgroundBlur = value } }),
                         range: 0...1,
                         defaultValue: 0,
-                        format: { "\(Int(($0 * 100).rounded()))%" },
+                        format: { VideoEditorFormat.percent($0) },
                         onEditingEnded: { model.endGesture() }
                     )
                 }
             }
 
-            VideoInspectorSection("Frame") {
+            VideoInspectorSection(L("Frame")) {
                 VideoSliderRow(
-                    title: "Padding",
+                    title: L("Padding"),
                     value: Binding(get: { project.padding }, set: { value in model.setStyle(coalesce: "padding") { $0.padding = value } }),
                     range: 0...0.25,
                     defaultValue: VideoStylePreset.factory.padding,
@@ -182,7 +185,7 @@ struct VideoBackgroundInspector: View {
                     onEditingEnded: { model.endGesture() }
                 )
                 VideoSliderRow(
-                    title: "Roundness",
+                    title: L("Roundness"),
                     value: Binding(get: { project.cornerRadius }, set: { value in model.setStyle(coalesce: "radius") { $0.cornerRadius = value } }),
                     range: 0...60,
                     defaultValue: VideoStylePreset.factory.cornerRadius,
@@ -190,16 +193,16 @@ struct VideoBackgroundInspector: View {
                     onEditingEnded: { model.endGesture() }
                 )
                 VideoSliderRow(
-                    title: "Shadow",
+                    title: L("Shadow"),
                     value: Binding(get: { project.shadow }, set: { value in model.setStyle(coalesce: "shadow") { $0.shadow = value } }),
                     range: 0...1,
                     defaultValue: VideoStylePreset.factory.shadow,
-                    format: { "\(Int(($0 * 100).rounded()))%" },
+                    format: { VideoEditorFormat.percent($0) },
                     onEditingEnded: { model.endGesture() }
                 )
                 VideoToggleRow(
-                    title: "Edge highlight",
-                    detail: "A hairline that separates dark recordings from the background",
+                    title: L("Edge highlight"),
+                    detail: L("A hairline that separates dark recordings from the background"),
                     isOn: Binding(get: { project.outline }, set: { value in model.setStyle { $0.outline = value } })
                 )
                 Button {
@@ -207,7 +210,7 @@ struct VideoBackgroundInspector: View {
                         project.padding = project.usesRawSourceFrame ? VideoStylePreset.factory.padding : 0
                     }
                 } label: {
-                    Label(project.usesRawSourceFrame ? "Show background" : "Full frame (no background)", systemImage: project.usesRawSourceFrame ? "rectangle.inset.filled" : "rectangle.fill")
+                    Label(project.usesRawSourceFrame ? L("Show background") : L("Full frame (no background)"), systemImage: project.usesRawSourceFrame ? "rectangle.inset.filled" : "rectangle.fill")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(VideoSecondaryButtonStyle())
@@ -218,9 +221,9 @@ struct VideoBackgroundInspector: View {
             VideoTransitionsSection(model: model)
             VideoSourcesSection(model: model)
 
-            VideoInspectorSection("Your look") {
+            VideoInspectorSection(L("Your look")) {
                 if model.styleMatchesDefault {
-                    Label("New recordings use this look", systemImage: "checkmark.seal.fill")
+                    Label(L("New recordings use this look"), systemImage: "checkmark.seal.fill")
                         .font(.system(size: 11.5, weight: .semibold))
                         .foregroundStyle(Color.green.opacity(0.9))
                 }
@@ -228,7 +231,7 @@ struct VideoBackgroundInspector: View {
                     Button {
                         model.saveStyleAsDefault()
                     } label: {
-                        Text("Use for new recordings")
+                        Text(L("Use for new recordings"))
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(VideoSecondaryButtonStyle())
@@ -239,9 +242,9 @@ struct VideoBackgroundInspector: View {
                         Image(systemName: "arrow.counterclockwise")
                     }
                     .buttonStyle(VideoSecondaryButtonStyle())
-                    .help("Reset to the Shotnix look")
+                    .help(L("Reset to the Shotnix look"))
                 }
-                Text("Saves the background, frame, cursor, and zoom style.")
+                Text(L("Saves the background, frame, cursor, and zoom style."))
                     .font(.system(size: 10.5))
                     .foregroundStyle(VideoEditorTheme.textTertiary)
             }
@@ -280,7 +283,7 @@ struct VideoBackgroundInspector: View {
             }
             let system = swatches.systemWallpapers
             if !system.isEmpty {
-                Text("From your Mac")
+                Text(L("From your Mac"))
                     .font(.system(size: 10.5, weight: .semibold))
                     .foregroundStyle(VideoEditorTheme.textTertiary)
                     .padding(.top, 2)
@@ -299,15 +302,15 @@ struct VideoBackgroundInspector: View {
         case .color:
             LazyVGrid(columns: columns, spacing: 8) {
                 ForEach(VideoBackgroundCatalog.colors, id: \.self) { color in
-                    swatch(.color(color), help: "Solid color")
+                    swatch(.color(color), help: L("Solid color"))
                 }
             }
             HStack {
-                Text("Custom")
+                Text(L("Custom"))
                     .font(.system(size: 12, weight: .medium))
                     .foregroundStyle(VideoEditorTheme.textPrimary)
                 Spacer()
-                ColorPicker("", selection: Binding(
+                ColorPicker(L("Custom color"), selection: Binding(
                     get: {
                         if case .color(let rgba) = project.background { return Color(nsColor: rgba.nsColor) }
                         return Color.white
@@ -342,7 +345,7 @@ struct VideoBackgroundInspector: View {
                 Button {
                     model.chooseBackgroundImage()
                 } label: {
-                    Label("Choose Image…", systemImage: "photo")
+                    Label(L("Choose Image…"), systemImage: "photo")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(VideoSecondaryButtonStyle())
@@ -398,52 +401,52 @@ struct VideoCursorInspector: View {
         VStack(alignment: .leading, spacing: 22) {
             if !model.project.canRenderCursor {
                 VideoCard {
-                    Label(model.project.nativeCursorVisible ? "The cursor is part of this video" : "No cursor data in this video", systemImage: "cursorarrow.slash")
+                    Label(model.project.nativeCursorVisible ? L("The cursor is part of this video") : L("No cursor data in this video"), systemImage: "cursorarrow.slash")
                         .font(.system(size: 12, weight: .semibold))
                         .foregroundStyle(VideoEditorTheme.textPrimary)
                     Text(model.project.nativeCursorVisible
-                         ? "It was recorded into the pixels, so it can't be resized or smoothed. New recordings capture an editable cursor by default (Settings → Recording)."
-                         : "Recordings made with Shotnix capture the pointer so it can be smoothed, resized, and hidden.")
+                         ? L("It was recorded into the pixels, so it can't be resized or smoothed. New recordings capture an editable cursor by default (Settings → Recording).")
+                         : L("Recordings made with Shotnix capture the pointer so it can be smoothed, resized, and hidden."))
                         .font(.system(size: 11))
                         .foregroundStyle(VideoEditorTheme.textSecondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
-                VideoInspectorSection("Clicks") {
+                VideoInspectorSection(L("Clicks")) {
                     VideoSegmented(options: VideoCursorSettings.ClickEffect.allCases.filter { $0 != .press }.map { ($0, $0.title) }, selection: binding(\.clickEffect))
                 }
             } else {
-                VideoInspectorSection("Cursor") {
-                    VideoToggleRow(title: "Show cursor", isOn: binding(\.visible))
+                VideoInspectorSection(L("Cursor")) {
+                    VideoToggleRow(title: L("Show cursor"), isOn: binding(\.visible))
                     VideoSliderRow(
-                        title: "Size",
+                        title: L("Size"),
                         value: binding(\.size, coalesce: "cursor-size"),
                         range: VideoCursorSettings.sizeRange,
                         defaultValue: VideoCursorSettings().size,
-                        format: { String(format: "%.1f×", $0) },
+                        format: { VideoEditorModel.formatScale($0) },
                         onEditingEnded: { model.endGesture() }
                     )
                 }
                 .disabled(false)
 
-                VideoInspectorSection("Movement") {
+                VideoInspectorSection(L("Movement")) {
                     VideoSegmented(options: VideoCursorSettings.Smoothing.allCases.map { ($0, $0.title) }, selection: binding(\.smoothing))
                     Text(smoothingDetail)
                         .font(.system(size: 10.5))
                         .foregroundStyle(VideoEditorTheme.textTertiary)
                         .fixedSize(horizontal: false, vertical: true)
-                    VideoToggleRow(title: "Motion blur", detail: "Soft streaks on fast moves", isOn: binding(\.motionBlur))
-                    VideoToggleRow(title: "Hide when idle", detail: "Fades out after a moment without movement", isOn: binding(\.hideWhenIdle))
-                    VideoToggleRow(title: "Hide the move to Stop", detail: "Skips the dash to the Stop button at the end", isOn: binding(\.tidyEnding))
+                    VideoToggleRow(title: L("Motion blur"), detail: L("Soft streaks on fast moves"), isOn: binding(\.motionBlur))
+                    VideoToggleRow(title: L("Hide when idle"), detail: L("Fades out after a moment without movement"), isOn: binding(\.hideWhenIdle))
+                    VideoToggleRow(title: L("Hide the move to Stop"), detail: L("Skips the dash to the Stop button at the end"), isOn: binding(\.tidyEnding))
                 }
 
-                VideoInspectorSection("Clicks") {
+                VideoInspectorSection(L("Clicks")) {
                     VideoSegmented(options: VideoCursorSettings.ClickEffect.allCases.map { ($0, $0.title) }, selection: binding(\.clickEffect))
                 }
 
-                VideoInspectorSection("Appearance") {
+                VideoInspectorSection(L("Appearance")) {
                     VideoToggleRow(
-                        title: "Always show the arrow",
-                        detail: model.artwork.hasCapturedShapes ? "Never switch to the text beam or the hand" : "This recording only has the arrow",
+                        title: L("Always show the arrow"),
+                        detail: model.artwork.hasCapturedShapes ? L("Never switch to the text beam or the hand") : L("This recording only has the arrow"),
                         isOn: binding(\.alwaysArrow)
                     )
                     .disabled(!model.artwork.hasCapturedShapes)
@@ -456,10 +459,10 @@ struct VideoCursorInspector: View {
 
     private var smoothingDetail: String {
         switch cursor.smoothing {
-        case .off: return "Exactly as recorded."
-        case .light: return "Removes jitter, keeps it snappy."
-        case .smooth: return "Glides without lagging behind — clicks still land exactly."
-        case .silky: return "Extra-fluid curves for slow, cinematic demos."
+        case .off: return L("Exactly as recorded.")
+        case .light: return L("Removes jitter, keeps it snappy.")
+        case .smooth: return L("Glides without lagging behind — clicks still land exactly.")
+        case .silky: return L("Extra-fluid curves for slow, cinematic demos.")
         }
     }
 }
@@ -475,59 +478,59 @@ struct VideoZoomInspector: View {
                 Button {
                     model.autoZoom()
                 } label: {
-                    Label("Auto Zoom", systemImage: "sparkles")
+                    Label(L("Auto Zoom"), systemImage: "sparkles")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(VideoPrimaryButtonStyle())
                 Text(model.project.clickEvents.isEmpty
-                     ? "No clicks were recorded, so add zooms by hand: hover the zoom track and click."
-                     : "Plans zooms around your \(model.project.clickEvents.count) click\(model.project.clickEvents.count == 1 ? "" : "s"). Zooms you placed by hand are kept.")
+                     ? L("No clicks were recorded, so add zooms by hand: hover the zoom track and click.")
+                     : L("Plans zooms around your \(model.project.clickEvents.count) clicks. Zooms you placed by hand are kept."))
                     .font(.system(size: 11))
                     .foregroundStyle(VideoEditorTheme.textSecondary)
                     .fixedSize(horizontal: false, vertical: true)
                 Button {
                     model.removeAllZooms()
                 } label: {
-                    Label("Remove all zooms", systemImage: "trash")
+                    Label(L("Remove all zooms"), systemImage: "trash")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(VideoSecondaryButtonStyle(destructive: true))
                 .disabled(model.project.zoomRegions.isEmpty)
             }
 
-            VideoInspectorSection("New zooms") {
-                VideoSegmented(options: [(1.5, "1.5×"), (2.0, "2×"), (2.5, "2.5×"), (3.0, "3×")], selection: Binding(
+            VideoInspectorSection(L("New zooms")) {
+                VideoSegmented(options: [1.5, 2.0, 2.5, 3.0].map { ($0, VideoEditorModel.formatScale($0)) }, selection: Binding(
                     get: { [1.5, 2.0, 2.5, 3.0].min { abs($0 - model.project.defaultZoomScale) < abs($1 - model.project.defaultZoomScale) } ?? 2 },
                     set: { value in model.setStyle { $0.defaultZoomScale = value } }
                 ))
                 Button {
                     model.applyZoomScaleToAll(model.project.defaultZoomScale)
                 } label: {
-                    Text("Apply to all zooms")
+                    Text(L("Apply to all zooms"))
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(VideoSecondaryButtonStyle())
                 .disabled(model.project.zoomRegions.isEmpty)
             }
 
-            VideoInspectorSection("Motion") {
+            VideoInspectorSection(L("Motion")) {
                 VideoSegmented(options: VideoZoomSpeed.allCases.map { ($0, $0.title) }, selection: Binding(
                     get: { model.project.zoomSpeed },
                     set: { value in model.setStyle { $0.zoomSpeed = value } }
                 ))
                 VideoSliderRow(
-                    title: "Motion blur",
+                    title: L("Motion blur"),
                     value: Binding(get: { model.project.motionBlur }, set: { value in model.setStyle(coalesce: "motion-blur") { $0.motionBlur = value } }),
                     range: 0...1,
                     defaultValue: VideoStylePreset.factory.motionBlur,
-                    format: { "\(Int(($0 * 100).rounded()))%" },
-                    detail: "Blurs fast camera moves the way a real camera does.",
+                    format: { VideoEditorFormat.percent($0) },
+                    detail: L("Blurs fast camera moves the way a real camera does."),
                     onEditingEnded: { model.endGesture() }
                 )
             }
 
             if !model.project.zoomRegions.isEmpty {
-                VideoInspectorSection("Zooms") {
+                VideoInspectorSection(L("Zooms")) {
                     VStack(spacing: 4) {
                         ForEach(model.project.zoomRegions) { region in
                             if let range = model.zoomTimelineRange(region) {
@@ -542,11 +545,11 @@ struct VideoZoomInspector: View {
                                         Text(VideoEditorModel.formatScale(region.scale))
                                             .font(.system(size: 12, weight: .semibold))
                                             .monospacedDigit()
-                                        Text(region.followsCursor ? "Follows cursor" : "Aim by hand")
+                                        Text(region.followsCursor ? L("Follows cursor") : L("Aim by hand"))
                                             .font(.system(size: 11))
                                             .foregroundStyle(VideoEditorTheme.textSecondary)
                                         Spacer()
-                                        Text("\(VideoEditorModel.timecode(range.lowerBound)) – \(VideoEditorModel.timecode(range.upperBound))")
+                                        Text(verbatim: "\(VideoEditorModel.timecode(range.lowerBound)) – \(VideoEditorModel.timecode(range.upperBound))")
                                             .font(.system(size: 10.5, design: .monospaced))
                                             .foregroundStyle(VideoEditorTheme.textTertiary)
                                     }
@@ -562,7 +565,7 @@ struct VideoZoomInspector: View {
                 }
             }
 
-            Text("Hover the zoom track and click to add a zoom, or press Z at the playhead. Drag a zoom to move it; drag its edges to change how long it lasts.")
+            Text(L("Hover the zoom track and click to add a zoom, or press Z at the playhead. Drag a zoom to move it; drag its edges to change how long it lasts."))
                 .font(.system(size: 10.5))
                 .foregroundStyle(VideoEditorTheme.textTertiary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -587,7 +590,7 @@ struct VideoAudioInspector: View {
             value: binding(keyPath, coalesce: "volume-\(title)"),
             range: VideoAudioSettings.volumeRange,
             defaultValue: 1,
-            format: { "\(Int(($0 * 100).rounded()))%" },
+            format: { VideoEditorFormat.percent($0) },
             detail: detail,
             onEditingEnded: { model.endGesture() }
         )
@@ -597,43 +600,43 @@ struct VideoAudioInspector: View {
         VStack(alignment: .leading, spacing: 22) {
             if !model.hasAudio {
                 VideoCard {
-                    Label("This recording has no sound", systemImage: "speaker.slash")
+                    Label(L("This recording has no sound"), systemImage: "speaker.slash")
                         .font(.system(size: 12, weight: .semibold))
                         .foregroundStyle(VideoEditorTheme.textPrimary)
-                    Text("Turn on the microphone or system audio before recording to capture sound.")
+                    Text(L("Turn on the microphone or system audio before recording to capture sound."))
                         .font(.system(size: 11))
                         .foregroundStyle(VideoEditorTheme.textSecondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
             } else {
-                VideoInspectorSection("Sound") {
-                    VideoToggleRow(title: "Mute video", detail: "Exports without sound — to quiet just the preview, press M", isOn: binding(\.muted))
+                VideoInspectorSection(L("Sound")) {
+                    VideoToggleRow(title: L("Mute video"), detail: L("Exports without sound — to quiet just the preview, press M"), isOn: binding(\.muted))
                     Group {
                         if model.hasSeparateVoiceAndSystem {
-                            level("Voice", \.voiceVolume, detail: "Your microphone")
-                            level("Computer sound", \.systemVolume, detail: "What was playing on your Mac")
+                            level(L("Voice"), \.voiceVolume, detail: L("Your microphone"))
+                            level(L("Computer sound"), \.systemVolume, detail: L("What was playing on your Mac"))
                         } else {
-                            level("Volume", \.volume)
+                            level(L("Volume"), \.volume)
                         }
                     }
                     .disabled(audio.muted)
                 }
 
                 if model.canEnhanceVoice {
-                    VideoInspectorSection("Voice") {
+                    VideoInspectorSection(L("Voice")) {
                         VideoToggleRow(
-                            title: "Enhance voice",
-                            detail: "Removes background noise and hum, and evens out your level — processed on this Mac",
+                            title: L("Enhance voice"),
+                            detail: L("Removes background noise and hum, and evens out your level — processed on this Mac"),
                             isOn: binding(\.enhanceVoice)
                         )
                         if let progress = model.voiceJob {
                             VStack(alignment: .leading, spacing: 5) {
                                 HStack {
-                                    Text("Cleaning up your voice…")
+                                    Text(L("Cleaning up your voice…"))
                                         .font(.system(size: 11, weight: .medium))
                                         .foregroundStyle(VideoEditorTheme.textSecondary)
                                     Spacer()
-                                    Text("\(Int((progress * 100).rounded()))%")
+                                    Text(VideoEditorFormat.percent(progress))
                                         .font(.system(size: 11, weight: .semibold, design: .monospaced))
                                         .foregroundStyle(VideoEditorTheme.textSecondary)
                                 }
@@ -648,15 +651,15 @@ struct VideoAudioInspector: View {
                     }
                 }
 
-                VideoInspectorSection("Export") {
+                VideoInspectorSection(L("Export")) {
                     VideoToggleRow(
-                        title: "Even out loudness",
-                        detail: "Exports at the level video sites expect (−16 LUFS) without clipping",
+                        title: L("Even out loudness"),
+                        detail: L("Exports at the level video sites expect (−16 LUFS) without clipping"),
                         isOn: binding(\.normalizeLoudness)
                     )
                 }
 
-                Text("Select a clip on the timeline to mute it or fade it in and out.")
+                Text(L("Select a clip on the timeline to mute it or fade it in and out."))
                     .font(.system(size: 10.5))
                     .foregroundStyle(VideoEditorTheme.textTertiary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -702,7 +705,7 @@ struct VideoSelectionInspector: View {
         }
         .background(Color.white.opacity(0.02))
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Selected \(headerTitle)")
+        .accessibilityLabel(L("Selected \(headerTitle)"))
     }
 
     private var header: some View {
@@ -724,8 +727,8 @@ struct VideoSelectionInspector: View {
                     .frame(width: 26, height: 26)
             }
             .buttonStyle(VideoToolButtonStyle(destructive: true))
-            .help("Delete (⌫)")
-            .accessibilityLabel("Delete")
+            .help(L("Delete (⌫)"))
+            .accessibilityLabel(L("Delete"))
             Button {
                 model.selection = .none
             } label: {
@@ -734,24 +737,24 @@ struct VideoSelectionInspector: View {
                     .frame(width: 26, height: 26)
             }
             .buttonStyle(VideoToolButtonStyle())
-            .help("Done (Esc)")
-            .accessibilityLabel("Done")
+            .help(L("Done (Esc)"))
+            .accessibilityLabel(L("Done"))
         }
         .padding(.horizontal, 10)
         .frame(height: 50)
     }
 
     private var headerTitle: String {
-        if !model.extraSelection.isEmpty { return "\(model.selectedItems.count) selected" }
+        if !model.extraSelection.isEmpty { return L("\(model.selectedItems.count) selected") }
         switch model.selection {
-        case .zoom: return "Zoom"
-        case .clip(let id): return "Clip \((model.segments.firstIndex { $0.id == id } ?? 0) + 1)"
-        case .overlay: return model.selectedOverlay?.kind.title ?? "Annotation"
-        case .click: return "Click"
-        case .caption: return "Caption"
-        case .keystroke: return "Shortcut"
-        case .cameraLayout: return "Camera layout"
-        case .range(let range): return "Selected \(VideoEditorModel.format(range.duration))"
+        case .zoom: return L("Zoom")
+        case .clip(let id): return L("Clip \((model.segments.firstIndex { $0.id == id } ?? 0) + 1)")
+        case .overlay: return model.selectedOverlay?.kind.title ?? L("Annotation")
+        case .click: return L("Click")
+        case .caption: return L("Caption")
+        case .keystroke: return L("Shortcut")
+        case .cameraLayout: return L("Camera layout")
+        case .range(let range): return L("Selected \(VideoEditorModel.format(range.duration))")
         case .none: return ""
         }
     }
@@ -796,34 +799,53 @@ struct VideoSelectionInspector: View {
     /// Several items: what they are, and what can be done with all of them.
     private var multipleContent: some View {
         VStack(alignment: .leading, spacing: 10) {
-            let counts = Dictionary(grouping: model.selectedItems, by: Self.kindName).map { "\($0.value.count) \($0.key)\($0.value.count == 1 ? "" : "s")" }.sorted()
+            let counts = Dictionary(grouping: model.selectedItems, by: ItemKind.init).map { Self.count($0.value.count, of: $0.key) }.sorted()
             Text(counts.joined(separator: " · "))
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(VideoEditorTheme.textPrimary)
-            Text("Drag one of them on the timeline to move them all together; ⌫ removes them all. ⇧- or ⌘-click adds or takes one out.")
+            Text(L("Drag one of them on the timeline to move them all together; ⌫ removes them all. ⇧- or ⌘-click adds or takes one out."))
                 .font(.system(size: 11))
                 .foregroundStyle(VideoEditorTheme.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
             Button(role: .destructive) {
                 model.deleteSelectedItems()
             } label: {
-                Label("Remove all \(model.selectedItems.count)", systemImage: "trash")
+                Label(L("Remove all \(model.selectedItems.count)"), systemImage: "trash")
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(VideoSecondaryButtonStyle(destructive: true))
         }
     }
 
-    private static func kindName(_ item: VideoEditorModel.Selection) -> String {
-        switch item {
-        case .zoom: return "zoom"
-        case .clip: return "clip"
-        case .overlay: return "annotation"
-        case .click: return "click"
-        case .caption: return "caption"
-        case .keystroke: return "shortcut"
-        case .cameraLayout: return "camera layout"
-        case .range, .none: return "part"
+    private enum ItemKind: Hashable {
+        case zoom, clip, annotation, click, caption, shortcut, cameraLayout, part
+
+        init(_ item: VideoEditorModel.Selection) {
+            switch item {
+            case .zoom: self = .zoom
+            case .clip: self = .clip
+            case .overlay: self = .annotation
+            case .click: self = .click
+            case .caption: self = .caption
+            case .keystroke: self = .shortcut
+            case .cameraLayout: self = .cameraLayout
+            case .range, .none: self = .part
+            }
+        }
+    }
+
+    /// "2 zooms", "1 clip": one whole phrase for each kind, so each
+    /// language puts the number and the plural where it belongs.
+    private static func count(_ count: Int, of kind: ItemKind) -> String {
+        switch kind {
+        case .zoom: return L("\(count) zooms")
+        case .clip: return L("\(count) clips")
+        case .annotation: return L("\(count) annotations")
+        case .click: return L("\(count) clicks")
+        case .caption: return L("\(count) captions")
+        case .shortcut: return L("\(count) shortcuts")
+        case .cameraLayout: return L("\(count) camera layouts")
+        case .part: return L("\(count) parts")
         }
     }
 
@@ -844,7 +866,7 @@ struct VideoSelectionInspector: View {
             }
         case .click(let id):
             if let click = model.project.clickEvents.first(where: { $0.id == id }) {
-                Text("Recorded at \(VideoEditorModel.timecode(model.timelineTime(forSource: click.time) ?? click.time)). Drag its dot on the timeline to retime it; ripples and Auto Zoom follow.")
+                Text(L("Recorded at \(VideoEditorModel.timecode(model.timelineTime(forSource: click.time) ?? click.time)). Drag its dot on the timeline to retime it; ripples and Auto Zoom follow."))
                     .font(.system(size: 11.5))
                     .foregroundStyle(VideoEditorTheme.textSecondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -859,7 +881,7 @@ struct VideoSelectionInspector: View {
                     Text(event.keys.joined(separator: " "))
                         .font(.system(size: 22, weight: .semibold))
                         .foregroundStyle(VideoEditorTheme.textPrimary)
-                    Text("Pressed at \(VideoEditorModel.timecode(model.timelineTime(forSource: event.time) ?? event.time)). Press ⌫ to hide it from the video — handy for a stray ⌘Tab.")
+                    Text(L("Pressed at \(VideoEditorModel.timecode(model.timelineTime(forSource: event.time) ?? event.time)). Press ⌫ to hide it from the video — handy for a stray ⌘Tab."))
                         .font(.system(size: 11.5))
                         .foregroundStyle(VideoEditorTheme.textSecondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -867,7 +889,7 @@ struct VideoSelectionInspector: View {
             }
         case .cameraLayout(let id):
             if let region = model.project.cameraLayouts.first(where: { $0.id == id }) {
-                VideoInspectorSection("Layout") {
+                VideoInspectorSection(L("Layout")) {
                     ForEach(VideoCameraLayoutRegion.Layout.allCases) { layout in
                         Button {
                             model.setCameraLayout(id, to: layout)
@@ -891,29 +913,29 @@ struct VideoSelectionInspector: View {
                         .buttonStyle(.plain)
                     }
                 }
-                Text("Drag the block on the Camera lane to move it, or its edges to change how long it lasts. Each change eases in and out.")
+                Text(L("Drag the block on the Camera lane to move it, or its edges to change how long it lasts. Each change eases in and out."))
                     .font(.system(size: 10.5))
                     .foregroundStyle(VideoEditorTheme.textTertiary)
                     .fixedSize(horizontal: false, vertical: true)
             }
         case .range(let range):
             VStack(alignment: .leading, spacing: 12) {
-                Text("\(VideoEditorModel.timecode(range.start)) → \(VideoEditorModel.timecode(range.end))")
+                Text(verbatim: "\(VideoEditorModel.timecode(range.start)) → \(VideoEditorModel.timecode(range.end))")
                     .font(.system(size: 12, weight: .semibold, design: .monospaced))
                     .foregroundStyle(VideoEditorTheme.textPrimary)
                 Button {
                     model.deleteRange(range)
                 } label: {
-                    Label("Cut this part", systemImage: "scissors")
+                    Label(L("Cut this part"), systemImage: "scissors")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(VideoPrimaryButtonStyle())
-                Text("Removed parts can be restored from the yellow marker on the timeline.")
+                Text(L("Removed parts can be restored from the yellow marker on the timeline."))
                     .font(.system(size: 10.5))
                     .foregroundStyle(VideoEditorTheme.textTertiary)
             }
             // Or change just this part.
-            VideoInspectorSection("Speed of this part") {
+            VideoInspectorSection(L("Speed of this part")) {
                 let current = model.rangeSpeed(range)
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 4), spacing: 6) {
                     ForEach([0.5, 1.0, 1.5, 2.0, 3.0, 4.0, 8.0, 16.0], id: \.self) { speed in
@@ -929,13 +951,13 @@ struct VideoSelectionInspector: View {
                                 .background(RoundedRectangle(cornerRadius: 6, style: .continuous).fill(selected ? VideoEditorTheme.clip : VideoEditorTheme.card))
                         }
                         .buttonStyle(.plain)
-                        .accessibilityLabel("\(VideoEditorModel.formatScale(speed)) speed")
+                        .accessibilityLabel(L("\(VideoEditorModel.formatScale(speed)) speed"))
                         .accessibilityAddTraits(selected ? .isSelected : [])
                     }
                 }
             }
-            VideoInspectorSection("Sound") {
-                VideoToggleRow(title: "Mute this part", isOn: Binding(get: { model.rangeIsMuted(range) }, set: { _ in model.toggleRangeMute(range) }))
+            VideoInspectorSection(L("Sound")) {
+                VideoToggleRow(title: L("Mute this part"), isOn: Binding(get: { model.rangeIsMuted(range) }, set: { _ in model.toggleRangeMute(range) }))
             }
         case .none:
             EmptyView()
@@ -946,8 +968,8 @@ struct VideoSelectionInspector: View {
 
     @ViewBuilder
     private func captionEditor(_ line: VideoCaptionLine) -> some View {
-        VideoInspectorSection("Text") {
-            TextField("Caption", text: Binding(get: { line.text }, set: { model.updateCaption(line.id, text: $0) }), axis: .vertical)
+        VideoInspectorSection(L("Text")) {
+            TextField(L("Caption"), text: Binding(get: { line.text }, set: { model.updateCaption(line.id, text: $0) }), axis: .vertical)
                 .textFieldStyle(.plain)
                 .font(.system(size: 13))
                 .lineLimit(2...6)
@@ -957,15 +979,15 @@ struct VideoSelectionInspector: View {
                 .focused($textFocused)
                 .onSubmit { model.endGesture() }
         }
-        VideoInspectorSection("Timing") {
-            timingRow("Starts", time: line.start) { model.setCaptionTiming(line.id, start: $0) }
-            timingRow("Ends", time: line.end) { model.setCaptionTiming(line.id, end: $0) }
+        VideoInspectorSection(L("Timing")) {
+            timingRow(L("Starts"), time: line.start) { model.setCaptionTiming(line.id, start: $0) }
+            timingRow(L("Ends"), time: line.end) { model.setCaptionTiming(line.id, end: $0) }
             Button {
                 let now = model.sourceTime(forTimeline: model.clock.time)
                 model.setCaptionTiming(line.id, start: now, end: max(line.end, now + 0.5))
                 model.endGesture()
             } label: {
-                Label("Start at the playhead", systemImage: "arrow.right.to.line")
+                Label(L("Start at the playhead"), systemImage: "arrow.right.to.line")
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(VideoSecondaryButtonStyle())
@@ -985,7 +1007,7 @@ struct VideoSelectionInspector: View {
                 Image(systemName: "minus").font(.system(size: 9, weight: .bold)).frame(width: 22, height: 20)
             }
             .buttonStyle(VideoToolButtonStyle())
-            .help("0.1s earlier")
+            .help(L("0.1s earlier"))
             Text(VideoEditorModel.timecode(model.timelineTime(forSource: time) ?? time))
                 .font(.system(size: 11, weight: .semibold, design: .monospaced))
                 .foregroundStyle(VideoEditorTheme.textSecondary)
@@ -997,7 +1019,7 @@ struct VideoSelectionInspector: View {
                 Image(systemName: "plus").font(.system(size: 9, weight: .bold)).frame(width: 22, height: 20)
             }
             .buttonStyle(VideoToolButtonStyle())
-            .help("0.1s later")
+            .help(L("0.1s later"))
         }
     }
 
@@ -1005,13 +1027,13 @@ struct VideoSelectionInspector: View {
 
     @ViewBuilder
     private func zoomEditor(_ zoom: VideoZoomRegion) -> some View {
-        VideoInspectorSection("Zoom level") {
+        VideoInspectorSection(L("Zoom level")) {
             VideoSliderRow(
-                title: "Level",
+                title: L("Level"),
                 value: Binding(get: { zoom.scale }, set: { value in model.updateZoom(zoom.id, coalesce: "scale-\(zoom.id)") { $0.scale = value } }),
                 range: VideoZoomRegion.scaleRange,
                 defaultValue: model.project.defaultZoomScale,
-                format: { String(format: "%.2g×", $0) },
+                format: { VideoEditorModel.formatScale($0) },
                 onEditingEnded: { model.endGesture() }
             )
             HStack(spacing: 6) {
@@ -1029,20 +1051,20 @@ struct VideoSelectionInspector: View {
                             .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
-                    .help("Zoom to \(VideoEditorModel.formatScale(value)) (key \(["1.5×": "2", "2×": "3", "2.5×": "4", "3×": "5"][VideoEditorModel.formatScale(value)] ?? ""))")
+                    .help(L("Zoom to \(VideoEditorModel.formatScale(value)) (key \([1.5: "2", 2.0: "3", 2.5: "4", 3.0: "5"][value] ?? ""))"))
                 }
             }
             Button {
                 model.applyZoomScaleToAll(zoom.scale)
             } label: {
-                Text("Use this level for every zoom")
+                Text(L("Use this level for every zoom"))
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(VideoSecondaryButtonStyle())
         }
 
-        VideoInspectorSection("Framing") {
-            VideoSegmented(options: [(true, "Follow cursor"), (false, "Aim by hand")], selection: Binding(
+        VideoInspectorSection(L("Framing")) {
+            VideoSegmented(options: [(true, L("Follow cursor")), (false, L("Aim by hand"))], selection: Binding(
                 get: { zoom.followsCursor },
                 set: { value in
                     model.updateZoom(zoom.id) { $0.followsCursor = value }
@@ -1050,17 +1072,17 @@ struct VideoSelectionInspector: View {
                 }
             ))
             if zoom.followsCursor {
-                Text("The camera keeps your cursor in view and glides after it.")
+                Text(L("The camera keeps your cursor in view and glides after it."))
                     .font(.system(size: 10.5))
                     .foregroundStyle(VideoEditorTheme.textTertiary)
             } else {
-                Text("Drag the frame on the preview to aim; drag its corners to zoom in or out.")
+                Text(L("Drag the frame on the preview to aim; drag its corners to zoom in or out."))
                     .font(.system(size: 10.5))
                     .foregroundStyle(VideoEditorTheme.textTertiary)
                 Button {
                     model.updateZoom(zoom.id) { $0.focusX = 0.5; $0.focusY = 0.5 }
                 } label: {
-                    Text("Center")
+                    Text(L("Center"))
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(VideoSecondaryButtonStyle())
@@ -1068,9 +1090,9 @@ struct VideoSelectionInspector: View {
         }
 
         if let range = model.zoomTimelineRange(zoom) {
-            VideoInspectorSection("Timing") {
+            VideoInspectorSection(L("Timing")) {
                 HStack {
-                    Text("\(VideoEditorModel.timecode(range.lowerBound)) → \(VideoEditorModel.timecode(range.upperBound))")
+                    Text(verbatim: "\(VideoEditorModel.timecode(range.lowerBound)) → \(VideoEditorModel.timecode(range.upperBound))")
                         .font(.system(size: 12, weight: .semibold, design: .monospaced))
                         .foregroundStyle(VideoEditorTheme.textPrimary)
                     Spacer()
@@ -1081,7 +1103,7 @@ struct VideoSelectionInspector: View {
                 Button {
                     model.duplicateZoom(zoom.id)
                 } label: {
-                    Label("Duplicate", systemImage: "plus.square.on.square")
+                    Label(L("Duplicate"), systemImage: "plus.square.on.square")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(VideoSecondaryButtonStyle())
@@ -1093,7 +1115,7 @@ struct VideoSelectionInspector: View {
 
     @ViewBuilder
     private func clipEditor(_ segment: VideoDemoTimelineSegment) -> some View {
-        VideoInspectorSection("Speed") {
+        VideoInspectorSection(L("Speed")) {
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 4), spacing: 6) {
                 ForEach([0.5, 1.0, 1.5, 2.0, 3.0, 4.0, 8.0, 16.0], id: \.self) { speed in
                     let selected = abs(segment.clip.normalizedSpeed - speed) < 0.01
@@ -1111,27 +1133,27 @@ struct VideoSelectionInspector: View {
                     .buttonStyle(.plain)
                 }
             }
-            Text("\(VideoEditorModel.format(segment.clip.sourceDuration)) of recording plays in \(VideoEditorModel.format(segment.duration)).")
+            Text(L("\(VideoEditorModel.format(segment.clip.sourceDuration)) of recording plays in \(VideoEditorModel.format(segment.duration))."))
                 .font(.system(size: 10.5))
                 .foregroundStyle(VideoEditorTheme.textTertiary)
         }
 
-        VideoInspectorSection("Sound") {
-            VideoToggleRow(title: "Mute this clip", isOn: Binding(get: { segment.clip.muted }, set: { model.setClipMuted(segment.id, $0) }))
+        VideoInspectorSection(L("Sound")) {
+            VideoToggleRow(title: L("Mute this clip"), isOn: Binding(get: { segment.clip.muted }, set: { model.setClipMuted(segment.id, $0) }))
             VideoSliderRow(
-                title: "Fade in",
+                title: L("Fade in"),
                 value: Binding(get: { segment.clip.fadeIn }, set: { model.setClipFade(segment.id, fadeIn: $0) }),
                 range: 0...max(min(segment.duration / 2, 3), 0.1),
                 defaultValue: 0,
-                format: { String(format: "%.1fs", $0) },
+                format: { VideoEditorModel.format($0) },
                 onEditingEnded: { model.endGesture() }
             )
             VideoSliderRow(
-                title: "Fade out",
+                title: L("Fade out"),
                 value: Binding(get: { segment.clip.fadeOut }, set: { model.setClipFade(segment.id, fadeOut: $0) }),
                 range: 0...max(min(segment.duration / 2, 3), 0.1),
                 defaultValue: 0,
-                format: { String(format: "%.1fs", $0) },
+                format: { VideoEditorModel.format($0) },
                 onEditingEnded: { model.endGesture() }
             )
         }
@@ -1139,29 +1161,29 @@ struct VideoSelectionInspector: View {
         // How the cut into this clip plays (VideoTransitions.swift).
         VideoClipTransitionSection(model: model, segment: segment)
 
-        VideoInspectorSection("Edit") {
+        VideoInspectorSection(L("Edit")) {
             HStack(spacing: 8) {
                 Button {
                     model.trimSelectedClipToPlayhead(leading: true)
                 } label: {
-                    Label("Start here", systemImage: "arrow.left.to.line")
+                    Label(L("Start here"), systemImage: "arrow.left.to.line")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(VideoSecondaryButtonStyle())
-                .help("Trim the clip's start to the playhead (I)")
+                .help(L("Trim the clip's start to the playhead (I)"))
                 Button {
                     model.trimSelectedClipToPlayhead(leading: false)
                 } label: {
-                    Label("End here", systemImage: "arrow.right.to.line")
+                    Label(L("End here"), systemImage: "arrow.right.to.line")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(VideoSecondaryButtonStyle())
-                .help("Trim the clip's end to the playhead (O)")
+                .help(L("Trim the clip's end to the playhead (O)"))
             }
             Button {
                 model.splitAtPlayhead()
             } label: {
-                Label("Split at playhead", systemImage: "scissors")
+                Label(L("Split at playhead"), systemImage: "scissors")
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(VideoSecondaryButtonStyle())
@@ -1171,7 +1193,7 @@ struct VideoSelectionInspector: View {
                     Button {
                         model.moveClip(segment.id, toIndex: index - 1)
                     } label: {
-                        Label("Move earlier", systemImage: "arrow.left")
+                        Label(L("Move earlier"), systemImage: "arrow.left")
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(VideoSecondaryButtonStyle())
@@ -1179,7 +1201,7 @@ struct VideoSelectionInspector: View {
                     Button {
                         model.moveClip(segment.id, toIndex: index + 1)
                     } label: {
-                        Label("Move later", systemImage: "arrow.right")
+                        Label(L("Move later"), systemImage: "arrow.right")
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(VideoSecondaryButtonStyle())
@@ -1197,8 +1219,8 @@ struct VideoSelectionInspector: View {
             VideoImageOverlayInspector(model: model, overlay: overlay)
         }
         if overlay.kind == .text {
-            VideoInspectorSection("Text") {
-                TextField("Text", text: Binding(get: { overlay.text }, set: { value in model.updateOverlay(overlay.id, coalesce: "text-\(overlay.id)") { $0.text = value } }), axis: .vertical)
+            VideoInspectorSection(L("Text")) {
+                TextField(L("Text"), text: Binding(get: { overlay.text }, set: { value in model.updateOverlay(overlay.id, coalesce: "text-\(overlay.id)") { $0.text = value } }), axis: .vertical)
                     .textFieldStyle(.plain)
                     .font(.system(size: 13, weight: .medium))
                     .lineLimit(1...4)
@@ -1209,7 +1231,7 @@ struct VideoSelectionInspector: View {
                     .onChange(of: model.textEditRequest) { _ in textFocused = true }
                 // The size of the letters, apart from the box's width.
                 VideoSliderRow(
-                    title: "Size",
+                    title: L("Size"),
                     value: Binding(get: { model.textSize(of: overlay) }, set: { model.setTextSize($0, of: overlay.id) }),
                     range: 14...64,
                     format: { "\(Int($0.rounded()))" },
@@ -1218,12 +1240,12 @@ struct VideoSelectionInspector: View {
             }
         }
         if overlay.kind.hasColor {
-            VideoInspectorSection(overlay.kind == .text ? "Tag color" : "Color") {
+            VideoInspectorSection(overlay.kind == .text ? L("Tag color") : L("Color")) {
                 VideoOverlayColorPicker(model: model, overlay: overlay)
             }
         }
         if overlay.kind == .arrow || overlay.kind == .highlight {
-            VideoInspectorSection("Thickness") {
+            VideoInspectorSection(L("Thickness")) {
                 VideoSegmented(
                     options: VideoOverlayThickness.allCases.map { ($0, $0.title) },
                     selection: Binding(get: { overlay.thickness }, set: { model.setOverlayThickness(overlay.id, $0) })
@@ -1234,14 +1256,14 @@ struct VideoSelectionInspector: View {
             Button {
                 model.flipArrow(overlay.id)
             } label: {
-                Label("Turn around", systemImage: "arrow.left.arrow.right")
+                Label(L("Turn around"), systemImage: "arrow.left.arrow.right")
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(VideoSecondaryButtonStyle())
-            .help("Swap the arrow's head and tail")
+            .help(L("Swap the arrow's head and tail"))
         }
         if overlay.kind == .spotlight {
-            VideoInspectorSection("Shape") {
+            VideoInspectorSection(L("Shape")) {
                 VideoSegmented(
                     options: VideoOverlayShape.allCases.map { ($0, $0.title) },
                     selection: Binding(get: { overlay.shape ?? .rectangle }, set: { model.setOverlayShape(overlay.id, $0) })
@@ -1250,7 +1272,7 @@ struct VideoSelectionInspector: View {
         }
         // Images have their own placement controls (VideoImageOverlays.swift).
         if overlay.kind != .image {
-            VideoInspectorSection("Placement") {
+            VideoInspectorSection(L("Placement")) {
                 Text(placementHelp(overlay.kind))
                     .font(.system(size: 11))
                     .foregroundStyle(VideoEditorTheme.textSecondary)
@@ -1261,11 +1283,11 @@ struct VideoSelectionInspector: View {
 
     private func placementHelp(_ kind: VideoDemoOverlayEffectKind) -> String {
         switch kind {
-        case .blur: return "Drag the box on the preview over anything private. Blur follows zooms and stays until its bar ends."
-        case .arrow: return "Drag the arrow on the preview to move it; drag its head or tail to point it anywhere. Its bar on the timeline sets when it shows."
-        case .spotlight: return "Drag the spot on the preview; drag a corner to resize it. Everything around it dims while its bar on the timeline runs."
-        case .text: return "Drag it on the preview to move it; drag a corner to resize; double-click it to type. Its bar on the timeline sets when it shows."
-        default: return "Drag it on the preview to move it; drag a corner to resize. Its bar on the timeline sets when it shows."
+        case .blur: return L("Drag the box on the preview over anything private. Blur follows zooms and stays until its bar ends.")
+        case .arrow: return L("Drag the arrow on the preview to move it; drag its head or tail to point it anywhere. Its bar on the timeline sets when it shows.")
+        case .spotlight: return L("Drag the spot on the preview; drag a corner to resize it. Everything around it dims while its bar on the timeline runs.")
+        case .text: return L("Drag it on the preview to move it; drag a corner to resize; double-click it to type. Its bar on the timeline sets when it shows.")
+        default: return L("Drag it on the preview to move it; drag a corner to resize. Its bar on the timeline sets when it shows.")
         }
     }
 }

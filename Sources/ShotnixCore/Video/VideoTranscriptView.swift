@@ -40,7 +40,7 @@ struct VideoTranscriptEditor: NSViewRepresentable {
         textView.usesFindBar = true
         textView.isIncrementalSearchingEnabled = true
         textView.selectedTextAttributes = [.backgroundColor: NSColor.controlAccentColor.withAlphaComponent(0.45)]
-        textView.setAccessibilityLabel("Transcript")
+        textView.setAccessibilityLabel(L("Transcript"))
         scroll.documentView = textView
         context.coordinator.textView = textView
         return scroll
@@ -352,20 +352,20 @@ final class TranscriptTextView: NSTextView {
     override func menu(for event: NSEvent) -> NSMenu? {
         let menu = NSMenu()
         let hasSelection = selectedRange().length > 0
-        let cut = NSMenuItem(title: "Cut from Video", action: #selector(cutFromVideo), keyEquivalent: "")
+        let cut = NSMenuItem(title: L("Cut from Video"), action: #selector(cutFromVideo), keyEquivalent: "")
         cut.target = self
         cut.isEnabled = hasSelection
         menu.addItem(cut)
         if coordinator?.hasCutWordsInSelection == true {
-            let restore = NSMenuItem(title: "Restore", action: #selector(restoreWords), keyEquivalent: "")
+            let restore = NSMenuItem(title: L("Restore"), action: #selector(restoreWords), keyEquivalent: "")
             restore.target = self
             menu.addItem(restore)
         }
-        let play = NSMenuItem(title: "Play from Here", action: #selector(playFromHere), keyEquivalent: "")
+        let play = NSMenuItem(title: L("Play from Here"), action: #selector(playFromHere), keyEquivalent: "")
         play.target = self
         menu.addItem(play)
         menu.addItem(.separator())
-        menu.addItem(NSMenuItem(title: "Copy", action: #selector(copy(_:)), keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: L("Copy"), action: #selector(copy(_:)), keyEquivalent: ""))
         return menu
     }
 

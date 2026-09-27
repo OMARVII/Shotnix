@@ -155,15 +155,21 @@ extension VideoEditorModel {
 
     /// ", 0:03.0 to 0:04.5" (or ", at 0:03.0") for spoken descriptions.
     static func spokenSpan(_ start: Double, _ end: Double) -> String {
-        end - start > 0.05 ? ", \(timecode(start)) to \(timecode(end))" : ", at \(timecode(start))"
+        end - start > 0.05 ? L(", \(timecode(start)) to \(timecode(end))") : L(", at \(timecode(start))")
+    }
+
+    /// Parts of a spoken description, each a whole phrase, in a list
+    /// ("Clip 2, 4.0s long, muted").
+    static func spokenList(_ parts: [String]) -> String {
+        parts.joined(separator: L(", "))
     }
 
     /// "Clip 2, 4.0s long, 2× speed, muted, 0:02.0 to 0:06.0".
     static func spokenClip(index: Int, segment: VideoDemoTimelineSegment) -> String {
-        var parts = ["Clip \(index + 1)", "\(format(segment.duration)) long"]
-        if abs(segment.clip.normalizedSpeed - 1) > 0.01 { parts.append("\(formatScale(segment.clip.normalizedSpeed)) speed") }
-        if segment.clip.muted { parts.append("muted") }
-        return parts.joined(separator: ", ") + spokenSpan(segment.timelineStart, segment.timelineEnd)
+        var parts = [L("Clip \(index + 1)"), L("\(format(segment.duration)) long")]
+        if abs(segment.clip.normalizedSpeed - 1) > 0.01 { parts.append(L("\(formatScale(segment.clip.normalizedSpeed)) speed")) }
+        if segment.clip.muted { parts.append(L("muted")) }
+        return spokenList(parts) + spokenSpan(segment.timelineStart, segment.timelineEnd)
     }
 
     /// Spoken (and shown to VoiceOver) for an item: what it is and where.
@@ -175,23 +181,25 @@ extension VideoEditorModel {
         switch item {
         case .zoom(let id):
             let region = project.zoomRegions.first { $0.id == id }
-            return "Zoom \(region.map { Self.formatScale($0.scale) } ?? "")\(region?.followsCursor == true ? ", follows the cursor" : "")\(at(span))"
+            var parts = [L("Zoom \(region.map { Self.formatScale($0.scale) } ?? "")")]
+            if region?.followsCursor == true { parts.append(L("follows the cursor")) }
+            return Self.spokenList(parts) + at(span)
         case .overlay(let id):
-            guard let effect = project.overlayEffects.first(where: { $0.id == id }) else { return "Annotation" }
-            return (effect.kind == .text ? "Text “\(effect.text)”" : effect.kind.title) + at(span)
+            guard let effect = project.overlayEffects.first(where: { $0.id == id }) else { return L("Annotation") }
+            return (effect.kind == .text ? L("Text “\(effect.text)”") : effect.kind.title) + at(span)
         case .caption(let id):
-            return "Caption “\(plan.captions.first { $0.id == id }?.text ?? "")”\(at(span))"
+            return L("Caption “\(plan.captions.first { $0.id == id }?.text ?? "")”") + at(span)
         case .cameraLayout(let id):
-            return "Camera layout: \(project.cameraLayouts.first { $0.id == id }?.layout.title ?? "")\(at(span))"
+            return L("Camera layout: \(project.cameraLayouts.first { $0.id == id }?.layout.title ?? "")") + at(span)
         case .keystroke(let id):
-            return "Shortcut \(project.keystrokes.first { $0.id == id }?.keys.joined() ?? "")\(at(span))"
+            return L("Shortcut \(project.keystrokes.first { $0.id == id }?.keys.joined() ?? "")") + at(span)
         case .click:
-            return "Click\(at(span))"
+            return L("Click") + at(span)
         case .clip(let id):
-            guard let index = segments.firstIndex(where: { $0.id == id }) else { return "Clip" }
+            guard let index = segments.firstIndex(where: { $0.id == id }) else { return L("Clip") }
             return Self.spokenClip(index: index, segment: segments[index])
         case .range(let range):
-            return "Selected part\(at((range.normalized.start, range.normalized.end)))"
+            return L("Selected part") + at((range.normalized.start, range.normalized.end))
         case .none:
             return ""
         }
@@ -215,7 +223,8 @@ extension VideoEditorModel {
                 return nil
             }
         }
-        pendingUndoLabel = "Move \(groupMoveOrigins.count) Items"
+        // An edit name, not shown as it is (see VideoEditDescription).
+        pendingUndoLabel = "Move \(groupMoveOrigins.count) Items" // l10n-ignore
     }
 
     /// Every selected bar shifts by the same `delta` (timeline seconds),
@@ -279,7 +288,9 @@ extension VideoEditorModel {
             }
         }
         selection = .none
-        let keptClip = removedClips < clips.count ? " (a video keeps at least one clip)" : ""
-        showNotice("Removed \(ids.count + removedClips) items — ⌘Z to undo\(keptClip)", symbol: "trash")
+        let removed = ids.count + removedClips
+        showNotice(removedClips < clips.count
+                   ? L("Removed \(removed) items — ⌘Z to undo (a video keeps at least one clip)")
+                   : L("Removed \(removed) items — ⌘Z to undo"), symbol: "trash")
     }
 }

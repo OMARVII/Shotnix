@@ -4,10 +4,18 @@
 <dict>
 	<key>%@ (%@)</key>
 	<string>%@（%@）</string>
+	<key>%@ (This Mac)</key>
+	<string>%@（这台 Mac）</string>
 	<key>%@ (edited)</key>
 	<string>%@（已编辑）</string>
 	<key>%@ (original)</key>
 	<string>%@（原文）</string>
+	<key>%@ (⇧⌘Z)</key>
+	<string>%@（⇧⌘Z）</string>
+	<key>%@ (⌘Z)</key>
+	<string>%@（⌘Z）</string>
+	<key>%@ Zoom</key>
+	<string>缩放 %@</string>
 	<key>%@ area</key>
 	<string>%@ 区域</string>
 	<key>%@ can't be transcribed on this Mac without sending your voice to a server. To add it, turn on Dictation for %@ in System Settings → Keyboard, or pick another language.</key>
@@ -22,10 +30,16 @@
 	<string>%@ 全屏</string>
 	<key>%@ isn't supported for captions on this Mac. Pick another language.</key>
 	<string>这台 Mac 不支持用%@生成字幕。请选择其他语言。</string>
+	<key>%@ long</key>
+	<string>时长 %@</string>
+	<key>%@ of recording plays in %@.</key>
+	<string>%@ 的录制内容在 %@ 内播完。</string>
 	<key>%@ pt</key>
 	<string>%@ 磅</string>
 	<key>%@ quality · %@</key>
 	<string>%@质量 · %@</string>
+	<key>%@ speed</key>
+	<string>速度 %@</string>
 	<key>%@ transition</key>
 	<string>%@转场</string>
 	<key>%@ window</key>
@@ -40,6 +54,8 @@
 	<string>%@ · 已在剪贴板中 — 可粘贴到任何地方</string>
 	<key>%@ × %@ px</key>
 	<string>%@ × %@ 像素</string>
+	<key>%@ — %@</key>
+	<string>%@ — %@</string>
 	<key>%@ — Shotnix lives in your menu bar</key>
 	<string>%@ — Shotnix 位于菜单栏中</string>
 	<key>%@ — click to change</key>
@@ -68,6 +84,18 @@
 	<string>%lld 个标注，正在裁剪</string>
 	<key>%lld barcodes found</key>
 	<string>找到 %lld 个条形码</string>
+	<key>%lld camera layouts</key>
+	<string>%lld 个摄像头布局</string>
+	<key>%lld captions</key>
+	<string>%lld 条字幕</string>
+	<key>%lld clicks</key>
+	<string>%lld 次点按</string>
+	<key>%lld clips</key>
+	<string>%lld 个片段</string>
+	<key>%lld cuts here (%@ removed) — click to restore some or all</key>
+	<string>此处有 %lld 处剪除（共移除 %@）— 点按以恢复部分或全部</string>
+	<key>%lld cuts, %@ removed</key>
+	<string>%lld 处剪除，共移除 %@</string>
 	<key>%lld days</key>
 	<string>%lld 天</string>
 	<key>%lld email addresses</key>
@@ -82,6 +110,10 @@
 	<string>%lld 个链接</string>
 	<key>%lld of %lld captures</key>
 	<string>%2$lld 张截屏中的 %1$lld 张</string>
+	<key>%lld parts</key>
+	<string>%lld 个部分</string>
+	<key>%lld pressed — select one on the timeline and press ⌫ to hide it</key>
+	<string>已按下 %lld 个 — 在时间线上选择一个并按 ⌫ 即可隐藏</string>
 	<key>%lld px · Esc or Done finishes</key>
 	<string>%lld 像素 · 按 Esc 键或点按“完成”结束</string>
 	<key>%lld recorded clicks — in the preview and the export</key>
@@ -96,10 +128,28 @@
 	<string>已删除 %lld 张截屏 — 点按或按下 ⌘Z 撤销</string>
 	<key>%lld seconds</key>
 	<string>%lld 秒</string>
+	<key>%lld selected</key>
+	<string>已选择 %lld 项</string>
+	<key>%lld shortcuts</key>
+	<string>%lld 个快捷键</string>
+	<key>%lld zooms</key>
+	<string>%lld 个缩放</string>
 	<key>%lld%%</key>
 	<string>%lld%%</string>
+	<key>%lld%% volume</key>
+	<string>音量 %lld%%</string>
 	<key>%lld/%lld configured</key>
 	<string>已设置 %lld/%lld</string>
+	<key>, </key>
+	<string>，</string>
+	<key>, %@ to %@</key>
+	<string>，%@ 至 %@</string>
+	<key>, at %@</key>
+	<string>，位于 %@</string>
+	<key>0.1s earlier</key>
+	<string>提前 0.1 秒</string>
+	<key>0.1s later</key>
+	<string>推后 0.1 秒</string>
 	<key>A 2-second “Made with Shotnix” outro on your background — your own outro card is in Style</key>
 	<string>在你的背景上显示 2 秒的“Made with Shotnix”结尾 — 你自己的片尾卡在“样式”中</string>
 	<key>A big GIF — about %@ and %@ of memory to make. A smaller size, fewer fps, or MP4 is lighter.</key>
@@ -110,6 +160,8 @@
 	<string>硬切 — 点按以添加转场</string>
 	<key>A file with that name is in the way. Pick another name and export again.</key>
 	<string>已存在同名文件。请换一个名称，然后重新导出。</string>
+	<key>A hairline that separates dark recordings from the background</key>
+	<string>一条细线，将深色录制内容与背景分开</string>
 	<key>A second caption track you can show, burn in, or save as subtitles. Translated on this Mac — nothing is uploaded.</key>
 	<string>第二条字幕轨道，可显示、嵌入视频或存储为字幕文件。在这台 Mac 上翻译 — 不会上传任何内容。</string>
 	<key>A song under the whole video — it loops to fill, fades in and out, and dips while you talk. Use music you have the rights to.</key>
@@ -132,6 +184,14 @@
 	<string>准确度</string>
 	<key>Accurate</key>
 	<string>精确</string>
+	<key>Add Arrow</key>
+	<string>添加箭头</string>
+	<key>Add Blur</key>
+	<string>添加模糊</string>
+	<key>Add Caption Line at Playhead</key>
+	<string>在播放头处添加字幕行</string>
+	<key>Add Highlight</key>
+	<string>添加高亮</string>
 	<key>Add Image or Logo…</key>
 	<string>添加图像或标志…</string>
 	<key>Add Intro Card</key>
@@ -140,20 +200,56 @@
 	<string>添加音乐…</string>
 	<key>Add Outro Card</key>
 	<string>添加片尾卡</string>
+	<key>Add Spotlight (Dim Around a Spot)</key>
+	<string>添加聚光灯（调暗周围）</string>
+	<key>Add Text</key>
+	<string>添加文字</string>
+	<key>Add Zoom at Playhead</key>
+	<string>在播放头处添加缩放</string>
+	<key>Add a caption at the playhead</key>
+	<string>在播放头处添加字幕</string>
+	<key>Add a zoom at the playhead (Z)</key>
+	<string>在播放头处添加缩放（Z）</string>
 	<key>Add another recording or video after this one — Shotnix recordings keep their pointer, clicks, and shortcuts.</key>
 	<string>在此录制内容之后添加另一个录制内容或视频 — Shotnix 录制内容会保留指针、点按和快捷键。</string>
+	<key>Add arrow at the playhead (A)</key>
+	<string>在播放头处添加箭头（A）</string>
+	<key>Add blur at the playhead (B)</key>
+	<string>在播放头处添加模糊（B）</string>
+	<key>Add highlight at the playhead (H)</key>
+	<string>在播放头处添加高亮（H）</string>
+	<key>Add image at the playhead</key>
+	<string>在播放头处添加图像</string>
+	<key>Add spotlight at the playhead</key>
+	<string>在播放头处添加聚光灯</string>
+	<key>Add text at the playhead (T)</key>
+	<string>在播放头处添加文字（T）</string>
+	<key>Add zoom at playhead</key>
+	<string>在播放头处添加缩放</string>
+	<key>Add “%@” at the playhead</key>
+	<string>在播放头处添加“%@”</string>
 	<key>Added %@ — %@</key>
 	<string>已添加 %@ — %@</string>
+	<key>Adjust to move it half a second</key>
+	<string>调整可将其移动半秒</string>
 	<key>Advanced Tools</key>
 	<string>高级工具</string>
 	<key>After Capture</key>
 	<string>截屏后</string>
+	<key>Aim by Hand</key>
+	<string>手动对准</string>
+	<key>Aim by hand</key>
+	<string>手动对准</string>
 	<key>All Captures</key>
 	<string>所有截屏</string>
 	<key>All Displays</key>
 	<string>所有显示器</string>
 	<key>All captures are moved to Shotnix’s trash and permanently deleted after %lld days.</key>
 	<string>所有截屏都会移到 Shotnix 的废纸篓，并在 %lld 天后永久删除。</string>
+	<key>All commands</key>
+	<string>所有命令</string>
+	<key>All commands (⌘K)</key>
+	<string>所有命令（⌘K）</string>
 	<key>All configured</key>
 	<string>全部已设置</string>
 	<key>All zooms set to %@</key>
@@ -166,6 +262,8 @@
 	<string>请在“辅助功能”中允许 Shotnix — 快捷键会自动开启。</string>
 	<key>Almost done</key>
 	<string>即将完成</string>
+	<key>Always show the arrow</key>
+	<string>始终显示箭头</string>
 	<key>Amber Fold</key>
 	<string>琥珀褶皱</string>
 	<key>Annotate Last Screenshot</key>
@@ -176,8 +274,12 @@
 	<string>标注文字</string>
 	<key>Annotation tools</key>
 	<string>标注工具</string>
+	<key>Any color…</key>
+	<string>任意颜色…</string>
 	<key>App</key>
 	<string>App</string>
+	<key>Appearance</key>
+	<string>外观</string>
 	<key>Append Video…</key>
 	<string>追加视频…</string>
 	<key>Apple Shortcuts</key>
@@ -202,12 +304,22 @@
 	<string>应用裁剪</string>
 	<key>Apply the crop (Return)</key>
 	<string>应用裁剪（Return 键）</string>
+	<key>Apply to all zooms</key>
+	<string>应用到所有缩放</string>
 	<key>Aqua Marble</key>
 	<string>水色大理石</string>
 	<key>Area</key>
 	<string>区域</string>
 	<key>Arrow</key>
 	<string>箭头</string>
+	<key>Arrow head</key>
+	<string>箭头头部</string>
+	<key>Arrow tail</key>
+	<string>箭头尾部</string>
+	<key>Aspect Ratio %@ — %@</key>
+	<string>宽高比 %@ — %@</string>
+	<key>Aspect ratio</key>
+	<string>宽高比</string>
 	<key>At playhead</key>
 	<string>设为播放头</string>
 	<key>Audio</key>
@@ -218,6 +330,10 @@
 	<string>极光蓝</string>
 	<key>Auto</key>
 	<string>自动</string>
+	<key>Auto Zoom</key>
+	<string>自动缩放</string>
+	<key>Auto Zoom from Clicks</key>
+	<string>根据点按自动缩放</string>
 	<key>Auto zoom applied — %lld zooms follow your clicks</key>
 	<string>已应用自动缩放 — %lld 个缩放跟随你的点按</string>
 	<key>Auto zoom — %lld zooms</key>
@@ -238,8 +354,12 @@
 	<string>已恢复为 Shotnix 风格</string>
 	<key>Back to the original recording — ⌘Z to undo</key>
 	<string>已恢复为原始录制内容 — 按 ⌘Z 撤销</string>
+	<key>Back · pause · faster</key>
+	<string>后退 · 暂停 · 加快</string>
 	<key>Background</key>
 	<string>背景</string>
+	<key>Background, padding, corners, shadow</key>
+	<string>背景、边距、圆角、阴影</string>
 	<key>Balanced</key>
 	<string>均衡</string>
 	<key>Balancing loudness…</key>
@@ -250,6 +370,10 @@
 	<string>已将条形码内容拷贝到剪贴板</string>
 	<key>Barcodes</key>
 	<string>条形码</string>
+	<key>Behavior</key>
+	<string>行为</string>
+	<key>Behind you</key>
+	<string>身后</string>
 	<key>Between clips</key>
 	<string>片段之间</string>
 	<key>Black</key>
@@ -262,6 +386,8 @@
 	<string>模糊</string>
 	<key>Blurred area</key>
 	<string>模糊区域</string>
+	<key>Blurs fast camera moves the way a real camera does.</key>
+	<string>像真实摄像机一样模糊快速的镜头移动。</string>
 	<key>Bold</key>
 	<string>粗体</string>
 	<key>Bold outline</key>
@@ -286,24 +412,42 @@
 	<string>标注气泡：%@</string>
 	<key>Camera</key>
 	<string>摄像头</string>
+	<key>Camera Side by Side at Playhead</key>
+	<string>在播放头处并排显示摄像头</string>
 	<key>Camera access is off — allow Shotnix in System Settings → Privacy &amp; Security → Camera.</key>
 	<string>摄像头访问权限已关闭 — 请在“系统设置”→“隐私与安全性”→“摄像头”中允许 Shotnix。</string>
+	<key>Camera bubble</key>
+	<string>摄像头气泡</string>
 	<key>Camera disconnected</key>
 	<string>摄像头已断开</string>
 	<key>Camera disconnected.</key>
 	<string>摄像头已断开连接。</string>
 	<key>Camera disconnected. The recording continues without it.</key>
 	<string>摄像头已断开连接。录制将在没有摄像头的情况下继续。</string>
+	<key>Camera follows your cursor</key>
+	<string>镜头跟随你的指针</string>
+	<key>Camera footage is missing</key>
+	<string>摄像头画面缺失</string>
 	<key>Camera footage, cleaned-up voice, drafts, and clipboard exports</key>
 	<string>摄像头素材、清理后的人声、草稿和剪贴板导出</string>
 	<key>Camera hidden</key>
 	<string>隐藏摄像头</string>
+	<key>Camera layout</key>
+	<string>摄像头布局</string>
 	<key>Camera layout removed</key>
 	<string>已移除摄像头布局</string>
+	<key>Camera layout: %@</key>
+	<string>摄像头布局：%@</string>
+	<key>Camera layouts</key>
+	<string>摄像头布局</string>
+	<key>Camera layouts — drag to move, drag an edge to retime, click to change</key>
+	<string>摄像头布局 — 拖移可移动，拖移边缘可调整时间，点按可更改</string>
 	<key>Camera preview</key>
 	<string>摄像头预览</string>
 	<key>Camera stopped</key>
 	<string>摄像头已停止</string>
+	<key>Camera — drag to move it, click for options</key>
+	<string>摄像头 — 拖移可移动，点按可查看选项</string>
 	<key>Cancel</key>
 	<string>取消</string>
 	<key>Cancel Recording</key>
@@ -316,10 +460,14 @@
 	<string>已取消</string>
 	<key>Canyon Silk</key>
 	<string>峡谷丝绸</string>
+	<key>Caption</key>
+	<string>字幕</string>
 	<key>Caption removed</key>
 	<string>已移除字幕</string>
 	<key>Caption style %@</key>
 	<string>字幕样式：%@</string>
+	<key>Caption “%@”</key>
+	<string>字幕“%@”</string>
 	<key>Captions</key>
 	<string>字幕</string>
 	<key>Captions are drawn into the picture, and a subtitles file is saved next to the video.</key>
@@ -328,10 +476,14 @@
 	<string>字幕会绘制在画面中。</string>
 	<key>Captions are hidden in the editor (Captions tab → Show captions).</key>
 	<string>字幕已在编辑器中隐藏（“字幕”标签页→“显示字幕”）。</string>
+	<key>Captions from your narration — and cut the video by editing its words</key>
+	<string>根据你的解说生成字幕 — 还能通过编辑文字来剪辑视频</string>
 	<key>Captions look like this</key>
 	<string>字幕 效果 就是 这样</string>
 	<key>Captions ready — %lld lines</key>
 	<string>字幕已生成 — %lld 行</string>
+	<key>Captions tab</key>
+	<string>“字幕”标签页</string>
 	<key>Captions translated to %@</key>
 	<string>字幕已翻译为%@</string>
 	<key>Capture</key>
@@ -388,6 +540,8 @@
 	<string>选择</string>
 	<key>Choose Capture Area in the Shotnix menu to start</key>
 	<string>在 Shotnix 菜单中选择“捕捉区域”即可开始</string>
+	<key>Choose Image…</key>
+	<string>选择图像…</string>
 	<key>Choose a language</key>
 	<string>选择语言</string>
 	<key>Choose a logo, watermark, or screenshot to place on the video</key>
@@ -434,6 +588,8 @@
 	<string>正在清理人声…</string>
 	<key>Cleaning up your voice first… %lld%%</key>
 	<string>正在先清理你的人声…%lld%%</string>
+	<key>Cleaning up your voice…</key>
+	<string>正在清理你的人声…</string>
 	<key>Cleaning up your voice… %lld%%</key>
 	<string>正在清理你的人声…%lld%%</string>
 	<key>Clear All</key>
@@ -442,20 +598,36 @@
 	<string>清除历史记录</string>
 	<key>Clear History?</key>
 	<string>要清除历史记录吗？</string>
+	<key>Click</key>
+	<string>点按</string>
 	<key>Click a window to capture it  ·  Esc cancels</key>
 	<string>点按窗口以捕捉  ·  按 Esc 键取消</string>
+	<key>Click a zoom</key>
+	<string>点按缩放</string>
 	<key>Click an annotation to edit it</key>
 	<string>点按标注即可编辑</string>
+	<key>Click it on the video</key>
+	<string>在视频上点按它</string>
 	<key>Click or press Esc to cancel</key>
 	<string>点按或按下 Esc 键以取消</string>
 	<key>Click removed — ⌘Z to undo</key>
 	<string>已移除点按 — 按 ⌘Z 撤销</string>
 	<key>Click sounds</key>
 	<string>点按音效</string>
+	<key>Click to add a zoom — or press Z at the playhead</key>
+	<string>点按即可添加缩放 — 或在播放头处按下 Z</string>
 	<key>Click to add the next step</key>
 	<string>点按以添加下一步</string>
 	<key>Click volume</key>
 	<string>点按音量</string>
+	<key>Clicks</key>
+	<string>点按</string>
+	<key>Clicks — drag one to retime it, ⌫ removes the selected one</key>
+	<string>点按 — 拖移可调整时间，按 ⌫ 可移除所选项</string>
+	<key>Clip</key>
+	<string>片段</string>
+	<key>Clip %lld</key>
+	<string>片段 %lld</string>
 	<key>Clip moved — ⌘Z to undo</key>
 	<string>已移动片段 — 按 ⌘Z 撤销</string>
 	<key>Clip now ends here</key>
@@ -466,6 +638,8 @@
 	<string>已移除片段 — 按 ⌘Z 撤销</string>
 	<key>Clip split</key>
 	<string>已分割片段</string>
+	<key>Clip starts / ends here</key>
+	<string>片段从此处开始/结束</string>
 	<key>Clipboard</key>
 	<string>剪贴板</string>
 	<key>Close</key>
@@ -478,6 +652,8 @@
 	<string>关闭贴图</string>
 	<key>Close Window</key>
 	<string>关闭窗口</string>
+	<key>Closing the editor stops it.</key>
+	<string>关闭编辑器会停止此操作。</string>
 	<key>Coastal Haze</key>
 	<string>海岸薄雾</string>
 	<key>Cobalt Drapes</key>
@@ -486,8 +662,12 @@
 	<string>颜色</string>
 	<key>Command Center</key>
 	<string>命令中心</string>
+	<key>Commands</key>
+	<string>命令</string>
 	<key>Compose Email</key>
 	<string>撰写邮件</string>
+	<key>Computer sound</key>
+	<string>电脑声音</string>
 	<key>Conflict detected</key>
 	<string>检测到冲突</string>
 	<key>Copied</key>
@@ -502,6 +682,8 @@
 	<string>拷贝 %@</string>
 	<key>Copy (⌘C)</key>
 	<string>拷贝（⌘C）</string>
+	<key>Copy Current Frame</key>
+	<string>拷贝当前帧</string>
 	<key>Copy Path</key>
 	<string>拷贝路径</string>
 	<key>Copy Text</key>
@@ -510,6 +692,8 @@
 	<string>拷贝为表格</string>
 	<key>Copy capture to clipboard</key>
 	<string>将截屏拷贝到剪贴板</string>
+	<key>Copy current frame</key>
+	<string>拷贝当前帧</string>
 	<key>Copy image to clipboard</key>
 	<string>将图像拷贝到剪贴板</string>
 	<key>Copy recognized text (OCR)</key>
@@ -562,6 +746,8 @@
 	<string>无法打开该图像</string>
 	<key>Couldn't open that video — %@</key>
 	<string>无法打开该视频 — %@</string>
+	<key>Couldn't open this video</key>
+	<string>无法打开此视频</string>
 	<key>Couldn't prepare the video. Export again; if it keeps happening, restart Shotnix.</key>
 	<string>无法准备视频。请重新导出；如果问题仍然存在，请重新启动 Shotnix。</string>
 	<key>Couldn't read that audio file</key>
@@ -598,8 +784,20 @@
 	<string>清晰且紧凑 — 最佳默认选项</string>
 	<key>Crop</key>
 	<string>裁剪</string>
+	<key>Crop the Recording…</key>
+	<string>裁剪录制内容…</string>
+	<key>Crop the recording — trim away toolbars or empty space</key>
+	<string>裁剪录制内容 — 去掉工具栏或空白区域</string>
+	<key>Cropped</key>
+	<string>已裁剪</string>
+	<key>Cropped — cursor, zooms, and clicks follow</key>
+	<string>已裁剪 — 指针、缩放和点按会随之调整</string>
 	<key>Cursor</key>
 	<string>指针</string>
+	<key>Cursor, clicks, and keyboard shortcuts</key>
+	<string>指针、点按和快捷键</string>
+	<key>Custom</key>
+	<string>自定</string>
 	<key>Custom color</key>
 	<string>自定颜色</string>
 	<key>Custom color #%@</key>
@@ -612,6 +810,12 @@
 	<string>剪切</string>
 	<key>Cut %lld words — ⌘Z to undo</key>
 	<string>已剪掉 %lld 个词 — 按 ⌘Z 撤销</string>
+	<key>Cut filler words like um and uh</key>
+	<string>剪掉“嗯”“呃”之类的语气词</string>
+	<key>Cut from Video</key>
+	<string>从视频中剪掉</string>
+	<key>Cut this part</key>
+	<string>剪掉这一段</string>
 	<key>Cut, no transition</key>
 	<string>硬切，无转场</string>
 	<key>Cutout</key>
@@ -622,22 +826,34 @@
 	<string>删除</string>
 	<key>Delete %lld Captures?</key>
 	<string>要删除 %lld 张截屏吗？</string>
+	<key>Delete (⌫)</key>
+	<string>删除（⌫）</string>
 	<key>Delete All</key>
 	<string>全部删除</string>
 	<key>Delete Captures</key>
 	<string>删除截屏</string>
+	<key>Delete Clip</key>
+	<string>删除片段</string>
 	<key>Delete Screenshot</key>
 	<string>删除截屏</string>
 	<key>Delete Screenshots</key>
 	<string>删除截屏</string>
 	<key>Delete Selection</key>
 	<string>删除所选内容</string>
+	<key>Delete Zoom</key>
+	<string>删除缩放</string>
 	<key>Delete every saved capture</key>
 	<string>删除所有已存储的截屏</string>
+	<key>Delete selection</key>
+	<string>删除所选内容</string>
+	<key>Delete selection (⌫)</key>
+	<string>删除所选内容（⌫）</string>
 	<key>Deleted captures waiting in History's trash and files no capture uses are removed for good, along with %lld captures past your History limit. The rest of your history stays.</key>
 	<string>历史记录废纸篓中已删除的截屏、不再被任何截屏使用的文件，以及超出历史记录期限的 %lld 张截屏将被永久移除。其余历史记录会保留。</string>
 	<key>Deleted captures waiting in History's trash and files no capture uses are removed for good. The captures in your history stay.</key>
 	<string>历史记录废纸篓中已删除的截屏以及不再被任何截屏使用的文件将被永久移除。历史记录中的截屏会保留。</string>
+	<key>Deselect / close</key>
+	<string>取消选择/关闭</string>
 	<key>Desert Violet</key>
 	<string>沙漠紫罗兰</string>
 	<key>Dip to black</key>
@@ -662,6 +878,8 @@
 	<string>磁盘将满</string>
 	<key>Dismiss</key>
 	<string>忽略</string>
+	<key>Dismiss tips</key>
+	<string>隐藏提示</string>
 	<key>Display</key>
 	<string>显示器</string>
 	<key>Display %lld</key>
@@ -682,42 +900,86 @@
 	<string>不存储</string>
 	<key>Done</key>
 	<string>完成</string>
+	<key>Done (Esc)</key>
+	<string>完成（Esc）</string>
+	<key>Double-click</key>
+	<string>连按两次</string>
+	<key>Double-click text</key>
+	<string>连按两次文字</string>
 	<key>Double-click to edit, or drag into another app. Command-C copies, Command-S saves, Escape dismisses.</key>
 	<string>连按两次以编辑，或拖移到其他 App。Command-C 拷贝，Command-S 存储，Esc 键关闭。</string>
+	<key>Double-click to show the recording in Finder</key>
+	<string>连按两次以在“访达”中显示录制内容</string>
 	<key>Downloading the language model…</key>
 	<string>正在下载语言模型…</string>
 	<key>Drag edges or corners to resize  ·  Arrow keys nudge (⇧ ×10)  ·  Return captures  ·  Esc cancels</key>
 	<string>拖移边缘或角落以调整大小  ·  方向键微调位置（⇧ ×10）  ·  按 Return 键捕捉  ·  按 Esc 键取消</string>
+	<key>Drag it on the preview to move it; drag a corner to resize. Its bar on the timeline sets when it shows.</key>
+	<string>在预览中拖移即可移动；拖移某个角可调整大小。时间线上的条块决定它何时显示。</string>
+	<key>Drag it on the preview to move it; drag a corner to resize; double-click it to type. Its bar on the timeline sets when it shows.</key>
+	<string>在预览中拖移即可移动；拖移某个角可调整大小；连按两次即可输入文字。时间线上的条块决定它何时显示。</string>
+	<key>Drag one of them on the timeline to move them all together; ⌫ removes them all. ⇧- or ⌘-click adds or takes one out.</key>
+	<string>在时间线上拖移其中一项即可一起移动所有项目；按 ⌫ 会全部移除。按住 ⇧ 或 ⌘ 点按可添加或移除某一项。</string>
+	<key>Drag the arrow on the preview to move it; drag its head or tail to point it anywhere. Its bar on the timeline sets when it shows.</key>
+	<string>在预览中拖移箭头可移动它；拖移箭头的头部或尾部可指向任意位置。时间线上的条块决定它何时显示。</string>
+	<key>Drag the block on the Camera lane to move it, or its edges to change how long it lasts. Each change eases in and out.</key>
+	<string>拖移“摄像头”轨道上的块可移动它，拖移其边缘可更改持续时间。每次切换都会平滑过渡。</string>
+	<key>Drag the box on the preview over anything private. Blur follows zooms and stays until its bar ends.</key>
+	<string>在预览中将方框拖到任何隐私内容上。模糊效果会跟随缩放，并持续到其条块结束。</string>
+	<key>Drag the frame on the preview to aim; drag its corners to zoom in or out.</key>
+	<string>在预览中拖移画框即可对准；拖移其角可放大或缩小。</string>
+	<key>Drag the spot on the preview; drag a corner to resize it. Everything around it dims while its bar on the timeline runs.</key>
+	<string>在预览中拖移聚光区域；拖移某个角可调整其大小。在其时间线条块持续期间，周围的一切都会变暗。</string>
 	<key>Drag to capture  ·  Hold ⇧ as you let go to adjust first  ·  Space moves  ·  Esc cancels</key>
 	<string>拖移以捕捉  ·  松开时按住 ⇧ 可先调整  ·  空格键移动选区  ·  按 Esc 键取消</string>
+	<key>Drag to change where this clip ends</key>
+	<string>拖移可更改此片段的结尾</string>
+	<key>Drag to change where this clip starts</key>
+	<string>拖移可更改此片段的开头</string>
+	<key>Drag to move this clip to another place in the video</key>
+	<string>拖移可将此片段移到视频中的其他位置</string>
+	<key>Drag to move where the arrow starts</key>
+	<string>拖移以移动箭头起点</string>
 	<key>Drag to move. Press Command-C to copy, Escape to close.</key>
 	<string>拖移以移动。按下 Command-C 拷贝，按下 Esc 键关闭。</string>
 	<key>Drag to move; drag a corner to resize</key>
 	<string>拖移以移动；拖移角以调整大小</string>
+	<key>Drag to point the arrow</key>
+	<string>拖移以调整箭头指向</string>
 	<key>Drag to select, then adjust  ·  Hold ⇧ as you let go to capture right away  ·  Esc cancels</key>
 	<string>拖移以选择，然后调整  ·  松开时按住 ⇧ 可立即捕捉  ·  按 Esc 键取消</string>
 	<key>Draw with the selected tool. Tool shortcuts: V select, A arrow, R rectangle, T text, O callout, H highlighter, B blur, P pixelate, S spotlight, C crop.</key>
 	<string>使用所选工具绘制。工具快捷键：V 选择、A 箭头、R 矩形、T 文字、O 标注气泡、H 荧光笔、B 模糊、P 像素化、S 聚光灯、C 裁剪。</string>
 	<key>Drawing</key>
 	<string>手绘</string>
+	<key>Duplicate</key>
+	<string>复制</string>
+	<key>Duplicate zoom or annotation</key>
+	<string>复制缩放或标注</string>
 	<key>Duplicated</key>
 	<string>已复制</string>
 	<key>Dusk</key>
 	<string>黄昏</string>
 	<key>Each recording keeps its own pointer, clicks, and shortcuts. Reorder them here; cut and trim them on the timeline like any clip.</key>
 	<string>每个录制内容都保留自己的指针、点按和快捷键。在这里调整顺序；像其他片段一样在时间线上剪切和修剪。</string>
+	<key>Edge highlight</key>
+	<string>边缘描边</string>
 	<key>Edit</key>
 	<string>编辑</string>
 	<key>Edit Last Recording</key>
 	<string>编辑最近的录制内容</string>
 	<key>Edit Video</key>
 	<string>编辑视频</string>
+	<key>Edit by text</key>
+	<string>按文字编辑</string>
 	<key>Editable Cursor</key>
 	<string>可编辑指针</string>
 	<key>Editable cursor</key>
 	<string>可编辑指针</string>
 	<key>Editable cursor records the pointer separately so the editor can smooth it, resize it, and keep it crisp when zoomed — the video editor adds it back on export (the raw recording file has no pointer). Auto-zoom makes a fresh recording open already produced: the camera zooms to follow your clicks. Keyboard shortcuts records only ⌘, ⌃ and ⌥ combos (plus Esc and F-keys) so the editor can show them as keycaps — plain typing is never recorded; macOS asks for Accessibility access. High quality is the default; Max keeps more detail but creates larger files. The countdown gives you a moment after pressing Record; Esc cancels it. Stop a recording with %@ from any app — plain Esc stays with the app you're recording.</key>
 	<string>“可编辑指针”会单独记录指针，以便编辑器将其平滑、调整大小，并在缩放时保持清晰 — 视频编辑器会在导出时将指针加回（原始录制文件中不含指针）。开启自动缩放后，新录制内容打开时就已制作完成：镜头会跟随你的点按。“显示快捷键”只记录含 ⌘、⌃ 和 ⌥ 的组合键（以及 Esc 键和功能键），以便编辑器将其显示为按键 — 普通输入绝不会被记录；macOS 会请求辅助功能权限。默认使用“高”质量；“最高”保留更多细节，但文件更大。倒计时让你在开始录制后有片刻准备；按 Esc 键可取消。在任何 App 中按 %@ 都能停止录制 — 单独按 Esc 键仍会传给你正在录制的 App。</string>
+	<key>Editing</key>
+	<string>编辑</string>
 	<key>Ellipse</key>
 	<string>椭圆</string>
 	<key>Email</key>
@@ -744,12 +1006,22 @@
 	<string>编码</string>
 	<key>End card</key>
 	<string>结尾画面</string>
+	<key>End here</key>
+	<string>到这里结束</string>
+	<key>Ends</key>
+	<string>结束</string>
 	<key>English</key>
 	<string>英语</string>
+	<key>Enhance Voice</key>
+	<string>增强人声</string>
+	<key>Enhance voice</key>
+	<string>增强人声</string>
 	<key>Enjoying Shotnix? Click to star it on GitHub ★</key>
 	<string>喜欢 Shotnix 吗？点按即可在 GitHub 上为它加星标 ★</string>
 	<key>Enjoying Shotnix? Star it on GitHub so more people find it.</key>
 	<string>喜欢 Shotnix 吗？在 GitHub 上加个星标，让更多人发现它。</string>
+	<key>Esc</key>
+	<string>Esc</string>
 	<key>Esc or Done finishes</key>
 	<string>按 Esc 键或点按“完成”结束</string>
 	<key>Estimated file size. Still screens take less.</key>
@@ -758,6 +1030,8 @@
 	<string>预估大小：%@</string>
 	<key>Estimating…</key>
 	<string>正在估算…</string>
+	<key>Even out loudness</key>
+	<string>统一响度</string>
 	<key>Every clip is muted — this export will have no sound.</key>
 	<string>所有片段都已静音 — 此导出将没有声音。</string>
 	<key>Every cut, zoom, annotation, caption, and style change on this video is removed — the recordings you added stay. You can undo this.</key>
@@ -768,10 +1042,16 @@
 	<string>所有音量都为 0（“音频”标签页）— 此导出将没有声音。</string>
 	<key>Everything is ready</key>
 	<string>一切就绪</string>
+	<key>Exactly as recorded.</key>
+	<string>与录制时完全一致。</string>
 	<key>Export</key>
 	<string>导出</string>
+	<key>Export (⌘E)</key>
+	<string>导出（⌘E）</string>
 	<key>Export Format</key>
 	<string>导出格式</string>
+	<key>Export Video…</key>
+	<string>导出视频…</string>
 	<key>Export and put the file on the clipboard — paste it into Slack, Mail, or Finder</key>
 	<string>导出并将文件放到剪贴板 — 可粘贴到 Slack、“邮件”或“访达”</string>
 	<key>Export cancelled</key>
@@ -800,8 +1080,14 @@
 	<string>正在导出…</string>
 	<key>Exporting… %lld%%</key>
 	<string>正在导出…%lld%%</string>
+	<key>Exports at the level video sites expect (−16 LUFS) without clipping</key>
+	<string>按视频网站要求的音量导出（−16 LUFS），不会削波</string>
+	<key>Exports without sound — to quiet just the preview, press M</key>
+	<string>导出时不含声音 — 若只想让预览静音，请按 M</string>
 	<key>Export…</key>
 	<string>导出…</string>
+	<key>Extra-fluid curves for slow, cinematic demos.</key>
+	<string>超流畅的曲线，适合慢节奏、电影感的演示。</string>
 	<key>Fade in</key>
 	<string>淡入</string>
 	<key>Fade in from black</key>
@@ -810,14 +1096,20 @@
 	<string>淡出</string>
 	<key>Fade out to black</key>
 	<string>淡出到黑色</string>
+	<key>Fades out after a moment without movement</key>
+	<string>片刻不移动后淡出</string>
 	<key>Fast</key>
 	<string>快速</string>
+	<key>Fast-forward moments where nothing happens</key>
+	<string>快进没有动静的时刻</string>
 	<key>File</key>
 	<string>文件</string>
 	<key>File Name</key>
 	<string>文件名</string>
 	<key>File not found</key>
 	<string>找不到文件</string>
+	<key>Fill the Frame, Follow the Cursor</key>
+	<string>填满画面并跟随指针</string>
 	<key>Filled Rectangle</key>
 	<string>实心矩形</string>
 	<key>Filled rectangle</key>
@@ -826,6 +1118,10 @@
 	<string>实心圆角矩形</string>
 	<key>Filling the frame — the view follows your cursor</key>
 	<string>正在填满画面 — 视图会跟随你的指针</string>
+	<key>Find in Transcript</key>
+	<string>在文字稿中查找</string>
+	<key>Find in the transcript</key>
+	<string>在文字稿中查找</string>
 	<key>Finish and Quit</key>
 	<string>完成后退出</string>
 	<key>Finish or cancel the current recording setup</key>
@@ -834,14 +1130,28 @@
 	<string>修复</string>
 	<key>Flamingo</key>
 	<string>火烈鸟</string>
+	<key>Flip like a selfie</key>
+	<string>像自拍一样翻转</string>
+	<key>Follow Cursor</key>
+	<string>跟随指针</string>
+	<key>Follow cursor</key>
+	<string>跟随指针</string>
+	<key>Follows cursor</key>
+	<string>跟随指针</string>
 	<key>Forever</key>
 	<string>永久</string>
 	<key>Format</key>
 	<string>格式</string>
+	<key>Frame</key>
+	<string>边框</string>
 	<key>Frame copied</key>
 	<string>已拷贝画面</string>
 	<key>Frame rate</key>
 	<string>帧速率</string>
+	<key>Framing</key>
+	<string>取景</string>
+	<key>Free</key>
+	<string>自由</string>
 	<key>Free up ⌘⇧ shortcuts · optional</key>
 	<string>释放 ⌘⇧ 快捷键 · 可选</string>
 	<key>Freed %@</key>
@@ -854,10 +1164,22 @@
 	<string>手绘荧光笔</string>
 	<key>Freehand highlight</key>
 	<string>手绘高亮</string>
+	<key>From your Mac</key>
+	<string>来自你的 Mac</string>
+	<key>Full Camera at Playhead</key>
+	<string>在播放头处使用全屏摄像头</string>
+	<key>Full Frame (No Background)</key>
+	<string>全画面（无背景）</string>
 	<key>Full camera</key>
 	<string>全屏摄像头</string>
+	<key>Full camera for intro &amp; outro</key>
+	<string>片头和片尾使用全屏摄像头</string>
+	<key>Full frame (no background)</key>
+	<string>全画面（无背景）</string>
 	<key>Full screen: %@</key>
 	<string>全屏：%@</string>
+	<key>Full-Camera Intro and Outro</key>
+	<string>全屏摄像头片头和片尾</string>
 	<key>Full-screen camera for your intro and outro</key>
 	<string>片头和片尾显示全屏摄像头</string>
 	<key>Fullscreen</key>
@@ -866,10 +1188,18 @@
 	<string>GIF 可以嵌入任何地方 — README、拉取请求、文档。尽量保持简短：它们很快就会变大。</string>
 	<key>General</key>
 	<string>通用</string>
+	<key>Gets out of the way during zoom moves</key>
+	<string>缩放时自动让开</string>
 	<key>Getting ready…</key>
 	<string>正在准备…</string>
 	<key>Glacier</key>
 	<string>冰川</string>
+	<key>Glides without lagging behind — clicks still land exactly.</key>
+	<string>流畅跟随、毫不拖沓 — 点按位置依然精准。</string>
+	<key>Go to End</key>
+	<string>前往结尾</string>
+	<key>Go to Start</key>
+	<string>前往开头</string>
 	<key>Gradient</key>
 	<string>渐变</string>
 	<key>Grant Screen Recording first, then try it here.</key>
@@ -888,6 +1218,8 @@
 	<string>状态</string>
 	<key>Hidden</key>
 	<string>隐藏</string>
+	<key>Hide</key>
+	<string>隐藏</string>
 	<key>Hide Desktop Icons</key>
 	<string>隐藏桌面图标</string>
 	<key>Hide Icon</key>
@@ -896,6 +1228,12 @@
 	<string>截屏时隐藏桌面图标</string>
 	<key>Hide the Menu Bar Icon?</key>
 	<string>要隐藏菜单栏图标吗？</string>
+	<key>Hide the move to Stop</key>
+	<string>隐藏移向“停止”的动作</string>
+	<key>Hide tips (bring them back from ⌘K or the shortcuts list)</key>
+	<string>隐藏提示（可通过 ⌘K 或快捷键列表重新显示）</string>
+	<key>Hide when idle</key>
+	<string>静止时隐藏</string>
 	<key>Hide — the export keeps going (Esc)</key>
 	<string>隐藏 — 导出会继续进行（Esc）</string>
 	<key>High</key>
@@ -904,6 +1242,8 @@
 	<string>高亮</string>
 	<key>Highlight color</key>
 	<string>高亮颜色</string>
+	<key>Highlight words</key>
+	<string>高亮字词</string>
 	<key>Highlighter</key>
 	<string>荧光笔</string>
 	<key>History</key>
@@ -916,8 +1256,14 @@
 	<string>历史记录占用 …（%lld 张截屏）</string>
 	<key>History was already tidy</key>
 	<string>历史记录已经很整洁</string>
+	<key>Home  End</key>
+	<string>Home  End</string>
 	<key>Hotkeys are system-wide and active while Shotnix is running. The ⌘⇧3 default works best after Apple's screenshot shortcut is disabled.</key>
 	<string>快捷键在 Shotnix 运行时全局有效。停用 Apple 的截屏快捷键后，默认的 ⌘⇧3 效果最佳。</string>
+	<key>Hover the Zoom track</key>
+	<string>悬停在缩放轨道上</string>
+	<key>Hover the zoom track and click to add a zoom, or press Z at the playhead. Drag a zoom to move it; drag its edges to change how long it lasts.</key>
+	<string>将指针悬停在缩放轨道上并点按即可添加缩放，或在播放头处按下 Z。拖移缩放可移动它；拖移其边缘可更改持续时间。</string>
 	<key>How strongly blur and pixelate hide what's under them</key>
 	<string>模糊和像素化遮盖下方内容的程度</string>
 	<key>Image</key>
@@ -932,14 +1278,24 @@
 	<string>入点延后</string>
 	<key>Includes: %@</key>
 	<string>包含：%@</string>
+	<key>Inspector tabs</key>
+	<string>检查器标签页</string>
 	<key>Instagram, LinkedIn</key>
 	<string>Instagram、LinkedIn</string>
 	<key>Instant</key>
 	<string>即时</string>
+	<key>Intro</key>
+	<string>片头</string>
 	<key>Intro &amp; outro</key>
 	<string>片头和片尾</string>
 	<key>Intro card</key>
 	<string>片头卡</string>
+	<key>Intro card — click to edit it in Style</key>
+	<string>片头卡 — 点按以在“样式”中编辑</string>
+	<key>Intro card “%@”, %@ to %@</key>
+	<string>片头卡“%@”，%@ 至 %@</string>
+	<key>Intro card, %@ to %@</key>
+	<string>片头卡，%@ 至 %@</string>
 	<key>Iris</key>
 	<string>鸢尾</string>
 	<key>It may be damaged, still being saved, or in a format this Mac can't play. MP4 and MOV videos work best.</key>
@@ -948,8 +1304,14 @@
 	<string>该文件只有声音，或者什么都没有。Shotnix 可编辑屏幕录制和其他视频。</string>
 	<key>It was moved, renamed, or deleted. Open it from where it is now.</key>
 	<string>它已被移动、重新命名或删除。请从它现在的位置打开。</string>
+	<key>It was recorded into the pixels, so it can't be resized or smoothed. New recordings capture an editable cursor by default (Settings → Recording).</key>
+	<string>指针已录入画面像素中，因此无法调整大小或平滑处理。新录制内容默认会捕捉可编辑的指针（“设置”→“录制”）。</string>
 	<key>JPEG Quality</key>
 	<string>JPEG 质量</string>
+	<key>Jump here</key>
+	<string>跳转到这里</string>
+	<key>Jump one second</key>
+	<string>跳转一秒</string>
 	<key>Keep</key>
 	<string>保留</string>
 	<key>Keep Editing</key>
@@ -958,6 +1320,8 @@
 	<string>继续工作</string>
 	<key>Keep captures</key>
 	<string>截屏保留时长</string>
+	<key>Keep editing — the words appear here when Shotnix is done listening.</key>
+	<string>你可以继续编辑 — Shotnix 听完后，字词会显示在这里。</string>
 	<key>Keeping 30 days removes %lld older captures from History now. This can't be undone.</key>
 	<string>选择“30 天”将立即从历史记录中移除 %lld 张较早的截屏。此操作无法撤销。</string>
 	<key>Keeping 7 days removes %lld older captures from History now. This can't be undone.</key>
@@ -972,12 +1336,24 @@
 	<string>选择“最近 500 张截屏”将立即从历史记录中移除 %lld 张较早的截屏。此操作无法撤销。</string>
 	<key>Keyboard</key>
 	<string>键盘</string>
+	<key>Keyboard Shortcuts</key>
+	<string>快捷键</string>
+	<key>Keyboard shortcuts</key>
+	<string>快捷键</string>
+	<key>Keyboard shortcuts (?)</key>
+	<string>快捷键（?）</string>
 	<key>Keyboard shortcuts are on</key>
 	<string>快捷键已开启</string>
+	<key>Keyboard shortcuts — click one to select it, ⌫ hides it</key>
+	<string>快捷键 — 点按即可选择，按 ⌫ 可隐藏</string>
+	<key>Keys on screen</key>
+	<string>屏幕按键</string>
 	<key>L</key>
 	<string>大</string>
 	<key>Lagoon</key>
 	<string>泻湖</string>
+	<key>Language</key>
+	<string>语言</string>
 	<key>Languages</key>
 	<string>语言</string>
 	<key>Large</key>
@@ -990,10 +1366,18 @@
 	<string>登录时打开 Shotnix</string>
 	<key>Lavender Glass</key>
 	<string>薰衣草玻璃</string>
+	<key>Layout</key>
+	<string>布局</string>
+	<key>Layouts</key>
+	<string>布局</string>
 	<key>Left</key>
 	<string>左侧</string>
 	<key>Length</key>
 	<string>时长</string>
+	<key>Letterbox Instead of Following the Cursor</key>
+	<string>加黑边，不跟随指针</string>
+	<key>Level</key>
+	<string>级别</string>
 	<key>Light</key>
 	<string>轻度</string>
 	<key>Lime Signal</key>
@@ -1004,6 +1388,8 @@
 	<string>线条粗细</string>
 	<key>Linen</key>
 	<string>亚麻</string>
+	<key>Lines · %lld</key>
+	<string>字幕行 · %lld</string>
 	<key>Link</key>
 	<string>链接</string>
 	<key>Link QR found</key>
@@ -1016,6 +1402,10 @@
 	<string>链接（%2$lld 个中的 %1$lld 个）</string>
 	<key>Listening…</key>
 	<string>正在聆听…</string>
+	<key>Listens on this Mac — nothing is uploaded</key>
+	<string>在这台 Mac 上识别 — 不会上传任何内容</string>
+	<key>Look</key>
+	<string>外观</string>
 	<key>Loop to fill</key>
 	<string>循环填满</string>
 	<key>Lower under your voice</key>
@@ -1080,24 +1470,42 @@
 	<string>最小化</string>
 	<key>Mint</key>
 	<string>薄荷</string>
+	<key>Mirror</key>
+	<string>镜像</string>
 	<key>Mist</key>
 	<string>薄雾</string>
+	<key>More</key>
+	<string>更多</string>
+	<key>More caption options</key>
+	<string>更多字幕选项</string>
 	<key>More recording options</key>
 	<string>更多录制选项</string>
+	<key>More tips</key>
+	<string>更多提示</string>
 	<key>Moss</key>
 	<string>苔绿</string>
 	<key>Moss Glow</key>
 	<string>苔藓微光</string>
+	<key>Motion</key>
+	<string>运动</string>
+	<key>Motion blur</key>
+	<string>动态模糊</string>
 	<key>Move %@ earlier</key>
 	<string>将 %@ 前移</string>
 	<key>Move %@ later</key>
 	<string>将 %@ 后移</string>
+	<key>Move Earlier</key>
+	<string>向前移动</string>
+	<key>Move Later</key>
+	<string>向后移动</string>
 	<key>Move earlier</key>
 	<string>前移</string>
 	<key>Move later</key>
 	<string>后移</string>
 	<key>Move the playhead inside a clip to split</key>
 	<string>将播放头移到片段内以进行分割</string>
+	<key>Movement</key>
+	<string>移动</string>
 	<key>Music</key>
 	<string>音乐</string>
 	<key>Music added — it dips while you talk</key>
@@ -1108,8 +1516,24 @@
 	<string>已移除音乐 — 按 ⌘Z 撤销</string>
 	<key>Music — click to change its volume, fades, and ducking</key>
 	<string>音乐 — 点按以更改音量、淡入淡出和人声时的降低</string>
+	<key>Music “%@”</key>
+	<string>音乐“%@”</string>
 	<key>Mute Clip</key>
 	<string>将片段静音</string>
+	<key>Mute preview</key>
+	<string>将预览静音</string>
+	<key>Mute the Preview (the Export Keeps Its Sound)</key>
+	<string>将预览静音（导出内容保留声音）</string>
+	<key>Mute the preview (M) — the export keeps its sound</key>
+	<string>将预览静音（M）— 导出内容保留声音</string>
+	<key>Mute the preview (or the selected clip)</key>
+	<string>将预览（或所选片段）静音</string>
+	<key>Mute this clip</key>
+	<string>将此片段静音</string>
+	<key>Mute this part</key>
+	<string>将此部分静音</string>
+	<key>Mute video</key>
+	<string>视频静音</string>
 	<key>Mute video is on (Audio tab) — this export will have no sound.</key>
 	<string>“视频静音”已打开（“音频”标签页）— 此导出将没有声音。</string>
 	<key>Nebula</key>
@@ -1122,20 +1546,34 @@
 	<string>网络</string>
 	<key>Never</key>
 	<string>永不</string>
+	<key>Never switch to the text beam or the hand</key>
+	<string>从不切换为文本光标或手形</string>
 	<key>New caption</key>
 	<string>新字幕</string>
+	<key>New recordings use this look</key>
+	<string>新录制内容会使用此风格</string>
 	<key>New screenshots are copied automatically. Turn this off if you only want to use the overlay or history actions.</key>
 	<string>新截屏会自动拷贝。如果只想使用缩略图或历史记录中的操作，请关闭此选项。</string>
+	<key>New zooms</key>
+	<string>新缩放</string>
 	<key>Nice shot. You're all set.</key>
 	<string>截得漂亮！一切就绪。</string>
 	<key>Night Current</key>
 	<string>夜之流</string>
+	<key>No Exports Yet</key>
+	<string>尚无导出内容</string>
+	<key>No background</key>
+	<string>无背景</string>
+	<key>No background — text only</key>
+	<string>无背景 — 仅文字</string>
 	<key>No barcode found in this selection</key>
 	<string>此选区中未找到条形码</string>
 	<key>No camera connected</key>
 	<string>未连接摄像头</string>
 	<key>No camera found.</key>
 	<string>未找到摄像头。</string>
+	<key>No camera in this recording</key>
+	<string>此录制内容中没有摄像头画面</string>
 	<key>No captions in the picture — add a subtitles file to upload them separately.</key>
 	<string>画面中无字幕 — 添加字幕文件以单独上传。</string>
 	<key>No captures contain “%@”</key>
@@ -1150,8 +1588,12 @@
 	<string>此视频中没有录制到点按</string>
 	<key>No clicks were recorded — add zooms by hand</key>
 	<string>没有录制到点按 — 请手动添加缩放</string>
+	<key>No clicks were recorded, so add zooms by hand: hover the zoom track and click.</key>
+	<string>没有录制到点按，请手动添加缩放：将指针悬停在缩放轨道上并点按。</string>
 	<key>No conflict</key>
 	<string>无冲突</string>
+	<key>No cursor data in this video</key>
+	<string>此视频中没有指针数据</string>
 	<key>No idle moments found — nice and tight</key>
 	<string>未发现空闲片段 — 节奏紧凑</string>
 	<key>No long pauses to shorten</key>
@@ -1160,6 +1602,10 @@
 	<string>未连接麦克风</string>
 	<key>No microphone is connected, so this recording has no mic.</key>
 	<string>未连接麦克风，因此此录制内容没有麦克风声音。</string>
+	<key>No music</key>
+	<string>没有音乐</string>
+	<key>No pauses to shorten</key>
+	<string>没有可缩短的停顿</string>
 	<key>No recordable windows found</key>
 	<string>未找到可录制的窗口</string>
 	<key>No recording in progress</key>
@@ -1176,16 +1622,22 @@
 	<string>此录制内容中未检测到语音。如果其中有旁白，请在“音频”标签页中检查其音量，然后重试。</string>
 	<key>No text found in this selection</key>
 	<string>此选区中未找到文字</string>
+	<key>No ums</key>
+	<string>没有语气词</string>
 	<key>No ums or uhs left</key>
 	<string>已没有语气词</string>
 	<key>None</key>
 	<string>无</string>
+	<key>None in this recording. Turn on “Show keyboard shortcuts” in Settings → Recording and every ⌘ shortcut you press appears as keycaps. Plain typing is never recorded.</key>
+	<string>此录制内容中没有。在“设置”→“录制”中打开“显示快捷键”后，你按下的每个 ⌘ 快捷键都会以按键形式显示。普通打字永远不会被录制。</string>
 	<key>Not enough disk space to record.</key>
 	<string>磁盘空间不足，无法录制。</string>
 	<key>Not enough free disk space for this recording: it needs about %@ free, and %@ is available. Free up some space and try again.</key>
 	<string>磁盘空间不足，无法进行此录制：大约需要 %@ 可用空间，当前可用 %@。请释放一些空间后重试。</string>
 	<key>Not enough free disk space for this recording: it needs about %@ free, and %@ is available. Free up space, or choose Balanced quality or 30 fps.</key>
 	<string>磁盘空间不足，无法进行此录制：大约需要 %@ 可用空间，当前可用 %@。请释放空间，或选择“均衡”质量或 30 fps。</string>
+	<key>Not for this video</key>
+	<string>此视频不需要</string>
 	<key>Not now</key>
 	<string>以后再说</string>
 	<key>Nothing to clean up — everything belongs to recordings you still have</key>
@@ -1216,6 +1668,8 @@
 	<string>打开</string>
 	<key>Open %@</key>
 	<string>打开 %@</string>
+	<key>Open Another Video…</key>
+	<string>打开其他视频…</string>
 	<key>Open Command Center</key>
 	<string>打开命令中心</string>
 	<key>Open Editor After Recording</key>
@@ -1228,6 +1682,10 @@
 	<string>打开链接</string>
 	<key>Open Messages</key>
 	<string>打开“信息”</string>
+	<key>Open Privacy Settings</key>
+	<string>打开“隐私与安全性”</string>
+	<key>Open Recording Settings…</key>
+	<string>打开录制设置…</string>
 	<key>Open Settings</key>
 	<string>打开设置</string>
 	<key>Open System Settings</key>
@@ -1240,12 +1698,18 @@
 	<string>录制后打开编辑器</string>
 	<key>Open in annotation editor</key>
 	<string>在截屏编辑器中打开</string>
+	<key>Opens its title and length in Style</key>
+	<string>在“样式”中打开其标题和时长</string>
 	<key>Opens its volume, fades, and ducking in Audio</key>
 	<string>在“音频”中打开其音量、淡入淡出和降低设置</string>
 	<key>Or drag it on the preview. Images stay put while the camera zooms.</key>
 	<string>也可以在预览中拖移。缩放时图像会保持不动。</string>
 	<key>Or drag its bar on the timeline.</key>
 	<string>也可以在时间线上拖移其条块。</string>
+	<key>Or drag the bubble on the video — it snaps to the nearest spot.</key>
+	<string>也可以在视频上拖移气泡 — 它会吸附到最近的位置。</string>
+	<key>Or type one at the playhead</key>
+	<string>或在播放头处手动输入一条</string>
 	<key>Orange</key>
 	<string>橙色</string>
 	<key>Orchid</key>
@@ -1258,8 +1722,16 @@
 	<string>出点提前</string>
 	<key>Out later</key>
 	<string>出点延后</string>
+	<key>Outro</key>
+	<string>片尾</string>
 	<key>Outro card</key>
 	<string>片尾卡</string>
+	<key>Outro card — click to edit it in Style</key>
+	<string>片尾卡 — 点按以在“样式”中编辑</string>
+	<key>Outro card “%@”, %@ to %@</key>
+	<string>片尾卡“%@”，%@ 至 %@</string>
+	<key>Outro card, %@ to %@</key>
+	<string>片尾卡，%@ 至 %@</string>
 	<key>Overlay position</key>
 	<string>缩略图位置</string>
 	<key>Padding</key>
@@ -1270,6 +1742,10 @@
 	<string>密码</string>
 	<key>Paste</key>
 	<string>粘贴</string>
+	<key>Pause</key>
+	<string>暂停</string>
+	<key>Pause (Space)</key>
+	<string>暂停（空格键）</string>
 	<key>Pause / Resume Recording</key>
 	<string>暂停/继续录制</string>
 	<key>Pause Recording</key>
@@ -1310,14 +1786,28 @@
 	<string>像素化</string>
 	<key>Pixelated area</key>
 	<string>像素化区域</string>
+	<key>Placement</key>
+	<string>位置</string>
+	<key>Plan zooms from your clicks — keeps zooms you placed by hand</key>
+	<string>根据你的点按规划缩放 — 保留你手动放置的缩放</string>
+	<key>Plans zooms around your %lld clicks. Zooms you placed by hand are kept.</key>
+	<string>根据你的 %lld 次点按规划缩放。你手动放置的缩放会保留。</string>
 	<key>Play</key>
 	<string>播放</string>
+	<key>Play (Space)</key>
+	<string>播放（空格键）</string>
+	<key>Play / pause</key>
+	<string>播放/暂停</string>
 	<key>Play Click Sounds</key>
 	<string>播放点按音效</string>
 	<key>Play a click on each click</key>
 	<string>每次点按时播放点按声</string>
 	<key>Play capture sound</key>
 	<string>截屏时播放声音</string>
+	<key>Play from Here</key>
+	<string>从这里播放</string>
+	<key>Playback</key>
+	<string>播放</string>
 	<key>Playing %lld×</key>
 	<string>正在以 %lld× 速度播放</string>
 	<key>Plays after the last clip, before the end card</key>
@@ -1326,6 +1816,8 @@
 	<string>在第一个片段之前播放</string>
 	<key>Plays everywhere</key>
 	<string>随处可播放</string>
+	<key>Plays or pauses. Use Option-arrow keys to select what's on the timeline.</key>
+	<string>播放或暂停。使用 Option 键和箭头键可选择时间线上的内容。</string>
 	<key>Plum</key>
 	<string>梅子</string>
 	<key>Polar Dawn</key>
@@ -1338,6 +1830,8 @@
 	<string>设置</string>
 	<key>Preparing to copy…</key>
 	<string>正在准备拷贝…</string>
+	<key>Preparing your video…</key>
+	<string>正在准备你的视频…</string>
 	<key>Preparing…</key>
 	<string>正在准备…</string>
 	<key>Preset</key>
@@ -1348,6 +1842,8 @@
 	<string>随时按下 %@ — 也可以现在就试试。</string>
 	<key>Press %@ to take your first screenshot</key>
 	<string>按下 %@ 截取你的第一张截屏</string>
+	<key>Pressed at %@. Press ⌫ to hide it from the video — handy for a stray ⌘Tab.</key>
+	<string>按下于 %@。按下 ⌫ 可在视频中隐藏它 — 适合处理误按的 ⌘Tab。</string>
 	<key>Preview</key>
 	<string>预览</string>
 	<key>Preview muted — the export keeps its sound</key>
@@ -1356,6 +1852,8 @@
 	<string>预览声音已打开</string>
 	<key>Preview the target, then continue to recording controls.</key>
 	<string>预览目标，然后继续设置录制。</string>
+	<key>Previous / next frame</key>
+	<string>上一帧/下一帧</string>
 	<key>Prism Sweep</key>
 	<string>棱镜流光</string>
 	<key>Privacy Policy</key>
@@ -1390,6 +1888,8 @@
 	<string>就绪</string>
 	<key>Ready · %lld optional off</key>
 	<string>就绪 · %lld 个可选快捷键未设置</string>
+	<key>Recent Exports</key>
+	<string>最近导出</string>
 	<key>Recognized Text</key>
 	<string>识别出的文字</string>
 	<key>Recognized text</key>
@@ -1410,6 +1910,8 @@
 	<string>录制麦克风</string>
 	<key>Record system audio</key>
 	<string>录制电脑声音</string>
+	<key>Recorded at %@. Drag its dot on the timeline to retime it; ripples and Auto Zoom follow.</key>
+	<string>录制于 %@。在时间线上拖移它的圆点即可调整时间；波纹和自动缩放会随之更新。</string>
 	<key>Recording</key>
 	<string>录制</string>
 	<key>Recording already in progress</key>
@@ -1446,6 +1948,8 @@
 	<string>录制内容</string>
 	<key>Recordings in the Trash or on a drive that isn't plugged in keep their data. This can't be undone.</key>
 	<string>废纸篓中或未连接磁盘上的录制内容会保留其数据。此操作无法撤销。</string>
+	<key>Recordings made with Shotnix capture the pointer so it can be smoothed, resized, and hidden.</key>
+	<string>使用 Shotnix 录制的内容会单独捕捉指针，以便平滑、调整大小和隐藏。</string>
 	<key>Records %@ × %@ pixels (%@ × %@ points)</key>
 	<string>录制 %@ × %@ 像素（%@ × %@ 点）</string>
 	<key>Records the pointer separately, so the editor can smooth it, resize it, and keep it crisp when zoomed.</key>
@@ -1460,8 +1964,238 @@
 	<string>遮盖强度</string>
 	<key>Redo</key>
 	<string>重做</string>
+	<key>Redo Add Arrow</key>
+	<string>重做添加箭头</string>
+	<key>Redo Add Blur</key>
+	<string>重做添加模糊</string>
+	<key>Redo Add Camera Layout</key>
+	<string>重做添加摄像头布局</string>
+	<key>Redo Add Camera Layouts</key>
+	<string>重做添加摄像头布局</string>
+	<key>Redo Add Caption</key>
+	<string>重做添加字幕</string>
+	<key>Redo Add Captions</key>
+	<string>重做添加字幕</string>
+	<key>Redo Add Click</key>
+	<string>重做添加点按</string>
+	<key>Redo Add Clicks</key>
+	<string>重做添加点按</string>
+	<key>Redo Add Highlight</key>
+	<string>重做添加高亮</string>
+	<key>Redo Add Image</key>
+	<string>重做添加图像</string>
+	<key>Redo Add Intro Card</key>
+	<string>重做添加片头卡</string>
+	<key>Redo Add Music</key>
+	<string>重做添加音乐</string>
+	<key>Redo Add Outro Card</key>
+	<string>重做添加片尾卡</string>
+	<key>Redo Add Recording</key>
+	<string>重做添加录制内容</string>
+	<key>Redo Add Spotlight</key>
+	<string>重做添加聚光灯</string>
+	<key>Redo Add Text</key>
+	<string>重做添加文字</string>
+	<key>Redo Add Zoom</key>
+	<string>重做添加缩放</string>
+	<key>Redo Add Zooms</key>
+	<string>重做添加缩放</string>
+	<key>Redo Annotation Change</key>
+	<string>重做标注更改</string>
+	<key>Redo Annotations</key>
+	<string>重做标注更改</string>
+	<key>Redo Arrow Style</key>
+	<string>重做箭头样式更改</string>
+	<key>Redo Aspect Ratio</key>
+	<string>重做宽高比更改</string>
+	<key>Redo Auto Zoom</key>
+	<string>重做自动缩放</string>
+	<key>Redo Background</key>
+	<string>重做背景更改</string>
+	<key>Redo Blur Style</key>
+	<string>重做模糊样式更改</string>
+	<key>Redo Camera Change</key>
+	<string>重做摄像头更改</string>
+	<key>Redo Camera Layout Change</key>
+	<string>重做摄像头布局更改</string>
+	<key>Redo Camera Layouts</key>
+	<string>重做摄像头布局更改</string>
+	<key>Redo Caption Style</key>
+	<string>重做字幕样式更改</string>
+	<key>Redo Caption Translation</key>
+	<string>重做字幕翻译</string>
+	<key>Redo Captions</key>
+	<string>重做字幕更改</string>
+	<key>Redo Click Sounds</key>
+	<string>重做点按音效更改</string>
+	<key>Redo Clicks</key>
+	<string>重做点按更改</string>
+	<key>Redo Crop</key>
+	<string>重做裁剪</string>
+	<key>Redo Cursor Change</key>
+	<string>重做指针更改</string>
+	<key>Redo Cut</key>
+	<string>重做剪除</string>
+	<key>Redo Cut Word</key>
+	<string>重做剪掉字词</string>
+	<key>Redo Cut Words</key>
+	<string>重做剪掉字词</string>
+	<key>Redo Delete %lld Items</key>
+	<string>重做删除 %lld 个项目</string>
+	<key>Redo Delete Annotations</key>
+	<string>重做删除标注</string>
+	<key>Redo Delete Arrow</key>
+	<string>重做删除箭头</string>
+	<key>Redo Delete Blur</key>
+	<string>重做删除模糊</string>
+	<key>Redo Delete Camera Layout</key>
+	<string>重做删除摄像头布局</string>
+	<key>Redo Delete Camera Layouts</key>
+	<string>重做删除摄像头布局</string>
+	<key>Redo Delete Caption</key>
+	<string>重做删除字幕</string>
+	<key>Redo Delete Captions</key>
+	<string>重做删除字幕</string>
+	<key>Redo Delete Click</key>
+	<string>重做删除点按</string>
+	<key>Redo Delete Clicks</key>
+	<string>重做删除点按</string>
+	<key>Redo Delete Clip</key>
+	<string>重做删除片段</string>
+	<key>Redo Delete Clips</key>
+	<string>重做删除片段</string>
+	<key>Redo Delete Highlight</key>
+	<string>重做删除高亮</string>
+	<key>Redo Delete Image</key>
+	<string>重做删除图像</string>
+	<key>Redo Delete Spotlight</key>
+	<string>重做删除聚光灯</string>
+	<key>Redo Delete Text</key>
+	<string>重做删除文字</string>
+	<key>Redo Delete Zoom</key>
+	<string>重做删除缩放</string>
+	<key>Redo Delete Zooms</key>
+	<string>重做删除缩放</string>
+	<key>Redo Edit Caption</key>
+	<string>重做编辑字幕</string>
+	<key>Redo Edit Text</key>
+	<string>重做编辑文字</string>
+	<key>Redo Enhance Voice</key>
+	<string>重做增强人声</string>
+	<key>Redo Fade</key>
+	<string>重做淡入淡出</string>
+	<key>Redo Hide Shortcut</key>
+	<string>重做隐藏快捷键</string>
+	<key>Redo Highlight Style</key>
+	<string>重做高亮样式更改</string>
+	<key>Redo Image Style</key>
+	<string>重做图像样式更改</string>
+	<key>Redo Intro and Outro</key>
+	<string>重做摄像头片头和片尾</string>
+	<key>Redo Move %lld Items</key>
+	<string>重做移动 %lld 个项目</string>
+	<key>Redo Move Arrow</key>
+	<string>重做移动箭头</string>
+	<key>Redo Move Blur</key>
+	<string>重做移动模糊</string>
+	<key>Redo Move Click</key>
+	<string>重做移动点按</string>
+	<key>Redo Move Clip</key>
+	<string>重做移动片段</string>
+	<key>Redo Move Highlight</key>
+	<string>重做移动高亮</string>
+	<key>Redo Move Image</key>
+	<string>重做移动图像</string>
+	<key>Redo Move Recording</key>
+	<string>重做移动录制内容</string>
+	<key>Redo Move Spotlight</key>
+	<string>重做移动聚光灯</string>
+	<key>Redo Move Text</key>
+	<string>重做移动文字</string>
+	<key>Redo Music Change</key>
+	<string>重做音乐更改</string>
+	<key>Redo Mute Clip</key>
+	<string>重做片段静音</string>
+	<key>Redo Mute Part</key>
+	<string>重做部分静音</string>
+	<key>Redo Mute Video</key>
+	<string>重做视频静音</string>
+	<key>Redo Remove All Zooms</key>
+	<string>重做移除所有缩放</string>
+	<key>Redo Remove Captions</key>
+	<string>重做移除字幕</string>
+	<key>Redo Remove Intro Card</key>
+	<string>重做移除片头卡</string>
+	<key>Redo Remove Music</key>
+	<string>重做移除音乐</string>
+	<key>Redo Remove Outro Card</key>
+	<string>重做移除片尾卡</string>
+	<key>Redo Remove Recording</key>
+	<string>重做移除录制内容</string>
+	<key>Redo Remove Ums</key>
+	<string>重做移除语气词</string>
+	<key>Redo Replace Music</key>
+	<string>重做替换音乐</string>
+	<key>Redo Reset Look</key>
+	<string>重做重置风格</string>
+	<key>Redo Restore</key>
+	<string>重做恢复</string>
+	<key>Redo Restore Cut</key>
+	<string>重做恢复剪除部分</string>
+	<key>Redo Restore Cuts</key>
+	<string>重做恢复剪除部分</string>
+	<key>Redo Restore Pause</key>
+	<string>重做恢复停顿</string>
+	<key>Redo Restore Word</key>
+	<string>重做恢复字词</string>
+	<key>Redo Restore Words</key>
+	<string>重做恢复字词</string>
+	<key>Redo Shortcut Style</key>
+	<string>重做快捷键样式更改</string>
+	<key>Redo Shortcuts</key>
+	<string>重做快捷键更改</string>
+	<key>Redo Shorten Pause</key>
+	<string>重做缩短停顿</string>
+	<key>Redo Shorten Pauses</key>
+	<string>重做缩短停顿</string>
+	<key>Redo Sound Change</key>
+	<string>重做声音更改</string>
+	<key>Redo Speed Change</key>
+	<string>重做速度更改</string>
+	<key>Redo Speed Up Idle</key>
+	<string>重做加速空闲片段</string>
+	<key>Redo Split</key>
+	<string>重做分割</string>
+	<key>Redo Spotlight Style</key>
+	<string>重做聚光灯样式更改</string>
+	<key>Redo Start Over</key>
+	<string>重做从头开始</string>
+	<key>Redo Style Change</key>
+	<string>重做样式更改</string>
+	<key>Redo Text Style</key>
+	<string>重做文字样式更改</string>
 	<key>Redo Timeline Edit</key>
 	<string>重做时间线编辑</string>
+	<key>Redo Title Card</key>
+	<string>重做标题卡更改</string>
+	<key>Redo Transcribe</key>
+	<string>重做转录</string>
+	<key>Redo Transitions</key>
+	<string>重做转场更改</string>
+	<key>Redo Trim</key>
+	<string>重做修剪</string>
+	<key>Redo Unmute Clip</key>
+	<string>重做取消片段静音</string>
+	<key>Redo Unmute Part</key>
+	<string>重做取消部分静音</string>
+	<key>Redo Unmute Video</key>
+	<string>重做取消视频静音</string>
+	<key>Redo Zoom Change</key>
+	<string>重做缩放更改</string>
+	<key>Redo Zoom Level for All</key>
+	<string>重做统一缩放级别</string>
+	<key>Redo Zooms</key>
+	<string>重做缩放更改</string>
 	<key>Reels, TikTok, Shorts</key>
 	<string>Reels、TikTok、Shorts</string>
 	<key>Regular</key>
@@ -1474,26 +2208,54 @@
 	<string>移除 %@</string>
 	<key>Remove %@ of video data?</key>
 	<string>要移除 %@ 的视频数据吗？</string>
+	<key>Remove %lld ums</key>
+	<string>移除 %lld 个语气词</string>
+	<key>Remove All Zooms</key>
+	<string>移除所有缩放</string>
 	<key>Remove Intro Card</key>
 	<string>移除片头卡</string>
 	<key>Remove Music</key>
 	<string>移除音乐</string>
 	<key>Remove Outro Card</key>
 	<string>移除片尾卡</string>
+	<key>Remove Transcript &amp; Captions</key>
+	<string>移除文字稿和字幕</string>
+	<key>Remove Ums</key>
+	<string>移除语气词</string>
+	<key>Remove all %lld</key>
+	<string>全部移除（%lld）</string>
+	<key>Remove all zooms</key>
+	<string>移除所有缩放</string>
+	<key>Remove caption</key>
+	<string>移除字幕</string>
 	<key>Remove from this video</key>
 	<string>从此视频中移除</string>
+	<key>Remove this caption</key>
+	<string>移除此字幕</string>
 	<key>Remove this translation</key>
 	<string>移除此翻译</string>
 	<key>Remove translation</key>
 	<string>移除翻译</string>
+	<key>Removed %@ — click to restore</key>
+	<string>已移除 %@ — 点按以恢复</string>
 	<key>Removed %@ — ⌘Z to undo</key>
 	<string>已移除 %@ — 按 ⌘Z 撤销</string>
 	<key>Removed %lld filler words — %@ shorter</key>
 	<string>已移除 %lld 个语气词 — 视频缩短了 %@</string>
+	<key>Removed %lld items — ⌘Z to undo</key>
+	<string>已移除 %lld 个项目 — 按 ⌘Z 撤销</string>
+	<key>Removed %lld items — ⌘Z to undo (a video keeps at least one clip)</key>
+	<string>已移除 %lld 个项目 — 按 ⌘Z 撤销（视频至少保留一个片段）</string>
 	<key>Removed %lld zooms — ⌘Z to undo</key>
 	<string>已移除 %lld 个缩放 — 按 ⌘Z 撤销</string>
+	<key>Removed parts can be restored from the yellow marker on the timeline.</key>
+	<string>已移除的部分可通过时间线上的黄色标记恢复。</string>
 	<key>Removed — ⌘Z to undo</key>
 	<string>已移除 — 按 ⌘Z 撤销</string>
+	<key>Removes background noise and hum, and evens out your level — processed on this Mac</key>
+	<string>去除背景噪音和嗡嗡声，并平衡你的音量 — 在这台 Mac 上处理</string>
+	<key>Removes jitter, keeps it snappy.</key>
+	<string>去除抖动，保持灵敏。</string>
 	<key>Rendering for the clipboard… %lld%%</key>
 	<string>正在为剪贴板渲染…%lld%%</string>
 	<key>Rendering, then copying to your clipboard</key>
@@ -1506,14 +2268,28 @@
 	<string>报告问题</string>
 	<key>Reset</key>
 	<string>重置</string>
+	<key>Reset %@</key>
+	<string>重置%@</string>
 	<key>Reset Defaults</key>
 	<string>恢复默认设置</string>
 	<key>Reset crop</key>
 	<string>重置裁剪</string>
+	<key>Reset to the Shotnix Look</key>
+	<string>恢复为 Shotnix 风格</string>
+	<key>Reset to the Shotnix look</key>
+	<string>恢复为 Shotnix 风格</string>
 	<key>Resize</key>
 	<string>调整大小</string>
 	<key>Resolution</key>
 	<string>分辨率</string>
+	<key>Restore</key>
+	<string>恢复</string>
+	<key>Restore %@ at %@</key>
+	<string>恢复 %2$@ 处的 %1$@</string>
+	<key>Restore %@ cut at %@</key>
+	<string>恢复位于 %2$@ 的 %1$@ 剪除部分</string>
+	<key>Restore All %lld</key>
+	<string>全部恢复（%lld）</string>
 	<key>Restore Apple Shortcuts</key>
 	<string>恢复 Apple 快捷键</string>
 	<key>Restored %@</key>
@@ -1566,6 +2342,8 @@
 	<string>圆角</string>
 	<key>Rounded rectangle</key>
 	<string>圆角矩形</string>
+	<key>Roundness</key>
+	<string>圆角</string>
 	<key>S</key>
 	<string>小</string>
 	<key>SHOTNIX LIBRARY</key>
@@ -1584,6 +2362,8 @@
 	<string>存储位置</string>
 	<key>Save Subtitles</key>
 	<string>存储字幕</string>
+	<key>Save Subtitles (.srt)…</key>
+	<string>存储字幕（.srt）…</string>
 	<key>Save Subtitles (.vtt)…</key>
 	<string>存储字幕（.vtt）…</string>
 	<key>Save automatically</key>
@@ -1606,6 +2386,12 @@
 	<string>已存储到“%@”：%@</string>
 	<key>Saved — new recordings will use this look</key>
 	<string>已存储 — 新录制内容将使用此风格</string>
+	<key>Saves %@ — only silences where nothing happens on screen</key>
+	<string>节省 %@ — 仅限屏幕上无任何动静的静音部分</string>
+	<key>Saves %@ — silences where the pointer rests and nothing is clicked or pressed (this older recording can't see typing)</key>
+	<string>节省 %@ — 指针静止且没有点按或按键的静音部分（这个较早的录制内容无法识别打字）</string>
+	<key>Saves the background, frame, cursor, and zoom style.</key>
+	<string>会存储背景、边框、指针和缩放样式。</string>
 	<key>Save…</key>
 	<string>存储…</string>
 	<key>Saving captures to History</key>
@@ -1660,6 +2446,8 @@
 	<string>滚动截屏已达到最大长度（%lld 点），已完成。</string>
 	<key>Scrolling capture stopped after %lld minutes.</key>
 	<string>滚动截屏已在 %lld 分钟后停止。</string>
+	<key>Search commands</key>
+	<string>搜索命令</string>
 	<key>Search text in captures</key>
 	<string>搜索截屏中的文字</string>
 	<key>Security</key>
@@ -1668,10 +2456,24 @@
 	<string>选择</string>
 	<key>Select All</key>
 	<string>全选</string>
+	<key>Select a clip on the timeline to mute it or fade it in and out.</key>
+	<string>在时间线上选择一个片段即可将其静音或设置淡入淡出。</string>
+	<key>Select a range to cut</key>
+	<string>选择要剪掉的范围</string>
 	<key>Select a window to record without blocking other apps</key>
 	<string>选择要录制的窗口，不影响其他 App 的使用</string>
+	<key>Select previous / next item</key>
+	<string>选择上一个/下一个项目</string>
+	<key>Select several items</key>
+	<string>选择多个项目</string>
 	<key>Select which display to record fullscreen</key>
 	<string>选择要全屏录制的显示器</string>
+	<key>Select words and press ⌫ to cut them from the video — ⌫ again on crossed-out words puts them back. Click a word to jump there; ⌘F finds.</key>
+	<string>选择字词并按下 ⌫ 即可将其从视频中剪掉 — 在带删除线的字词上再按 ⌫ 可恢复。点按字词可跳转到该处；按 ⌘F 可查找。</string>
+	<key>Selected %@</key>
+	<string>已选择：%@</string>
+	<key>Selected part</key>
+	<string>所选部分</string>
 	<key>Selection</key>
 	<string>选区</string>
 	<key>Selection %@ by %@ points</key>
@@ -1700,14 +2502,24 @@
 	<string>共享</string>
 	<key>Share — Mail, Messages, AirDrop…</key>
 	<string>共享 — “邮件”、“信息”、隔空投送…</string>
+	<key>Shortcut</key>
+	<string>快捷键</string>
+	<key>Shortcut %@</key>
+	<string>快捷键 %@</string>
 	<key>Shortcut Conflict Detected</key>
 	<string>检测到快捷键冲突</string>
 	<key>Shortcut hidden</key>
 	<string>已隐藏快捷键</string>
 	<key>Shortcuts</key>
 	<string>快捷键</string>
+	<key>Shorten %lld pauses</key>
+	<string>缩短 %lld 处停顿</string>
+	<key>Shorten Pauses</key>
+	<string>缩短停顿</string>
 	<key>Shortened %lld pauses — %@ shorter</key>
 	<string>已缩短 %lld 处停顿 — 视频缩短了 %@</string>
+	<key>Shortens every silence over a second (this video has no Shotnix pointer data to spot what happens on screen)</key>
+	<string>缩短每段超过一秒的静音（此视频没有 Shotnix 指针数据，无法识别屏幕上发生了什么）</string>
 	<key>Shotnix Preferences</key>
 	<string>Shotnix 设置</string>
 	<key>Shotnix can't open this file</key>
@@ -1728,6 +2540,8 @@
 	<string>Shotnix 仍在转录</string>
 	<key>Shotnix isn't allowed to record the screen. Turn it on in System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording.</key>
 	<string>Shotnix 无权录制屏幕。请在“系统设置”→“隐私与安全性”→“录屏与系统录音”中开启。</string>
+	<key>Shotnix listens to the recording right on this Mac — nothing is uploaded. Then cut the video by deleting words, remove ums and long pauses in one click, and add captions.</key>
+	<string>Shotnix 直接在这台 Mac 上听取录制内容 — 不会上传任何内容。然后你可以通过删除字词来剪辑视频，一键移除语气词和长停顿，并添加字幕。</string>
 	<key>Shotnix lives here — setup continues next launch</key>
 	<string>Shotnix 就在这里 — 下次启动时将继续设置</string>
 	<key>Shotnix lives in your menu bar</key>
@@ -1744,32 +2558,70 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>Shotnix – 截屏历史记录</string>
 	<key>Show</key>
 	<string>显示</string>
+	<key>Show Background</key>
+	<string>显示背景</string>
 	<key>Show Desktop Icons</key>
 	<string>显示桌面图标</string>
 	<key>Show Editor</key>
 	<string>显示编辑器</string>
+	<key>Show Editor Tips</key>
+	<string>显示编辑器提示</string>
+	<key>Show Folder in Finder</key>
+	<string>在“访达”中显示文件夹</string>
 	<key>Show Quick Access Overlay</key>
 	<string>显示快速访问缩略图</string>
+	<key>Show Recent Export “%@” in Finder</key>
+	<string>在“访达”中显示最近导出的“%@”</string>
+	<key>Show Recording in Finder</key>
+	<string>在“访达”中显示录制内容</string>
 	<key>Show Video Editor</key>
 	<string>显示视频编辑器</string>
+	<key>Show background</key>
+	<string>显示背景</string>
+	<key>Show camera</key>
+	<string>显示摄像头</string>
+	<key>Show captions</key>
+	<string>显示字幕</string>
 	<key>Show cursor</key>
 	<string>显示指针</string>
 	<key>Show for the whole video</key>
 	<string>在整个视频中显示</string>
 	<key>Show in Finder</key>
 	<string>在“访达”中显示</string>
+	<key>Show in Finder — %@</key>
+	<string>在“访达”中显示 — %@</string>
 	<key>Show keyboard shortcuts</key>
 	<string>显示快捷键</string>
 	<key>Show menu bar icon</key>
 	<string>在菜单栏中显示图标</string>
+	<key>Show more / less detail</key>
+	<string>显示更多/更少细节</string>
+	<key>Show more of the timeline</key>
+	<string>显示更多时间线</string>
 	<key>Show one kind of capture</key>
 	<string>只显示一种截屏</string>
+	<key>Show shortcuts</key>
+	<string>显示快捷键</string>
+	<key>Show the timeline in more detail</key>
+	<string>更详细地显示时间线</string>
 	<key>Show the whole screenshot again</key>
 	<string>重新显示整个截屏</string>
+	<key>Show tips under the video again</key>
+	<string>重新在视频下方显示提示</string>
 	<key>Shows what can be removed — data of recordings Shotnix can't find, unused footage and pictures, old clipboard exports — and asks before removing it</key>
 	<string>显示可移除的内容 — Shotnix 找不到的录制内容的数据、未使用的素材和图片、旧的剪贴板导出 — 并在移除前询问</string>
+	<key>Shrink while zoomed</key>
+	<string>缩放时缩小</string>
+	<key>Shuffle Background</key>
+	<string>随机背景</string>
+	<key>Shuffle the background</key>
+	<string>随机选择背景</string>
 	<key>Side by side</key>
 	<string>并排</string>
+	<key>Silences over a second get shortened — except while you click, type, scroll, or move the pointer, so the demo itself is never cut</key>
+	<string>超过一秒的静音会被缩短 — 点按、打字、滚动或移动指针时除外，因此演示本身不会被剪掉</string>
+	<key>Silences over a second get shortened — except while you move the pointer, click, or press a shortcut</key>
+	<string>超过一秒的静音会被缩短 — 移动指针、点按或按下快捷键时除外</string>
 	<key>Silky</key>
 	<string>丝滑</string>
 	<key>Silver</key>
@@ -1780,6 +2632,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>跳过设置</string>
 	<key>Skipping frames</key>
 	<string>正在丢帧</string>
+	<key>Skips the dash to the Stop button at the end</key>
+	<string>略过结尾时快速移向“停止”按钮的动作</string>
 	<key>Sky</key>
 	<string>天空</string>
 	<key>Sky Wash</key>
@@ -1796,10 +2650,18 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>社交媒体</string>
 	<key>Social feeds</key>
 	<string>社交媒体信息流</string>
+	<key>Soft streaks on fast moves</key>
+	<string>快速移动时产生柔和拖影</string>
 	<key>Solid Color</key>
 	<string>纯色</string>
+	<key>Solid color</key>
+	<string>纯色</string>
+	<key>Sound</key>
+	<string>声音</string>
 	<key>Sounds</key>
 	<string>声音</string>
+	<key>Space</key>
+	<string>空格键</string>
 	<key>Space Gray</key>
 	<string>深空灰色</string>
 	<key>Sped up %lld idle moments — saved %@</key>
@@ -1810,10 +2672,24 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>Shotnix 的语音识别已在“系统设置”→“隐私与安全性”→“语音识别”中关闭。请将其打开，然后重试。</string>
 	<key>Speech recognition isn't available on this Mac right now. Try again in a moment.</key>
 	<string>这台 Mac 目前无法使用语音识别。请稍后重试。</string>
+	<key>Speed</key>
+	<string>速度</string>
+	<key>Speed Up Idle</key>
+	<string>加速空闲片段</string>
+	<key>Speed Up Idle Moments</key>
+	<string>加速空闲片段</string>
 	<key>Speed Up Idle works on Shotnix recordings — it watches the pointer</key>
 	<string>“加速空闲片段”适用于 Shotnix 录制内容 — 它会追踪指针</string>
+	<key>Speed of this part</key>
+	<string>此部分的速度</string>
+	<key>Split</key>
+	<string>分割</string>
 	<key>Split at Playhead</key>
 	<string>在播放头处分割</string>
+	<key>Split at playhead</key>
+	<string>在播放头处分割</string>
+	<key>Split at the playhead (S)</key>
+	<string>在播放头处分割（S）</string>
 	<key>Split the video (S) to make cuts; each can dissolve or dip to black.</key>
 	<string>分割视频（S）以创建剪切点；每个剪切点都可以叠化或黑场过渡。</string>
 	<key>Spoken word</key>
@@ -1824,12 +2700,22 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>聚光灯形状</string>
 	<key>Star on GitHub</key>
 	<string>在 GitHub 上加星标</string>
+	<key>Start / end</key>
+	<string>开头/结尾</string>
 	<key>Start Over</key>
 	<string>重新开始</string>
+	<key>Start Over from the Original Recording…</key>
+	<string>从原始录制内容重新开始…</string>
+	<key>Start at the playhead</key>
+	<string>从播放头处开始</string>
+	<key>Start here</key>
+	<string>从这里开始</string>
 	<key>Start over from the original recording?</key>
 	<string>要从原始录制内容重新开始吗？</string>
 	<key>Start the song at</key>
 	<string>歌曲起始位置</string>
+	<key>Starts</key>
+	<string>开始</string>
 	<key>Startup</key>
 	<string>启动</string>
 	<key>Step %lld</key>
@@ -1840,8 +2726,12 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>仍在存储录制内容…</string>
 	<key>Stitching…</key>
 	<string>正在拼接…</string>
+	<key>Stop Enhancing Voice</key>
+	<string>停止增强人声</string>
 	<key>Stop Recording</key>
 	<string>停止录制</string>
+	<key>Stop and Close</key>
+	<string>停止并关闭</string>
 	<key>Stop recording</key>
 	<string>停止录制</string>
 	<key>Stop recording (%@)</key>
@@ -1866,6 +2756,10 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>日落珊瑚</string>
 	<key>Support</key>
 	<string>支持</string>
+	<key>Swap the arrow's head and tail</key>
+	<string>交换箭头的头尾</string>
+	<key>Switch the camera to full screen for talking points, or put it side by side with the screen — at the playhead. Each shows on the Camera lane.</key>
+	<string>在播放头处将摄像头切换为全屏以讲解要点，或与屏幕并排显示。每次切换都会显示在“摄像头”轨道上。</string>
 	<key>System Default</key>
 	<string>系统默认</string>
 	<key>System audio</key>
@@ -1876,6 +2770,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>已拷贝表格 — 可粘贴到电子表格中</string>
 	<key>Tag</key>
 	<string>标签</string>
+	<key>Tag color</key>
+	<string>标签颜色</string>
 	<key>Tahoe Ice</key>
 	<string>太浩冰蓝</string>
 	<key>Take a Test Screenshot</key>
@@ -1900,6 +2796,10 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>文字识别失败</string>
 	<key>Text size</key>
 	<string>文字大小</string>
+	<key>Text · highlight · arrow · blur</key>
+	<string>文字 · 高亮 · 箭头 · 模糊</string>
+	<key>Text “%@”</key>
+	<string>文字“%@”</string>
 	<key>Text: %@</key>
 	<string>文字：%@</string>
 	<key>Thanks for watching</key>
@@ -1920,8 +2820,12 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>窗口在录制开始前已关闭。</string>
 	<key>The camera couldn't start.</key>
 	<string>无法启动摄像头。</string>
+	<key>The camera keeps your cursor in view and glides after it.</key>
+	<string>镜头会让指针保持在画面中，并平滑地跟随它。</string>
 	<key>The camera stopped. The recording continues without it.</key>
 	<string>摄像头已停止。录制将在没有摄像头的情况下继续。</string>
+	<key>The cursor is part of this video</key>
+	<string>指针已录入此视频</string>
 	<key>The export carries on in the background (Esc)</key>
 	<string>导出会在后台继续（Esc）</string>
 	<key>The export stopped unexpectedly (%@). Try again — if it keeps happening, export at a lower resolution or in H.264.</key>
@@ -1970,6 +2874,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>这里已有缩放</string>
 	<key>There's no video in this file</key>
 	<string>此文件中没有视频</string>
+	<key>Thickness</key>
+	<string>粗细</string>
 	<key>Thin</key>
 	<string>细</string>
 	<key>This GIF is too long for its size — it would need about %@ of memory. Pick a smaller size or fewer frames per second, export part of the video, or choose MP4.</key>
@@ -1978,16 +2884,26 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>这台 Mac 无法在这两种语言之间翻译。请选择其他语言。</string>
 	<key>This Week</key>
 	<string>本周</string>
+	<key>This list</key>
+	<string>此列表</string>
+	<key>This recording has no sound</key>
+	<string>此录制内容没有声音</string>
 	<key>This recording has no sound to transcribe. You can still type captions yourself.</key>
 	<string>此录制内容没有可转录的声音。你仍然可以自己输入字幕。</string>
+	<key>This recording has no sound. Turn on the microphone before recording to narrate it.</key>
+	<string>此录制内容没有声音。录制前打开麦克风即可进行解说。</string>
 	<key>This recording has no voice to duck under</key>
 	<string>此录制内容中没有人声，无需降低音量</string>
+	<key>This recording only has the arrow</key>
+	<string>此录制内容只有箭头</string>
 	<key>This replaces all %lld caption lines, including any you edited or typed, with a new transcript in %@.</key>
 	<string>这会用新的%2$@文字稿替换全部 %1$lld 行字幕，包括你编辑或输入过的行。</string>
 	<key>This video is copy-protected and can't be exported.</key>
 	<string>此视频受复制保护，无法导出。</string>
 	<key>This video isn't there anymore</key>
 	<string>此视频已不存在</string>
+	<key>This video was recorded with your camera, but “%@” isn't in %@ anymore. Put it back there and open the video again to get the camera bubble back.</key>
+	<string>此视频录制时使用了摄像头，但“%@”已不在 %@ 中。请将它放回原处并重新打开视频，即可恢复摄像头气泡。</string>
 	<key>Three quick steps and you're capturing.</key>
 	<string>只需三个简单步骤即可开始截屏。</string>
 	<key>Tide Glass</key>
@@ -2000,8 +2916,14 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>定时截屏会先选择区域，再倒计时截屏 — 让你有时间打开菜单或显示悬停状态。按 Esc 键可取消。</string>
 	<key>Timeline</key>
 	<string>时间线</string>
+	<key>Timeline scale</key>
+	<string>时间线缩放比例</string>
+	<key>Timeline scale (pinch, or ⌘-scroll)</key>
+	<string>时间线缩放比例（捏合或按住 ⌘ 滚动）</string>
 	<key>Timing</key>
 	<string>时间</string>
+	<key>Tips</key>
+	<string>提示</string>
 	<key>Title</key>
 	<string>标题</string>
 	<key>To</key>
@@ -2020,14 +2942,24 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>左上</string>
 	<key>Top right</key>
 	<string>右上</string>
+	<key>Transcribe</key>
+	<string>转录</string>
 	<key>Transcribe Again</key>
 	<string>重新转录</string>
+	<key>Transcribe Again…</key>
+	<string>重新转录…</string>
+	<key>Transcribe Narration (Captions, Edit by Text)</key>
+	<string>转录解说（字幕、按文字编辑）</string>
 	<key>Transcribe again?</key>
 	<string>要重新转录吗？</string>
 	<key>Transcribe the narration to search its words</key>
 	<string>转录旁白后即可搜索其中的词语</string>
+	<key>Transcribe…</key>
+	<string>转录…</string>
 	<key>Transcribing “%@”</key>
 	<string>正在转录“%@”</string>
+	<key>Transcript</key>
+	<string>文字稿</string>
 	<key>Transcript and captions removed — ⌘Z to undo</key>
 	<string>已移除文字稿和字幕 — 按 ⌘Z 撤销</string>
 	<key>Transition in</key>
@@ -2036,24 +2968,290 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>转场</string>
 	<key>Translate</key>
 	<string>翻译</string>
+	<key>Trim the clip's end to the playhead (O)</key>
+	<string>将片段结尾修剪到播放头（O）</string>
+	<key>Trim the clip's start to the playhead (I)</key>
+	<string>将片段开头修剪到播放头（I）</string>
+	<key>Try Again</key>
+	<string>重试</string>
 	<key>Try it right now — Capture Area is also in the menu bar.</key>
 	<string>现在就试试 — “捕捉区域”也在菜单栏中。</string>
 	<key>Turn Off Click Sounds</key>
 	<string>关闭点按音效</string>
+	<key>Turn On</key>
+	<string>打开</string>
+	<key>Turn around</key>
+	<string>反转方向</string>
+	<key>Turn on the camera in the recording bar before you record, and your face appears here as a bubble you can place, resize, and restyle.</key>
+	<string>录制前在录制栏中打开摄像头，你的脸就会以气泡形式显示在这里，你可以调整它的位置、大小和样式。</string>
+	<key>Turn on the microphone or system audio before recording to capture sound.</key>
+	<string>录制前打开麦克风或电脑声音即可录制声音。</string>
+	<key>Turn the video's sound back on</key>
+	<string>重新打开视频声音</string>
 	<key>Type here…</key>
 	<string>在此输入…</string>
+	<key>Type in a text annotation</key>
+	<string>在文字标注中输入</string>
 	<key>URL</key>
 	<string>网址</string>
 	<key>Under the voice</key>
 	<string>人声时音量</string>
 	<key>Undo</key>
 	<string>撤销</string>
+	<key>Undo / redo</key>
+	<string>撤销/重做</string>
+	<key>Undo Add Arrow</key>
+	<string>撤销添加箭头</string>
+	<key>Undo Add Blur</key>
+	<string>撤销添加模糊</string>
+	<key>Undo Add Camera Layout</key>
+	<string>撤销添加摄像头布局</string>
+	<key>Undo Add Camera Layouts</key>
+	<string>撤销添加摄像头布局</string>
+	<key>Undo Add Caption</key>
+	<string>撤销添加字幕</string>
+	<key>Undo Add Captions</key>
+	<string>撤销添加字幕</string>
+	<key>Undo Add Click</key>
+	<string>撤销添加点按</string>
+	<key>Undo Add Clicks</key>
+	<string>撤销添加点按</string>
+	<key>Undo Add Highlight</key>
+	<string>撤销添加高亮</string>
+	<key>Undo Add Image</key>
+	<string>撤销添加图像</string>
+	<key>Undo Add Intro Card</key>
+	<string>撤销添加片头卡</string>
+	<key>Undo Add Music</key>
+	<string>撤销添加音乐</string>
+	<key>Undo Add Outro Card</key>
+	<string>撤销添加片尾卡</string>
+	<key>Undo Add Recording</key>
+	<string>撤销添加录制内容</string>
+	<key>Undo Add Spotlight</key>
+	<string>撤销添加聚光灯</string>
+	<key>Undo Add Text</key>
+	<string>撤销添加文字</string>
+	<key>Undo Add Zoom</key>
+	<string>撤销添加缩放</string>
+	<key>Undo Add Zooms</key>
+	<string>撤销添加缩放</string>
+	<key>Undo Annotation Change</key>
+	<string>撤销标注更改</string>
+	<key>Undo Annotations</key>
+	<string>撤销标注更改</string>
+	<key>Undo Arrow Style</key>
+	<string>撤销箭头样式更改</string>
+	<key>Undo Aspect Ratio</key>
+	<string>撤销宽高比更改</string>
+	<key>Undo Auto Zoom</key>
+	<string>撤销自动缩放</string>
+	<key>Undo Background</key>
+	<string>撤销背景更改</string>
+	<key>Undo Blur Style</key>
+	<string>撤销模糊样式更改</string>
+	<key>Undo Camera Change</key>
+	<string>撤销摄像头更改</string>
+	<key>Undo Camera Layout Change</key>
+	<string>撤销摄像头布局更改</string>
+	<key>Undo Camera Layouts</key>
+	<string>撤销摄像头布局更改</string>
+	<key>Undo Caption Style</key>
+	<string>撤销字幕样式更改</string>
+	<key>Undo Caption Translation</key>
+	<string>撤销字幕翻译</string>
+	<key>Undo Captions</key>
+	<string>撤销字幕更改</string>
+	<key>Undo Click Sounds</key>
+	<string>撤销点按音效更改</string>
+	<key>Undo Clicks</key>
+	<string>撤销点按更改</string>
+	<key>Undo Crop</key>
+	<string>撤销裁剪</string>
+	<key>Undo Cursor Change</key>
+	<string>撤销指针更改</string>
+	<key>Undo Cut</key>
+	<string>撤销剪除</string>
+	<key>Undo Cut Word</key>
+	<string>撤销剪掉字词</string>
+	<key>Undo Cut Words</key>
+	<string>撤销剪掉字词</string>
+	<key>Undo Delete %lld Items</key>
+	<string>撤销删除 %lld 个项目</string>
+	<key>Undo Delete Annotations</key>
+	<string>撤销删除标注</string>
+	<key>Undo Delete Arrow</key>
+	<string>撤销删除箭头</string>
+	<key>Undo Delete Blur</key>
+	<string>撤销删除模糊</string>
+	<key>Undo Delete Camera Layout</key>
+	<string>撤销删除摄像头布局</string>
+	<key>Undo Delete Camera Layouts</key>
+	<string>撤销删除摄像头布局</string>
+	<key>Undo Delete Caption</key>
+	<string>撤销删除字幕</string>
+	<key>Undo Delete Captions</key>
+	<string>撤销删除字幕</string>
+	<key>Undo Delete Click</key>
+	<string>撤销删除点按</string>
+	<key>Undo Delete Clicks</key>
+	<string>撤销删除点按</string>
+	<key>Undo Delete Clip</key>
+	<string>撤销删除片段</string>
+	<key>Undo Delete Clips</key>
+	<string>撤销删除片段</string>
+	<key>Undo Delete Highlight</key>
+	<string>撤销删除高亮</string>
+	<key>Undo Delete Image</key>
+	<string>撤销删除图像</string>
+	<key>Undo Delete Spotlight</key>
+	<string>撤销删除聚光灯</string>
+	<key>Undo Delete Text</key>
+	<string>撤销删除文字</string>
+	<key>Undo Delete Zoom</key>
+	<string>撤销删除缩放</string>
+	<key>Undo Delete Zooms</key>
+	<string>撤销删除缩放</string>
+	<key>Undo Edit Caption</key>
+	<string>撤销编辑字幕</string>
+	<key>Undo Edit Text</key>
+	<string>撤销编辑文字</string>
+	<key>Undo Enhance Voice</key>
+	<string>撤销增强人声</string>
+	<key>Undo Fade</key>
+	<string>撤销淡入淡出</string>
+	<key>Undo Hide Shortcut</key>
+	<string>撤销隐藏快捷键</string>
+	<key>Undo Highlight Style</key>
+	<string>撤销高亮样式更改</string>
+	<key>Undo Image Style</key>
+	<string>撤销图像样式更改</string>
+	<key>Undo Intro and Outro</key>
+	<string>撤销摄像头片头和片尾</string>
+	<key>Undo Move %lld Items</key>
+	<string>撤销移动 %lld 个项目</string>
+	<key>Undo Move Arrow</key>
+	<string>撤销移动箭头</string>
+	<key>Undo Move Blur</key>
+	<string>撤销移动模糊</string>
+	<key>Undo Move Click</key>
+	<string>撤销移动点按</string>
+	<key>Undo Move Clip</key>
+	<string>撤销移动片段</string>
+	<key>Undo Move Highlight</key>
+	<string>撤销移动高亮</string>
+	<key>Undo Move Image</key>
+	<string>撤销移动图像</string>
+	<key>Undo Move Recording</key>
+	<string>撤销移动录制内容</string>
+	<key>Undo Move Spotlight</key>
+	<string>撤销移动聚光灯</string>
+	<key>Undo Move Text</key>
+	<string>撤销移动文字</string>
+	<key>Undo Music Change</key>
+	<string>撤销音乐更改</string>
+	<key>Undo Mute Clip</key>
+	<string>撤销片段静音</string>
+	<key>Undo Mute Part</key>
+	<string>撤销部分静音</string>
+	<key>Undo Mute Video</key>
+	<string>撤销视频静音</string>
+	<key>Undo Remove All Zooms</key>
+	<string>撤销移除所有缩放</string>
+	<key>Undo Remove Captions</key>
+	<string>撤销移除字幕</string>
+	<key>Undo Remove Intro Card</key>
+	<string>撤销移除片头卡</string>
+	<key>Undo Remove Music</key>
+	<string>撤销移除音乐</string>
+	<key>Undo Remove Outro Card</key>
+	<string>撤销移除片尾卡</string>
+	<key>Undo Remove Recording</key>
+	<string>撤销移除录制内容</string>
+	<key>Undo Remove Ums</key>
+	<string>撤销移除语气词</string>
+	<key>Undo Replace Music</key>
+	<string>撤销替换音乐</string>
+	<key>Undo Reset Look</key>
+	<string>撤销重置风格</string>
+	<key>Undo Restore</key>
+	<string>撤销恢复</string>
+	<key>Undo Restore Cut</key>
+	<string>撤销恢复剪除部分</string>
+	<key>Undo Restore Cuts</key>
+	<string>撤销恢复剪除部分</string>
+	<key>Undo Restore Pause</key>
+	<string>撤销恢复停顿</string>
+	<key>Undo Restore Word</key>
+	<string>撤销恢复字词</string>
+	<key>Undo Restore Words</key>
+	<string>撤销恢复字词</string>
+	<key>Undo Shortcut Style</key>
+	<string>撤销快捷键样式更改</string>
+	<key>Undo Shortcuts</key>
+	<string>撤销快捷键更改</string>
+	<key>Undo Shorten Pause</key>
+	<string>撤销缩短停顿</string>
+	<key>Undo Shorten Pauses</key>
+	<string>撤销缩短停顿</string>
+	<key>Undo Sound Change</key>
+	<string>撤销声音更改</string>
+	<key>Undo Speed Change</key>
+	<string>撤销速度更改</string>
+	<key>Undo Speed Up Idle</key>
+	<string>撤销加速空闲片段</string>
+	<key>Undo Split</key>
+	<string>撤销分割</string>
+	<key>Undo Spotlight Style</key>
+	<string>撤销聚光灯样式更改</string>
+	<key>Undo Start Over</key>
+	<string>撤销从头开始</string>
+	<key>Undo Style Change</key>
+	<string>撤销样式更改</string>
+	<key>Undo Text Style</key>
+	<string>撤销文字样式更改</string>
 	<key>Undo Timeline Edit</key>
 	<string>撤销时间线编辑</string>
+	<key>Undo Title Card</key>
+	<string>撤销标题卡更改</string>
+	<key>Undo Transcribe</key>
+	<string>撤销转录</string>
+	<key>Undo Transitions</key>
+	<string>撤销转场更改</string>
+	<key>Undo Trim</key>
+	<string>撤销修剪</string>
+	<key>Undo Unmute Clip</key>
+	<string>撤销取消片段静音</string>
+	<key>Undo Unmute Part</key>
+	<string>撤销取消部分静音</string>
+	<key>Undo Unmute Video</key>
+	<string>撤销取消视频静音</string>
+	<key>Undo Zoom Change</key>
+	<string>撤销缩放更改</string>
+	<key>Undo Zoom Level for All</key>
+	<string>撤销统一缩放级别</string>
+	<key>Undo Zooms</key>
+	<string>撤销缩放更改</string>
+	<key>Unmute Clip</key>
+	<string>取消片段静音</string>
+	<key>Unmute preview</key>
+	<string>取消预览静音</string>
+	<key>Unmute the Preview</key>
+	<string>取消预览静音</string>
+	<key>Unmute the preview (M)</key>
+	<string>取消预览静音（M）</string>
 	<key>Updates</key>
 	<string>更新</string>
 	<key>Upload Custom Image</key>
 	<string>选取自定图像</string>
+	<key>Use This Look for New Recordings</key>
+	<string>为新录制内容使用此风格</string>
+	<key>Use for new recordings</key>
+	<string>用于新录制内容</string>
+	<key>Use this color</key>
+	<string>使用此颜色</string>
+	<key>Use this level for every zoom</key>
+	<string>将此级别用于所有缩放</string>
 	<key>Used for screenshots and recordings. Tokens: %y year, %m month, %d day, %H hour, %M minute, %S second. Leave empty to restore the default.</key>
 	<string>用于截屏和录制内容。标记：%y 年、%m 月、%d 日、%H 时、%M 分、%S 秒。留空即可恢复默认设置。</string>
 	<key>Utility</key>
@@ -2072,10 +3270,14 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>视频数据占用 %@</string>
 	<key>Video exported</key>
 	<string>已导出视频</string>
+	<key>Video preview</key>
+	<string>视频预览</string>
 	<key>Violet</key>
 	<string>紫罗兰</string>
 	<key>Violet Bloom</key>
 	<string>紫罗兰绽放</string>
+	<key>Voice</key>
+	<string>人声</string>
 	<key>Voice enhanced — background noise removed</key>
 	<string>人声已增强 — 背景噪音已移除</string>
 	<key>Voice enhancement isn't available on this Mac. Turn off Enhance voice to keep the original sound.</key>
@@ -2086,6 +3288,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>音量</string>
 	<key>Waiting…</key>
 	<string>等待中…</string>
+	<key>Wallpaper</key>
+	<string>墙纸</string>
 	<key>Warning</key>
 	<string>警告</string>
 	<key>Web</key>
@@ -2096,6 +3300,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>欢迎</string>
 	<key>Welcome to Shotnix</key>
 	<string>欢迎使用 Shotnix</string>
+	<key>What was playing on your Mac</key>
+	<string>你的 Mac 上播放的声音</string>
 	<key>What's New</key>
 	<string>新功能</string>
 	<key>White</key>
@@ -2118,6 +3324,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>窗口截屏只包含窗口本身，不会带入任何遮挡的内容。开启后，截屏会带有透明边距和柔和的投影。</string>
 	<key>Window closed</key>
 	<string>窗口已关闭</string>
+	<key>Words light up as they're spoken</key>
+	<string>说到哪个词，哪个词就会亮起</string>
 	<key>Writable</key>
 	<string>可写入</string>
 	<key>Yellow</key>
@@ -2150,18 +3358,70 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>你的磁盘已满。请释放一些空间（清倒废纸篓、删除旧的录制内容）或导出到其他磁盘，然后重试。</string>
 	<key>Your edits will be lost if you close without saving or copying them.</key>
 	<string>如果关闭前不存储或拷贝，你的编辑将会丢失。</string>
+	<key>Your look</key>
+	<string>你的风格</string>
+	<key>Your microphone</key>
+	<string>你的麦克风</string>
+	<key>Your narration can become captions — then cut the video by editing its words.</key>
+	<string>你的解说可以变成字幕 — 然后通过编辑文字来剪辑视频。</string>
+	<key>Your narration can become captions — transcribe it here</key>
+	<string>你的解说可以变成字幕 — 在这里转录</string>
 	<key>Your text</key>
 	<string>你的文字</string>
+	<key>Your video's background shows behind you — found on this Mac, frame by frame.</key>
+	<string>视频背景会显示在你身后 — 在这台 Mac 上逐帧识别。</string>
+	<key>Your words, as text</key>
+	<string>把你的话变成文字</string>
 	<key>Zoom</key>
 	<string>缩放</string>
+	<key>Zoom %@</key>
+	<string>缩放 %@</string>
+	<key>Zoom Level</key>
+	<string>缩放级别</string>
+	<key>Zoom in at the pointer</key>
+	<string>在指针处放大</string>
+	<key>Zoom level</key>
+	<string>缩放级别</string>
+	<key>Zoom level (zoom selected)</key>
+	<string>缩放级别（选中缩放时）</string>
+	<key>Zoom moves</key>
+	<string>缩放效果</string>
 	<key>Zoom removed — ⌘Z to undo</key>
 	<string>已移除缩放 — 按 ⌘Z 撤销</string>
+	<key>Zoom to %@ (key %@)</key>
+	<string>缩放到 %@（按键 %@）</string>
+	<key>Zoom — drag to move, drag an edge to resize, click to edit</key>
+	<string>缩放 — 拖移可移动，拖移边缘可调整长度，点按可编辑</string>
+	<key>Zooms</key>
+	<string>缩放</string>
+	<key>Zooms &amp; annotations</key>
+	<string>缩放和标注</string>
+	<key>Zooms and annotations can be duplicated</key>
+	<string>只能复制缩放和标注</string>
 	<key>a table</key>
 	<string>1 个表格</string>
+	<key>add a zoom</key>
+	<string>添加缩放</string>
+	<key>aim or resize it</key>
+	<string>对准或调整大小</string>
+	<key>all shortcuts</key>
+	<string>所有快捷键</string>
 	<key>captions burned in</key>
 	<string>已嵌入字幕</string>
+	<key>cut by editing words</key>
+	<string>通过编辑文字剪辑</string>
+	<key>dips under your voice</key>
+	<string>人声出现时自动降低</string>
+	<key>every command</key>
+	<string>所有命令</string>
+	<key>export</key>
+	<string>导出</string>
+	<key>follows the cursor</key>
+	<string>跟随指针</string>
 	<key>intro card</key>
 	<string>片头卡</string>
+	<key>loops</key>
+	<string>循环播放</string>
 	<key>macOS downloads %@ once, then translates right here — nothing is uploaded.</key>
 	<string>macOS 会下载一次%@，之后直接在此翻译 — 不会上传任何内容。</string>
 	<key>macOS screenshot shortcuts (⌘⇧3, ⌘⇧4, ⌘⇧5) conflict with Shotnix.
@@ -2178,6 +3438,10 @@ You can re-enable Apple's shortcuts anytime in System Settings → Keyboard → 
 	<string>麦克风</string>
 	<key>music</key>
 	<string>音乐</string>
+	<key>mute the preview</key>
+	<string>预览静音</string>
+	<key>muted</key>
+	<string>已静音</string>
 	<key>no audio</key>
 	<string>无音频</string>
 	<key>no captions in the picture</key>
@@ -2186,22 +3450,46 @@ You can re-enable Apple's shortcuts anytime in System Settings → Keyboard → 
 	<string>无结尾画面</string>
 	<key>outro card</key>
 	<string>片尾卡</string>
+	<key>play</key>
+	<string>播放</string>
 	<key>pointer</key>
 	<string>指针</string>
+	<key>select a part to cut</key>
+	<string>选择要剪掉的部分</string>
+	<key>select it</key>
+	<string>选中它</string>
+	<key>split at the playhead</key>
+	<string>在播放头处分割</string>
+	<key>step through the timeline</key>
+	<string>逐项浏览时间线</string>
 	<key>sys+mic</key>
 	<string>系统+麦克风</string>
 	<key>system</key>
 	<string>系统</string>
+	<key>text, highlight, arrow, blur</key>
+	<string>文字、高亮、箭头、模糊</string>
 	<key>the video</key>
 	<string>视频</string>
 	<key>this recording</key>
 	<string>此录制内容</string>
+	<key>trim to the playhead</key>
+	<string>修剪到播放头</string>
+	<key>type</key>
+	<string>输入</string>
 	<key>up to %@ GB/min</key>
 	<string>最多 %@ GB/分钟</string>
 	<key>up to %@ MB/min</key>
 	<string>最多 %@ MB/分钟</string>
+	<key>zoom the timeline</key>
+	<string>缩放时间线</string>
 	<key>© 2026 Shotnix Contributors</key>
 	<string>© 2026 Shotnix 贡献者</string>
+	<key>· aim by hand</key>
+	<string>· 手动对准</string>
+	<key>· drag to aim</key>
+	<string>· 拖移以对准</string>
+	<key>· follows cursor</key>
+	<string>· 跟随指针</string>
 	<key>“%@” (was in %@)</key>
 	<string>“%@”（原位于 %@）</string>
 	<key>“%@” can't be found. Put it back where it was, or remove it from this video (Style → Recordings), then export again.</key>
@@ -2224,8 +3512,18 @@ You can re-enable Apple's shortcuts anytime in System Settings → Keyboard → 
 	<string>• Shotnix 找不到的 %lld 个录制内容的编辑、录制详情和摄像头素材（%@）：%@</string>
 	<key>• Pictures and songs no video uses — %lld files, %@</key>
 	<string>• 没有视频使用的图片和歌曲 — %lld 个文件，%@</string>
+	<key>⇧-drag</key>
+	<string>⇧-拖移</string>
 	<key>⇧-drag on the timeline to select a part first.</key>
 	<string>请先在时间线上按住 ⇧ 拖移以选择一部分。</string>
+	<key>⇧-drag the timeline</key>
+	<string>按住 ⇧ 拖移时间线</string>
+	<key>⇧/⌘-click</key>
+	<string>⇧/⌘-点按</string>
+	<key>⌘ scroll</key>
+	<string>⌘ 滚动</string>
+	<key>⌘-scroll</key>
+	<string>⌘-滚动</string>
 	<key>✓ Copied to clipboard</key>
 	<string>✓ 已拷贝到剪贴板</string>
 	<key>✓ Saved screenshot</key>

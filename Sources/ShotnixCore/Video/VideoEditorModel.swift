@@ -114,22 +114,22 @@ final class VideoEditorModel: ObservableObject {
         var id: String { rawValue }
         var title: String {
             switch self {
-            case .background: return "Style"
-            case .cursor: return "Cursor"
-            case .zoom: return "Zoom"
-            case .camera: return "Camera"
-            case .captions: return "Captions"
-            case .audio: return "Audio"
+            case .background: return L("Style")
+            case .cursor: return L("Cursor")
+            case .zoom: return L("Zoom")
+            case .camera: return L("Camera")
+            case .captions: return L("Captions")
+            case .audio: return L("Audio")
             }
         }
         var help: String {
             switch self {
-            case .background: return "Background, padding, corners, shadow"
-            case .cursor: return "Cursor, clicks, and keyboard shortcuts"
-            case .zoom: return "Zoom moves"
-            case .camera: return "Camera bubble"
-            case .captions: return "Captions from your narration — and cut the video by editing its words"
-            case .audio: return "Sound"
+            case .background: return L("Background, padding, corners, shadow")
+            case .cursor: return L("Cursor, clicks, and keyboard shortcuts")
+            case .zoom: return L("Zoom moves")
+            case .camera: return L("Camera bubble")
+            case .captions: return L("Captions from your narration — and cut the video by editing its words")
+            case .audio: return L("Sound")
             }
         }
         var symbol: String {
@@ -722,7 +722,7 @@ final class VideoEditorModel: ObservableObject {
         validateSelection()
         canUndo = !undoStack.isEmpty
         canRedo = true
-        showNotice("Undo \(step.label)", symbol: "arrow.uturn.backward")
+        showNotice(VideoEditDescription.undoTitle(step.label), symbol: "arrow.uturn.backward")
     }
 
     func redo() {
@@ -733,7 +733,7 @@ final class VideoEditorModel: ObservableObject {
         validateSelection()
         canUndo = true
         canRedo = !redoStack.isEmpty
-        showNotice("Redo \(step.label)", symbol: "arrow.uturn.forward")
+        showNotice(VideoEditDescription.redoTitle(step.label), symbol: "arrow.uturn.forward")
     }
 
     // MARK: Undo across reopening

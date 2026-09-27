@@ -114,13 +114,13 @@ struct VideoTimelineToolbar: View {
                     .frame(width: 30, height: 26)
             }
             .buttonStyle(VideoToolButtonStyle(prominent: true))
-            .help(model.isPlaying ? "Pause (Space)" : "Play (Space)")
-            .accessibilityLabel(model.isPlaying ? "Pause" : "Play")
+            .help(model.isPlaying ? L("Pause (Space)") : L("Play (Space)"))
+            .accessibilityLabel(model.isPlaying ? L("Pause") : L("Play"))
 
             HStack(spacing: 3) {
                 Text(VideoEditorModel.timecode(clock.time))
                     .foregroundStyle(VideoEditorTheme.textPrimary)
-                Text("/")
+                Text(verbatim: "/")
                     .foregroundStyle(VideoEditorTheme.textTertiary)
                 Text(VideoEditorModel.timecode(model.timelineDuration))
                     .foregroundStyle(VideoEditorTheme.textSecondary)
@@ -130,14 +130,14 @@ struct VideoTimelineToolbar: View {
 
             toolbarDivider
 
-            toolButton("scissors", "Split", "Split at the playhead (S)") { model.splitAtPlayhead() }
-            toolButton("plus.magnifyingglass", "Zoom", "Add a zoom at the playhead (Z)") {
+            toolButton(symbol: "scissors", title: L("Split"), help: L("Split at the playhead (S)")) { model.splitAtPlayhead() }
+            toolButton(symbol: "plus.magnifyingglass", title: L("Zoom"), help: L("Add a zoom at the playhead (Z)")) {
                 model.addZoom(at: clock.time)
             }
             toolbarDivider
 
-            toolButton("sparkles", "Auto Zoom", "Plan zooms from your clicks — keeps zooms you placed by hand") { model.autoZoom() }
-            toolButton("hare", "Speed Up Idle", "Fast-forward moments where nothing happens") { model.speedUpIdle() }
+            toolButton(symbol: "sparkles", title: L("Auto Zoom"), help: L("Plan zooms from your clicks — keeps zooms you placed by hand")) { model.autoZoom() }
+            toolButton(symbol: "hare", title: L("Speed Up Idle"), help: L("Fast-forward moments where nothing happens")) { model.speedUpIdle() }
 
             Spacer(minLength: 8)
 
@@ -150,8 +150,8 @@ struct VideoTimelineToolbar: View {
                         .frame(width: 28, height: 24)
                 }
                 .buttonStyle(VideoToolButtonStyle())
-                .help("Delete selection (⌫)")
-                .accessibilityLabel("Delete selection")
+                .help(L("Delete selection (⌫)"))
+                .accessibilityLabel(L("Delete selection"))
             }
 
             if model.hasAudio {
@@ -163,8 +163,8 @@ struct VideoTimelineToolbar: View {
                         .frame(width: 28, height: 24)
                 }
                 .buttonStyle(VideoToolButtonStyle())
-                .help(model.previewMuted ? "Unmute the preview (M)" : "Mute the preview (M) — the export keeps its sound")
-                .accessibilityLabel(model.previewMuted ? "Unmute preview" : "Mute preview")
+                .help(model.previewMuted ? L("Unmute the preview (M)") : L("Mute the preview (M) — the export keeps its sound"))
+                .accessibilityLabel(model.previewMuted ? L("Unmute preview") : L("Mute preview"))
             }
 
             HStack(spacing: 6) {
@@ -175,11 +175,11 @@ struct VideoTimelineToolbar: View {
                 }
                 .buttonStyle(.plain)
                 .foregroundStyle(VideoEditorTheme.textSecondary)
-                .accessibilityLabel("Show more of the timeline")
+                .accessibilityLabel(L("Show more of the timeline"))
                 Slider(value: Binding(get: { log(model.timelineZoom) / log(model.maxTimelineZoom) }, set: { model.timelineZoom = pow(model.maxTimelineZoom, $0) }), in: 0...1)
                     .frame(width: 90)
                     .controlSize(.small)
-                    .accessibilityLabel("Timeline scale")
+                    .accessibilityLabel(L("Timeline scale"))
                 Button {
                     model.zoomTimeline(by: 1.4)
                 } label: {
@@ -187,10 +187,10 @@ struct VideoTimelineToolbar: View {
                 }
                 .buttonStyle(.plain)
                 .foregroundStyle(VideoEditorTheme.textSecondary)
-                .accessibilityLabel("Show the timeline in more detail")
+                .accessibilityLabel(L("Show the timeline in more detail"))
             }
             .font(.system(size: 12, weight: .semibold))
-            .help("Timeline scale (pinch, or ⌘-scroll)")
+            .help(L("Timeline scale (pinch, or ⌘-scroll)"))
         }
         .padding(.horizontal, 14)
     }
@@ -201,7 +201,7 @@ struct VideoTimelineToolbar: View {
             .frame(width: 1, height: 18)
     }
 
-    private func toolButton(_ symbol: String, _ title: String, _ help: String, action: @escaping () -> Void) -> some View {
+    private func toolButton(symbol: String, title: String, help: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Label(title, systemImage: symbol)
                 .font(.system(size: 12, weight: .semibold))
@@ -496,11 +496,11 @@ struct VideoTimelineSurface: View {
                 HStack(spacing: 4) {
                     Image(systemName: region.followsCursor ? "cursorarrow.motionlines" : "scope")
                         .font(.system(size: 9.5, weight: .bold))
-                    Text(width > 80 ? "\(VideoEditorModel.formatScale(region.scale)) Zoom" : VideoEditorModel.formatScale(region.scale))
+                    Text(width > 80 ? L("\(VideoEditorModel.formatScale(region.scale)) Zoom") : VideoEditorModel.formatScale(region.scale))
                         .font(.system(size: 11, weight: .bold))
                         .monospacedDigit()
                     if width > 150 {
-                        Text(region.followsCursor ? "· follows cursor" : "· aim by hand")
+                        Text(region.followsCursor ? L("· follows cursor") : L("· aim by hand"))
                             .font(.system(size: 10.5, weight: .semibold))
                             .foregroundStyle(.white.opacity(0.72))
                     }
@@ -529,16 +529,16 @@ struct VideoTimelineSurface: View {
         .gesture(zoomMoveGesture(region, range: range))
         .contextMenu { zoomMenu(region) }
         .offset(x: x(shown.lowerBound), y: 2)
-        .help("Zoom — drag to move, drag an edge to resize, click to edit")
+        .help(L("Zoom — drag to move, drag an edge to resize, click to edit"))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(model.accessibilityDescription(of: .zoom(region.id)))
-        .accessibilityHint("Adjust to move it half a second")
+        .accessibilityHint(L("Adjust to move it half a second"))
         .accessibilityAddTraits(selected ? [.isButton, .isSelected] : .isButton)
         .accessibilityAction {
             model.selection = .zoom(region.id)
             model.inspectorTab = .zoom
         }
-        .accessibilityAction(named: "Delete") { model.deleteZoom(region.id) }
+        .accessibilityAction(named: L("Delete")) { model.deleteZoom(region.id) }
         .accessibilityAdjustableAction { direction in
             let step = direction == .increment ? 0.5 : -0.5
             model.setZoomWindow(region.id, start: range.lowerBound + step, end: range.upperBound + step, coalesce: "zoom-nudge")
@@ -677,19 +677,19 @@ struct VideoTimelineSurface: View {
 
     @ViewBuilder
     private func zoomMenu(_ region: VideoZoomRegion) -> some View {
-        Button(region.followsCursor ? "Aim by Hand" : "Follow Cursor") {
+        Button(region.followsCursor ? L("Aim by Hand") : L("Follow Cursor")) {
             model.updateZoom(region.id) { $0.followsCursor.toggle() }
         }
-        Menu("Zoom Level") {
+        Menu(L("Zoom Level")) {
             ForEach([1.25, 1.5, 2, 2.5, 3, 4], id: \.self) { scale in
                 Button(VideoEditorModel.formatScale(scale)) {
                     model.updateZoom(region.id) { $0.scale = scale }
                 }
             }
         }
-        Button("Duplicate") { model.duplicateZoom(region.id) }
+        Button(L("Duplicate")) { model.duplicateZoom(region.id) }
         Divider()
-        Button("Delete Zoom", role: .destructive) { model.deleteZoom(region.id) }
+        Button(L("Delete Zoom"), role: .destructive) { model.deleteZoom(region.id) }
     }
 
     // MARK: Clip track
@@ -731,17 +731,17 @@ struct VideoTimelineSurface: View {
                         restorePill(symbol: "scissors", text: VideoEditorModel.format(gap.duration))
                     }
                     .buttonStyle(.plain)
-                    .help("Removed \(VideoEditorModel.format(gap.duration)) — click to restore")
-                    .accessibilityLabel("Restore \(VideoEditorModel.format(gap.duration)) cut at \(VideoEditorModel.timecode(gap.timelineTime))")
+                    .help(L("Removed \(VideoEditorModel.format(gap.duration)) — click to restore"))
+                    .accessibilityLabel(L("Restore \(VideoEditorModel.format(gap.duration)) cut at \(VideoEditorModel.timecode(gap.timelineTime))"))
                     .offset(x: x(gap.timelineTime) - 24, y: -9)
                 } else {
                     let total = group.reduce(0) { $0 + $1.duration }
                     Menu {
                         ForEach(group) { gap in
-                            Button("Restore \(VideoEditorModel.format(gap.duration)) at \(VideoEditorModel.timecode(gap.timelineTime))") { model.restore(gap) }
+                            Button(L("Restore \(VideoEditorModel.format(gap.duration)) at \(VideoEditorModel.timecode(gap.timelineTime))")) { model.restore(gap) }
                         }
                         Divider()
-                        Button("Restore All \(group.count)") { model.restore(group) }
+                        Button(L("Restore All \(group.count)")) { model.restore(group) }
                     } label: {
                         restorePill(symbol: "scissors", text: "\(group.count) · \(VideoEditorModel.format(total))")
                     }
@@ -749,8 +749,8 @@ struct VideoTimelineSurface: View {
                     .buttonStyle(.plain)
                     .menuIndicator(.hidden)
                     .fixedSize()
-                    .help("\(group.count) cuts here (\(VideoEditorModel.format(total)) removed) — click to restore some or all")
-                    .accessibilityLabel("\(group.count) cuts, \(VideoEditorModel.format(total)) removed")
+                    .help(L("\(group.count) cuts here (\(VideoEditorModel.format(total)) removed) — click to restore some or all"))
+                    .accessibilityLabel(L("\(group.count) cuts, \(VideoEditorModel.format(total)) removed"))
                     .offset(x: x(group.first?.timelineTime ?? 0) - 24, y: -9)
                 }
             }
@@ -822,15 +822,15 @@ struct VideoTimelineSurface: View {
         .onHover { inside in (inside ? NSCursor.openHand : NSCursor.arrow).set() }
         .gesture(overlayMoveGesture(effect, start: start, end: end, layers: layers))
         .contextMenu {
-            Button("Delete", role: .destructive) { model.deleteOverlay(effect.id) }
+            Button(L("Delete"), role: .destructive) { model.deleteOverlay(effect.id) }
         }
         .offset(x: x(shown.0), y: laneY(effect.layer, in: layers))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(model.accessibilityDescription(of: .overlay(effect.id)))
-        .accessibilityHint("Adjust to move it half a second")
+        .accessibilityHint(L("Adjust to move it half a second"))
         .accessibilityAddTraits(selected ? [.isButton, .isSelected] : .isButton)
         .accessibilityAction { model.selection = .overlay(effect.id) }
-        .accessibilityAction(named: "Delete") { model.deleteOverlay(effect.id) }
+        .accessibilityAction(named: L("Delete")) { model.deleteOverlay(effect.id) }
         .accessibilityAdjustableAction { direction in
             let step = direction == .increment ? 0.5 : -0.5
             model.setOverlayWindow(effect.id, start: start + step, end: end + step, coalesce: "overlay-nudge")
@@ -958,7 +958,7 @@ struct VideoTimelineClipView: View, Equatable {
 
             if width > 70 {
                 HStack(spacing: 5) {
-                    Text("Clip \(index + 1)")
+                    Text(L("Clip \(index + 1)"))
                         .font(.system(size: 10.5, weight: .bold))
                     Text(VideoEditorModel.format(segment.duration))
                         .font(.system(size: 10, weight: .semibold))
@@ -981,7 +981,7 @@ struct VideoTimelineClipView: View, Equatable {
                 .contentShape(Capsule())
                 .onHover { inside in (inside ? NSCursor.openHand : NSCursor.arrow).set() }
                 .gesture(reorderGesture)
-                .help("Drag to move this clip to another place in the video")
+                .help(L("Drag to move this clip to another place in the video"))
                 .padding(5)
             }
 
@@ -1004,10 +1004,10 @@ struct VideoTimelineClipView: View, Equatable {
         .accessibilityLabel(VideoEditorModel.spokenClip(index: index, segment: segment))
         .accessibilityAddTraits(selected ? [.isButton, .isSelected] : .isButton)
         .accessibilityAction { model.selectClip(segment.id) }
-        .accessibilityAction(named: "Split at Playhead") { model.splitAtPlayhead() }
-        .accessibilityAction(named: "Move Earlier") { model.moveClip(segment.id, toIndex: index - 1) }
-        .accessibilityAction(named: "Move Later") { model.moveClip(segment.id, toIndex: index + 1) }
-        .accessibilityAction(named: "Delete") { model.deleteClip(segment.id) }
+        .accessibilityAction(named: L("Split at Playhead")) { model.splitAtPlayhead() }
+        .accessibilityAction(named: L("Move Earlier")) { model.moveClip(segment.id, toIndex: index - 1) }
+        .accessibilityAction(named: L("Move Later")) { model.moveClip(segment.id, toIndex: index + 1) }
+        .accessibilityAction(named: L("Delete")) { model.deleteClip(segment.id) }
         .offset(x: reorderOffset ?? 0)
         .opacity(reorderOffset == nil ? 1 : 0.85)
         .shadow(color: .black.opacity(reorderOffset == nil ? 0 : 0.6), radius: 10, y: 4)
@@ -1114,15 +1114,15 @@ struct VideoTimelineClipView: View, Equatable {
                     model.endTrim(segment.id, leading: leading)
                 }
         )
-        .help(leading ? "Drag to change where this clip starts" : "Drag to change where this clip ends")
+        .help(leading ? L("Drag to change where this clip starts") : L("Drag to change where this clip ends"))
     }
 
     @ViewBuilder
     private var clipMenu: some View {
-        Button("Split at Playhead") {
+        Button(L("Split at Playhead")) {
             model.splitAtPlayhead()
         }
-        Menu("Speed") {
+        Menu(L("Speed")) {
             ForEach([0.5, 1, 1.5, 2, 3, 4, 8, 16], id: \.self) { speed in
                 Button {
                     model.setClipSpeed(segment.id, speed)
@@ -1136,15 +1136,15 @@ struct VideoTimelineClipView: View, Equatable {
                 }
             }
         }
-        Button(segment.clip.muted ? "Unmute Clip" : "Mute Clip") {
+        Button(segment.clip.muted ? L("Unmute Clip") : L("Mute Clip")) {
             model.setClipMuted(segment.id, !segment.clip.muted)
         }
-        Button("Move Earlier") { model.moveClip(segment.id, toIndex: index - 1) }
+        Button(L("Move Earlier")) { model.moveClip(segment.id, toIndex: index - 1) }
             .disabled(index == 0)
-        Button("Move Later") { model.moveClip(segment.id, toIndex: index + 1) }
+        Button(L("Move Later")) { model.moveClip(segment.id, toIndex: index + 1) }
             .disabled(index >= model.segments.count - 1)
         Divider()
-        Button("Delete Clip", role: .destructive) {
+        Button(L("Delete Clip"), role: .destructive) {
             model.deleteClip(segment.id)
         }
         .disabled(model.segments.count <= 1)

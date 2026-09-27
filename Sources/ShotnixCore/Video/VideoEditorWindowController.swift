@@ -160,12 +160,13 @@ final class VideoDemoEditorWindowController: NSWindowController, NSWindowDelegat
 
     /// Closing mid-export (or mid-transcription) asks first.
     func windowShouldClose(_ sender: NSWindow) -> Bool {
-        guard let job = model.runningJobDescription else { return true }
+        guard model.runningJobDescription != nil else { return true }
         let alert = NSAlert()
-        alert.messageText = "Shotnix is still \(job)"
-        alert.informativeText = "Closing the editor stops it."
-        alert.addButton(withTitle: "Keep Editing")
-        alert.addButton(withTitle: "Stop and Close")
+        // A whole sentence for each job (not "still" plus a piece).
+        alert.messageText = model.captionTask != nil ? L("Shotnix is still transcribing") : L("Shotnix is still cleaning up the voice")
+        alert.informativeText = L("Closing the editor stops it.")
+        alert.addButton(withTitle: L("Keep Editing"))
+        alert.addButton(withTitle: L("Stop and Close"))
         alert.alertStyle = .warning
         alert.beginSheetModal(for: sender) { [weak self, weak sender] response in
             guard response == .alertSecondButtonReturn, let self, let sender else { return }

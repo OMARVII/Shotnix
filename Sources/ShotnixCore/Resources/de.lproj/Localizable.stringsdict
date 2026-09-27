@@ -98,6 +98,86 @@
 			<string>%lld Strichcodes gefunden</string>
 		</dict>
 	</dict>
+	<key>%lld camera layouts</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld Kameralayout</string>
+			<key>other</key>
+			<string>%lld Kameralayouts</string>
+		</dict>
+	</dict>
+	<key>%lld clicks</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld Klick</string>
+			<key>other</key>
+			<string>%lld Klicks</string>
+		</dict>
+	</dict>
+	<key>%lld clips</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld Clip</string>
+			<key>other</key>
+			<string>%lld Clips</string>
+		</dict>
+	</dict>
+	<key>%lld cuts here (%@ removed) — click to restore some or all</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld Schnitt hier (%@ entfernt) – klicken, um ihn wiederherzustellen</string>
+			<key>other</key>
+			<string>%lld Schnitte hier (%@ entfernt) – klicken, um einige oder alle wiederherzustellen</string>
+		</dict>
+	</dict>
+	<key>%lld cuts, %@ removed</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld Schnitt, %@ entfernt</string>
+			<key>other</key>
+			<string>%lld Schnitte, %@ entfernt</string>
+		</dict>
+	</dict>
 	<key>%lld days</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -194,6 +274,38 @@
 			<string>%lld Links</string>
 		</dict>
 	</dict>
+	<key>%lld parts</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld Abschnitt</string>
+			<key>other</key>
+			<string>%lld Abschnitte</string>
+		</dict>
+	</dict>
+	<key>%lld pressed — select one on the timeline and press ⌫ to hide it</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld gedrückt – wähle ihn in der Zeitleiste aus und drücke ⌫, um ihn auszublenden</string>
+			<key>other</key>
+			<string>%lld gedrückt – wähle einen in der Zeitleiste aus und drücke ⌫, um ihn auszublenden</string>
+		</dict>
+	</dict>
 	<key>%lld recorded clicks — in the preview and the export</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -272,6 +384,38 @@
 			<string>%lld Sekunde</string>
 			<key>other</key>
 			<string>%lld Sekunden</string>
+		</dict>
+	</dict>
+	<key>%lld shortcuts</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld Kurzbefehl</string>
+			<key>other</key>
+			<string>%lld Kurzbefehle</string>
+		</dict>
+	</dict>
+	<key>%lld zooms</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld Zoom</string>
+			<key>other</key>
+			<string>%lld Zooms</string>
 		</dict>
 	</dict>
 	<key>Auto zoom applied — %lld zooms follow your clicks</key>
@@ -530,6 +674,22 @@
 			<string>Letzte %lld Bildschirmfotos</string>
 		</dict>
 	</dict>
+	<key>Plans zooms around your %lld clicks. Zooms you placed by hand are kept.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Plant Zooms um deinen Klick. Von Hand gesetzte Zooms bleiben erhalten.</string>
+			<key>other</key>
+			<string>Plant Zooms um deine %lld Klicks. Von Hand gesetzte Zooms bleiben erhalten.</string>
+		</dict>
+	</dict>
 	<key>Ready · %lld optional off</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -546,6 +706,54 @@
 			<string>Bereit · %lld optionale Kurzbefehle aus</string>
 		</dict>
 	</dict>
+	<key>Redo Delete %lld Items</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Löschen von %lld Objekt wiederholen</string>
+			<key>other</key>
+			<string>Löschen von %lld Objekten wiederholen</string>
+		</dict>
+	</dict>
+	<key>Redo Move %lld Items</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Verschieben von %lld Objekt wiederholen</string>
+			<key>other</key>
+			<string>Verschieben von %lld Objekten wiederholen</string>
+		</dict>
+	</dict>
+	<key>Remove %lld ums</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld Füllwort entfernen</string>
+			<key>other</key>
+			<string>%lld Füllwörter entfernen</string>
+		</dict>
+	</dict>
 	<key>Removed %lld filler words — %@ shorter</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -560,6 +768,38 @@
 			<string>%lld Füllwort entfernt – %@ kürzer</string>
 			<key>other</key>
 			<string>%lld Füllwörter entfernt – %@ kürzer</string>
+		</dict>
+	</dict>
+	<key>Removed %lld items — ⌘Z to undo</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld Objekt entfernt – ⌘Z zum Widerrufen</string>
+			<key>other</key>
+			<string>%lld Objekte entfernt – ⌘Z zum Widerrufen</string>
+		</dict>
+	</dict>
+	<key>Removed %lld items — ⌘Z to undo (a video keeps at least one clip)</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld Objekt entfernt – ⌘Z zum Widerrufen (ein Video behält mindestens einen Clip)</string>
+			<key>other</key>
+			<string>%lld Objekte entfernt – ⌘Z zum Widerrufen (ein Video behält mindestens einen Clip)</string>
 		</dict>
 	</dict>
 	<key>Removed %lld zooms — ⌘Z to undo</key>
@@ -642,6 +882,22 @@
 			<string>Die Scroll-Aufnahme wurde nach %lld Minuten beendet.</string>
 		</dict>
 	</dict>
+	<key>Shorten %lld pauses</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld Pause kürzen</string>
+			<key>other</key>
+			<string>%lld Pausen kürzen</string>
+		</dict>
+	</dict>
 	<key>Shortened %lld pauses — %@ shorter</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -704,6 +960,38 @@
 			<string>Dadurch wird %lld Untertitelzeile – auch wenn du sie bearbeitet oder getippt hast – durch ein neues Transkript auf %@ ersetzt.</string>
 			<key>other</key>
 			<string>Dadurch werden alle %lld Untertitelzeilen – auch bearbeitete oder getippte – durch ein neues Transkript auf %@ ersetzt.</string>
+		</dict>
+	</dict>
+	<key>Undo Delete %lld Items</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Löschen von %lld Objekt widerrufen</string>
+			<key>other</key>
+			<string>Löschen von %lld Objekten widerrufen</string>
+		</dict>
+	</dict>
+	<key>Undo Move %lld Items</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Verschieben von %lld Objekt widerrufen</string>
+			<key>other</key>
+			<string>Verschieben von %lld Objekten widerrufen</string>
 		</dict>
 	</dict>
 	<key>You have unsaved edits in %lld screenshots.</key>

@@ -8,7 +8,7 @@ enum VideoCropAspect: String, CaseIterable, Identifiable {
     var id: String { rawValue }
     var title: String {
         switch self {
-        case .free: return "Free"
+        case .free: return L("Free")
         case .widescreen: return "16:9"
         case .classic: return "4:3"
         case .square: return "1:1"
@@ -63,7 +63,7 @@ extension VideoEditorModel {
         endGesture()
         refreshPlan()
         if !project.crop.isFull {
-            showNotice("Cropped — cursor, zooms, and clicks follow", symbol: "crop")
+            showNotice(L("Cropped — cursor, zooms, and clicks follow"), symbol: "crop")
         }
     }
 
@@ -293,14 +293,14 @@ struct VideoCropBar: View {
                 model.resetCrop()
                 model.cropAspect = .free
             } label: {
-                Text("Reset")
+                Text(L("Reset"))
             }
             .buttonStyle(VideoSecondaryButtonStyle())
             .disabled(model.project.crop.isFull)
             Button {
                 model.endCrop()
             } label: {
-                Text("Done")
+                Text(L("Done"))
             }
             .buttonStyle(VideoPrimaryButtonStyle())
             .keyboardShortcut(.defaultAction)

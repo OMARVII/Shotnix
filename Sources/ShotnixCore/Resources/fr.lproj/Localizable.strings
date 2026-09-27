@@ -4,10 +4,18 @@
 <dict>
 	<key>%@ (%@)</key>
 	<string>%@ (%@)</string>
+	<key>%@ (This Mac)</key>
+	<string>%@ (ce Mac)</string>
 	<key>%@ (edited)</key>
 	<string>%@ (modifié)</string>
 	<key>%@ (original)</key>
 	<string>%@ (original)</string>
+	<key>%@ (⇧⌘Z)</key>
+	<string>%@ (⇧⌘Z)</string>
+	<key>%@ (⌘Z)</key>
+	<string>%@ (⌘Z)</string>
+	<key>%@ Zoom</key>
+	<string>Zoom %@</string>
 	<key>%@ area</key>
 	<string>%@ zone</string>
 	<key>%@ can't be transcribed on this Mac without sending your voice to a server. To add it, turn on Dictation for %@ in System Settings → Keyboard, or pick another language.</key>
@@ -22,10 +30,16 @@
 	<string>%@ plein écran</string>
 	<key>%@ isn't supported for captions on this Mac. Pick another language.</key>
 	<string>La langue %@ n’est pas prise en charge pour les sous-titres sur ce Mac. Choisissez une autre langue.</string>
+	<key>%@ long</key>
+	<string>durée %@</string>
+	<key>%@ of recording plays in %@.</key>
+	<string>%@ d’enregistrement lus en %@.</string>
 	<key>%@ pt</key>
 	<string>%@ pt</string>
 	<key>%@ quality · %@</key>
 	<string>Qualité : %@ · %@</string>
+	<key>%@ speed</key>
+	<string>vitesse %@</string>
 	<key>%@ transition</key>
 	<string>Transition : %@</string>
 	<key>%@ window</key>
@@ -40,6 +54,8 @@
 	<string>%@ · dans le presse-papiers — collez-le où vous voulez</string>
 	<key>%@ × %@ px</key>
 	<string>%@ × %@ px</string>
+	<key>%@ — %@</key>
+	<string>%@ — %@</string>
 	<key>%@ — Shotnix lives in your menu bar</key>
 	<string>%@ — Shotnix est dans la barre des menus</string>
 	<key>%@ — click to change</key>
@@ -62,8 +78,20 @@
 	<string>%lld s</string>
 	<key>%lld%%</key>
 	<string>%lld %%</string>
+	<key>%lld%% volume</key>
+	<string>volume %lld %%</string>
 	<key>%lld/%lld configured</key>
 	<string>Configurés : %lld/%lld</string>
+	<key>, </key>
+	<string>, </string>
+	<key>, %@ to %@</key>
+	<string>, de %@ à %@</string>
+	<key>, at %@</key>
+	<string>, à %@</string>
+	<key>0.1s earlier</key>
+	<string>0,1 s plus tôt</string>
+	<key>0.1s later</key>
+	<string>0,1 s plus tard</string>
 	<key>A 2-second “Made with Shotnix” outro on your background — your own outro card is in Style</key>
 	<string>Un outro « Made with Shotnix » de 2 secondes sur votre arrière-plan — votre propre carton de fin se trouve dans Style</string>
 	<key>A big GIF — about %@ and %@ of memory to make. A smaller size, fewer fps, or MP4 is lighter.</key>
@@ -74,6 +102,8 @@
 	<string>Une coupe — cliquez pour ajouter une transition</string>
 	<key>A file with that name is in the way. Pick another name and export again.</key>
 	<string>Un fichier portant ce nom existe déjà. Choisissez un autre nom, puis exportez à nouveau.</string>
+	<key>A hairline that separates dark recordings from the background</key>
+	<string>Un filet fin détache les enregistrements sombres de l’arrière-plan</string>
 	<key>A second caption track you can show, burn in, or save as subtitles. Translated on this Mac — nothing is uploaded.</key>
 	<string>Une deuxième piste de sous-titres à afficher, incruster ou enregistrer en fichier de sous-titres. Traduite sur ce Mac — rien n’est envoyé en ligne.</string>
 	<key>A song under the whole video — it loops to fill, fades in and out, and dips while you talk. Use music you have the rights to.</key>
@@ -96,6 +126,14 @@
 	<string>Précision</string>
 	<key>Accurate</key>
 	<string>Précise</string>
+	<key>Add Arrow</key>
+	<string>Ajouter une flèche</string>
+	<key>Add Blur</key>
+	<string>Ajouter un flou</string>
+	<key>Add Caption Line at Playhead</key>
+	<string>Ajouter une ligne de sous-titre à la tête de lecture</string>
+	<key>Add Highlight</key>
+	<string>Ajouter un surlignage</string>
 	<key>Add Image or Logo…</key>
 	<string>Ajouter une image ou un logo…</string>
 	<key>Add Intro Card</key>
@@ -104,20 +142,56 @@
 	<string>Ajouter de la musique…</string>
 	<key>Add Outro Card</key>
 	<string>Ajouter un carton de fin</string>
+	<key>Add Spotlight (Dim Around a Spot)</key>
+	<string>Ajouter un projecteur (assombrir autour)</string>
+	<key>Add Text</key>
+	<string>Ajouter du texte</string>
+	<key>Add Zoom at Playhead</key>
+	<string>Ajouter un zoom à la tête de lecture</string>
+	<key>Add a caption at the playhead</key>
+	<string>Ajouter un sous-titre à la tête de lecture</string>
+	<key>Add a zoom at the playhead (Z)</key>
+	<string>Ajouter un zoom à la tête de lecture (Z)</string>
 	<key>Add another recording or video after this one — Shotnix recordings keep their pointer, clicks, and shortcuts.</key>
 	<string>Ajoutez un autre enregistrement ou une autre vidéo après celui-ci — les enregistrements Shotnix conservent leur pointeur, leurs clics et leurs raccourcis.</string>
+	<key>Add arrow at the playhead (A)</key>
+	<string>Ajouter une flèche à la tête de lecture (A)</string>
+	<key>Add blur at the playhead (B)</key>
+	<string>Ajouter un flou à la tête de lecture (B)</string>
+	<key>Add highlight at the playhead (H)</key>
+	<string>Ajouter un surlignage à la tête de lecture (H)</string>
+	<key>Add image at the playhead</key>
+	<string>Ajouter une image à la tête de lecture</string>
+	<key>Add spotlight at the playhead</key>
+	<string>Ajouter un projecteur à la tête de lecture</string>
+	<key>Add text at the playhead (T)</key>
+	<string>Ajouter du texte à la tête de lecture (T)</string>
+	<key>Add zoom at playhead</key>
+	<string>Ajouter un zoom à la tête de lecture</string>
+	<key>Add “%@” at the playhead</key>
+	<string>Ajouter « %@ » à la tête de lecture</string>
 	<key>Added %@ — %@</key>
 	<string>%@ ajouté — %@</string>
+	<key>Adjust to move it half a second</key>
+	<string>Ajustez pour le déplacer d’une demi-seconde</string>
 	<key>Advanced Tools</key>
 	<string>Outils avancés</string>
 	<key>After Capture</key>
 	<string>Après la capture</string>
+	<key>Aim by Hand</key>
+	<string>Viser à la main</string>
+	<key>Aim by hand</key>
+	<string>Viser à la main</string>
 	<key>All Captures</key>
 	<string>Toutes les captures</string>
 	<key>All Displays</key>
 	<string>Tous les écrans</string>
 	<key>All captures are moved to Shotnix’s trash and permanently deleted after %lld days.</key>
 	<string>Toutes les captures sont placées dans la corbeille de Shotnix et définitivement supprimées après %lld jours.</string>
+	<key>All commands</key>
+	<string>Toutes les commandes</string>
+	<key>All commands (⌘K)</key>
+	<string>Toutes les commandes (⌘K)</string>
 	<key>All configured</key>
 	<string>Tous configurés</string>
 	<key>All zooms set to %@</key>
@@ -130,6 +204,8 @@
 	<string>Autorisez Shotnix dans Accessibilité — les raccourcis s’activeront d’eux-mêmes.</string>
 	<key>Almost done</key>
 	<string>Presque terminé</string>
+	<key>Always show the arrow</key>
+	<string>Toujours afficher la flèche</string>
 	<key>Amber Fold</key>
 	<string>Pli d’ambre</string>
 	<key>Annotate Last Screenshot</key>
@@ -140,8 +216,12 @@
 	<string>Texte de l’annotation</string>
 	<key>Annotation tools</key>
 	<string>Outils d’annotation</string>
+	<key>Any color…</key>
+	<string>Toute couleur…</string>
 	<key>App</key>
 	<string>App</string>
+	<key>Appearance</key>
+	<string>Apparence</string>
 	<key>Append Video…</key>
 	<string>Ajouter une vidéo à la suite…</string>
 	<key>Apple Shortcuts</key>
@@ -166,12 +246,22 @@
 	<string>Appliquer le rognage</string>
 	<key>Apply the crop (Return)</key>
 	<string>Appliquer le rognage (Retour)</string>
+	<key>Apply to all zooms</key>
+	<string>Appliquer à tous les zooms</string>
 	<key>Aqua Marble</key>
 	<string>Marbre aqua</string>
 	<key>Area</key>
 	<string>Zone</string>
 	<key>Arrow</key>
 	<string>Flèche</string>
+	<key>Arrow head</key>
+	<string>Pointe de la flèche</string>
+	<key>Arrow tail</key>
+	<string>Queue de la flèche</string>
+	<key>Aspect Ratio %@ — %@</key>
+	<string>Format %@ — %@</string>
+	<key>Aspect ratio</key>
+	<string>Format d’image</string>
 	<key>At playhead</key>
 	<string>À la tête de lecture</string>
 	<key>Audio</key>
@@ -182,6 +272,10 @@
 	<string>Bleu aurore</string>
 	<key>Auto</key>
 	<string>Auto</string>
+	<key>Auto Zoom</key>
+	<string>Zoom auto</string>
+	<key>Auto Zoom from Clicks</key>
+	<string>Zoom automatique à partir des clics</string>
 	<key>Auto-dismiss overlay</key>
 	<string>Masquer la vignette automatiquement</string>
 	<key>Auto-save folder</key>
@@ -198,8 +292,12 @@
 	<string>Retour au style Shotnix</string>
 	<key>Back to the original recording — ⌘Z to undo</key>
 	<string>Retour à l’enregistrement d’origine — ⌘Z pour annuler</string>
+	<key>Back · pause · faster</key>
+	<string>Arrière · pause · plus vite</string>
 	<key>Background</key>
 	<string>Arrière-plan</string>
+	<key>Background, padding, corners, shadow</key>
+	<string>Arrière-plan, marge, coins, ombre</string>
 	<key>Balanced</key>
 	<string>Équilibrée</string>
 	<key>Balancing loudness…</key>
@@ -210,6 +308,10 @@
 	<string>Code-barres copié dans le presse-papiers</string>
 	<key>Barcodes</key>
 	<string>Codes-barres</string>
+	<key>Behavior</key>
+	<string>Comportement</string>
+	<key>Behind you</key>
+	<string>Derrière vous</string>
 	<key>Between clips</key>
 	<string>Entre les clips</string>
 	<key>Black</key>
@@ -222,6 +324,8 @@
 	<string>Flouter</string>
 	<key>Blurred area</key>
 	<string>Zone floutée</string>
+	<key>Blurs fast camera moves the way a real camera does.</key>
+	<string>Floute les mouvements de caméra rapides, comme une vraie caméra.</string>
 	<key>Bold</key>
 	<string>Gras</string>
 	<key>Bold outline</key>
@@ -246,24 +350,42 @@
 	<string>Bulle : %@</string>
 	<key>Camera</key>
 	<string>Caméra</string>
+	<key>Camera Side by Side at Playhead</key>
+	<string>Caméra côte à côte à la tête de lecture</string>
 	<key>Camera access is off — allow Shotnix in System Settings → Privacy &amp; Security → Camera.</key>
 	<string>L’accès à la caméra est désactivé — autorisez Shotnix dans Réglages Système → Confidentialité et sécurité → Caméra.</string>
+	<key>Camera bubble</key>
+	<string>Bulle de caméra</string>
 	<key>Camera disconnected</key>
 	<string>Caméra débranchée</string>
 	<key>Camera disconnected.</key>
 	<string>Caméra déconnectée.</string>
 	<key>Camera disconnected. The recording continues without it.</key>
 	<string>Caméra déconnectée. L’enregistrement continue sans elle.</string>
+	<key>Camera follows your cursor</key>
+	<string>La caméra suit votre pointeur</string>
+	<key>Camera footage is missing</key>
+	<string>Les images de la caméra sont introuvables</string>
 	<key>Camera footage, cleaned-up voice, drafts, and clipboard exports</key>
 	<string>Séquences de caméra, voix nettoyée, brouillons et exportations pour le presse-papiers</string>
 	<key>Camera hidden</key>
 	<string>Caméra masquée</string>
+	<key>Camera layout</key>
+	<string>Disposition de la caméra</string>
 	<key>Camera layout removed</key>
 	<string>Disposition de la caméra supprimée</string>
+	<key>Camera layout: %@</key>
+	<string>Disposition de la caméra : %@</string>
+	<key>Camera layouts</key>
+	<string>Dispositions de caméra</string>
+	<key>Camera layouts — drag to move, drag an edge to retime, click to change</key>
+	<string>Dispositions de caméra — faites glisser pour déplacer, un bord pour ajuster la durée, cliquez pour changer</string>
 	<key>Camera preview</key>
 	<string>Aperçu de la caméra</string>
 	<key>Camera stopped</key>
 	<string>Caméra arrêtée</string>
+	<key>Camera — drag to move it, click for options</key>
+	<string>Caméra — faites-la glisser pour la déplacer, cliquez pour les options</string>
 	<key>Cancel</key>
 	<string>Annuler</string>
 	<key>Cancel Recording</key>
@@ -276,10 +398,14 @@
 	<string>Annulé</string>
 	<key>Canyon Silk</key>
 	<string>Soie de canyon</string>
+	<key>Caption</key>
+	<string>Sous-titre</string>
 	<key>Caption removed</key>
 	<string>Sous-titre supprimé</string>
 	<key>Caption style %@</key>
 	<string>Style de sous-titres %@</string>
+	<key>Caption “%@”</key>
+	<string>Sous-titre « %@ »</string>
 	<key>Captions</key>
 	<string>Sous-titres</string>
 	<key>Captions are drawn into the picture, and a subtitles file is saved next to the video.</key>
@@ -288,8 +414,12 @@
 	<string>Les sous-titres sont incrustés dans l’image.</string>
 	<key>Captions are hidden in the editor (Captions tab → Show captions).</key>
 	<string>Les sous-titres sont masqués dans l’éditeur (onglet Sous-titres → Afficher les sous-titres).</string>
+	<key>Captions from your narration — and cut the video by editing its words</key>
+	<string>Sous-titres tirés de votre narration — et montage de la vidéo par son texte</string>
 	<key>Captions look like this</key>
 	<string>Voici vos sous-titres</string>
+	<key>Captions tab</key>
+	<string>Onglet Sous-titres</string>
 	<key>Captions translated to %@</key>
 	<string>Sous-titres traduits en %@</string>
 	<key>Capture</key>
@@ -346,6 +476,8 @@
 	<string>Choisir</string>
 	<key>Choose Capture Area in the Shotnix menu to start</key>
 	<string>Choisissez « Capturer une zone » dans le menu Shotnix pour commencer</string>
+	<key>Choose Image…</key>
+	<string>Choisir une image…</string>
 	<key>Choose a language</key>
 	<string>Choisir une langue</string>
 	<key>Choose a logo, watermark, or screenshot to place on the video</key>
@@ -392,6 +524,8 @@
 	<string>Nettoyage de la voix…</string>
 	<key>Cleaning up your voice first… %lld%%</key>
 	<string>Nettoyage de votre voix d’abord… %lld %%</string>
+	<key>Cleaning up your voice…</key>
+	<string>Nettoyage de votre voix…</string>
 	<key>Cleaning up your voice… %lld%%</key>
 	<string>Nettoyage de votre voix… %lld %%</string>
 	<key>Clear All</key>
@@ -400,20 +534,36 @@
 	<string>Effacer l’historique</string>
 	<key>Clear History?</key>
 	<string>Effacer l’historique ?</string>
+	<key>Click</key>
+	<string>Clic</string>
 	<key>Click a window to capture it  ·  Esc cancels</key>
 	<string>Cliquez sur une fenêtre pour la capturer  ·  Échap pour annuler</string>
+	<key>Click a zoom</key>
+	<string>Cliquer sur un zoom</string>
 	<key>Click an annotation to edit it</key>
 	<string>Cliquez sur une annotation pour la modifier</string>
+	<key>Click it on the video</key>
+	<string>Cliquer dessus dans la vidéo</string>
 	<key>Click or press Esc to cancel</key>
 	<string>Cliquez ou appuyez sur Échap pour annuler</string>
 	<key>Click removed — ⌘Z to undo</key>
 	<string>Clic supprimé — ⌘Z pour annuler</string>
 	<key>Click sounds</key>
 	<string>Sons de clic</string>
+	<key>Click to add a zoom — or press Z at the playhead</key>
+	<string>Cliquez pour ajouter un zoom — ou appuyez sur Z à la tête de lecture</string>
 	<key>Click to add the next step</key>
 	<string>Cliquez pour ajouter l’étape suivante</string>
 	<key>Click volume</key>
 	<string>Volume des clics</string>
+	<key>Clicks</key>
+	<string>Clics</string>
+	<key>Clicks — drag one to retime it, ⌫ removes the selected one</key>
+	<string>Clics — faites-en glisser un pour le recaler, ⌫ supprime celui qui est sélectionné</string>
+	<key>Clip</key>
+	<string>Clip</string>
+	<key>Clip %lld</key>
+	<string>Clip %lld</string>
 	<key>Clip moved — ⌘Z to undo</key>
 	<string>Clip déplacé — ⌘Z pour annuler</string>
 	<key>Clip now ends here</key>
@@ -424,6 +574,8 @@
 	<string>Clip supprimé — ⌘Z pour annuler</string>
 	<key>Clip split</key>
 	<string>Clip scindé</string>
+	<key>Clip starts / ends here</key>
+	<string>Le clip commence/finit ici</string>
 	<key>Clipboard</key>
 	<string>Presse-papiers</string>
 	<key>Close</key>
@@ -436,6 +588,8 @@
 	<string>Fermer</string>
 	<key>Close Window</key>
 	<string>Fermer la fenêtre</string>
+	<key>Closing the editor stops it.</key>
+	<string>Fermer l’éditeur l’interrompra.</string>
 	<key>Coastal Haze</key>
 	<string>Brume côtière</string>
 	<key>Cobalt Drapes</key>
@@ -444,8 +598,12 @@
 	<string>Couleur</string>
 	<key>Command Center</key>
 	<string>Centre de commande</string>
+	<key>Commands</key>
+	<string>Commandes</string>
 	<key>Compose Email</key>
 	<string>Rédiger un e-mail</string>
+	<key>Computer sound</key>
+	<string>Son de l’ordinateur</string>
 	<key>Conflict detected</key>
 	<string>Conflit détecté</string>
 	<key>Copied</key>
@@ -460,6 +618,8 @@
 	<string>Copier %@</string>
 	<key>Copy (⌘C)</key>
 	<string>Copier (⌘C)</string>
+	<key>Copy Current Frame</key>
+	<string>Copier l’image actuelle</string>
 	<key>Copy Path</key>
 	<string>Copier le chemin</string>
 	<key>Copy Text</key>
@@ -468,6 +628,8 @@
 	<string>Copier en tableau</string>
 	<key>Copy capture to clipboard</key>
 	<string>Copier la capture dans le presse-papiers</string>
+	<key>Copy current frame</key>
+	<string>Copier l’image actuelle</string>
 	<key>Copy image to clipboard</key>
 	<string>Copier l’image dans le presse-papiers</string>
 	<key>Copy recognized text (OCR)</key>
@@ -520,6 +682,8 @@
 	<string>Impossible d’ouvrir cette image</string>
 	<key>Couldn't open that video — %@</key>
 	<string>Impossible d’ouvrir cette vidéo — %@</string>
+	<key>Couldn't open this video</key>
+	<string>Impossible d’ouvrir cette vidéo</string>
 	<key>Couldn't prepare the video. Export again; if it keeps happening, restart Shotnix.</key>
 	<string>Impossible de préparer la vidéo. Exportez à nouveau ; si le problème persiste, redémarrez Shotnix.</string>
 	<key>Couldn't read that audio file</key>
@@ -556,8 +720,20 @@
 	<string>Net et compact — le meilleur choix par défaut</string>
 	<key>Crop</key>
 	<string>Rogner</string>
+	<key>Crop the Recording…</key>
+	<string>Rogner l’enregistrement…</string>
+	<key>Crop the recording — trim away toolbars or empty space</key>
+	<string>Rogner l’enregistrement — retirer les barres d’outils ou les zones vides</string>
+	<key>Cropped</key>
+	<string>Rogné</string>
+	<key>Cropped — cursor, zooms, and clicks follow</key>
+	<string>Rogné — le pointeur, les zooms et les clics suivent</string>
 	<key>Cursor</key>
 	<string>Pointeur</string>
+	<key>Cursor, clicks, and keyboard shortcuts</key>
+	<string>Pointeur, clics et raccourcis clavier</string>
+	<key>Custom</key>
+	<string>Personnalisée</string>
 	<key>Custom color</key>
 	<string>Couleur personnalisée</string>
 	<key>Custom color #%@</key>
@@ -568,6 +744,12 @@
 	<string>Personnaliser…</string>
 	<key>Cut</key>
 	<string>Couper</string>
+	<key>Cut filler words like um and uh</key>
+	<string>Couper les mots de remplissage comme « euh » et « hum »</string>
+	<key>Cut from Video</key>
+	<string>Couper de la vidéo</string>
+	<key>Cut this part</key>
+	<string>Couper ce passage</string>
 	<key>Cut, no transition</key>
 	<string>Coupe, sans transition</string>
 	<key>Cutout</key>
@@ -576,20 +758,32 @@
 	<string>Détails décodés</string>
 	<key>Delete</key>
 	<string>Supprimer</string>
+	<key>Delete (⌫)</key>
+	<string>Supprimer (⌫)</string>
 	<key>Delete All</key>
 	<string>Tout supprimer</string>
 	<key>Delete Captures</key>
 	<string>Supprimer les captures</string>
+	<key>Delete Clip</key>
+	<string>Supprimer le clip</string>
 	<key>Delete Screenshot</key>
 	<string>Supprimer la capture</string>
 	<key>Delete Screenshots</key>
 	<string>Supprimer les captures</string>
 	<key>Delete Selection</key>
 	<string>Supprimer la sélection</string>
+	<key>Delete Zoom</key>
+	<string>Supprimer le zoom</string>
 	<key>Delete every saved capture</key>
 	<string>Supprimer toutes les captures enregistrées</string>
+	<key>Delete selection</key>
+	<string>Supprimer la sélection</string>
+	<key>Delete selection (⌫)</key>
+	<string>Supprimer la sélection (⌫)</string>
 	<key>Deleted captures waiting in History's trash and files no capture uses are removed for good. The captures in your history stay.</key>
 	<string>Les captures supprimées en attente dans la corbeille de l’historique et les fichiers qu’aucune capture n’utilise sont définitivement supprimés. Les captures de votre historique sont conservées.</string>
+	<key>Deselect / close</key>
+	<string>Désélectionner/fermer</string>
 	<key>Desert Violet</key>
 	<string>Violet du désert</string>
 	<key>Dip to black</key>
@@ -614,6 +808,8 @@
 	<string>Disque bientôt plein</string>
 	<key>Dismiss</key>
 	<string>Ignorer</string>
+	<key>Dismiss tips</key>
+	<string>Masquer les astuces</string>
 	<key>Display</key>
 	<string>Écran</string>
 	<key>Display %lld</key>
@@ -634,42 +830,86 @@
 	<string>Ne pas enregistrer</string>
 	<key>Done</key>
 	<string>Terminé</string>
+	<key>Done (Esc)</key>
+	<string>Terminé (Échap)</string>
+	<key>Double-click</key>
+	<string>Double-clic</string>
+	<key>Double-click text</key>
+	<string>Double-cliquer sur un texte</string>
 	<key>Double-click to edit, or drag into another app. Command-C copies, Command-S saves, Escape dismisses.</key>
 	<string>Double-cliquez pour modifier, ou faites glisser vers une autre app. Commande + C copie, Commande + S enregistre, Échap ferme.</string>
+	<key>Double-click to show the recording in Finder</key>
+	<string>Double-cliquez pour afficher l’enregistrement dans le Finder</string>
 	<key>Downloading the language model…</key>
 	<string>Téléchargement du modèle de langue…</string>
 	<key>Drag edges or corners to resize  ·  Arrow keys nudge (⇧ ×10)  ·  Return captures  ·  Esc cancels</key>
 	<string>Redimensionnez par les bords ou les coins  ·  Flèches pour déplacer (⇧ ×10)  ·  Retour pour capturer  ·  Échap pour annuler</string>
+	<key>Drag it on the preview to move it; drag a corner to resize. Its bar on the timeline sets when it shows.</key>
+	<string>Faites glisser l’élément dans l’aperçu pour le déplacer ; faites glisser un coin pour le redimensionner. Sa barre dans la timeline définit quand il apparaît.</string>
+	<key>Drag it on the preview to move it; drag a corner to resize; double-click it to type. Its bar on the timeline sets when it shows.</key>
+	<string>Faites glisser le texte dans l’aperçu pour le déplacer ; faites glisser un coin pour le redimensionner ; double-cliquez pour saisir. Sa barre dans la timeline définit quand il apparaît.</string>
+	<key>Drag one of them on the timeline to move them all together; ⌫ removes them all. ⇧- or ⌘-click adds or takes one out.</key>
+	<string>Faites glisser l’un d’eux dans la timeline pour tous les déplacer ensemble ; ⌫ les supprime tous. Un clic avec ⇧ ou ⌘ en ajoute ou en retire un.</string>
+	<key>Drag the arrow on the preview to move it; drag its head or tail to point it anywhere. Its bar on the timeline sets when it shows.</key>
+	<string>Faites glisser la flèche dans l’aperçu pour la déplacer ; faites glisser sa pointe ou sa queue pour l’orienter. Sa barre dans la timeline définit quand elle apparaît.</string>
+	<key>Drag the block on the Camera lane to move it, or its edges to change how long it lasts. Each change eases in and out.</key>
+	<string>Faites glisser le bloc sur la piste Caméra pour le déplacer, ou ses bords pour modifier sa durée. Chaque changement se fait en douceur.</string>
+	<key>Drag the box on the preview over anything private. Blur follows zooms and stays until its bar ends.</key>
+	<string>Faites glisser le cadre dans l’aperçu sur tout élément privé. Le flou suit les zooms et reste jusqu’à la fin de sa barre.</string>
+	<key>Drag the frame on the preview to aim; drag its corners to zoom in or out.</key>
+	<string>Faites glisser le cadre dans l’aperçu pour viser ; faites glisser ses coins pour zoomer ou dézoomer.</string>
+	<key>Drag the spot on the preview; drag a corner to resize it. Everything around it dims while its bar on the timeline runs.</key>
+	<string>Faites glisser le projecteur dans l’aperçu ; faites glisser un coin pour le redimensionner. Tout ce qui l’entoure s’assombrit pendant sa barre dans la timeline.</string>
 	<key>Drag to capture  ·  Hold ⇧ as you let go to adjust first  ·  Space moves  ·  Esc cancels</key>
 	<string>Faites glisser pour capturer  ·  Maintenez ⇧ en relâchant pour ajuster d’abord  ·  Espace pour déplacer  ·  Échap pour annuler</string>
+	<key>Drag to change where this clip ends</key>
+	<string>Faites glisser pour modifier la fin de ce clip</string>
+	<key>Drag to change where this clip starts</key>
+	<string>Faites glisser pour modifier le début de ce clip</string>
+	<key>Drag to move this clip to another place in the video</key>
+	<string>Faites glisser pour déplacer ce clip ailleurs dans la vidéo</string>
+	<key>Drag to move where the arrow starts</key>
+	<string>Faites glisser pour déplacer le départ de la flèche</string>
 	<key>Drag to move. Press Command-C to copy, Escape to close.</key>
 	<string>Faites glisser pour déplacer. Appuyez sur Commande + C pour copier, sur Échap pour fermer.</string>
 	<key>Drag to move; drag a corner to resize</key>
 	<string>Faites glisser pour déplacer ; faites glisser un coin pour redimensionner</string>
+	<key>Drag to point the arrow</key>
+	<string>Faites glisser pour orienter la flèche</string>
 	<key>Drag to select, then adjust  ·  Hold ⇧ as you let go to capture right away  ·  Esc cancels</key>
 	<string>Faites glisser pour sélectionner, puis ajustez  ·  Maintenez ⇧ en relâchant pour capturer aussitôt  ·  Échap pour annuler</string>
 	<key>Draw with the selected tool. Tool shortcuts: V select, A arrow, R rectangle, T text, O callout, H highlighter, B blur, P pixelate, S spotlight, C crop.</key>
 	<string>Dessinez avec l’outil sélectionné. Raccourcis des outils : V sélectionner, A flèche, R rectangle, T texte, O bulle, H surligneur, B flouter, P pixéliser, S projecteur, C rogner.</string>
 	<key>Drawing</key>
 	<string>Dessin</string>
+	<key>Duplicate</key>
+	<string>Dupliquer</string>
+	<key>Duplicate zoom or annotation</key>
+	<string>Dupliquer un zoom ou une annotation</string>
 	<key>Duplicated</key>
 	<string>Dupliqué</string>
 	<key>Dusk</key>
 	<string>Crépuscule</string>
 	<key>Each recording keeps its own pointer, clicks, and shortcuts. Reorder them here; cut and trim them on the timeline like any clip.</key>
 	<string>Chaque enregistrement conserve son pointeur, ses clics et ses raccourcis. Réorganisez-les ici ; coupez-les et raccourcissez-les dans la timeline comme n’importe quel clip.</string>
+	<key>Edge highlight</key>
+	<string>Liseré</string>
 	<key>Edit</key>
 	<string>Modifier</string>
 	<key>Edit Last Recording</key>
 	<string>Modifier le dernier enregistrement</string>
 	<key>Edit Video</key>
 	<string>Modifier la vidéo</string>
+	<key>Edit by text</key>
+	<string>Montage par texte</string>
 	<key>Editable Cursor</key>
 	<string>Pointeur modifiable</string>
 	<key>Editable cursor</key>
 	<string>Pointeur modifiable</string>
 	<key>Editable cursor records the pointer separately so the editor can smooth it, resize it, and keep it crisp when zoomed — the video editor adds it back on export (the raw recording file has no pointer). Auto-zoom makes a fresh recording open already produced: the camera zooms to follow your clicks. Keyboard shortcuts records only ⌘, ⌃ and ⌥ combos (plus Esc and F-keys) so the editor can show them as keycaps — plain typing is never recorded; macOS asks for Accessibility access. High quality is the default; Max keeps more detail but creates larger files. The countdown gives you a moment after pressing Record; Esc cancels it. Stop a recording with %@ from any app — plain Esc stays with the app you're recording.</key>
 	<string>« Pointeur modifiable » enregistre le pointeur séparément pour que l’éditeur puisse le lisser, le redimensionner et le garder net lors des zooms — l’éditeur vidéo le réintègre à l’exportation (le fichier brut de l’enregistrement ne contient pas de pointeur). Avec le zoom automatique, un nouvel enregistrement s’ouvre déjà monté : la caméra suit vos clics. « Afficher les raccourcis clavier » n’enregistre que les combinaisons avec ⌘, ⌃ et ⌥ (plus Échap et les touches de fonction) pour que l’éditeur puisse les afficher sous forme de touches — la frappe normale n’est jamais enregistrée ; macOS demande l’accès à l’accessibilité. La qualité élevée est utilisée par défaut ; la qualité maximale conserve plus de détails mais produit des fichiers plus volumineux. Le compte à rebours vous laisse un instant après avoir lancé l’enregistrement ; Échap l’annule. Arrêtez un enregistrement depuis n’importe quelle app avec %@ — un simple Échap reste destiné à l’app que vous enregistrez.</string>
+	<key>Editing</key>
+	<string>Montage</string>
 	<key>Ellipse</key>
 	<string>Ellipse</string>
 	<key>Email</key>
@@ -696,12 +936,22 @@
 	<string>Encodage</string>
 	<key>End card</key>
 	<string>Écran de fin</string>
+	<key>End here</key>
+	<string>Finir ici</string>
+	<key>Ends</key>
+	<string>Fin</string>
 	<key>English</key>
 	<string>Anglais</string>
+	<key>Enhance Voice</key>
+	<string>Améliorer la voix</string>
+	<key>Enhance voice</key>
+	<string>Améliorer la voix</string>
 	<key>Enjoying Shotnix? Click to star it on GitHub ★</key>
 	<string>Vous aimez Shotnix ? Cliquez pour lui donner une étoile sur GitHub ★</string>
 	<key>Enjoying Shotnix? Star it on GitHub so more people find it.</key>
 	<string>Vous aimez Shotnix ? Ajoutez une étoile sur GitHub pour que plus de monde le découvre.</string>
+	<key>Esc</key>
+	<string>Échap</string>
 	<key>Esc or Done finishes</key>
 	<string>Échap ou « Terminé » pour finir</string>
 	<key>Estimated file size. Still screens take less.</key>
@@ -710,6 +960,8 @@
 	<string>Taille estimée : %@</string>
 	<key>Estimating…</key>
 	<string>Estimation…</string>
+	<key>Even out loudness</key>
+	<string>Égaliser le volume sonore</string>
 	<key>Every clip is muted — this export will have no sound.</key>
 	<string>Tous les clips sont coupés — cette exportation n’aura pas de son.</string>
 	<key>Every cut, zoom, annotation, caption, and style change on this video is removed — the recordings you added stay. You can undo this.</key>
@@ -720,10 +972,16 @@
 	<string>Tous les niveaux sonores sont à 0 (onglet Audio) — cette exportation n’aura pas de son.</string>
 	<key>Everything is ready</key>
 	<string>Tout est prêt</string>
+	<key>Exactly as recorded.</key>
+	<string>Exactement comme enregistré.</string>
 	<key>Export</key>
 	<string>Exporter</string>
+	<key>Export (⌘E)</key>
+	<string>Exporter (⌘E)</string>
 	<key>Export Format</key>
 	<string>Format d’exportation</string>
+	<key>Export Video…</key>
+	<string>Exporter la vidéo…</string>
 	<key>Export and put the file on the clipboard — paste it into Slack, Mail, or Finder</key>
 	<string>Exporter et placer le fichier dans le presse-papiers — collez-le dans Slack, Mail ou le Finder</string>
 	<key>Export cancelled</key>
@@ -752,8 +1010,14 @@
 	<string>Exportation…</string>
 	<key>Exporting… %lld%%</key>
 	<string>Exportation… %lld %%</string>
+	<key>Exports at the level video sites expect (−16 LUFS) without clipping</key>
+	<string>Exporte au niveau attendu par les sites vidéo (−16 LUFS), sans saturation</string>
+	<key>Exports without sound — to quiet just the preview, press M</key>
+	<string>Exporte sans son — pour couper uniquement l’aperçu, appuyez sur M</string>
 	<key>Export…</key>
 	<string>Exporter…</string>
+	<key>Extra-fluid curves for slow, cinematic demos.</key>
+	<string>Courbes extra-fluides pour des démos lentes et cinématographiques.</string>
 	<key>Fade in</key>
 	<string>Fondu d’entrée</string>
 	<key>Fade in from black</key>
@@ -762,14 +1026,20 @@
 	<string>Fondu de sortie</string>
 	<key>Fade out to black</key>
 	<string>Fondu vers le noir</string>
+	<key>Fades out after a moment without movement</key>
+	<string>Disparaît après un moment sans mouvement</string>
 	<key>Fast</key>
 	<string>Rapide</string>
+	<key>Fast-forward moments where nothing happens</key>
+	<string>Accélérer les moments où rien ne se passe</string>
 	<key>File</key>
 	<string>Fichier</string>
 	<key>File Name</key>
 	<string>Nom de fichier</string>
 	<key>File not found</key>
 	<string>Fichier introuvable</string>
+	<key>Fill the Frame, Follow the Cursor</key>
+	<string>Remplir le cadre et suivre le pointeur</string>
 	<key>Filled Rectangle</key>
 	<string>Rectangle plein</string>
 	<key>Filled rectangle</key>
@@ -778,6 +1048,10 @@
 	<string>Rectangle arrondi plein</string>
 	<key>Filling the frame — the view follows your cursor</key>
 	<string>Le cadre est rempli — la vue suit votre pointeur</string>
+	<key>Find in Transcript</key>
+	<string>Rechercher dans la transcription</string>
+	<key>Find in the transcript</key>
+	<string>Rechercher dans la transcription</string>
 	<key>Finish and Quit</key>
 	<string>Terminer et quitter</string>
 	<key>Finish or cancel the current recording setup</key>
@@ -786,14 +1060,28 @@
 	<string>Corriger</string>
 	<key>Flamingo</key>
 	<string>Flamant</string>
+	<key>Flip like a selfie</key>
+	<string>Inverser comme un selfie</string>
+	<key>Follow Cursor</key>
+	<string>Suivre le pointeur</string>
+	<key>Follow cursor</key>
+	<string>Suivre le pointeur</string>
+	<key>Follows cursor</key>
+	<string>Suit le pointeur</string>
 	<key>Forever</key>
 	<string>Pour toujours</string>
 	<key>Format</key>
 	<string>Format</string>
+	<key>Frame</key>
+	<string>Cadre</string>
 	<key>Frame copied</key>
 	<string>Image copiée</string>
 	<key>Frame rate</key>
 	<string>Fréquence d’images</string>
+	<key>Framing</key>
+	<string>Cadrage</string>
+	<key>Free</key>
+	<string>Libre</string>
 	<key>Free up ⌘⇧ shortcuts · optional</key>
 	<string>Libérer les raccourcis ⌘⇧ · facultatif</string>
 	<key>Freed %@</key>
@@ -804,10 +1092,22 @@
 	<string>Surligneur à main levée</string>
 	<key>Freehand highlight</key>
 	<string>Surlignage à main levée</string>
+	<key>From your Mac</key>
+	<string>De votre Mac</string>
+	<key>Full Camera at Playhead</key>
+	<string>Caméra en plein écran à la tête de lecture</string>
+	<key>Full Frame (No Background)</key>
+	<string>Plein cadre (sans arrière-plan)</string>
 	<key>Full camera</key>
 	<string>Caméra en plein écran</string>
+	<key>Full camera for intro &amp; outro</key>
+	<string>Caméra plein écran pour l’intro et la fin</string>
+	<key>Full frame (no background)</key>
+	<string>Plein cadre (sans arrière-plan)</string>
 	<key>Full screen: %@</key>
 	<string>Plein écran : %@</string>
+	<key>Full-Camera Intro and Outro</key>
+	<string>Intro et fin avec caméra en plein écran</string>
 	<key>Full-screen camera for your intro and outro</key>
 	<string>Caméra en plein écran pour votre intro et votre fin</string>
 	<key>Fullscreen</key>
@@ -816,10 +1116,18 @@
 	<string>Les GIF s’intègrent partout — README, pull requests, docs. Faites-les courts : ils deviennent vite lourds.</string>
 	<key>General</key>
 	<string>Général</string>
+	<key>Gets out of the way during zoom moves</key>
+	<string>S’efface pendant les mouvements de zoom</string>
 	<key>Getting ready…</key>
 	<string>Préparation…</string>
 	<key>Glacier</key>
 	<string>Glacier</string>
+	<key>Glides without lagging behind — clicks still land exactly.</key>
+	<string>Glisse sans traîner — les clics restent précis.</string>
+	<key>Go to End</key>
+	<string>Aller à la fin</string>
+	<key>Go to Start</key>
+	<string>Aller au début</string>
 	<key>Gradient</key>
 	<string>Dégradé</string>
 	<key>Grant Screen Recording first, then try it here.</key>
@@ -838,6 +1146,8 @@
 	<string>État</string>
 	<key>Hidden</key>
 	<string>Masqué</string>
+	<key>Hide</key>
+	<string>Masquer</string>
 	<key>Hide Desktop Icons</key>
 	<string>Masquer les icônes du bureau</string>
 	<key>Hide Icon</key>
@@ -846,6 +1156,12 @@
 	<string>Masquer les icônes du bureau pendant la capture</string>
 	<key>Hide the Menu Bar Icon?</key>
 	<string>Masquer l’icône de la barre des menus ?</string>
+	<key>Hide the move to Stop</key>
+	<string>Masquer le trajet vers Arrêter</string>
+	<key>Hide tips (bring them back from ⌘K or the shortcuts list)</key>
+	<string>Masquer les astuces (réaffichez-les avec ⌘K ou la liste des raccourcis)</string>
+	<key>Hide when idle</key>
+	<string>Masquer à l’arrêt</string>
 	<key>Hide — the export keeps going (Esc)</key>
 	<string>Masquer — l’exportation continue (Échap)</string>
 	<key>High</key>
@@ -854,6 +1170,8 @@
 	<string>Surlignage</string>
 	<key>Highlight color</key>
 	<string>Couleur de surlignage</string>
+	<key>Highlight words</key>
+	<string>Surligner les mots</string>
 	<key>Highlighter</key>
 	<string>Surligneur</string>
 	<key>History</key>
@@ -862,8 +1180,14 @@
 	<string>Historique effacé — cliquez ou appuyez sur ⌘Z pour annuler</string>
 	<key>History was already tidy</key>
 	<string>L’historique était déjà propre</string>
+	<key>Home  End</key>
+	<string>Début  Fin</string>
 	<key>Hotkeys are system-wide and active while Shotnix is running. The ⌘⇧3 default works best after Apple's screenshot shortcut is disabled.</key>
 	<string>Les raccourcis fonctionnent dans tout le système tant que Shotnix est ouvert. Le raccourci ⌘⇧3 par défaut fonctionne mieux une fois le raccourci de capture d’Apple désactivé.</string>
+	<key>Hover the Zoom track</key>
+	<string>Survoler la piste Zoom</string>
+	<key>Hover the zoom track and click to add a zoom, or press Z at the playhead. Drag a zoom to move it; drag its edges to change how long it lasts.</key>
+	<string>Survolez la piste de zoom et cliquez pour ajouter un zoom, ou appuyez sur Z à la tête de lecture. Faites glisser un zoom pour le déplacer ; faites glisser ses bords pour modifier sa durée.</string>
 	<key>How strongly blur and pixelate hide what's under them</key>
 	<string>Degré de masquage du flou et de la pixélisation</string>
 	<key>Image</key>
@@ -878,14 +1202,24 @@
 	<string>Entrée plus tard</string>
 	<key>Includes: %@</key>
 	<string>Contenu : %@</string>
+	<key>Inspector tabs</key>
+	<string>Onglets de l’inspecteur</string>
 	<key>Instagram, LinkedIn</key>
 	<string>Instagram, LinkedIn</string>
 	<key>Instant</key>
 	<string>Instantané</string>
+	<key>Intro</key>
+	<string>Intro</string>
 	<key>Intro &amp; outro</key>
 	<string>Intro et fin</string>
 	<key>Intro card</key>
 	<string>Carton d’intro</string>
+	<key>Intro card — click to edit it in Style</key>
+	<string>Carton d’intro — cliquez pour le modifier dans Style</string>
+	<key>Intro card “%@”, %@ to %@</key>
+	<string>Carton d’intro « %@ », de %@ à %@</string>
+	<key>Intro card, %@ to %@</key>
+	<string>Carton d’intro, de %@ à %@</string>
 	<key>Iris</key>
 	<string>Iris</string>
 	<key>It may be damaged, still being saved, or in a format this Mac can't play. MP4 and MOV videos work best.</key>
@@ -894,8 +1228,14 @@
 	<string>Le fichier ne contient que du son, ou rien du tout. Shotnix modifie les enregistrements de l’écran et les autres vidéos.</string>
 	<key>It was moved, renamed, or deleted. Open it from where it is now.</key>
 	<string>Elle a été déplacée, renommée ou supprimée. Ouvrez-la depuis son emplacement actuel.</string>
+	<key>It was recorded into the pixels, so it can't be resized or smoothed. New recordings capture an editable cursor by default (Settings → Recording).</key>
+	<string>Il a été enregistré dans l’image : impossible de le redimensionner ou de le lisser. Les nouveaux enregistrements capturent par défaut un pointeur modifiable (Réglages → Enregistrement).</string>
 	<key>JPEG Quality</key>
 	<string>Qualité JPEG</string>
+	<key>Jump here</key>
+	<string>Aller ici</string>
+	<key>Jump one second</key>
+	<string>Sauter d’une seconde</string>
 	<key>Keep</key>
 	<string>Garder</string>
 	<key>Keep Editing</key>
@@ -904,14 +1244,28 @@
 	<string>Continuer</string>
 	<key>Keep captures</key>
 	<string>Conserver les captures</string>
+	<key>Keep editing — the words appear here when Shotnix is done listening.</key>
+	<string>Continuez à modifier — les mots apparaîtront ici quand Shotnix aura fini d’écouter.</string>
 	<key>Keyboard</key>
 	<string>Clavier</string>
+	<key>Keyboard Shortcuts</key>
+	<string>Raccourcis clavier</string>
+	<key>Keyboard shortcuts</key>
+	<string>Raccourcis clavier</string>
+	<key>Keyboard shortcuts (?)</key>
+	<string>Raccourcis clavier (?)</string>
 	<key>Keyboard shortcuts are on</key>
 	<string>Les raccourcis clavier sont activés</string>
+	<key>Keyboard shortcuts — click one to select it, ⌫ hides it</key>
+	<string>Raccourcis clavier — cliquez sur l’un d’eux pour le sélectionner, ⌫ le masque</string>
+	<key>Keys on screen</key>
+	<string>Touches à l’écran</string>
 	<key>L</key>
 	<string>L</string>
 	<key>Lagoon</key>
 	<string>Lagon</string>
+	<key>Language</key>
+	<string>Langue</string>
 	<key>Languages</key>
 	<string>Langues</string>
 	<key>Large</key>
@@ -922,10 +1276,18 @@
 	<string>Ouvrir Shotnix à l’ouverture de session</string>
 	<key>Lavender Glass</key>
 	<string>Verre lavande</string>
+	<key>Layout</key>
+	<string>Disposition</string>
+	<key>Layouts</key>
+	<string>Dispositions</string>
 	<key>Left</key>
 	<string>Gauche</string>
 	<key>Length</key>
 	<string>Durée</string>
+	<key>Letterbox Instead of Following the Cursor</key>
+	<string>Ajouter des bandes au lieu de suivre le pointeur</string>
+	<key>Level</key>
+	<string>Niveau</string>
 	<key>Light</key>
 	<string>Léger</string>
 	<key>Lime Signal</key>
@@ -936,6 +1298,8 @@
 	<string>Épaisseur du trait</string>
 	<key>Linen</key>
 	<string>Lin</string>
+	<key>Lines · %lld</key>
+	<string>Lignes · %lld</string>
 	<key>Link</key>
 	<string>Lien</string>
 	<key>Link QR found</key>
@@ -948,6 +1312,10 @@
 	<string>Liens (%lld sur %lld)</string>
 	<key>Listening…</key>
 	<string>Écoute…</string>
+	<key>Listens on this Mac — nothing is uploaded</key>
+	<string>L’écoute se fait sur ce Mac — rien n’est envoyé</string>
+	<key>Look</key>
+	<string>Apparence</string>
 	<key>Loop to fill</key>
 	<string>Boucler pour remplir</string>
 	<key>Lower under your voice</key>
@@ -1012,24 +1380,42 @@
 	<string>Placer dans le Dock</string>
 	<key>Mint</key>
 	<string>Menthe</string>
+	<key>Mirror</key>
+	<string>Miroir</string>
 	<key>Mist</key>
 	<string>Brume</string>
+	<key>More</key>
+	<string>Plus</string>
+	<key>More caption options</key>
+	<string>Autres options de sous-titres</string>
 	<key>More recording options</key>
 	<string>Autres options d’enregistrement</string>
+	<key>More tips</key>
+	<string>Plus d’astuces</string>
 	<key>Moss</key>
 	<string>Mousse</string>
 	<key>Moss Glow</key>
 	<string>Lueur de mousse</string>
+	<key>Motion</key>
+	<string>Mouvement</string>
+	<key>Motion blur</key>
+	<string>Flou de mouvement</string>
 	<key>Move %@ earlier</key>
 	<string>Déplacer %@ plus tôt</string>
 	<key>Move %@ later</key>
 	<string>Déplacer %@ plus tard</string>
+	<key>Move Earlier</key>
+	<string>Déplacer plus tôt</string>
+	<key>Move Later</key>
+	<string>Déplacer plus tard</string>
 	<key>Move earlier</key>
 	<string>Plus tôt</string>
 	<key>Move later</key>
 	<string>Plus tard</string>
 	<key>Move the playhead inside a clip to split</key>
 	<string>Placez la tête de lecture dans un clip pour le scinder</string>
+	<key>Movement</key>
+	<string>Mouvement</string>
 	<key>Music</key>
 	<string>Musique</string>
 	<key>Music added — it dips while you talk</key>
@@ -1040,8 +1426,24 @@
 	<string>Musique supprimée — ⌘Z pour annuler</string>
 	<key>Music — click to change its volume, fades, and ducking</key>
 	<string>Musique — cliquez pour modifier son volume, ses fondus et son atténuation</string>
+	<key>Music “%@”</key>
+	<string>Musique « %@ »</string>
 	<key>Mute Clip</key>
 	<string>Couper le son du clip</string>
+	<key>Mute preview</key>
+	<string>Couper le son de l’aperçu</string>
+	<key>Mute the Preview (the Export Keeps Its Sound)</key>
+	<string>Couper le son de l’aperçu (l’export garde le son)</string>
+	<key>Mute the preview (M) — the export keeps its sound</key>
+	<string>Couper le son de l’aperçu (M) — l’export garde le son</string>
+	<key>Mute the preview (or the selected clip)</key>
+	<string>Couper le son de l’aperçu (ou du clip sélectionné)</string>
+	<key>Mute this clip</key>
+	<string>Couper le son de ce clip</string>
+	<key>Mute this part</key>
+	<string>Couper le son de ce passage</string>
+	<key>Mute video</key>
+	<string>Couper le son de la vidéo</string>
 	<key>Mute video is on (Audio tab) — this export will have no sound.</key>
 	<string>Couper le son de la vidéo est activé (onglet Audio) — cette exportation n’aura pas de son.</string>
 	<key>Nebula</key>
@@ -1054,20 +1456,34 @@
 	<string>Réseau</string>
 	<key>Never</key>
 	<string>Jamais</string>
+	<key>Never switch to the text beam or the hand</key>
+	<string>Ne jamais passer au curseur de texte ni à la main</string>
 	<key>New caption</key>
 	<string>Nouveau sous-titre</string>
+	<key>New recordings use this look</key>
+	<string>Les nouveaux enregistrements utilisent ce style</string>
 	<key>New screenshots are copied automatically. Turn this off if you only want to use the overlay or history actions.</key>
 	<string>Les nouvelles captures sont copiées automatiquement. Désactivez cette option si vous préférez passer par la vignette ou l’historique.</string>
+	<key>New zooms</key>
+	<string>Nouveaux zooms</string>
 	<key>Nice shot. You're all set.</key>
 	<string>Belle capture ! Tout est prêt.</string>
 	<key>Night Current</key>
 	<string>Courant nocturne</string>
+	<key>No Exports Yet</key>
+	<string>Aucune exportation</string>
+	<key>No background</key>
+	<string>Aucun arrière-plan</string>
+	<key>No background — text only</key>
+	<string>Aucun arrière-plan — texte seul</string>
 	<key>No barcode found in this selection</key>
 	<string>Aucun code-barres dans cette sélection</string>
 	<key>No camera connected</key>
 	<string>Aucune caméra connectée</string>
 	<key>No camera found.</key>
 	<string>Aucune caméra détectée.</string>
+	<key>No camera in this recording</key>
+	<string>Aucune caméra dans cet enregistrement</string>
 	<key>No captions in the picture — add a subtitles file to upload them separately.</key>
 	<string>Pas de sous-titres dans l’image — ajoutez un fichier de sous-titres pour les mettre en ligne séparément.</string>
 	<key>No captures contain “%@”</key>
@@ -1082,8 +1498,12 @@
 	<string>Aucun clic n’a été enregistré dans cette vidéo</string>
 	<key>No clicks were recorded — add zooms by hand</key>
 	<string>Aucun clic enregistré — ajoutez des zooms à la main</string>
+	<key>No clicks were recorded, so add zooms by hand: hover the zoom track and click.</key>
+	<string>Aucun clic n’a été enregistré : ajoutez des zooms à la main en survolant la piste de zoom puis en cliquant.</string>
 	<key>No conflict</key>
 	<string>Aucun conflit</string>
+	<key>No cursor data in this video</key>
+	<string>Aucune donnée de pointeur dans cette vidéo</string>
 	<key>No idle moments found — nice and tight</key>
 	<string>Aucun temps mort — bien rythmé</string>
 	<key>No long pauses to shorten</key>
@@ -1092,6 +1512,10 @@
 	<string>Aucun micro connecté</string>
 	<key>No microphone is connected, so this recording has no mic.</key>
 	<string>Aucun micro n’est connecté : cet enregistrement n’aura pas de son du micro.</string>
+	<key>No music</key>
+	<string>Aucune musique</string>
+	<key>No pauses to shorten</key>
+	<string>Aucune pause à raccourcir</string>
 	<key>No recordable windows found</key>
 	<string>Aucune fenêtre à enregistrer</string>
 	<key>No recording in progress</key>
@@ -1108,16 +1532,22 @@
 	<string>Aucune parole n’a été détectée dans cet enregistrement. S’il contient une narration, vérifiez son niveau dans l’onglet Audio, puis réessayez.</string>
 	<key>No text found in this selection</key>
 	<string>Aucun texte dans cette sélection</string>
+	<key>No ums</key>
+	<string>Aucune hésitation</string>
 	<key>No ums or uhs left</key>
 	<string>Plus aucun mot de remplissage</string>
 	<key>None</key>
 	<string>Aucun</string>
+	<key>None in this recording. Turn on “Show keyboard shortcuts” in Settings → Recording and every ⌘ shortcut you press appears as keycaps. Plain typing is never recorded.</key>
+	<string>Aucun dans cet enregistrement. Activez « Afficher les raccourcis clavier » dans Réglages → Enregistrement : chaque raccourci ⌘ que vous utilisez apparaît sous forme de touches. La saisie ordinaire n’est jamais enregistrée.</string>
 	<key>Not enough disk space to record.</key>
 	<string>Espace disque insuffisant pour enregistrer.</string>
 	<key>Not enough free disk space for this recording: it needs about %@ free, and %@ is available. Free up some space and try again.</key>
 	<string>Espace disque insuffisant pour cet enregistrement : il faut environ %@ d’espace libre, et il reste %@. Libérez de l’espace et réessayez.</string>
 	<key>Not enough free disk space for this recording: it needs about %@ free, and %@ is available. Free up space, or choose Balanced quality or 30 fps.</key>
 	<string>Espace disque insuffisant pour cet enregistrement : il faut environ %@ d’espace libre, et il reste %@. Libérez de l’espace, ou choisissez la qualité Équilibrée ou 30 fps.</string>
+	<key>Not for this video</key>
+	<string>Pas pour cette vidéo</string>
 	<key>Not now</key>
 	<string>Plus tard</string>
 	<key>Nothing to clean up — everything belongs to recordings you still have</key>
@@ -1148,6 +1578,8 @@
 	<string>Ouvrir</string>
 	<key>Open %@</key>
 	<string>Ouvrir %@</string>
+	<key>Open Another Video…</key>
+	<string>Ouvrir une autre vidéo…</string>
 	<key>Open Command Center</key>
 	<string>Ouvrir le centre de commande</string>
 	<key>Open Editor After Recording</key>
@@ -1160,6 +1592,10 @@
 	<string>Ouvrir le lien</string>
 	<key>Open Messages</key>
 	<string>Ouvrir Messages</string>
+	<key>Open Privacy Settings</key>
+	<string>Ouvrir Confidentialité et sécurité</string>
+	<key>Open Recording Settings…</key>
+	<string>Ouvrir les réglages d’enregistrement…</string>
 	<key>Open Settings</key>
 	<string>Ouvrir les réglages</string>
 	<key>Open System Settings</key>
@@ -1172,12 +1608,18 @@
 	<string>Ouvrir l’éditeur après l’enregistrement</string>
 	<key>Open in annotation editor</key>
 	<string>Ouvrir dans l’éditeur de captures</string>
+	<key>Opens its title and length in Style</key>
+	<string>Ouvre son titre et sa durée dans Style</string>
 	<key>Opens its volume, fades, and ducking in Audio</key>
 	<string>Ouvre son volume, ses fondus et son atténuation dans Audio</string>
 	<key>Or drag it on the preview. Images stay put while the camera zooms.</key>
 	<string>Ou faites-la glisser dans l’aperçu. Les images restent en place pendant les zooms.</string>
 	<key>Or drag its bar on the timeline.</key>
 	<string>Ou faites glisser sa barre dans la timeline.</string>
+	<key>Or drag the bubble on the video — it snaps to the nearest spot.</key>
+	<string>Ou faites glisser la bulle sur la vidéo — elle s’aimante à l’emplacement le plus proche.</string>
+	<key>Or type one at the playhead</key>
+	<string>Ou en saisir un à la tête de lecture</string>
 	<key>Orange</key>
 	<string>Orange</string>
 	<key>Orchid</key>
@@ -1190,8 +1632,16 @@
 	<string>Sortie plus tôt</string>
 	<key>Out later</key>
 	<string>Sortie plus tard</string>
+	<key>Outro</key>
+	<string>Fin</string>
 	<key>Outro card</key>
 	<string>Carton de fin</string>
+	<key>Outro card — click to edit it in Style</key>
+	<string>Carton de fin — cliquez pour le modifier dans Style</string>
+	<key>Outro card “%@”, %@ to %@</key>
+	<string>Carton de fin « %@ », de %@ à %@</string>
+	<key>Outro card, %@ to %@</key>
+	<string>Carton de fin, de %@ à %@</string>
 	<key>Overlay position</key>
 	<string>Position de la vignette</string>
 	<key>Padding</key>
@@ -1202,6 +1652,10 @@
 	<string>Mot de passe</string>
 	<key>Paste</key>
 	<string>Coller</string>
+	<key>Pause</key>
+	<string>Pause</string>
+	<key>Pause (Space)</key>
+	<string>Pause (Espace)</string>
 	<key>Pause / Resume Recording</key>
 	<string>Suspendre/reprendre l’enregistrement</string>
 	<key>Pause Recording</key>
@@ -1242,14 +1696,26 @@
 	<string>Pixéliser</string>
 	<key>Pixelated area</key>
 	<string>Zone pixélisée</string>
+	<key>Placement</key>
+	<string>Placement</string>
+	<key>Plan zooms from your clicks — keeps zooms you placed by hand</key>
+	<string>Prévoir des zooms d’après vos clics — les zooms placés à la main sont conservés</string>
 	<key>Play</key>
 	<string>Lire</string>
+	<key>Play (Space)</key>
+	<string>Lire (Espace)</string>
+	<key>Play / pause</key>
+	<string>Lecture/pause</string>
 	<key>Play Click Sounds</key>
 	<string>Jouer les sons de clic</string>
 	<key>Play a click on each click</key>
 	<string>Jouer un son à chaque clic</string>
 	<key>Play capture sound</key>
 	<string>Émettre un son lors de la capture</string>
+	<key>Play from Here</key>
+	<string>Lire à partir d’ici</string>
+	<key>Playback</key>
+	<string>Lecture</string>
 	<key>Playing %lld×</key>
 	<string>Lecture à %lld×</string>
 	<key>Plays after the last clip, before the end card</key>
@@ -1258,6 +1724,8 @@
 	<string>Avant le premier clip</string>
 	<key>Plays everywhere</key>
 	<string>Lisible partout</string>
+	<key>Plays or pauses. Use Option-arrow keys to select what's on the timeline.</key>
+	<string>Lance ou met en pause la lecture. Utilisez Option et les touches fléchées pour sélectionner les éléments de la timeline.</string>
 	<key>Plum</key>
 	<string>Prune</string>
 	<key>Polar Dawn</key>
@@ -1270,6 +1738,8 @@
 	<string>Réglages</string>
 	<key>Preparing to copy…</key>
 	<string>Préparation de la copie…</string>
+	<key>Preparing your video…</key>
+	<string>Préparation de votre vidéo…</string>
 	<key>Preparing…</key>
 	<string>Préparation…</string>
 	<key>Preset</key>
@@ -1280,6 +1750,8 @@
 	<string>Appuyez sur %@ à tout moment — ou essayez dès maintenant.</string>
 	<key>Press %@ to take your first screenshot</key>
 	<string>Appuyez sur %@ pour faire votre première capture</string>
+	<key>Pressed at %@. Press ⌫ to hide it from the video — handy for a stray ⌘Tab.</key>
+	<string>Utilisé à %@. Appuyez sur ⌫ pour le masquer dans la vidéo — pratique pour un ⌘Tab accidentel.</string>
 	<key>Preview</key>
 	<string>Aperçu</string>
 	<key>Preview muted — the export keeps its sound</key>
@@ -1288,6 +1760,8 @@
 	<string>Son de l’aperçu activé</string>
 	<key>Preview the target, then continue to recording controls.</key>
 	<string>Vérifiez l’aperçu, puis passez à l’enregistrement.</string>
+	<key>Previous / next frame</key>
+	<string>Image précédente/suivante</string>
 	<key>Prism Sweep</key>
 	<string>Balayage prismatique</string>
 	<key>Privacy Policy</key>
@@ -1320,6 +1794,8 @@
 	<string>Réactiver les raccourcis de capture ⌘⇧3/4/5 d’Apple</string>
 	<key>Ready</key>
 	<string>Prêt</string>
+	<key>Recent Exports</key>
+	<string>Exportations récentes</string>
 	<key>Recognized Text</key>
 	<string>Texte reconnu</string>
 	<key>Recognized text</key>
@@ -1340,6 +1816,8 @@
 	<string>Enregistrer le micro</string>
 	<key>Record system audio</key>
 	<string>Enregistrer le son de l’ordinateur</string>
+	<key>Recorded at %@. Drag its dot on the timeline to retime it; ripples and Auto Zoom follow.</key>
+	<string>Enregistré à %@. Faites glisser son point dans la timeline pour le recaler ; les ondes et le zoom auto suivent.</string>
 	<key>Recording</key>
 	<string>Enregistrement</string>
 	<key>Recording already in progress</key>
@@ -1376,6 +1854,8 @@
 	<string>Enregistrements</string>
 	<key>Recordings in the Trash or on a drive that isn't plugged in keep their data. This can't be undone.</key>
 	<string>Les enregistrements placés dans la corbeille ou sur un disque non branché conservent leurs données. Cette action est irréversible.</string>
+	<key>Recordings made with Shotnix capture the pointer so it can be smoothed, resized, and hidden.</key>
+	<string>Les enregistrements réalisés avec Shotnix capturent le pointeur pour qu’il puisse être lissé, redimensionné et masqué.</string>
 	<key>Records %@ × %@ pixels (%@ × %@ points)</key>
 	<string>Enregistre %@ × %@ pixels (%@ × %@ points)</string>
 	<key>Records the pointer separately, so the editor can smooth it, resize it, and keep it crisp when zoomed.</key>
@@ -1390,8 +1870,234 @@
 	<string>Intensité du masquage</string>
 	<key>Redo</key>
 	<string>Rétablir</string>
+	<key>Redo Add Arrow</key>
+	<string>Rétablir l’ajout de la flèche</string>
+	<key>Redo Add Blur</key>
+	<string>Rétablir l’ajout du flou</string>
+	<key>Redo Add Camera Layout</key>
+	<string>Rétablir l’ajout de la disposition de caméra</string>
+	<key>Redo Add Camera Layouts</key>
+	<string>Rétablir l’ajout des dispositions de caméra</string>
+	<key>Redo Add Caption</key>
+	<string>Rétablir l’ajout du sous-titre</string>
+	<key>Redo Add Captions</key>
+	<string>Rétablir l’ajout des sous-titres</string>
+	<key>Redo Add Click</key>
+	<string>Rétablir l’ajout du clic</string>
+	<key>Redo Add Clicks</key>
+	<string>Rétablir l’ajout des clics</string>
+	<key>Redo Add Highlight</key>
+	<string>Rétablir l’ajout du surlignage</string>
+	<key>Redo Add Image</key>
+	<string>Rétablir l’ajout de l’image</string>
+	<key>Redo Add Intro Card</key>
+	<string>Rétablir l’ajout du carton d’intro</string>
+	<key>Redo Add Music</key>
+	<string>Rétablir l’ajout de la musique</string>
+	<key>Redo Add Outro Card</key>
+	<string>Rétablir l’ajout du carton de fin</string>
+	<key>Redo Add Recording</key>
+	<string>Rétablir l’ajout de l’enregistrement</string>
+	<key>Redo Add Spotlight</key>
+	<string>Rétablir l’ajout du projecteur</string>
+	<key>Redo Add Text</key>
+	<string>Rétablir l’ajout du texte</string>
+	<key>Redo Add Zoom</key>
+	<string>Rétablir l’ajout du zoom</string>
+	<key>Redo Add Zooms</key>
+	<string>Rétablir l’ajout des zooms</string>
+	<key>Redo Annotation Change</key>
+	<string>Rétablir la modification de l’annotation</string>
+	<key>Redo Annotations</key>
+	<string>Rétablir la modification des annotations</string>
+	<key>Redo Arrow Style</key>
+	<string>Rétablir la modification du style de la flèche</string>
+	<key>Redo Aspect Ratio</key>
+	<string>Rétablir la modification du format</string>
+	<key>Redo Auto Zoom</key>
+	<string>Rétablir le zoom automatique</string>
+	<key>Redo Background</key>
+	<string>Rétablir la modification de l’arrière-plan</string>
+	<key>Redo Blur Style</key>
+	<string>Rétablir la modification du style du flou</string>
+	<key>Redo Camera Change</key>
+	<string>Rétablir la modification de la caméra</string>
+	<key>Redo Camera Layout Change</key>
+	<string>Rétablir la modification de la disposition de caméra</string>
+	<key>Redo Camera Layouts</key>
+	<string>Rétablir la modification des dispositions de caméra</string>
+	<key>Redo Caption Style</key>
+	<string>Rétablir la modification du style des sous-titres</string>
+	<key>Redo Caption Translation</key>
+	<string>Rétablir la traduction des sous-titres</string>
+	<key>Redo Captions</key>
+	<string>Rétablir la modification des sous-titres</string>
+	<key>Redo Click Sounds</key>
+	<string>Rétablir la modification des sons de clic</string>
+	<key>Redo Clicks</key>
+	<string>Rétablir la modification des clics</string>
+	<key>Redo Crop</key>
+	<string>Rétablir le rognage</string>
+	<key>Redo Cursor Change</key>
+	<string>Rétablir la modification du pointeur</string>
+	<key>Redo Cut</key>
+	<string>Rétablir la coupe</string>
+	<key>Redo Cut Word</key>
+	<string>Rétablir la coupe du mot</string>
+	<key>Redo Cut Words</key>
+	<string>Rétablir la coupe des mots</string>
+	<key>Redo Delete Annotations</key>
+	<string>Rétablir la suppression des annotations</string>
+	<key>Redo Delete Arrow</key>
+	<string>Rétablir la suppression de la flèche</string>
+	<key>Redo Delete Blur</key>
+	<string>Rétablir la suppression du flou</string>
+	<key>Redo Delete Camera Layout</key>
+	<string>Rétablir la suppression de la disposition de caméra</string>
+	<key>Redo Delete Camera Layouts</key>
+	<string>Rétablir la suppression des dispositions de caméra</string>
+	<key>Redo Delete Caption</key>
+	<string>Rétablir la suppression du sous-titre</string>
+	<key>Redo Delete Captions</key>
+	<string>Rétablir la suppression des sous-titres</string>
+	<key>Redo Delete Click</key>
+	<string>Rétablir la suppression du clic</string>
+	<key>Redo Delete Clicks</key>
+	<string>Rétablir la suppression des clics</string>
+	<key>Redo Delete Clip</key>
+	<string>Rétablir la suppression du clip</string>
+	<key>Redo Delete Clips</key>
+	<string>Rétablir la suppression des clips</string>
+	<key>Redo Delete Highlight</key>
+	<string>Rétablir la suppression du surlignage</string>
+	<key>Redo Delete Image</key>
+	<string>Rétablir la suppression de l’image</string>
+	<key>Redo Delete Spotlight</key>
+	<string>Rétablir la suppression du projecteur</string>
+	<key>Redo Delete Text</key>
+	<string>Rétablir la suppression du texte</string>
+	<key>Redo Delete Zoom</key>
+	<string>Rétablir la suppression du zoom</string>
+	<key>Redo Delete Zooms</key>
+	<string>Rétablir la suppression des zooms</string>
+	<key>Redo Edit Caption</key>
+	<string>Rétablir la modification du sous-titre</string>
+	<key>Redo Edit Text</key>
+	<string>Rétablir la modification du texte</string>
+	<key>Redo Enhance Voice</key>
+	<string>Rétablir l’amélioration de la voix</string>
+	<key>Redo Fade</key>
+	<string>Rétablir le fondu</string>
+	<key>Redo Hide Shortcut</key>
+	<string>Rétablir le masquage du raccourci</string>
+	<key>Redo Highlight Style</key>
+	<string>Rétablir la modification du style du surlignage</string>
+	<key>Redo Image Style</key>
+	<string>Rétablir la modification du style de l’image</string>
+	<key>Redo Intro and Outro</key>
+	<string>Rétablir la caméra pour l’intro et la fin</string>
+	<key>Redo Move Arrow</key>
+	<string>Rétablir le déplacement de la flèche</string>
+	<key>Redo Move Blur</key>
+	<string>Rétablir le déplacement du flou</string>
+	<key>Redo Move Click</key>
+	<string>Rétablir le déplacement du clic</string>
+	<key>Redo Move Clip</key>
+	<string>Rétablir le déplacement du clip</string>
+	<key>Redo Move Highlight</key>
+	<string>Rétablir le déplacement du surlignage</string>
+	<key>Redo Move Image</key>
+	<string>Rétablir le déplacement de l’image</string>
+	<key>Redo Move Recording</key>
+	<string>Rétablir le déplacement de l’enregistrement</string>
+	<key>Redo Move Spotlight</key>
+	<string>Rétablir le déplacement du projecteur</string>
+	<key>Redo Move Text</key>
+	<string>Rétablir le déplacement du texte</string>
+	<key>Redo Music Change</key>
+	<string>Rétablir la modification de la musique</string>
+	<key>Redo Mute Clip</key>
+	<string>Rétablir la coupure du son du clip</string>
+	<key>Redo Mute Part</key>
+	<string>Rétablir la coupure du son du passage</string>
+	<key>Redo Mute Video</key>
+	<string>Rétablir la coupure du son de la vidéo</string>
+	<key>Redo Remove All Zooms</key>
+	<string>Rétablir la suppression de tous les zooms</string>
+	<key>Redo Remove Captions</key>
+	<string>Rétablir la suppression des sous-titres</string>
+	<key>Redo Remove Intro Card</key>
+	<string>Rétablir la suppression du carton d’intro</string>
+	<key>Redo Remove Music</key>
+	<string>Rétablir la suppression de la musique</string>
+	<key>Redo Remove Outro Card</key>
+	<string>Rétablir la suppression du carton de fin</string>
+	<key>Redo Remove Recording</key>
+	<string>Rétablir la suppression de l’enregistrement</string>
+	<key>Redo Remove Ums</key>
+	<string>Rétablir la suppression des mots de remplissage</string>
+	<key>Redo Replace Music</key>
+	<string>Rétablir le remplacement de la musique</string>
+	<key>Redo Reset Look</key>
+	<string>Rétablir la réinitialisation du style</string>
+	<key>Redo Restore</key>
+	<string>Rétablir la restauration</string>
+	<key>Redo Restore Cut</key>
+	<string>Rétablir la restauration de la coupe</string>
+	<key>Redo Restore Cuts</key>
+	<string>Rétablir la restauration des coupes</string>
+	<key>Redo Restore Pause</key>
+	<string>Rétablir la restauration de la pause</string>
+	<key>Redo Restore Word</key>
+	<string>Rétablir la restauration du mot</string>
+	<key>Redo Restore Words</key>
+	<string>Rétablir la restauration des mots</string>
+	<key>Redo Shortcut Style</key>
+	<string>Rétablir la modification du style des raccourcis</string>
+	<key>Redo Shortcuts</key>
+	<string>Rétablir la modification des raccourcis</string>
+	<key>Redo Shorten Pause</key>
+	<string>Rétablir le raccourcissement de la pause</string>
+	<key>Redo Shorten Pauses</key>
+	<string>Rétablir le raccourcissement des pauses</string>
+	<key>Redo Sound Change</key>
+	<string>Rétablir la modification du son</string>
+	<key>Redo Speed Change</key>
+	<string>Rétablir la modification de la vitesse</string>
+	<key>Redo Speed Up Idle</key>
+	<string>Rétablir l’accélération des temps morts</string>
+	<key>Redo Split</key>
+	<string>Rétablir la scission</string>
+	<key>Redo Spotlight Style</key>
+	<string>Rétablir la modification du style du projecteur</string>
+	<key>Redo Start Over</key>
+	<string>Rétablir le retour à l’original</string>
+	<key>Redo Style Change</key>
+	<string>Rétablir la modification du style</string>
+	<key>Redo Text Style</key>
+	<string>Rétablir la modification du style du texte</string>
 	<key>Redo Timeline Edit</key>
 	<string>Rétablir la modification de la timeline</string>
+	<key>Redo Title Card</key>
+	<string>Rétablir la modification du carton de titre</string>
+	<key>Redo Transcribe</key>
+	<string>Rétablir la transcription</string>
+	<key>Redo Transitions</key>
+	<string>Rétablir la modification des transitions</string>
+	<key>Redo Trim</key>
+	<string>Rétablir l’ajustement</string>
+	<key>Redo Unmute Clip</key>
+	<string>Rétablir le rétablissement du son du clip</string>
+	<key>Redo Unmute Part</key>
+	<string>Rétablir le rétablissement du son du passage</string>
+	<key>Redo Unmute Video</key>
+	<string>Rétablir le rétablissement du son de la vidéo</string>
+	<key>Redo Zoom Change</key>
+	<string>Rétablir la modification du zoom</string>
+	<key>Redo Zoom Level for All</key>
+	<string>Rétablir le niveau de zoom commun</string>
+	<key>Redo Zooms</key>
+	<string>Rétablir la modification des zooms</string>
 	<key>Reels, TikTok, Shorts</key>
 	<string>Reels, TikTok, Shorts</string>
 	<key>Regular</key>
@@ -1404,22 +2110,44 @@
 	<string>Retirer %@</string>
 	<key>Remove %@ of video data?</key>
 	<string>Supprimer %@ de données vidéo ?</string>
+	<key>Remove All Zooms</key>
+	<string>Supprimer tous les zooms</string>
 	<key>Remove Intro Card</key>
 	<string>Supprimer le carton d’intro</string>
 	<key>Remove Music</key>
 	<string>Supprimer la musique</string>
 	<key>Remove Outro Card</key>
 	<string>Supprimer le carton de fin</string>
+	<key>Remove Transcript &amp; Captions</key>
+	<string>Supprimer la transcription et les sous-titres</string>
+	<key>Remove Ums</key>
+	<string>Supprimer les mots de remplissage</string>
+	<key>Remove all %lld</key>
+	<string>Tout supprimer (%lld)</string>
+	<key>Remove all zooms</key>
+	<string>Supprimer tous les zooms</string>
+	<key>Remove caption</key>
+	<string>Supprimer le sous-titre</string>
 	<key>Remove from this video</key>
 	<string>Retirer de cette vidéo</string>
+	<key>Remove this caption</key>
+	<string>Supprimer ce sous-titre</string>
 	<key>Remove this translation</key>
 	<string>Supprimer cette traduction</string>
 	<key>Remove translation</key>
 	<string>Supprimer la traduction</string>
+	<key>Removed %@ — click to restore</key>
+	<string>Passage de %@ supprimé — cliquez pour le restaurer</string>
 	<key>Removed %@ — ⌘Z to undo</key>
 	<string>Suppression de %@ — ⌘Z pour annuler</string>
+	<key>Removed parts can be restored from the yellow marker on the timeline.</key>
+	<string>Les passages supprimés peuvent être restaurés depuis le repère jaune de la timeline.</string>
 	<key>Removed — ⌘Z to undo</key>
 	<string>Supprimé — ⌘Z pour annuler</string>
+	<key>Removes background noise and hum, and evens out your level — processed on this Mac</key>
+	<string>Supprime le bruit de fond et le ronflement, et égalise votre niveau — traité sur ce Mac</string>
+	<key>Removes jitter, keeps it snappy.</key>
+	<string>Supprime les tremblements, reste réactif.</string>
 	<key>Rendering for the clipboard… %lld%%</key>
 	<string>Rendu pour le presse-papiers… %lld %%</string>
 	<key>Rendering, then copying to your clipboard</key>
@@ -1432,14 +2160,28 @@
 	<string>Signaler un problème</string>
 	<key>Reset</key>
 	<string>Réinitialiser</string>
+	<key>Reset %@</key>
+	<string>Réinitialiser %@</string>
 	<key>Reset Defaults</key>
 	<string>Rétablir les valeurs par défaut</string>
 	<key>Reset crop</key>
 	<string>Réinitialiser le rognage</string>
+	<key>Reset to the Shotnix Look</key>
+	<string>Rétablir le style Shotnix</string>
+	<key>Reset to the Shotnix look</key>
+	<string>Rétablir le style Shotnix</string>
 	<key>Resize</key>
 	<string>Redimensionner</string>
 	<key>Resolution</key>
 	<string>Résolution</string>
+	<key>Restore</key>
+	<string>Restaurer</string>
+	<key>Restore %@ at %@</key>
+	<string>Restaurer %1$@ à %2$@</string>
+	<key>Restore %@ cut at %@</key>
+	<string>Restaurer la coupe de %1$@ à %2$@</string>
+	<key>Restore All %lld</key>
+	<string>Tout restaurer (%lld)</string>
 	<key>Restore Apple Shortcuts</key>
 	<string>Restaurer les raccourcis Apple</string>
 	<key>Restored %@</key>
@@ -1488,6 +2230,8 @@
 	<string>Coins arrondis</string>
 	<key>Rounded rectangle</key>
 	<string>Rectangle arrondi</string>
+	<key>Roundness</key>
+	<string>Arrondi</string>
 	<key>S</key>
 	<string>S</string>
 	<key>SHOTNIX LIBRARY</key>
@@ -1506,6 +2250,8 @@
 	<string>Emplacement d’enregistrement</string>
 	<key>Save Subtitles</key>
 	<string>Enregistrer les sous-titres</string>
+	<key>Save Subtitles (.srt)…</key>
+	<string>Enregistrer les sous-titres (.srt)…</string>
 	<key>Save Subtitles (.vtt)…</key>
 	<string>Enregistrer les sous-titres (.vtt)…</string>
 	<key>Save automatically</key>
@@ -1528,6 +2274,12 @@
 	<string>Enregistré dans « %@ » : %@</string>
 	<key>Saved — new recordings will use this look</key>
 	<string>Enregistré — les nouveaux enregistrements utiliseront ce style</string>
+	<key>Saves %@ — only silences where nothing happens on screen</key>
+	<string>Gagne %@ — uniquement les silences où rien ne se passe à l’écran</string>
+	<key>Saves %@ — silences where the pointer rests and nothing is clicked or pressed (this older recording can't see typing)</key>
+	<string>Gagne %@ — silences où le pointeur est immobile et où rien n’est cliqué ni pressé (cet ancien enregistrement ne détecte pas la saisie)</string>
+	<key>Saves the background, frame, cursor, and zoom style.</key>
+	<string>Enregistre l’arrière-plan, le cadre, le pointeur et le style de zoom.</string>
 	<key>Save…</key>
 	<string>Enregistrer…</string>
 	<key>Saving captures to History</key>
@@ -1578,6 +2330,8 @@
 	<string>Commandes de la capture défilante</string>
 	<key>Scrolling capture failed</key>
 	<string>Échec de la capture défilante</string>
+	<key>Search commands</key>
+	<string>Rechercher des commandes</string>
 	<key>Search text in captures</key>
 	<string>Rechercher du texte dans les captures</string>
 	<key>Security</key>
@@ -1586,10 +2340,24 @@
 	<string>Sélectionner</string>
 	<key>Select All</key>
 	<string>Tout sélectionner</string>
+	<key>Select a clip on the timeline to mute it or fade it in and out.</key>
+	<string>Sélectionnez un clip dans la timeline pour couper son son ou lui appliquer un fondu.</string>
+	<key>Select a range to cut</key>
+	<string>Sélectionner un passage à couper</string>
 	<key>Select a window to record without blocking other apps</key>
 	<string>Choisissez une fenêtre à enregistrer sans bloquer les autres apps</string>
+	<key>Select previous / next item</key>
+	<string>Sélectionner l’élément précédent/suivant</string>
+	<key>Select several items</key>
+	<string>Sélectionner plusieurs éléments</string>
 	<key>Select which display to record fullscreen</key>
 	<string>Choisissez l’écran à enregistrer en plein écran</string>
+	<key>Select words and press ⌫ to cut them from the video — ⌫ again on crossed-out words puts them back. Click a word to jump there; ⌘F finds.</key>
+	<string>Sélectionnez des mots et appuyez sur ⌫ pour les couper de la vidéo — ⌫ sur des mots barrés les rétablit. Cliquez sur un mot pour y aller ; ⌘F pour rechercher.</string>
+	<key>Selected %@</key>
+	<string>Sélection : %@</string>
+	<key>Selected part</key>
+	<string>Passage sélectionné</string>
 	<key>Selection</key>
 	<string>Sélection</string>
 	<key>Selection %@ by %@ points</key>
@@ -1618,12 +2386,20 @@
 	<string>Partager</string>
 	<key>Share — Mail, Messages, AirDrop…</key>
 	<string>Partager — Mail, Messages, AirDrop…</string>
+	<key>Shortcut</key>
+	<string>Raccourci</string>
+	<key>Shortcut %@</key>
+	<string>Raccourci %@</string>
 	<key>Shortcut Conflict Detected</key>
 	<string>Conflit de raccourcis détecté</string>
 	<key>Shortcut hidden</key>
 	<string>Raccourci masqué</string>
 	<key>Shortcuts</key>
 	<string>Raccourcis</string>
+	<key>Shorten Pauses</key>
+	<string>Raccourcir les pauses</string>
+	<key>Shortens every silence over a second (this video has no Shotnix pointer data to spot what happens on screen)</key>
+	<string>Raccourcit chaque silence de plus d’une seconde (cette vidéo n’a pas de données de pointeur Shotnix pour repérer ce qui se passe à l’écran)</string>
 	<key>Shotnix Preferences</key>
 	<string>Réglages de Shotnix</string>
 	<key>Shotnix can't open this file</key>
@@ -1644,6 +2420,8 @@
 	<string>Shotnix est encore en train de transcrire</string>
 	<key>Shotnix isn't allowed to record the screen. Turn it on in System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording.</key>
 	<string>Shotnix n’est pas autorisé à enregistrer l’écran. Activez-le dans Réglages Système → Confidentialité et sécurité → Enregistrement de l’écran et des sons du système.</string>
+	<key>Shotnix listens to the recording right on this Mac — nothing is uploaded. Then cut the video by deleting words, remove ums and long pauses in one click, and add captions.</key>
+	<string>Shotnix écoute l’enregistrement directement sur ce Mac — rien n’est envoyé. Coupez ensuite la vidéo en supprimant des mots, retirez les hésitations et les longues pauses en un clic, et ajoutez des sous-titres.</string>
 	<key>Shotnix lives here — setup continues next launch</key>
 	<string>Shotnix se trouve ici — la configuration reprendra au prochain lancement</string>
 	<key>Shotnix lives in your menu bar</key>
@@ -1660,32 +2438,70 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Shotnix – Historique des captures</string>
 	<key>Show</key>
 	<string>Afficher</string>
+	<key>Show Background</key>
+	<string>Afficher l’arrière-plan</string>
 	<key>Show Desktop Icons</key>
 	<string>Afficher les icônes du bureau</string>
 	<key>Show Editor</key>
 	<string>Afficher l’éditeur</string>
+	<key>Show Editor Tips</key>
+	<string>Afficher les astuces de l’éditeur</string>
+	<key>Show Folder in Finder</key>
+	<string>Afficher le dossier dans le Finder</string>
 	<key>Show Quick Access Overlay</key>
 	<string>Afficher la vignette d’accès rapide</string>
+	<key>Show Recent Export “%@” in Finder</key>
+	<string>Afficher l’export récent « %@ » dans le Finder</string>
+	<key>Show Recording in Finder</key>
+	<string>Afficher l’enregistrement dans le Finder</string>
 	<key>Show Video Editor</key>
 	<string>Afficher l’éditeur vidéo</string>
+	<key>Show background</key>
+	<string>Afficher l’arrière-plan</string>
+	<key>Show camera</key>
+	<string>Afficher la caméra</string>
+	<key>Show captions</key>
+	<string>Afficher les sous-titres</string>
 	<key>Show cursor</key>
 	<string>Afficher le pointeur</string>
 	<key>Show for the whole video</key>
 	<string>Afficher pendant toute la vidéo</string>
 	<key>Show in Finder</key>
 	<string>Afficher dans le Finder</string>
+	<key>Show in Finder — %@</key>
+	<string>Afficher dans le Finder — %@</string>
 	<key>Show keyboard shortcuts</key>
 	<string>Afficher les raccourcis clavier</string>
 	<key>Show menu bar icon</key>
 	<string>Afficher l’icône dans la barre des menus</string>
+	<key>Show more / less detail</key>
+	<string>Afficher plus/moins de détails</string>
+	<key>Show more of the timeline</key>
+	<string>Afficher plus de la timeline</string>
 	<key>Show one kind of capture</key>
 	<string>Afficher un seul type de capture</string>
+	<key>Show shortcuts</key>
+	<string>Afficher les raccourcis</string>
+	<key>Show the timeline in more detail</key>
+	<string>Afficher la timeline plus en détail</string>
 	<key>Show the whole screenshot again</key>
 	<string>Afficher de nouveau toute la capture</string>
+	<key>Show tips under the video again</key>
+	<string>Réafficher les astuces sous la vidéo</string>
 	<key>Shows what can be removed — data of recordings Shotnix can't find, unused footage and pictures, old clipboard exports — and asks before removing it</key>
 	<string>Montre ce qui peut être supprimé — données d’enregistrements introuvables, séquences et images inutilisées, anciennes exportations pour le presse-papiers — et demande avant de supprimer</string>
+	<key>Shrink while zoomed</key>
+	<string>Réduire pendant les zooms</string>
+	<key>Shuffle Background</key>
+	<string>Arrière-plan aléatoire</string>
+	<key>Shuffle the background</key>
+	<string>Choisir un arrière-plan au hasard</string>
 	<key>Side by side</key>
 	<string>Côte à côte</string>
+	<key>Silences over a second get shortened — except while you click, type, scroll, or move the pointer, so the demo itself is never cut</key>
+	<string>Les silences de plus d’une seconde sont raccourcis — sauf pendant que vous cliquez, tapez, faites défiler ou déplacez le pointeur, pour que la démo elle-même ne soit jamais coupée</string>
+	<key>Silences over a second get shortened — except while you move the pointer, click, or press a shortcut</key>
+	<string>Les silences de plus d’une seconde sont raccourcis — sauf pendant que vous déplacez le pointeur, cliquez ou utilisez un raccourci</string>
 	<key>Silky</key>
 	<string>Soyeux</string>
 	<key>Silver</key>
@@ -1696,6 +2512,8 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Ignorer la configuration</string>
 	<key>Skipping frames</key>
 	<string>Images perdues</string>
+	<key>Skips the dash to the Stop button at the end</key>
+	<string>Ignore le déplacement rapide vers le bouton Arrêter à la fin</string>
 	<key>Sky</key>
 	<string>Ciel</string>
 	<key>Sky Wash</key>
@@ -1712,20 +2530,42 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Réseaux sociaux</string>
 	<key>Social feeds</key>
 	<string>Fils des réseaux sociaux</string>
+	<key>Soft streaks on fast moves</key>
+	<string>Traînées douces sur les mouvements rapides</string>
 	<key>Solid Color</key>
 	<string>Couleur unie</string>
+	<key>Solid color</key>
+	<string>Couleur unie</string>
+	<key>Sound</key>
+	<string>Son</string>
 	<key>Sounds</key>
 	<string>Sons</string>
+	<key>Space</key>
+	<string>Espace</string>
 	<key>Space Gray</key>
 	<string>Gris sidéral</string>
 	<key>Speech recognition is turned off for Shotnix in System Settings → Privacy &amp; Security → Speech Recognition. Turn it on, then try again.</key>
 	<string>La reconnaissance vocale est désactivée pour Shotnix dans Réglages Système → Confidentialité et sécurité → Reconnaissance vocale. Activez-la, puis réessayez.</string>
 	<key>Speech recognition isn't available on this Mac right now. Try again in a moment.</key>
 	<string>La reconnaissance vocale n’est pas disponible sur ce Mac pour le moment. Réessayez dans un instant.</string>
+	<key>Speed</key>
+	<string>Vitesse</string>
+	<key>Speed Up Idle</key>
+	<string>Accélérer les temps morts</string>
+	<key>Speed Up Idle Moments</key>
+	<string>Accélérer les temps morts</string>
 	<key>Speed Up Idle works on Shotnix recordings — it watches the pointer</key>
 	<string>Accélérer les temps morts fonctionne avec les enregistrements Shotnix — la fonction suit le pointeur</string>
+	<key>Speed of this part</key>
+	<string>Vitesse de ce passage</string>
+	<key>Split</key>
+	<string>Scinder</string>
 	<key>Split at Playhead</key>
 	<string>Scinder à la tête de lecture</string>
+	<key>Split at playhead</key>
+	<string>Scinder à la tête de lecture</string>
+	<key>Split at the playhead (S)</key>
+	<string>Scinder à la tête de lecture (S)</string>
 	<key>Split the video (S) to make cuts; each can dissolve or dip to black.</key>
 	<string>Scindez la vidéo (S) pour créer des coupes ; chacune peut passer par un fondu ou un fondu au noir.</string>
 	<key>Spoken word</key>
@@ -1736,12 +2576,22 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Forme du projecteur</string>
 	<key>Star on GitHub</key>
 	<string>Mettre une étoile sur GitHub</string>
+	<key>Start / end</key>
+	<string>Début/fin</string>
 	<key>Start Over</key>
 	<string>Recommencer</string>
+	<key>Start Over from the Original Recording…</key>
+	<string>Recommencer à partir de l’enregistrement d’origine…</string>
+	<key>Start at the playhead</key>
+	<string>Commencer à la tête de lecture</string>
+	<key>Start here</key>
+	<string>Commencer ici</string>
 	<key>Start over from the original recording?</key>
 	<string>Recommencer à partir de l’enregistrement d’origine ?</string>
 	<key>Start the song at</key>
 	<string>Démarrer le morceau à</string>
+	<key>Starts</key>
+	<string>Début</string>
 	<key>Startup</key>
 	<string>Démarrage</string>
 	<key>Step %lld</key>
@@ -1752,8 +2602,12 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Finalisation de l’enregistrement en cours…</string>
 	<key>Stitching…</key>
 	<string>Assemblage…</string>
+	<key>Stop Enhancing Voice</key>
+	<string>Arrêter l’amélioration de la voix</string>
 	<key>Stop Recording</key>
 	<string>Arrêter l’enregistrement</string>
+	<key>Stop and Close</key>
+	<string>Arrêter et fermer</string>
 	<key>Stop recording</key>
 	<string>Arrêter l’enregistrement</string>
 	<key>Stop recording (%@)</key>
@@ -1778,6 +2632,10 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Corail couchant</string>
 	<key>Support</key>
 	<string>Assistance</string>
+	<key>Swap the arrow's head and tail</key>
+	<string>Intervertir la pointe et la queue de la flèche</string>
+	<key>Switch the camera to full screen for talking points, or put it side by side with the screen — at the playhead. Each shows on the Camera lane.</key>
+	<string>Passez la caméra en plein écran pour les points clés, ou placez-la côte à côte avec l’écran — à la tête de lecture. Chaque changement apparaît sur la piste Caméra.</string>
 	<key>System Default</key>
 	<string>Par défaut du système</string>
 	<key>System audio</key>
@@ -1788,6 +2646,8 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Tableau copié — collez-le dans un tableur</string>
 	<key>Tag</key>
 	<string>Étiquette</string>
+	<key>Tag color</key>
+	<string>Couleur de l’étiquette</string>
 	<key>Tahoe Ice</key>
 	<string>Glace de Tahoe</string>
 	<key>Take a Test Screenshot</key>
@@ -1812,6 +2672,10 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Échec de la reconnaissance de texte</string>
 	<key>Text size</key>
 	<string>Taille du texte</string>
+	<key>Text · highlight · arrow · blur</key>
+	<string>Texte · surlignage · flèche · flou</string>
+	<key>Text “%@”</key>
+	<string>Texte « %@ »</string>
 	<key>Text: %@</key>
 	<string>Texte : %@</string>
 	<key>Thanks for watching</key>
@@ -1832,8 +2696,12 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>La fenêtre s’est fermée avant le début de l’enregistrement.</string>
 	<key>The camera couldn't start.</key>
 	<string>Impossible de démarrer la caméra.</string>
+	<key>The camera keeps your cursor in view and glides after it.</key>
+	<string>La caméra garde votre pointeur dans le cadre et le suit en douceur.</string>
 	<key>The camera stopped. The recording continues without it.</key>
 	<string>La caméra s’est arrêtée. L’enregistrement continue sans elle.</string>
+	<key>The cursor is part of this video</key>
+	<string>Le pointeur fait partie de cette vidéo</string>
 	<key>The export carries on in the background (Esc)</key>
 	<string>L’exportation se poursuit en arrière-plan (Échap)</string>
 	<key>The export stopped unexpectedly (%@). Try again — if it keeps happening, export at a lower resolution or in H.264.</key>
@@ -1882,6 +2750,8 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Il y a déjà un zoom ici</string>
 	<key>There's no video in this file</key>
 	<string>Ce fichier ne contient pas de vidéo</string>
+	<key>Thickness</key>
+	<string>Épaisseur</string>
 	<key>Thin</key>
 	<string>Fin</string>
 	<key>This GIF is too long for its size — it would need about %@ of memory. Pick a smaller size or fewer frames per second, export part of the video, or choose MP4.</key>
@@ -1890,14 +2760,24 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Ce Mac ne peut pas traduire entre ces langues. Choisissez une autre langue.</string>
 	<key>This Week</key>
 	<string>Cette semaine</string>
+	<key>This list</key>
+	<string>Cette liste</string>
+	<key>This recording has no sound</key>
+	<string>Cet enregistrement n’a pas de son</string>
 	<key>This recording has no sound to transcribe. You can still type captions yourself.</key>
 	<string>Cet enregistrement ne contient pas de son à transcrire. Vous pouvez tout de même saisir des sous-titres vous-même.</string>
+	<key>This recording has no sound. Turn on the microphone before recording to narrate it.</key>
+	<string>Cet enregistrement n’a pas de son. Activez le micro avant d’enregistrer pour le commenter.</string>
 	<key>This recording has no voice to duck under</key>
 	<string>Cet enregistrement ne contient pas de voix sous laquelle baisser la musique</string>
+	<key>This recording only has the arrow</key>
+	<string>Cet enregistrement ne contient que la flèche</string>
 	<key>This video is copy-protected and can't be exported.</key>
 	<string>Cette vidéo est protégée contre la copie et ne peut pas être exportée.</string>
 	<key>This video isn't there anymore</key>
 	<string>Cette vidéo n’est plus là</string>
+	<key>This video was recorded with your camera, but “%@” isn't in %@ anymore. Put it back there and open the video again to get the camera bubble back.</key>
+	<string>Cette vidéo a été enregistrée avec votre caméra, mais « %@ » ne se trouve plus dans %@. Remettez-le à cet endroit et rouvrez la vidéo pour retrouver la bulle de caméra.</string>
 	<key>Three quick steps and you're capturing.</key>
 	<string>Trois étapes rapides et vous voilà prêt à capturer.</string>
 	<key>Tide Glass</key>
@@ -1910,8 +2790,14 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>La capture avec minuteur sélectionne d’abord la zone, puis lance un compte à rebours avant la capture — le temps d’ouvrir des menus ou d’afficher des états de survol. Échap annule.</string>
 	<key>Timeline</key>
 	<string>Timeline</string>
+	<key>Timeline scale</key>
+	<string>Échelle de la timeline</string>
+	<key>Timeline scale (pinch, or ⌘-scroll)</key>
+	<string>Échelle de la timeline (pincer ou ⌘-défiler)</string>
 	<key>Timing</key>
 	<string>Minutage</string>
+	<key>Tips</key>
+	<string>Astuces</string>
 	<key>Title</key>
 	<string>Titre</string>
 	<key>To</key>
@@ -1930,14 +2816,24 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>En haut à gauche</string>
 	<key>Top right</key>
 	<string>En haut à droite</string>
+	<key>Transcribe</key>
+	<string>Transcrire</string>
 	<key>Transcribe Again</key>
 	<string>Transcrire à nouveau</string>
+	<key>Transcribe Again…</key>
+	<string>Transcrire à nouveau…</string>
+	<key>Transcribe Narration (Captions, Edit by Text)</key>
+	<string>Transcrire la narration (sous-titres, montage par le texte)</string>
 	<key>Transcribe again?</key>
 	<string>Transcrire à nouveau ?</string>
 	<key>Transcribe the narration to search its words</key>
 	<string>Transcrivez la narration pour rechercher dans ses mots</string>
+	<key>Transcribe…</key>
+	<string>Transcrire…</string>
 	<key>Transcribing “%@”</key>
 	<string>Transcription de « %@ »</string>
+	<key>Transcript</key>
+	<string>Transcription</string>
 	<key>Transcript and captions removed — ⌘Z to undo</key>
 	<string>Transcription et sous-titres supprimés — ⌘Z pour annuler</string>
 	<key>Transition in</key>
@@ -1946,24 +2842,286 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Transitions</string>
 	<key>Translate</key>
 	<string>Traduire</string>
+	<key>Trim the clip's end to the playhead (O)</key>
+	<string>Ajuster la fin du clip à la tête de lecture (O)</string>
+	<key>Trim the clip's start to the playhead (I)</key>
+	<string>Ajuster le début du clip à la tête de lecture (I)</string>
+	<key>Try Again</key>
+	<string>Réessayer</string>
 	<key>Try it right now — Capture Area is also in the menu bar.</key>
 	<string>Essayez dès maintenant — « Capturer une zone » se trouve aussi dans la barre des menus.</string>
 	<key>Turn Off Click Sounds</key>
 	<string>Désactiver les sons de clic</string>
+	<key>Turn On</key>
+	<string>Activer</string>
+	<key>Turn around</key>
+	<string>Inverser</string>
+	<key>Turn on the camera in the recording bar before you record, and your face appears here as a bubble you can place, resize, and restyle.</key>
+	<string>Activez la caméra dans la barre d’enregistrement avant d’enregistrer : votre visage apparaîtra ici dans une bulle que vous pourrez placer, redimensionner et personnaliser.</string>
+	<key>Turn on the microphone or system audio before recording to capture sound.</key>
+	<string>Activez le micro ou le son de l’ordinateur avant l’enregistrement pour capturer le son.</string>
+	<key>Turn the video's sound back on</key>
+	<string>Réactiver le son de la vidéo</string>
 	<key>Type here…</key>
 	<string>Saisissez du texte…</string>
+	<key>Type in a text annotation</key>
+	<string>Saisir du texte dans une annotation</string>
 	<key>URL</key>
 	<string>URL</string>
 	<key>Under the voice</key>
 	<string>Sous la voix</string>
 	<key>Undo</key>
 	<string>Annuler</string>
+	<key>Undo / redo</key>
+	<string>Annuler/Rétablir</string>
+	<key>Undo Add Arrow</key>
+	<string>Annuler l’ajout de la flèche</string>
+	<key>Undo Add Blur</key>
+	<string>Annuler l’ajout du flou</string>
+	<key>Undo Add Camera Layout</key>
+	<string>Annuler l’ajout de la disposition de caméra</string>
+	<key>Undo Add Camera Layouts</key>
+	<string>Annuler l’ajout des dispositions de caméra</string>
+	<key>Undo Add Caption</key>
+	<string>Annuler l’ajout du sous-titre</string>
+	<key>Undo Add Captions</key>
+	<string>Annuler l’ajout des sous-titres</string>
+	<key>Undo Add Click</key>
+	<string>Annuler l’ajout du clic</string>
+	<key>Undo Add Clicks</key>
+	<string>Annuler l’ajout des clics</string>
+	<key>Undo Add Highlight</key>
+	<string>Annuler l’ajout du surlignage</string>
+	<key>Undo Add Image</key>
+	<string>Annuler l’ajout de l’image</string>
+	<key>Undo Add Intro Card</key>
+	<string>Annuler l’ajout du carton d’intro</string>
+	<key>Undo Add Music</key>
+	<string>Annuler l’ajout de la musique</string>
+	<key>Undo Add Outro Card</key>
+	<string>Annuler l’ajout du carton de fin</string>
+	<key>Undo Add Recording</key>
+	<string>Annuler l’ajout de l’enregistrement</string>
+	<key>Undo Add Spotlight</key>
+	<string>Annuler l’ajout du projecteur</string>
+	<key>Undo Add Text</key>
+	<string>Annuler l’ajout du texte</string>
+	<key>Undo Add Zoom</key>
+	<string>Annuler l’ajout du zoom</string>
+	<key>Undo Add Zooms</key>
+	<string>Annuler l’ajout des zooms</string>
+	<key>Undo Annotation Change</key>
+	<string>Annuler la modification de l’annotation</string>
+	<key>Undo Annotations</key>
+	<string>Annuler la modification des annotations</string>
+	<key>Undo Arrow Style</key>
+	<string>Annuler la modification du style de la flèche</string>
+	<key>Undo Aspect Ratio</key>
+	<string>Annuler la modification du format</string>
+	<key>Undo Auto Zoom</key>
+	<string>Annuler le zoom automatique</string>
+	<key>Undo Background</key>
+	<string>Annuler la modification de l’arrière-plan</string>
+	<key>Undo Blur Style</key>
+	<string>Annuler la modification du style du flou</string>
+	<key>Undo Camera Change</key>
+	<string>Annuler la modification de la caméra</string>
+	<key>Undo Camera Layout Change</key>
+	<string>Annuler la modification de la disposition de caméra</string>
+	<key>Undo Camera Layouts</key>
+	<string>Annuler la modification des dispositions de caméra</string>
+	<key>Undo Caption Style</key>
+	<string>Annuler la modification du style des sous-titres</string>
+	<key>Undo Caption Translation</key>
+	<string>Annuler la traduction des sous-titres</string>
+	<key>Undo Captions</key>
+	<string>Annuler la modification des sous-titres</string>
+	<key>Undo Click Sounds</key>
+	<string>Annuler la modification des sons de clic</string>
+	<key>Undo Clicks</key>
+	<string>Annuler la modification des clics</string>
+	<key>Undo Crop</key>
+	<string>Annuler le rognage</string>
+	<key>Undo Cursor Change</key>
+	<string>Annuler la modification du pointeur</string>
+	<key>Undo Cut</key>
+	<string>Annuler la coupe</string>
+	<key>Undo Cut Word</key>
+	<string>Annuler la coupe du mot</string>
+	<key>Undo Cut Words</key>
+	<string>Annuler la coupe des mots</string>
+	<key>Undo Delete Annotations</key>
+	<string>Annuler la suppression des annotations</string>
+	<key>Undo Delete Arrow</key>
+	<string>Annuler la suppression de la flèche</string>
+	<key>Undo Delete Blur</key>
+	<string>Annuler la suppression du flou</string>
+	<key>Undo Delete Camera Layout</key>
+	<string>Annuler la suppression de la disposition de caméra</string>
+	<key>Undo Delete Camera Layouts</key>
+	<string>Annuler la suppression des dispositions de caméra</string>
+	<key>Undo Delete Caption</key>
+	<string>Annuler la suppression du sous-titre</string>
+	<key>Undo Delete Captions</key>
+	<string>Annuler la suppression des sous-titres</string>
+	<key>Undo Delete Click</key>
+	<string>Annuler la suppression du clic</string>
+	<key>Undo Delete Clicks</key>
+	<string>Annuler la suppression des clics</string>
+	<key>Undo Delete Clip</key>
+	<string>Annuler la suppression du clip</string>
+	<key>Undo Delete Clips</key>
+	<string>Annuler la suppression des clips</string>
+	<key>Undo Delete Highlight</key>
+	<string>Annuler la suppression du surlignage</string>
+	<key>Undo Delete Image</key>
+	<string>Annuler la suppression de l’image</string>
+	<key>Undo Delete Spotlight</key>
+	<string>Annuler la suppression du projecteur</string>
+	<key>Undo Delete Text</key>
+	<string>Annuler la suppression du texte</string>
+	<key>Undo Delete Zoom</key>
+	<string>Annuler la suppression du zoom</string>
+	<key>Undo Delete Zooms</key>
+	<string>Annuler la suppression des zooms</string>
+	<key>Undo Edit Caption</key>
+	<string>Annuler la modification du sous-titre</string>
+	<key>Undo Edit Text</key>
+	<string>Annuler la modification du texte</string>
+	<key>Undo Enhance Voice</key>
+	<string>Annuler l’amélioration de la voix</string>
+	<key>Undo Fade</key>
+	<string>Annuler le fondu</string>
+	<key>Undo Hide Shortcut</key>
+	<string>Annuler le masquage du raccourci</string>
+	<key>Undo Highlight Style</key>
+	<string>Annuler la modification du style du surlignage</string>
+	<key>Undo Image Style</key>
+	<string>Annuler la modification du style de l’image</string>
+	<key>Undo Intro and Outro</key>
+	<string>Annuler la caméra pour l’intro et la fin</string>
+	<key>Undo Move Arrow</key>
+	<string>Annuler le déplacement de la flèche</string>
+	<key>Undo Move Blur</key>
+	<string>Annuler le déplacement du flou</string>
+	<key>Undo Move Click</key>
+	<string>Annuler le déplacement du clic</string>
+	<key>Undo Move Clip</key>
+	<string>Annuler le déplacement du clip</string>
+	<key>Undo Move Highlight</key>
+	<string>Annuler le déplacement du surlignage</string>
+	<key>Undo Move Image</key>
+	<string>Annuler le déplacement de l’image</string>
+	<key>Undo Move Recording</key>
+	<string>Annuler le déplacement de l’enregistrement</string>
+	<key>Undo Move Spotlight</key>
+	<string>Annuler le déplacement du projecteur</string>
+	<key>Undo Move Text</key>
+	<string>Annuler le déplacement du texte</string>
+	<key>Undo Music Change</key>
+	<string>Annuler la modification de la musique</string>
+	<key>Undo Mute Clip</key>
+	<string>Annuler la coupure du son du clip</string>
+	<key>Undo Mute Part</key>
+	<string>Annuler la coupure du son du passage</string>
+	<key>Undo Mute Video</key>
+	<string>Annuler la coupure du son de la vidéo</string>
+	<key>Undo Remove All Zooms</key>
+	<string>Annuler la suppression de tous les zooms</string>
+	<key>Undo Remove Captions</key>
+	<string>Annuler la suppression des sous-titres</string>
+	<key>Undo Remove Intro Card</key>
+	<string>Annuler la suppression du carton d’intro</string>
+	<key>Undo Remove Music</key>
+	<string>Annuler la suppression de la musique</string>
+	<key>Undo Remove Outro Card</key>
+	<string>Annuler la suppression du carton de fin</string>
+	<key>Undo Remove Recording</key>
+	<string>Annuler la suppression de l’enregistrement</string>
+	<key>Undo Remove Ums</key>
+	<string>Annuler la suppression des mots de remplissage</string>
+	<key>Undo Replace Music</key>
+	<string>Annuler le remplacement de la musique</string>
+	<key>Undo Reset Look</key>
+	<string>Annuler la réinitialisation du style</string>
+	<key>Undo Restore</key>
+	<string>Annuler la restauration</string>
+	<key>Undo Restore Cut</key>
+	<string>Annuler la restauration de la coupe</string>
+	<key>Undo Restore Cuts</key>
+	<string>Annuler la restauration des coupes</string>
+	<key>Undo Restore Pause</key>
+	<string>Annuler la restauration de la pause</string>
+	<key>Undo Restore Word</key>
+	<string>Annuler la restauration du mot</string>
+	<key>Undo Restore Words</key>
+	<string>Annuler la restauration des mots</string>
+	<key>Undo Shortcut Style</key>
+	<string>Annuler la modification du style des raccourcis</string>
+	<key>Undo Shortcuts</key>
+	<string>Annuler la modification des raccourcis</string>
+	<key>Undo Shorten Pause</key>
+	<string>Annuler le raccourcissement de la pause</string>
+	<key>Undo Shorten Pauses</key>
+	<string>Annuler le raccourcissement des pauses</string>
+	<key>Undo Sound Change</key>
+	<string>Annuler la modification du son</string>
+	<key>Undo Speed Change</key>
+	<string>Annuler la modification de la vitesse</string>
+	<key>Undo Speed Up Idle</key>
+	<string>Annuler l’accélération des temps morts</string>
+	<key>Undo Split</key>
+	<string>Annuler la scission</string>
+	<key>Undo Spotlight Style</key>
+	<string>Annuler la modification du style du projecteur</string>
+	<key>Undo Start Over</key>
+	<string>Annuler le retour à l’original</string>
+	<key>Undo Style Change</key>
+	<string>Annuler la modification du style</string>
+	<key>Undo Text Style</key>
+	<string>Annuler la modification du style du texte</string>
 	<key>Undo Timeline Edit</key>
 	<string>Annuler la modification de la timeline</string>
+	<key>Undo Title Card</key>
+	<string>Annuler la modification du carton de titre</string>
+	<key>Undo Transcribe</key>
+	<string>Annuler la transcription</string>
+	<key>Undo Transitions</key>
+	<string>Annuler la modification des transitions</string>
+	<key>Undo Trim</key>
+	<string>Annuler l’ajustement</string>
+	<key>Undo Unmute Clip</key>
+	<string>Annuler le rétablissement du son du clip</string>
+	<key>Undo Unmute Part</key>
+	<string>Annuler le rétablissement du son du passage</string>
+	<key>Undo Unmute Video</key>
+	<string>Annuler le rétablissement du son de la vidéo</string>
+	<key>Undo Zoom Change</key>
+	<string>Annuler la modification du zoom</string>
+	<key>Undo Zoom Level for All</key>
+	<string>Annuler le niveau de zoom commun</string>
+	<key>Undo Zooms</key>
+	<string>Annuler la modification des zooms</string>
+	<key>Unmute Clip</key>
+	<string>Réactiver le son du clip</string>
+	<key>Unmute preview</key>
+	<string>Réactiver le son de l’aperçu</string>
+	<key>Unmute the Preview</key>
+	<string>Réactiver le son de l’aperçu</string>
+	<key>Unmute the preview (M)</key>
+	<string>Réactiver le son de l’aperçu (M)</string>
 	<key>Updates</key>
 	<string>Mises à jour</string>
 	<key>Upload Custom Image</key>
 	<string>Choisir une image personnalisée</string>
+	<key>Use This Look for New Recordings</key>
+	<string>Utiliser ce style pour les nouveaux enregistrements</string>
+	<key>Use for new recordings</key>
+	<string>Utiliser par défaut</string>
+	<key>Use this color</key>
+	<string>Utiliser cette couleur</string>
+	<key>Use this level for every zoom</key>
+	<string>Utiliser ce niveau pour tous les zooms</string>
 	<key>Used for screenshots and recordings. Tokens: %y year, %m month, %d day, %H hour, %M minute, %S second. Leave empty to restore the default.</key>
 	<string>Utilisé pour les captures et les enregistrements. Balises : %y année, %m mois, %d jour, %H heure, %M minute, %S seconde. Laissez vide pour rétablir le modèle par défaut.</string>
 	<key>Utility</key>
@@ -1982,10 +3140,14 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Les données vidéo occupent %@</string>
 	<key>Video exported</key>
 	<string>Vidéo exportée</string>
+	<key>Video preview</key>
+	<string>Aperçu vidéo</string>
 	<key>Violet</key>
 	<string>Violet</string>
 	<key>Violet Bloom</key>
 	<string>Éclosion violette</string>
+	<key>Voice</key>
+	<string>Voix</string>
 	<key>Voice enhanced — background noise removed</key>
 	<string>Voix améliorée — bruit de fond supprimé</string>
 	<key>Voice enhancement isn't available on this Mac. Turn off Enhance voice to keep the original sound.</key>
@@ -1996,6 +3158,8 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Volume</string>
 	<key>Waiting…</key>
 	<string>En attente…</string>
+	<key>Wallpaper</key>
+	<string>Fond d’écran</string>
 	<key>Warning</key>
 	<string>Avertissement</string>
 	<key>Web</key>
@@ -2006,6 +3170,8 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Bienvenue</string>
 	<key>Welcome to Shotnix</key>
 	<string>Bienvenue dans Shotnix</string>
+	<key>What was playing on your Mac</key>
+	<string>Ce qui était diffusé sur votre Mac</string>
 	<key>What's New</key>
 	<string>Nouveautés</string>
 	<key>White</key>
@@ -2028,6 +3194,8 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Les captures de fenêtre sont isolées : rien de ce qui les recouvre n’apparaît. Avec cette option, elles reçoivent une marge transparente et une ombre portée douce.</string>
 	<key>Window closed</key>
 	<string>Fenêtre fermée</string>
+	<key>Words light up as they're spoken</key>
+	<string>Les mots s’allument au fil de la parole</string>
 	<key>Writable</key>
 	<string>Accessible en écriture</string>
 	<key>Yellow</key>
@@ -2054,18 +3222,70 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Votre disque est plein. Libérez de l’espace (videz la corbeille, supprimez d’anciens enregistrements) ou exportez vers un autre disque, puis réessayez.</string>
 	<key>Your edits will be lost if you close without saving or copying them.</key>
 	<string>Vos modifications seront perdues si vous fermez sans les enregistrer ni les copier.</string>
+	<key>Your look</key>
+	<string>Votre style</string>
+	<key>Your microphone</key>
+	<string>Votre micro</string>
+	<key>Your narration can become captions — then cut the video by editing its words.</key>
+	<string>Votre narration peut devenir des sous-titres — puis montez la vidéo par le texte.</string>
+	<key>Your narration can become captions — transcribe it here</key>
+	<string>Votre narration peut devenir des sous-titres — transcrivez-la ici</string>
 	<key>Your text</key>
 	<string>Votre texte</string>
+	<key>Your video's background shows behind you — found on this Mac, frame by frame.</key>
+	<string>L’arrière-plan de votre vidéo apparaît derrière vous — détouré sur ce Mac, image par image.</string>
+	<key>Your words, as text</key>
+	<string>Vos paroles, en texte</string>
 	<key>Zoom</key>
 	<string>Zoom</string>
+	<key>Zoom %@</key>
+	<string>Zoom %@</string>
+	<key>Zoom Level</key>
+	<string>Niveau de zoom</string>
+	<key>Zoom in at the pointer</key>
+	<string>Zoomer sur le pointeur</string>
+	<key>Zoom level</key>
+	<string>Niveau de zoom</string>
+	<key>Zoom level (zoom selected)</key>
+	<string>Niveau de zoom (zoom sélectionné)</string>
+	<key>Zoom moves</key>
+	<string>Mouvements de zoom</string>
 	<key>Zoom removed — ⌘Z to undo</key>
 	<string>Zoom supprimé — ⌘Z pour annuler</string>
+	<key>Zoom to %@ (key %@)</key>
+	<string>Zoomer à %@ (touche %@)</string>
+	<key>Zoom — drag to move, drag an edge to resize, click to edit</key>
+	<string>Zoom — faites glisser pour le déplacer, un bord pour le redimensionner, cliquez pour le modifier</string>
+	<key>Zooms</key>
+	<string>Zooms</string>
+	<key>Zooms &amp; annotations</key>
+	<string>Zooms et annotations</string>
+	<key>Zooms and annotations can be duplicated</key>
+	<string>Seuls les zooms et les annotations peuvent être dupliqués</string>
 	<key>a table</key>
 	<string>un tableau</string>
+	<key>add a zoom</key>
+	<string>ajouter un zoom</string>
+	<key>aim or resize it</key>
+	<string>le viser ou le redimensionner</string>
+	<key>all shortcuts</key>
+	<string>tous les raccourcis</string>
 	<key>captions burned in</key>
 	<string>sous-titres incrustés</string>
+	<key>cut by editing words</key>
+	<string>couper en modifiant le texte</string>
+	<key>dips under your voice</key>
+	<string>s’atténue sous votre voix</string>
+	<key>every command</key>
+	<string>toutes les commandes</string>
+	<key>export</key>
+	<string>exporter</string>
+	<key>follows the cursor</key>
+	<string>suit le pointeur</string>
 	<key>intro card</key>
 	<string>carton d’intro</string>
+	<key>loops</key>
+	<string>en boucle</string>
 	<key>macOS downloads %@ once, then translates right here — nothing is uploaded.</key>
 	<string>macOS télécharge la langue %@ une seule fois, puis traduit directement ici — rien n’est envoyé en ligne.</string>
 	<key>macOS screenshot shortcuts (⌘⇧3, ⌘⇧4, ⌘⇧5) conflict with Shotnix.
@@ -2082,6 +3302,10 @@ Vous pouvez réactiver les raccourcis d’Apple à tout moment dans Réglages Sy
 	<string>micro</string>
 	<key>music</key>
 	<string>musique</string>
+	<key>mute the preview</key>
+	<string>couper le son de l’aperçu</string>
+	<key>muted</key>
+	<string>son coupé</string>
 	<key>no audio</key>
 	<string>sans son</string>
 	<key>no captions in the picture</key>
@@ -2090,22 +3314,46 @@ Vous pouvez réactiver les raccourcis d’Apple à tout moment dans Réglages Sy
 	<string>pas d’écran de fin</string>
 	<key>outro card</key>
 	<string>carton de fin</string>
+	<key>play</key>
+	<string>lire</string>
 	<key>pointer</key>
 	<string>pointeur</string>
+	<key>select a part to cut</key>
+	<string>choisir un passage à couper</string>
+	<key>select it</key>
+	<string>le sélectionner</string>
+	<key>split at the playhead</key>
+	<string>scinder à la tête de lecture</string>
+	<key>step through the timeline</key>
+	<string>parcourir la timeline</string>
 	<key>sys+mic</key>
 	<string>sys.+micro</string>
 	<key>system</key>
 	<string>système</string>
+	<key>text, highlight, arrow, blur</key>
+	<string>texte, surlignage, flèche, flou</string>
 	<key>the video</key>
 	<string>la vidéo</string>
 	<key>this recording</key>
 	<string>cet enregistrement</string>
+	<key>trim to the playhead</key>
+	<string>ajuster à la tête de lecture</string>
+	<key>type</key>
+	<string>saisir</string>
 	<key>up to %@ GB/min</key>
 	<string>jusqu’à %@ Go/min</string>
 	<key>up to %@ MB/min</key>
 	<string>jusqu’à %@ Mo/min</string>
+	<key>zoom the timeline</key>
+	<string>zoomer dans la timeline</string>
 	<key>© 2026 Shotnix Contributors</key>
 	<string>© 2026 Contributeurs de Shotnix</string>
+	<key>· aim by hand</key>
+	<string>· visée à la main</string>
+	<key>· drag to aim</key>
+	<string>· faites glisser pour viser</string>
+	<key>· follows cursor</key>
+	<string>· suit le pointeur</string>
 	<key>“%@” (was in %@)</key>
 	<string>« %@ » (était dans %@)</string>
 	<key>“%@” can't be found. Put it back where it was, or remove it from this video (Style → Recordings), then export again.</key>
@@ -2116,8 +3364,18 @@ Vous pouvez réactiver les raccourcis d’Apple à tout moment dans Réglages Sy
 	<string>« %1$@ » trouvé dans %2$lld captures sur %3$lld</string>
 	<key>“Made with Shotnix” end card (2s)</key>
 	<string>écran de fin « Made with Shotnix » (2 s)</string>
+	<key>⇧-drag</key>
+	<string>⇧-glisser</string>
 	<key>⇧-drag on the timeline to select a part first.</key>
 	<string>Faites d’abord glisser avec ⇧ dans la timeline pour sélectionner une partie.</string>
+	<key>⇧-drag the timeline</key>
+	<string>⇧-glisser dans la timeline</string>
+	<key>⇧/⌘-click</key>
+	<string>⇧/⌘-clic</string>
+	<key>⌘ scroll</key>
+	<string>⌘ défiler</string>
+	<key>⌘-scroll</key>
+	<string>⌘-défiler</string>
 	<key>✓ Copied to clipboard</key>
 	<string>✓ Copié dans le presse-papiers</string>
 	<key>✓ Saved screenshot</key>

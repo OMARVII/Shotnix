@@ -321,8 +321,8 @@ struct VideoStageInteractionLayer: View {
                 .contentShape(Rectangle())
                 .gesture(pictureGesture)
                 .accessibilityElement()
-                .accessibilityLabel("Video preview")
-                .accessibilityHint("Plays or pauses. Use Option-arrow keys to select what's on the timeline.")
+                .accessibilityLabel(L("Video preview"))
+                .accessibilityHint(L("Plays or pauses. Use Option-arrow keys to select what's on the timeline."))
                 .accessibilityAddTraits(.isButton)
                 .accessibilityAction { model.togglePlay() }
                 .onContinuousHover(coordinateSpace: .named(Self.space)) { phase in
@@ -511,7 +511,7 @@ struct VideoStageInteractionLayer: View {
                             NSCursor.openHand.set()
                         }
                 )
-                .help("Camera — drag to move it, click for options")
+                .help(L("Camera — drag to move it, click for options"))
         }
     }
 
@@ -570,7 +570,7 @@ struct VideoStageInteractionLayer: View {
                         Image(systemName: "plus.magnifyingglass")
                         Text(VideoEditorModel.formatScale(zoom.scale))
                             .monospacedDigit()
-                        Text("· drag to aim")
+                        Text(L("· drag to aim"))
                             .foregroundStyle(.white.opacity(0.7))
                     }
                     .font(.system(size: 11, weight: .semibold))
@@ -648,7 +648,7 @@ struct VideoStageInteractionLayer: View {
     private var followBadge: some View {
         HStack(spacing: 6) {
             Image(systemName: "cursorarrow.motionlines")
-            Text("Camera follows your cursor")
+            Text(L("Camera follows your cursor"))
         }
         .font(.system(size: 11, weight: .semibold))
         .foregroundStyle(.white)
@@ -695,8 +695,8 @@ struct VideoStageInteractionLayer: View {
                     .contentShape(Circle().inset(by: -7))
                     .offset(x: point.x - 6, y: point.y - 6)
                     .onHover { inside in (inside ? NSCursor.crosshair : NSCursor.arrow).set() }
-                    .help(isHead ? "Drag to point the arrow" : "Drag to move where the arrow starts")
-                    .accessibilityLabel(isHead ? "Arrow head" : "Arrow tail")
+                    .help(isHead ? L("Drag to point the arrow") : L("Drag to move where the arrow starts"))
+                    .accessibilityLabel(isHead ? L("Arrow head") : L("Arrow tail"))
                     .gesture(
                         DragGesture(minimumDistance: 0, coordinateSpace: .global)
                             .onChanged { value in

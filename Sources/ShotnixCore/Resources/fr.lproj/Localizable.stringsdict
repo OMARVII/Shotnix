@@ -114,6 +114,102 @@
 			<string>%lld codes-barres détectés</string>
 		</dict>
 	</dict>
+	<key>%lld camera layouts</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld disposition de caméra</string>
+			<key>other</key>
+			<string>%lld dispositions de caméra</string>
+		</dict>
+	</dict>
+	<key>%lld captions</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld sous-titre</string>
+			<key>other</key>
+			<string>%lld sous-titres</string>
+		</dict>
+	</dict>
+	<key>%lld clicks</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld clic</string>
+			<key>other</key>
+			<string>%lld clics</string>
+		</dict>
+	</dict>
+	<key>%lld clips</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld clip</string>
+			<key>other</key>
+			<string>%lld clips</string>
+		</dict>
+	</dict>
+	<key>%lld cuts here (%@ removed) — click to restore some or all</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld coupe ici (%@ en moins) — cliquez pour la restaurer</string>
+			<key>other</key>
+			<string>%lld coupes ici (%@ en moins) — cliquez pour en restaurer tout ou partie</string>
+		</dict>
+	</dict>
+	<key>%lld cuts, %@ removed</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld coupe, %@ en moins</string>
+			<key>other</key>
+			<string>%lld coupes, %@ en moins</string>
+		</dict>
+	</dict>
 	<key>%lld days</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -210,6 +306,38 @@
 			<string>%lld liens</string>
 		</dict>
 	</dict>
+	<key>%lld parts</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld passage</string>
+			<key>other</key>
+			<string>%lld passages</string>
+		</dict>
+	</dict>
+	<key>%lld pressed — select one on the timeline and press ⌫ to hide it</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld utilisé — sélectionnez-le dans la timeline et appuyez sur ⌫ pour le masquer</string>
+			<key>other</key>
+			<string>%lld utilisés — sélectionnez-en un dans la timeline et appuyez sur ⌫ pour le masquer</string>
+		</dict>
+	</dict>
 	<key>%lld recorded clicks — in the preview and the export</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -288,6 +416,54 @@
 			<string>%lld seconde</string>
 			<key>other</key>
 			<string>%lld secondes</string>
+		</dict>
+	</dict>
+	<key>%lld selected</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld sélectionné</string>
+			<key>other</key>
+			<string>%lld sélectionnés</string>
+		</dict>
+	</dict>
+	<key>%lld shortcuts</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld raccourci</string>
+			<key>other</key>
+			<string>%lld raccourcis</string>
+		</dict>
+	</dict>
+	<key>%lld zooms</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld zoom</string>
+			<key>other</key>
+			<string>%lld zooms</string>
 		</dict>
 	</dict>
 	<key>Auto zoom applied — %lld zooms follow your clicks</key>
@@ -546,6 +722,22 @@
 			<string>%lld dernières captures</string>
 		</dict>
 	</dict>
+	<key>Plans zooms around your %lld clicks. Zooms you placed by hand are kept.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Prévoit des zooms autour de votre clic. Les zooms placés à la main sont conservés.</string>
+			<key>other</key>
+			<string>Prévoit des zooms autour de vos %lld clics. Les zooms placés à la main sont conservés.</string>
+		</dict>
+	</dict>
 	<key>Ready · %lld optional off</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -562,6 +754,54 @@
 			<string>Prêt · %lld raccourcis facultatifs désactivés</string>
 		</dict>
 	</dict>
+	<key>Redo Delete %lld Items</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Rétablir la suppression de %lld élément</string>
+			<key>other</key>
+			<string>Rétablir la suppression de %lld éléments</string>
+		</dict>
+	</dict>
+	<key>Redo Move %lld Items</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Rétablir le déplacement de %lld élément</string>
+			<key>other</key>
+			<string>Rétablir le déplacement de %lld éléments</string>
+		</dict>
+	</dict>
+	<key>Remove %lld ums</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Supprimer %lld hésitation</string>
+			<key>other</key>
+			<string>Supprimer %lld hésitations</string>
+		</dict>
+	</dict>
 	<key>Removed %lld filler words — %@ shorter</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -576,6 +816,38 @@
 			<string>%lld mot de remplissage supprimé — %@ de moins</string>
 			<key>other</key>
 			<string>%lld mots de remplissage supprimés — %@ de moins</string>
+		</dict>
+	</dict>
+	<key>Removed %lld items — ⌘Z to undo</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld élément supprimé — ⌘Z pour annuler</string>
+			<key>other</key>
+			<string>%lld éléments supprimés — ⌘Z pour annuler</string>
+		</dict>
+	</dict>
+	<key>Removed %lld items — ⌘Z to undo (a video keeps at least one clip)</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld élément supprimé — ⌘Z pour annuler (une vidéo garde au moins un clip)</string>
+			<key>other</key>
+			<string>%lld éléments supprimés — ⌘Z pour annuler (une vidéo garde au moins un clip)</string>
 		</dict>
 	</dict>
 	<key>Removed %lld zooms — ⌘Z to undo</key>
@@ -658,6 +930,22 @@
 			<string>La capture défilante s’est arrêtée après %lld minutes.</string>
 		</dict>
 	</dict>
+	<key>Shorten %lld pauses</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Raccourcir %lld pause</string>
+			<key>other</key>
+			<string>Raccourcir %lld pauses</string>
+		</dict>
+	</dict>
 	<key>Shortened %lld pauses — %@ shorter</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -720,6 +1008,38 @@
 			<string>Cela remplace %lld ligne de sous-titres, même si vous l’avez modifiée ou saisie, par une nouvelle transcription en %@.</string>
 			<key>other</key>
 			<string>Cela remplace les %lld lignes de sous-titres, y compris celles que vous avez modifiées ou saisies, par une nouvelle transcription en %@.</string>
+		</dict>
+	</dict>
+	<key>Undo Delete %lld Items</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Annuler la suppression de %lld élément</string>
+			<key>other</key>
+			<string>Annuler la suppression de %lld éléments</string>
+		</dict>
+	</dict>
+	<key>Undo Move %lld Items</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Annuler le déplacement de %lld élément</string>
+			<key>other</key>
+			<string>Annuler le déplacement de %lld éléments</string>
 		</dict>
 	</dict>
 	<key>You have unsaved edits in %lld screenshots.</key>
