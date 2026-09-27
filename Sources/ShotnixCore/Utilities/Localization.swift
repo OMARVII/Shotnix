@@ -8,7 +8,7 @@ import Foundation
 /// Shotnix in System Settings → General → Language & Region.
 enum L10n {
     /// Languages Shotnix is translated into, besides English.
-    static let translations = ["de", "fr", "zh-Hans"]
+    static let translations = ["de", "fr", "zh-Hans", "ru", "uk"]
 
     /// The bundle strings are looked up in. Tests point it at one language.
     nonisolated(unsafe) static var bundle: Bundle = defaultBundle

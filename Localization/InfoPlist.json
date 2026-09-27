@@ -3,30 +3,40 @@
     "en": "Shotnix records your camera alongside the screen when you turn the camera on for a recording.",
     "de": "Shotnix zeichnet deine Kamera zusammen mit dem Bildschirm auf, wenn du die Kamera für eine Aufnahme einschaltest.",
     "fr": "Shotnix enregistre votre caméra en même temps que l’écran lorsque vous activez la caméra pour un enregistrement.",
-    "zh-Hans": "当你为录制打开摄像头时，Shotnix 会同时录制摄像头和屏幕。"
+    "zh-Hans": "当你为录制打开摄像头时，Shotnix 会同时录制摄像头和屏幕。",
+    "ru": "Shotnix записывает изображение с камеры вместе с экраном, когда вы включаете камеру для записи.",
+    "uk": "Shotnix записує зображення з камери разом з екраном, коли ви вмикаєте камеру для запису."
   },
   "NSHumanReadableCopyright": {
     "en": "Copyright © 2026 Shotnix Contributors. MIT License.",
     "de": "Copyright © 2026 Shotnix Contributors. MIT-Lizenz.",
     "fr": "Copyright © 2026 Shotnix Contributors. Licence MIT.",
-    "zh-Hans": "Copyright © 2026 Shotnix Contributors。MIT 许可证。"
+    "zh-Hans": "Copyright © 2026 Shotnix Contributors。MIT 许可证。",
+    "ru": "Copyright © 2026 Shotnix Contributors. Лицензия MIT.",
+    "uk": "Copyright © 2026 Shotnix Contributors. Ліцензія MIT."
   },
   "NSMicrophoneUsageDescription": {
     "en": "Shotnix needs microphone access when you enable microphone audio for screen recordings.",
     "de": "Shotnix benötigt Zugriff auf das Mikrofon, wenn du den Mikrofonton für Bildschirmaufnahmen einschaltest.",
     "fr": "Shotnix a besoin d’accéder au micro lorsque vous activez le son du micro pour les enregistrements de l’écran.",
-    "zh-Hans": "当你为屏幕录制打开麦克风声音时，Shotnix 需要访问麦克风。"
+    "zh-Hans": "当你为屏幕录制打开麦克风声音时，Shotnix 需要访问麦克风。",
+    "ru": "Shotnix нужен доступ к микрофону, когда вы включаете звук с микрофона для записи экрана.",
+    "uk": "Shotnix потрібен доступ до мікрофона, коли ви вмикаєте звук із мікрофона для запису екрана."
   },
   "NSScreenCaptureUsageDescription": {
     "en": "Shotnix needs screen recording permission to capture screenshots and screen recordings.",
     "de": "Shotnix benötigt die Berechtigung zur Bildschirmaufnahme, um Bildschirmfotos und Bildschirmaufnahmen zu erstellen.",
     "fr": "Shotnix a besoin de l’autorisation d’enregistrement de l’écran pour réaliser des captures et des enregistrements d’écran.",
-    "zh-Hans": "Shotnix 需要屏幕录制权限才能截屏和录制屏幕。"
+    "zh-Hans": "Shotnix 需要屏幕录制权限才能截屏和录制屏幕。",
+    "ru": "Shotnix нужно разрешение на запись экрана, чтобы делать снимки и записи экрана.",
+    "uk": "Shotnix потрібен дозвіл на запис екрана, щоб робити знімки й записи екрана."
   },
   "NSSpeechRecognitionUsageDescription": {
     "en": "Shotnix transcribes your recordings on this Mac to create captions.",
     "de": "Shotnix transkribiert deine Aufnahmen auf diesem Mac, um Untertitel zu erstellen.",
     "fr": "Shotnix transcrit vos enregistrements sur ce Mac pour créer des sous-titres.",
-    "zh-Hans": "Shotnix 会在这台 Mac 上转写你的录制内容，以生成字幕。"
+    "zh-Hans": "Shotnix 会在这台 Mac 上转写你的录制内容，以生成字幕。",
+    "ru": "Shotnix расшифровывает ваши записи на этом Mac, чтобы создать субтитры.",
+    "uk": "Shotnix розшифровує ваші записи на цьому Mac, щоб створити субтитри."
   }
 }

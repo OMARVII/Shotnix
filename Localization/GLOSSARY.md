@@ -1,7 +1,7 @@
 # Shotnix localization glossary
 
-Shotnix is translated into German (de), French (fr), and Simplified Chinese
-(zh-Hans). Use the words macOS itself uses, so Shotnix reads like part of the
+Shotnix is translated into German (de), French (fr), Simplified Chinese
+(zh-Hans), Russian (ru), and Ukrainian (uk). Use the words macOS itself uses, so Shotnix reads like part of the
 system. When a term isn't here, look at how Apple's own apps say it.
 
 ## How it works
@@ -10,7 +10,10 @@ system. When a term isn't here, look at how Apple's own apps say it.
   Interpolations become placeholders: `L("\(count) captures")` → key
   `%lld captures`; `L("Saved to \(folder)")` → `Saved to %@`.
 - Translations: `Localization/translations/<area>.json` (see
-  `scripts/localize.py` for the format, including plurals).
+  `scripts/localize.py` for the format, including plurals). A language can
+  also live in its own files, `<area>.<language>.json` (`app.ru.json`), with
+  entries like `{"Save": {"ru": "Сохранить"}}`: the script merges every file,
+  and stops if two files translate one key differently.
 - `python3 scripts/localize.py` extracts the keys, merges the translations
   into `Localization/Localizable.xcstrings`, and compiles the `.lproj` files.
   `--check` must pass before anything ships.
@@ -140,3 +143,68 @@ from System Settings itself). German puts each name in „…“, Chinese in “
 | Speech Recognition | Spracherkennung | Reconnaissance vocale | 语音识别 |
 | Keyboard → Keyboard Shortcuts → Screenshots | Tastatur → Tastaturkurzbefehle → Bildschirmfotos | Clavier → Raccourcis clavier → Captures d’écran | 键盘 → 键盘快捷键 → 截屏 |
 | General → Language & Region → Applications | Allgemein → Sprache & Region → Apps | Général → Langue et région → Applications | 通用 → 语言与地区 → 应用程序 |
+
+## Russian and Ukrainian
+
+| | Russian | Ukrainian |
+|---|---|---|
+| Address | **вы**, lowercase, as Apple does | **ви**, lowercase |
+| Buttons and menu items | infinitive (`Сохранить`, `Отменить`) | infinitive (`Зберегти`, `Скасувати`) |
+| Quotes | «ёлочки», „лапки“ inside | «ялинки», „лапки“ inside |
+| Plurals | `one`, `few`, `many`, `other`: 1 снимок, 2 снимка, 5 снимков; `other` is for fractions | `one`, `few`, `many`, `other`: 1 знімок, 2 знімки, 5 знімків |
+
+Both run about 20% longer than English: keep buttons short. The script
+refuses a plural without all four forms. Dashes are spaced em dashes ( — ),
+the ellipsis is one character (…), and product names (Shotnix, Mac, macOS,
+Finder, GIF, MP4…) stay in Latin letters and aren't declined.
+
+| English | Russian | Ukrainian |
+|---|---|---|
+| screenshot | снимок экрана (short: снимок) | знімок екрана (short: знімок) |
+| capture (verb, a screenshot) | снять | зняти |
+| Capture Area / Record Area | Снять область / Записать область | Зняти область / Записати область |
+| screen recording (the feature) | запись экрана | запис екрана |
+| recording (a file) | запись | запис |
+| record (verb, video) | записать | записати |
+| area / window / full screen | область / окно / весь экран | область / вікно / весь екран |
+| History | История | Історія |
+| screenshot editor | редактор снимков | редактор знімків |
+| video editor | видеоредактор | відеоредактор |
+| annotation | разметка | розмітка |
+| arrow / text / callout | стрелка / текст / выноска | стрілка / текст / виноска |
+| highlight / highlighter | выделение / маркер | виділення / маркер |
+| blur / pixelate | размытие / пикселизация | розмиття / пікселізація |
+| crop | обрезать | обрізати |
+| background (backdrop) | фон | тло |
+| pin (a screenshot) | закрепить на экране | закріпити на екрані |
+| text recognition (OCR) | распознавание текста | розпізнавання тексту |
+| pointer | указатель | курсор |
+| click (verb) | нажать | клацнути |
+| drag | перетянуть | перетягнути |
+| captions / transcript | субтитры / расшифровка | субтитри / розшифровка |
+| timeline / clip | шкала времени / клип | шкала часу / кліп |
+| export | экспортировать | експортувати |
+| undo / redo | Отменить / Повторить | Відмінити / Повторити |
+| copy / paste / cut | Скопировать / Вставить / Вырезать | Скопіювати / Вставити / Вирізати |
+| save / save as… | Сохранить / Сохранить как… | Зберегти / Зберегти як… |
+| cancel / delete / done | Отменить / Удалить / Готово | Скасувати / Видалити / Готово |
+| Show in Finder | Показать в Finder | Показати у Finder |
+| quit Shotnix | Завершить Shotnix | Завершити Shotnix |
+| settings | Настройки | Параметри |
+| menu bar | строка меню | смуга меню |
+| keyboard shortcut | сочетание клавиш | клавіатурне скорочення |
+| microphone / camera | микрофон / камера | мікрофон / камера |
+| system audio | системный звук | системний звук |
+
+macOS names, from System Settings on macOS 26:
+
+| English | Russian | Ukrainian |
+|---|---|---|
+| System Settings | Системные настройки | Системні параметри |
+| Privacy & Security | Конфиденциальность и безопасность | Приватність і безпека |
+| Screen & System Audio Recording | Запись экрана и системного звука | Записування системного звуку й екрана |
+| Screen Recording (macOS 14 and earlier) | Запись экрана | Запис екрана |
+| Accessibility | Универсальный доступ | Доступність |
+| Speech Recognition | Распознавание речи | Розпізнавання мовлення |
+| Keyboard → Keyboard Shortcuts → Screenshots | Клавиатура → Сочетания клавиш → Снимки экрана | Клавіатура → Клавіатурні скорочення → Знімки екрана |
+| General → Language & Region → Applications | Основные → Язык и регион → Приложения | Загальні → Мова і регіон → Програми |

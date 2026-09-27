@@ -72,7 +72,7 @@ final class AppLanguageTests: XCTestCase {
 
     func testTheListIsEnglishAndEveryTranslationEachInItsOwnWords() {
         XCTAssertEqual(AppLanguage.all, ["en"] + L10n.translations)
-        let endonyms = ["English", "Deutsch", "Français", "简体中文"]
+        let endonyms = ["English", "Deutsch", "Français", "简体中文", "Русский", "Українська"]
         XCTAssertEqual(AppLanguage.all.map(AppLanguage.endonym), endonyms)
         for language in AppLanguage.all {
             L10n.use(language)

@@ -9,7 +9,7 @@ import XCTest
 /// popovers render in English, German, French, and Chinese to look at.
 @MainActor
 final class LocalizedLayoutTests: XCTestCase {
-    private static let languages = ["en", "de", "fr", "zh-Hans"]
+    private static let languages = ["en"] + L10n.translations
     private var suiteName: String!
 
     override func setUp() async throws {

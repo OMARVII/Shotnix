@@ -8,7 +8,7 @@ import XCTest
 /// surface per language (printed as SNAPSHOT-L10N: <path>) for a look.
 @MainActor
 final class CaptureLocalizationTests: XCTestCase {
-    private static let languages = ["de", "fr", "zh-Hans"]
+    private static let languages = L10n.translations
     private var suiteName: String!
     private var defaults: UserDefaults!
     private var windows: [NSWindow] = []

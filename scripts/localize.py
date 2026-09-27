@@ -57,7 +57,10 @@ MAIN_LPROJ = os.path.join(LOCALIZATION, "Main")
 RESOURCES = os.path.join(ROOT, "Sources", "ShotnixCore", "Resources")
 SOURCES = os.path.join(ROOT, "Sources", "ShotnixCore")
 SCRATCH = os.path.join(ROOT, ".build", "l10n")
-LANGUAGES = ["de", "fr", "zh-Hans"]
+LANGUAGES = ["de", "fr", "zh-Hans", "ru", "uk"]
+# Plural forms each language needs for whole numbers (CLDR). Russian and
+# Ukrainian: 1 день, 2 дня, 5 дней; "other" covers fractions.
+REQUIRED_PLURALS = {"ru": {"one", "few", "many", "other"}, "uk": {"one", "few", "many", "other"}}
 PLURAL_CATEGORIES = ["zero", "one", "two", "few", "many", "other"]
 
 SPECIFIER = re.compile(r"%(?:\d+\$)?(?:[-+ 0#]*\d*(?:\.\d+)?)(?:ll|l|h|hh|q|z|t|j)?([@dDuUxXoOfFeEgGcCsSaAp])|%%")
@@ -211,6 +214,9 @@ def problems_in(catalog):
             plural = isinstance(value, dict)
             if plural and "other" not in value:
                 problems.append(f"{key!r} ({language}): a plural needs an 'other' form")
+            if plural and not REQUIRED_PLURALS.get(language, set()) <= set(value):
+                missing = sorted(REQUIRED_PLURALS[language] - set(value))
+                problems.append(f"{key!r} ({language}): a plural needs the {', '.join(missing)} forms")
             for text in values_of(value):
                 found = specifiers(text)
                 if plural:

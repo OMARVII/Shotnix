@@ -13,7 +13,7 @@ import XCTest
 /// looks and translation controls, and the Style and Audio sections.
 @MainActor
 final class VideoFeatureLocalizationSnapshotTests: XCTestCase {
-    private static let languages = ["de", "fr", "zh-Hans"]
+    private static let languages = L10n.translations
 
     override class func setUp() {
         super.setUp()
