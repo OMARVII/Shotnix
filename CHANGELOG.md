@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.26.0-beta] - 2026-09-27
+
+### Added
+- **Shotnix speaks Russian and Ukrainian.** The whole app now also comes in Русский and Українська: the menu bar, Settings, the welcome window, the screenshot editor, capture and recording, History, text recognition, and the video editor. The translations use Apple's own words, including the exact names of System Settings panes, and every count reads right (1 снимок, 2 снимка, 5 снимков). Pick either one in Settings → General → Language, or let Shotnix follow your Mac.
+- **Remove Ums knows more languages.** In Chinese, Russian, and Ukrainian recordings, hesitations like 嗯 and 呃, э and эм, е and ем count as filler words. Real words people also hesitate with, such as 那个 or ну, stay.
+
+### Fixed
+- **Longer words fit.** The Copy and Edit buttons on History cards, the Open and Copy buttons in text recognition, the capture thumbnail's buttons, and the buttons after an export make room for longer words instead of cutting them off or breaking them in two. English looks as before.
+
 ## [0.25.0-beta] - 2026-09-27
 
 ### Added

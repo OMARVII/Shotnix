@@ -240,7 +240,7 @@ Ordered by expected payoff; pick based on where you want Shotnix positioned.
 - [x] **Video editor — next** ✅ 2026-09-26 *(caption looks, WebVTT and on-device translation, click sounds, background music, image overlays, intro/outro cards, multi-recording projects, transitions)*
   Caption styles and translation, optional click sounds, multi-recording projects, and transitions between clips.
 
-- [x] **Localization + accessibility pass** — L / LOW (urgency) *(VoiceOver pass done 2026-09-26 across the editors, History, capture tools and recording controls; German, French and Simplified Chinese done 2026-09-27, with a String Catalog pipeline and a glossary in `Localization/`)* — every new surface now needs its strings behind `L(…)` and translated before it ships.
+- [x] **Localization + accessibility pass** — L / LOW (urgency) *(VoiceOver pass done 2026-09-26 across the editors, History, capture tools and recording controls; German, French, Simplified Chinese, Russian and Ukrainian done 2026-09-27, with a String Catalog pipeline and a glossary in `Localization/`)* — every new surface now needs its strings behind `L(…)` and translated before it ships.
 
 ---
 

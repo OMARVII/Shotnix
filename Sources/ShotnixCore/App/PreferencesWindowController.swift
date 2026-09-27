@@ -1065,7 +1065,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.25.0"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.26.0"
     
     var body: some View {
         PreferencesPane {
@@ -1109,6 +1109,11 @@ struct AboutSettingsView: View {
                 ScrollView {
                     // The release notes stay in English (l10n-ignore); everything around them is localized.
                     Text(verbatim: """
+                    Version 0.26.0
+                    • Shotnix speaks Russian and Ukrainian too, from the menu bar to the video editor, in Apple's own words
+                    • Remove Ums catches Chinese, Russian, and Ukrainian hesitations (嗯, э, е)
+                    • Buttons in History, text recognition, and export make room for longer words
+
                     Version 0.25.0
                     • Shotnix speaks German, French, and Simplified Chinese: every menu, window, and notice, the screenshot editor, and the whole video editor, in the words macOS itself uses
                     • Pick Shotnix's language in Settings → General; it restarts in the new language and asks about unsaved edits first
