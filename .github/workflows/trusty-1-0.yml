@@ -9,11 +9,16 @@ on:
 jobs:
   swift:
     name: Swift package
-    runs-on: macos-15
+    # macOS 26: Shotnix builds against the macOS 26 SDK (SpeechAnalyzer for
+    # captions), as releases do; the macOS 15 SDK can't compile it.
+    runs-on: macos-26
 
     steps:
       - name: Check out Shotnix
         uses: actions/checkout@v6
+
+      - name: Show the toolchain
+        run: xcodebuild -version && swift --version
 
       - name: Run Swift tests
         run: swift test
