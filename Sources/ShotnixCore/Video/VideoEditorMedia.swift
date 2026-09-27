@@ -356,10 +356,7 @@ extension VideoEditorModel {
                 // borrows the neighbouring recording's picture.
                 let edges = [min(0.05, entry.duration / 2), max(entry.duration - 0.05, entry.duration / 2)]
                 let times = edges + (0..<count).map { entry.duration * (Double($0) + 0.5) / Double(count) }
-                for local in times {
-                    guard let cgImage = try? generator.copyCGImage(at: CMTime(seconds: local, preferredTimescale: 600), actualTime: nil) else { continue }
-                    thumbnails.append(VideoTimelineThumbnail(time: entry.offset + local, image: NSImage(cgImage: cgImage, size: NSSize(width: cgImage.width, height: cgImage.height))))
-                }
+                thumbnails += await VideoTimelineThumbnail.generate(with: generator, at: times, offset: entry.offset)
                 let start = Int((entry.offset * VideoWaveform.bucketsPerSecond).rounded())
                 if peaks.count < start { peaks += [Float](repeating: 0, count: start - peaks.count) }
                 if let waveform = await VideoMusicWaveform.load(url: url) {

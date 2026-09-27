@@ -429,7 +429,7 @@ enum VideoDemoExporter {
         let meter = VideoLoudnessMeter(channels: 2, sampleRate: 48_000)
         let total = max(edit.duration.seconds, 0.001)
         var reported = 0.0
-        while let sample = output.copyNextSampleBuffer() {
+        try output.forEachSampleBuffer { sample in
             if cancel.isSet {
                 reader.cancelReading()
                 throw VideoDemoExportError.cancelled
@@ -439,15 +439,16 @@ enum VideoDemoExporter {
                 reported = reached
                 progress(min(max(reached, 0), 1))
             }
-            guard let block = CMSampleBufferGetDataBuffer(sample) else { continue }
+            guard let block = CMSampleBufferGetDataBuffer(sample) else { return true }
             var length = 0
             var pointer: UnsafeMutablePointer<Int8>?
             guard CMBlockBufferGetDataPointer(block, atOffset: 0, lengthAtOffsetOut: nil, totalLengthOut: &length, dataPointerOut: &pointer) == noErr,
-                  let pointer else { continue }
+                  let pointer else { return true }
             let count = length / MemoryLayout<Float>.size
             pointer.withMemoryRebound(to: Float.self, capacity: count) { floats in
                 meter.add(interleaved: UnsafeBufferPointer(start: floats, count: count))
             }
+            return true
         }
         return meter.gain()
     }
@@ -534,22 +535,12 @@ enum VideoDemoExporter {
             let group = DispatchGroup()
             group.enter()
             videoInput.requestMediaDataWhenReady(on: videoQueue) { [self] in
+                // A pool per frame: the writer can keep asking for frames
+                // for the whole export, and without one every decoded frame
+                // stayed alive until it paused (a 3-minute Retina recording
+                // grew the app past 70 GB).
                 while videoInput.isReadyForMoreMediaData {
-                    if cancel.isSet {
-                        finishVideo(group)
-                        return
-                    }
-                    if !videoDone {
-                        if !appendNextFrame() {
-                            videoDone = true
-                            if endCard == nil {
-                                finishVideo(group)
-                                return
-                            }
-                        }
-                    } else if let card = endCard, !writerFailed, appendEndCardFrame(card) {
-                        continue
-                    } else {
+                    guard autoreleasepool(invoking: writeNextVideoFrame) else {
                         finishVideo(group)
                         return
                     }
@@ -562,20 +553,13 @@ enum VideoDemoExporter {
                 audioInput.requestMediaDataWhenReady(on: audioQueue) {
                     guard !finished else { return }
                     while audioInput.isReadyForMoreMediaData {
-                        if self.cancel.isSet {
-                            finished = true
-                            audioInput.markAsFinished()
-                            group.leave()
-                            return
+                        // A pool per buffer, like the video's.
+                        let appended = autoreleasepool { () -> Bool in
+                            guard !self.cancel.isSet, let raw = audioOutput.copyNextSampleBuffer() else { return false }
+                            let sample = VideoAudioGain.apply(self.audioGain, to: raw) ?? raw
+                            return audioInput.append(sample)
                         }
-                        guard let raw = audioOutput.copyNextSampleBuffer() else {
-                            finished = true
-                            audioInput.markAsFinished()
-                            group.leave()
-                            return
-                        }
-                        let sample = VideoAudioGain.apply(self.audioGain, to: raw) ?? raw
-                        if !audioInput.append(sample) {
+                        if !appended {
                             finished = true
                             audioInput.markAsFinished()
                             group.leave()
@@ -607,6 +591,20 @@ enum VideoDemoExporter {
         }
 
         private var videoFinished = false
+
+        /// Writes the next frame: the timeline's, then the end card's.
+        /// False once the video is complete, failed, or cancelled.
+        private func writeNextVideoFrame() -> Bool {
+            if cancel.isSet { return false }
+            if !videoDone {
+                if appendNextFrame() { return true }
+                videoDone = true
+                // The card starts on the next pass, once the writer is ready.
+                return endCard != nil
+            }
+            guard let card = endCard, !writerFailed else { return false }
+            return appendEndCardFrame(card)
+        }
 
         private func finishVideo(_ group: DispatchGroup) {
             guard !videoFinished else { return }
@@ -776,31 +774,39 @@ enum VideoDemoExporter {
         let context = VideoRenderContext.makeContext()
         let rect = CGRect(origin: .zero, size: outputSize)
         var written = 0
-        while let sample = output.copyNextSampleBuffer() {
+        while true {
             if cancel.isSet {
                 reader.cancelReading()
                 throw VideoDemoExportError.cancelled
             }
-            guard written < estimated, let pixelBuffer = CMSampleBufferGetImageBuffer(sample) else { continue }
-            let time = CMSampleBufferGetPresentationTimeStamp(sample).seconds
-            var options = VideoFrameRenderer.Options(frameRate: fps)
-            if edit.cameraTrack != nil {
-                if let frame = cameraStore.camera(at: time, tolerance: 0.02) { lastCameraFrame = frame }
-                options.webcamFrame = lastCameraFrame?.image
-                options.webcamMask = lastCameraFrame?.mask
+            // A pool per frame, so each decoded frame goes once it's in
+            // the GIF. Nil: the edit is over.
+            let added = autoreleasepool { () -> Bool? in
+                guard let sample = output.copyNextSampleBuffer() else { return nil }
+                guard written < estimated, let pixelBuffer = CMSampleBufferGetImageBuffer(sample) else { return false }
+                let time = CMSampleBufferGetPresentationTimeStamp(sample).seconds
+                var options = VideoFrameRenderer.Options(frameRate: fps)
+                if edit.cameraTrack != nil {
+                    if let frame = cameraStore.camera(at: time, tolerance: 0.02) { lastCameraFrame = frame }
+                    options.webcamFrame = lastCameraFrame?.image
+                    options.webcamMask = lastCameraFrame?.mask
+                }
+                if let frames, let request = plan.heldFrameRequest(at: time) {
+                    options.transitionFrame = frames.image(at: request.sourceTime)
+                }
+                let image = renderer.render(
+                    source: CIImage(cvPixelBuffer: pixelBuffer),
+                    timelineTime: time,
+                    plan: plan,
+                    outputSize: outputSize,
+                    options: options
+                )
+                guard let cgImage = context.createCGImage(image, from: rect, format: .RGBA8, colorSpace: CGColorSpace(name: CGColorSpace.sRGB)) else { return false }
+                CGImageDestinationAddImage(destination, cgImage, frameProperties)
+                return true
             }
-            if let frames, let request = plan.heldFrameRequest(at: time) {
-                options.transitionFrame = frames.image(at: request.sourceTime)
-            }
-            let image = renderer.render(
-                source: CIImage(cvPixelBuffer: pixelBuffer),
-                timelineTime: time,
-                plan: plan,
-                outputSize: outputSize,
-                options: options
-            )
-            guard let cgImage = context.createCGImage(image, from: rect, format: .RGBA8, colorSpace: CGColorSpace(name: CGColorSpace.sRGB)) else { continue }
-            CGImageDestinationAddImage(destination, cgImage, frameProperties)
+            guard let added else { break }
+            guard added else { continue }
             written += 1
             if written.isMultiple(of: 4) {
                 await progress(min(Double(written) / Double(estimated), 0.99))
@@ -812,6 +818,18 @@ enum VideoDemoExporter {
         guard written > 0, CGImageDestinationFinalize(destination) else {
             throw VideoDemoExportError.exportFailed(L("Couldn't write the GIF. Check that there's free space, or export a shorter part."))
         }
+    }
+}
+
+extension AVAssetReaderOutput {
+    /// Hands each sample buffer to `body` in its own autorelease pool, until
+    /// the output runs out or `body` returns false. Without the pools a loop
+    /// over a whole track keeps every buffer it read until the loop ends.
+    func forEachSampleBuffer(_ body: (CMSampleBuffer) throws -> Bool) rethrows {
+        while try autoreleasepool(invoking: { () throws -> Bool in
+            guard let sample = copyNextSampleBuffer() else { return false }
+            return try body(sample)
+        }) {}
     }
 }
 

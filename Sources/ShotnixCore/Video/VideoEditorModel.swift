@@ -7,6 +7,21 @@ struct VideoTimelineThumbnail: Identifiable {
     /// Source seconds.
     let time: Double
     let image: NSImage
+
+    /// A filmstrip in one pass through the recording: one decoder for all
+    /// the pictures, where a picture at a time opened one each (160 for a
+    /// long recording). `offset` moves them onto the source axis.
+    static func generate(with generator: AVAssetImageGenerator, at times: [Double], offset: Double = 0) async -> [VideoTimelineThumbnail] {
+        let requests = times.map { CMTime(seconds: $0, preferredTimescale: 600) }
+        let requested = Dictionary(zip(requests.map(\.value), times), uniquingKeysWith: { first, _ in first })
+        var thumbnails: [VideoTimelineThumbnail] = []
+        for await result in generator.images(for: requests) {
+            guard let image = try? result.image else { continue }
+            let time = requested[result.requestedTime.convertScale(600, method: .roundHalfAwayFromZero).value] ?? result.requestedTime.seconds
+            thumbnails.append(VideoTimelineThumbnail(time: offset + time, image: NSImage(cgImage: image, size: NSSize(width: image.width, height: image.height))))
+        }
+        return thumbnails.sorted { $0.time < $1.time }
+    }
 }
 
 /// Peak envelope of the recording's audio (all tracks mixed), in SOURCE time.
@@ -2062,10 +2077,7 @@ final class VideoEditorModel: ObservableObject {
             generator.maximumSize = CGSize(width: 320, height: 200)
             generator.requestedTimeToleranceBefore = CMTime(value: 1, timescale: 2)
             generator.requestedTimeToleranceAfter = CMTime(value: 1, timescale: 2)
-            return times.compactMap { time in
-                guard let cgImage = try? generator.copyCGImage(at: CMTime(seconds: time, preferredTimescale: 600), actualTime: nil) else { return nil }
-                return VideoTimelineThumbnail(time: time, image: NSImage(cgImage: cgImage, size: NSSize(width: cgImage.width, height: cgImage.height)))
-            }
+            return await VideoTimelineThumbnail.generate(with: generator, at: times)
         }.value
         thumbnails = images
     }
@@ -2093,11 +2105,12 @@ final class VideoEditorModel: ObservableObject {
             var peaks: [Float] = []
             var current: Float = 0
             var counted = 0
-            while let buffer = output.copyNextSampleBuffer(), let block = CMSampleBufferGetDataBuffer(buffer) {
+            output.forEachSampleBuffer { buffer in
+                guard let block = CMSampleBufferGetDataBuffer(buffer) else { return false }
                 var length = 0
                 var pointer: UnsafeMutablePointer<Int8>?
                 guard CMBlockBufferGetDataPointer(block, atOffset: 0, lengthAtOffsetOut: nil, totalLengthOut: &length, dataPointerOut: &pointer) == noErr,
-                      let pointer else { continue }
+                      let pointer else { return true }
                 let count = length / MemoryLayout<Float>.size
                 pointer.withMemoryRebound(to: Float.self, capacity: count) { floats in
                     for index in 0..<count {
@@ -2110,6 +2123,7 @@ final class VideoEditorModel: ObservableObject {
                         }
                     }
                 }
+                return true
             }
             if counted > 0 { peaks.append(current) }
             // Normalize so quiet recordings still read.

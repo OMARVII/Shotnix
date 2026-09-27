@@ -693,14 +693,15 @@ enum VideoAudioReader {
         reader.add(output)
         guard reader.startReading() else { throw reader.error ?? VideoCaptionTranscriber.Failure.unavailable }
 
-        while let sample = output.copyNextSampleBuffer() {
+        try output.forEachSampleBuffer { sample in
             try Task.checkCancellation()
             let frames = AVAudioFrameCount(CMSampleBufferGetNumSamples(sample))
-            guard frames > 0, let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frames) else { continue }
+            guard frames > 0, let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frames) else { return true }
             buffer.frameLength = frames
             let status = CMSampleBufferCopyPCMDataIntoAudioBufferList(sample, at: 0, frameCount: Int32(frames), into: buffer.mutableAudioBufferList)
-            guard status == noErr else { continue }
+            guard status == noErr else { return true }
             try handle(buffer, CMSampleBufferGetPresentationTimeStamp(sample))
+            return true
         }
         if reader.status == .failed { throw reader.error ?? VideoCaptionTranscriber.Failure.unavailable }
     }
