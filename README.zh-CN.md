@@ -14,7 +14,7 @@
 
 [官网](https://shotnix.com/zh) · [下载](https://github.com/OMARVII/Shotnix/releases/latest) · [更新日志（英文）](CHANGELOG.md) · [路线图（英文）](ROADMAP.md)
 
-[English](README.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · **简体中文**
+[English](README.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · **简体中文** · [Русский](README.ru.md) · [Українська](README.uk.md)
 
 <a href="https://shotnix.com/media/shotnix-editor-playback.mp4"><img src="assets/readme/hero.avif" width="100%" alt="Shotnix 视频编辑器正在播放一段演示：预览画面随每次点按放大，字幕逐词亮起，屏幕上显示快捷键，播放头沿着由字幕、缩放和片段组成的时间线移动。" /></a>
 
@@ -121,7 +121,7 @@
 
 ## 语言
 
-从菜单栏到视频编辑器，Shotnix 全面支持 **English、Deutsch、Français 和简体中文**四种语言。它会跟随 Mac 的系统语言；想换成其他语言，可以在 Shotnix 的“设置”→“通用”→“语言”中选择。翻译文件位于 [`Localization/`](Localization/)，译文如有不地道之处，欢迎母语用户指正。
+从菜单栏到视频编辑器，Shotnix 全面支持 **English、Deutsch、Français、简体中文、Русский 和 Українська** 六种语言。它会跟随 Mac 的系统语言；想换成其他语言，可以在 Shotnix 的“设置”→“通用”→“语言”中选择。翻译文件位于 [`Localization/`](Localization/)，译文如有不地道之处，欢迎母语用户指正。
 
 ## 安装
 
@@ -235,7 +235,7 @@ Shotnix 始终刻意将依赖控制在最少。
 - [x] 历史记录保留期限、清理和类型筛选
 - [x] 录制支持暂停/继续、丢弃，崩溃也不丢内容
 - [x] 视频编辑器：音乐、图片叠加、标题卡、转场、多段录制项目、字幕样式与翻译
-- [x] 本地化：德语、法语和简体中文
+- [x] 本地化：德语、法语、简体中文、俄语和乌克兰语
 
 ## 参与贡献
 

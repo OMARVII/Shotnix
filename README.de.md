@@ -14,7 +14,7 @@ Kostenlos und Open Source. Nativ, nur rund 11 MB groß, und deine Aufnahmen verl
 
 [Website](https://shotnix.com/de) · [Download](https://github.com/OMARVII/Shotnix/releases/latest) · [Neuigkeiten](CHANGELOG.md) · [Roadmap](ROADMAP.md) (beide auf Englisch)
 
-[English](README.md) · **Deutsch** · [Français](README.fr.md) · [简体中文](README.zh-CN.md)
+[English](README.md) · **Deutsch** · [Français](README.fr.md) · [简体中文](README.zh-CN.md) · [Русский](README.ru.md) · [Українська](README.uk.md)
 
 <a href="https://shotnix.com/media/shotnix-editor-playback.mp4"><img src="assets/readme/hero.avif" width="100%" alt="Der Video-Editor von Shotnix spielt eine Demo ab: Die Vorschau zoomt auf jeden Klick, Untertitel leuchten Wort für Wort auf, ein Tastaturkurzbefehl wird eingeblendet, und die Abspielposition wandert über eine Zeitleiste mit Untertiteln, Zooms und Clips." /></a>
 
@@ -121,7 +121,7 @@ Kostenlos und Open Source. Nativ, nur rund 11 MB groß, und deine Aufnahmen verl
 
 ## Sprachen
 
-Shotnix spricht **English, Deutsch, Français und 简体中文** – von der Menüleiste bis zum Video-Editor. Die App folgt der Sprache deines Mac; eine andere wählst du in Shotnix selbst unter „Einstellungen“ → „Allgemein“ → „Sprache“. Die Übersetzungen liegen in [`Localization/`](Localization/). Ist eine dieser Sprachen deine Muttersprache, sind Korrekturen herzlich willkommen.
+Shotnix spricht **English, Deutsch, Français, 简体中文, Русский und Українська** – von der Menüleiste bis zum Video-Editor. Die App folgt der Sprache deines Mac; eine andere wählst du in Shotnix selbst unter „Einstellungen“ → „Allgemein“ → „Sprache“. Die Übersetzungen liegen in [`Localization/`](Localization/). Ist eine dieser Sprachen deine Muttersprache, sind Korrekturen herzlich willkommen.
 
 ## Installation
 
@@ -235,7 +235,7 @@ Die App hält ihre Abhängigkeiten weiterhin bewusst schlank.
 - [x] Verlauf: Aufbewahrungsdauer, Aufräumen und Filter nach Aufnahmeart
 - [x] Pausieren/Fortsetzen, Verwerfen und absturzsichere Aufnahmen
 - [x] Video-Editor: Musik, Bild-Overlays, Titelkarten, Übergänge, Projekte mit mehreren Aufnahmen, Untertitelstile und Übersetzung
-- [x] Lokalisierung: Deutsch, Französisch und vereinfachtes Chinesisch
+- [x] Lokalisierung: Deutsch, Französisch, vereinfachtes Chinesisch, Russisch und Ukrainisch
 
 ## Mitmachen
 

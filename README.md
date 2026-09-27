@@ -14,7 +14,7 @@ Free and open source. Native, about 11 MB, and your captures never leave your Ma
 
 [Website](https://shotnix.com) · [Download](https://github.com/OMARVII/Shotnix/releases/latest) · [What’s new](CHANGELOG.md) · [Roadmap](ROADMAP.md)
 
-**English** · [Deutsch](README.de.md) · [Français](README.fr.md) · [简体中文](README.zh-CN.md)
+**English** · [Deutsch](README.de.md) · [Français](README.fr.md) · [简体中文](README.zh-CN.md) · [Русский](README.ru.md) · [Українська](README.uk.md)
 
 <a href="https://shotnix.com/media/shotnix-editor-playback.mp4"><img src="assets/readme/hero.avif" width="100%" alt="The Shotnix video editor playing a demo: the preview zooms in on each click, captions light up word by word, a keyboard shortcut appears, and the playhead moves along a timeline of captions, zooms, and clips." /></a>
 
@@ -121,7 +121,7 @@ Free and open source. Native, about 11 MB, and your captures never leave your Ma
 
 ## Languages
 
-Shotnix speaks **English, Deutsch, Français, and 简体中文**, from the menu bar to the video editor. It follows your Mac’s language; to use another one, pick it in Shotnix’s Settings → General → Language. The translations live in [`Localization/`](Localization/), and corrections from native speakers are welcome.
+Shotnix speaks **English, Deutsch, Français, 简体中文, Русский, and Українська**, from the menu bar to the video editor. It follows your Mac’s language; to use another one, pick it in Shotnix’s Settings → General → Language. The translations live in [`Localization/`](Localization/), and corrections from native speakers are welcome.
 
 ## Install
 
@@ -235,7 +235,7 @@ The app still keeps dependencies intentionally narrow.
 - [x] History retention, cleanup, and type filters
 - [x] Pause/resume, discard, and crash-safe recordings
 - [x] Video editor: music, image overlays, title cards, transitions, multi-recording projects, caption looks and translation
-- [x] Localization: German, French, and Simplified Chinese
+- [x] Localization: German, French, Simplified Chinese, Russian, and Ukrainian
 
 ## Contributing
 
