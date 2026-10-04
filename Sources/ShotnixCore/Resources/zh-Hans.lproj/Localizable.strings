@@ -162,6 +162,8 @@
 	<string>已存在同名文件。请换一个名称，然后重新导出。</string>
 	<key>A hairline that separates dark recordings from the background</key>
 	<string>一条细线，将深色录制内容与背景分开</string>
+	<key>A report helps fix this. You'll see everything before it's sent, and it never includes your screenshots or recordings.</key>
+	<string>报告有助于修复这个问题。发送前你会看到全部内容，报告绝不会包含你的截屏或录制内容。</string>
 	<key>A second caption track you can show, burn in, or save as subtitles. Translated on this Mac — nothing is uploaded.</key>
 	<string>第二条字幕轨道，可显示、嵌入视频或存储为字幕文件。在这台 Mac 上翻译 — 不会上传任何内容。</string>
 	<key>A song under the whole video — it loops to fill, fades in and out, and dips while you talk. Use music you have the rights to.</key>
@@ -898,6 +900,8 @@
 	<string>不再询问</string>
 	<key>Don't Save</key>
 	<string>不存储</string>
+	<key>Don't ask again</key>
+	<string>不再询问</string>
 	<key>Done</key>
 	<string>完成</string>
 	<key>Done (Esc)</key>
@@ -1636,6 +1640,8 @@
 	<string>无</string>
 	<key>None in this recording. Turn on “Show keyboard shortcuts” in Settings → Recording and every ⌘ shortcut you press appears as keycaps. Plain typing is never recorded.</key>
 	<string>此录制内容中没有。在“设置”→“录制”中打开“显示快捷键”后，你按下的每个 ⌘ 快捷键都会以按键形式显示。普通打字永远不会被录制。</string>
+	<key>Not Now</key>
+	<string>以后</string>
 	<key>Not enough disk space to record.</key>
 	<string>磁盘空间不足，无法录制。</string>
 	<key>Not enough free disk space for this recording: it needs about %@ free, and %@ is available. Free up some space and try again.</key>
@@ -2274,6 +2280,8 @@
 	<string>替换…</string>
 	<key>Report Issue</key>
 	<string>报告问题</string>
+	<key>Report on GitHub</key>
+	<string>在 GitHub 上报告</string>
 	<key>Reset</key>
 	<string>重置</string>
 	<key>Reset %@</key>
@@ -2492,6 +2500,8 @@
 	<string>选区宽 %@ 点、高 %@ 点</string>
 	<key>Selection %@ by %@ points. Arrow keys move it, Return captures, Escape cancels.</key>
 	<string>选区宽 %@ 点、高 %@ 点。方向键可移动选区，按 Return 键捕捉，按 Esc 键取消。</string>
+	<key>Send by Email…</key>
+	<string>通过电子邮件发送…</string>
 	<key>Set In to Playhead</key>
 	<string>将入点设为播放头位置</string>
 	<key>Set Out to Playhead</key>
@@ -2564,6 +2574,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>Shotnix 需要屏幕录制权限才能截取你的屏幕。
 
 请在“系统设置”→“隐私与安全性”→“录屏与系统录音”中启用。</string>
+	<key>Shotnix quit unexpectedly last time</key>
+	<string>Shotnix 上次意外退出</string>
 	<key>Shotnix restarts to switch languages. You can also set it in System Settings → General → Language &amp; Region → Applications.</key>
 	<string>切换语言时，Shotnix 会退出并重新打开。你也可以在“系统设置”→“通用”→“语言与地区”→“应用程序”中设置。</string>
 	<key>Shotnix will wrap these up before it quits.</key>
@@ -2846,6 +2858,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>导出会在后台继续（Esc）</string>
 	<key>The export stopped unexpectedly (%@). Try again — if it keeps happening, export at a lower resolution or in H.264.</key>
 	<string>导出意外停止（%@）。请重试 — 如果问题仍然存在，请以较低分辨率或 H.264 格式导出。</string>
+	<key>The full report is on your clipboard. Paste it into the email.</key>
+	<string>完整报告已拷贝到剪贴板，请将其粘贴到邮件中。</string>
 	<key>The menu bar icon is Shotnix's main entry point. While it is hidden, open Shotnix again from Finder, Launchpad, or Spotlight to bring these Preferences back.</key>
 	<string>菜单栏图标是 Shotnix 的主要入口。隐藏后，可从“访达”、“启动台”或“聚焦”再次打开 Shotnix 来重新显示这些设置。</string>
 	<key>The microphone couldn't start, so this recording has no mic.</key>
@@ -2944,6 +2958,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>标题</string>
 	<key>To</key>
 	<string>收件人</string>
+	<key>To attach the full report, drag it from Finder onto the GitHub page.</key>
+	<string>若要附加完整报告，请将其从“访达”拖到 GitHub 页面上。</string>
 	<key>Today</key>
 	<string>今天</string>
 	<key>Too long for a GIF at this size — it would need about %@ of memory. Make it lighter, export a part, or choose MP4.</key>
@@ -3440,6 +3456,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>片头卡</string>
 	<key>loops</key>
 	<string>循环播放</string>
+	<key>macOS closed Shotnix last time because it ran out of memory</key>
+	<string>上次 macOS 因内存不足关闭了 Shotnix</string>
 	<key>macOS downloads %@ once, then translates right here — nothing is uploaded.</key>
 	<string>macOS 会下载一次%@，之后直接在此翻译 — 不会上传任何内容。</string>
 	<key>macOS screenshot shortcuts (⌘⇧3, ⌘⇧4, ⌘⇧5) conflict with Shotnix.

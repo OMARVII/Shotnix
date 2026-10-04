@@ -5233,6 +5233,41 @@
         }
       }
     },
+    "A report helps fix this. You'll see everything before it's sent, and it never includes your screenshots or recordings." : {
+      "comment" : "Crash report alert text",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Bericht hilft, das zu beheben. Du siehst alles, bevor es gesendet wird, und er enthält nie deine Bildschirmfotos oder Aufnahmen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un rapport aide à corriger le problème. Vous verrez tout avant l’envoi, et il ne contient jamais vos captures ni vos enregistrements."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отчет поможет это исправить. Вы увидите его целиком перед отправкой, и в нем никогда не будет ваших снимков экрана и записей."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Звіт допоможе це виправити. Ви побачите його повністю перед надсиланням, і він ніколи не містить ваших знімків екрана чи записів."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "报告有助于修复这个问题。发送前你会看到全部内容，报告绝不会包含你的截屏或录制内容。"
+          }
+        }
+      }
+    },
     "A second caption track you can show, burn in, or save as subtitles. Translated on this Mac — nothing is uploaded." : {
       "localizations" : {
         "de" : {
@@ -18355,6 +18390,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "不存储"
+          }
+        }
+      }
+    },
+    "Don't ask again" : {
+      "comment" : "Crash report alert checkbox",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht mehr fragen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ne plus demander"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Больше не спрашивать"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Більше не питати"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不再询问"
           }
         }
       }
@@ -31855,6 +31925,41 @@
         }
       }
     },
+    "Not Now" : {
+      "comment" : "Crash report alert button: close without sending",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht jetzt"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus tard"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не сейчас"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не зараз"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以后"
+          }
+        }
+      }
+    },
     "Not enough disk space to record." : {
       "localizations" : {
         "de" : {
@@ -43527,6 +43632,41 @@
         }
       }
     },
+    "Report on GitHub" : {
+      "comment" : "Crash report alert button: opens a new GitHub issue",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf GitHub melden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signaler sur GitHub"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сообщить на GitHub"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Повідомити на GitHub"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 GitHub 上报告"
+          }
+        }
+      }
+    },
     "Reset" : {
       "comment" : "Editor: undo the crop",
       "localizations" : {
@@ -47616,6 +47756,41 @@
         }
       }
     },
+    "Send by Email…" : {
+      "comment" : "Crash report alert button: opens Mail with the report attached",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Per E-Mail senden …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envoyer par e-mail…"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отправить по электронной почте…"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Надіслати електронною поштою…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通过电子邮件发送…"
+          }
+        }
+      }
+    },
     "Set In to Playhead" : {
       "localizations" : {
         "de" : {
@@ -48917,6 +49092,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Shotnix 需要屏幕录制权限才能截取你的屏幕。\n\n请在“系统设置”→“隐私与安全性”→“录屏与系统录音”中启用。"
+          }
+        }
+      }
+    },
+    "Shotnix quit unexpectedly last time" : {
+      "comment" : "Crash report alert title, on the launch after a crash",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shotnix wurde beim letzten Mal unerwartet beendet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shotnix s’est fermé de façon inattendue la dernière fois"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В прошлый раз Shotnix неожиданно завершил работу"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Минулого разу Shotnix неочікувано завершив роботу"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shotnix 上次意外退出"
           }
         }
       }
@@ -53918,6 +54128,41 @@
         }
       }
     },
+    "The full report is on your clipboard. Paste it into the email." : {
+      "comment" : "Toast when Mail couldn't attach the crash report",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der vollständige Bericht ist in deiner Zwischenablage. Füge ihn in die E-Mail ein."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le rapport complet est dans votre presse-papiers. Collez-le dans l’e-mail."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Полный отчет скопирован в буфер обмена. Вставьте его в письмо."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Повний звіт скопійовано в буфер обміну. Вставте його в лист."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完整报告已拷贝到剪贴板，请将其粘贴到邮件中。"
+          }
+        }
+      }
+    },
     "The menu bar icon is Shotnix's main entry point. While it is hidden, open Shotnix again from Finder, Launchpad, or Spotlight to bring these Preferences back." : {
       "localizations" : {
         "de" : {
@@ -55676,6 +55921,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "收件人"
+          }
+        }
+      }
+    },
+    "To attach the full report, drag it from Finder onto the GitHub page." : {
+      "comment" : "Toast after opening the GitHub issue, with the report shown in Finder",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um den vollständigen Bericht anzuhängen, zieh ihn aus dem Finder auf die GitHub-Seite."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour joindre le rapport complet, faites-le glisser du Finder vers la page GitHub."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чтобы приложить полный отчет, перетащите его из Finder на страницу GitHub."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Щоб додати повний звіт, перетягніть його з Finder на сторінку GitHub."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "若要附加完整报告，请将其从“访达”拖到 GitHub 页面上。"
           }
         }
       }
@@ -64578,6 +64858,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "循环播放"
+          }
+        }
+      }
+    },
+    "macOS closed Shotnix last time because it ran out of memory" : {
+      "comment" : "Crash report alert title, after macOS closed Shotnix for using too much memory",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS hat Shotnix beim letzten Mal beendet, weil der Arbeitsspeicher nicht mehr gereicht hat"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS a fermé Shotnix la dernière fois, faute de mémoire disponible"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В прошлый раз macOS закрыла Shotnix из-за нехватки памяти"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Минулого разу macOS закрила Shotnix через нестачу пам’яті"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上次 macOS 因内存不足关闭了 Shotnix"
           }
         }
       }

@@ -108,6 +108,8 @@
 	<string>Файл із такою назвою вже існує. Виберіть іншу назву й експортуйте ще раз.</string>
 	<key>A hairline that separates dark recordings from the background</key>
 	<string>Тонка лінія, що відділяє темні записи від тла</string>
+	<key>A report helps fix this. You'll see everything before it's sent, and it never includes your screenshots or recordings.</key>
+	<string>Звіт допоможе це виправити. Ви побачите його повністю перед надсиланням, і він ніколи не містить ваших знімків екрана чи записів.</string>
 	<key>A second caption track you can show, burn in, or save as subtitles. Translated on this Mac — nothing is uploaded.</key>
 	<string>Друга доріжка субтитрів, яку можна показати, вшити у відео чи зберегти як файл субтитрів. Перекладається на цьому Mac — нічого не вивантажується.</string>
 	<key>A song under the whole video — it loops to fill, fades in and out, and dips while you talk. Use music you have the rights to.</key>
@@ -830,6 +832,8 @@
 	<string>Більше не питати</string>
 	<key>Don't Save</key>
 	<string>Не зберігати</string>
+	<key>Don't ask again</key>
+	<string>Більше не питати</string>
 	<key>Done</key>
 	<string>Готово</string>
 	<key>Done (Esc)</key>
@@ -1548,6 +1552,8 @@
 	<string>Немає</string>
 	<key>None in this recording. Turn on “Show keyboard shortcuts” in Settings → Recording and every ⌘ shortcut you press appears as keycaps. Plain typing is never recorded.</key>
 	<string>У цьому записі їх немає. Увімкніть «Показувати клавіатурні скорочення» в розділі Параметри → Запис, і кожне натиснуте скорочення з ⌘ з’являтиметься у вигляді клавіш. Звичайне введення тексту ніколи не записується.</string>
+	<key>Not Now</key>
+	<string>Не зараз</string>
 	<key>Not enough disk space to record.</key>
 	<string>Недостатньо місця на диску для запису.</string>
 	<key>Not enough free disk space for this recording: it needs about %@ free, and %@ is available. Free up some space and try again.</key>
@@ -2168,6 +2174,8 @@
 	<string>Замінити…</string>
 	<key>Report Issue</key>
 	<string>Повідомити про проблему</string>
+	<key>Report on GitHub</key>
+	<string>Повідомити на GitHub</string>
 	<key>Reset</key>
 	<string>Скинути</string>
 	<key>Reset %@</key>
@@ -2378,6 +2386,8 @@
 	<string>Вибір: %@ на %@ точок</string>
 	<key>Selection %@ by %@ points. Arrow keys move it, Return captures, Escape cancels.</key>
 	<string>Вибір: %@ на %@ точок. Клавіші зі стрілками переміщують його, Return знімає, Escape скасовує.</string>
+	<key>Send by Email…</key>
+	<string>Надіслати електронною поштою…</string>
 	<key>Set In to Playhead</key>
 	<string>Встановити початок на покажчику відтворення</string>
 	<key>Set Out to Playhead</key>
@@ -2446,6 +2456,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>Shotnix потрібен дозвіл на запис екрана, щоб знімати ваш екран.
 
 Увімкніть його тут: Системні параметри → Приватність і безпека → Записування системного звуку й екрана.</string>
+	<key>Shotnix quit unexpectedly last time</key>
+	<string>Минулого разу Shotnix неочікувано завершив роботу</string>
 	<key>Shotnix restarts to switch languages. You can also set it in System Settings → General → Language &amp; Region → Applications.</key>
 	<string>Щоб змінити мову, Shotnix перезапускається. Мову також можна задати тут: Системні параметри → Загальні → Мова і регіон → Програми.</string>
 	<key>Shotnix will wrap these up before it quits.</key>
@@ -2724,6 +2736,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>Експорт триває у фоні (Esc)</string>
 	<key>The export stopped unexpectedly (%@). Try again — if it keeps happening, export at a lower resolution or in H.264.</key>
 	<string>Експорт несподівано зупинився (%@). Спробуйте ще раз — якщо це повторюється, експортуйте з нижчою роздільністю або в H.264.</string>
+	<key>The full report is on your clipboard. Paste it into the email.</key>
+	<string>Повний звіт скопійовано в буфер обміну. Вставте його в лист.</string>
 	<key>The menu bar icon is Shotnix's main entry point. While it is hidden, open Shotnix again from Finder, Launchpad, or Spotlight to bring these Preferences back.</key>
 	<string>Значок у смузі меню — основний вхід до Shotnix. Поки його сховано, відкрийте Shotnix знову з Finder, Launchpad або Spotlight, щоб повернутися до цих параметрів.</string>
 	<key>The microphone couldn't start, so this recording has no mic.</key>
@@ -2820,6 +2834,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>Назва</string>
 	<key>To</key>
 	<string>Кому</string>
+	<key>To attach the full report, drag it from Finder onto the GitHub page.</key>
+	<string>Щоб додати повний звіт, перетягніть його з Finder на сторінку GitHub.</string>
 	<key>Today</key>
 	<string>Сьогодні</string>
 	<key>Too long for a GIF at this size — it would need about %@ of memory. Make it lighter, export a part, or choose MP4.</key>
@@ -3306,6 +3322,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>вступна заставка</string>
 	<key>loops</key>
 	<string>повторюється</string>
+	<key>macOS closed Shotnix last time because it ran out of memory</key>
+	<string>Минулого разу macOS закрила Shotnix через нестачу пам’яті</string>
 	<key>macOS downloads %@ once, then translates right here — nothing is uploaded.</key>
 	<string>macOS один раз завантажить мову «%@», а потім перекладатиме просто тут — нічого не вивантажується.</string>
 	<key>macOS screenshot shortcuts (⌘⇧3, ⌘⇧4, ⌘⇧5) conflict with Shotnix.

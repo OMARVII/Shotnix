@@ -63,6 +63,9 @@
   "%lld/%lld configured" : {
     "ru" : "Настроено: %lld из %lld"
   },
+  "A report helps fix this. You'll see everything before it's sent, and it never includes your screenshots or recordings." : {
+    "ru" : "Отчет поможет это исправить. Вы увидите его целиком перед отправкой, и в нем никогда не будет ваших снимков экрана и записей."
+  },
   "About" : {
     "ru" : "О программе"
   },
@@ -397,6 +400,9 @@
   "Don't Save" : {
     "ru" : "Не сохранять"
   },
+  "Don't ask again" : {
+    "ru" : "Больше не спрашивать"
+  },
   "Done" : {
     "ru" : "Готово"
   },
@@ -701,6 +707,9 @@
   "No conflict" : {
     "ru" : "Нет конфликтов"
   },
+  "Not Now" : {
+    "ru" : "Не сейчас"
+  },
   "Numbered Steps" : {
     "ru" : "Нумерованные шаги"
   },
@@ -871,6 +880,9 @@
   "Report Issue" : {
     "ru" : "Сообщить о проблеме"
   },
+  "Report on GitHub" : {
+    "ru" : "Сообщить на GitHub"
+  },
   "Reset" : {
     "ru" : "Сбросить"
   },
@@ -970,6 +982,9 @@
   "Selection" : {
     "ru" : "Выделение"
   },
+  "Send by Email…" : {
+    "ru" : "Отправить по электронной почте…"
+  },
   "Set In to Playhead" : {
     "ru" : "Задать начало по указателю воспроизведения"
   },
@@ -1014,6 +1029,9 @@
   },
   "Shotnix needs Screen Recording permission to capture your screen.\n\nPlease enable it in System Settings → Privacy & Security → Screen & System Audio Recording." : {
     "ru" : "Чтобы снимать экран, Shotnix нужно разрешение на запись экрана.\n\nВключите его в разделе Системные настройки → Конфиденциальность и безопасность → Запись экрана и системного звука."
+  },
+  "Shotnix quit unexpectedly last time" : {
+    "ru" : "В прошлый раз Shotnix неожиданно завершил работу"
   },
   "Shotnix restarts to switch languages. You can also set it in System Settings → General → Language & Region → Applications." : {
     "ru" : "Чтобы сменить язык, Shotnix перезапустится. Язык также можно выбрать в разделе Системные настройки → Основные → Язык и регион → Приложения."
@@ -1123,6 +1141,9 @@
   "Text: %@" : {
     "ru" : "Текст: %@"
   },
+  "The full report is on your clipboard. Paste it into the email." : {
+    "ru" : "Полный отчет скопирован в буфер обмена. Вставьте его в письмо."
+  },
   "The menu bar icon is Shotnix's main entry point. While it is hidden, open Shotnix again from Finder, Launchpad, or Spotlight to bring these Preferences back." : {
     "ru" : "Значок в строке меню — основной способ открыть Shotnix. Пока он скрыт, чтобы вернуться к этим настройкам, снова откройте Shotnix из Finder, Launchpad или Spotlight."
   },
@@ -1149,6 +1170,9 @@
   },
   "Timeline" : {
     "ru" : "Шкала времени"
+  },
+  "To attach the full report, drag it from Finder onto the GitHub page." : {
+    "ru" : "Чтобы приложить полный отчет, перетащите его из Finder на страницу GitHub."
   },
   "Tools" : {
     "ru" : "Инструменты"
@@ -1232,6 +1256,9 @@
   },
   "Zoom" : {
     "ru" : "Масштаб"
+  },
+  "macOS closed Shotnix last time because it ran out of memory" : {
+    "ru" : "В прошлый раз macOS закрыла Shotnix из-за нехватки памяти"
   },
   "macOS screenshot shortcuts (⌘⇧3, ⌘⇧4, ⌘⇧5) conflict with Shotnix.\n\nDisable them so Shotnix owns the capture shortcuts and screenshots do not double-trigger.\n\nYou can re-enable Apple's shortcuts anytime in System Settings → Keyboard → Keyboard Shortcuts → Screenshots." : {
     "ru" : "Сочетания клавиш macOS для снимков экрана (⌘⇧3, ⌘⇧4, ⌘⇧5) конфликтуют с Shotnix.\n\nОтключите их, чтобы сочетания для снимков принадлежали Shotnix и снимки не срабатывали дважды.\n\nСочетания клавиш Apple можно снова включить в любой момент в разделе Системные настройки → Клавиатура → Сочетания клавиш → Снимки экрана."

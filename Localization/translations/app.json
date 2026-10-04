@@ -124,6 +124,12 @@
     "fr" : "Configurés : %lld/%lld",
     "zh-Hans" : "已设置 %lld/%lld"
   },
+  "A report helps fix this. You'll see everything before it's sent, and it never includes your screenshots or recordings." : {
+    "comment" : "Crash report alert text",
+    "de" : "Ein Bericht hilft, das zu beheben. Du siehst alles, bevor es gesendet wird, und er enthält nie deine Bildschirmfotos oder Aufnahmen.",
+    "fr" : "Un rapport aide à corriger le problème. Vous verrez tout avant l’envoi, et il ne contient jamais vos captures ni vos enregistrements.",
+    "zh-Hans" : "报告有助于修复这个问题。发送前你会看到全部内容，报告绝不会包含你的截屏或录制内容。"
+  },
   "About" : {
     "comment" : "Settings tab",
     "de" : "Info",
@@ -699,6 +705,12 @@
     "fr" : "Ne pas enregistrer",
     "zh-Hans" : "不存储"
   },
+  "Don't ask again" : {
+    "comment" : "Crash report alert checkbox",
+    "de" : "Nicht mehr fragen",
+    "fr" : "Ne plus demander",
+    "zh-Hans" : "不再询问"
+  },
   "Done" : {
     "comment" : "VoiceOver: a finished setup step",
     "de" : "Fertig",
@@ -1234,6 +1246,12 @@
     "fr" : "Aucun conflit",
     "zh-Hans" : "无冲突"
   },
+  "Not Now" : {
+    "comment" : "Crash report alert button: close without sending",
+    "de" : "Nicht jetzt",
+    "fr" : "Plus tard",
+    "zh-Hans" : "以后"
+  },
   "Numbered Steps" : {
     "de" : "Nummerierte Schritte",
     "fr" : "Étapes numérotées",
@@ -1524,6 +1542,12 @@
     "fr" : "Signaler un problème",
     "zh-Hans" : "报告问题"
   },
+  "Report on GitHub" : {
+    "comment" : "Crash report alert button: opens a new GitHub issue",
+    "de" : "Auf GitHub melden",
+    "fr" : "Signaler sur GitHub",
+    "zh-Hans" : "在 GitHub 上报告"
+  },
   "Reset" : {
     "comment" : "Editor: undo the crop",
     "de" : "Zurücksetzen",
@@ -1695,6 +1719,12 @@
     "fr" : "Sélection",
     "zh-Hans" : "选区"
   },
+  "Send by Email…" : {
+    "comment" : "Crash report alert button: opens Mail with the report attached",
+    "de" : "Per E-Mail senden …",
+    "fr" : "Envoyer par e-mail…",
+    "zh-Hans" : "通过电子邮件发送…"
+  },
   "Set In to Playhead" : {
     "de" : "Startpunkt an Abspielposition setzen",
     "fr" : "Placer le point d’entrée sur la tête de lecture",
@@ -1769,6 +1799,12 @@
     "de" : "Shotnix braucht die Berechtigung für Bildschirmaufnahmen, um deinen Bildschirm aufzunehmen.\n\nAktiviere sie unter „Systemeinstellungen“ → „Datenschutz & Sicherheit“ → „Aufnahme von Bildschirm & Systemaudio“.",
     "fr" : "Shotnix a besoin de l’autorisation d’enregistrement de l’écran pour capturer votre écran.\n\nActivez-la dans Réglages Système → Confidentialité et sécurité → Enregistrement de l’écran et des sons du système.",
     "zh-Hans" : "Shotnix 需要屏幕录制权限才能截取你的屏幕。\n\n请在“系统设置”→“隐私与安全性”→“录屏与系统录音”中启用。"
+  },
+  "Shotnix quit unexpectedly last time" : {
+    "comment" : "Crash report alert title, on the launch after a crash",
+    "de" : "Shotnix wurde beim letzten Mal unerwartet beendet",
+    "fr" : "Shotnix s’est fermé de façon inattendue la dernière fois",
+    "zh-Hans" : "Shotnix 上次意外退出"
   },
   "Shotnix restarts to switch languages. You can also set it in System Settings → General → Language & Region → Applications." : {
     "comment" : "Settings → General, below the language pop-up",
@@ -1957,6 +1993,12 @@
     "fr" : "Texte : %@",
     "zh-Hans" : "文字：%@"
   },
+  "The full report is on your clipboard. Paste it into the email." : {
+    "comment" : "Toast when Mail couldn't attach the crash report",
+    "de" : "Der vollständige Bericht ist in deiner Zwischenablage. Füge ihn in die E-Mail ein.",
+    "fr" : "Le rapport complet est dans votre presse-papiers. Collez-le dans l’e-mail.",
+    "zh-Hans" : "完整报告已拷贝到剪贴板，请将其粘贴到邮件中。"
+  },
   "The menu bar icon is Shotnix's main entry point. While it is hidden, open Shotnix again from Finder, Launchpad, or Spotlight to bring these Preferences back." : {
     "de" : "Über das Symbol in der Menüleiste erreichst du Shotnix. Solange es ausgeblendet ist, öffne Shotnix erneut über den Finder, das Launchpad oder Spotlight, um diese Einstellungen wieder aufzurufen.",
     "fr" : "L’icône de la barre des menus est le principal point d’accès à Shotnix. Tant qu’elle est masquée, ouvrez de nouveau Shotnix depuis le Finder, le Launchpad ou Spotlight pour retrouver ces réglages.",
@@ -2003,6 +2045,12 @@
     "de" : "Zeitleiste",
     "fr" : "Timeline",
     "zh-Hans" : "时间线"
+  },
+  "To attach the full report, drag it from Finder onto the GitHub page." : {
+    "comment" : "Toast after opening the GitHub issue, with the report shown in Finder",
+    "de" : "Um den vollständigen Bericht anzuhängen, zieh ihn aus dem Finder auf die GitHub-Seite.",
+    "fr" : "Pour joindre le rapport complet, faites-le glisser du Finder vers la page GitHub.",
+    "zh-Hans" : "若要附加完整报告，请将其从“访达”拖到 GitHub 页面上。"
   },
   "Tools" : {
     "de" : "Werkzeuge",
@@ -2147,6 +2195,12 @@
     "de" : "Zoom",
     "fr" : "Zoom",
     "zh-Hans" : "缩放"
+  },
+  "macOS closed Shotnix last time because it ran out of memory" : {
+    "comment" : "Crash report alert title, after macOS closed Shotnix for using too much memory",
+    "de" : "macOS hat Shotnix beim letzten Mal beendet, weil der Arbeitsspeicher nicht mehr gereicht hat",
+    "fr" : "macOS a fermé Shotnix la dernière fois, faute de mémoire disponible",
+    "zh-Hans" : "上次 macOS 因内存不足关闭了 Shotnix"
   },
   "macOS screenshot shortcuts (⌘⇧3, ⌘⇧4, ⌘⇧5) conflict with Shotnix.\n\nDisable them so Shotnix owns the capture shortcuts and screenshots do not double-trigger.\n\nYou can re-enable Apple's shortcuts anytime in System Settings → Keyboard → Keyboard Shortcuts → Screenshots." : {
     "de" : "Die Bildschirmfoto-Kurzbefehle von macOS (⌘⇧3, ⌘⇧4, ⌘⇧5) kollidieren mit Shotnix.\n\nDeaktiviere sie, damit Shotnix die Aufnahme-Kurzbefehle übernimmt und Bildschirmfotos nicht doppelt ausgelöst werden.\n\nDu kannst Apples Kurzbefehle jederzeit unter „Systemeinstellungen“ → „Tastatur“ → „Tastaturkurzbefehle“ → „Bildschirmfotos“ wieder aktivieren.",

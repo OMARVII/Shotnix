@@ -104,6 +104,8 @@
 	<string>Un fichier portant ce nom existe déjà. Choisissez un autre nom, puis exportez à nouveau.</string>
 	<key>A hairline that separates dark recordings from the background</key>
 	<string>Un filet fin détache les enregistrements sombres de l’arrière-plan</string>
+	<key>A report helps fix this. You'll see everything before it's sent, and it never includes your screenshots or recordings.</key>
+	<string>Un rapport aide à corriger le problème. Vous verrez tout avant l’envoi, et il ne contient jamais vos captures ni vos enregistrements.</string>
 	<key>A second caption track you can show, burn in, or save as subtitles. Translated on this Mac — nothing is uploaded.</key>
 	<string>Une deuxième piste de sous-titres à afficher, incruster ou enregistrer en fichier de sous-titres. Traduite sur ce Mac — rien n’est envoyé en ligne.</string>
 	<key>A song under the whole video — it loops to fill, fades in and out, and dips while you talk. Use music you have the rights to.</key>
@@ -828,6 +830,8 @@
 	<string>Ne plus demander</string>
 	<key>Don't Save</key>
 	<string>Ne pas enregistrer</string>
+	<key>Don't ask again</key>
+	<string>Ne plus demander</string>
 	<key>Done</key>
 	<string>Terminé</string>
 	<key>Done (Esc)</key>
@@ -1546,6 +1550,8 @@
 	<string>Aucun</string>
 	<key>None in this recording. Turn on “Show keyboard shortcuts” in Settings → Recording and every ⌘ shortcut you press appears as keycaps. Plain typing is never recorded.</key>
 	<string>Aucun dans cet enregistrement. Activez « Afficher les raccourcis clavier » dans Réglages → Enregistrement : chaque raccourci ⌘ que vous utilisez apparaît sous forme de touches. La saisie ordinaire n’est jamais enregistrée.</string>
+	<key>Not Now</key>
+	<string>Plus tard</string>
 	<key>Not enough disk space to record.</key>
 	<string>Espace disque insuffisant pour enregistrer.</string>
 	<key>Not enough free disk space for this recording: it needs about %@ free, and %@ is available. Free up some space and try again.</key>
@@ -2166,6 +2172,8 @@
 	<string>Remplacer…</string>
 	<key>Report Issue</key>
 	<string>Signaler un problème</string>
+	<key>Report on GitHub</key>
+	<string>Signaler sur GitHub</string>
 	<key>Reset</key>
 	<string>Réinitialiser</string>
 	<key>Reset %@</key>
@@ -2376,6 +2384,8 @@
 	<string>Sélection de %@ sur %@ points</string>
 	<key>Selection %@ by %@ points. Arrow keys move it, Return captures, Escape cancels.</key>
 	<string>Sélection de %@ sur %@ points. Les flèches la déplacent, Retour capture, Échap annule.</string>
+	<key>Send by Email…</key>
+	<string>Envoyer par e-mail…</string>
 	<key>Set In to Playhead</key>
 	<string>Placer le point d’entrée sur la tête de lecture</string>
 	<key>Set Out to Playhead</key>
@@ -2444,6 +2454,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>Shotnix a besoin de l’autorisation d’enregistrement de l’écran pour capturer votre écran.
 
 Activez-la dans Réglages Système → Confidentialité et sécurité → Enregistrement de l’écran et des sons du système.</string>
+	<key>Shotnix quit unexpectedly last time</key>
+	<string>Shotnix s’est fermé de façon inattendue la dernière fois</string>
 	<key>Shotnix restarts to switch languages. You can also set it in System Settings → General → Language &amp; Region → Applications.</key>
 	<string>Shotnix redémarre pour changer de langue. Vous pouvez aussi la choisir dans Réglages Système → Général → Langue et région → Applications.</string>
 	<key>Shotnix will wrap these up before it quits.</key>
@@ -2722,6 +2734,8 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>L’exportation se poursuit en arrière-plan (Échap)</string>
 	<key>The export stopped unexpectedly (%@). Try again — if it keeps happening, export at a lower resolution or in H.264.</key>
 	<string>L’exportation s’est arrêtée de façon inattendue (%@). Réessayez — si le problème persiste, exportez à une résolution plus basse ou en H.264.</string>
+	<key>The full report is on your clipboard. Paste it into the email.</key>
+	<string>Le rapport complet est dans votre presse-papiers. Collez-le dans l’e-mail.</string>
 	<key>The menu bar icon is Shotnix's main entry point. While it is hidden, open Shotnix again from Finder, Launchpad, or Spotlight to bring these Preferences back.</key>
 	<string>L’icône de la barre des menus est le principal point d’accès à Shotnix. Tant qu’elle est masquée, ouvrez de nouveau Shotnix depuis le Finder, le Launchpad ou Spotlight pour retrouver ces réglages.</string>
 	<key>The microphone couldn't start, so this recording has no mic.</key>
@@ -2818,6 +2832,8 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Titre</string>
 	<key>To</key>
 	<string>À</string>
+	<key>To attach the full report, drag it from Finder onto the GitHub page.</key>
+	<string>Pour joindre le rapport complet, faites-le glisser du Finder vers la page GitHub.</string>
 	<key>Today</key>
 	<string>Aujourd’hui</string>
 	<key>Too long for a GIF at this size — it would need about %@ of memory. Make it lighter, export a part, or choose MP4.</key>
@@ -3304,6 +3320,8 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>carton d’intro</string>
 	<key>loops</key>
 	<string>en boucle</string>
+	<key>macOS closed Shotnix last time because it ran out of memory</key>
+	<string>macOS a fermé Shotnix la dernière fois, faute de mémoire disponible</string>
 	<key>macOS downloads %@ once, then translates right here — nothing is uploaded.</key>
 	<string>macOS télécharge la langue %@ une seule fois, puis traduit directement ici — rien n’est envoyé en ligne.</string>
 	<key>macOS screenshot shortcuts (⌘⇧3, ⌘⇧4, ⌘⇧5) conflict with Shotnix.

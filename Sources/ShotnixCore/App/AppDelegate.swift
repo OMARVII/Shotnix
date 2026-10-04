@@ -76,6 +76,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// Quitting is certain now: when it's a restart (a new language or a new
     /// permission), the new Shotnix starts, and waits for this one to exit.
     func applicationWillTerminate(_ notification: Notification) {
+        CrashReporter.endSession()
         AppRelaunch.launchNewInstanceIfRestarting()
     }
 
@@ -83,6 +84,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // After a restart, the previous Shotnix finishes quitting before this
         // one takes the hotkeys, the menu bar, and History.
         AppRelaunch.waitForPreviousInstance()
+        // Before anything that could crash: the next launch can tell a crash
+        // from a normal quit.
+        CrashReporter.startSession()
         Settings.migrateOnboardingFlagIfNeeded()
         // Before the welcome window marks this install as launched.
         Settings.migrateCaptureSettingsIfNeeded()
@@ -162,6 +166,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         if !welcomeController.showIfNeeded(onClose: welcomeCloseHandler) {
             promptForNativeShortcuts()
+            // Never during a recording: it waits for the Stop.
+            CrashReporter.offerReportIfNeeded { [weak self] in
+                guard let engine = self?.captureEngine else { return false }
+                return engine.recordingElapsedSeconds != nil || engine.recordingIsSaving
+            }
             // Escape hatch on cold launch: applicationShouldHandleReopen only
             // fires for an already-running app, so with the status item hidden
             // a fresh launch would otherwise be completely invisible. After a
