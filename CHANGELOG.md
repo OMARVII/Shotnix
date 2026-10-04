@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.26.3-beta] - 2026-10-04
+
+### Added
+- **After a crash, Shotnix offers to send the report.** If Shotnix quit unexpectedly, or macOS closed it because it ran out of memory, the next launch asks once whether to send a report: by email, with macOS's crash report attached, or as a GitHub issue with the summary filled in and the report ready to drag in. Nothing is sent unless you send it yourself: you see everything first, your home folder and account name are hidden, and a report never includes your screenshots or recordings. A normal quit, an update or a restart never asks, and Don't ask again turns it off.
+
 ## [0.26.2-beta] - 2026-09-27
 
 ### Changed
