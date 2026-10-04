@@ -131,6 +131,22 @@ final class CrashReporterTests: XCTestCase {
         XCTAssertTrue(summary.details.contains("36.0 GB"))
     }
 
+    /// Opt-in: SHOTNIX_CRASH_REPORT=/path/to/Shotnix-….ips swift test --filter CrashReporterTests
+    /// reads a real crash report and prints what each button would send.
+    func testReadsARealCrashReport() throws {
+        guard let path = ProcessInfo.processInfo.environment["SHOTNIX_CRASH_REPORT"] else { throw XCTSkip("Set SHOTNIX_CRASH_REPORT") }
+        let text = try String(contentsOfFile: path, encoding: .utf8)
+        let crash = try XCTUnwrap(CrashReportFile.parse(text, url: URL(fileURLWithPath: path), bundleID: bundleID), "not one of Shotnix's crashes")
+        XCTAssertFalse(crash.frames.isEmpty, "the crashed thread")
+        XCTAssertFalse(crash.text.contains(NSHomeDirectory()))
+        let summary = CrashReportSummary(reason: .crash(crash))
+        print("SUBJECT: \(summary.subject)")
+        print("BODY:\n\(summary.emailBody)")
+        let issue = try XCTUnwrap(summary.issueURL(base: CrashReporter.issuesURL))
+        print("ISSUE URL (\(issue.absoluteString.count) chars): \(issue.absoluteString.prefix(160))…")
+        XCTAssertLessThan(issue.absoluteString.count, 8_000)
+    }
+
     /// Opt-in: SHOTNIX_SNAPSHOT_DIR=/path swift test --filter CrashReporterTests
     /// draws the alert in each language, to check nothing is cut off.
     @MainActor
