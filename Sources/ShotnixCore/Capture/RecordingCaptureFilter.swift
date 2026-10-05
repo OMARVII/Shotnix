@@ -37,7 +37,7 @@ enum RecordingCaptureFilter {
         if let front, belongsToReal(front) {
             kept += visible.filter { $0.level == .popUpMenu }
         }
-        return Set(kept.map { CGWindowID($0.windowNumber) })
+        return Set(kept.compactMap { CGWindowID(exactly: $0.windowNumber) })
     }
 
     static func isRealWindow(_ window: NSWindow) -> Bool {
@@ -73,7 +73,7 @@ enum RecordingCaptureFilter {
 
     /// What the display filter depends on: a change means it's rebuilt.
     static func ownWindowsSignature() -> [CGWindowID] {
-        let visible = NSApp.windows.filter { $0.isVisible && $0.windowNumber > 0 }.map { CGWindowID($0.windowNumber) }
+        let visible = NSApp.windows.filter { $0.isVisible && $0.windowNumber > 0 }.compactMap { CGWindowID(exactly: $0.windowNumber) }
         return (visible + recordableOwnWindowIDs().map { $0 | 0x8000_0000 }).sorted()
     }
 

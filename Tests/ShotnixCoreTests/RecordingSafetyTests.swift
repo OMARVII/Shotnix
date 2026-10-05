@@ -41,6 +41,24 @@ final class RecordingSafetyTests: XCTestCase {
         XCTAssertEqual(kept, Set([editor, appKitOwned, plain].map { CGWindowID($0.windowNumber) }))
     }
 
+    /// macOS 26's menu bar windows report numbers past 32 bits (2³², 2³³).
+    /// They aren't capturable windows: skipped, never a crash when a
+    /// recording starts (it was, for recordings started by AI apps).
+    func testWindowNumbersPast32BitsAreSkipped() {
+        final class MenuBarLikeWindow: NSWindow {
+            override var windowNumber: Int { 1 << 33 }
+        }
+        let menuBar = MenuBarLikeWindow(contentRect: NSRect(x: 0, y: 0, width: 300, height: 200), styleMask: [.titled], backing: .buffered, defer: false)
+        menuBar.isReleasedWhenClosed = false
+        menuBar.setFrameOrigin(RecordingUITestSupport.offscreen)
+        menuBar.orderFrontRegardless()
+        let editor = window(titled: true)
+        defer { [menuBar, editor].forEach { $0.orderOut(nil) } }
+
+        let kept = RecordingCaptureFilter.recordableOwnWindowIDs(in: [menuBar, editor], front: nil)
+        XCTAssertEqual(kept, [CGWindowID(editor.windowNumber)])
+    }
+
     /// Framework UI shipped inside the app (the updater's prompts) stays out;
     /// Shotnix's own code and the system's (AppKit alerts, panels) don't.
     func testOnlyBundledFrameworksAreTreatedAsForeign() throws {
