@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.26.5-beta] - 2026-10-11
+
+### Fixed
+- **Starting a recording on macOS 26 could crash Shotnix.** The menu bar's windows there can report numbers bigger than Shotnix expected, and converting them made Shotnix quit as an area or full-screen recording started. Those windows are skipped now, and screenshots skip them too.
+
 ## [0.26.4-beta] - 2026-10-11
 
 ### Fixed
