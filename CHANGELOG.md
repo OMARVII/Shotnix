@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.26.4-beta] - 2026-10-11
+
+### Fixed
+- **Cutting words no longer clips the next one.** Remove Ums and deleting words in the transcript cut by the speech recognizer's word times, which can be a fraction of a second off, so the start of the next word often went too. Cuts now follow the recording's sound: each filler goes completely, the word after it stays whole, and Shorten Pauses only ever removes silence.
+
 ## [0.26.3-beta] - 2026-10-04
 
 ### Added

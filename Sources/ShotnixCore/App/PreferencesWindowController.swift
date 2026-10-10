@@ -1065,7 +1065,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.26.3"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.26.4"
     
     var body: some View {
         PreferencesPane {
@@ -1109,6 +1109,9 @@ struct AboutSettingsView: View {
                 ScrollView {
                     // The release notes stay in English (l10n-ignore); everything around them is localized.
                     Text(verbatim: """
+                    Version 0.26.4
+                    • Remove Ums and cutting words in the transcript follow the recording's sound: each filler goes completely and the next word stays whole
+
                     Version 0.26.3
                     • After a crash, Shotnix offers to send the report by email or as a GitHub issue: nothing is sent unless you send it, and it never includes your screenshots or recordings
 
