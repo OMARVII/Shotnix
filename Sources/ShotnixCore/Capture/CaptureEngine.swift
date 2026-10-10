@@ -960,7 +960,8 @@ final class CaptureEngine {
     static func ownChromeWindowNumbers() -> Set<CGWindowID> {
         Set(NSApp.windows.compactMap { window -> CGWindowID? in
             guard window.isVisible, window.windowNumber > 0, !isCapturableOwnWindow(window) else { return nil }
-            return CGWindowID(window.windowNumber)
+            // macOS 26's menu bar windows report numbers past 32 bits: not ones to leave out.
+            return CGWindowID(exactly: window.windowNumber)
         })
     }
 
@@ -1010,7 +1011,7 @@ final class CaptureEngine {
             if let ownApp = content.applications.first(where: { $0.processID == currentProcessID }) {
                 let contentWindowIDs = Set(NSApp.windows.compactMap { window -> CGWindowID? in
                     guard window.isVisible, Self.isCapturableOwnWindow(window) else { return nil }
-                    return CGWindowID(window.windowNumber)
+                    return CGWindowID(exactly: window.windowNumber)
                 })
                 var exceptedWindows: [SCWindow] = []
                 if !contentWindowIDs.isEmpty {

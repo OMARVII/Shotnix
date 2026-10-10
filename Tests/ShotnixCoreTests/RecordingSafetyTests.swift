@@ -59,6 +59,22 @@ final class RecordingSafetyTests: XCTestCase {
         XCTAssertEqual(kept, [CGWindowID(editor.windowNumber)])
     }
 
+    /// Screenshots leave Shotnix's floating windows out by number, and a
+    /// menu bar window past 32 bits is skipped there too, never a crash.
+    func testScreenshotChromeSkipsWindowNumbersPast32Bits() {
+        final class MenuBarLikeWindow: NSWindow {
+            override var windowNumber: Int { 1 << 33 }
+        }
+        let menuBar = MenuBarLikeWindow(contentRect: NSRect(x: 0, y: 0, width: 300, height: 24), styleMask: [.borderless], backing: .buffered, defer: false)
+        menuBar.isReleasedWhenClosed = false
+        menuBar.level = .statusBar
+        menuBar.setFrameOrigin(RecordingUITestSupport.offscreen)
+        menuBar.orderFrontRegardless()
+        defer { menuBar.orderOut(nil) }
+        XCTAssertTrue(menuBar.isVisible)
+        XCTAssertFalse(CaptureEngine.ownChromeWindowNumbers().contains { UInt64($0) == UInt64(1) << 33 })
+    }
+
     /// Framework UI shipped inside the app (the updater's prompts) stays out;
     /// Shotnix's own code and the system's (AppKit alerts, panels) don't.
     func testOnlyBundledFrameworksAreTreatedAsForeign() throws {
