@@ -165,7 +165,7 @@ struct VideoBackgroundInspector: View {
                 swatchGrid
                 if showsBlur {
                     VideoSliderRow(
-                        title: L("Blur"),
+                        title: L("Background blur"),
                         value: Binding(get: { project.backgroundBlur }, set: { value in model.setStyle(coalesce: "bg-blur") { $0.backgroundBlur = value } }),
                         range: 0...1,
                         defaultValue: 0,
@@ -1261,6 +1261,18 @@ struct VideoSelectionInspector: View {
             }
             .buttonStyle(VideoSecondaryButtonStyle())
             .help(L("Swap the arrow's head and tail"))
+        }
+        if overlay.kind == .blur {
+            VideoInspectorSection(L("Blur")) {
+                VideoSliderRow(
+                    title: L("Strength"),
+                    value: Binding(get: { overlay.blurStrength }, set: { model.setBlurStrength($0, of: overlay.id) }),
+                    range: VideoDemoOverlayEffect.blurStrengthRange,
+                    defaultValue: 1,
+                    format: { VideoEditorFormat.percent($0) },
+                    onEditingEnded: { model.endGesture() }
+                )
+            }
         }
         if overlay.kind == .spotlight {
             VideoInspectorSection(L("Shape")) {

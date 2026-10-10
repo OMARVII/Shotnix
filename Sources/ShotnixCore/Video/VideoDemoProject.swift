@@ -187,6 +187,8 @@ struct VideoDemoOverlayEffect: Codable, Equatable, Identifiable {
     var shape: VideoOverlayShape?
     /// The picture an image annotation shows.
     var image: VideoOverlayImage?
+    /// How strongly a blur hides what's under it, 0.1–1 (nil: fully).
+    var strength: Double?
 
     init(
         id: UUID = UUID(),
@@ -219,6 +221,10 @@ struct VideoDemoOverlayEffect: Codable, Equatable, Identifiable {
     /// The color actually drawn.
     var resolvedColor: VideoRGBA { color ?? kind.defaultColor }
 
+    /// A blur's strength as drawn (blurs from before it could be set hide fully).
+    var blurStrength: Double { min(max(strength ?? 1, Self.blurStrengthRange.lowerBound), Self.blurStrengthRange.upperBound) }
+    static let blurStrengthRange: ClosedRange<Double> = 0.1...1
+
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(UUID.self, forKey: .id)
@@ -236,6 +242,7 @@ struct VideoDemoOverlayEffect: Codable, Equatable, Identifiable {
         arrowEnds = try? container.decodeIfPresent(VideoArrowEnds.self, forKey: .arrowEnds)
         shape = try? container.decodeIfPresent(VideoOverlayShape.self, forKey: .shape)
         image = try? container.decodeIfPresent(VideoOverlayImage.self, forKey: .image)
+        strength = try? container.decodeIfPresent(Double.self, forKey: .strength)
     }
 }
 

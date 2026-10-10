@@ -16,6 +16,7 @@ final class VideoAnnotationStyleTests: XCTestCase {
             VideoOverlayStyleMemory.setColor(nil, for: kind)
             UserDefaults.standard.removeObject(forKey: "videoOverlayThickness.\(kind.rawValue)")
         }
+        VideoOverlayStyleMemory.blurStrength = nil
         super.tearDown()
     }
 
@@ -28,6 +29,12 @@ final class VideoAnnotationStyleTests: XCTestCase {
     private func minimum(_ image: CIImage, in rect: CGRect) -> (r: Double, g: Double, b: Double) {
         var pixel = [UInt8](repeating: 0, count: 4)
         CIContext().render(image.applyingFilter("CIAreaMinimum", parameters: [kCIInputExtentKey: CIVector(cgRect: rect)]), toBitmap: &pixel, rowBytes: 4, bounds: CGRect(x: 0, y: 0, width: 1, height: 1), format: .RGBA8, colorSpace: CGColorSpace(name: CGColorSpace.sRGB))
+        return (Double(pixel[0]) / 255, Double(pixel[1]) / 255, Double(pixel[2]) / 255)
+    }
+
+    private func maximum(_ image: CIImage, in rect: CGRect) -> (r: Double, g: Double, b: Double) {
+        var pixel = [UInt8](repeating: 0, count: 4)
+        CIContext().render(image.applyingFilter("CIAreaMaximum", parameters: [kCIInputExtentKey: CIVector(cgRect: rect)]), toBitmap: &pixel, rowBytes: 4, bounds: CGRect(x: 0, y: 0, width: 1, height: 1), format: .RGBA8, colorSpace: CGColorSpace(name: CGColorSpace.sRGB))
         return (Double(pixel[0]) / 255, Double(pixel[1]) / 255, Double(pixel[2]) / 255)
     }
 
@@ -52,6 +59,67 @@ final class VideoAnnotationStyleTests: XCTestCase {
         let again = try JSONDecoder().decode(VideoDemoOverlayEffect.self, from: JSONEncoder().encode(colored))
         XCTAssertEqual(again.color, VideoRGBA(hex: 0xFF453A))
         XCTAssertEqual(again.thickness, .bold)
+    }
+
+    /// Blurs from before strength could be set still hide fully.
+    func testOldBlursHideFullyAndStrengthIsSaved() throws {
+        let json = #"{"id":"6A1D2E3F-0000-4000-8000-000000000002","kind":"blur","time":1,"duration":2,"x":0.5,"y":0.5,"width":0.2,"height":0.1,"text":"","layer":0}"#
+        var effect = try JSONDecoder().decode(VideoDemoOverlayEffect.self, from: Data(json.utf8))
+        XCTAssertNil(effect.strength)
+        XCTAssertEqual(effect.blurStrength, 1)
+        effect.strength = 0.3
+        let again = try JSONDecoder().decode(VideoDemoOverlayEffect.self, from: JSONEncoder().encode(effect))
+        XCTAssertEqual(again.blurStrength, 0.3, accuracy: 0.0001)
+        effect.strength = 0
+        XCTAssertEqual(effect.blurStrength, VideoDemoOverlayEffect.blurStrengthRange.lowerBound, "never no blur at all")
+    }
+
+    /// Over black and white stripes, a full blur leaves one even gray and a
+    /// weak one keeps the stripes showing through.
+    func testWeakerBlurLeavesMoreOfThePicture() {
+        let size = CGSize(width: 1920, height: 1080)
+        let stripes = CIFilter(name: "CIStripesGenerator", parameters: ["inputColor0": CIColor.black, "inputColor1": CIColor.white, "inputWidth": 40])!.outputImage!.cropped(to: CGRect(origin: .zero, size: size))
+        func render(_ strength: Double?) -> CIImage {
+            var effect = VideoDemoOverlayEffect(kind: .blur, time: 0, duration: 5, x: 0.5, y: 0.5, width: 0.4, height: 0.4)
+            effect.strength = strength
+            let plan = VideoDemoExporter.makePlan(project: project([effect]), sourceDuration: 5, recording: nil)
+            return VideoFrameRenderer().render(source: stripes, timelineTime: 2, plan: plan, outputSize: size)
+        }
+        let probe = CGRect(x: 860, y: 490, width: 200, height: 100)
+        func spread(_ image: CIImage) -> Double { maximum(image, in: probe).g - minimum(image, in: probe).g }
+        let full = render(nil)
+        XCTAssertLessThan(spread(full), 0.08, "nothing to read under a full blur")
+        XCTAssertEqual(average(full, in: probe).g, average(render(1), in: probe).g, accuracy: 0.002, "full is how blurs always looked")
+        let weak = spread(render(0.1))
+        let half = spread(render(0.5))
+        XCTAssertGreaterThan(weak, 0.6, "a weak blur keeps the stripes")
+        XCTAssertGreaterThan(weak, half)
+        XCTAssertGreaterThan(half, spread(full), "every step of the slider shows")
+    }
+
+    func testNewBlursStartWithTheLastStrength() async throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent("shotnix-style-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let url = directory.appendingPathComponent("rec.mp4")
+        try await VideoTestSupport.writeFakeRecording(to: url, size: CGSize(width: 640, height: 400), seconds: 4, fps: 30)
+        VideoDemoDraftStore.delete(for: url)
+        let model = VideoEditorModel(videoURL: url)
+        await model.load()
+        model.addOverlay(.blur)
+        let first = try XCTUnwrap(model.selectedOverlay)
+        XCTAssertEqual(first.blurStrength, 1, "full until you pick otherwise")
+        model.setBlurStrength(0.4, of: first.id)
+        model.setBlurStrength(0.35, of: first.id)
+        model.endGesture()
+        XCTAssertEqual(model.project.overlayEffects.first { $0.id == first.id }?.blurStrength ?? 0, 0.35, accuracy: 0.0001)
+        model.seek(to: 2)
+        model.addOverlay(.blur)
+        XCTAssertEqual(model.selectedOverlay?.blurStrength ?? 0, 0.35, accuracy: 0.0001, "new blurs start with the last strength")
+        // One drag of the slider is one undo.
+        model.undo()
+        model.undo()
+        XCTAssertEqual(model.project.overlayEffects.first { $0.id == first.id }?.blurStrength ?? 0, 1, accuracy: 0.0001)
     }
 
     func testArrowUsesItsColorAndThickness() {

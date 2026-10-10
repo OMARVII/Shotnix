@@ -300,6 +300,8 @@
 	<string>Назад · пауза · швидше</string>
 	<key>Background</key>
 	<string>Тло</string>
+	<key>Background blur</key>
+	<string>Розмиття тла</string>
 	<key>Background, padding, corners, shadow</key>
 	<string>Тло, відступ, кути, тінь</string>
 	<key>Balanced</key>

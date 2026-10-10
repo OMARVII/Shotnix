@@ -257,6 +257,11 @@ final class VideoFeatureLocalizationSnapshotTests: XCTestCase {
         try VideoInspection.writePNG(to: logo, size: CGSize(width: 300, height: 120), color: NSColor(srgbRed: 1, green: 0.42, blue: 0.2, alpha: 1))
         model.seek(to: 4)
         let image = try XCTUnwrap(model.addImageOverlay(from: logo))
+        model.seek(to: 5)
+        model.addOverlay(.blur)
+        let blur = try XCTUnwrap(model.selectedOverlay?.id)
+        model.setBlurStrength(0.6, of: blur)
+        defer { VideoOverlayStyleMemory.blurStrength = nil }
         try await Task.sleep(nanoseconds: 900_000_000)
         for language in Self.languages {
             L10n.use(language)
@@ -276,6 +281,9 @@ final class VideoFeatureLocalizationSnapshotTests: XCTestCase {
             try await render(VideoInspectorView(model: model), size: CGSize(width: 318, height: 900), name: "\(language)-zoom-inspector")
             model.selection = .overlay(image)
             try await render(VideoInspectorView(model: model), size: CGSize(width: 318, height: 900), name: "\(language)-image-inspector")
+            // A blur's own strength, apart from the background's blur.
+            model.selection = .overlay(blur)
+            try await render(VideoInspectorView(model: model), size: CGSize(width: 318, height: 900), name: "\(language)-blur-inspector")
             if let clip = model.segments.dropFirst().first {
                 model.selection = .clip(clip.id)
                 try await render(VideoInspectorView(model: model), size: CGSize(width: 318, height: 900), name: "\(language)-clip-transition")

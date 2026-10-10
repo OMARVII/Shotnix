@@ -1584,6 +1584,7 @@ final class VideoEditorModel: ObservableObject {
             thickness: VideoOverlayStyleMemory.thickness(for: kind)
         )
         if kind == .spotlight { effect.shape = VideoOverlayStyleMemory.shape }
+        if kind == .blur { effect.strength = VideoOverlayStyleMemory.blurStrength }
         // Land where it can be seen: zooms and vertical reframing show only
         // part of the frame, so place (and if needed shrink) it inside that.
         let visible = visibleRegion(at: time)

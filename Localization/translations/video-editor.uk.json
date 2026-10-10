@@ -246,6 +246,9 @@
   "Background" : {
     "uk" : "Тло"
   },
+  "Background blur" : {
+    "uk" : "Розмиття тла"
+  },
   "Background, padding, corners, shadow" : {
     "uk" : "Тло, відступ, кути, тінь"
   },

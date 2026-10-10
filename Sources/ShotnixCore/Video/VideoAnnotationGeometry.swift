@@ -60,6 +60,12 @@ extension VideoOverlayStyleMemory {
         get { UserDefaults.standard.string(forKey: "videoOverlayShape.spotlight").flatMap(VideoOverlayShape.init(rawValue:)) ?? .rectangle }
         set { UserDefaults.standard.set(newValue.rawValue, forKey: "videoOverlayShape.spotlight") }
     }
+
+    /// The blur strength picked last (new blurs start with it; nil: fully).
+    static var blurStrength: Double? {
+        get { UserDefaults.standard.object(forKey: "videoOverlayBlurStrength") as? Double }
+        set { UserDefaults.standard.set(newValue, forKey: "videoOverlayBlurStrength") }
+    }
 }
 
 // MARK: - Hit testing

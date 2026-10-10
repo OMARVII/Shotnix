@@ -1046,10 +1046,14 @@ final class VideoFrameRenderer {
         let unit = geometry.pixelScale * min(plan.canvasSize.width, plan.canvasSize.height) / 1080
         switch effect.kind {
         case .blur:
-            let sigma = Double(max(rect.width, rect.height) * 0.08 + 14 * unit)
+            // Fully strong, nothing under it can be read; weaker ones leave
+            // shapes and colors for context. The reach grows with the square
+            // of the strength, so the slider changes the look all along it.
+            let strength = effect.blurStrength
+            let sigma = Double(max(rect.width, rect.height) * 0.08 + 14 * unit) * (0.05 + 0.95 * strength * strength)
             let blurred = scene.clampedToExtent().applyingGaussianBlur(sigma: sigma).cropped(to: rect)
             // Darken slightly so blurred text can't be half-read.
-            let dimmed = blurred.applyingFilter("CIColorControls", parameters: [kCIInputSaturationKey: 0.8, kCIInputBrightnessKey: -0.04])
+            let dimmed = blurred.applyingFilter("CIColorControls", parameters: [kCIInputSaturationKey: 1 - 0.2 * strength, kCIInputBrightnessKey: -0.04 * strength])
             let mask = roundedRect(rect, radius: 12 * unit, color: CIColor.white)
             let clipped = dimmed.applyingFilter("CISourceInCompositing", parameters: [kCIInputBackgroundImageKey: mask])
             return clipped.composited(over: scene)

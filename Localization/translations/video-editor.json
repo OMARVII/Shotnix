@@ -442,6 +442,12 @@
     "fr": "Arrière-plan",
     "zh-Hans": "背景"
   },
+  "Background blur": {
+    "comment": "Slider: how blurred the wallpaper behind the recording is",
+    "de": "Hintergrund weichzeichnen",
+    "fr": "Flou de l’arrière-plan",
+    "zh-Hans": "背景模糊"
+  },
   "Background, padding, corners, shadow": {
     "de": "Hintergrund, Rand, Ecken, Schatten",
     "fr": "Arrière-plan, marge, coins, ombre",
@@ -459,7 +465,7 @@
     "zh-Hans": "身后"
   },
   "Blur": {
-    "comment": "How blurred the background is; also an annotation kind",
+    "comment": "An annotation that blurs what is under it (its kind, and its settings section)",
     "de": "Weichzeichnen",
     "fr": "Flou",
     "zh-Hans": "模糊"

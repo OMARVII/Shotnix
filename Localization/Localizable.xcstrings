@@ -8815,6 +8815,41 @@
         }
       }
     },
+    "Background blur" : {
+      "comment" : "Slider: how blurred the wallpaper behind the recording is",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hintergrund weichzeichnen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flou de l’arrière-plan"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Размытие фона"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Розмиття тла"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "背景模糊"
+          }
+        }
+      }
+    },
     "Background, padding, corners, shadow" : {
       "localizations" : {
         "de" : {
@@ -9227,7 +9262,7 @@
       }
     },
     "Blur" : {
-      "comment" : "How blurred the background is; also an annotation kind",
+      "comment" : "An annotation that blurs what is under it (its kind, and its settings section)",
       "localizations" : {
         "de" : {
           "stringUnit" : {

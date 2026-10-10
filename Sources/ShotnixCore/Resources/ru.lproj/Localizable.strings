@@ -298,6 +298,8 @@
 	<string>Назад · пауза · быстрее</string>
 	<key>Background</key>
 	<string>Фон</string>
+	<key>Background blur</key>
+	<string>Размытие фона</string>
 	<key>Background, padding, corners, shadow</key>
 	<string>Фон, отступ, углы, тень</string>
 	<key>Balanced</key>

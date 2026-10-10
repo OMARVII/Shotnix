@@ -774,6 +774,13 @@ extension VideoEditorModel {
         VideoOverlayStyleMemory.shape = shape
     }
 
+    /// How strongly a blur hides what's under it (new blurs start with it).
+    func setBlurStrength(_ strength: Double, of id: UUID) {
+        let value = min(max(strength, VideoDemoOverlayEffect.blurStrengthRange.lowerBound), VideoDemoOverlayEffect.blurStrengthRange.upperBound)
+        updateOverlay(id, coalesce: "blur-strength-\(id)") { $0.strength = value }
+        VideoOverlayStyleMemory.blurStrength = value
+    }
+
     /// Turns an arrow around (tail and head swap places).
     func flipArrow(_ id: UUID) {
         updateOverlay(id) { effect in

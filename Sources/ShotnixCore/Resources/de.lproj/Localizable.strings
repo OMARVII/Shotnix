@@ -304,6 +304,8 @@
 	<string>Zurück · Pause · Schneller</string>
 	<key>Background</key>
 	<string>Hintergrund</string>
+	<key>Background blur</key>
+	<string>Hintergrund weichzeichnen</string>
 	<key>Background, padding, corners, shadow</key>
 	<string>Hintergrund, Rand, Ecken, Schatten</string>
 	<key>Balanced</key>

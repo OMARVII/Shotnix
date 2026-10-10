@@ -360,6 +360,8 @@
 	<string>后退 · 暂停 · 加快</string>
 	<key>Background</key>
 	<string>背景</string>
+	<key>Background blur</key>
+	<string>背景模糊</string>
 	<key>Background, padding, corners, shadow</key>
 	<string>背景、边距、圆角、阴影</string>
 	<key>Balanced</key>

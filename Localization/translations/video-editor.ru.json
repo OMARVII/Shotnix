@@ -251,6 +251,9 @@
   "Background" : {
     "ru" : "Фон"
   },
+  "Background blur" : {
+    "ru" : "Размытие фона"
+  },
   "Background, padding, corners, shadow" : {
     "ru" : "Фон, отступ, углы, тень"
   },

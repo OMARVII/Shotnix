@@ -298,6 +298,8 @@
 	<string>Arrière · pause · plus vite</string>
 	<key>Background</key>
 	<string>Arrière-plan</string>
+	<key>Background blur</key>
+	<string>Flou de l’arrière-plan</string>
 	<key>Background, padding, corners, shadow</key>
 	<string>Arrière-plan, marge, coins, ombre</string>
 	<key>Balanced</key>
