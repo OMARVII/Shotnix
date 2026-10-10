@@ -366,15 +366,16 @@ extension VideoEditorModel {
         isIncluded(sourceTime: (word.start + word.end) / 2)
     }
 
-    /// Source spans for runs of consecutive word indices.
-    private func ranges(forWords indices: IndexSet) -> [ClosedRange<Double>] {
+    /// Source spans for runs of consecutive word indices, each with its words.
+    private func cuts(forWords indices: IndexSet) -> [(words: [VideoTranscriptWord], range: ClosedRange<Double>)] {
         let words = transcriptWords
-        var ranges: [ClosedRange<Double>] = []
+        var cuts: [(words: [VideoTranscriptWord], range: ClosedRange<Double>)] = []
         var run: [Int] = []
         func flush() {
             guard let first = run.first, let last = run.last else { return }
-            let next = last + 1 < words.count ? words[last + 1] : nil
-            if let range = VideoTranscript.cutRange(for: words[first...last], next: next) { ranges.append(range) }
+            if let range = VideoTranscript.cutRange(words: words, run: first...last, sound: waveform) {
+                cuts.append((Array(words[first...last]), range))
+            }
             run = []
         }
         for index in indices where words.indices.contains(index) {
@@ -382,17 +383,24 @@ extension VideoEditorModel {
             run.append(index)
         }
         flush()
-        return ranges
+        return cuts
+    }
+
+    private func ranges(forWords indices: IndexSet) -> [ClosedRange<Double>] {
+        cuts(forWords: indices).map(\.range)
     }
 
     /// Cuts words out of the video (select them in the transcript, ⌫).
     func cutWords(_ indices: IndexSet) {
         let words = transcriptWords
         let kept = IndexSet(indices.filter { words.indices.contains($0) && isIncluded(words[$0]) })
-        let ranges = ranges(forWords: kept)
-        guard !ranges.isEmpty else { return }
+        let cuts = cuts(forWords: kept)
+        guard !cuts.isEmpty else { return }
         var ok = true
-        mutate(label: kept.count == 1 ? "Cut Word" : "Cut Words") { ok = $0.removeSourceRanges(ranges, totalDuration: sourceDuration) }
+        mutate(label: kept.count == 1 ? "Cut Word" : "Cut Words") { project in
+            ok = project.removeSourceRanges(cuts.map(\.range), totalDuration: sourceDuration)
+            if ok { for cut in cuts { project.retime(cut.words, into: cut.range) } }
+        }
         guard ok else {
             showNotice(L("A video needs at least one clip"), symbol: "exclamationmark.triangle")
             return
@@ -428,7 +436,7 @@ extension VideoEditorModel {
     }
 
     var fillerRanges: [ClosedRange<Double>] {
-        VideoTranscript.fillerRanges(words: transcriptWords) { isIncluded(sourceTime: $0) }
+        VideoTranscript.fillerRanges(words: transcriptWords, sound: waveform) { isIncluded(sourceTime: $0) }
     }
 
     var fillerCount: Int {
@@ -436,18 +444,22 @@ extension VideoEditorModel {
     }
 
     var pauseRanges: [ClosedRange<Double>] {
-        VideoTranscript.pauseRanges(words: transcriptWords, busy: activityTimes) { isIncluded(sourceTime: $0) }
+        VideoTranscript.pauseRanges(words: transcriptWords, busy: activityTimes, sound: waveform) { isIncluded(sourceTime: $0) }
     }
 
     func removeFillers() {
-        let ranges = fillerRanges
-        guard !ranges.isEmpty else {
+        let words = transcriptWords
+        let cuts = VideoTranscript.fillerCuts(words: words, sound: waveform) { isIncluded(sourceTime: $0) }
+        guard !cuts.isEmpty else {
             showNotice(L("No ums or uhs left"), symbol: "checkmark.circle")
             return
         }
         let count = fillerCount
         let before = timelineDuration
-        mutate(label: "Remove Ums") { $0.removeSourceRanges(ranges, totalDuration: sourceDuration) }
+        mutate(label: "Remove Ums") { project in
+            guard project.removeSourceRanges(VideoTranscript.merge(cuts.map(\.range)), totalDuration: sourceDuration) else { return }
+            for cut in cuts { project.retime([words[cut.index]], into: cut.range) }
+        }
         let shorter = Self.format(max(before - timelineDuration, 0))
         showNotice(L("Removed \(count) filler words — \(shorter) shorter"), symbol: "wand.and.stars")
     }

@@ -28,6 +28,20 @@ struct VideoTimelineThumbnail: Identifiable {
 struct VideoWaveform {
     static let bucketsPerSecond = 50.0
     let peaks: [Float]
+    /// At or below this, the sound counts as silence: well under speech,
+    /// above the room's steady noise.
+    let quiet: Float
+
+    init(peaks: [Float]) {
+        self.peaks = peaks
+        let sorted = peaks.sorted()
+        func percentile(_ fraction: Double) -> Float {
+            sorted.isEmpty ? 0 : sorted[min(Int(Double(sorted.count) * fraction), sorted.count - 1)]
+        }
+        let floor = percentile(0.1)
+        let loud = percentile(0.9)
+        quiet = min(loud * 0.15, max(floor * 2.5, loud * 0.03, 0.001))
+    }
 
     func peak(from start: Double, to end: Double) -> Float {
         guard !peaks.isEmpty, end > start else { return 0 }

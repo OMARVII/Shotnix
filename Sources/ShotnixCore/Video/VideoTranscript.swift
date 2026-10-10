@@ -54,26 +54,51 @@ enum VideoTranscript {
     }
 
     /// The source span to remove for a run of consecutive words: the words
-    /// plus the silence up to the next word (a short breath is kept).
+    /// plus the silence up to the next word (a short breath is kept), and
+    /// never into the next word itself.
     static func cutRange(for run: ArraySlice<VideoTranscriptWord>, next: VideoTranscriptWord?) -> ClosedRange<Double>? {
         guard let first = run.first, let last = run.last else { return nil }
         let start = max(first.start - 0.02, 0)
         var end = last.end + 0.02
-        if let next, next.start - last.end < 0.8 {
-            end = max(end, next.start - 0.06)
+        if let next {
+            if next.start - last.end < 0.8 { end = max(end, next.start - 0.06) }
+            end = min(end, max(next.start, last.end))
         }
         return end - start > 0.05 ? start...end : nil
     }
 
-    /// Filler words that are still in the video.
-    static func fillerRanges(words: [VideoTranscriptWord], isIncluded: (Double) -> Bool) -> [ClosedRange<Double>] {
-        var ranges: [ClosedRange<Double>] = []
+    /// The span to cut for `words[run]`, moved onto the run's own sound
+    /// when the recording's waveform is known: the recognizer's times sit
+    /// on a coarse grid and can be off by a whole word, more so over
+    /// background noise.
+    static func cutRange(words: [VideoTranscriptWord], run: ClosedRange<Int>, sound: VideoWaveform?) -> ClosedRange<Double>? {
+        guard words.indices.contains(run.lowerBound), words.indices.contains(run.upperBound) else { return nil }
+        let next = run.upperBound + 1 < words.count ? words[run.upperBound + 1] : nil
+        guard let timed = cutRange(for: words[run], next: next) else { return nil }
+        guard let sound else { return timed }
+        if let cut = sound.cut(words: words, run: run) { return cut }
+        // Its sound runs into its neighbours': the timed cut, its edges off
+        // the sound they'd split, reaching at most a little past the words.
+        let kept = sound.keepingWords(timed)
+        let start = max(kept.lowerBound, timed.lowerBound - 0.1)
+        let end = min(kept.upperBound, timed.upperBound + 0.1)
+        return start < end ? start...end : timed
+    }
+
+    /// Each filler word still in the video, with the span its cut removes.
+    static func fillerCuts(words: [VideoTranscriptWord], sound: VideoWaveform? = nil, isIncluded: (Double) -> Bool) -> [(index: Int, range: ClosedRange<Double>)] {
+        var cuts: [(index: Int, range: ClosedRange<Double>)] = []
         for (index, word) in words.enumerated() where word.isFiller && isIncluded((word.start + word.end) / 2) {
-            if let range = cutRange(for: words[index...index], next: index + 1 < words.count ? words[index + 1] : nil) {
-                ranges.append(range)
+            if let range = cutRange(words: words, run: index...index, sound: sound) {
+                cuts.append((index, range))
             }
         }
-        return merge(ranges)
+        return cuts
+    }
+
+    /// Filler words that are still in the video.
+    static func fillerRanges(words: [VideoTranscriptWord], sound: VideoWaveform? = nil, isIncluded: (Double) -> Bool) -> [ClosedRange<Double>] {
+        merge(fillerCuts(words: words, sound: sound, isIncluded: isIncluded).map(\.range))
     }
 
     /// Silences between words longer than `minimum`, shortened to `keep` —
@@ -84,17 +109,25 @@ enum VideoTranscript {
         minimum: Double = 1.0,
         keep: Double = 0.4,
         busy: [Double],
+        sound: VideoWaveform? = nil,
         isIncluded: (Double) -> Bool
     ) -> [ClosedRange<Double>] {
         var ranges: [ClosedRange<Double>] = []
         for (a, b) in zip(words, words.dropFirst()) {
             let gap = b.start - a.end
             guard gap > minimum else { continue }
-            let start = a.end + keep / 2
-            let end = b.start - keep / 2
+            var start = a.end + keep / 2
+            var end = b.start - keep / 2
             guard end - start > 0.2, isIncluded((start + end) / 2) else { continue }
             // Leave pauses where the screen is busy.
             if let first = firstIndex(in: busy, atLeast: start - 0.2), busy[first] <= end + 0.2 { continue }
+            // Only ever the silence: a word timed early or late keeps its sound.
+            if let sound {
+                let kept = sound.keepingWords(start...end, canGrow: false)
+                start = kept.lowerBound
+                end = kept.upperBound
+                guard end - start > 0.2 else { continue }
+            }
             ranges.append(start...end)
         }
         return merge(ranges)
@@ -271,5 +304,173 @@ extension VideoDemoProject {
         timelineClips = clips
         ensureTimeline(totalDuration: totalDuration)
         return true
+    }
+}
+
+// MARK: - Keeping cuts off words
+
+extension VideoDemoProject {
+    /// Moves cut words onto the span their cut took when the recognizer
+    /// had them elsewhere, so the transcript (which goes by a word's
+    /// middle) shows them cut and they put back the same span.
+    mutating func retime(_ words: [VideoTranscriptWord], into range: ClosedRange<Double>) {
+        for word in words where !range.contains((word.start + word.end) / 2) {
+            guard let line = captions.firstIndex(where: { $0.id == word.lineID }),
+                  captions[line].words.indices.contains(word.index) else { continue }
+            let start = min(max(word.start, range.lowerBound), range.upperBound - 0.02)
+            captions[line].words[word.index].start = start
+            captions[line].words[word.index].end = max(min(word.end, range.upperBound), start + 0.01)
+        }
+    }
+}
+
+extension VideoWaveform {
+    /// Stretches of sound touching `window`, whole.
+    func sounds(touching window: ClosedRange<Double>) -> [ClosedRange<Double>] {
+        let rate = Self.bucketsPerSecond
+        func sounding(_ index: Int) -> Bool { peaks.indices.contains(index) && peaks[index] > quiet }
+        var first = max(Int((window.lowerBound * rate).rounded(.down)), 0)
+        var last = min(Int((window.upperBound * rate).rounded(.down)), peaks.count - 1)
+        guard first <= last else { return [] }
+        while sounding(first), sounding(first - 1) { first -= 1 }
+        while sounding(last), sounding(last + 1) { last += 1 }
+        var stretches: [ClosedRange<Double>] = []
+        var open: Int?
+        for index in first...(last + 1) {
+            if index <= last, sounding(index) {
+                if open == nil { open = index }
+            } else if let start = open {
+                stretches.append(Double(start) / rate...Double(index) / rate)
+                open = nil
+            }
+        }
+        return stretches
+    }
+
+    /// The span to cut for `words[run]`, from the sound itself: each
+    /// stretch of sound near it belongs to the word whose time overlaps it
+    /// most (the run, the word before, the word after, or words further
+    /// out), never the run's when it covers most of a neighbour's time,
+    /// and a single word takes the stretch nearest its middle. The cut
+    /// takes the run's sound and the silence after it up to a breath
+    /// before the next word, and never touches sound that stays. Nil when
+    /// none of the sound is the run's: it runs into its neighbours.
+    func cut(words: [VideoTranscriptWord], run: ClosedRange<Int>) -> ClosedRange<Double>? {
+        guard peaks.count > 1, words.indices.contains(run.lowerBound), words.indices.contains(run.upperBound) else { return nil }
+        let first = words[run.lowerBound]
+        let last = words[run.upperBound]
+        let previous = run.lowerBound > 0 ? words[run.lowerBound - 1] : nil
+        let next = run.upperBound + 1 < words.count ? words[run.upperBound + 1] : nil
+        let own = first.start...max(last.end, first.start)
+        let before = previous.map { $0.start...max($0.end, $0.start) }
+        let after = next.map { $0.start...max($0.end, $0.start) }
+        let window = min(previous?.start ?? first.start - 0.5, first.start)...max(next?.end ?? last.end + 0.5, last.end)
+        func overlap(_ a: ClosedRange<Double>, _ b: ClosedRange<Double>?) -> Double {
+            guard let b else { return 0 }
+            return max(min(a.upperBound, b.upperBound) - max(a.lowerBound, b.lowerBound), 0)
+        }
+        func coversMost(_ stretch: ClosedRange<Double>, of word: ClosedRange<Double>?) -> Bool {
+            guard let word else { return false }
+            return overlap(stretch, word) > 0.5 * (word.upperBound - word.lowerBound)
+        }
+        enum Owner { case run, previous, next, further }
+        var owned: [(stretch: ClosedRange<Double>, owner: Owner)] = []
+        for stretch in sounds(touching: window) {
+            let ours = overlap(stretch, own)
+            let earlier = overlap(stretch, before)
+            let later = overlap(stretch, after)
+            let further = max(window.lowerBound - stretch.lowerBound, 0) + max(stretch.upperBound - window.upperBound, 0)
+            if ours > 0, ours >= max(earlier, later, further), !coversMost(stretch, of: before), !coversMost(stretch, of: after) {
+                owned.append((stretch, .run))
+            } else if earlier > 0, earlier >= max(later, further) {
+                owned.append((stretch, .previous))
+            } else if later > 0, later >= further {
+                owned.append((stretch, .next))
+            } else {
+                owned.append((stretch, .further))
+            }
+        }
+        var mine = owned.filter { $0.owner == .run }.map(\.stretch)
+        let middle = (first.start + last.end) / 2
+        func distance(_ stretch: ClosedRange<Double>) -> Double { max(stretch.lowerBound - middle, middle - stretch.upperBound, 0) }
+        if mine.isEmpty {
+            // Timed off its own sound: a stretch the word before has after
+            // its main one, or the word after has before its main one.
+            var spare: [ClosedRange<Double>] = []
+            let earlier = owned.filter { $0.owner == .previous }.map(\.stretch)
+            if let main = earlier.max(by: { overlap($0, before) < overlap($1, before) }) {
+                spare += earlier.filter { $0.lowerBound >= main.upperBound }
+            }
+            let later = owned.filter { $0.owner == .next }.map(\.stretch)
+            if let main = later.max(by: { overlap($0, after) < overlap($1, after) }) {
+                spare += later.filter { $0.upperBound <= main.lowerBound }
+            }
+            if let nearest = spare.filter({ max($0.lowerBound - own.upperBound, own.lowerBound - $0.upperBound, 0) <= 0.3 }).min(by: { distance($0) < distance($1) }) {
+                mine = [nearest]
+            }
+        } else if run.count == 1, mine.count > 1 {
+            mine = [mine.min { distance($0) < distance($1) }!]
+        }
+        guard let lower = mine.first?.lowerBound, let upper = mine.last?.upperBound else { return nil }
+        let others = owned.map(\.stretch).filter { !mine.contains($0) }
+        let kept = others.filter { $0.upperBound <= lower }.map(\.upperBound).max() ?? 0
+        let following = others.filter { $0.lowerBound >= upper }.map(\.lowerBound).min() ?? .infinity
+        let start = max(lower - 0.02, kept, 0)
+        // A soft "s" or "f" starting the next word sits under the quiet
+        // level, so the breath kept before its loud part is a bit longer.
+        var end = upper + 0.02
+        if following - upper < 0.8 { end = max(end, following - 0.1) }
+        end = min(end, following)
+        return start < end ? start...end : nil
+    }
+
+    /// The quietest moment within 60 ms of `time`.
+    func quietest(near time: Double) -> Double {
+        let rate = Self.bucketsPerSecond
+        let center = Int((time * rate).rounded(.down))
+        let window = (center - 3...center + 3).filter { peaks.indices.contains($0) }
+        guard let index = window.min(by: { peaks[$0] < peaks[$1] || (peaks[$0] == peaks[$1] && abs($0 - center) < abs($1 - center)) }) else { return time }
+        return (Double(index) + 0.5) / rate
+    }
+
+    /// Moves a cut's edges off the sound they'd split: an edge inside a
+    /// stretch of sound takes all of it when most of it is in the cut,
+    /// and stops short of it otherwise. Where words run together with no
+    /// silence, an edge splits at the quietest moment nearby instead.
+    /// `canGrow: false` only ever shrinks the cut (a shortened pause never
+    /// takes a word's sound).
+    func keepingWords(_ range: ClosedRange<Double>, canGrow: Bool = true) -> ClosedRange<Double> {
+        guard peaks.count > 1 else { return range }
+        let rate = Self.bucketsPerSecond
+        func bucket(_ time: Double) -> Int { Int((time * rate).rounded(.down)) }
+        func loud(_ index: Int) -> Bool { peaks.indices.contains(index) && peaks[index] > quiet }
+        func sound(around time: Double) -> ClosedRange<Double>? {
+            guard loud(bucket(time)) else { return nil }
+            return sounds(touching: time...time).first
+        }
+        func hasSound(_ start: Double, _ end: Double) -> Bool {
+            let from = bucket(start)
+            let to = bucket(end - 0.001)
+            return from <= to && (from...to).contains(where: loud)
+        }
+        var start = range.lowerBound
+        var end = range.upperBound
+        if let around = sound(around: start), around.upperBound <= end {
+            let inside = around.upperBound - start
+            start = canGrow && inside > start - around.lowerBound ? around.lowerBound : around.upperBound
+        }
+        if let around = sound(around: end), around.lowerBound >= start {
+            let inside = end - around.lowerBound
+            end = canGrow && inside > around.upperBound - end ? around.upperBound : around.lowerBound
+        }
+        if canGrow, !hasSound(start, end), hasSound(range.lowerBound, range.upperBound) {
+            start = sound(around: range.lowerBound) == nil ? start : quietest(near: range.lowerBound)
+            end = sound(around: range.upperBound) == nil ? end : quietest(near: range.upperBound)
+        }
+        if !canGrow {
+            start = max(start, range.lowerBound)
+            end = min(end, range.upperBound)
+        }
+        return start < end ? start...end : range
     }
 }

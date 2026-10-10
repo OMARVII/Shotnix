@@ -248,6 +248,79 @@ extension VideoCaptionTests {
         }
     }
 
+    /// Real transcription of narration with fillers, each piece spoken on
+    /// its own and joined with set gaps, so every word's true span is known:
+    /// the recognizer's times run up to 0.2 s off, and a cut by them took
+    /// the start of the next word. Cuts by the sound take each filler whole
+    /// and leave every word. Opt-in (SHOTNIX_SPEECH_TEST=1).
+    func testFillerCutsLeaveTheWordsAroundThem() async throws {
+        guard ProcessInfo.processInfo.environment["SHOTNIX_SPEECH_TEST"] == "1" else {
+            throw XCTSkip("Set SHOTNIX_SPEECH_TEST=1 to run the on-device speech test")
+        }
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent("shotnix-fillers-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let pieces: [(text: String, filler: Bool, gap: Double)] = [
+            ("So,", false, 0.12), ("um", true, 0.10), ("open the settings panel.", false, 0.35),
+            ("Then", false, 0.10), ("uh", true, 0.12), ("turn on dark mode and", false, 0.15),
+            ("um", true, 0.10), ("save your changes.", false, 0),
+        ]
+        var samples: [Float] = []
+        var rate = 0.0
+        var spans: [(filler: Bool, start: Double, end: Double)] = []
+        for (index, piece) in pieces.enumerated() {
+            let spoken = directory.appendingPathComponent("piece\(index).aiff")
+            let say = Process()
+            say.executableURL = URL(fileURLWithPath: "/usr/bin/say")
+            say.arguments = ["-v", "Samantha", "-o", spoken.path, piece.text]
+            try say.run()
+            say.waitUntilExit()
+            let file = try AVAudioFile(forReading: spoken)
+            let buffer = try XCTUnwrap(AVAudioPCMBuffer(pcmFormat: file.processingFormat, frameCapacity: AVAudioFrameCount(file.length)))
+            try file.read(into: buffer)
+            if rate == 0 {
+                rate = file.processingFormat.sampleRate
+                samples = [Float](repeating: 0, count: Int(0.5 * rate))
+            }
+            XCTAssertEqual(file.processingFormat.sampleRate, rate)
+            let data = UnsafeBufferPointer(start: try XCTUnwrap(buffer.floatChannelData)[0], count: Int(buffer.frameLength))
+            let first = try XCTUnwrap(data.firstIndex { abs($0) > 0.003 })
+            let last = try XCTUnwrap(data.lastIndex { abs($0) > 0.003 })
+            let start = Double(samples.count) / rate
+            samples += data[first...last]
+            spans.append((piece.filler, start, Double(samples.count) / rate))
+            samples += [Float](repeating: 0, count: Int(piece.gap * rate))
+        }
+        samples += [Float](repeating: 0, count: Int(0.8 * rate))
+        let audio = directory.appendingPathComponent("speech.caf")
+        let format = try XCTUnwrap(AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: rate, channels: 1, interleaved: false))
+        let output = try XCTUnwrap(AVAudioPCMBuffer(pcmFormat: format, frameCapacity: AVAudioFrameCount(samples.count)))
+        output.frameLength = AVAudioFrameCount(samples.count)
+        samples.withUnsafeBufferPointer { output.floatChannelData![0].update(from: $0.baseAddress!, count: samples.count) }
+        do {
+            let file = try AVAudioFile(forWriting: audio, settings: format.settings)
+            try file.write(from: output)
+        }
+
+        let result = try await VideoCaptionTranscriber.transcribe(url: audio, languageIdentifier: "en-US") { _ in }
+        let words = VideoTranscript.words(from: VideoCaptionBuilder.lines(from: result.words), language: result.language)
+        print("WORDS: \(words.map { String(format: "%@ %.2f-%.2f", $0.text, $0.start, $0.end) })")
+        let loaded = await VideoMusicWaveform.load(url: audio)
+        let sound = try XCTUnwrap(loaded)
+        let cuts = VideoTranscript.fillerCuts(words: words, sound: sound) { _ in true }
+        XCTAssertGreaterThanOrEqual(cuts.count, 2, "the recognizer heard the fillers")
+        func overlap(_ range: ClosedRange<Double>, _ span: (filler: Bool, start: Double, end: Double)) -> Double {
+            max(min(range.upperBound, span.end) - max(range.lowerBound, span.start), 0)
+        }
+        for cut in cuts {
+            let filler = try XCTUnwrap(spans.filter(\.filler).max { overlap(cut.range, $0) < overlap(cut.range, $1) })
+            XCTAssertGreaterThan(overlap(cut.range, filler), 0.9 * (filler.end - filler.start), "the whole filler: \(cut.range)")
+            for word in spans where !word.filler {
+                XCTAssertLessThan(overlap(cut.range, word), 0.02, "none of a word: \(cut.range) vs \(word.start)-\(word.end)")
+            }
+        }
+    }
+
     /// The editor flow: Generate Captions on a narrated recording.
     @MainActor
     func testEditorGeneratesCaptionsFromNarration() async throws {
