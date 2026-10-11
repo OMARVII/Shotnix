@@ -1,7 +1,7 @@
 # Shotnix localization glossary
 
 Shotnix is translated into German (de), French (fr), Simplified Chinese
-(zh-Hans), Russian (ru), and Ukrainian (uk). Use the words macOS itself uses, so Shotnix reads like part of the
+(zh-Hans), Russian (ru), Ukrainian (uk), and Japanese (ja). Use the words macOS itself uses, so Shotnix reads like part of the
 system. When a term isn't here, look at how Apple's own apps say it.
 
 ## How it works
@@ -262,3 +262,115 @@ macOS names, from System Settings on macOS 26:
 | Speech Recognition | Распознавание речи | Розпізнавання мовлення |
 | Keyboard → Keyboard Shortcuts → Screenshots | Клавиатура → Сочетания клавиш → Снимки экрана | Клавіатура → Клавіатурні скорочення → Знімки екрана |
 | General → Language & Region → Applications | Основные → Язык и регион → Приложения | Загальні → Мова і регіон → Програми |
+
+## Japanese
+
+Japanese follows Apple's own Japanese, measured from the macOS 26 string
+tables (AppKit, Screenshot, Preview, System Settings).
+
+| | Japanese |
+|---|---|
+| Register | sentences, alerts, help text and descriptions in polite です/ます (`保存しますか?`, `書き出しました。`); no あなた (leave the subject out, as Apple does) |
+| Buttons and menu items | a noun or a plain verb, as Apple's menus: `保存`, `キャンセル`, `書き出す…`, `取り消す`, `ウインドウを閉じる`, `Finderに表示` |
+| Punctuation | full-width `、。` and `（）`; half-width `?` and `!` (Apple writes `置き換えてもよろしいですか?`); a label colon is half-width with a space after (`最小: 10`) |
+| Quotes | names of things in “…” as Apple does (`“システム設定”`), not 「…」 |
+| Spacing | no space between Japanese and Latin letters or digits (`Shotnixを終了`, `10秒`, `GIFを書き出す`); keep the spaces inside Latin phrases (`QuickTime Player`) |
+| Menu paths | “…”＞“…” in sentences, as Apple's help does (`“システム設定”＞“プライバシーとセキュリティ”`); keep an arrow (→) only where the English key draws one as a symbol |
+| Plurals | one form only: give a plain string, like Chinese (`%lld件のスクリーンショット`) |
+| Counters | `%lld項目` (selected or deleted items, as Finder says), `%lld件` (captures in History), `%lld個` (zooms, clips, captions), `%lld箇所` (cuts, pauses), `%lld回` (clicks), `%lld秒`, `%lld分`, `%lld枚` (images) |
+| Katakana | Apple's spellings without the final long vowel: `ウインドウ` (never ウィンドウ), `フォルダ`, `ポインタ`, `エディタ`, `スライダ`, `サムネール`, `ユーザ`, `フィルタ`, `プレーヤー` |
+| Ellipsis | the single character `…`, as in English |
+
+Japanese is often shorter than English, but katakana words grow fast: keep
+buttons to a word or two.
+
+| English | Japanese |
+|---|---|
+| screenshot | スクリーンショット |
+| capture (verb, a screenshot) | 取り込む (Apple's Screenshot: `選択部分を取り込む`) |
+| capture (noun, an item in History) | スクリーンショット (or 項目 for any kind of item) |
+| Capture Area / Capture Window / Capture Fullscreen | 範囲を取り込む / ウインドウを取り込む / 画面全体を取り込む |
+| Record Area / Record Window / Record Fullscreen | 範囲を収録 / ウインドウを収録 / 画面全体を収録 |
+| screen recording (the feature) | 画面収録 |
+| record (verb, video) | 収録する (Apple: `収録を停止`); 録音 only for sound alone |
+| recording (a file) | 収録 (or 収録したビデオ where 収録 alone is unclear) |
+| area / window / full screen | 範囲 / ウインドウ / 画面全体 |
+| all displays / display | すべてのディスプレイ / ディスプレイ |
+| previous area | 前回の範囲 |
+| scrolling capture | スクロール取り込み (the action: スクロールして取り込む) |
+| timed capture | タイマー取り込み (the action: タイマーで取り込む) |
+| Capture Text (OCR) / text recognition | テキストを取り込む / テキスト認識 |
+| QR code | QRコード |
+| pin (a screenshot) / pinned screenshot | 画面に固定 / 固定したスクリーンショット |
+| screenshot editor / video editor | スクリーンショットエディタ / ビデオエディタ |
+| annotate / annotation | 注釈を付ける / 注釈 |
+| arrow / rectangle / filled rectangle / ellipse / line | 矢印 / 長方形 / 塗りつぶした長方形 / 楕円 / 線 |
+| freehand / text / callout | フリーハンド / テキスト / 吹き出し |
+| numbered step | 番号付きステップ |
+| highlight / highlighter | ハイライト / 蛍光ペン |
+| blur / pixelate | ぼかし / モザイク |
+| spotlight (tool) | スポットライト |
+| crop | 切り取り (Apple Preview's word; Cut is カット, so they never clash) |
+| background (backdrop) / padding / shadow / corner radius | 背景 / 余白 / シャドウ / 角の丸み |
+| opacity | 不透明度 |
+| undo / redo | 取り消す / やり直す (an edit's name: `ズームの削除を取り消す`) |
+| copy / paste / cut / select all | コピー / ペースト / カット / すべてを選択 |
+| save / save as… / don't save | 保存 / 別名で保存… / 保存しない |
+| export (button) / Export… / export (noun) | 書き出す / 書き出す… / 書き出し |
+| cancel / delete / done / close | キャンセル / 削除 / 完了 / 閉じる |
+| Show in Finder | Finderに表示 |
+| quit Shotnix / About Shotnix | Shotnixを終了 / Shotnixについて |
+| settings / Settings… | 設定 / 設定… |
+| Settings tabs: General, Shortcuts, Screenshots, Recording, About | 一般 / ショートカット / スクリーンショット / 収録 / 情報 |
+| System Default (microphone, camera, language) | システムのデフォルト |
+| History / Library (History's sidebar) | 履歴 / ライブラリ |
+| Clean Up / Clear History | クリーンアップ / 履歴を消去 |
+| Quick Access overlay (the thumbnail after a capture) | クイックアクセス (the thumbnail itself: サムネール) |
+| Command Center / Health | コマンドセンター / 状態 |
+| menu bar | メニューバー |
+| keyboard shortcut | キーボードショートカット (short: ショートカット) |
+| microphone / camera | マイク / カメラ |
+| system audio / computer sound | システムオーディオ |
+| voice / narration | 声 / ナレーション |
+| pause / resume / stop | 一時停止 / 再開 / 停止 |
+| discard (a take) | 破棄 |
+| countdown | カウントダウン |
+| timeline / lane / clip | タイムライン / トラック / クリップ |
+| playhead | 再生ヘッド |
+| trim / cut (a removed part) / cut (the join) | トリミング / カット / つなぎ目 |
+| zoom (noun) / Auto Zoom | ズーム / 自動ズーム |
+| pointer / cursor | ポインタ |
+| click (noun / verb) | クリック / クリックする |
+| drag | ドラッグ |
+| captions / burn captions into the video | 字幕 / 字幕をビデオに焼き付ける |
+| transcript / transcribe | 文字起こし / 文字起こしする |
+| filler words (um, uh) | フィラー (えー、えーと) |
+| idle moments (Speed Up Idle) | 動きのない区間 |
+| Enhance voice | 声を補正 |
+| mute / unmute | 消音 / 消音を解除 |
+| volume / speed / aspect ratio | 音量 / 速度 / アスペクト比 |
+| music / song | 音楽 / 曲 |
+| title card / intro / outro / end card | タイトルカード / オープニング / エンディング / エンドカード |
+| transition: dissolve / dip to black / hard cut | トランジション: ディゾルブ / 黒にフェード / カット |
+| fade in / fade out | フェードイン / フェードアウト |
+| camera bubble / camera layout | カメラのワイプ / カメラのレイアウト |
+| vertical (9:16) | 縦型 |
+| preview | プレビュー |
+| permission (privacy) | アクセス許可 |
+| update / Check for Updates… | アップデート / アップデートを確認… |
+| px / pt | px / pt |
+
+macOS names, from System Settings on macOS 26:
+
+| English | Japanese |
+|---|---|
+| System Settings | システム設定 |
+| Privacy & Security | プライバシーとセキュリティ |
+| Screen & System Audio Recording | 画面収録とシステムオーディオ録音 |
+| Screen Recording (macOS 14 and earlier) | 画面収録 |
+| Microphone / Camera | マイク / カメラ |
+| Accessibility | アクセシビリティ |
+| Speech Recognition | 音声認識 |
+| Keyboard → Keyboard Shortcuts… → Screenshots | キーボード＞キーボードショートカット…＞スクリーンショット |
+| General → Language & Region → Applications | 一般＞言語と地域＞アプリケーション |
+| Login Items & Extensions | ログイン項目と機能拡張 |

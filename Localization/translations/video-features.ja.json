@@ -1,0 +1,1355 @@
+{
+  "%@ (edited)" : {
+    "ja" : "%@（編集済み）"
+  },
+  "%@ (original)" : {
+    "ja" : "%@（オリジナル）"
+  },
+  "%@ can't be transcribed on this Mac without sending your voice to a server. To add it, turn on Dictation for %@ in System Settings → Keyboard, or pick another language." : {
+    "ja" : "このMacでは、声をサーバに送信せずに%@を文字起こしすることはできません。追加するには、“システム設定”＞“キーボード”で%@の音声入力をオンにするか、別の言語を選択してください。"
+  },
+  "%@ isn't supported for captions on this Mac. Pick another language." : {
+    "ja" : "このMacでは%@の字幕に対応していません。別の言語を選択してください。"
+  },
+  "%@ transition" : {
+    "ja" : "%@のトランジション"
+  },
+  "%@ · on your clipboard — paste it anywhere" : {
+    "ja" : "%@ · クリップボードにあります。どこにでもペーストできます"
+  },
+  "%@ — click to change" : {
+    "ja" : "%@: クリックして変更"
+  },
+  "%@ → %@ — the part you ⇧-dragged on the timeline" : {
+    "ja" : "%@ → %@（タイムラインで⇧ドラッグした部分）"
+  },
+  "%@, %@" : {
+    "ja" : "%@、%@"
+  },
+  "%@, and %lld more" : {
+    "ja" : "%@、ほか%lld件"
+  },
+  "%@s" : {
+    "ja" : "%@秒"
+  },
+  "%@–%@ only" : {
+    "ja" : "%@–%@のみ"
+  },
+  "%lld lines changed since translating" : {
+    "ja" : "翻訳後に%lld行が変更されました"
+  },
+  "%lld recorded clicks — in the preview and the export" : {
+    "ja" : "記録されたクリック%lld回。プレビューと書き出しで鳴ります"
+  },
+  "%lld%%" : {
+    "ja" : "%lld%%"
+  },
+  "A 2-second “Made with Shotnix” outro on your background — your own outro card is in Style" : {
+    "ja" : "背景に“Made with Shotnix”を2秒間表示して締めくくります。独自のエンディングカードは“スタイル”にあります"
+  },
+  "A big GIF — about %@ and %@ of memory to make. A smaller size, fewer fps, or MP4 is lighter." : {
+    "ja" : "大きなGIFです。約%@で、作成に%@のメモリが必要です。サイズを小さくするか、fpsを下げるか、MP4にすると軽くなります。"
+  },
+  "A clean picture plus a subtitles file to upload." : {
+    "ja" : "映像には字幕を入れず、アップロード用の字幕ファイルを別に保存します。"
+  },
+  "A cut — click to add a transition" : {
+    "ja" : "つなぎ目: クリックしてトランジションを追加"
+  },
+  "A file with that name is in the way. Pick another name and export again." : {
+    "ja" : "同じ名前のファイルがすでにあります。別の名前を付けて、もう一度書き出してください。"
+  },
+  "A second caption track you can show, burn in, or save as subtitles. Translated on this Mac — nothing is uploaded." : {
+    "ja" : "表示、焼き付け、字幕ファイルとしての保存ができる2つ目の字幕トラックです。このMac上で翻訳されるため、何もアップロードされません。"
+  },
+  "A song under the whole video — it loops to fill, fades in and out, and dips while you talk. Use music you have the rights to." : {
+    "ja" : "ビデオ全体に曲を流します。長さに合わせてループし、フェードイン/フェードアウトして、話している間は音量が下がります。使用する権利のある音楽を使ってください。"
+  },
+  "A subtitles file for YouTube and web players (.srt), or for the web (.vtt) — follows your cuts" : {
+    "ja" : "YouTubeやWebプレーヤー用（.srt）、またはWeb用（.vtt）の字幕ファイルです。カットが反映されます"
+  },
+  "A video needs at least one clip" : {
+    "ja" : "ビデオには少なくとも1つのクリップが必要です"
+  },
+  "About %lld min left" : {
+    "ja" : "残り約%lld分"
+  },
+  "About %lld%% smaller — plays on Apple devices and most phones; some browsers and Windows PCs can't play it without an extra codec" : {
+    "ja" : "サイズが約%lld%%小さくなります。Appleデバイスとほとんどのスマートフォンで再生できます。一部のブラウザやWindows PCでは、追加のコーデックがないと再生できません"
+  },
+  "About %llds left" : {
+    "ja" : "残り約%lld秒"
+  },
+  "Add Image or Logo…" : {
+    "ja" : "画像またはロゴを追加…"
+  },
+  "Add Intro Card" : {
+    "ja" : "オープニングカードを追加"
+  },
+  "Add Music…" : {
+    "ja" : "音楽を追加…"
+  },
+  "Add Outro Card" : {
+    "ja" : "エンディングカードを追加"
+  },
+  "Add another recording or video after this one — Shotnix recordings keep their pointer, clicks, and shortcuts." : {
+    "ja" : "このビデオの後ろに別の収録やビデオを追加できます。Shotnixで収録したビデオは、ポインタ、クリック、ショートカットを保持します。"
+  },
+  "Added %@ — %@" : {
+    "ja" : "“%@”を追加しました（%@）"
+  },
+  "All zooms set to %@" : {
+    "ja" : "すべてのズームを%@に設定しました"
+  },
+  "Almost done" : {
+    "ja" : "まもなく完了"
+  },
+  "Append Video…" : {
+    "ja" : "ビデオを末尾に追加…"
+  },
+  "Applies at every cut. Click a cut's marker on the timeline, or select a clip, to choose one for that cut only." : {
+    "ja" : "すべてのつなぎ目に適用されます。1つのつなぎ目だけに設定するには、タイムライン上のつなぎ目のマーカーをクリックするか、クリップを選択します。"
+  },
+  "Arrow" : {
+    "ja" : "矢印"
+  },
+  "At playhead" : {
+    "ja" : "再生ヘッドに合わせる"
+  },
+  "Aurora" : {
+    "ja" : "オーロラ"
+  },
+  "Auto" : {
+    "ja" : "自動"
+  },
+  "Auto zoom applied — %lld zooms follow your clicks" : {
+    "ja" : "自動ズームを適用しました。クリックに合わせて%lld個のズームを追加しました"
+  },
+  "Auto zoom — %lld zooms" : {
+    "ja" : "自動ズーム: %lld個のズーム"
+  },
+  "Back" : {
+    "ja" : "戻る"
+  },
+  "Back to the Shotnix look" : {
+    "ja" : "Shotnixの標準スタイルに戻しました"
+  },
+  "Back to the original recording — ⌘Z to undo" : {
+    "ja" : "元の収録に戻しました。⌘Zで取り消せます"
+  },
+  "Balancing loudness…" : {
+    "ja" : "音量を均一化中…"
+  },
+  "Between clips" : {
+    "ja" : "クリップ間"
+  },
+  "Blossom" : {
+    "ja" : "ブロッサム"
+  },
+  "Blur" : {
+    "ja" : "ぼかし"
+  },
+  "Bold" : {
+    "ja" : "太い"
+  },
+  "Bold outline" : {
+    "ja" : "太い縁取り"
+  },
+  "Bottom" : {
+    "ja" : "下"
+  },
+  "Bottom left" : {
+    "ja" : "左下"
+  },
+  "Bottom right" : {
+    "ja" : "右下"
+  },
+  "Burn captions into the video" : {
+    "ja" : "字幕をビデオに焼き付ける"
+  },
+  "Camera footage, cleaned-up voice, drafts, and clipboard exports" : {
+    "ja" : "カメラ映像、補正済みの声、下書き、クリップボード用の書き出し"
+  },
+  "Camera hidden" : {
+    "ja" : "カメラ非表示"
+  },
+  "Camera layout removed" : {
+    "ja" : "カメラのレイアウトを削除しました"
+  },
+  "Cancel export" : {
+    "ja" : "書き出しをキャンセル"
+  },
+  "Cancel this export" : {
+    "ja" : "この書き出しをキャンセル"
+  },
+  "Cancelled" : {
+    "ja" : "キャンセルしました"
+  },
+  "Caption removed" : {
+    "ja" : "字幕を削除しました"
+  },
+  "Caption style %@" : {
+    "ja" : "字幕のスタイル: %@"
+  },
+  "Captions" : {
+    "ja" : "字幕"
+  },
+  "Captions are drawn into the picture, and a subtitles file is saved next to the video." : {
+    "ja" : "字幕を映像に描き込み、ビデオと同じ場所に字幕ファイルを保存します。"
+  },
+  "Captions are drawn into the picture." : {
+    "ja" : "字幕を映像に描き込みます。"
+  },
+  "Captions are hidden in the editor (Captions tab → Show captions)." : {
+    "ja" : "字幕はエディタで非表示になっています（“字幕”タブ＞“字幕を表示”）。"
+  },
+  "Captions look like this" : {
+    "ja" : "字幕は このように 表示されます"
+  },
+  "Captions ready — %lld lines" : {
+    "ja" : "字幕ができました（%lld行）"
+  },
+  "Captions translated to %@" : {
+    "ja" : "字幕を%@に翻訳しました"
+  },
+  "Cards use your background, and the timeline grows to fit them. The “Made with Shotnix” end card is separate — it's in the export options." : {
+    "ja" : "カードには背景が使われ、その分タイムラインが長くなります。“Made with Shotnix”エンドカードはこれとは別で、書き出しオプションにあります。"
+  },
+  "Center" : {
+    "ja" : "中央"
+  },
+  "Choose a language" : {
+    "ja" : "言語を選択"
+  },
+  "Choose a logo, watermark, or screenshot to place on the video" : {
+    "ja" : "ビデオに配置するロゴ、透かし、またはスクリーンショットを選択してください"
+  },
+  "Choose a recording or video to add after this one" : {
+    "ja" : "このビデオの後ろに追加する収録またはビデオを選択してください"
+  },
+  "Choose a song to play under the video" : {
+    "ja" : "ビデオに流す曲を選択してください"
+  },
+  "Circle" : {
+    "ja" : "円形"
+  },
+  "Citrus" : {
+    "ja" : "シトラス"
+  },
+  "Classic" : {
+    "ja" : "クラシック"
+  },
+  "Clean Up…" : {
+    "ja" : "クリーンアップ…"
+  },
+  "Cleaning up the voice in “%@”" : {
+    "ja" : "“%@”の声を補正中"
+  },
+  "Cleaning up voice…" : {
+    "ja" : "声を補正中…"
+  },
+  "Cleaning up your voice first… %lld%%" : {
+    "ja" : "先に声を補正中…%lld%%"
+  },
+  "Cleaning up your voice… %lld%%" : {
+    "ja" : "声を補正中…%lld%%"
+  },
+  "Click removed — ⌘Z to undo" : {
+    "ja" : "クリックを削除しました。⌘Zで取り消せます"
+  },
+  "Click sounds" : {
+    "ja" : "クリック音"
+  },
+  "Click volume" : {
+    "ja" : "クリック音の音量"
+  },
+  "Clip moved — ⌘Z to undo" : {
+    "ja" : "クリップを移動しました。⌘Zで取り消せます"
+  },
+  "Clip now ends here" : {
+    "ja" : "クリップの終了位置をここに設定しました"
+  },
+  "Clip now starts here" : {
+    "ja" : "クリップの開始位置をここに設定しました"
+  },
+  "Clip removed — ⌘Z to undo" : {
+    "ja" : "クリップを削除しました。⌘Zで取り消せます"
+  },
+  "Clip split" : {
+    "ja" : "クリップを分割しました"
+  },
+  "Close" : {
+    "ja" : "閉じる"
+  },
+  "Close (Esc)" : {
+    "ja" : "閉じる（Esc）"
+  },
+  "Copied" : {
+    "ja" : "コピーしました"
+  },
+  "Copied to clipboard" : {
+    "ja" : "クリップボードにコピーしました"
+  },
+  "Copied — paste it anywhere" : {
+    "ja" : "コピーしました。どこにでもペーストできます"
+  },
+  "Copy Path" : {
+    "ja" : "パスをコピー"
+  },
+  "Copy to clipboard" : {
+    "ja" : "クリップボードにコピー"
+  },
+  "Copy to clipboard — %@" : {
+    "ja" : "クリップボードにコピー — %@"
+  },
+  "Copying %lld%%" : {
+    "ja" : "コピー中…%lld%%"
+  },
+  "Couldn't add that song — %@" : {
+    "ja" : "その曲を追加できませんでした。%@"
+  },
+  "Couldn't create the GIF file. Check that you can save to that folder, then export again." : {
+    "ja" : "GIFファイルを作成できませんでした。そのフォルダに保存できるか確認してから、もう一度書き出してください。"
+  },
+  "Couldn't make captions" : {
+    "ja" : "字幕を作成できませんでした"
+  },
+  "Couldn't make the click sound. Turn off Click sounds (Audio tab), then export again." : {
+    "ja" : "クリック音を作成できませんでした。“オーディオ”タブで“クリック音”をオフにしてから、もう一度書き出してください。"
+  },
+  "Couldn't open that image" : {
+    "ja" : "その画像を開けませんでした"
+  },
+  "Couldn't open that video — %@" : {
+    "ja" : "そのビデオを開けませんでした。%@"
+  },
+  "Couldn't prepare the video. Export again; if it keeps happening, restart Shotnix." : {
+    "ja" : "ビデオを準備できませんでした。もう一度書き出してください。問題が続く場合は、Shotnixを再起動してください。"
+  },
+  "Couldn't read that audio file" : {
+    "ja" : "そのオーディオファイルを読み込めませんでした"
+  },
+  "Couldn't read the recording for the GIF. Try exporting a shorter part, or choose MP4." : {
+    "ja" : "GIF用に収録を読み込めませんでした。短い部分を書き出すか、MP4を選択してください。"
+  },
+  "Couldn't read the recording. Check that its file is still there, then export again." : {
+    "ja" : "収録を読み込めませんでした。ファイルがまだあるか確認してから、もう一度書き出してください。"
+  },
+  "Couldn't save the captions file" : {
+    "ja" : "字幕ファイルを保存できませんでした"
+  },
+  "Couldn't set up the video encoder. Choose H.264 or a lower resolution, then export again." : {
+    "ja" : "ビデオエンコーダを設定できませんでした。H.264か低い解像度を選択してから、もう一度書き出してください。"
+  },
+  "Couldn't start the export. Export again; if it keeps happening, restart Shotnix." : {
+    "ja" : "書き出しを開始できませんでした。もう一度書き出してください。問題が続く場合は、Shotnixを再起動してください。"
+  },
+  "Couldn't translate (%@). Try again, or pick another language." : {
+    "ja" : "翻訳できませんでした（%@）。もう一度試すか、別の言語を選択してください。"
+  },
+  "Couldn't write the GIF. Check that there's free space, or export a shorter part." : {
+    "ja" : "GIFを書き込めませんでした。空き容量があるか確認するか、短い部分を書き出してください。"
+  },
+  "Couldn't write the video. Check that there's free space and that you can save to that folder, then export again." : {
+    "ja" : "ビデオを書き込めませんでした。空き容量があり、そのフォルダに保存できるか確認してから、もう一度書き出してください。"
+  },
+  "Crisp and compact — the best default" : {
+    "ja" : "鮮明でコンパクトな、最適な標準設定"
+  },
+  "Cut %lld words — ⌘Z to undo" : {
+    "ja" : "%lld語をカットしました。⌘Zで取り消せます"
+  },
+  "Cut, no transition" : {
+    "ja" : "つなぎ目、トランジションなし"
+  },
+  "Cutout" : {
+    "ja" : "切り抜き"
+  },
+  "Dip to black" : {
+    "ja" : "黒にフェード"
+  },
+  "Dips while you talk, comes back in the pauses" : {
+    "ja" : "話している間は音量が下がり、話が途切れると元に戻ります"
+  },
+  "Dismiss" : {
+    "ja" : "閉じる"
+  },
+  "Dissolve" : {
+    "ja" : "ディゾルブ"
+  },
+  "Dissolve Between Clips" : {
+    "ja" : "クリップ間をディゾルブ"
+  },
+  "Docs, slides" : {
+    "ja" : "ドキュメント、スライド"
+  },
+  "Done" : {
+    "ja" : "完了"
+  },
+  "Downloading the language model…" : {
+    "ja" : "言語モデルをダウンロード中…"
+  },
+  "Drag to move; drag a corner to resize" : {
+    "ja" : "ドラッグで移動、角をドラッグでサイズを変更"
+  },
+  "Duplicated" : {
+    "ja" : "複製しました"
+  },
+  "Dusk" : {
+    "ja" : "夕暮れ"
+  },
+  "Each recording keeps its own pointer, clicks, and shortcuts. Reorder them here; cut and trim them on the timeline like any clip." : {
+    "ja" : "各収録はそれぞれのポインタ、クリック、ショートカットを保持します。ここで順番を並べ替え、ほかのクリップと同じようにタイムラインでカットやトリミングができます。"
+  },
+  "Edit Video" : {
+    "ja" : "ビデオを編集"
+  },
+  "Ellipse" : {
+    "ja" : "楕円"
+  },
+  "Ember" : {
+    "ja" : "残り火"
+  },
+  "Emerald" : {
+    "ja" : "エメラルド"
+  },
+  "Encoding" : {
+    "ja" : "エンコード"
+  },
+  "End card" : {
+    "ja" : "エンドカード"
+  },
+  "English" : {
+    "ja" : "英語"
+  },
+  "Estimating…" : {
+    "ja" : "残り時間を計算中…"
+  },
+  "Every clip is muted — this export will have no sound." : {
+    "ja" : "すべてのクリップが消音されているため、書き出したビデオにはサウンドが入りません。"
+  },
+  "Every cut, zoom, annotation, caption, and style change on this video is removed — the recordings you added stay. You can undo this." : {
+    "ja" : "このビデオのカット、ズーム、注釈、字幕、スタイルの変更がすべて削除されます。追加した収録はそのまま残ります。この操作は取り消せます。"
+  },
+  "Every cut, zoom, annotation, caption, and style change on this video is removed. You can undo this." : {
+    "ja" : "このビデオのカット、ズーム、注釈、字幕、スタイルの変更がすべて削除されます。この操作は取り消せます。"
+  },
+  "Every sound level is at 0 (Audio tab) — this export will have no sound." : {
+    "ja" : "すべての音量が0になっているため（“オーディオ”タブ）、書き出したビデオにはサウンドが入りません。"
+  },
+  "Export" : {
+    "ja" : "書き出す"
+  },
+  "Export and put the file on the clipboard — paste it into Slack, Mail, or Finder" : {
+    "ja" : "書き出してファイルをクリップボードにコピーします。Slack、“メール”、Finderにペーストできます"
+  },
+  "Export cancelled" : {
+    "ja" : "書き出しをキャンセルしました"
+  },
+  "Export cancelled." : {
+    "ja" : "書き出しをキャンセルしました。"
+  },
+  "Export complete" : {
+    "ja" : "書き出しが完了しました"
+  },
+  "Export failed" : {
+    "ja" : "書き出せませんでした"
+  },
+  "Export: %@" : {
+    "ja" : "書き出し: %@"
+  },
+  "Exported" : {
+    "ja" : "書き出しました"
+  },
+  "Exported without Enhance voice — it couldn't finish." : {
+    "ja" : "“声を補正”を完了できなかったため、補正なしで書き出しました。"
+  },
+  "Exported · %@" : {
+    "ja" : "書き出しました · %@"
+  },
+  "Exporting %lld%%" : {
+    "ja" : "書き出し中…%lld%%"
+  },
+  "Exporting a video for the clipboard" : {
+    "ja" : "クリップボード用のビデオを書き出しています"
+  },
+  "Exporting “%@”" : {
+    "ja" : "“%@”を書き出しています"
+  },
+  "Exporting…" : {
+    "ja" : "書き出し中…"
+  },
+  "Exporting… %lld%%" : {
+    "ja" : "書き出し中…%lld%%"
+  },
+  "Export…" : {
+    "ja" : "書き出す…"
+  },
+  "Fade in" : {
+    "ja" : "フェードイン"
+  },
+  "Fade in from black" : {
+    "ja" : "黒からフェードイン"
+  },
+  "Fade out" : {
+    "ja" : "フェードアウト"
+  },
+  "Fade out to black" : {
+    "ja" : "黒へフェードアウト"
+  },
+  "File not found" : {
+    "ja" : "ファイルが見つかりません"
+  },
+  "Filling the frame — the view follows your cursor" : {
+    "ja" : "画面いっぱいに表示します。ポインタに合わせて表示範囲が動きます"
+  },
+  "Flamingo" : {
+    "ja" : "フラミンゴ"
+  },
+  "Frame copied" : {
+    "ja" : "フレームをコピーしました"
+  },
+  "Frame rate" : {
+    "ja" : "フレームレート"
+  },
+  "Freed %@ (%lld files)" : {
+    "ja" : "%@を解放しました（%lld個のファイル）"
+  },
+  "Full camera" : {
+    "ja" : "カメラ全面"
+  },
+  "Full-screen camera for your intro and outro" : {
+    "ja" : "オープニングとエンディングをカメラ全面にしました"
+  },
+  "GIFs embed anywhere — READMEs, pull requests, docs. Keep them short: they get big fast." : {
+    "ja" : "GIFはREADME、プルリクエスト、ドキュメントなど、どこにでも埋め込めます。すぐにファイルが大きくなるので、短めにしてください。"
+  },
+  "Getting ready…" : {
+    "ja" : "準備しています…"
+  },
+  "Glacier" : {
+    "ja" : "氷河"
+  },
+  "Graphite" : {
+    "ja" : "グラファイト"
+  },
+  "Hard Cuts Between Clips" : {
+    "ja" : "クリップ間をカットでつなぐ"
+  },
+  "Hard cut" : {
+    "ja" : "カット"
+  },
+  "Hidden" : {
+    "ja" : "非表示"
+  },
+  "Hide — the export keeps going (Esc)" : {
+    "ja" : "非表示にします。書き出しは続行されます（Esc）"
+  },
+  "Highlight" : {
+    "ja" : "ハイライト"
+  },
+  "Highlight color" : {
+    "ja" : "ハイライトカラー"
+  },
+  "Image" : {
+    "ja" : "画像"
+  },
+  "In" : {
+    "ja" : "イン点"
+  },
+  "In & out" : {
+    "ja" : "イン/アウト"
+  },
+  "In earlier" : {
+    "ja" : "イン点を早める"
+  },
+  "In later" : {
+    "ja" : "イン点を遅らせる"
+  },
+  "Includes: %@" : {
+    "ja" : "内容: %@"
+  },
+  "Instagram, LinkedIn" : {
+    "ja" : "Instagram、LinkedIn"
+  },
+  "Instant" : {
+    "ja" : "瞬時"
+  },
+  "Intro & outro" : {
+    "ja" : "オープニングとエンディング"
+  },
+  "Intro card" : {
+    "ja" : "オープニングカード"
+  },
+  "Iris" : {
+    "ja" : "アイリス"
+  },
+  "It may be damaged, still being saved, or in a format this Mac can't play. MP4 and MOV videos work best." : {
+    "ja" : "ファイルが破損しているか、保存中か、このMacで再生できない形式の可能性があります。MP4やMOVのビデオが最適です。"
+  },
+  "It only has sound, or nothing at all. Shotnix edits screen recordings and other videos." : {
+    "ja" : "サウンドだけのファイルか、空のファイルです。Shotnixで編集できるのは画面収録やその他のビデオです。"
+  },
+  "It was moved, renamed, or deleted. Open it from where it is now." : {
+    "ja" : "移動、名前変更、または削除された可能性があります。現在の場所から開いてください。"
+  },
+  "Keep Editing" : {
+    "ja" : "編集を続ける"
+  },
+  "L" : {
+    "ja" : "大"
+  },
+  "Lagoon" : {
+    "ja" : "ラグーン"
+  },
+  "Languages" : {
+    "ja" : "言語"
+  },
+  "Large" : {
+    "ja" : "大"
+  },
+  "Larger than the recording — text may look softer than at a lower resolution." : {
+    "ja" : "収録より大きいサイズです。低い解像度のときよりテキストがぼやけて見えることがあります。"
+  },
+  "Left" : {
+    "ja" : "左"
+  },
+  "Length" : {
+    "ja" : "長さ"
+  },
+  "Light" : {
+    "ja" : "軽め"
+  },
+  "Linen" : {
+    "ja" : "リネン"
+  },
+  "Listening…" : {
+    "ja" : "聞き取り中…"
+  },
+  "Loop to fill" : {
+    "ja" : "ループして最後まで再生"
+  },
+  "Lower under your voice" : {
+    "ja" : "話している間は音量を下げる"
+  },
+  "M" : {
+    "ja" : "中"
+  },
+  "Make it lighter: %@, %@ fps" : {
+    "ja" : "軽くする: %@、%@ fps"
+  },
+  "Match the recording" : {
+    "ja" : "収録に合わせる"
+  },
+  "Maximum detail for further editing" : {
+    "ja" : "ディテールを最大限に保持。後でさらに編集する場合に"
+  },
+  "Meadow" : {
+    "ja" : "草原"
+  },
+  "Medium" : {
+    "ja" : "中"
+  },
+  "Midnight" : {
+    "ja" : "ミッドナイト"
+  },
+  "Minimal" : {
+    "ja" : "ミニマル"
+  },
+  "Mint" : {
+    "ja" : "ミント"
+  },
+  "Mist" : {
+    "ja" : "ミスト"
+  },
+  "Move %@ earlier" : {
+    "ja" : "“%@”を前に移動"
+  },
+  "Move %@ later" : {
+    "ja" : "“%@”を後ろに移動"
+  },
+  "Move earlier" : {
+    "ja" : "前に移動"
+  },
+  "Move later" : {
+    "ja" : "後ろに移動"
+  },
+  "Move the playhead inside a clip to split" : {
+    "ja" : "分割するには、再生ヘッドをクリップ内に移動してください"
+  },
+  "Music" : {
+    "ja" : "音楽"
+  },
+  "Music added — it dips while you talk" : {
+    "ja" : "音楽を追加しました。話している間は音量が下がります"
+  },
+  "Music options" : {
+    "ja" : "音楽のオプション"
+  },
+  "Music removed — ⌘Z to undo" : {
+    "ja" : "音楽を削除しました。⌘Zで取り消せます"
+  },
+  "Music — click to change its volume, fades, and ducking" : {
+    "ja" : "音楽: クリックして音量、フェード、話している間の音量を変更"
+  },
+  "Mute video is on (Audio tab) — this export will have no sound." : {
+    "ja" : "“ビデオを消音”がオンになっているため（“オーディオ”タブ）、書き出したビデオにはサウンドが入りません。"
+  },
+  "Nebula" : {
+    "ja" : "星雲"
+  },
+  "New caption" : {
+    "ja" : "新しい字幕"
+  },
+  "No captions in the picture — add a subtitles file to upload them separately." : {
+    "ja" : "映像に字幕は入りません。別にアップロードするには字幕ファイルを追加してください。"
+  },
+  "No clicks left on the timeline" : {
+    "ja" : "タイムラインにクリックが残っていません"
+  },
+  "No clicks were recorded in this video" : {
+    "ja" : "このビデオにはクリックが記録されていません"
+  },
+  "No clicks were recorded — add zooms by hand" : {
+    "ja" : "クリックが記録されていません。ズームは手動で追加してください"
+  },
+  "No idle moments found — nice and tight" : {
+    "ja" : "動きのない区間は見つかりませんでした。テンポは良好です"
+  },
+  "No long pauses to shorten" : {
+    "ja" : "短縮できる長い無音部分はありません"
+  },
+  "No room after this zoom" : {
+    "ja" : "このズームの後ろに空きがありません"
+  },
+  "No room here — move the playhead" : {
+    "ja" : "ここには空きがありません。再生ヘッドを移動してください"
+  },
+  "No speech was found in this recording. If it has narration, check its level in the Audio tab, then try again." : {
+    "ja" : "この収録には音声が見つかりませんでした。ナレーションが入っている場合は、“オーディオ”タブで音量を確認してから、もう一度お試しください。"
+  },
+  "No ums or uhs left" : {
+    "ja" : "フィラー（えー、あのー）はもうありません"
+  },
+  "None" : {
+    "ja" : "なし"
+  },
+  "Nothing to clean up — everything belongs to recordings you still have" : {
+    "ja" : "クリーンアップするものはありません。すべて現在ある収録のデータです"
+  },
+  "Ocean" : {
+    "ja" : "オーシャン"
+  },
+  "Of the frame's width." : {
+    "ja" : "ビデオの幅に対する割合です。"
+  },
+  "Off" : {
+    "ja" : "オフ"
+  },
+  "On your clipboard · %@" : {
+    "ja" : "クリップボードにあります · %@"
+  },
+  "Only %@ free on your disk — this may not fit. Free up space or save to another drive." : {
+    "ja" : "ディスクの空き容量が%@しかないため、収まらない可能性があります。空き容量を増やすか、別のドライブに保存してください。"
+  },
+  "Opacity" : {
+    "ja" : "不透明度"
+  },
+  "Opens its volume, fades, and ducking in Audio" : {
+    "ja" : "“オーディオ”で音量、フェード、話している間の音量の設定を開きます"
+  },
+  "Or drag it on the preview. Images stay put while the camera zooms." : {
+    "ja" : "プレビュー上でドラッグすることもできます。ズーム中も画像は同じ位置に留まります。"
+  },
+  "Or drag its bar on the timeline." : {
+    "ja" : "タイムライン上のバーをドラッグすることもできます。"
+  },
+  "Orchid" : {
+    "ja" : "オーキッド"
+  },
+  "Original" : {
+    "ja" : "オリジナル"
+  },
+  "Out" : {
+    "ja" : "アウト点"
+  },
+  "Out earlier" : {
+    "ja" : "アウト点を早める"
+  },
+  "Out later" : {
+    "ja" : "アウト点を遅らせる"
+  },
+  "Outro card" : {
+    "ja" : "エンディングカード"
+  },
+  "Part of the recording couldn't be read — the file may be damaged. Try exporting a shorter part of the video." : {
+    "ja" : "収録の一部を読み込めませんでした。ファイルが破損している可能性があります。ビデオの短い部分を書き出してみてください。"
+  },
+  "Pause restored" : {
+    "ja" : "無音部分を復元しました"
+  },
+  "Pause shortened" : {
+    "ja" : "無音部分を短縮しました"
+  },
+  "Peach" : {
+    "ja" : "ピーチ"
+  },
+  "Picked up where you left off" : {
+    "ja" : "前回の続きから再開しました"
+  },
+  "Play" : {
+    "ja" : "再生"
+  },
+  "Play Click Sounds" : {
+    "ja" : "クリック音を鳴らす"
+  },
+  "Play a click on each click" : {
+    "ja" : "クリックごとにクリック音を鳴らす"
+  },
+  "Playing %lld×" : {
+    "ja" : "%lld倍速で再生中"
+  },
+  "Plays after the last clip, before the end card" : {
+    "ja" : "最後のクリップとエンドカードの間に再生"
+  },
+  "Plays before the first clip" : {
+    "ja" : "最初のクリップの前に再生"
+  },
+  "Plays everywhere" : {
+    "ja" : "どこでも再生できます"
+  },
+  "Plum" : {
+    "ja" : "プラム"
+  },
+  "Position" : {
+    "ja" : "位置"
+  },
+  "Preparing to copy…" : {
+    "ja" : "コピーの準備中…"
+  },
+  "Preparing…" : {
+    "ja" : "準備中…"
+  },
+  "Press" : {
+    "ja" : "押し込み"
+  },
+  "Preview muted — the export keeps its sound" : {
+    "ja" : "プレビューを消音しました。書き出したビデオのサウンドはそのままです"
+  },
+  "Preview sound on" : {
+    "ja" : "プレビューのサウンドをオンにしました"
+  },
+  "Pure" : {
+    "ja" : "ピュア"
+  },
+  "Quality" : {
+    "ja" : "品質"
+  },
+  "Quick" : {
+    "ja" : "速め"
+  },
+  "Range" : {
+    "ja" : "範囲"
+  },
+  "Recording removed — ⌘Z to undo" : {
+    "ja" : "収録を削除しました。⌘Zで取り消せます"
+  },
+  "Recording saved" : {
+    "ja" : "収録を保存しました"
+  },
+  "Recordings" : {
+    "ja" : "収録したビデオ"
+  },
+  "Recordings in the Trash or on a drive that isn't plugged in keep their data. This can't be undone." : {
+    "ja" : "ゴミ箱内の収録や、接続されていないドライブ上の収録のデータは残ります。この操作は取り消せません。"
+  },
+  "Rectangle" : {
+    "ja" : "長方形"
+  },
+  "Reels, TikTok, Shorts" : {
+    "ja" : "Reels、TikTok、Shorts"
+  },
+  "Regular" : {
+    "ja" : "標準"
+  },
+  "Remove" : {
+    "ja" : "削除"
+  },
+  "Remove %@" : {
+    "ja" : "“%@”を削除"
+  },
+  "Remove %@ of video data?" : {
+    "ja" : "%@のビデオデータを削除しますか?"
+  },
+  "Remove Intro Card" : {
+    "ja" : "オープニングカードを削除"
+  },
+  "Remove Music" : {
+    "ja" : "音楽を削除"
+  },
+  "Remove Outro Card" : {
+    "ja" : "エンディングカードを削除"
+  },
+  "Remove from this video" : {
+    "ja" : "このビデオから削除"
+  },
+  "Remove this translation" : {
+    "ja" : "この翻訳を削除"
+  },
+  "Remove translation" : {
+    "ja" : "翻訳を削除"
+  },
+  "Removed %@ — ⌘Z to undo" : {
+    "ja" : "%@を削除しました。⌘Zで取り消せます"
+  },
+  "Removed %lld filler words — %@ shorter" : {
+    "ja" : "%lld個のフィラーを削除し、%@短くなりました"
+  },
+  "Removed %lld zooms — ⌘Z to undo" : {
+    "ja" : "%lld個のズームを削除しました。⌘Zで取り消せます"
+  },
+  "Removed — ⌘Z to undo" : {
+    "ja" : "削除しました。⌘Zで取り消せます"
+  },
+  "Rendering for the clipboard… %lld%%" : {
+    "ja" : "クリップボード用にレンダリング中…%lld%%"
+  },
+  "Rendering, then copying to your clipboard" : {
+    "ja" : "レンダリング後にクリップボードにコピーします"
+  },
+  "Replace Music…" : {
+    "ja" : "音楽を置き換える…"
+  },
+  "Replace…" : {
+    "ja" : "置き換える…"
+  },
+  "Resolution" : {
+    "ja" : "解像度"
+  },
+  "Restored %@" : {
+    "ja" : "%@分を復元しました"
+  },
+  "Restored %lld cuts — %@" : {
+    "ja" : "%lld箇所のカット（計%@）を復元しました"
+  },
+  "Restored %lld words" : {
+    "ja" : "%lld語を復元しました"
+  },
+  "Reveal" : {
+    "ja" : "表示"
+  },
+  "Reveal in Finder" : {
+    "ja" : "Finderに表示"
+  },
+  "Right" : {
+    "ja" : "右"
+  },
+  "Ripple" : {
+    "ja" : "波紋"
+  },
+  "Rounded" : {
+    "ja" : "角丸"
+  },
+  "S" : {
+    "ja" : "小"
+  },
+  "Save %@…" : {
+    "ja" : "%@を保存…"
+  },
+  "Save Subtitles" : {
+    "ja" : "字幕を保存"
+  },
+  "Save Subtitles (.vtt)…" : {
+    "ja" : "字幕を保存（.vtt）…"
+  },
+  "Saved %@" : {
+    "ja" : "“%@”を保存しました"
+  },
+  "Saved — new recordings will use this look" : {
+    "ja" : "保存しました。新しい収録にはこのスタイルが使われます"
+  },
+  "Selection" : {
+    "ja" : "選択範囲"
+  },
+  "Set the in point to the playhead (%@)" : {
+    "ja" : "イン点を再生ヘッドの位置（%@）に設定"
+  },
+  "Set the out point to the playhead (%@)" : {
+    "ja" : "アウト点を再生ヘッドの位置（%@）に設定"
+  },
+  "Share" : {
+    "ja" : "共有"
+  },
+  "Share — Mail, Messages, AirDrop…" : {
+    "ja" : "共有: “メール”、“メッセージ”、AirDrop…"
+  },
+  "Shortcut hidden" : {
+    "ja" : "ショートカットを非表示にしました"
+  },
+  "Shortened %lld pauses — %@ shorter" : {
+    "ja" : "%lld箇所の無音部分を短縮し、%@短くなりました"
+  },
+  "Shotnix can't open this file" : {
+    "ja" : "Shotnixではこのファイルを開けません"
+  },
+  "Shotnix can't save to that folder. Pick another place, like Desktop or Movies, and export again." : {
+    "ja" : "Shotnixはそのフォルダに保存できません。“デスクトップ”や“ムービー”など別の場所を選択して、もう一度書き出してください。"
+  },
+  "Shotnix is still cleaning up the voice" : {
+    "ja" : "Shotnixはまだ声を補正しています"
+  },
+  "Shotnix is still transcribing" : {
+    "ja" : "Shotnixはまだ文字起こしをしています"
+  },
+  "Show" : {
+    "ja" : "表示"
+  },
+  "Show for the whole video" : {
+    "ja" : "ビデオ全体で表示"
+  },
+  "Show in Finder" : {
+    "ja" : "Finderに表示"
+  },
+  "Shows what can be removed — data of recordings Shotnix can't find, unused footage and pictures, old clipboard exports — and asks before removing it" : {
+    "ja" : "削除できるもの（Shotnixが見つけられない収録のデータ、使われていない映像や画像、古いクリップボード用の書き出し）を表示し、削除する前に確認します"
+  },
+  "Side by side" : {
+    "ja" : "横並び"
+  },
+  "Silky" : {
+    "ja" : "シルキー"
+  },
+  "Size" : {
+    "ja" : "サイズ"
+  },
+  "Sky" : {
+    "ja" : "スカイ"
+  },
+  "Slow" : {
+    "ja" : "ゆっくり"
+  },
+  "Small" : {
+    "ja" : "小"
+  },
+  "Smallest files, great for docs and chat" : {
+    "ja" : "ファイルが最も小さく、ドキュメントやチャットに最適"
+  },
+  "Smooth" : {
+    "ja" : "滑らか"
+  },
+  "Social" : {
+    "ja" : "SNS"
+  },
+  "Social feeds" : {
+    "ja" : "SNSのフィード"
+  },
+  "Sped up %lld idle moments — saved %@" : {
+    "ja" : "動きのない区間を%lld箇所早送りし、%@短くなりました"
+  },
+  "Sped up %lld idle moments — saved %@ · check any typing" : {
+    "ja" : "動きのない区間を%lld箇所早送りし、%@短くなりました · 入力中の場面を確認してください"
+  },
+  "Speech recognition is turned off for Shotnix in System Settings → Privacy & Security → Speech Recognition. Turn it on, then try again." : {
+    "ja" : "Shotnixの音声認識が“システム設定”＞“プライバシーとセキュリティ”＞“音声認識”でオフになっています。オンにしてから、もう一度お試しください。"
+  },
+  "Speech recognition isn't available on this Mac right now. Try again in a moment." : {
+    "ja" : "現在このMacでは音声認識を使用できません。しばらくしてからもう一度お試しください。"
+  },
+  "Speed Up Idle works on Shotnix recordings — it watches the pointer" : {
+    "ja" : "“動きのない区間を早送り”はShotnixで収録したビデオで使えます。ポインタの動きをもとに判断します"
+  },
+  "Split the video (S) to make cuts; each can dissolve or dip to black." : {
+    "ja" : "ビデオを分割（S）するとつなぎ目ができます。それぞれにディゾルブや黒にフェードを設定できます。"
+  },
+  "Spoken word" : {
+    "ja" : "話している単語"
+  },
+  "Spotlight" : {
+    "ja" : "スポットライト"
+  },
+  "Start Over" : {
+    "ja" : "元の収録に戻す"
+  },
+  "Start over from the original recording?" : {
+    "ja" : "元の収録に戻しますか?"
+  },
+  "Start the song at" : {
+    "ja" : "曲の開始位置"
+  },
+  "Studio" : {
+    "ja" : "スタジオ"
+  },
+  "Subtitle" : {
+    "ja" : "サブタイトル"
+  },
+  "Subtitles file" : {
+    "ja" : "字幕ファイル"
+  },
+  "Sunset" : {
+    "ja" : "サンセット"
+  },
+  "Tag" : {
+    "ja" : "背景"
+  },
+  "Tangerine" : {
+    "ja" : "タンジェリン"
+  },
+  "Thanks for watching" : {
+    "ja" : "ご視聴ありがとうございました"
+  },
+  "That drive is read-only. Pick another place to save, then export again." : {
+    "ja" : "そのドライブは読み出し専用です。別の保存場所を選択してから、もう一度書き出してください。"
+  },
+  "That part is only a title card — include a moment of the video to export it." : {
+    "ja" : "その部分はタイトルカードだけです。書き出すにはビデオの一部を含めてください。"
+  },
+  "That part of the timeline is only a title card. Include a moment of the video in the range, then export again." : {
+    "ja" : "タイムラインのその部分はタイトルカードだけです。範囲にビデオの一部を含めてから、もう一度書き出してください。"
+  },
+  "That video is empty" : {
+    "ja" : "そのビデオは空です"
+  },
+  "The export carries on in the background (Esc)" : {
+    "ja" : "書き出しはバックグラウンドで続行されます（Esc）"
+  },
+  "The export stopped unexpectedly (%@). Try again — if it keeps happening, export at a lower resolution or in H.264." : {
+    "ja" : "書き出しが予期せず停止しました（%@）。もう一度お試しください。問題が続く場合は、低い解像度またはH.264で書き出してください。"
+  },
+  "The picture's file is gone — choose it again with Replace." : {
+    "ja" : "画像のファイルが見つかりません。“置き換える”でもう一度選択してください。"
+  },
+  "The recording's file can't be found — it may have been moved or deleted. Put it back and export again." : {
+    "ja" : "収録のファイルが見つかりません。移動または削除された可能性があります。元の場所に戻してから、もう一度書き出してください。"
+  },
+  "The selected file has no video track. Choose a video file instead." : {
+    "ja" : "選択したファイルにはビデオトラックがありません。ビデオファイルを選択してください。"
+  },
+  "The song is shorter than the video" : {
+    "ja" : "曲がビデオより短いです"
+  },
+  "The song's file is gone — choose it again with Replace." : {
+    "ja" : "曲のファイルが見つかりません。“置き換える”でもう一度選択してください。"
+  },
+  "The timeline is empty. Restore a clip, then export again." : {
+    "ja" : "タイムラインが空です。クリップを復元してから、もう一度書き出してください。"
+  },
+  "The video encoder is busy — another app may be recording or exporting. Wait a moment and try again, or choose H.264." : {
+    "ja" : "ビデオエンコーダが使用中です。別のアプリが収録中または書き出し中の可能性があります。しばらく待ってからもう一度試すか、H.264を選択してください。"
+  },
+  "The video's own recording can't be removed" : {
+    "ja" : "このビデオ自体の収録は削除できません"
+  },
+  "The voice track is empty, so there's nothing to clean up. Turn off Enhance voice to keep the original sound." : {
+    "ja" : "声のトラックが空なので、補正するものがありません。元のサウンドのままにするには、“声を補正”をオフにしてください。"
+  },
+  "There are no captions to translate yet. Transcribe or add captions first." : {
+    "ja" : "翻訳する字幕がまだありません。先に文字起こしするか、字幕を追加してください。"
+  },
+  "There isn't enough free space on this disk: this export needs about %@ and %@ is free. Free up some space (empty the Trash, delete old recordings) or export to another drive." : {
+    "ja" : "このディスクの空き容量が足りません。この書き出しには約%@必要ですが、空きは%@です。空き容量を増やす（ゴミ箱を空にする、古い収録を削除するなど）か、別のドライブに書き出してください。"
+  },
+  "There isn't enough free space on “%@”: this export needs about %@ and %@ is free. Free up some space (empty the Trash, delete old recordings) or export to another drive." : {
+    "ja" : "“%@”の空き容量が足りません。この書き出しには約%@必要ですが、空きは%@です。空き容量を増やす（ゴミ箱を空にする、古い収録を削除するなど）か、別のドライブに書き出してください。"
+  },
+  "There's already a zoom here" : {
+    "ja" : "ここにはすでにズームがあります"
+  },
+  "There's no video in this file" : {
+    "ja" : "このファイルにはビデオがありません"
+  },
+  "Thin" : {
+    "ja" : "細い"
+  },
+  "This GIF is too long for its size — it would need about %@ of memory. Pick a smaller size or fewer frames per second, export part of the video, or choose MP4." : {
+    "ja" : "このGIFはサイズに対して長すぎます。約%@のメモリが必要です。サイズやフレームレートを下げるか、ビデオの一部を書き出すか、MP4を選択してください。"
+  },
+  "This Mac can't translate between these languages. Pick another language." : {
+    "ja" : "このMacではこれらの言語間で翻訳できません。別の言語を選択してください。"
+  },
+  "This recording has no sound to transcribe. You can still type captions yourself." : {
+    "ja" : "この収録には文字起こしできる音声がありません。字幕を自分で入力することはできます。"
+  },
+  "This recording has no voice to duck under" : {
+    "ja" : "この収録には、音量を下げる対象となる声がありません"
+  },
+  "This replaces all %lld caption lines, including any you edited or typed, with a new transcript in %@." : {
+    "ja" : "字幕%1$lld行すべて（編集や入力をした行も含む）が、%2$@の新しい文字起こしに置き換えられます。"
+  },
+  "This video is copy-protected and can't be exported." : {
+    "ja" : "このビデオはコピー保護されているため、書き出せません。"
+  },
+  "This video isn't there anymore" : {
+    "ja" : "このビデオは見つかりません"
+  },
+  "Timing" : {
+    "ja" : "タイミング"
+  },
+  "Title" : {
+    "ja" : "タイトル"
+  },
+  "Too long for a GIF at this size — it would need about %@ of memory. Make it lighter, export a part, or choose MP4." : {
+    "ja" : "このサイズのGIFには長すぎます。約%@のメモリが必要です。軽くするか、一部を書き出すか、MP4を選択してください。"
+  },
+  "Too short for an intro and outro" : {
+    "ja" : "短すぎてオープニングとエンディングを追加できません"
+  },
+  "Top" : {
+    "ja" : "上"
+  },
+  "Top left" : {
+    "ja" : "左上"
+  },
+  "Top right" : {
+    "ja" : "右上"
+  },
+  "Transcribe Again" : {
+    "ja" : "もう一度文字起こし"
+  },
+  "Transcribe again?" : {
+    "ja" : "もう一度文字起こししますか?"
+  },
+  "Transcribe the narration to search its words" : {
+    "ja" : "ナレーションを文字起こしすると、単語を検索できます"
+  },
+  "Transcribing “%@”" : {
+    "ja" : "“%@”を文字起こし中"
+  },
+  "Transcript and captions removed — ⌘Z to undo" : {
+    "ja" : "文字起こしと字幕を削除しました。⌘Zで取り消せます"
+  },
+  "Transition in" : {
+    "ja" : "このクリップへのトランジション"
+  },
+  "Transitions" : {
+    "ja" : "トランジション"
+  },
+  "Translate" : {
+    "ja" : "翻訳"
+  },
+  "Turn Off Click Sounds" : {
+    "ja" : "クリック音をオフにする"
+  },
+  "Under the voice" : {
+    "ja" : "話している間の音量"
+  },
+  "Video copied" : {
+    "ja" : "ビデオをコピーしました"
+  },
+  "Video data" : {
+    "ja" : "ビデオデータ"
+  },
+  "Video data uses %@" : {
+    "ja" : "ビデオデータの使用量: %@"
+  },
+  "Video exported" : {
+    "ja" : "ビデオを書き出しました"
+  },
+  "Violet" : {
+    "ja" : "バイオレット"
+  },
+  "Voice enhanced — background noise removed" : {
+    "ja" : "声を補正し、背景ノイズを除去しました"
+  },
+  "Voice enhancement isn't available on this Mac. Turn off Enhance voice to keep the original sound." : {
+    "ja" : "このMacでは声の補正を使用できません。元のサウンドのままにするには、“声を補正”をオフにしてください。"
+  },
+  "Voice enhancement stopped partway. Turn Enhance voice off and on again to retry." : {
+    "ja" : "声の補正が途中で停止しました。もう一度試すには、“声を補正”をオフにしてから再度オンにしてください。"
+  },
+  "Volume" : {
+    "ja" : "音量"
+  },
+  "Waiting…" : {
+    "ja" : "待機中…"
+  },
+  "Web" : {
+    "ja" : "Web"
+  },
+  "Welcome" : {
+    "ja" : "ようこそ"
+  },
+  "Whole video" : {
+    "ja" : "ビデオ全体"
+  },
+  "Wide" : {
+    "ja" : "ワイド"
+  },
+  "YouTube, presentations" : {
+    "ja" : "YouTube、プレゼンテーション"
+  },
+  "Your Mac ran low on memory. Close some apps or pick a lower resolution, then export again." : {
+    "ja" : "Macのメモリが不足しました。いくつかのアプリを終了するか、低い解像度を選択してから、もう一度書き出してください。"
+  },
+  "Your disk is full. Free up some space (empty the Trash, delete old recordings) or export to another drive, then try again." : {
+    "ja" : "ディスクがいっぱいです。空き容量を増やす（ゴミ箱を空にする、古い収録を削除するなど）か、別のドライブに書き出してから、もう一度お試しください。"
+  },
+  "Your text" : {
+    "ja" : "テキストを入力"
+  },
+  "Zoom removed — ⌘Z to undo" : {
+    "ja" : "ズームを削除しました。⌘Zで取り消せます"
+  },
+  "captions burned in" : {
+    "ja" : "焼き付けた字幕"
+  },
+  "intro card" : {
+    "ja" : "オープニングカード"
+  },
+  "macOS downloads %@ once, then translates right here — nothing is uploaded." : {
+    "ja" : "macOSが%@を一度ダウンロードすると、以降はこのMac上で翻訳します。何もアップロードされません。"
+  },
+  "music" : {
+    "ja" : "音楽"
+  },
+  "no captions in the picture" : {
+    "ja" : "映像に字幕なし"
+  },
+  "no end card" : {
+    "ja" : "エンドカードなし"
+  },
+  "outro card" : {
+    "ja" : "エンディングカード"
+  },
+  "pointer" : {
+    "ja" : "ポインタ"
+  },
+  "the video" : {
+    "ja" : "ビデオ"
+  },
+  "this recording" : {
+    "ja" : "この収録"
+  },
+  "“%@” (was in %@)" : {
+    "ja" : "“%@”（%@にありました）"
+  },
+  "“%@” can't be found. Put it back where it was, or remove it from this video (Style → Recordings), then export again." : {
+    "ja" : "“%@”が見つかりません。元の場所に戻すか、このビデオから削除してから（“スタイル”＞“収録したビデオ”）、もう一度書き出してください。"
+  },
+  "“%@” can't be read — it may be damaged, still being saved, or in a format this Mac can't play. Remove it from this video (Style → Recordings), or put a working copy in its place, then export again." : {
+    "ja" : "“%@”を読み込めません。破損しているか、保存中か、このMacで再生できない形式の可能性があります。このビデオから削除するか（“スタイル”＞“収録したビデオ”）、正常なコピーを同じ場所に置いてから、もう一度書き出してください。"
+  },
+  "“Made with Shotnix” end card (2s)" : {
+    "ja" : "“Made with Shotnix”エンドカード（2秒）"
+  },
+  "• %lld small notes about recordings that are gone" : {
+    "ja" : "• なくなった収録に関する小さなメモ%lld件"
+  },
+  "• Camera footage no recording uses — %lld files, %@" : {
+    "ja" : "• どの収録にも使われていないカメラ映像: %lld個のファイル、%@"
+  },
+  "• Cleaned-up voice of recordings not found or changed since — %lld files, %@" : {
+    "ja" : "• 見つからない収録や、その後変更された収録の補正済みの声: %lld個のファイル、%@"
+  },
+  "• Clipboard exports older than a day — %lld files, %@" : {
+    "ja" : "• 1日以上前のクリップボード用の書き出し: %lld個のファイル、%@"
+  },
+  "• Edits, recording details, and camera footage of %lld recordings Shotnix can't find (%@): %@" : {
+    "ja" : "• Shotnixが見つけられない%lld件の収録の編集内容、収録の詳細、カメラ映像（%@）: %@"
+  },
+  "• Pictures and songs no video uses — %lld files, %@" : {
+    "ja" : "• どのビデオにも使われていない画像と曲: %lld個のファイル、%@"
+  },
+  "⇧-drag on the timeline to select a part first." : {
+    "ja" : "先にタイムラインを⇧ドラッグして、部分を選択してください。"
+  }
+}

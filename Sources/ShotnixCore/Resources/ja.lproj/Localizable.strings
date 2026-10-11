@@ -1,0 +1,3574 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>%@ (%@)</key>
+	<string>%@（%@）</string>
+	<key>%@ (This Mac)</key>
+	<string>%@（このMac）</string>
+	<key>%@ (edited)</key>
+	<string>%@（編集済み）</string>
+	<key>%@ (original)</key>
+	<string>%@（オリジナル）</string>
+	<key>%@ (⇧⌘Z)</key>
+	<string>%@（⇧⌘Z）</string>
+	<key>%@ (⌘Z)</key>
+	<string>%@（⌘Z）</string>
+	<key>%@ Zoom</key>
+	<string>%@ズーム</string>
+	<key>%@ area</key>
+	<string>%@: 範囲</string>
+	<key>%@ can't be transcribed on this Mac without sending your voice to a server. To add it, turn on Dictation for %@ in System Settings → Keyboard, or pick another language.</key>
+	<string>このMacでは、声をサーバに送信せずに%@を文字起こしすることはできません。追加するには、“システム設定”＞“キーボード”で%@の音声入力をオンにするか、別の言語を選択してください。</string>
+	<key>%@ capture from %@</key>
+	<string>%2$@に取り込んだ%1$@のスクリーンショット</string>
+	<key>%@ capture, %@</key>
+	<string>%1$@のスクリーンショット、%2$@</string>
+	<key>%@ found</key>
+	<string>%@が見つかりました</string>
+	<key>%@ fullscreen</key>
+	<string>%@: 画面全体</string>
+	<key>%@ isn't supported for captions on this Mac. Pick another language.</key>
+	<string>このMacでは%@の字幕に対応していません。別の言語を選択してください。</string>
+	<key>%@ long</key>
+	<string>長さ%@</string>
+	<key>%@ of recording plays in %@.</key>
+	<string>収録の%@を%@で再生します。</string>
+	<key>%@ pt</key>
+	<string>%@pt</string>
+	<key>%@ quality · %@</key>
+	<string>品質: %@ · %@</string>
+	<key>%@ speed</key>
+	<string>速度%@</string>
+	<key>%@ transition</key>
+	<string>%@のトランジション</string>
+	<key>%@ window</key>
+	<string>%@: ウインドウ</string>
+	<key>%@ · %@ px</key>
+	<string>%@ · %@ px</string>
+	<key>%@ · %@ × %@ image</key>
+	<string>%@ · %@ × %@の画像</string>
+	<key>%@ · %lld fps</key>
+	<string>%@ · %lld fps</string>
+	<key>%@ · on your clipboard — paste it anywhere</key>
+	<string>%@ · クリップボードにあります。どこにでもペーストできます</string>
+	<key>%@ × %@ px</key>
+	<string>%@ × %@ px</string>
+	<key>%@ — %@</key>
+	<string>%@（%@）</string>
+	<key>%@ — Shotnix lives in your menu bar</key>
+	<string>%@。Shotnixはメニューバーにあります</string>
+	<key>%@ — click to change</key>
+	<string>%@: クリックして変更</string>
+	<key>%@ → %@ — the part you ⇧-dragged on the timeline</key>
+	<string>%@ → %@（タイムラインで⇧ドラッグした部分）</string>
+	<key>%@, %@</key>
+	<string>%@、%@</string>
+	<key>%@, and %lld more</key>
+	<string>%@、ほか%lld件</string>
+	<key>%@: %@</key>
+	<string>%@: %@</string>
+	<key>%@s</key>
+	<string>%@秒</string>
+	<key>%@–%@ only</key>
+	<string>%@–%@のみ</string>
+	<key>%lld QR codes found</key>
+	<string>%lld個のQRコードが見つかりました</string>
+	<key>%lld annotations</key>
+	<string>%lld個の注釈</string>
+	<key>%lld annotations, %@ selected</key>
+	<string>%lld個の注釈、%@を選択中</string>
+	<key>%lld annotations, %@ selected, cropping</key>
+	<string>%lld個の注釈、%@を選択中、切り取り中</string>
+	<key>%lld annotations, cropping</key>
+	<string>%lld個の注釈、切り取り中</string>
+	<key>%lld barcodes found</key>
+	<string>%lld個のバーコードが見つかりました</string>
+	<key>%lld camera layouts</key>
+	<string>%lld個のカメラのレイアウト</string>
+	<key>%lld captions</key>
+	<string>%lld個の字幕</string>
+	<key>%lld clicks</key>
+	<string>%lld回のクリック</string>
+	<key>%lld clips</key>
+	<string>%lld個のクリップ</string>
+	<key>%lld cuts here (%@ removed) — click to restore some or all</key>
+	<string>ここで%lld箇所をカット（計%@を削除）。クリックすると一部またはすべてを復元できます</string>
+	<key>%lld cuts, %@ removed</key>
+	<string>%lld箇所のカット、計%@を削除</string>
+	<key>%lld days</key>
+	<string>%lld日</string>
+	<key>%lld email addresses</key>
+	<string>%lld件のメールアドレス</string>
+	<key>%lld lines</key>
+	<string>%lld行</string>
+	<key>%lld lines changed since translating</key>
+	<string>翻訳後に%lld行が変更されました</string>
+	<key>%lld lines · found %@</key>
+	<string>%lld行 · %@を検出</string>
+	<key>%lld links</key>
+	<string>%lld件のリンク</string>
+	<key>%lld of %lld captures</key>
+	<string>%2$lld件中%1$lld件のスクリーンショット</string>
+	<key>%lld parts</key>
+	<string>%lld箇所</string>
+	<key>%lld pressed — select one on the timeline and press ⌫ to hide it</key>
+	<string>%lld回押されています。タイムラインで1つ選択して⌫を押すと非表示にできます</string>
+	<key>%lld px · Esc or Done finishes</key>
+	<string>%lld px · Escキーまたは“完了”で終了</string>
+	<key>%lld recorded clicks — in the preview and the export</key>
+	<string>記録されたクリック%lld回。プレビューと書き出しで鳴ります</string>
+	<key>%lld s</key>
+	<string>%lld秒</string>
+	<key>%lld saved captures · drag any card to Finder · right-click for more actions</key>
+	<string>保存済みのスクリーンショット%lld件 · カードはFinderにドラッグできます · 右クリックでその他の操作</string>
+	<key>%lld screens</key>
+	<string>%lld台のディスプレイ</string>
+	<key>%lld screenshots deleted — click or press ⌘Z to undo</key>
+	<string>%lld件のスクリーンショットを削除しました。クリックするか⌘Zを押すと取り消せます</string>
+	<key>%lld seconds</key>
+	<string>%lld秒</string>
+	<key>%lld selected</key>
+	<string>%lld項目を選択</string>
+	<key>%lld shortcuts</key>
+	<string>%lld個のショートカット</string>
+	<key>%lld zooms</key>
+	<string>%lld個のズーム</string>
+	<key>%lld%%</key>
+	<string>%lld%%</string>
+	<key>%lld%% volume</key>
+	<string>音量%lld%%</string>
+	<key>%lld/%lld configured</key>
+	<string>設定済み: %lld/%lld</string>
+	<key>, </key>
+	<string>、</string>
+	<key>, %@ to %@</key>
+	<string>、%@から%@</string>
+	<key>, at %@</key>
+	<string>、%@の時点</string>
+	<key>0.1s earlier</key>
+	<string>0.1秒早く</string>
+	<key>0.1s later</key>
+	<string>0.1秒遅く</string>
+	<key>A 2-second “Made with Shotnix” outro on your background — your own outro card is in Style</key>
+	<string>背景に“Made with Shotnix”を2秒間表示して締めくくります。独自のエンディングカードは“スタイル”にあります</string>
+	<key>A big GIF — about %@ and %@ of memory to make. A smaller size, fewer fps, or MP4 is lighter.</key>
+	<string>大きなGIFです。約%@で、作成に%@のメモリが必要です。サイズを小さくするか、fpsを下げるか、MP4にすると軽くなります。</string>
+	<key>A clean picture plus a subtitles file to upload.</key>
+	<string>映像には字幕を入れず、アップロード用の字幕ファイルを別に保存します。</string>
+	<key>A cut — click to add a transition</key>
+	<string>つなぎ目: クリックしてトランジションを追加</string>
+	<key>A file with that name is in the way. Pick another name and export again.</key>
+	<string>同じ名前のファイルがすでにあります。別の名前を付けて、もう一度書き出してください。</string>
+	<key>A hairline that separates dark recordings from the background</key>
+	<string>暗い映像と背景の境目に細い線を引きます</string>
+	<key>A report helps fix this. You'll see everything before it's sent, and it never includes your screenshots or recordings.</key>
+	<string>レポートはこの問題の修正に役立ちます。送信前にすべての内容を確認でき、スクリーンショットや収録したビデオが含まれることはありません。</string>
+	<key>A second caption track you can show, burn in, or save as subtitles. Translated on this Mac — nothing is uploaded.</key>
+	<string>表示、焼き付け、字幕ファイルとしての保存ができる2つ目の字幕トラックです。このMac上で翻訳されるため、何もアップロードされません。</string>
+	<key>A song under the whole video — it loops to fill, fades in and out, and dips while you talk. Use music you have the rights to.</key>
+	<string>ビデオ全体に曲を流します。長さに合わせてループし、フェードイン/フェードアウトして、話している間は音量が下がります。使用する権利のある音楽を使ってください。</string>
+	<key>A subtitles file for YouTube and web players (.srt), or for the web (.vtt) — follows your cuts</key>
+	<string>YouTubeやWebプレーヤー用（.srt）、またはWeb用（.vtt）の字幕ファイルです。カットが反映されます</string>
+	<key>A video needs at least one clip</key>
+	<string>ビデオには少なくとも1つのクリップが必要です</string>
+	<key>About</key>
+	<string>情報</string>
+	<key>About %lld min left</key>
+	<string>残り約%lld分</string>
+	<key>About %lld%% smaller — plays on Apple devices and most phones; some browsers and Windows PCs can't play it without an extra codec</key>
+	<string>サイズが約%lld%%小さくなります。Appleデバイスとほとんどのスマートフォンで再生できます。一部のブラウザやWindows PCでは、追加のコーデックがないと再生できません</string>
+	<key>About %llds left</key>
+	<string>残り約%lld秒</string>
+	<key>About Shotnix</key>
+	<string>Shotnixについて</string>
+	<key>Accuracy</key>
+	<string>精度</string>
+	<key>Accurate</key>
+	<string>正確</string>
+	<key>Add Arrow</key>
+	<string>矢印を追加</string>
+	<key>Add Blur</key>
+	<string>ぼかしを追加</string>
+	<key>Add Caption Line at Playhead</key>
+	<string>再生ヘッドの位置に字幕の行を追加</string>
+	<key>Add Highlight</key>
+	<string>ハイライトを追加</string>
+	<key>Add Image or Logo…</key>
+	<string>画像またはロゴを追加…</string>
+	<key>Add Intro Card</key>
+	<string>オープニングカードを追加</string>
+	<key>Add Music…</key>
+	<string>音楽を追加…</string>
+	<key>Add Outro Card</key>
+	<string>エンディングカードを追加</string>
+	<key>Add Spotlight (Dim Around a Spot)</key>
+	<string>スポットライトを追加（周囲を暗くする）</string>
+	<key>Add Text</key>
+	<string>テキストを追加</string>
+	<key>Add Zoom at Playhead</key>
+	<string>再生ヘッドの位置にズームを追加</string>
+	<key>Add a caption at the playhead</key>
+	<string>再生ヘッドの位置に字幕を追加</string>
+	<key>Add a zoom at the playhead (Z)</key>
+	<string>再生ヘッドの位置にズームを追加（Z）</string>
+	<key>Add another recording or video after this one — Shotnix recordings keep their pointer, clicks, and shortcuts.</key>
+	<string>このビデオの後ろに別の収録やビデオを追加できます。Shotnixで収録したビデオは、ポインタ、クリック、ショートカットを保持します。</string>
+	<key>Add arrow at the playhead (A)</key>
+	<string>再生ヘッドの位置に矢印を追加（A）</string>
+	<key>Add blur at the playhead (B)</key>
+	<string>再生ヘッドの位置にぼかしを追加（B）</string>
+	<key>Add highlight at the playhead (H)</key>
+	<string>再生ヘッドの位置にハイライトを追加（H）</string>
+	<key>Add image at the playhead</key>
+	<string>再生ヘッドの位置に画像を追加</string>
+	<key>Add spotlight at the playhead</key>
+	<string>再生ヘッドの位置にスポットライトを追加</string>
+	<key>Add text at the playhead (T)</key>
+	<string>再生ヘッドの位置にテキストを追加（T）</string>
+	<key>Add zoom at playhead</key>
+	<string>再生ヘッドの位置にズームを追加</string>
+	<key>Add “%@” at the playhead</key>
+	<string>再生ヘッドの位置に“%@”を追加</string>
+	<key>Added %@ — %@</key>
+	<string>“%@”を追加しました（%@）</string>
+	<key>Adjust to move it half a second</key>
+	<string>調整すると0.5秒ずつ移動します</string>
+	<key>Advanced Tools</key>
+	<string>高度なツール</string>
+	<key>After Capture</key>
+	<string>取り込み後</string>
+	<key>Aim by Hand</key>
+	<string>手動で位置を指定</string>
+	<key>Aim by hand</key>
+	<string>手動で位置を指定</string>
+	<key>All Captures</key>
+	<string>すべてのスクリーンショット</string>
+	<key>All Displays</key>
+	<string>すべてのディスプレイ</string>
+	<key>All captures are moved to Shotnix’s trash and permanently deleted after %lld days.</key>
+	<string>すべてのスクリーンショットはShotnixのゴミ箱に移動され、%lld日後に完全に削除されます。</string>
+	<key>All commands</key>
+	<string>すべてのコマンド</string>
+	<key>All commands (⌘K)</key>
+	<string>すべてのコマンド（⌘K）</string>
+	<key>All configured</key>
+	<string>すべて設定済み</string>
+	<key>All zooms set to %@</key>
+	<string>すべてのズームを%@に設定しました</string>
+	<key>Allow Access…</key>
+	<string>アクセスを許可…</string>
+	<key>Allow Screen Recording</key>
+	<string>画面収録を許可</string>
+	<key>Allow Shotnix in Accessibility — shortcuts turn on by themselves.</key>
+	<string>“アクセシビリティ”でShotnixを許可すると、ショートカットの表示が自動的にオンになります。</string>
+	<key>Almost done</key>
+	<string>まもなく完了</string>
+	<key>Always show the arrow</key>
+	<string>常に矢印を表示</string>
+	<key>Amber Fold</key>
+	<string>琥珀のひだ</string>
+	<key>Annotate Last Screenshot</key>
+	<string>最後のスクリーンショットに注釈を付ける</string>
+	<key>Annotation</key>
+	<string>注釈</string>
+	<key>Annotation text</key>
+	<string>注釈のテキスト</string>
+	<key>Annotation tools</key>
+	<string>注釈ツール</string>
+	<key>Any color…</key>
+	<string>その他のカラー…</string>
+	<key>App</key>
+	<string>アプリ</string>
+	<key>Appearance</key>
+	<string>外観</string>
+	<key>Append Video…</key>
+	<string>ビデオを末尾に追加…</string>
+	<key>Apple Shortcuts</key>
+	<string>Appleのショートカット</string>
+	<key>Apple screenshot shortcuts disabled.</key>
+	<string>Appleのスクリーンショット用ショートカットを無効にしました。</string>
+	<key>Apple screenshot shortcuts disabled. Shotnix shortcuts are now active.</key>
+	<string>Appleのスクリーンショット用ショートカットを無効にしました。Shotnixのショートカットが有効になりました。</string>
+	<key>Apple screenshot shortcuts restored.</key>
+	<string>Appleのスクリーンショット用ショートカットを元に戻しました。</string>
+	<key>Apple's screenshot shortcuts still own ⌘⇧3/4/5 — captures can double-trigger.</key>
+	<string>⌘⇧3/4/5はまだAppleのスクリーンショット用ショートカットに使われているため、二重に取り込まれることがあります。</string>
+	<key>Apple's shortcuts are out of the way.</key>
+	<string>Appleのショートカットと競合しません。</string>
+	<key>Applies at every cut. Click a cut's marker on the timeline, or select a clip, to choose one for that cut only.</key>
+	<string>すべてのつなぎ目に適用されます。1つのつなぎ目だけに設定するには、タイムライン上のつなぎ目のマーカーをクリックするか、クリップを選択します。</string>
+	<key>Apply</key>
+	<string>適用</string>
+	<key>Apply background to this image</key>
+	<string>この画像に背景を適用</string>
+	<key>Apply crop</key>
+	<string>切り取りを適用</string>
+	<key>Apply the crop (Return)</key>
+	<string>切り取りを適用（Returnキー）</string>
+	<key>Apply to all zooms</key>
+	<string>すべてのズームに適用</string>
+	<key>Aqua Marble</key>
+	<string>アクアマーブル</string>
+	<key>Area</key>
+	<string>範囲</string>
+	<key>Arrow</key>
+	<string>矢印</string>
+	<key>Arrow head</key>
+	<string>矢印の先端</string>
+	<key>Arrow tail</key>
+	<string>矢印の始点</string>
+	<key>Aspect Ratio %@ — %@</key>
+	<string>アスペクト比%@（%@）</string>
+	<key>Aspect ratio</key>
+	<string>アスペクト比</string>
+	<key>At playhead</key>
+	<string>再生ヘッドに合わせる</string>
+	<key>Audio</key>
+	<string>オーディオ</string>
+	<key>Aurora</key>
+	<string>オーロラ</string>
+	<key>Aurora Blue</key>
+	<string>オーロラブルー</string>
+	<key>Auto</key>
+	<string>自動</string>
+	<key>Auto Zoom</key>
+	<string>自動ズーム</string>
+	<key>Auto Zoom from Clicks</key>
+	<string>クリックから自動ズーム</string>
+	<key>Auto zoom applied — %lld zooms follow your clicks</key>
+	<string>自動ズームを適用しました。クリックに合わせて%lld個のズームを追加しました</string>
+	<key>Auto zoom — %lld zooms</key>
+	<string>自動ズーム: %lld個のズーム</string>
+	<key>Auto-dismiss overlay</key>
+	<string>サムネールを自動的に閉じる</string>
+	<key>Auto-save folder</key>
+	<string>自動保存先</string>
+	<key>Auto-zoom new recordings</key>
+	<string>新しい収録に自動ズームを適用</string>
+	<key>Automatic</key>
+	<string>自動</string>
+	<key>Automatic detects each capture's language; pick languages when it guesses wrong. Accurate reads small text best — Fast answers sooner but knows fewer languages. Used by Capture Text, Copy Text, and History search.</key>
+	<string>“自動”はスクリーンショットごとに言語を検出します。判定が間違っているときは言語を選択してください。“正確”は小さな文字を最もよく読み取れます。“高速”はすぐに結果が出ますが、対応する言語が少なくなります。“テキストを取り込む”、“テキストをコピー”、履歴の検索で使用されます。</string>
+	<key>Back</key>
+	<string>戻る</string>
+	<key>Back to the Shotnix look</key>
+	<string>Shotnixの標準スタイルに戻しました</string>
+	<key>Back to the original recording — ⌘Z to undo</key>
+	<string>元の収録に戻しました。⌘Zで取り消せます</string>
+	<key>Back · pause · faster</key>
+	<string>逆再生 · 一時停止 · 早送り</string>
+	<key>Background</key>
+	<string>背景</string>
+	<key>Background blur</key>
+	<string>背景のぼかし</string>
+	<key>Background, padding, corners, shadow</key>
+	<string>背景、余白、角の丸み、シャドウ</string>
+	<key>Balanced</key>
+	<string>標準</string>
+	<key>Balancing loudness…</key>
+	<string>音量を均一化中…</string>
+	<key>Barcode</key>
+	<string>バーコード</string>
+	<key>Barcode copied to clipboard</key>
+	<string>バーコードの内容をクリップボードにコピーしました</string>
+	<key>Barcodes</key>
+	<string>バーコード</string>
+	<key>Behavior</key>
+	<string>動作</string>
+	<key>Behind you</key>
+	<string>背後</string>
+	<key>Between clips</key>
+	<string>クリップ間</string>
+	<key>Black</key>
+	<string>ブラック</string>
+	<key>Blossom</key>
+	<string>ブロッサム</string>
+	<key>Blue</key>
+	<string>ブルー</string>
+	<key>Blur</key>
+	<string>ぼかし</string>
+	<key>Blurred area</key>
+	<string>ぼかした範囲</string>
+	<key>Blurs fast camera moves the way a real camera does.</key>
+	<string>本物のカメラのように、速いカメラの動きをぼかします。</string>
+	<key>Bold</key>
+	<string>太い</string>
+	<key>Bold outline</key>
+	<string>太い縁取り</string>
+	<key>Bone</key>
+	<string>生成り</string>
+	<key>Bottom</key>
+	<string>下</string>
+	<key>Bottom left</key>
+	<string>左下</string>
+	<key>Bottom right</key>
+	<string>右下</string>
+	<key>Bring All to Front</key>
+	<string>すべてを手前に移動</string>
+	<key>Burn captions into the video</key>
+	<string>字幕をビデオに焼き付ける</string>
+	<key>Call</key>
+	<string>電話をかける</string>
+	<key>Callout</key>
+	<string>吹き出し</string>
+	<key>Callout: %@</key>
+	<string>吹き出し: %@</string>
+	<key>Camera</key>
+	<string>カメラ</string>
+	<key>Camera Side by Side at Playhead</key>
+	<string>再生ヘッドの位置でカメラを横並びに</string>
+	<key>Camera access is off — allow Shotnix in System Settings → Privacy &amp; Security → Camera.</key>
+	<string>カメラへのアクセスがオフになっています。“システム設定”＞“プライバシーとセキュリティ”＞“カメラ”でShotnixを許可してください。</string>
+	<key>Camera bubble</key>
+	<string>カメラのワイプ</string>
+	<key>Camera disconnected</key>
+	<string>カメラ未接続</string>
+	<key>Camera disconnected.</key>
+	<string>カメラの接続が解除されました。</string>
+	<key>Camera disconnected. The recording continues without it.</key>
+	<string>カメラの接続が解除されました。カメラなしで収録を続けます。</string>
+	<key>Camera follows your cursor</key>
+	<string>カメラがポインタに追従</string>
+	<key>Camera footage is missing</key>
+	<string>カメラ映像が見つかりません</string>
+	<key>Camera footage, cleaned-up voice, drafts, and clipboard exports</key>
+	<string>カメラ映像、補正済みの声、下書き、クリップボード用の書き出し</string>
+	<key>Camera hidden</key>
+	<string>カメラ非表示</string>
+	<key>Camera layout</key>
+	<string>カメラのレイアウト</string>
+	<key>Camera layout removed</key>
+	<string>カメラのレイアウトを削除しました</string>
+	<key>Camera layout: %@</key>
+	<string>カメラのレイアウト: %@</string>
+	<key>Camera layouts</key>
+	<string>カメラのレイアウト</string>
+	<key>Camera layouts — drag to move, drag an edge to retime, click to change</key>
+	<string>カメラのレイアウト: ドラッグで移動、端をドラッグで長さを変更、クリックで変更</string>
+	<key>Camera preview</key>
+	<string>カメラのプレビュー</string>
+	<key>Camera stopped</key>
+	<string>カメラ停止</string>
+	<key>Camera — drag to move it, click for options</key>
+	<string>カメラ: ドラッグで移動、クリックでオプションを表示</string>
+	<key>Cancel</key>
+	<string>キャンセル</string>
+	<key>Cancel Recording</key>
+	<string>収録をキャンセル</string>
+	<key>Cancel export</key>
+	<string>書き出しをキャンセル</string>
+	<key>Cancel this export</key>
+	<string>この書き出しをキャンセル</string>
+	<key>Cancelled</key>
+	<string>キャンセルしました</string>
+	<key>Canyon Silk</key>
+	<string>峡谷のシルク</string>
+	<key>Caption</key>
+	<string>字幕</string>
+	<key>Caption removed</key>
+	<string>字幕を削除しました</string>
+	<key>Caption style %@</key>
+	<string>字幕のスタイル: %@</string>
+	<key>Caption “%@”</key>
+	<string>字幕“%@”</string>
+	<key>Captions</key>
+	<string>字幕</string>
+	<key>Captions are drawn into the picture, and a subtitles file is saved next to the video.</key>
+	<string>字幕を映像に描き込み、ビデオと同じ場所に字幕ファイルを保存します。</string>
+	<key>Captions are drawn into the picture.</key>
+	<string>字幕を映像に描き込みます。</string>
+	<key>Captions are hidden in the editor (Captions tab → Show captions).</key>
+	<string>字幕はエディタで非表示になっています（“字幕”タブ＞“字幕を表示”）。</string>
+	<key>Captions from your narration — and cut the video by editing its words</key>
+	<string>ナレーションから字幕を作成し、テキストを編集してビデオをカットできます</string>
+	<key>Captions look like this</key>
+	<string>字幕は このように 表示されます</string>
+	<key>Captions ready — %lld lines</key>
+	<string>字幕ができました（%lld行）</string>
+	<key>Captions tab</key>
+	<string>“字幕”タブ</string>
+	<key>Captions translated to %@</key>
+	<string>字幕を%@に翻訳しました</string>
+	<key>Capture</key>
+	<string>スクリーンショット</string>
+	<key>Capture  ⏎</key>
+	<string>取り込む  ⏎</string>
+	<key>Capture All Displays</key>
+	<string>すべてのディスプレイを取り込む</string>
+	<key>Capture Area</key>
+	<string>範囲を取り込む</string>
+	<key>Capture Fullscreen</key>
+	<string>画面全体を取り込む</string>
+	<key>Capture Fullscreen Alt</key>
+	<string>画面全体を取り込む（代替）</string>
+	<key>Capture History</key>
+	<string>スクリーンショットの履歴</string>
+	<key>Capture Previous Area</key>
+	<string>前回の範囲を取り込む</string>
+	<key>Capture Text</key>
+	<string>テキストを取り込む</string>
+	<key>Capture Text and Scrolling Capture come without shortcuts, so ⌘⇧O and ⌘⇧S keep meaning Open and Save As in your other apps — click a field to set your own. Pressing the Scrolling Capture shortcut again finishes a scrolling capture.</key>
+	<string>“テキストを取り込む”と“スクロールして取り込む”には最初はショートカットが割り当てられていないため、ほかのアプリでは⌘⇧Oと⌘⇧Sを引き続き“開く”と“別名で保存”に使えます。フィールドをクリックすると独自のショートカットを設定できます。スクロール取り込み中に“スクロールして取り込む”のショートカットをもう一度押すと、取り込みが終了します。</string>
+	<key>Capture Window</key>
+	<string>ウインドウを取り込む</string>
+	<key>Capture failed</key>
+	<string>取り込みに失敗しました</string>
+	<key>Capture from %@</key>
+	<string>%@に取り込んだスクリーンショット</string>
+	<key>Capture immediately after selecting</key>
+	<string>選択後すぐに取り込む</string>
+	<key>Capture type</key>
+	<string>取り込みの種類</string>
+	<key>Capture · Record · Updates</key>
+	<string>取り込み · 収録 · アップデート</string>
+	<key>Capture, %@</key>
+	<string>スクリーンショット、%@</string>
+	<key>Captured screenshots will appear here instantly</key>
+	<string>取り込んだスクリーンショットはすぐにここに表示されます</string>
+	<key>Captures</key>
+	<string>スクリーンショット</string>
+	<key>Captures stay in History until you delete them, unless you pick a limit here. Clean Up empties History's trash (deleted captures you could still undo) and removes files no capture uses anymore.</key>
+	<string>ここで上限を選択しない限り、スクリーンショットは削除するまで履歴に残ります。“クリーンアップ”は履歴のゴミ箱（削除を取り消せるスクリーンショット）を空にし、どのスクリーンショットにも使われなくなったファイルを削除します。</string>
+	<key>Carbon Arc</key>
+	<string>カーボンアーク</string>
+	<key>Cards use your background, and the timeline grows to fit them. The “Made with Shotnix” end card is separate — it's in the export options.</key>
+	<string>カードには背景が使われ、その分タイムラインが長くなります。“Made with Shotnix”エンドカードはこれとは別で、書き出しオプションにあります。</string>
+	<key>Center</key>
+	<string>中央</string>
+	<key>Check</key>
+	<string>確認</string>
+	<key>Check for Updates</key>
+	<string>アップデートを確認</string>
+	<key>Choose</key>
+	<string>選択</string>
+	<key>Choose Capture Area in the Shotnix menu to start</key>
+	<string>Shotnixのメニューから“範囲を取り込む”を選択して始めましょう</string>
+	<key>Choose Image…</key>
+	<string>画像を選択…</string>
+	<key>Choose a language</key>
+	<string>言語を選択</string>
+	<key>Choose a logo, watermark, or screenshot to place on the video</key>
+	<string>ビデオに配置するロゴ、透かし、またはスクリーンショットを選択してください</string>
+	<key>Choose a recording or video to add after this one</key>
+	<string>このビデオの後ろに追加する収録またはビデオを選択してください</string>
+	<key>Choose a song to play under the video</key>
+	<string>ビデオに流す曲を選択してください</string>
+	<key>Choose a writable folder for auto-save.</key>
+	<string>自動保存用に書き込み可能なフォルダを選択してください。</string>
+	<key>Choose a writable folder.</key>
+	<string>書き込み可能なフォルダを選択してください。</string>
+	<key>Choose folder</key>
+	<string>フォルダを選択</string>
+	<key>Choose screen</key>
+	<string>ディスプレイを選択</string>
+	<key>Choose what happens immediately after taking a screenshot.</key>
+	<string>スクリーンショットを撮った直後の動作を選択します。</string>
+	<key>Choose window</key>
+	<string>ウインドウを選択</string>
+	<key>Choose...</key>
+	<string>選択…</string>
+	<key>Circle</key>
+	<string>円形</string>
+	<key>Citrus</key>
+	<string>シトラス</string>
+	<key>Classic</key>
+	<string>クラシック</string>
+	<key>Clay</key>
+	<string>クレイ</string>
+	<key>Clean Up</key>
+	<string>クリーンアップ</string>
+	<key>Clean Up History?</key>
+	<string>履歴をクリーンアップしますか?</string>
+	<key>Clean Up lists what it would remove — the data of recordings Shotnix can't find, camera footage and pictures nothing uses, and clipboard exports older than a day — and asks first. On its own, Shotnix only removes clipboard exports older than a day; the data of your recordings stays until you clean it up here.</key>
+	<string>“クリーンアップ”では、削除される項目（Shotnixが見つけられない収録のデータ、どこにも使われていないカメラ映像と画像、1日以上経ったクリップボード用の書き出し）が一覧表示され、削除する前に確認を求められます。Shotnixが自動で削除するのは1日以上経ったクリップボード用の書き出しだけで、収録のデータはここでクリーンアップするまで残ります。</string>
+	<key>Clean Up…</key>
+	<string>クリーンアップ…</string>
+	<key>Cleaning Up…</key>
+	<string>クリーンアップ中…</string>
+	<key>Cleaning up the voice in “%@”</key>
+	<string>“%@”の声を補正中</string>
+	<key>Cleaning up voice…</key>
+	<string>声を補正中…</string>
+	<key>Cleaning up your voice first… %lld%%</key>
+	<string>先に声を補正中…%lld%%</string>
+	<key>Cleaning up your voice…</key>
+	<string>声を補正中…</string>
+	<key>Cleaning up your voice… %lld%%</key>
+	<string>声を補正中…%lld%%</string>
+	<key>Clear All</key>
+	<string>すべてを消去</string>
+	<key>Clear History</key>
+	<string>履歴を消去</string>
+	<key>Clear History?</key>
+	<string>履歴を消去しますか?</string>
+	<key>Click</key>
+	<string>クリック</string>
+	<key>Click a window to capture it  ·  Esc cancels</key>
+	<string>ウインドウをクリックして取り込む  ·  Escキーでキャンセル</string>
+	<key>Click a zoom</key>
+	<string>ズームをクリック</string>
+	<key>Click an annotation to edit it</key>
+	<string>注釈をクリックして編集</string>
+	<key>Click it on the video</key>
+	<string>ビデオ上でクリック</string>
+	<key>Click or press Esc to cancel</key>
+	<string>クリックするかEscキーを押してキャンセル</string>
+	<key>Click removed — ⌘Z to undo</key>
+	<string>クリックを削除しました。⌘Zで取り消せます</string>
+	<key>Click sounds</key>
+	<string>クリック音</string>
+	<key>Click to add a zoom — or press Z at the playhead</key>
+	<string>クリックしてズームを追加。再生ヘッドの位置でZキーを押しても追加できます</string>
+	<key>Click to add the next step</key>
+	<string>クリックで次のステップを追加</string>
+	<key>Click volume</key>
+	<string>クリック音の音量</string>
+	<key>Clicks</key>
+	<string>クリック</string>
+	<key>Clicks — drag one to retime it, ⌫ removes the selected one</key>
+	<string>クリック: ドラッグでタイミングを変更、⌫で選択したクリックを削除</string>
+	<key>Clip</key>
+	<string>クリップ</string>
+	<key>Clip %lld</key>
+	<string>クリップ%lld</string>
+	<key>Clip moved — ⌘Z to undo</key>
+	<string>クリップを移動しました。⌘Zで取り消せます</string>
+	<key>Clip now ends here</key>
+	<string>クリップの終了位置をここに設定しました</string>
+	<key>Clip now starts here</key>
+	<string>クリップの開始位置をここに設定しました</string>
+	<key>Clip removed — ⌘Z to undo</key>
+	<string>クリップを削除しました。⌘Zで取り消せます</string>
+	<key>Clip split</key>
+	<string>クリップを分割しました</string>
+	<key>Clip starts / ends here</key>
+	<string>ここをクリップの開始/終了位置に</string>
+	<key>Clipboard</key>
+	<string>クリップボード</string>
+	<key>Close</key>
+	<string>閉じる</string>
+	<key>Close (Esc)</key>
+	<string>閉じる（Esc）</string>
+	<key>Close All Pins</key>
+	<string>すべて閉じる</string>
+	<key>Close Pin</key>
+	<string>閉じる</string>
+	<key>Close Window</key>
+	<string>ウインドウを閉じる</string>
+	<key>Closing the editor stops it.</key>
+	<string>エディタを閉じると停止します。</string>
+	<key>Coastal Haze</key>
+	<string>海辺のもや</string>
+	<key>Cobalt Drapes</key>
+	<string>コバルトのドレープ</string>
+	<key>Color</key>
+	<string>カラー</string>
+	<key>Command Center</key>
+	<string>コマンドセンター</string>
+	<key>Commands</key>
+	<string>コマンド</string>
+	<key>Compose Email</key>
+	<string>メールを作成</string>
+	<key>Computer sound</key>
+	<string>システムオーディオ</string>
+	<key>Conflict detected</key>
+	<string>競合あり</string>
+	<key>Copied</key>
+	<string>コピーしました</string>
+	<key>Copied to clipboard</key>
+	<string>クリップボードにコピーしました</string>
+	<key>Copied — paste it anywhere</key>
+	<string>コピーしました。どこにでもペーストできます</string>
+	<key>Copy</key>
+	<string>コピー</string>
+	<key>Copy %@</key>
+	<string>%@をコピー</string>
+	<key>Copy (⌘C)</key>
+	<string>コピー（⌘C）</string>
+	<key>Copy Current Frame</key>
+	<string>現在のフレームをコピー</string>
+	<key>Copy Path</key>
+	<string>パスをコピー</string>
+	<key>Copy Text</key>
+	<string>テキストをコピー</string>
+	<key>Copy as Table</key>
+	<string>表としてコピー</string>
+	<key>Copy capture to clipboard</key>
+	<string>スクリーンショットをクリップボードにコピー</string>
+	<key>Copy current frame</key>
+	<string>現在のフレームをコピー</string>
+	<key>Copy image to clipboard</key>
+	<string>画像をクリップボードにコピー</string>
+	<key>Copy recognized text (OCR)</key>
+	<string>認識されたテキストをコピー（OCR）</string>
+	<key>Copy screenshots to clipboard</key>
+	<string>スクリーンショットをクリップボードにコピー</string>
+	<key>Copy the rows tab-separated, ready to paste into a spreadsheet</key>
+	<string>行をタブ区切りでコピーします。スプレッドシートにそのままペーストできます。</string>
+	<key>Copy to clipboard</key>
+	<string>クリップボードにコピー</string>
+	<key>Copy to clipboard — %@</key>
+	<string>クリップボードにコピー — %@</string>
+	<key>Copying %lld%%</key>
+	<string>コピー中…%lld%%</string>
+	<key>Could Not Disable Apple Shortcuts</key>
+	<string>Appleのショートカットを無効にできませんでした</string>
+	<key>Could Not Save Screenshot</key>
+	<string>スクリーンショットを保存できませんでした</string>
+	<key>Could not copy the screenshot</key>
+	<string>スクリーンショットをコピーできませんでした</string>
+	<key>Could not copy this capture</key>
+	<string>このスクリーンショットをコピーできませんでした</string>
+	<key>Could not encode screenshot as PNG.</key>
+	<string>スクリーンショットをPNGにエンコードできませんでした。</string>
+	<key>Could not encode the screenshot.</key>
+	<string>スクリーンショットをエンコードできませんでした。</string>
+	<key>Could not list windows. Check permissions.</key>
+	<string>ウインドウの一覧を取得できませんでした。アクセス許可を確認してください。</string>
+	<key>Could not restore Apple shortcuts.</key>
+	<string>Appleのショートカットを元に戻せませんでした。</string>
+	<key>Could not save the recording (%@).</key>
+	<string>収録を保存できませんでした（%@）。</string>
+	<key>Could not save the recording.</key>
+	<string>収録を保存できませんでした。</string>
+	<key>Could not start recording (%@).</key>
+	<string>収録を開始できませんでした（%@）。</string>
+	<key>Couldn't add that song — %@</key>
+	<string>その曲を追加できませんでした。%@</string>
+	<key>Couldn't copy the screenshot. Try again, or save it instead.</key>
+	<string>スクリーンショットをコピーできませんでした。もう一度試すか、代わりに保存してください。</string>
+	<key>Couldn't create the GIF file. Check that you can save to that folder, then export again.</key>
+	<string>GIFファイルを作成できませんでした。そのフォルダに保存できるか確認してから、もう一度書き出してください。</string>
+	<key>Couldn't create the video file.</key>
+	<string>ビデオファイルを作成できませんでした。</string>
+	<key>Couldn't make captions</key>
+	<string>字幕を作成できませんでした</string>
+	<key>Couldn't make the click sound. Turn off Click sounds (Audio tab), then export again.</key>
+	<string>クリック音を作成できませんでした。“オーディオ”タブで“クリック音”をオフにしてから、もう一度書き出してください。</string>
+	<key>Couldn't open that image</key>
+	<string>その画像を開けませんでした</string>
+	<key>Couldn't open that video — %@</key>
+	<string>そのビデオを開けませんでした。%@</string>
+	<key>Couldn't open this video</key>
+	<string>このビデオを開けませんでした</string>
+	<key>Couldn't prepare the video. Export again; if it keeps happening, restart Shotnix.</key>
+	<string>ビデオを準備できませんでした。もう一度書き出してください。問題が続く場合は、Shotnixを再起動してください。</string>
+	<key>Couldn't read that audio file</key>
+	<string>そのオーディオファイルを読み込めませんでした</string>
+	<key>Couldn't read the recording for the GIF. Try exporting a shorter part, or choose MP4.</key>
+	<string>GIF用に収録を読み込めませんでした。短い部分を書き出すか、MP4を選択してください。</string>
+	<key>Couldn't read the recording. Check that its file is still there, then export again.</key>
+	<string>収録を読み込めませんでした。ファイルがまだあるか確認してから、もう一度書き出してください。</string>
+	<key>Couldn't save the captions file</key>
+	<string>字幕ファイルを保存できませんでした</string>
+	<key>Couldn't save the screenshot to %@. Click to check the save folder.</key>
+	<string>スクリーンショットを“%@”に保存できませんでした。クリックして保存先フォルダを確認してください。</string>
+	<key>Couldn't save the screenshot: Shotnix can't write to %@. Click to choose another save folder.</key>
+	<string>スクリーンショットを保存できませんでした。Shotnixは“%@”に書き込めません。クリックして別の保存先フォルダを選択してください。</string>
+	<key>Couldn't save the screenshot: it could not be encoded as %@.</key>
+	<string>スクリーンショットを保存できませんでした。%@形式にエンコードできません。</string>
+	<key>Couldn't save the screenshot: the disk is full. Free up space or pick another save folder.</key>
+	<string>スクリーンショットを保存できませんでした。ディスクがいっぱいです。空き領域を増やすか、別の保存先フォルダを選択してください。</string>
+	<key>Couldn't set up the video encoder. Choose H.264 or a lower resolution, then export again.</key>
+	<string>ビデオエンコーダを設定できませんでした。H.264か低い解像度を選択してから、もう一度書き出してください。</string>
+	<key>Couldn't start the export. Export again; if it keeps happening, restart Shotnix.</key>
+	<string>書き出しを開始できませんでした。もう一度書き出してください。問題が続く場合は、Shotnixを再起動してください。</string>
+	<key>Couldn't translate (%@). Try again, or pick another language.</key>
+	<string>翻訳できませんでした（%@）。もう一度試すか、別の言語を選択してください。</string>
+	<key>Couldn't write the GIF. Check that there's free space, or export a shorter part.</key>
+	<string>GIFを書き込めませんでした。空き容量があるか確認するか、短い部分を書き出してください。</string>
+	<key>Couldn't write the video. Check that there's free space and that you can save to that folder, then export again.</key>
+	<string>ビデオを書き込めませんでした。空き容量があり、そのフォルダに保存できるか確認してから、もう一度書き出してください。</string>
+	<key>Countdown</key>
+	<string>カウントダウン</string>
+	<key>Crimson Ridge</key>
+	<string>深紅の尾根</string>
+	<key>Crisp and compact — the best default</key>
+	<string>鮮明でコンパクトな、最適な標準設定</string>
+	<key>Crop</key>
+	<string>切り取り</string>
+	<key>Crop the Recording…</key>
+	<string>収録を切り取る…</string>
+	<key>Crop the recording — trim away toolbars or empty space</key>
+	<string>収録を切り取って、ツールバーや余白を取り除きます</string>
+	<key>Cropped</key>
+	<string>切り取り済み</string>
+	<key>Cropped — cursor, zooms, and clicks follow</key>
+	<string>切り取りました。ポインタ、ズーム、クリックも合わせて調整されます</string>
+	<key>Cursor</key>
+	<string>ポインタ</string>
+	<key>Cursor, clicks, and keyboard shortcuts</key>
+	<string>ポインタ、クリック、キーボードショートカット</string>
+	<key>Custom</key>
+	<string>カスタム</string>
+	<key>Custom color</key>
+	<string>カスタムカラー</string>
+	<key>Custom color #%@</key>
+	<string>カスタムカラー #%@</string>
+	<key>Custom: %@</key>
+	<string>カスタム: %@</string>
+	<key>Custom…</key>
+	<string>カスタム…</string>
+	<key>Cut</key>
+	<string>カット</string>
+	<key>Cut %lld words — ⌘Z to undo</key>
+	<string>%lld語をカットしました。⌘Zで取り消せます</string>
+	<key>Cut filler words like um and uh</key>
+	<string>えー、あのーなどのフィラーをカット</string>
+	<key>Cut from Video</key>
+	<string>ビデオからカット</string>
+	<key>Cut this part</key>
+	<string>この部分をカット</string>
+	<key>Cut, no transition</key>
+	<string>つなぎ目、トランジションなし</string>
+	<key>Cutout</key>
+	<string>切り抜き</string>
+	<key>Decoded details</key>
+	<string>読み取った内容</string>
+	<key>Delete</key>
+	<string>削除</string>
+	<key>Delete %lld Captures?</key>
+	<string>%lld件のスクリーンショットを削除しますか?</string>
+	<key>Delete (⌫)</key>
+	<string>削除（⌫）</string>
+	<key>Delete All</key>
+	<string>すべてを削除</string>
+	<key>Delete Captures</key>
+	<string>スクリーンショットを削除</string>
+	<key>Delete Clip</key>
+	<string>クリップを削除</string>
+	<key>Delete Screenshot</key>
+	<string>スクリーンショットを削除</string>
+	<key>Delete Screenshots</key>
+	<string>スクリーンショットを削除</string>
+	<key>Delete Selection</key>
+	<string>選択項目を削除</string>
+	<key>Delete Zoom</key>
+	<string>ズームを削除</string>
+	<key>Delete every saved capture</key>
+	<string>保存されているすべてのスクリーンショットを削除します</string>
+	<key>Delete selection</key>
+	<string>選択項目を削除</string>
+	<key>Delete selection (⌫)</key>
+	<string>選択項目を削除（⌫）</string>
+	<key>Deleted captures waiting in History's trash and files no capture uses are removed for good, along with %lld captures past your History limit. The rest of your history stays.</key>
+	<string>履歴のゴミ箱にある削除済みのスクリーンショットと、どのスクリーンショットにも使われていないファイルが、履歴の上限を超えた%lld件のスクリーンショットとともに完全に削除されます。そのほかの履歴は残ります。</string>
+	<key>Deleted captures waiting in History's trash and files no capture uses are removed for good. The captures in your history stay.</key>
+	<string>履歴のゴミ箱にある削除済みのスクリーンショットと、どのスクリーンショットにも使われていないファイルが完全に削除されます。履歴内のスクリーンショットは残ります。</string>
+	<key>Deselect / close</key>
+	<string>選択解除/閉じる</string>
+	<key>Desert Violet</key>
+	<string>砂漠のすみれ</string>
+	<key>Dip to black</key>
+	<string>黒にフェード</string>
+	<key>Dips while you talk, comes back in the pauses</key>
+	<string>話している間は音量が下がり、話が途切れると元に戻ります</string>
+	<key>Directory where screenshots are saved if Auto-Save is enabled.</key>
+	<string>“自動的に保存”がオンのときに、スクリーンショットが保存されるフォルダです。</string>
+	<key>Disable Apple Shortcuts</key>
+	<string>Appleのショートカットを無効にする</string>
+	<key>Disabled</key>
+	<string>無効</string>
+	<key>Discard</key>
+	<string>破棄</string>
+	<key>Discard Changes</key>
+	<string>変更内容を破棄</string>
+	<key>Discard recording</key>
+	<string>収録を破棄</string>
+	<key>Discard this recording?</key>
+	<string>この収録を破棄しますか?</string>
+	<key>Disk almost full</key>
+	<string>ディスク残量わずか</string>
+	<key>Dismiss</key>
+	<string>閉じる</string>
+	<key>Dismiss tips</key>
+	<string>ヒントを閉じる</string>
+	<key>Display</key>
+	<string>ディスプレイ</string>
+	<key>Display %lld</key>
+	<string>ディスプレイ%lld</string>
+	<key>Display %lld · Main</key>
+	<string>ディスプレイ%lld · メイン</string>
+	<key>Dissolve</key>
+	<string>ディゾルブ</string>
+	<key>Dissolve Between Clips</key>
+	<string>クリップ間をディゾルブ</string>
+	<key>Do you want to review them before quitting?</key>
+	<string>終了する前に確認しますか?</string>
+	<key>Docs, slides</key>
+	<string>ドキュメント、スライド</string>
+	<key>Don't Ask Again</key>
+	<string>次回から確認しない</string>
+	<key>Don't Save</key>
+	<string>保存しない</string>
+	<key>Don't ask again</key>
+	<string>次回から確認しない</string>
+	<key>Done</key>
+	<string>完了</string>
+	<key>Done (Esc)</key>
+	<string>完了（Esc）</string>
+	<key>Double-click</key>
+	<string>ダブルクリック</string>
+	<key>Double-click text</key>
+	<string>テキストをダブルクリック</string>
+	<key>Double-click to edit, or drag into another app. Command-C copies, Command-S saves, Escape dismisses.</key>
+	<string>ダブルクリックで編集、またはほかのアプリにドラッグします。Command-Cでコピー、Command-Sで保存、Escキーで閉じます。</string>
+	<key>Double-click to show the recording in Finder</key>
+	<string>ダブルクリックで収録をFinderに表示</string>
+	<key>Downloading the language model…</key>
+	<string>言語モデルをダウンロード中…</string>
+	<key>Drag edges or corners to resize  ·  Arrow keys nudge (⇧ ×10)  ·  Return captures  ·  Esc cancels</key>
+	<string>端または角をドラッグしてサイズを変更  ·  矢印キーで微調整（⇧で×10）  ·  Returnキーで取り込む  ·  Escキーでキャンセル</string>
+	<key>Drag it on the preview to move it; drag a corner to resize. Its bar on the timeline sets when it shows.</key>
+	<string>プレビュー上でドラッグすると移動、角をドラッグするとサイズを変更できます。表示するタイミングはタイムライン上のバーで設定します。</string>
+	<key>Drag it on the preview to move it; drag a corner to resize; double-click it to type. Its bar on the timeline sets when it shows.</key>
+	<string>プレビュー上でドラッグすると移動、角をドラッグするとサイズ変更、ダブルクリックすると入力ができます。表示するタイミングはタイムライン上のバーで設定します。</string>
+	<key>Drag one of them on the timeline to move them all together; ⌫ removes them all. ⇧- or ⌘-click adds or takes one out.</key>
+	<string>タイムライン上でどれか1つをドラッグすると、すべてまとめて移動します。⌫を押すとすべて削除されます。⇧クリックまたは⌘クリックで1つずつ追加・除外できます。</string>
+	<key>Drag the arrow on the preview to move it; drag its head or tail to point it anywhere. Its bar on the timeline sets when it shows.</key>
+	<string>プレビュー上で矢印をドラッグすると移動、先端や始点をドラッグすると好きな方向に向けられます。表示するタイミングはタイムライン上のバーで設定します。</string>
+	<key>Drag the block on the Camera lane to move it, or its edges to change how long it lasts. Each change eases in and out.</key>
+	<string>“カメラ”トラックのブロックをドラッグすると移動、端をドラッグすると長さを変更できます。切り替わりはそれぞれ滑らかに行われます。</string>
+	<key>Drag the box on the preview over anything private. Blur follows zooms and stays until its bar ends.</key>
+	<string>プレビュー上で、見られたくない部分に枠をドラッグして重ねます。ぼかしはズームに追従し、バーの終わりまで表示されます。</string>
+	<key>Drag the frame on the preview to aim; drag its corners to zoom in or out.</key>
+	<string>プレビュー上で枠をドラッグして位置を指定し、角をドラッグしてズームイン/ズームアウトします。</string>
+	<key>Drag the spot on the preview; drag a corner to resize it. Everything around it dims while its bar on the timeline runs.</key>
+	<string>プレビュー上でスポットをドラッグし、角をドラッグしてサイズを変更します。タイムライン上のバーの間は、その周囲がすべて暗くなります。</string>
+	<key>Drag to capture  ·  Hold ⇧ as you let go to adjust first  ·  Space moves  ·  Esc cancels</key>
+	<string>ドラッグして取り込む  ·  ⇧を押しながら放すと取り込む前に調整  ·  スペースバーで移動  ·  Escキーでキャンセル</string>
+	<key>Drag to change where this clip ends</key>
+	<string>ドラッグしてこのクリップの終了位置を変更</string>
+	<key>Drag to change where this clip starts</key>
+	<string>ドラッグしてこのクリップの開始位置を変更</string>
+	<key>Drag to move this clip to another place in the video</key>
+	<string>ドラッグしてこのクリップをビデオ内の別の位置に移動</string>
+	<key>Drag to move where the arrow starts</key>
+	<string>ドラッグして矢印の始点を移動</string>
+	<key>Drag to move. Press Command-C to copy, Escape to close.</key>
+	<string>ドラッグして移動します。Command-Cでコピー、Escキーで閉じます。</string>
+	<key>Drag to move; drag a corner to resize</key>
+	<string>ドラッグで移動、角をドラッグでサイズを変更</string>
+	<key>Drag to point the arrow</key>
+	<string>ドラッグして矢印の向きを変更</string>
+	<key>Drag to select, then adjust  ·  Hold ⇧ as you let go to capture right away  ·  Esc cancels</key>
+	<string>ドラッグして選択してから調整  ·  ⇧を押しながら放すとすぐに取り込む  ·  Escキーでキャンセル</string>
+	<key>Draw with the selected tool. Tool shortcuts: V select, A arrow, R rectangle, T text, O callout, H highlighter, B blur, P pixelate, S spotlight, C crop.</key>
+	<string>選択したツールで描画します。ツールのショートカット: V（選択）、A（矢印）、R（長方形）、T（テキスト）、O（吹き出し）、H（蛍光ペン）、B（ぼかし）、P（モザイク）、S（スポットライト）、C（切り取り）。</string>
+	<key>Drawing</key>
+	<string>描画</string>
+	<key>Duplicate</key>
+	<string>複製</string>
+	<key>Duplicate zoom or annotation</key>
+	<string>ズームまたは注釈を複製</string>
+	<key>Duplicated</key>
+	<string>複製しました</string>
+	<key>Dusk</key>
+	<string>夕暮れ</string>
+	<key>Each recording keeps its own pointer, clicks, and shortcuts. Reorder them here; cut and trim them on the timeline like any clip.</key>
+	<string>各収録はそれぞれのポインタ、クリック、ショートカットを保持します。ここで順番を並べ替え、ほかのクリップと同じようにタイムラインでカットやトリミングができます。</string>
+	<key>Edge highlight</key>
+	<string>縁取り</string>
+	<key>Edit</key>
+	<string>編集</string>
+	<key>Edit Last Recording</key>
+	<string>最後の収録を編集</string>
+	<key>Edit Video</key>
+	<string>ビデオを編集</string>
+	<key>Edit by text</key>
+	<string>テキストで編集</string>
+	<key>Editable Cursor</key>
+	<string>編集可能なポインタ</string>
+	<key>Editable cursor</key>
+	<string>編集可能なポインタ</string>
+	<key>Editable cursor records the pointer separately so the editor can smooth it, resize it, and keep it crisp when zoomed — the video editor adds it back on export (the raw recording file has no pointer). Auto-zoom makes a fresh recording open already produced: the camera zooms to follow your clicks. Keyboard shortcuts records only ⌘, ⌃ and ⌥ combos (plus Esc and F-keys) so the editor can show them as keycaps — plain typing is never recorded; macOS asks for Accessibility access. High quality is the default; Max keeps more detail but creates larger files. The countdown gives you a moment after pressing Record; Esc cancels it. Stop a recording with %@ from any app — plain Esc stays with the app you're recording.</key>
+	<string>“編集可能なポインタ”では、ポインタが別に記録されるため、エディタでポインタの動きを滑らかにしたり、サイズを変えたり、ズームしてもくっきり表示したりできます。ポインタは書き出し時にビデオエディタで合成されます（収録したままのファイルにはポインタは入っていません）。“自動ズーム”を使うと、新しい収録が編集済みの状態で開き、クリックに合わせて画面がズームします。“キーボードショートカットを表示”では、⌘、⌃、⌥を使った組み合わせ（およびEscキーとファンクションキー）だけが記録され、エディタでキーとして表示できます。通常の入力が記録されることはありません。macOSからアクセシビリティへのアクセスを求められます。品質のデフォルトは“高”です。“最高”では細部がより保たれますが、ファイルサイズが大きくなります。カウントダウンがあると、“収録”を押してから開始までに少し時間ができます。Escキーでキャンセルできます。収録はどのアプリからでも%@で停止できます。Escキーだけを押した場合は、収録中のアプリに送られます。</string>
+	<key>Editing</key>
+	<string>編集</string>
+	<key>Ellipse</key>
+	<string>楕円</string>
+	<key>Email</key>
+	<string>メール</string>
+	<key>Email %@</key>
+	<string>%@にメールを送信</string>
+	<key>Email QR found</key>
+	<string>メールのQRコードが見つかりました</string>
+	<key>Email address copied</key>
+	<string>メールアドレスをコピーしました</string>
+	<key>Ember</key>
+	<string>残り火</string>
+	<key>Ember Fog</key>
+	<string>残り火の霧</string>
+	<key>Emerald</key>
+	<string>エメラルド</string>
+	<key>Enable Shotnix in System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording, then quit and reopen Shotnix so macOS applies the permission.</key>
+	<string>“システム設定”＞“プライバシーとセキュリティ”＞“画面収録とシステムオーディオ録音”でShotnixをオンにしたあと、アクセス許可をmacOSに反映させるためにShotnixを終了して再度開いてください。</string>
+	<key>Enable Shotnix in System Settings, then relaunch so macOS applies it.</key>
+	<string>“システム設定”でShotnixをオンにしたあと、macOSに反映させるためにShotnixを再度開いてください。</string>
+	<key>Enabled</key>
+	<string>有効</string>
+	<key>Encoding</key>
+	<string>エンコード</string>
+	<key>End card</key>
+	<string>エンドカード</string>
+	<key>End here</key>
+	<string>ここで終了</string>
+	<key>Ends</key>
+	<string>終了</string>
+	<key>English</key>
+	<string>英語</string>
+	<key>Enhance Voice</key>
+	<string>声を補正</string>
+	<key>Enhance voice</key>
+	<string>声を補正</string>
+	<key>Enjoying Shotnix? Click to star it on GitHub ★</key>
+	<string>Shotnixを気に入っていただけましたか? クリックしてGitHubでスターを付けてください ★</string>
+	<key>Enjoying Shotnix? Star it on GitHub so more people find it.</key>
+	<string>Shotnixを気に入っていただけましたか? GitHubでスターを付けると、より多くの人に見つけてもらえます。</string>
+	<key>Esc</key>
+	<string>Esc</string>
+	<key>Esc or Done finishes</key>
+	<string>Escキーまたは“完了”で終了</string>
+	<key>Estimated file size. Still screens take less.</key>
+	<string>推定ファイルサイズです。画面の動きが少ないほど小さくなります。</string>
+	<key>Estimated size %@</key>
+	<string>推定サイズ: %@</string>
+	<key>Estimating…</key>
+	<string>残り時間を計算中…</string>
+	<key>Even out loudness</key>
+	<string>音量を均一化</string>
+	<key>Every clip is muted — this export will have no sound.</key>
+	<string>すべてのクリップが消音されているため、書き出したビデオにはサウンドが入りません。</string>
+	<key>Every cut, zoom, annotation, caption, and style change on this video is removed — the recordings you added stay. You can undo this.</key>
+	<string>このビデオのカット、ズーム、注釈、字幕、スタイルの変更がすべて削除されます。追加した収録はそのまま残ります。この操作は取り消せます。</string>
+	<key>Every cut, zoom, annotation, caption, and style change on this video is removed. You can undo this.</key>
+	<string>このビデオのカット、ズーム、注釈、字幕、スタイルの変更がすべて削除されます。この操作は取り消せます。</string>
+	<key>Every sound level is at 0 (Audio tab) — this export will have no sound.</key>
+	<string>すべての音量が0になっているため（“オーディオ”タブ）、書き出したビデオにはサウンドが入りません。</string>
+	<key>Everything is ready</key>
+	<string>すべて準備完了</string>
+	<key>Exactly as recorded.</key>
+	<string>収録したままの動きです。</string>
+	<key>Export</key>
+	<string>書き出す</string>
+	<key>Export (⌘E)</key>
+	<string>書き出す（⌘E）</string>
+	<key>Export Format</key>
+	<string>書き出しフォーマット</string>
+	<key>Export Video…</key>
+	<string>ビデオを書き出す…</string>
+	<key>Export and put the file on the clipboard — paste it into Slack, Mail, or Finder</key>
+	<string>書き出してファイルをクリップボードにコピーします。Slack、“メール”、Finderにペーストできます</string>
+	<key>Export cancelled</key>
+	<string>書き出しをキャンセルしました</string>
+	<key>Export cancelled.</key>
+	<string>書き出しをキャンセルしました。</string>
+	<key>Export complete</key>
+	<string>書き出しが完了しました</string>
+	<key>Export failed</key>
+	<string>書き出せませんでした</string>
+	<key>Export: %@</key>
+	<string>書き出し: %@</string>
+	<key>Exported</key>
+	<string>書き出しました</string>
+	<key>Exported without Enhance voice — it couldn't finish.</key>
+	<string>“声を補正”を完了できなかったため、補正なしで書き出しました。</string>
+	<key>Exported · %@</key>
+	<string>書き出しました · %@</string>
+	<key>Exporting %lld%%</key>
+	<string>書き出し中…%lld%%</string>
+	<key>Exporting a video for the clipboard</key>
+	<string>クリップボード用のビデオを書き出しています</string>
+	<key>Exporting “%@”</key>
+	<string>“%@”を書き出しています</string>
+	<key>Exporting…</key>
+	<string>書き出し中…</string>
+	<key>Exporting… %lld%%</key>
+	<string>書き出し中…%lld%%</string>
+	<key>Exports at the level video sites expect (−16 LUFS) without clipping</key>
+	<string>動画サイトが想定するレベル（−16 LUFS）で、音割れせずに書き出します</string>
+	<key>Exports without sound — to quiet just the preview, press M</key>
+	<string>サウンドなしで書き出します。プレビューだけを消音するにはMキーを押します</string>
+	<key>Export…</key>
+	<string>書き出す…</string>
+	<key>Extra-fluid curves for slow, cinematic demos.</key>
+	<string>映画のようにゆっくり見せるデモ向けの、より滑らかなカーブです。</string>
+	<key>Fade in</key>
+	<string>フェードイン</string>
+	<key>Fade in from black</key>
+	<string>黒からフェードイン</string>
+	<key>Fade out</key>
+	<string>フェードアウト</string>
+	<key>Fade out to black</key>
+	<string>黒へフェードアウト</string>
+	<key>Fades out after a moment without movement</key>
+	<string>しばらく動かないとフェードアウトします</string>
+	<key>Fast</key>
+	<string>高速</string>
+	<key>Fast-forward moments where nothing happens</key>
+	<string>動きのない区間を早送り</string>
+	<key>File</key>
+	<string>ファイル</string>
+	<key>File Name</key>
+	<string>ファイル名</string>
+	<key>File not found</key>
+	<string>ファイルが見つかりません</string>
+	<key>Fill the Frame, Follow the Cursor</key>
+	<string>画面いっぱいに表示してポインタに追従</string>
+	<key>Filled Rectangle</key>
+	<string>塗りつぶした長方形</string>
+	<key>Filled rectangle</key>
+	<string>塗りつぶした長方形</string>
+	<key>Filled rounded rectangle</key>
+	<string>塗りつぶした角丸長方形</string>
+	<key>Filling the frame — the view follows your cursor</key>
+	<string>画面いっぱいに表示します。ポインタに合わせて表示範囲が動きます</string>
+	<key>Find in Transcript</key>
+	<string>文字起こし内を検索</string>
+	<key>Find in the transcript</key>
+	<string>文字起こし内を検索</string>
+	<key>Finish and Quit</key>
+	<string>完了してから終了</string>
+	<key>Finish or cancel the current recording setup</key>
+	<string>現在の収録の準備を完了するか、キャンセルしてください</string>
+	<key>Fix</key>
+	<string>修正</string>
+	<key>Flamingo</key>
+	<string>フラミンゴ</string>
+	<key>Flip like a selfie</key>
+	<string>自撮りと同じ向きにします</string>
+	<key>Follow Cursor</key>
+	<string>ポインタに追従</string>
+	<key>Follow cursor</key>
+	<string>ポインタに追従</string>
+	<key>Follows cursor</key>
+	<string>ポインタに追従</string>
+	<key>Forever</key>
+	<string>無期限</string>
+	<key>Format</key>
+	<string>フォーマット</string>
+	<key>Frame</key>
+	<string>枠</string>
+	<key>Frame copied</key>
+	<string>フレームをコピーしました</string>
+	<key>Frame rate</key>
+	<string>フレームレート</string>
+	<key>Framing</key>
+	<string>フレーミング</string>
+	<key>Free</key>
+	<string>自由形式</string>
+	<key>Free up ⌘⇧ shortcuts · optional</key>
+	<string>⌘⇧のショートカットを空ける · 任意</string>
+	<key>Freed %@</key>
+	<string>%@を解放しました</string>
+	<key>Freed %@ (%lld files)</key>
+	<string>%@を解放しました（%lld個のファイル）</string>
+	<key>Freehand Draw</key>
+	<string>フリーハンド</string>
+	<key>Freehand Highlighter</key>
+	<string>フリーハンド蛍光ペン</string>
+	<key>Freehand highlight</key>
+	<string>フリーハンドのハイライト</string>
+	<key>From your Mac</key>
+	<string>このMacから</string>
+	<key>Full Camera at Playhead</key>
+	<string>再生ヘッドの位置でカメラを全面に</string>
+	<key>Full Frame (No Background)</key>
+	<string>全面表示（背景なし）</string>
+	<key>Full camera</key>
+	<string>カメラ全面</string>
+	<key>Full camera for intro &amp; outro</key>
+	<string>オープニングとエンディングをカメラ全面に</string>
+	<key>Full frame (no background)</key>
+	<string>全面表示（背景なし）</string>
+	<key>Full screen: %@</key>
+	<string>画面全体: %@</string>
+	<key>Full-Camera Intro and Outro</key>
+	<string>オープニングとエンディングをカメラ全面に</string>
+	<key>Full-screen camera for your intro and outro</key>
+	<string>オープニングとエンディングをカメラ全面にしました</string>
+	<key>Fullscreen</key>
+	<string>画面全体</string>
+	<key>GIFs embed anywhere — READMEs, pull requests, docs. Keep them short: they get big fast.</key>
+	<string>GIFはREADME、プルリクエスト、ドキュメントなど、どこにでも埋め込めます。すぐにファイルが大きくなるので、短めにしてください。</string>
+	<key>General</key>
+	<string>一般</string>
+	<key>Gets out of the way during zoom moves</key>
+	<string>ズーム中は邪魔にならないようにします</string>
+	<key>Getting ready…</key>
+	<string>準備しています…</string>
+	<key>Glacier</key>
+	<string>氷河</string>
+	<key>Glides without lagging behind — clicks still land exactly.</key>
+	<string>遅れずに滑らかに動き、クリック位置も正確なままです。</string>
+	<key>Go to End</key>
+	<string>最後に移動</string>
+	<key>Go to Start</key>
+	<string>最初に移動</string>
+	<key>Gradient</key>
+	<string>グラデーション</string>
+	<key>Grant Screen Recording first, then try it here.</key>
+	<string>画面収録を許可したあとで、ここで試してください。</string>
+	<key>Granted — captures, recordings, and OCR are ready.</key>
+	<string>許可済みです。スクリーンショット、収録、OCRを使用できます。</string>
+	<key>Graphite</key>
+	<string>グラファイト</string>
+	<key>Green</key>
+	<string>グリーン</string>
+	<key>Hard Cuts Between Clips</key>
+	<string>クリップ間をカットでつなぐ</string>
+	<key>Hard cut</key>
+	<string>カット</string>
+	<key>Health</key>
+	<string>状態</string>
+	<key>Hidden</key>
+	<string>非表示</string>
+	<key>Hidden network</key>
+	<string>非公開ネットワーク</string>
+	<key>Hide</key>
+	<string>非表示にする</string>
+	<key>Hide Desktop Icons</key>
+	<string>デスクトップのアイコンを非表示</string>
+	<key>Hide Icon</key>
+	<string>アイコンを非表示</string>
+	<key>Hide desktop icons while capturing</key>
+	<string>取り込み中はデスクトップのアイコンを非表示</string>
+	<key>Hide the Menu Bar Icon?</key>
+	<string>メニューバーのアイコンを非表示にしますか?</string>
+	<key>Hide the move to Stop</key>
+	<string>“停止”への移動を非表示</string>
+	<key>Hide tips (bring them back from ⌘K or the shortcuts list)</key>
+	<string>ヒントを非表示（⌘Kまたはショートカット一覧から再表示できます）</string>
+	<key>Hide when idle</key>
+	<string>静止中は非表示</string>
+	<key>Hide — the export keeps going (Esc)</key>
+	<string>非表示にします。書き出しは続行されます（Esc）</string>
+	<key>High</key>
+	<string>高</string>
+	<key>Highlight</key>
+	<string>ハイライト</string>
+	<key>Highlight color</key>
+	<string>ハイライトカラー</string>
+	<key>Highlight words</key>
+	<string>単語をハイライト</string>
+	<key>Highlighter</key>
+	<string>蛍光ペン</string>
+	<key>History</key>
+	<string>履歴</string>
+	<key>History cleared — click or press ⌘Z to undo</key>
+	<string>履歴を消去しました。クリックするか⌘Zを押すと取り消せます</string>
+	<key>History uses %@ (%lld captures)</key>
+	<string>履歴の使用量: %@（スクリーンショット%lld件）</string>
+	<key>History uses … (%lld captures)</key>
+	<string>履歴の使用量: …（スクリーンショット%lld件）</string>
+	<key>History was already tidy</key>
+	<string>履歴はすでに整理されています</string>
+	<key>Home  End</key>
+	<string>Home  End</string>
+	<key>Hotkeys are system-wide and active while Shotnix is running. The ⌘⇧3 default works best after Apple's screenshot shortcut is disabled.</key>
+	<string>ショートカットはShotnixの実行中、システム全体で有効です。デフォルトの⌘⇧3は、Appleのスクリーンショット用ショートカットを無効にすると最も確実に動作します。</string>
+	<key>Hover the Zoom track</key>
+	<string>ズームトラックをクリック</string>
+	<key>Hover the zoom track and click to add a zoom, or press Z at the playhead. Drag a zoom to move it; drag its edges to change how long it lasts.</key>
+	<string>ズームトラックにポインタを置いてクリックするか、再生ヘッドの位置でZキーを押すとズームを追加できます。ズームをドラッグすると移動、端をドラッグすると長さを変更できます。</string>
+	<key>How strongly blur and pixelate hide what's under them</key>
+	<string>ぼかしとモザイクで下の内容を隠す強さ</string>
+	<key>Image</key>
+	<string>画像</string>
+	<key>In</key>
+	<string>イン点</string>
+	<key>In &amp; out</key>
+	<string>イン/アウト</string>
+	<key>In earlier</key>
+	<string>イン点を早める</string>
+	<key>In later</key>
+	<string>イン点を遅らせる</string>
+	<key>Includes: %@</key>
+	<string>内容: %@</string>
+	<key>Inspector tabs</key>
+	<string>インスペクタのタブ</string>
+	<key>Instagram, LinkedIn</key>
+	<string>Instagram、LinkedIn</string>
+	<key>Instant</key>
+	<string>瞬時</string>
+	<key>Intro</key>
+	<string>オープニング</string>
+	<key>Intro &amp; outro</key>
+	<string>オープニングとエンディング</string>
+	<key>Intro card</key>
+	<string>オープニングカード</string>
+	<key>Intro card — click to edit it in Style</key>
+	<string>オープニングカード: クリックして“スタイル”で編集</string>
+	<key>Intro card “%@”, %@ to %@</key>
+	<string>オープニングカード“%@”、%@から%@</string>
+	<key>Intro card, %@ to %@</key>
+	<string>オープニングカード、%@から%@</string>
+	<key>Iris</key>
+	<string>アイリス</string>
+	<key>It may be damaged, still being saved, or in a format this Mac can't play. MP4 and MOV videos work best.</key>
+	<string>ファイルが破損しているか、保存中か、このMacで再生できない形式の可能性があります。MP4やMOVのビデオが最適です。</string>
+	<key>It only has sound, or nothing at all. Shotnix edits screen recordings and other videos.</key>
+	<string>サウンドだけのファイルか、空のファイルです。Shotnixで編集できるのは画面収録やその他のビデオです。</string>
+	<key>It was moved, renamed, or deleted. Open it from where it is now.</key>
+	<string>移動、名前変更、または削除された可能性があります。現在の場所から開いてください。</string>
+	<key>It was recorded into the pixels, so it can't be resized or smoothed. New recordings capture an editable cursor by default (Settings → Recording).</key>
+	<string>ポインタが映像に焼き込まれているため、サイズの変更や滑らかにする処理はできません。新しい収録では、デフォルトで編集可能なポインタが記録されます（“設定”＞“収録”）。</string>
+	<key>JPEG Quality</key>
+	<string>JPEGの品質</string>
+	<key>Jump here</key>
+	<string>ここに移動</string>
+	<key>Jump one second</key>
+	<string>1秒移動</string>
+	<key>Keep</key>
+	<string>続ける</string>
+	<key>Keep Editing</key>
+	<string>編集を続ける</string>
+	<key>Keep Working</key>
+	<string>作業を続ける</string>
+	<key>Keep captures</key>
+	<string>スクリーンショットの保存期間</string>
+	<key>Keep editing — the words appear here when Shotnix is done listening.</key>
+	<string>編集を続けられます。Shotnixが聞き取りを終えると、ここにテキストが表示されます。</string>
+	<key>Keeping 30 days removes %lld older captures from History now. This can't be undone.</key>
+	<string>保存期間を“30日”にすると、それより古い%lld件のスクリーンショットが今すぐ履歴から削除されます。この操作は取り消せません。</string>
+	<key>Keeping 7 days removes %lld older captures from History now. This can't be undone.</key>
+	<string>保存期間を“7日”にすると、それより古い%lld件のスクリーンショットが今すぐ履歴から削除されます。この操作は取り消せません。</string>
+	<key>Keeping 90 days removes %lld older captures from History now. This can't be undone.</key>
+	<string>保存期間を“90日”にすると、それより古い%lld件のスクリーンショットが今すぐ履歴から削除されます。この操作は取り消せません。</string>
+	<key>Keeping last 1,000 captures removes %lld older captures from History now. This can't be undone.</key>
+	<string>保存期間を“最新1,000件”にすると、それより古い%lld件のスクリーンショットが今すぐ履歴から削除されます。この操作は取り消せません。</string>
+	<key>Keeping last 100 captures removes %lld older captures from History now. This can't be undone.</key>
+	<string>保存期間を“最新100件”にすると、それより古い%lld件のスクリーンショットが今すぐ履歴から削除されます。この操作は取り消せません。</string>
+	<key>Keeping last 500 captures removes %lld older captures from History now. This can't be undone.</key>
+	<string>保存期間を“最新500件”にすると、それより古い%lld件のスクリーンショットが今すぐ履歴から削除されます。この操作は取り消せません。</string>
+	<key>Keyboard</key>
+	<string>キーボード</string>
+	<key>Keyboard Shortcuts</key>
+	<string>キーボードショートカット</string>
+	<key>Keyboard shortcuts</key>
+	<string>キーボードショートカット</string>
+	<key>Keyboard shortcuts (?)</key>
+	<string>キーボードショートカット（?）</string>
+	<key>Keyboard shortcuts are on</key>
+	<string>キーボードショートカットの表示がオンになりました</string>
+	<key>Keyboard shortcuts — click one to select it, ⌫ hides it</key>
+	<string>キーボードショートカット: クリックで選択、⌫で非表示</string>
+	<key>Keys on screen</key>
+	<string>キー表示</string>
+	<key>L</key>
+	<string>大</string>
+	<key>Lagoon</key>
+	<string>ラグーン</string>
+	<key>Language</key>
+	<string>言語</string>
+	<key>Languages</key>
+	<string>言語</string>
+	<key>Large</key>
+	<string>大</string>
+	<key>Larger than the recording — text may look softer than at a lower resolution.</key>
+	<string>収録より大きいサイズです。低い解像度のときよりテキストがぼやけて見えることがあります。</string>
+	<key>Last %lld captures</key>
+	<string>最新%lld件</string>
+	<key>Later</key>
+	<string>あとで</string>
+	<key>Launch Shotnix at login</key>
+	<string>ログイン時にShotnixを開く</string>
+	<key>Lavender Glass</key>
+	<string>ラベンダーガラス</string>
+	<key>Layout</key>
+	<string>レイアウト</string>
+	<key>Layouts</key>
+	<string>レイアウト</string>
+	<key>Left</key>
+	<string>左</string>
+	<key>Length</key>
+	<string>長さ</string>
+	<key>Letterbox Instead of Following the Cursor</key>
+	<string>ポインタに追従せずレターボックスで表示</string>
+	<key>Level</key>
+	<string>倍率</string>
+	<key>Light</key>
+	<string>軽め</string>
+	<key>Lime Signal</key>
+	<string>ライムシグナル</string>
+	<key>Line</key>
+	<string>線</string>
+	<key>Line width</key>
+	<string>線の幅</string>
+	<key>Linen</key>
+	<string>リネン</string>
+	<key>Lines · %lld</key>
+	<string>字幕の行 · %lld</string>
+	<key>Link</key>
+	<string>リンク</string>
+	<key>Link QR found</key>
+	<string>リンクのQRコードが見つかりました</string>
+	<key>Link copied</key>
+	<string>リンクをコピーしました</string>
+	<key>Links</key>
+	<string>リンク</string>
+	<key>Links (%lld of %lld)</key>
+	<string>リンク（%2$lld件中%1$lld件）</string>
+	<key>Listening…</key>
+	<string>聞き取り中…</string>
+	<key>Listens on this Mac — nothing is uploaded</key>
+	<string>このMac上で聞き取ります。何もアップロードされません</string>
+	<key>Look</key>
+	<string>スタイル</string>
+	<key>Loop to fill</key>
+	<string>ループして最後まで再生</string>
+	<key>Lower under your voice</key>
+	<string>話している間は音量を下げる</string>
+	<key>M</key>
+	<string>中</string>
+	<key>MIT License — Free and open source</key>
+	<string>無料のオープンソース（MITライセンス）</string>
+	<key>Make it lighter: %@, %@ fps</key>
+	<string>軽くする: %@、%@ fps</string>
+	<key>Manage</key>
+	<string>管理</string>
+	<key>Match the recording</key>
+	<string>収録に合わせる</string>
+	<key>Max</key>
+	<string>最高</string>
+	<key>Maximum detail for further editing</key>
+	<string>ディテールを最大限に保持。後でさらに編集する場合に</string>
+	<key>Maximum length reached</key>
+	<string>最大の長さに達しました</string>
+	<key>Meadow</key>
+	<string>草原</string>
+	<key>Medium</key>
+	<string>中</string>
+	<key>Menu Bar</key>
+	<string>メニューバー</string>
+	<key>Menu bar is full, so macOS hid the Shotnix icon — %@ still captures. Click here for the menu.</key>
+	<string>メニューバーがいっぱいのため、macOSがShotnixのアイコンを非表示にしました。%@で引き続き取り込めます。ここをクリックするとメニューが開きます。</string>
+	<key>Menu bar is full, so macOS hid the Shotnix icon — your shortcuts still work. Click here for the menu.</key>
+	<string>メニューバーがいっぱいのため、macOSがShotnixのアイコンを非表示にしました。ショートカットは引き続き使えます。ここをクリックするとメニューが開きます。</string>
+	<key>Message</key>
+	<string>メッセージ</string>
+	<key>Message QR found</key>
+	<string>メッセージのQRコードが見つかりました</string>
+	<key>Mic disconnected</key>
+	<string>マイク未接続</string>
+	<key>Mic stopped</key>
+	<string>マイク停止</string>
+	<key>Mic switched</key>
+	<string>マイク切り替え</string>
+	<key>Microphone</key>
+	<string>マイク</string>
+	<key>Microphone access is off, so this recording has no mic.</key>
+	<string>マイクへのアクセスがオフのため、この収録にはマイクの音声が入りません。</string>
+	<key>Microphone access is off. Allow Shotnix in System Settings → Privacy &amp; Security → Microphone.</key>
+	<string>マイクへのアクセスがオフになっています。“システム設定”＞“プライバシーとセキュリティ”＞“マイク”でShotnixを許可してください。</string>
+	<key>Microphone disconnected. Now recording from %@.</key>
+	<string>マイクの接続が解除されました。現在は“%@”で録音しています。</string>
+	<key>Microphone disconnected. The recording continues without it.</key>
+	<string>マイクの接続が解除されました。マイクなしで収録を続けます。</string>
+	<key>Microphone level</key>
+	<string>マイクの入力レベル</string>
+	<key>Microphone recording requires macOS microphone permission. System audio excludes Shotnix sounds to avoid feedback.</key>
+	<string>マイクで録音するには、macOSでマイクへのアクセスを許可する必要があります。ハウリングを防ぐため、システムオーディオにShotnixのサウンドは含まれません。</string>
+	<key>Midnight</key>
+	<string>ミッドナイト</string>
+	<key>Midnight Graphite</key>
+	<string>ミッドナイトグラファイト</string>
+	<key>Minimal</key>
+	<string>ミニマル</string>
+	<key>Minimize</key>
+	<string>しまう</string>
+	<key>Mint</key>
+	<string>ミント</string>
+	<key>Mirror</key>
+	<string>左右反転</string>
+	<key>Mist</key>
+	<string>ミスト</string>
+	<key>More</key>
+	<string>その他</string>
+	<key>More caption options</key>
+	<string>その他の字幕オプション</string>
+	<key>More recording options</key>
+	<string>その他の収録オプション</string>
+	<key>More tips</key>
+	<string>次のヒント</string>
+	<key>Moss</key>
+	<string>モス</string>
+	<key>Moss Glow</key>
+	<string>苔の輝き</string>
+	<key>Motion</key>
+	<string>モーション</string>
+	<key>Motion blur</key>
+	<string>モーションブラー</string>
+	<key>Move %@ earlier</key>
+	<string>“%@”を前に移動</string>
+	<key>Move %@ later</key>
+	<string>“%@”を後ろに移動</string>
+	<key>Move Earlier</key>
+	<string>前に移動</string>
+	<key>Move Later</key>
+	<string>後ろに移動</string>
+	<key>Move earlier</key>
+	<string>前に移動</string>
+	<key>Move later</key>
+	<string>後ろに移動</string>
+	<key>Move the playhead inside a clip to split</key>
+	<string>分割するには、再生ヘッドをクリップ内に移動してください</string>
+	<key>Movement</key>
+	<string>動き</string>
+	<key>Music</key>
+	<string>音楽</string>
+	<key>Music added — it dips while you talk</key>
+	<string>音楽を追加しました。話している間は音量が下がります</string>
+	<key>Music options</key>
+	<string>音楽のオプション</string>
+	<key>Music removed — ⌘Z to undo</key>
+	<string>音楽を削除しました。⌘Zで取り消せます</string>
+	<key>Music — click to change its volume, fades, and ducking</key>
+	<string>音楽: クリックして音量、フェード、話している間の音量を変更</string>
+	<key>Music “%@”</key>
+	<string>音楽“%@”</string>
+	<key>Mute Clip</key>
+	<string>クリップを消音</string>
+	<key>Mute preview</key>
+	<string>プレビューを消音</string>
+	<key>Mute the Preview (the Export Keeps Its Sound)</key>
+	<string>プレビューを消音（書き出したビデオにはサウンドが残ります）</string>
+	<key>Mute the preview (M) — the export keeps its sound</key>
+	<string>プレビューを消音（M）。書き出したビデオにはサウンドが残ります</string>
+	<key>Mute the preview (or the selected clip)</key>
+	<string>プレビュー（または選択したクリップ）を消音</string>
+	<key>Mute this clip</key>
+	<string>このクリップを消音</string>
+	<key>Mute this part</key>
+	<string>この部分を消音</string>
+	<key>Mute video</key>
+	<string>ビデオを消音</string>
+	<key>Mute video is on (Audio tab) — this export will have no sound.</key>
+	<string>“ビデオを消音”がオンになっているため（“オーディオ”タブ）、書き出したビデオにはサウンドが入りません。</string>
+	<key>Nebula</key>
+	<string>星雲</string>
+	<key>Needed to capture the screen. macOS will ask once.</key>
+	<string>画面の取り込みに必要です。macOSからの確認は一度だけです。</string>
+	<key>Neo Pop</key>
+	<string>ネオポップ</string>
+	<key>Network</key>
+	<string>ネットワーク</string>
+	<key>Never</key>
+	<string>しない</string>
+	<key>Never switch to the text beam or the hand</key>
+	<string>Iビームや手の形のポインタに切り替えません</string>
+	<key>New caption</key>
+	<string>新しい字幕</string>
+	<key>New recordings use this look</key>
+	<string>新しい収録にはこのスタイルが使われます</string>
+	<key>New screenshots are copied automatically. Turn this off if you only want to use the overlay or history actions.</key>
+	<string>新しいスクリーンショットは自動的にコピーされます。サムネールや履歴の操作だけを使いたい場合はオフにしてください。</string>
+	<key>New zooms</key>
+	<string>新しいズーム</string>
+	<key>Nice shot. You're all set.</key>
+	<string>うまく撮れました。準備完了です。</string>
+	<key>Night Current</key>
+	<string>夜の潮流</string>
+	<key>No</key>
+	<string>いいえ</string>
+	<key>No Exports Yet</key>
+	<string>書き出しはまだありません</string>
+	<key>No background</key>
+	<string>背景なし</string>
+	<key>No background — text only</key>
+	<string>背景なし（テキストのみ）</string>
+	<key>No barcode found in this selection</key>
+	<string>選択範囲にバーコードが見つかりませんでした</string>
+	<key>No camera connected</key>
+	<string>カメラが接続されていません</string>
+	<key>No camera found.</key>
+	<string>カメラが見つかりません。</string>
+	<key>No camera in this recording</key>
+	<string>この収録にはカメラ映像がありません</string>
+	<key>No captions in the picture — add a subtitles file to upload them separately.</key>
+	<string>映像に字幕は入りません。別にアップロードするには字幕ファイルを追加してください。</string>
+	<key>No captures contain “%@”</key>
+	<string>“%@”を含むスクリーンショットはありません</string>
+	<key>No captures of this type</key>
+	<string>この種類のスクリーンショットはありません</string>
+	<key>No captures yet</key>
+	<string>スクリーンショットはまだありません</string>
+	<key>No clicks left on the timeline</key>
+	<string>タイムラインにクリックが残っていません</string>
+	<key>No clicks were recorded in this video</key>
+	<string>このビデオにはクリックが記録されていません</string>
+	<key>No clicks were recorded — add zooms by hand</key>
+	<string>クリックが記録されていません。ズームは手動で追加してください</string>
+	<key>No clicks were recorded, so add zooms by hand: hover the zoom track and click.</key>
+	<string>クリックが記録されていないため、ズームは手動で追加してください。ズームトラックにポインタを置いてクリックします。</string>
+	<key>No conflict</key>
+	<string>競合なし</string>
+	<key>No cursor data in this video</key>
+	<string>このビデオにはポインタのデータがありません</string>
+	<key>No idle moments found — nice and tight</key>
+	<string>動きのない区間は見つかりませんでした。テンポは良好です</string>
+	<key>No long pauses to shorten</key>
+	<string>短縮できる長い無音部分はありません</string>
+	<key>No microphone connected</key>
+	<string>マイクが接続されていません</string>
+	<key>No microphone is connected, so this recording has no mic.</key>
+	<string>マイクが接続されていないため、この収録にはマイクの音声が入りません。</string>
+	<key>No music</key>
+	<string>音楽なし</string>
+	<key>No pauses to shorten</key>
+	<string>短縮できる無音部分はありません</string>
+	<key>No recordable windows found</key>
+	<string>収録できるウインドウが見つかりません</string>
+	<key>No recording in progress</key>
+	<string>進行中の収録はありません</string>
+	<key>No room after this zoom</key>
+	<string>このズームの後ろに空きがありません</string>
+	<key>No room here — move the playhead</key>
+	<string>ここには空きがありません。再生ヘッドを移動してください</string>
+	<key>No saved captures yet</key>
+	<string>保存済みのスクリーンショットはまだありません</string>
+	<key>No sound from the microphone</key>
+	<string>マイクから音声が入力されていません</string>
+	<key>No speech was found in this recording. If it has narration, check its level in the Audio tab, then try again.</key>
+	<string>この収録には音声が見つかりませんでした。ナレーションが入っている場合は、“オーディオ”タブで音量を確認してから、もう一度お試しください。</string>
+	<key>No text found in this selection</key>
+	<string>選択範囲にテキストが見つかりませんでした</string>
+	<key>No ums</key>
+	<string>フィラーなし</string>
+	<key>No ums or uhs left</key>
+	<string>フィラー（えー、あのー）はもうありません</string>
+	<key>None</key>
+	<string>なし</string>
+	<key>None in this recording. Turn on “Show keyboard shortcuts” in Settings → Recording and every ⌘ shortcut you press appears as keycaps. Plain typing is never recorded.</key>
+	<string>この収録にはありません。“設定”＞“収録”で“キーボードショートカットを表示”をオンにすると、押した⌘ショートカットがすべてキーキャップで表示されます。通常の文字入力が記録されることはありません。</string>
+	<key>Not Now</key>
+	<string>今はしない</string>
+	<key>Not enough disk space to record.</key>
+	<string>ディスクの空き領域が足りないため、収録できません。</string>
+	<key>Not enough free disk space for this recording: it needs about %@ free, and %@ is available. Free up some space and try again.</key>
+	<string>この収録に必要なディスクの空き領域が足りません。約%@の空き領域が必要ですが、使用可能なのは%@です。空き領域を増やしてから、もう一度お試しください。</string>
+	<key>Not enough free disk space for this recording: it needs about %@ free, and %@ is available. Free up space, or choose Balanced quality or 30 fps.</key>
+	<string>この収録に必要なディスクの空き領域が足りません。約%@の空き領域が必要ですが、使用可能なのは%@です。空き領域を増やすか、品質“標準”または30 fpsを選択してください。</string>
+	<key>Not for this video</key>
+	<string>このビデオでは使用しない</string>
+	<key>Not now</key>
+	<string>今はしない</string>
+	<key>Nothing to clean up — everything belongs to recordings you still have</key>
+	<string>クリーンアップするものはありません。すべて現在ある収録のデータです</string>
+	<key>Nothing was recorded — the screen didn't send any picture. Try again.</key>
+	<string>何も収録されませんでした。画面から映像を受信できませんでした。もう一度お試しください。</string>
+	<key>Numbered Steps</key>
+	<string>番号付きステップ</string>
+	<key>OCR / Capture Text</key>
+	<string>テキストを取り込む（OCR）</string>
+	<key>OK</key>
+	<string>OK</string>
+	<key>Ocean</key>
+	<string>オーシャン</string>
+	<key>Of the frame's width.</key>
+	<string>ビデオの幅に対する割合です。</string>
+	<key>Off</key>
+	<string>オフ</string>
+	<key>Older</key>
+	<string>それ以前</string>
+	<key>On your clipboard · %@</key>
+	<string>クリップボードにあります · %@</string>
+	<key>Only %@ free on your disk — this may not fit. Free up space or save to another drive.</key>
+	<string>ディスクの空き容量が%@しかないため、収まらない可能性があります。空き容量を増やすか、別のドライブに保存してください。</string>
+	<key>Opacity</key>
+	<string>不透明度</string>
+	<key>Open</key>
+	<string>開く</string>
+	<key>Open %@</key>
+	<string>%@を開く</string>
+	<key>Open Another Video…</key>
+	<string>別のビデオを開く…</string>
+	<key>Open Command Center</key>
+	<string>コマンドセンターを開く</string>
+	<key>Open Editor After Recording</key>
+	<string>収録後にエディタを開く</string>
+	<key>Open History</key>
+	<string>履歴を開く</string>
+	<key>Open Keyboard Settings</key>
+	<string>キーボード設定を開く</string>
+	<key>Open Link</key>
+	<string>リンクを開く</string>
+	<key>Open Messages</key>
+	<string>“メッセージ”を開く</string>
+	<key>Open Privacy Settings</key>
+	<string>“プライバシーとセキュリティ”を開く</string>
+	<key>Open Recording Settings…</key>
+	<string>収録設定を開く…</string>
+	<key>Open Settings</key>
+	<string>システム設定を開く</string>
+	<key>Open System Settings</key>
+	<string>システム設定を開く</string>
+	<key>Open System Settings → Keyboard → Keyboard Shortcuts → Screenshots and turn off the screenshot shortcuts manually.</key>
+	<string>“システム設定”＞“キーボード”＞“キーボードショートカット…”＞“スクリーンショット”を開き、スクリーンショット用のショートカットを手動でオフにしてください。</string>
+	<key>Open Video Editor</key>
+	<string>ビデオエディタを開く</string>
+	<key>Open editor after recording</key>
+	<string>収録後にエディタを開く</string>
+	<key>Open in annotation editor</key>
+	<string>スクリーンショットエディタで開く</string>
+	<key>Opens its title and length in Style</key>
+	<string>“スタイル”にタイトルと長さの設定を表示します</string>
+	<key>Opens its volume, fades, and ducking in Audio</key>
+	<string>“オーディオ”で音量、フェード、話している間の音量の設定を開きます</string>
+	<key>Or drag it on the preview. Images stay put while the camera zooms.</key>
+	<string>プレビュー上でドラッグすることもできます。ズーム中も画像は同じ位置に留まります。</string>
+	<key>Or drag its bar on the timeline.</key>
+	<string>タイムライン上のバーをドラッグすることもできます。</string>
+	<key>Or drag the bubble on the video — it snaps to the nearest spot.</key>
+	<string>またはビデオ上でワイプをドラッグします。いちばん近い位置にスナップします。</string>
+	<key>Or type one at the playhead</key>
+	<string>または再生ヘッドの位置に手動で入力</string>
+	<key>Orange</key>
+	<string>オレンジ</string>
+	<key>Orchid</key>
+	<string>オーキッド</string>
+	<key>Original</key>
+	<string>オリジナル</string>
+	<key>Otherwise, Shotnix switches languages the next time it opens.</key>
+	<string>今すぐ再起動しない場合は、次回Shotnixを開いたときに言語が切り替わります。</string>
+	<key>Out</key>
+	<string>アウト点</string>
+	<key>Out earlier</key>
+	<string>アウト点を早める</string>
+	<key>Out later</key>
+	<string>アウト点を遅らせる</string>
+	<key>Outro</key>
+	<string>エンディング</string>
+	<key>Outro card</key>
+	<string>エンディングカード</string>
+	<key>Outro card — click to edit it in Style</key>
+	<string>エンディングカード: クリックして“スタイル”で編集</string>
+	<key>Outro card “%@”, %@ to %@</key>
+	<string>エンディングカード“%@”、%@から%@</string>
+	<key>Outro card, %@ to %@</key>
+	<string>エンディングカード、%@から%@</string>
+	<key>Overlay position</key>
+	<string>サムネールの位置</string>
+	<key>Padding</key>
+	<string>余白</string>
+	<key>Part of the recording couldn't be read — the file may be damaged. Try exporting a shorter part of the video.</key>
+	<string>収録の一部を読み込めませんでした。ファイルが破損している可能性があります。ビデオの短い部分を書き出してみてください。</string>
+	<key>Password</key>
+	<string>パスワード</string>
+	<key>Paste</key>
+	<string>ペースト</string>
+	<key>Pause</key>
+	<string>一時停止</string>
+	<key>Pause (Space)</key>
+	<string>一時停止（スペース）</string>
+	<key>Pause / Resume Recording</key>
+	<string>収録を一時停止/再開</string>
+	<key>Pause Recording</key>
+	<string>収録を一時停止</string>
+	<key>Pause recording</key>
+	<string>収録を一時停止</string>
+	<key>Pause recording (%@)</key>
+	<string>収録を一時停止（%@）</string>
+	<key>Pause restored</key>
+	<string>無音部分を復元しました</string>
+	<key>Pause shortened</key>
+	<string>無音部分を短縮しました</string>
+	<key>Paused</key>
+	<string>一時停止中</string>
+	<key>Peach</key>
+	<string>ピーチ</string>
+	<key>Pending</key>
+	<string>未完了</string>
+	<key>Permission needed</key>
+	<string>アクセス許可が必要</string>
+	<key>Phone</key>
+	<string>電話番号</string>
+	<key>Phone QR found</key>
+	<string>電話番号のQRコードが見つかりました</string>
+	<key>Picked up where you left off</key>
+	<string>前回の続きから再開しました</string>
+	<key>Pin</key>
+	<string>画面に固定</string>
+	<key>Pin to Screen</key>
+	<string>画面に固定</string>
+	<key>Pine Dusk</key>
+	<string>松林の夕暮れ</string>
+	<key>Pinned Screenshot</key>
+	<string>固定したスクリーンショット</string>
+	<key>Pinned screenshot</key>
+	<string>固定したスクリーンショット</string>
+	<key>Pixelate</key>
+	<string>モザイク</string>
+	<key>Pixelated area</key>
+	<string>モザイクをかけた範囲</string>
+	<key>Placement</key>
+	<string>配置</string>
+	<key>Plan zooms from your clicks — keeps zooms you placed by hand</key>
+	<string>クリックに合わせてズームを配置します。手動で配置したズームは残ります</string>
+	<key>Plans zooms around your %lld clicks. Zooms you placed by hand are kept.</key>
+	<string>%lld回のクリックに合わせてズームを配置します。手動で配置したズームは残ります。</string>
+	<key>Play</key>
+	<string>再生</string>
+	<key>Play (Space)</key>
+	<string>再生（スペース）</string>
+	<key>Play / pause</key>
+	<string>再生/一時停止</string>
+	<key>Play Click Sounds</key>
+	<string>クリック音を鳴らす</string>
+	<key>Play a click on each click</key>
+	<string>クリックごとにクリック音を鳴らす</string>
+	<key>Play capture sound</key>
+	<string>取り込み時にサウンドを再生</string>
+	<key>Play from Here</key>
+	<string>ここから再生</string>
+	<key>Playback</key>
+	<string>再生</string>
+	<key>Playing %lld×</key>
+	<string>%lld倍速で再生中</string>
+	<key>Plays after the last clip, before the end card</key>
+	<string>最後のクリップとエンドカードの間に再生</string>
+	<key>Plays before the first clip</key>
+	<string>最初のクリップの前に再生</string>
+	<key>Plays everywhere</key>
+	<string>どこでも再生できます</string>
+	<key>Plays or pauses. Use Option-arrow keys to select what's on the timeline.</key>
+	<string>再生または一時停止します。Optionキーと矢印キーで、タイムライン上の項目を選択できます。</string>
+	<key>Plum</key>
+	<string>プラム</string>
+	<key>Polar Dawn</key>
+	<string>極地の夜明け</string>
+	<key>Porcelain</key>
+	<string>ポーセリン</string>
+	<key>Position</key>
+	<string>位置</string>
+	<key>Preferences</key>
+	<string>設定</string>
+	<key>Preparing to copy…</key>
+	<string>コピーの準備中…</string>
+	<key>Preparing your video…</key>
+	<string>ビデオを準備中…</string>
+	<key>Preparing…</key>
+	<string>準備中…</string>
+	<key>Preset</key>
+	<string>プリセット</string>
+	<key>Press</key>
+	<string>押し込み</string>
+	<key>Press %@ anytime — or try it right now.</key>
+	<string>いつでも%@で取り込めます。今ここで試すこともできます。</string>
+	<key>Press %@ to take your first screenshot</key>
+	<string>%@を押して最初のスクリーンショットを撮りましょう</string>
+	<key>Pressed at %@. Press ⌫ to hide it from the video — handy for a stray ⌘Tab.</key>
+	<string>%@に押されました。⌫を押すとビデオで非表示になります。誤って押した⌘Tabなどを隠すのに便利です。</string>
+	<key>Preview</key>
+	<string>プレビュー</string>
+	<key>Preview muted — the export keeps its sound</key>
+	<string>プレビューを消音しました。書き出したビデオのサウンドはそのままです</string>
+	<key>Preview sound on</key>
+	<string>プレビューのサウンドをオンにしました</string>
+	<key>Preview the target, then continue to recording controls.</key>
+	<string>対象をプレビューしてから、収録コントロールに進みます。</string>
+	<key>Previous / next frame</key>
+	<string>前/次のフレーム</string>
+	<key>Prism Sweep</key>
+	<string>プリズムの光</string>
+	<key>Privacy Policy</key>
+	<string>プライバシーポリシー</string>
+	<key>Pure</key>
+	<string>ピュア</string>
+	<key>Purple</key>
+	<string>パープル</string>
+	<key>QR Code</key>
+	<string>QRコード</string>
+	<key>QR Codes</key>
+	<string>QRコード</string>
+	<key>QR copied to clipboard</key>
+	<string>QRコードの内容をクリップボードにコピーしました</string>
+	<key>Quality</key>
+	<string>品質</string>
+	<key>Quick</key>
+	<string>速め</string>
+	<key>Quit &amp; Reopen</key>
+	<string>終了して再度開く</string>
+	<key>Quit Shotnix</key>
+	<string>Shotnixを終了</string>
+	<key>Quit Shotnix?</key>
+	<string>Shotnixを終了しますか?</string>
+	<key>Radius</key>
+	<string>角の丸み</string>
+	<key>Range</key>
+	<string>範囲</string>
+	<key>Re-enable Apple's ⌘⇧3/4/5 screenshot shortcuts</key>
+	<string>Appleのスクリーンショット用ショートカット（⌘⇧3/4/5）を再度有効にします</string>
+	<key>Ready</key>
+	<string>準備完了</string>
+	<key>Ready · %lld optional off</key>
+	<string>準備完了 · 任意の%lld件は未設定</string>
+	<key>Recent Exports</key>
+	<string>最近の書き出し</string>
+	<key>Recognized Text</key>
+	<string>認識されたテキスト</string>
+	<key>Recognized text</key>
+	<string>認識されたテキスト</string>
+	<key>Record</key>
+	<string>収録</string>
+	<key>Record (Return)</key>
+	<string>収録（Returnキー）</string>
+	<key>Record Area</key>
+	<string>範囲を収録</string>
+	<key>Record Fullscreen</key>
+	<string>画面全体を収録</string>
+	<key>Record Window</key>
+	<string>ウインドウを収録</string>
+	<key>Record camera</key>
+	<string>カメラを収録</string>
+	<key>Record microphone</key>
+	<string>マイクを録音</string>
+	<key>Record system audio</key>
+	<string>システムオーディオを録音</string>
+	<key>Recorded at %@. Drag its dot on the timeline to retime it; ripples and Auto Zoom follow.</key>
+	<string>%@に記録されました。タイムライン上の点をドラッグするとタイミングを変更でき、波紋と自動ズームも合わせて移動します。</string>
+	<key>Recording</key>
+	<string>収録</string>
+	<key>Recording already in progress</key>
+	<string>すでに収録中です</string>
+	<key>Recording canceled</key>
+	<string>収録をキャンセルしました</string>
+	<key>Recording controls</key>
+	<string>収録コントロール</string>
+	<key>Recording discarded</key>
+	<string>収録を破棄しました</string>
+	<key>Recording failed before saving.</key>
+	<string>保存する前に収録に失敗しました。</string>
+	<key>Recording keyboard shortcuts</key>
+	<string>キーボードショートカットを記録中</string>
+	<key>Recording paused — click to stop (%@)</key>
+	<string>収録を一時停止中。クリックすると停止します（%@）</string>
+	<key>Recording removed — ⌘Z to undo</key>
+	<string>収録を削除しました。⌘Zで取り消せます</string>
+	<key>Recording saved</key>
+	<string>収録を保存しました</string>
+	<key>Recording shortcuts are unassigned by default — click a field to set one. Stop Recording also cancels recording setup. While recording, %@ always stops it, from any app.</key>
+	<string>収録のショートカットは最初は割り当てられていません。フィールドをクリックして設定してください。“収録を停止”は収録の準備をキャンセルするときにも使えます。収録中は、どのアプリからでも%@で必ず停止できます。</string>
+	<key>Recording stopped early — saved what was captured.</key>
+	<string>収録が途中で停止しました。それまでの内容は保存されています。</string>
+	<key>Recording the camera</key>
+	<string>カメラを収録中</string>
+	<key>Recording time</key>
+	<string>収録時間</string>
+	<key>Recording without the camera.</key>
+	<string>カメラなしで収録します。</string>
+	<key>Recording — click to stop (%@)</key>
+	<string>収録中。クリックすると停止します（%@）</string>
+	<key>Recordings</key>
+	<string>収録したビデオ</string>
+	<key>Recordings in the Trash or on a drive that isn't plugged in keep their data. This can't be undone.</key>
+	<string>ゴミ箱内の収録や、接続されていないドライブ上の収録のデータは残ります。この操作は取り消せません。</string>
+	<key>Recordings made with Shotnix capture the pointer so it can be smoothed, resized, and hidden.</key>
+	<string>Shotnixで収録したビデオではポインタが別に記録されるため、滑らかにしたり、サイズを変えたり、非表示にしたりできます。</string>
+	<key>Records %@ × %@ pixels (%@ × %@ points)</key>
+	<string>%@ × %@ピクセル（%@ × %@ポイント）を収録します</string>
+	<key>Records the pointer separately, so the editor can smooth it, resize it, and keep it crisp when zoomed.</key>
+	<string>ポインタを別途収録するため、エディタでポインタの動きを滑らかにしたり、サイズを変更したり、ズームしてもくっきり表示したりできます。</string>
+	<key>Recovered your interrupted recording “%@”. Click to open it.</key>
+	<string>中断された収録“%@”を復元しました。クリックすると開きます。</string>
+	<key>Rectangle</key>
+	<string>長方形</string>
+	<key>Red</key>
+	<string>レッド</string>
+	<key>Redaction strength</key>
+	<string>ぼかしとモザイクの強さ</string>
+	<key>Redo</key>
+	<string>やり直す</string>
+	<key>Redo Add Arrow</key>
+	<string>矢印の追加をやり直す</string>
+	<key>Redo Add Blur</key>
+	<string>ぼかしの追加をやり直す</string>
+	<key>Redo Add Camera Layout</key>
+	<string>カメラのレイアウトの追加をやり直す</string>
+	<key>Redo Add Camera Layouts</key>
+	<string>カメラのレイアウトの追加をやり直す</string>
+	<key>Redo Add Caption</key>
+	<string>字幕の追加をやり直す</string>
+	<key>Redo Add Captions</key>
+	<string>字幕の追加をやり直す</string>
+	<key>Redo Add Click</key>
+	<string>クリックの追加をやり直す</string>
+	<key>Redo Add Clicks</key>
+	<string>クリックの追加をやり直す</string>
+	<key>Redo Add Highlight</key>
+	<string>ハイライトの追加をやり直す</string>
+	<key>Redo Add Image</key>
+	<string>画像の追加をやり直す</string>
+	<key>Redo Add Intro Card</key>
+	<string>オープニングカードの追加をやり直す</string>
+	<key>Redo Add Music</key>
+	<string>音楽の追加をやり直す</string>
+	<key>Redo Add Outro Card</key>
+	<string>エンディングカードの追加をやり直す</string>
+	<key>Redo Add Recording</key>
+	<string>収録の追加をやり直す</string>
+	<key>Redo Add Spotlight</key>
+	<string>スポットライトの追加をやり直す</string>
+	<key>Redo Add Text</key>
+	<string>テキストの追加をやり直す</string>
+	<key>Redo Add Zoom</key>
+	<string>ズームの追加をやり直す</string>
+	<key>Redo Add Zooms</key>
+	<string>ズームの追加をやり直す</string>
+	<key>Redo Annotation Change</key>
+	<string>注釈の変更をやり直す</string>
+	<key>Redo Annotations</key>
+	<string>注釈の変更をやり直す</string>
+	<key>Redo Arrow Style</key>
+	<string>矢印のスタイル変更をやり直す</string>
+	<key>Redo Aspect Ratio</key>
+	<string>アスペクト比の変更をやり直す</string>
+	<key>Redo Auto Zoom</key>
+	<string>自動ズームの適用をやり直す</string>
+	<key>Redo Background</key>
+	<string>背景の変更をやり直す</string>
+	<key>Redo Blur Style</key>
+	<string>ぼかしのスタイル変更をやり直す</string>
+	<key>Redo Camera Change</key>
+	<string>カメラの変更をやり直す</string>
+	<key>Redo Camera Layout Change</key>
+	<string>カメラのレイアウトの変更をやり直す</string>
+	<key>Redo Camera Layouts</key>
+	<string>カメラのレイアウトの変更をやり直す</string>
+	<key>Redo Caption Style</key>
+	<string>字幕のスタイル変更をやり直す</string>
+	<key>Redo Caption Translation</key>
+	<string>字幕の翻訳をやり直す</string>
+	<key>Redo Captions</key>
+	<string>字幕の変更をやり直す</string>
+	<key>Redo Click Sounds</key>
+	<string>クリック音の変更をやり直す</string>
+	<key>Redo Clicks</key>
+	<string>クリックの変更をやり直す</string>
+	<key>Redo Crop</key>
+	<string>切り取りをやり直す</string>
+	<key>Redo Cursor Change</key>
+	<string>ポインタの変更をやり直す</string>
+	<key>Redo Cut</key>
+	<string>カットをやり直す</string>
+	<key>Redo Cut Word</key>
+	<string>単語のカットをやり直す</string>
+	<key>Redo Cut Words</key>
+	<string>単語のカットをやり直す</string>
+	<key>Redo Delete %lld Items</key>
+	<string>%lld項目の削除をやり直す</string>
+	<key>Redo Delete Annotations</key>
+	<string>注釈の削除をやり直す</string>
+	<key>Redo Delete Arrow</key>
+	<string>矢印の削除をやり直す</string>
+	<key>Redo Delete Blur</key>
+	<string>ぼかしの削除をやり直す</string>
+	<key>Redo Delete Camera Layout</key>
+	<string>カメラのレイアウトの削除をやり直す</string>
+	<key>Redo Delete Camera Layouts</key>
+	<string>カメラのレイアウトの削除をやり直す</string>
+	<key>Redo Delete Caption</key>
+	<string>字幕の削除をやり直す</string>
+	<key>Redo Delete Captions</key>
+	<string>字幕の削除をやり直す</string>
+	<key>Redo Delete Click</key>
+	<string>クリックの削除をやり直す</string>
+	<key>Redo Delete Clicks</key>
+	<string>クリックの削除をやり直す</string>
+	<key>Redo Delete Clip</key>
+	<string>クリップの削除をやり直す</string>
+	<key>Redo Delete Clips</key>
+	<string>クリップの削除をやり直す</string>
+	<key>Redo Delete Highlight</key>
+	<string>ハイライトの削除をやり直す</string>
+	<key>Redo Delete Image</key>
+	<string>画像の削除をやり直す</string>
+	<key>Redo Delete Spotlight</key>
+	<string>スポットライトの削除をやり直す</string>
+	<key>Redo Delete Text</key>
+	<string>テキストの削除をやり直す</string>
+	<key>Redo Delete Zoom</key>
+	<string>ズームの削除をやり直す</string>
+	<key>Redo Delete Zooms</key>
+	<string>ズームの削除をやり直す</string>
+	<key>Redo Edit Caption</key>
+	<string>字幕の編集をやり直す</string>
+	<key>Redo Edit Text</key>
+	<string>テキストの編集をやり直す</string>
+	<key>Redo Enhance Voice</key>
+	<string>声の補正をやり直す</string>
+	<key>Redo Fade</key>
+	<string>フェードの変更をやり直す</string>
+	<key>Redo Hide Shortcut</key>
+	<string>ショートカットの非表示をやり直す</string>
+	<key>Redo Highlight Style</key>
+	<string>ハイライトのスタイル変更をやり直す</string>
+	<key>Redo Image Style</key>
+	<string>画像のスタイル変更をやり直す</string>
+	<key>Redo Intro and Outro</key>
+	<string>カメラ全面のオープニングとエンディングをやり直す</string>
+	<key>Redo Move %lld Items</key>
+	<string>%lld項目の移動をやり直す</string>
+	<key>Redo Move Arrow</key>
+	<string>矢印の移動をやり直す</string>
+	<key>Redo Move Blur</key>
+	<string>ぼかしの移動をやり直す</string>
+	<key>Redo Move Click</key>
+	<string>クリックの移動をやり直す</string>
+	<key>Redo Move Clip</key>
+	<string>クリップの移動をやり直す</string>
+	<key>Redo Move Highlight</key>
+	<string>ハイライトの移動をやり直す</string>
+	<key>Redo Move Image</key>
+	<string>画像の移動をやり直す</string>
+	<key>Redo Move Recording</key>
+	<string>収録の移動をやり直す</string>
+	<key>Redo Move Spotlight</key>
+	<string>スポットライトの移動をやり直す</string>
+	<key>Redo Move Text</key>
+	<string>テキストの移動をやり直す</string>
+	<key>Redo Music Change</key>
+	<string>音楽の変更をやり直す</string>
+	<key>Redo Mute Clip</key>
+	<string>クリップの消音をやり直す</string>
+	<key>Redo Mute Part</key>
+	<string>部分の消音をやり直す</string>
+	<key>Redo Mute Video</key>
+	<string>ビデオの消音をやり直す</string>
+	<key>Redo Remove All Zooms</key>
+	<string>すべてのズームの削除をやり直す</string>
+	<key>Redo Remove Captions</key>
+	<string>字幕の削除をやり直す</string>
+	<key>Redo Remove Intro Card</key>
+	<string>オープニングカードの削除をやり直す</string>
+	<key>Redo Remove Music</key>
+	<string>音楽の削除をやり直す</string>
+	<key>Redo Remove Outro Card</key>
+	<string>エンディングカードの削除をやり直す</string>
+	<key>Redo Remove Recording</key>
+	<string>収録の削除をやり直す</string>
+	<key>Redo Remove Ums</key>
+	<string>フィラーの削除をやり直す</string>
+	<key>Redo Replace Music</key>
+	<string>音楽の置き換えをやり直す</string>
+	<key>Redo Reset Look</key>
+	<string>スタイルのリセットをやり直す</string>
+	<key>Redo Restore</key>
+	<string>復元をやり直す</string>
+	<key>Redo Restore Cut</key>
+	<string>カットの復元をやり直す</string>
+	<key>Redo Restore Cuts</key>
+	<string>カットの復元をやり直す</string>
+	<key>Redo Restore Pause</key>
+	<string>無音部分の復元をやり直す</string>
+	<key>Redo Restore Word</key>
+	<string>単語の復元をやり直す</string>
+	<key>Redo Restore Words</key>
+	<string>単語の復元をやり直す</string>
+	<key>Redo Shortcut Style</key>
+	<string>ショートカットのスタイル変更をやり直す</string>
+	<key>Redo Shortcuts</key>
+	<string>ショートカットの変更をやり直す</string>
+	<key>Redo Shorten Pause</key>
+	<string>無音部分の短縮をやり直す</string>
+	<key>Redo Shorten Pauses</key>
+	<string>無音部分の短縮をやり直す</string>
+	<key>Redo Sound Change</key>
+	<string>サウンドの変更をやり直す</string>
+	<key>Redo Speed Change</key>
+	<string>速度の変更をやり直す</string>
+	<key>Redo Speed Up Idle</key>
+	<string>動きのない区間の早送りをやり直す</string>
+	<key>Redo Split</key>
+	<string>分割をやり直す</string>
+	<key>Redo Spotlight Style</key>
+	<string>スポットライトのスタイル変更をやり直す</string>
+	<key>Redo Start Over</key>
+	<string>元の収録への復元をやり直す</string>
+	<key>Redo Style Change</key>
+	<string>スタイルの変更をやり直す</string>
+	<key>Redo Text Style</key>
+	<string>テキストのスタイル変更をやり直す</string>
+	<key>Redo Timeline Edit</key>
+	<string>タイムラインの編集をやり直す</string>
+	<key>Redo Title Card</key>
+	<string>タイトルカードの変更をやり直す</string>
+	<key>Redo Transcribe</key>
+	<string>文字起こしをやり直す</string>
+	<key>Redo Transitions</key>
+	<string>トランジションの変更をやり直す</string>
+	<key>Redo Trim</key>
+	<string>トリミングをやり直す</string>
+	<key>Redo Unmute Clip</key>
+	<string>クリップの消音解除をやり直す</string>
+	<key>Redo Unmute Part</key>
+	<string>部分の消音解除をやり直す</string>
+	<key>Redo Unmute Video</key>
+	<string>ビデオの消音解除をやり直す</string>
+	<key>Redo Zoom Change</key>
+	<string>ズームの変更をやり直す</string>
+	<key>Redo Zoom Level for All</key>
+	<string>ズーム倍率の一括変更をやり直す</string>
+	<key>Redo Zooms</key>
+	<string>ズームの変更をやり直す</string>
+	<key>Reels, TikTok, Shorts</key>
+	<string>Reels、TikTok、Shorts</string>
+	<key>Regular</key>
+	<string>標準</string>
+	<key>Releasing the mouse takes the shot. Hold ⇧ as you release to adjust the selection first — drag its edges, nudge it with the arrow keys, then press Return.</key>
+	<string>マウスボタンを放すと取り込まれます。放すときに⇧を押したままにすると、先に選択範囲を調整できます。端をドラッグしたり矢印キーで少しずつ動かしたりしてから、Returnキーを押してください。</string>
+	<key>Remove</key>
+	<string>削除</string>
+	<key>Remove %@</key>
+	<string>“%@”を削除</string>
+	<key>Remove %@ of video data?</key>
+	<string>%@のビデオデータを削除しますか?</string>
+	<key>Remove %lld ums</key>
+	<string>%lld個のフィラーを削除</string>
+	<key>Remove All Zooms</key>
+	<string>すべてのズームを削除</string>
+	<key>Remove Intro Card</key>
+	<string>オープニングカードを削除</string>
+	<key>Remove Music</key>
+	<string>音楽を削除</string>
+	<key>Remove Outro Card</key>
+	<string>エンディングカードを削除</string>
+	<key>Remove Transcript &amp; Captions</key>
+	<string>文字起こしと字幕を削除</string>
+	<key>Remove Ums</key>
+	<string>フィラーを削除</string>
+	<key>Remove all %lld</key>
+	<string>%lld項目をすべて削除</string>
+	<key>Remove all zooms</key>
+	<string>すべてのズームを削除</string>
+	<key>Remove caption</key>
+	<string>字幕を削除</string>
+	<key>Remove from this video</key>
+	<string>このビデオから削除</string>
+	<key>Remove this caption</key>
+	<string>この字幕を削除</string>
+	<key>Remove this translation</key>
+	<string>この翻訳を削除</string>
+	<key>Remove translation</key>
+	<string>翻訳を削除</string>
+	<key>Removed %@ — click to restore</key>
+	<string>%@を削除。クリックすると復元できます</string>
+	<key>Removed %@ — ⌘Z to undo</key>
+	<string>%@を削除しました。⌘Zで取り消せます</string>
+	<key>Removed %lld filler words — %@ shorter</key>
+	<string>%lld個のフィラーを削除し、%@短くなりました</string>
+	<key>Removed %lld items — ⌘Z to undo</key>
+	<string>%lld項目を削除しました。⌘Zで取り消せます</string>
+	<key>Removed %lld items — ⌘Z to undo (a video keeps at least one clip)</key>
+	<string>%lld項目を削除しました。⌘Zで取り消せます（ビデオにはクリップが少なくとも1つ必要です）</string>
+	<key>Removed %lld zooms — ⌘Z to undo</key>
+	<string>%lld個のズームを削除しました。⌘Zで取り消せます</string>
+	<key>Removed parts can be restored from the yellow marker on the timeline.</key>
+	<string>削除した部分は、タイムライン上の黄色いマーカーから復元できます。</string>
+	<key>Removed — ⌘Z to undo</key>
+	<string>削除しました。⌘Zで取り消せます</string>
+	<key>Removes background noise and hum, and evens out your level — processed on this Mac</key>
+	<string>背景ノイズやハムノイズを除去し、音量を均一にします。処理はこのMac上で行われます</string>
+	<key>Removes jitter, keeps it snappy.</key>
+	<string>ぶれを取り除き、きびきびとした動きを保ちます。</string>
+	<key>Rendering for the clipboard… %lld%%</key>
+	<string>クリップボード用にレンダリング中…%lld%%</string>
+	<key>Rendering, then copying to your clipboard</key>
+	<string>レンダリング後にクリップボードにコピーします</string>
+	<key>Replace Music…</key>
+	<string>音楽を置き換える…</string>
+	<key>Replace…</key>
+	<string>置き換える…</string>
+	<key>Report Issue</key>
+	<string>問題を報告</string>
+	<key>Report on GitHub</key>
+	<string>GitHubで報告</string>
+	<key>Reset</key>
+	<string>リセット</string>
+	<key>Reset %@</key>
+	<string>%@をリセット</string>
+	<key>Reset Defaults</key>
+	<string>デフォルトに戻す</string>
+	<key>Reset crop</key>
+	<string>切り取りをリセット</string>
+	<key>Reset to the Shotnix Look</key>
+	<string>Shotnixの標準スタイルに戻す</string>
+	<key>Reset to the Shotnix look</key>
+	<string>Shotnixの標準スタイルに戻す</string>
+	<key>Resize</key>
+	<string>サイズを変更</string>
+	<key>Resolution</key>
+	<string>解像度</string>
+	<key>Restart Now</key>
+	<string>今すぐ再起動</string>
+	<key>Restart Shotnix to use %@?</key>
+	<string>Shotnixを再起動して%@に切り替えますか?</string>
+	<key>Restore</key>
+	<string>復元</string>
+	<key>Restore %@ at %@</key>
+	<string>%2$@の%1$@を復元</string>
+	<key>Restore %@ cut at %@</key>
+	<string>%2$@のカット（%1$@）を復元</string>
+	<key>Restore All %lld</key>
+	<string>%lld箇所すべてを復元</string>
+	<key>Restore Apple Shortcuts</key>
+	<string>Appleのショートカットを元に戻す</string>
+	<key>Restored %@</key>
+	<string>%@分を復元しました</string>
+	<key>Restored %lld cuts — %@</key>
+	<string>%lld箇所のカット（計%@）を復元しました</string>
+	<key>Restored %lld words</key>
+	<string>%lld語を復元しました</string>
+	<key>Resume Recording</key>
+	<string>収録を再開</string>
+	<key>Resume recording</key>
+	<string>収録を再開</string>
+	<key>Resume recording (%@)</key>
+	<string>収録を再開（%@）</string>
+	<key>Reveal</key>
+	<string>表示</string>
+	<key>Reveal in Finder</key>
+	<string>Finderに表示</string>
+	<key>Review Changes…</key>
+	<string>変更内容を確認…</string>
+	<key>Review the decoded email payload before copying.</key>
+	<string>コピーする前に、読み取ったメールの内容を確認してください。</string>
+	<key>Review the decoded link before opening.</key>
+	<string>開く前に、読み取ったリンクを確認してください。</string>
+	<key>Review the decoded link before opening: %@</key>
+	<string>開く前に、読み取ったリンクを確認してください: %@</string>
+	<key>Review the decoded text before copying.</key>
+	<string>コピーする前に、読み取ったテキストを確認してください。</string>
+	<key>Review the decoded values before copying or opening.</key>
+	<string>コピーしたり開いたりする前に、読み取った値を確認してください。</string>
+	<key>Review the email details before composing.</key>
+	<string>メールを作成する前に、メールの詳細を確認してください。</string>
+	<key>Review the message details before opening.</key>
+	<string>開く前に、メッセージの詳細を確認してください。</string>
+	<key>Review the network details before copying.</key>
+	<string>コピーする前に、ネットワークの詳細を確認してください。</string>
+	<key>Review the phone number before opening.</key>
+	<string>開く前に、電話番号を確認してください。</string>
+	<key>Right</key>
+	<string>右</string>
+	<key>Ripple</key>
+	<string>波紋</string>
+	<key>Rose Smoke</key>
+	<string>ローズスモーク</string>
+	<key>Rounded</key>
+	<string>角丸</string>
+	<key>Rounded Corners (⌥R)</key>
+	<string>角を丸める（⌥R）</string>
+	<key>Rounded corners</key>
+	<string>角を丸める</string>
+	<key>Rounded rectangle</key>
+	<string>角丸長方形</string>
+	<key>Roundness</key>
+	<string>角の丸み</string>
+	<key>S</key>
+	<string>小</string>
+	<key>SHOTNIX LIBRARY</key>
+	<string>Shotnixライブラリ</string>
+	<key>Save</key>
+	<string>保存</string>
+	<key>Save %@…</key>
+	<string>%@を保存…</string>
+	<key>Save (⌘S)</key>
+	<string>保存（⌘S）</string>
+	<key>Save As…</key>
+	<string>別名で保存…</string>
+	<key>Save Folder</key>
+	<string>保存先フォルダ</string>
+	<key>Save Location</key>
+	<string>保存場所</string>
+	<key>Save Subtitles</key>
+	<string>字幕を保存</string>
+	<key>Save Subtitles (.srt)…</key>
+	<string>字幕を保存（.srt）…</string>
+	<key>Save Subtitles (.vtt)…</key>
+	<string>字幕を保存（.vtt）…</string>
+	<key>Save automatically</key>
+	<string>自動的に保存</string>
+	<key>Save changes to this screenshot?</key>
+	<string>このスクリーンショットへの変更内容を保存しますか?</string>
+	<key>Save folder updated.</key>
+	<string>保存先フォルダを更新しました。</string>
+	<key>Save screenshot to disk</key>
+	<string>スクリーンショットをディスクに保存</string>
+	<key>Saved</key>
+	<string>保存済み</string>
+	<key>Saved %@</key>
+	<string>“%@”を保存しました</string>
+	<key>Saved %@ to %@ — click to reveal in Finder</key>
+	<string>“%1$@”を“%2$@”に保存しました。クリックするとFinderに表示します</string>
+	<key>Saved capture</key>
+	<string>保存済みのスクリーンショット</string>
+	<key>Saved to %@: %@</key>
+	<string>“%@”に保存しました: %@</string>
+	<key>Saved — new recordings will use this look</key>
+	<string>保存しました。新しい収録にはこのスタイルが使われます</string>
+	<key>Saves %@ — only silences where nothing happens on screen</key>
+	<string>%@短縮。画面上で何も起きていない無音部分だけが対象です</string>
+	<key>Saves %@ — silences where the pointer rests and nothing is clicked or pressed (this older recording can't see typing)</key>
+	<string>%@短縮。ポインタが止まっていて、クリックもキー操作もない無音部分が対象です（この古い収録では入力を検出できません）</string>
+	<key>Saves the background, frame, cursor, and zoom style.</key>
+	<string>背景、枠、ポインタ、ズームのスタイルを保存します。</string>
+	<key>Save…</key>
+	<string>保存…</string>
+	<key>Saving captures to History</key>
+	<string>スクリーンショットを履歴に保存中</string>
+	<key>Saving the last recording…</key>
+	<string>前回の収録を保存中…</string>
+	<key>Saving the recording</key>
+	<string>収録を保存中</string>
+	<key>Saving the recording…</key>
+	<string>収録を保存中…</string>
+	<key>Saving the screen recording</key>
+	<string>画面収録を保存しています</string>
+	<key>Saving…</key>
+	<string>保存中…</string>
+	<key>Scan QR Code</key>
+	<string>QRコードをスキャン</string>
+	<key>Screen Recording</key>
+	<string>画面収録</string>
+	<key>Screen Recording Permission Required</key>
+	<string>画面収録のアクセス許可が必要です</string>
+	<key>Screen recording didn't start in time. Try again.</key>
+	<string>画面収録が時間内に開始されませんでした。もう一度お試しください。</string>
+	<key>Screenshot Editor</key>
+	<string>スクリーンショットエディタ</string>
+	<key>Screenshot canvas</key>
+	<string>スクリーンショットのキャンバス</string>
+	<key>Screenshot captured</key>
+	<string>スクリーンショットを取り込みました</string>
+	<key>Screenshot selection</key>
+	<string>スクリーンショットの選択範囲</string>
+	<key>Screenshot thumbnail</key>
+	<string>スクリーンショットのサムネール</string>
+	<key>Screenshots</key>
+	<string>スクリーンショット</string>
+	<key>Scroll down to capture</key>
+	<string>下にスクロールして取り込む</string>
+	<key>Scroll down to capture more</key>
+	<string>さらに下にスクロールして取り込む</string>
+	<key>Scrolled too fast — scroll back up a little</key>
+	<string>速すぎます。少し戻してください</string>
+	<key>Scrolling</key>
+	<string>スクロール</string>
+	<key>Scrolling Capture</key>
+	<string>スクロールして取り込む</string>
+	<key>Scrolling capture</key>
+	<string>スクロール取り込み</string>
+	<key>Scrolling capture controls</key>
+	<string>スクロール取り込みのコントロール</string>
+	<key>Scrolling capture failed</key>
+	<string>スクロール取り込みに失敗しました</string>
+	<key>Scrolling capture reached its maximum length (%lld points) and finished.</key>
+	<string>スクロール取り込みが最大の長さ（%lldポイント）に達したため、終了しました。</string>
+	<key>Scrolling capture stopped after %lld minutes.</key>
+	<string>%lld分が経過したため、スクロール取り込みを停止しました。</string>
+	<key>Search commands</key>
+	<string>コマンドを検索</string>
+	<key>Search text in captures</key>
+	<string>スクリーンショット内のテキストを検索</string>
+	<key>Security</key>
+	<string>セキュリティ</string>
+	<key>Select</key>
+	<string>選択</string>
+	<key>Select All</key>
+	<string>すべてを選択</string>
+	<key>Select a clip on the timeline to mute it or fade it in and out.</key>
+	<string>タイムラインでクリップを選択すると、消音やフェードイン/フェードアウトを設定できます。</string>
+	<key>Select a range to cut</key>
+	<string>カットする範囲を選択</string>
+	<key>Select a window to record without blocking other apps</key>
+	<string>収録するウインドウを選択します。ほかのアプリはそのまま使えます。</string>
+	<key>Select previous / next item</key>
+	<string>前/次の項目を選択</string>
+	<key>Select several items</key>
+	<string>複数の項目を選択</string>
+	<key>Select which display to record fullscreen</key>
+	<string>画面全体を収録するディスプレイを選択します</string>
+	<key>Select words and press ⌫ to cut them from the video — ⌫ again on crossed-out words puts them back. Click a word to jump there; ⌘F finds.</key>
+	<string>単語を選択して⌫を押すと、ビデオからカットされます。取り消し線の付いた単語でもう一度⌫を押すと元に戻ります。単語をクリックするとその位置に移動し、⌘Fで検索できます。</string>
+	<key>Selected %@</key>
+	<string>選択中: %@</string>
+	<key>Selected part</key>
+	<string>選択した部分</string>
+	<key>Selection</key>
+	<string>選択範囲</string>
+	<key>Selection %@ by %@ points</key>
+	<string>選択範囲: 幅%@ポイント、高さ%@ポイント</string>
+	<key>Selection %@ by %@ points. Arrow keys move it, Return captures, Escape cancels.</key>
+	<string>選択範囲: 幅%@ポイント、高さ%@ポイント。矢印キーで移動、Returnキーで取り込み、Escキーでキャンセルします。</string>
+	<key>Send by Email…</key>
+	<string>メールで送信…</string>
+	<key>Set In to Playhead</key>
+	<string>イン点を再生ヘッドの位置に設定</string>
+	<key>Set Out to Playhead</key>
+	<string>アウト点を再生ヘッドの位置に設定</string>
+	<key>Set the in point to the playhead (%@)</key>
+	<string>イン点を再生ヘッドの位置（%@）に設定</string>
+	<key>Set the out point to the playhead (%@)</key>
+	<string>アウト点を再生ヘッドの位置（%@）に設定</string>
+	<key>Settings</key>
+	<string>設定</string>
+	<key>Settings…</key>
+	<string>設定…</string>
+	<key>Shadow</key>
+	<string>シャドウ</string>
+	<key>Shadow and transparent padding</key>
+	<string>シャドウと透明な余白</string>
+	<key>Shape</key>
+	<string>形状</string>
+	<key>Share</key>
+	<string>共有</string>
+	<key>Share — Mail, Messages, AirDrop…</key>
+	<string>共有: “メール”、“メッセージ”、AirDrop…</string>
+	<key>Shortcut</key>
+	<string>ショートカット</string>
+	<key>Shortcut %@</key>
+	<string>ショートカット%@</string>
+	<key>Shortcut Conflict Detected</key>
+	<string>ショートカットの競合が検出されました</string>
+	<key>Shortcut hidden</key>
+	<string>ショートカットを非表示にしました</string>
+	<key>Shortcuts</key>
+	<string>ショートカット</string>
+	<key>Shorten %lld pauses</key>
+	<string>%lld箇所の無音部分を短縮</string>
+	<key>Shorten Pauses</key>
+	<string>無音部分を短縮</string>
+	<key>Shortened %lld pauses — %@ shorter</key>
+	<string>%lld箇所の無音部分を短縮し、%@短くなりました</string>
+	<key>Shortens every silence over a second (this video has no Shotnix pointer data to spot what happens on screen)</key>
+	<string>1秒を超える無音部分をすべて短縮します（このビデオにはShotnixのポインタデータがないため、画面上の動きを判別できません）</string>
+	<key>Shotnix Preferences</key>
+	<string>Shotnixの設定</string>
+	<key>Shotnix can't open this file</key>
+	<string>Shotnixではこのファイルを開けません</string>
+	<key>Shotnix can't save to that folder. Pick another place, like Desktop or Movies, and export again.</key>
+	<string>Shotnixはそのフォルダに保存できません。“デスクトップ”や“ムービー”など別の場所を選択して、もう一度書き出してください。</string>
+	<key>Shotnix can't write to the save folder. Choose another one in Settings → Screenshots.</key>
+	<string>Shotnixは保存先フォルダに書き込めません。“設定”＞“スクリーンショット”で別のフォルダを選択してください。</string>
+	<key>Shotnix could not write the file to:
+%@</key>
+	<string>Shotnixは次の場所にファイルを書き込めませんでした:
+%@</string>
+	<key>Shotnix is ready to use!</key>
+	<string>Shotnixを使う準備ができました!</string>
+	<key>Shotnix is still cleaning up the voice</key>
+	<string>Shotnixはまだ声を補正しています</string>
+	<key>Shotnix is still transcribing</key>
+	<string>Shotnixはまだ文字起こしをしています</string>
+	<key>Shotnix isn't allowed to record the screen. Turn it on in System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording.</key>
+	<string>Shotnixに画面収録が許可されていません。“システム設定”＞“プライバシーとセキュリティ”＞“画面収録とシステムオーディオ録音”でオンにしてください。</string>
+	<key>Shotnix listens to the recording right on this Mac — nothing is uploaded. Then cut the video by deleting words, remove ums and long pauses in one click, and add captions.</key>
+	<string>ShotnixはこのMac上で収録を聞き取ります。何もアップロードされません。そのあと、単語を削除してビデオをカットしたり、フィラーや長い無音をワンクリックで削除したり、字幕を追加したりできます。</string>
+	<key>Shotnix lives here — setup continues next launch</key>
+	<string>Shotnixはここにあります。設定は次回の起動時に再開します</string>
+	<key>Shotnix lives in your menu bar</key>
+	<string>Shotnixはメニューバーにあります</string>
+	<key>Shotnix needs Screen Recording permission to capture your screen.
+
+Please enable it in System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording.</key>
+	<string>Shotnixで画面を取り込むには、画面収録のアクセス許可が必要です。
+
+“システム設定”＞“プライバシーとセキュリティ”＞“画面収録とシステムオーディオ録音”でオンにしてください。</string>
+	<key>Shotnix quit unexpectedly last time</key>
+	<string>前回、Shotnixが予期せず終了しました</string>
+	<key>Shotnix restarts to switch languages. You can also set it in System Settings → General → Language &amp; Region → Applications.</key>
+	<string>言語を切り替えるとShotnixが再起動します。“システム設定”＞“一般”＞“言語と地域”＞“アプリケーション”でも設定できます。</string>
+	<key>Shotnix will wrap these up before it quits.</key>
+	<string>Shotnixは終了する前にこれらの処理を完了します。</string>
+	<key>Shotnix – Capture History</key>
+	<string>Shotnix – スクリーンショットの履歴</string>
+	<key>Show</key>
+	<string>表示</string>
+	<key>Show Background</key>
+	<string>背景を表示</string>
+	<key>Show Desktop Icons</key>
+	<string>デスクトップのアイコンを表示</string>
+	<key>Show Editor</key>
+	<string>エディタを表示</string>
+	<key>Show Editor Tips</key>
+	<string>エディタのヒントを表示</string>
+	<key>Show Folder in Finder</key>
+	<string>フォルダをFinderに表示</string>
+	<key>Show Quick Access Overlay</key>
+	<string>クイックアクセスのサムネールを表示</string>
+	<key>Show Recent Export “%@” in Finder</key>
+	<string>最近書き出した“%@”をFinderに表示</string>
+	<key>Show Recording in Finder</key>
+	<string>収録をFinderに表示</string>
+	<key>Show Video Editor</key>
+	<string>ビデオエディタを表示</string>
+	<key>Show background</key>
+	<string>背景を表示</string>
+	<key>Show camera</key>
+	<string>カメラを表示</string>
+	<key>Show captions</key>
+	<string>字幕を表示</string>
+	<key>Show cursor</key>
+	<string>ポインタを表示</string>
+	<key>Show for the whole video</key>
+	<string>ビデオ全体で表示</string>
+	<key>Show in Finder</key>
+	<string>Finderに表示</string>
+	<key>Show in Finder — %@</key>
+	<string>Finderに表示: %@</string>
+	<key>Show keyboard shortcuts</key>
+	<string>キーボードショートカットを表示</string>
+	<key>Show menu bar icon</key>
+	<string>メニューバーにアイコンを表示</string>
+	<key>Show more / less detail</key>
+	<string>拡大/縮小表示</string>
+	<key>Show more of the timeline</key>
+	<string>タイムラインを縮小表示</string>
+	<key>Show one kind of capture</key>
+	<string>1種類のスクリーンショットだけを表示します</string>
+	<key>Show shortcuts</key>
+	<string>ショートカットを表示</string>
+	<key>Show the timeline in more detail</key>
+	<string>タイムラインを拡大表示</string>
+	<key>Show the whole screenshot again</key>
+	<string>スクリーンショット全体をもう一度表示します</string>
+	<key>Show tips under the video again</key>
+	<string>ビデオの下のヒントを再表示</string>
+	<key>Shows what can be removed — data of recordings Shotnix can't find, unused footage and pictures, old clipboard exports — and asks before removing it</key>
+	<string>削除できるもの（Shotnixが見つけられない収録のデータ、使われていない映像や画像、古いクリップボード用の書き出し）を表示し、削除する前に確認します</string>
+	<key>Shrink while zoomed</key>
+	<string>ズーム中は縮小</string>
+	<key>Shuffle Background</key>
+	<string>背景をシャッフル</string>
+	<key>Shuffle the background</key>
+	<string>背景をシャッフル</string>
+	<key>Side by side</key>
+	<string>横並び</string>
+	<key>Silences over a second get shortened — except while you click, type, scroll, or move the pointer, so the demo itself is never cut</key>
+	<string>1秒を超える無音部分を短縮します。ただし、クリック、入力、スクロール、ポインタの移動中は除くため、デモ自体がカットされることはありません</string>
+	<key>Silences over a second get shortened — except while you move the pointer, click, or press a shortcut</key>
+	<string>1秒を超える無音部分を短縮します。ただし、ポインタの移動中、クリック時、ショートカットの入力時は除きます</string>
+	<key>Silky</key>
+	<string>シルキー</string>
+	<key>Silver</key>
+	<string>シルバー</string>
+	<key>Size</key>
+	<string>サイズ</string>
+	<key>Skip Setup</key>
+	<string>設定をスキップ</string>
+	<key>Skipping frames</key>
+	<string>フレーム落ち発生中</string>
+	<key>Skips the dash to the Stop button at the end</key>
+	<string>最後の“停止”ボタンへの素早い移動を省きます</string>
+	<key>Sky</key>
+	<string>スカイ</string>
+	<key>Sky Wash</key>
+	<string>空のにじみ</string>
+	<key>Slow</key>
+	<string>ゆっくり</string>
+	<key>Small</key>
+	<string>小</string>
+	<key>Smallest files, great for docs and chat</key>
+	<string>ファイルが最も小さく、ドキュメントやチャットに最適</string>
+	<key>Smooth</key>
+	<string>滑らか</string>
+	<key>Social</key>
+	<string>SNS</string>
+	<key>Social feeds</key>
+	<string>SNSのフィード</string>
+	<key>Soft streaks on fast moves</key>
+	<string>速い動きにやわらかな残像を付けます</string>
+	<key>Solid Color</key>
+	<string>単色</string>
+	<key>Solid color</key>
+	<string>単色</string>
+	<key>Sound</key>
+	<string>サウンド</string>
+	<key>Sounds</key>
+	<string>サウンド</string>
+	<key>Space</key>
+	<string>スペース</string>
+	<key>Space Gray</key>
+	<string>スペースグレイ</string>
+	<key>Sped up %lld idle moments — saved %@</key>
+	<string>動きのない区間を%lld箇所早送りし、%@短くなりました</string>
+	<key>Sped up %lld idle moments — saved %@ · check any typing</key>
+	<string>動きのない区間を%lld箇所早送りし、%@短くなりました · 入力中の場面を確認してください</string>
+	<key>Speech recognition is turned off for Shotnix in System Settings → Privacy &amp; Security → Speech Recognition. Turn it on, then try again.</key>
+	<string>Shotnixの音声認識が“システム設定”＞“プライバシーとセキュリティ”＞“音声認識”でオフになっています。オンにしてから、もう一度お試しください。</string>
+	<key>Speech recognition isn't available on this Mac right now. Try again in a moment.</key>
+	<string>現在このMacでは音声認識を使用できません。しばらくしてからもう一度お試しください。</string>
+	<key>Speed</key>
+	<string>速度</string>
+	<key>Speed Up Idle</key>
+	<string>動きのない区間を早送り</string>
+	<key>Speed Up Idle Moments</key>
+	<string>動きのない区間を早送り</string>
+	<key>Speed Up Idle works on Shotnix recordings — it watches the pointer</key>
+	<string>“動きのない区間を早送り”はShotnixで収録したビデオで使えます。ポインタの動きをもとに判断します</string>
+	<key>Speed of this part</key>
+	<string>この部分の速度</string>
+	<key>Split</key>
+	<string>分割</string>
+	<key>Split at Playhead</key>
+	<string>再生ヘッドの位置で分割</string>
+	<key>Split at playhead</key>
+	<string>再生ヘッドの位置で分割</string>
+	<key>Split at the playhead (S)</key>
+	<string>再生ヘッドの位置で分割（S）</string>
+	<key>Split the video (S) to make cuts; each can dissolve or dip to black.</key>
+	<string>ビデオを分割（S）するとつなぎ目ができます。それぞれにディゾルブや黒にフェードを設定できます。</string>
+	<key>Spoken word</key>
+	<string>話している単語</string>
+	<key>Spotlight</key>
+	<string>スポットライト</string>
+	<key>Spotlight shape</key>
+	<string>スポットライトの形状</string>
+	<key>Star on GitHub</key>
+	<string>GitHubでスターを付ける</string>
+	<key>Start / end</key>
+	<string>最初/最後</string>
+	<key>Start Over</key>
+	<string>元の収録に戻す</string>
+	<key>Start Over from the Original Recording…</key>
+	<string>元の収録に戻す…</string>
+	<key>Start at the playhead</key>
+	<string>再生ヘッドの位置から開始</string>
+	<key>Start here</key>
+	<string>ここから開始</string>
+	<key>Start over from the original recording?</key>
+	<string>元の収録に戻しますか?</string>
+	<key>Start the song at</key>
+	<string>曲の開始位置</string>
+	<key>Starts</key>
+	<string>開始</string>
+	<key>Startup</key>
+	<string>起動</string>
+	<key>Step %lld</key>
+	<string>ステップ%lld</string>
+	<key>Still saving the last recording — try again in a moment.</key>
+	<string>前回の収録をまだ保存しています。しばらくしてからもう一度お試しください。</string>
+	<key>Still saving the recording…</key>
+	<string>収録をまだ保存しています…</string>
+	<key>Stitching…</key>
+	<string>結合中…</string>
+	<key>Stop Enhancing Voice</key>
+	<string>声の補正を停止</string>
+	<key>Stop Recording</key>
+	<string>収録を停止</string>
+	<key>Stop and Close</key>
+	<string>停止して閉じる</string>
+	<key>Stop recording</key>
+	<string>収録を停止</string>
+	<key>Stop recording (%@)</key>
+	<string>収録を停止（%@）</string>
+	<key>Storage</key>
+	<string>ストレージ</string>
+	<key>Strength</key>
+	<string>強さ</string>
+	<key>Studio</key>
+	<string>スタジオ</string>
+	<key>Style</key>
+	<string>スタイル</string>
+	<key>Subject</key>
+	<string>件名</string>
+	<key>Subtitle</key>
+	<string>サブタイトル</string>
+	<key>Subtitles file</key>
+	<string>字幕ファイル</string>
+	<key>Sunset</key>
+	<string>サンセット</string>
+	<key>Sunset Coral</key>
+	<string>サンセットコーラル</string>
+	<key>Support</key>
+	<string>サポート</string>
+	<key>Swap the arrow's head and tail</key>
+	<string>矢印の先端と始点を入れ替える</string>
+	<key>Switch the camera to full screen for talking points, or put it side by side with the screen — at the playhead. Each shows on the Camera lane.</key>
+	<string>再生ヘッドの位置で、カメラを全面に切り替えて要点を話したり、画面と横並びにしたりできます。切り替えはそれぞれ“カメラ”トラックに表示されます。</string>
+	<key>System Default</key>
+	<string>システムのデフォルト</string>
+	<key>System Default (%@)</key>
+	<string>システムのデフォルト（%@）</string>
+	<key>System audio</key>
+	<string>システムオーディオ</string>
+	<key>System audio couldn't be recorded. Try again without system audio.</key>
+	<string>システムオーディオを録音できませんでした。システムオーディオをオフにして、もう一度お試しください。</string>
+	<key>Table copied — paste it into a spreadsheet</key>
+	<string>表をコピーしました。スプレッドシートにペーストできます。</string>
+	<key>Tag</key>
+	<string>背景</string>
+	<key>Tag color</key>
+	<string>背景のカラー</string>
+	<key>Tahoe Ice</key>
+	<string>タホの氷</string>
+	<key>Take a Test Screenshot</key>
+	<string>テスト用のスクリーンショットを撮る</string>
+	<key>Take your first screenshot</key>
+	<string>最初のスクリーンショットを撮る</string>
+	<key>Tangerine</key>
+	<string>タンジェリン</string>
+	<key>Template</key>
+	<string>テンプレート</string>
+	<key>Text</key>
+	<string>テキスト</string>
+	<key>Text QR found</key>
+	<string>テキストのQRコードが見つかりました</string>
+	<key>Text Recognition</key>
+	<string>テキスト認識</string>
+	<key>Text copied</key>
+	<string>テキストをコピーしました</string>
+	<key>Text copied to clipboard</key>
+	<string>テキストをクリップボードにコピーしました</string>
+	<key>Text recognition failed</key>
+	<string>テキスト認識に失敗しました</string>
+	<key>Text size</key>
+	<string>テキストサイズ</string>
+	<key>Text · highlight · arrow · blur</key>
+	<string>テキスト/ハイライト/矢印/ぼかし</string>
+	<key>Text “%@”</key>
+	<string>テキスト“%@”</string>
+	<key>Text: %@</key>
+	<string>テキスト: %@</string>
+	<key>Thanks for watching</key>
+	<string>ご視聴ありがとうございました</string>
+	<key>That display isn't available anymore.</key>
+	<string>そのディスプレイは使用できなくなりました。</string>
+	<key>That display or window isn't available anymore.</key>
+	<string>そのディスプレイまたはウインドウは使用できなくなりました。</string>
+	<key>That drive is read-only. Pick another place to save, then export again.</key>
+	<string>そのドライブは読み出し専用です。別の保存場所を選択してから、もう一度書き出してください。</string>
+	<key>That part is only a title card — include a moment of the video to export it.</key>
+	<string>その部分はタイトルカードだけです。書き出すにはビデオの一部を含めてください。</string>
+	<key>That part of the timeline is only a title card. Include a moment of the video in the range, then export again.</key>
+	<string>タイムラインのその部分はタイトルカードだけです。範囲にビデオの一部を含めてから、もう一度書き出してください。</string>
+	<key>That video is empty</key>
+	<string>そのビデオは空です</string>
+	<key>That window closed before recording could start.</key>
+	<string>収録を開始する前にウインドウが閉じられました。</string>
+	<key>The camera couldn't start.</key>
+	<string>カメラを起動できませんでした。</string>
+	<key>The camera keeps your cursor in view and glides after it.</key>
+	<string>カメラがポインタを画面内にとらえ、滑らかに追いかけます。</string>
+	<key>The camera stopped. The recording continues without it.</key>
+	<string>カメラが停止しました。カメラなしで収録を続けます。</string>
+	<key>The cursor is part of this video</key>
+	<string>このビデオではポインタが映像に焼き込まれています</string>
+	<key>The export carries on in the background (Esc)</key>
+	<string>書き出しはバックグラウンドで続行されます（Esc）</string>
+	<key>The export stopped unexpectedly (%@). Try again — if it keeps happening, export at a lower resolution or in H.264.</key>
+	<string>書き出しが予期せず停止しました（%@）。もう一度お試しください。問題が続く場合は、低い解像度またはH.264で書き出してください。</string>
+	<key>The full report is on your clipboard. Paste it into the email.</key>
+	<string>レポート全文をクリップボードにコピーしました。メールにペーストしてください。</string>
+	<key>The menu bar icon is Shotnix's main entry point. While it is hidden, open Shotnix again from Finder, Launchpad, or Spotlight to bring these Preferences back.</key>
+	<string>メニューバーのアイコンはShotnixを使うための主な入り口です。非表示の間にこの設定を再び開くには、Finder、Launchpad、またはSpotlightからShotnixをもう一度開いてください。</string>
+	<key>The microphone couldn't start, so this recording has no mic.</key>
+	<string>マイクを起動できなかったため、この収録にはマイクの音声が入りません。</string>
+	<key>The microphone stopped working. The recording continues without it.</key>
+	<string>マイクが動作しなくなりました。マイクなしで収録を続けます。</string>
+	<key>The picture's file is gone — choose it again with Replace.</key>
+	<string>画像のファイルが見つかりません。“置き換える”でもう一度選択してください。</string>
+	<key>The recording couldn't be finished — saved the first %@.</key>
+	<string>収録を完了できませんでした。最初の%@を保存しました。</string>
+	<key>The recording's file can't be found — it may have been moved or deleted. Put it back and export again.</key>
+	<string>収録のファイルが見つかりません。移動または削除された可能性があります。元の場所に戻してから、もう一度書き出してください。</string>
+	<key>The save panel did not return a destination. Please try saving again.</key>
+	<string>保存パネルから保存先を取得できませんでした。もう一度保存してください。</string>
+	<key>The screenshot has no image data.</key>
+	<string>スクリーンショットに画像データがありません。</string>
+	<key>The selected file has no video track. Choose a video file instead.</key>
+	<string>選択したファイルにはビデオトラックがありません。ビデオファイルを選択してください。</string>
+	<key>The selection stays on screen to adjust — drag its edges, nudge it with the arrow keys, then press Return. Hold ⇧ as you release to capture right away.</key>
+	<string>選択範囲は調整できるように画面に残ります。端をドラッグしたり矢印キーで少しずつ動かしたりしてから、Returnキーを押してください。放すときに⇧を押したままにすると、すぐに取り込まれます。</string>
+	<key>The song is shorter than the video</key>
+	<string>曲がビデオより短いです</string>
+	<key>The song's file is gone — choose it again with Replace.</key>
+	<string>曲のファイルが見つかりません。“置き換える”でもう一度選択してください。</string>
+	<key>The timeline is empty. Restore a clip, then export again.</key>
+	<string>タイムラインが空です。クリップを復元してから、もう一度書き出してください。</string>
+	<key>The video encoder is busy — another app may be recording or exporting. Wait a moment and try again, or choose H.264.</key>
+	<string>ビデオエンコーダが使用中です。別のアプリが収録中または書き出し中の可能性があります。しばらく待ってからもう一度試すか、H.264を選択してください。</string>
+	<key>The video's own recording can't be removed</key>
+	<string>このビデオ自体の収録は削除できません</string>
+	<key>The voice track is empty, so there's nothing to clean up. Turn off Enhance voice to keep the original sound.</key>
+	<string>声のトラックが空なので、補正するものがありません。元のサウンドのままにするには、“声を補正”をオフにしてください。</string>
+	<key>The window you're recording closed. Stop when you're ready — the recording keeps going.</key>
+	<string>収録中のウインドウが閉じられました。収録は続いています。準備ができたら停止してください。</string>
+	<key>There are no captions to translate yet. Transcribe or add captions first.</key>
+	<string>翻訳する字幕がまだありません。先に文字起こしするか、字幕を追加してください。</string>
+	<key>There isn't enough free space on this disk: this export needs about %@ and %@ is free. Free up some space (empty the Trash, delete old recordings) or export to another drive.</key>
+	<string>このディスクの空き容量が足りません。この書き出しには約%@必要ですが、空きは%@です。空き容量を増やす（ゴミ箱を空にする、古い収録を削除するなど）か、別のドライブに書き出してください。</string>
+	<key>There isn't enough free space on “%@”: this export needs about %@ and %@ is free. Free up some space (empty the Trash, delete old recordings) or export to another drive.</key>
+	<string>“%@”の空き容量が足りません。この書き出しには約%@必要ですが、空きは%@です。空き容量を増やす（ゴミ箱を空にする、古い収録を削除するなど）か、別のドライブに書き出してください。</string>
+	<key>There's already a zoom here</key>
+	<string>ここにはすでにズームがあります</string>
+	<key>There's no video in this file</key>
+	<string>このファイルにはビデオがありません</string>
+	<key>Thickness</key>
+	<string>太さ</string>
+	<key>Thin</key>
+	<string>細い</string>
+	<key>This GIF is too long for its size — it would need about %@ of memory. Pick a smaller size or fewer frames per second, export part of the video, or choose MP4.</key>
+	<string>このGIFはサイズに対して長すぎます。約%@のメモリが必要です。サイズやフレームレートを下げるか、ビデオの一部を書き出すか、MP4を選択してください。</string>
+	<key>This Mac can't translate between these languages. Pick another language.</key>
+	<string>このMacではこれらの言語間で翻訳できません。別の言語を選択してください。</string>
+	<key>This Week</key>
+	<string>今週</string>
+	<key>This list</key>
+	<string>この一覧</string>
+	<key>This recording has no sound</key>
+	<string>この収録にはサウンドがありません</string>
+	<key>This recording has no sound to transcribe. You can still type captions yourself.</key>
+	<string>この収録には文字起こしできる音声がありません。字幕を自分で入力することはできます。</string>
+	<key>This recording has no sound. Turn on the microphone before recording to narrate it.</key>
+	<string>この収録にはサウンドがありません。ナレーションを入れるには、収録する前にマイクをオンにしてください。</string>
+	<key>This recording has no voice to duck under</key>
+	<string>この収録には、音量を下げる対象となる声がありません</string>
+	<key>This recording only has the arrow</key>
+	<string>この収録には矢印のポインタしかありません</string>
+	<key>This replaces all %lld caption lines, including any you edited or typed, with a new transcript in %@.</key>
+	<string>字幕%1$lld行すべて（編集や入力をした行も含む）が、%2$@の新しい文字起こしに置き換えられます。</string>
+	<key>This video is copy-protected and can't be exported.</key>
+	<string>このビデオはコピー保護されているため、書き出せません。</string>
+	<key>This video isn't there anymore</key>
+	<string>このビデオは見つかりません</string>
+	<key>This video was recorded with your camera, but “%@” isn't in %@ anymore. Put it back there and open the video again to get the camera bubble back.</key>
+	<string>このビデオはカメラを使って収録されましたが、“%@”が“%@”フォルダに見つかりません。元の場所に戻してからビデオを開き直すと、カメラのワイプが復元されます。</string>
+	<key>Three quick steps and you're capturing.</key>
+	<string>3つの簡単なステップで、すぐに取り込みを始められます。</string>
+	<key>Tide Glass</key>
+	<string>潮のガラス</string>
+	<key>Timed Capture</key>
+	<string>タイマーで取り込む</string>
+	<key>Timed Capture (%llds)</key>
+	<string>タイマーで取り込む（%lld秒）</string>
+	<key>Timed Capture selects the area first, then counts down before the shot — time to open menus or hover states. Esc cancels.</key>
+	<string>“タイマーで取り込む”では、先に範囲を選択し、取り込む前にカウントダウンします。その間にメニューを開いたり、ポインタを重ねたときの表示を出したりできます。Escキーでキャンセルできます。</string>
+	<key>Timeline</key>
+	<string>タイムライン</string>
+	<key>Timeline scale</key>
+	<string>タイムラインの表示倍率</string>
+	<key>Timeline scale (pinch, or ⌘-scroll)</key>
+	<string>タイムラインの表示倍率（ピンチまたは⌘スクロール）</string>
+	<key>Timing</key>
+	<string>タイミング</string>
+	<key>Tips</key>
+	<string>ヒント</string>
+	<key>Title</key>
+	<string>タイトル</string>
+	<key>To</key>
+	<string>宛先</string>
+	<key>To attach the full report, drag it from Finder onto the GitHub page.</key>
+	<string>レポート全文を添付するには、FinderからGitHubのページにドラッグしてください。</string>
+	<key>Today</key>
+	<string>今日</string>
+	<key>Too long for a GIF at this size — it would need about %@ of memory. Make it lighter, export a part, or choose MP4.</key>
+	<string>このサイズのGIFには長すぎます。約%@のメモリが必要です。軽くするか、一部を書き出すか、MP4を選択してください。</string>
+	<key>Too short for an intro and outro</key>
+	<string>短すぎてオープニングとエンディングを追加できません</string>
+	<key>Tools</key>
+	<string>ツール</string>
+	<key>Top</key>
+	<string>上</string>
+	<key>Top left</key>
+	<string>左上</string>
+	<key>Top right</key>
+	<string>右上</string>
+	<key>Transcribe</key>
+	<string>文字起こし</string>
+	<key>Transcribe Again</key>
+	<string>もう一度文字起こし</string>
+	<key>Transcribe Again…</key>
+	<string>もう一度文字起こし…</string>
+	<key>Transcribe Narration (Captions, Edit by Text)</key>
+	<string>ナレーションを文字起こし（字幕、テキストで編集）</string>
+	<key>Transcribe again?</key>
+	<string>もう一度文字起こししますか?</string>
+	<key>Transcribe the narration to search its words</key>
+	<string>ナレーションを文字起こしすると、単語を検索できます</string>
+	<key>Transcribe…</key>
+	<string>文字起こし…</string>
+	<key>Transcribing “%@”</key>
+	<string>“%@”を文字起こし中</string>
+	<key>Transcript</key>
+	<string>文字起こし</string>
+	<key>Transcript and captions removed — ⌘Z to undo</key>
+	<string>文字起こしと字幕を削除しました。⌘Zで取り消せます</string>
+	<key>Transition in</key>
+	<string>このクリップへのトランジション</string>
+	<key>Transitions</key>
+	<string>トランジション</string>
+	<key>Translate</key>
+	<string>翻訳</string>
+	<key>Trim the clip's end to the playhead (O)</key>
+	<string>クリップの最後を再生ヘッドの位置までトリミング（O）</string>
+	<key>Trim the clip's start to the playhead (I)</key>
+	<string>クリップの最初を再生ヘッドの位置までトリミング（I）</string>
+	<key>Try Again</key>
+	<string>再試行</string>
+	<key>Try it right now — Capture Area is also in the menu bar.</key>
+	<string>今すぐ試してみましょう。“範囲を取り込む”はメニューバーからも使えます。</string>
+	<key>Turn Off Click Sounds</key>
+	<string>クリック音をオフにする</string>
+	<key>Turn On</key>
+	<string>オンにする</string>
+	<key>Turn around</key>
+	<string>向きを反転</string>
+	<key>Turn on the camera in the recording bar before you record, and your face appears here as a bubble you can place, resize, and restyle.</key>
+	<string>収録する前に収録バーでカメラをオンにすると、ここに顔がワイプとして表示されます。ワイプの位置、サイズ、スタイルは自由に変更できます。</string>
+	<key>Turn on the microphone or system audio before recording to capture sound.</key>
+	<string>サウンドを収録するには、収録する前にマイクまたはシステムオーディオをオンにしてください。</string>
+	<key>Turn the video's sound back on</key>
+	<string>ビデオのサウンドを再びオンにする</string>
+	<key>Type here…</key>
+	<string>ここに入力…</string>
+	<key>Type in a text annotation</key>
+	<string>テキストの注釈に入力</string>
+	<key>URL</key>
+	<string>URL</string>
+	<key>Under the voice</key>
+	<string>話している間の音量</string>
+	<key>Undo</key>
+	<string>取り消す</string>
+	<key>Undo / redo</key>
+	<string>取り消す/やり直す</string>
+	<key>Undo Add Arrow</key>
+	<string>矢印の追加を取り消す</string>
+	<key>Undo Add Blur</key>
+	<string>ぼかしの追加を取り消す</string>
+	<key>Undo Add Camera Layout</key>
+	<string>カメラのレイアウトの追加を取り消す</string>
+	<key>Undo Add Camera Layouts</key>
+	<string>カメラのレイアウトの追加を取り消す</string>
+	<key>Undo Add Caption</key>
+	<string>字幕の追加を取り消す</string>
+	<key>Undo Add Captions</key>
+	<string>字幕の追加を取り消す</string>
+	<key>Undo Add Click</key>
+	<string>クリックの追加を取り消す</string>
+	<key>Undo Add Clicks</key>
+	<string>クリックの追加を取り消す</string>
+	<key>Undo Add Highlight</key>
+	<string>ハイライトの追加を取り消す</string>
+	<key>Undo Add Image</key>
+	<string>画像の追加を取り消す</string>
+	<key>Undo Add Intro Card</key>
+	<string>オープニングカードの追加を取り消す</string>
+	<key>Undo Add Music</key>
+	<string>音楽の追加を取り消す</string>
+	<key>Undo Add Outro Card</key>
+	<string>エンディングカードの追加を取り消す</string>
+	<key>Undo Add Recording</key>
+	<string>収録の追加を取り消す</string>
+	<key>Undo Add Spotlight</key>
+	<string>スポットライトの追加を取り消す</string>
+	<key>Undo Add Text</key>
+	<string>テキストの追加を取り消す</string>
+	<key>Undo Add Zoom</key>
+	<string>ズームの追加を取り消す</string>
+	<key>Undo Add Zooms</key>
+	<string>ズームの追加を取り消す</string>
+	<key>Undo Annotation Change</key>
+	<string>注釈の変更を取り消す</string>
+	<key>Undo Annotations</key>
+	<string>注釈の変更を取り消す</string>
+	<key>Undo Arrow Style</key>
+	<string>矢印のスタイル変更を取り消す</string>
+	<key>Undo Aspect Ratio</key>
+	<string>アスペクト比の変更を取り消す</string>
+	<key>Undo Auto Zoom</key>
+	<string>自動ズームの適用を取り消す</string>
+	<key>Undo Background</key>
+	<string>背景の変更を取り消す</string>
+	<key>Undo Blur Style</key>
+	<string>ぼかしのスタイル変更を取り消す</string>
+	<key>Undo Camera Change</key>
+	<string>カメラの変更を取り消す</string>
+	<key>Undo Camera Layout Change</key>
+	<string>カメラのレイアウトの変更を取り消す</string>
+	<key>Undo Camera Layouts</key>
+	<string>カメラのレイアウトの変更を取り消す</string>
+	<key>Undo Caption Style</key>
+	<string>字幕のスタイル変更を取り消す</string>
+	<key>Undo Caption Translation</key>
+	<string>字幕の翻訳を取り消す</string>
+	<key>Undo Captions</key>
+	<string>字幕の変更を取り消す</string>
+	<key>Undo Click Sounds</key>
+	<string>クリック音の変更を取り消す</string>
+	<key>Undo Clicks</key>
+	<string>クリックの変更を取り消す</string>
+	<key>Undo Crop</key>
+	<string>切り取りを取り消す</string>
+	<key>Undo Cursor Change</key>
+	<string>ポインタの変更を取り消す</string>
+	<key>Undo Cut</key>
+	<string>カットを取り消す</string>
+	<key>Undo Cut Word</key>
+	<string>単語のカットを取り消す</string>
+	<key>Undo Cut Words</key>
+	<string>単語のカットを取り消す</string>
+	<key>Undo Delete %lld Items</key>
+	<string>%lld項目の削除を取り消す</string>
+	<key>Undo Delete Annotations</key>
+	<string>注釈の削除を取り消す</string>
+	<key>Undo Delete Arrow</key>
+	<string>矢印の削除を取り消す</string>
+	<key>Undo Delete Blur</key>
+	<string>ぼかしの削除を取り消す</string>
+	<key>Undo Delete Camera Layout</key>
+	<string>カメラのレイアウトの削除を取り消す</string>
+	<key>Undo Delete Camera Layouts</key>
+	<string>カメラのレイアウトの削除を取り消す</string>
+	<key>Undo Delete Caption</key>
+	<string>字幕の削除を取り消す</string>
+	<key>Undo Delete Captions</key>
+	<string>字幕の削除を取り消す</string>
+	<key>Undo Delete Click</key>
+	<string>クリックの削除を取り消す</string>
+	<key>Undo Delete Clicks</key>
+	<string>クリックの削除を取り消す</string>
+	<key>Undo Delete Clip</key>
+	<string>クリップの削除を取り消す</string>
+	<key>Undo Delete Clips</key>
+	<string>クリップの削除を取り消す</string>
+	<key>Undo Delete Highlight</key>
+	<string>ハイライトの削除を取り消す</string>
+	<key>Undo Delete Image</key>
+	<string>画像の削除を取り消す</string>
+	<key>Undo Delete Spotlight</key>
+	<string>スポットライトの削除を取り消す</string>
+	<key>Undo Delete Text</key>
+	<string>テキストの削除を取り消す</string>
+	<key>Undo Delete Zoom</key>
+	<string>ズームの削除を取り消す</string>
+	<key>Undo Delete Zooms</key>
+	<string>ズームの削除を取り消す</string>
+	<key>Undo Edit Caption</key>
+	<string>字幕の編集を取り消す</string>
+	<key>Undo Edit Text</key>
+	<string>テキストの編集を取り消す</string>
+	<key>Undo Enhance Voice</key>
+	<string>声の補正を取り消す</string>
+	<key>Undo Fade</key>
+	<string>フェードの変更を取り消す</string>
+	<key>Undo Hide Shortcut</key>
+	<string>ショートカットの非表示を取り消す</string>
+	<key>Undo Highlight Style</key>
+	<string>ハイライトのスタイル変更を取り消す</string>
+	<key>Undo Image Style</key>
+	<string>画像のスタイル変更を取り消す</string>
+	<key>Undo Intro and Outro</key>
+	<string>カメラ全面のオープニングとエンディングを取り消す</string>
+	<key>Undo Move %lld Items</key>
+	<string>%lld項目の移動を取り消す</string>
+	<key>Undo Move Arrow</key>
+	<string>矢印の移動を取り消す</string>
+	<key>Undo Move Blur</key>
+	<string>ぼかしの移動を取り消す</string>
+	<key>Undo Move Click</key>
+	<string>クリックの移動を取り消す</string>
+	<key>Undo Move Clip</key>
+	<string>クリップの移動を取り消す</string>
+	<key>Undo Move Highlight</key>
+	<string>ハイライトの移動を取り消す</string>
+	<key>Undo Move Image</key>
+	<string>画像の移動を取り消す</string>
+	<key>Undo Move Recording</key>
+	<string>収録の移動を取り消す</string>
+	<key>Undo Move Spotlight</key>
+	<string>スポットライトの移動を取り消す</string>
+	<key>Undo Move Text</key>
+	<string>テキストの移動を取り消す</string>
+	<key>Undo Music Change</key>
+	<string>音楽の変更を取り消す</string>
+	<key>Undo Mute Clip</key>
+	<string>クリップの消音を取り消す</string>
+	<key>Undo Mute Part</key>
+	<string>部分の消音を取り消す</string>
+	<key>Undo Mute Video</key>
+	<string>ビデオの消音を取り消す</string>
+	<key>Undo Remove All Zooms</key>
+	<string>すべてのズームの削除を取り消す</string>
+	<key>Undo Remove Captions</key>
+	<string>字幕の削除を取り消す</string>
+	<key>Undo Remove Intro Card</key>
+	<string>オープニングカードの削除を取り消す</string>
+	<key>Undo Remove Music</key>
+	<string>音楽の削除を取り消す</string>
+	<key>Undo Remove Outro Card</key>
+	<string>エンディングカードの削除を取り消す</string>
+	<key>Undo Remove Recording</key>
+	<string>収録の削除を取り消す</string>
+	<key>Undo Remove Ums</key>
+	<string>フィラーの削除を取り消す</string>
+	<key>Undo Replace Music</key>
+	<string>音楽の置き換えを取り消す</string>
+	<key>Undo Reset Look</key>
+	<string>スタイルのリセットを取り消す</string>
+	<key>Undo Restore</key>
+	<string>復元を取り消す</string>
+	<key>Undo Restore Cut</key>
+	<string>カットの復元を取り消す</string>
+	<key>Undo Restore Cuts</key>
+	<string>カットの復元を取り消す</string>
+	<key>Undo Restore Pause</key>
+	<string>無音部分の復元を取り消す</string>
+	<key>Undo Restore Word</key>
+	<string>単語の復元を取り消す</string>
+	<key>Undo Restore Words</key>
+	<string>単語の復元を取り消す</string>
+	<key>Undo Shortcut Style</key>
+	<string>ショートカットのスタイル変更を取り消す</string>
+	<key>Undo Shortcuts</key>
+	<string>ショートカットの変更を取り消す</string>
+	<key>Undo Shorten Pause</key>
+	<string>無音部分の短縮を取り消す</string>
+	<key>Undo Shorten Pauses</key>
+	<string>無音部分の短縮を取り消す</string>
+	<key>Undo Sound Change</key>
+	<string>サウンドの変更を取り消す</string>
+	<key>Undo Speed Change</key>
+	<string>速度の変更を取り消す</string>
+	<key>Undo Speed Up Idle</key>
+	<string>動きのない区間の早送りを取り消す</string>
+	<key>Undo Split</key>
+	<string>分割を取り消す</string>
+	<key>Undo Spotlight Style</key>
+	<string>スポットライトのスタイル変更を取り消す</string>
+	<key>Undo Start Over</key>
+	<string>元の収録への復元を取り消す</string>
+	<key>Undo Style Change</key>
+	<string>スタイルの変更を取り消す</string>
+	<key>Undo Text Style</key>
+	<string>テキストのスタイル変更を取り消す</string>
+	<key>Undo Timeline Edit</key>
+	<string>タイムラインの編集を取り消す</string>
+	<key>Undo Title Card</key>
+	<string>タイトルカードの変更を取り消す</string>
+	<key>Undo Transcribe</key>
+	<string>文字起こしを取り消す</string>
+	<key>Undo Transitions</key>
+	<string>トランジションの変更を取り消す</string>
+	<key>Undo Trim</key>
+	<string>トリミングを取り消す</string>
+	<key>Undo Unmute Clip</key>
+	<string>クリップの消音解除を取り消す</string>
+	<key>Undo Unmute Part</key>
+	<string>部分の消音解除を取り消す</string>
+	<key>Undo Unmute Video</key>
+	<string>ビデオの消音解除を取り消す</string>
+	<key>Undo Zoom Change</key>
+	<string>ズームの変更を取り消す</string>
+	<key>Undo Zoom Level for All</key>
+	<string>ズーム倍率の一括変更を取り消す</string>
+	<key>Undo Zooms</key>
+	<string>ズームの変更を取り消す</string>
+	<key>Unmute Clip</key>
+	<string>クリップの消音を解除</string>
+	<key>Unmute preview</key>
+	<string>プレビューの消音を解除</string>
+	<key>Unmute the Preview</key>
+	<string>プレビューの消音を解除</string>
+	<key>Unmute the preview (M)</key>
+	<string>プレビューの消音を解除（M）</string>
+	<key>Updates</key>
+	<string>アップデート</string>
+	<key>Upload Custom Image</key>
+	<string>カスタム画像を選択</string>
+	<key>Use This Look for New Recordings</key>
+	<string>このスタイルを新しい収録に使用</string>
+	<key>Use for new recordings</key>
+	<string>新しい収録に使用</string>
+	<key>Use this color</key>
+	<string>このカラーを使用</string>
+	<key>Use this level for every zoom</key>
+	<string>この倍率をすべてのズームに適用</string>
+	<key>Used for screenshots and recordings. Tokens: %y year, %m month, %d day, %H hour, %M minute, %S second. Leave empty to restore the default.</key>
+	<string>スクリーンショットと収録のファイル名に使用されます。トークン: %y（年）、%m（月）、%d（日）、%H（時）、%M（分）、%S（秒）。空欄にするとデフォルトに戻ります。</string>
+	<key>Utility</key>
+	<string>ユーティリティ</string>
+	<key>Version</key>
+	<string>バージョン</string>
+	<key>Version %@</key>
+	<string>バージョン%@</string>
+	<key>Video</key>
+	<string>ビデオ</string>
+	<key>Video copied</key>
+	<string>ビデオをコピーしました</string>
+	<key>Video data</key>
+	<string>ビデオデータ</string>
+	<key>Video data uses %@</key>
+	<string>ビデオデータの使用量: %@</string>
+	<key>Video exported</key>
+	<string>ビデオを書き出しました</string>
+	<key>Video preview</key>
+	<string>ビデオのプレビュー</string>
+	<key>Violet</key>
+	<string>バイオレット</string>
+	<key>Violet Bloom</key>
+	<string>すみれの花</string>
+	<key>Voice</key>
+	<string>声</string>
+	<key>Voice enhanced — background noise removed</key>
+	<string>声を補正し、背景ノイズを除去しました</string>
+	<key>Voice enhancement isn't available on this Mac. Turn off Enhance voice to keep the original sound.</key>
+	<string>このMacでは声の補正を使用できません。元のサウンドのままにするには、“声を補正”をオフにしてください。</string>
+	<key>Voice enhancement stopped partway. Turn Enhance voice off and on again to retry.</key>
+	<string>声の補正が途中で停止しました。もう一度試すには、“声を補正”をオフにしてから再度オンにしてください。</string>
+	<key>Volume</key>
+	<string>音量</string>
+	<key>Waiting…</key>
+	<string>待機中…</string>
+	<key>Wallpaper</key>
+	<string>壁紙</string>
+	<key>Warning</key>
+	<string>警告</string>
+	<key>Web</key>
+	<string>Web</string>
+	<key>Website</key>
+	<string>Webサイト</string>
+	<key>Welcome</key>
+	<string>ようこそ</string>
+	<key>Welcome to Shotnix</key>
+	<string>Shotnixへようこそ</string>
+	<key>What was playing on your Mac</key>
+	<string>Macで再生されていたサウンド</string>
+	<key>What's New</key>
+	<string>新機能</string>
+	<key>White</key>
+	<string>ホワイト</string>
+	<key>Whole video</key>
+	<string>ビデオ全体</string>
+	<key>Wi-Fi</key>
+	<string>Wi-Fi</string>
+	<key>Wi-Fi QR found</key>
+	<string>Wi-FiのQRコードが見つかりました</string>
+	<key>Wide</key>
+	<string>ワイド</string>
+	<key>Window</key>
+	<string>ウインドウ</string>
+	<key>Window Capture</key>
+	<string>ウインドウの取り込み</string>
+	<key>Window capture</key>
+	<string>ウインドウの取り込み</string>
+	<key>Window captures are isolated — nothing overlapping shows through. With this on they get transparent padding and a soft drop shadow.</key>
+	<string>ウインドウを取り込むと、そのウインドウだけが写り、重なっているものは写りません。オンにすると、透明な余白と柔らかいドロップシャドウが付きます。</string>
+	<key>Window closed</key>
+	<string>ウインドウが閉じた</string>
+	<key>Words light up as they're spoken</key>
+	<string>話している単語がハイライトされます</string>
+	<key>Writable</key>
+	<string>書き込み可能</string>
+	<key>Yellow</key>
+	<string>イエロー</string>
+	<key>Yes</key>
+	<string>はい</string>
+	<key>Yesterday</key>
+	<string>昨日</string>
+	<key>You have unsaved edits in %lld screenshots.</key>
+	<string>%lld件のスクリーンショットに未保存の編集があります。</string>
+	<key>You're all set — Shotnix lives here</key>
+	<string>準備完了です。Shotnixはここにあります</string>
+	<key>YouTube, presentations</key>
+	<string>YouTube、プレゼンテーション</string>
+	<key>Your Mac can't keep up with this recording and is skipping frames. Balanced quality or 30 fps will help.</key>
+	<string>Macの処理が収録に追いつかず、フレーム落ちが発生しています。品質“標準”または30 fpsにすると改善します。</string>
+	<key>Your Mac ran low on memory. Close some apps or pick a lower resolution, then export again.</key>
+	<string>Macのメモリが不足しました。いくつかのアプリを終了するか、低い解像度を選択してから、もう一度書き出してください。</string>
+	<key>Your camera is recorded as its own layer: a live bubble shows while you record (it never appears in the screen capture), and the editor lets you move, resize, and restyle it — or hide it — afterwards.</key>
+	<string>カメラは独立したレイヤーとして収録されます。収録中はライブのワイプが表示され（画面の収録には写りません）、あとからエディタで移動、サイズ変更、スタイル変更、または非表示にできます。</string>
+	<key>Your disk filled up — saved the first %@.</key>
+	<string>ディスクがいっぱいになりました。最初の%@を保存しました。</string>
+	<key>Your disk is almost full, so the recording stopped. It's saved.</key>
+	<string>ディスクの空き領域が少なくなったため、収録を停止しました。収録は保存されています。</string>
+	<key>Your disk is almost full. In about %lld minutes the recording stops and saves itself.</key>
+	<string>ディスクの空き領域が少なくなっています。約%lld分後に収録が停止し、自動的に保存されます。</string>
+	<key>Your disk is almost full. In about %lld seconds the recording stops and saves itself.</key>
+	<string>ディスクの空き領域が少なくなっています。約%lld秒後に収録が停止し、自動的に保存されます。</string>
+	<key>Your disk is full, so the recording couldn't be saved.</key>
+	<string>ディスクがいっぱいのため、収録を保存できませんでした。</string>
+	<key>Your disk is full. Free up some space (empty the Trash, delete old recordings) or export to another drive, then try again.</key>
+	<string>ディスクがいっぱいです。空き容量を増やす（ゴミ箱を空にする、古い収録を削除するなど）か、別のドライブに書き出してから、もう一度お試しください。</string>
+	<key>Your edits will be lost if you close without saving or copying them.</key>
+	<string>保存またはコピーせずに閉じると、編集内容は失われます。</string>
+	<key>Your look</key>
+	<string>自分のスタイル</string>
+	<key>Your microphone</key>
+	<string>マイク</string>
+	<key>Your narration can become captions — then cut the video by editing its words.</key>
+	<string>ナレーションを字幕にできます。さらに、テキストを編集してビデオをカットできます。</string>
+	<key>Your narration can become captions — transcribe it here</key>
+	<string>ここでナレーションを文字起こしすると、字幕にできます</string>
+	<key>Your text</key>
+	<string>テキストを入力</string>
+	<key>Your video's background shows behind you — found on this Mac, frame by frame.</key>
+	<string>ビデオの背景が背後に表示されます。人物の切り抜きは、このMac上で1フレームずつ行われます。</string>
+	<key>Your words, as text</key>
+	<string>話した内容をテキストに</string>
+	<key>Zoom</key>
+	<string>ズーム</string>
+	<key>Zoom %@</key>
+	<string>ズーム%@</string>
+	<key>Zoom Level</key>
+	<string>ズーム倍率</string>
+	<key>Zoom in at the pointer</key>
+	<string>ポインタの位置で拡大</string>
+	<key>Zoom level</key>
+	<string>ズーム倍率</string>
+	<key>Zoom level (zoom selected)</key>
+	<string>ズーム倍率（ズームを選択中）</string>
+	<key>Zoom moves</key>
+	<string>ズームの動き</string>
+	<key>Zoom removed — ⌘Z to undo</key>
+	<string>ズームを削除しました。⌘Zで取り消せます</string>
+	<key>Zoom to %@ (key %@)</key>
+	<string>%@にズーム（%@キー）</string>
+	<key>Zoom — drag to move, drag an edge to resize, click to edit</key>
+	<string>ズーム: ドラッグで移動、端をドラッグで長さを変更、クリックで編集</string>
+	<key>Zooms</key>
+	<string>ズーム</string>
+	<key>Zooms &amp; annotations</key>
+	<string>ズームと注釈</string>
+	<key>Zooms and annotations can be duplicated</key>
+	<string>複製できるのはズームと注釈だけです</string>
+	<key>a table</key>
+	<string>表</string>
+	<key>add a zoom</key>
+	<string>ズームを追加</string>
+	<key>aim or resize it</key>
+	<string>移動やサイズ変更</string>
+	<key>all shortcuts</key>
+	<string>すべてのショートカット</string>
+	<key>captions burned in</key>
+	<string>焼き付けた字幕</string>
+	<key>cut by editing words</key>
+	<string>テキストを編集してカット</string>
+	<key>dips under your voice</key>
+	<string>話している間は音量が下がる</string>
+	<key>every command</key>
+	<string>すべてのコマンド</string>
+	<key>export</key>
+	<string>書き出す</string>
+	<key>follows the cursor</key>
+	<string>ポインタに追従</string>
+	<key>intro card</key>
+	<string>オープニングカード</string>
+	<key>loops</key>
+	<string>ループ再生</string>
+	<key>macOS closed Shotnix last time because it ran out of memory</key>
+	<string>前回、メモリが不足したためmacOSがShotnixを終了しました</string>
+	<key>macOS downloads %@ once, then translates right here — nothing is uploaded.</key>
+	<string>macOSが%@を一度ダウンロードすると、以降はこのMac上で翻訳します。何もアップロードされません。</string>
+	<key>macOS screenshot shortcuts (⌘⇧3, ⌘⇧4, ⌘⇧5) conflict with Shotnix.
+
+Disable them so Shotnix owns the capture shortcuts and screenshots do not double-trigger.
+
+You can re-enable Apple's shortcuts anytime in System Settings → Keyboard → Keyboard Shortcuts → Screenshots.</key>
+	<string>macOSのスクリーンショット用ショートカット（⌘⇧3、⌘⇧4、⌘⇧5）がShotnixと競合しています。
+
+これらを無効にすると、取り込みのショートカットをShotnixが使えるようになり、スクリーンショットが二重に撮られることもなくなります。
+
+Appleのショートカットは、“システム設定”＞“キーボード”＞“キーボードショートカット…”＞“スクリーンショット”でいつでも再度有効にできます。</string>
+	<key>mic</key>
+	<string>マイク</string>
+	<key>music</key>
+	<string>音楽</string>
+	<key>mute the preview</key>
+	<string>プレビューを消音</string>
+	<key>muted</key>
+	<string>消音</string>
+	<key>no audio</key>
+	<string>音声なし</string>
+	<key>no captions in the picture</key>
+	<string>映像に字幕なし</string>
+	<key>no end card</key>
+	<string>エンドカードなし</string>
+	<key>outro card</key>
+	<string>エンディングカード</string>
+	<key>play</key>
+	<string>再生</string>
+	<key>pointer</key>
+	<string>ポインタ</string>
+	<key>select a part to cut</key>
+	<string>カットする部分を選択</string>
+	<key>select it</key>
+	<string>選択</string>
+	<key>split at the playhead</key>
+	<string>再生ヘッドの位置で分割</string>
+	<key>step through the timeline</key>
+	<string>タイムラインの項目を順に選択</string>
+	<key>sys+mic</key>
+	<string>内部+マイク</string>
+	<key>system</key>
+	<string>内部音声</string>
+	<key>text, highlight, arrow, blur</key>
+	<string>テキスト、ハイライト、矢印、ぼかし</string>
+	<key>the video</key>
+	<string>ビデオ</string>
+	<key>this recording</key>
+	<string>この収録</string>
+	<key>trim to the playhead</key>
+	<string>再生ヘッドまでトリミング</string>
+	<key>type</key>
+	<string>入力</string>
+	<key>up to %@ GB/min</key>
+	<string>最大%@ GB/分</string>
+	<key>up to %@ MB/min</key>
+	<string>最大%@ MB/分</string>
+	<key>zoom the timeline</key>
+	<string>タイムラインを拡大/縮小</string>
+	<key>© 2026 Shotnix Contributors</key>
+	<string>© 2026 Shotnixのコントリビュータ</string>
+	<key>· aim by hand</key>
+	<string>· 手動で位置を指定</string>
+	<key>· drag to aim</key>
+	<string>· ドラッグで位置を指定</string>
+	<key>· follows cursor</key>
+	<string>· ポインタに追従</string>
+	<key>“%@” (was in %@)</key>
+	<string>“%@”（%@にありました）</string>
+	<key>“%@” can't be found. Put it back where it was, or remove it from this video (Style → Recordings), then export again.</key>
+	<string>“%@”が見つかりません。元の場所に戻すか、このビデオから削除してから（“スタイル”＞“収録したビデオ”）、もう一度書き出してください。</string>
+	<key>“%@” can't be read — it may be damaged, still being saved, or in a format this Mac can't play. Remove it from this video (Style → Recordings), or put a working copy in its place, then export again.</key>
+	<string>“%@”を読み込めません。破損しているか、保存中か、このMacで再生できない形式の可能性があります。このビデオから削除するか（“スタイル”＞“収録したビデオ”）、正常なコピーを同じ場所に置いてから、もう一度書き出してください。</string>
+	<key>“%@” found in %lld of %lld captures</key>
+	<string>%3$lld件中%2$lld件のスクリーンショットで“%1$@”が見つかりました</string>
+	<key>“Made with Shotnix” end card (2s)</key>
+	<string>“Made with Shotnix”エンドカード（2秒）</string>
+	<key>• %lld small notes about recordings that are gone</key>
+	<string>• なくなった収録に関する小さなメモ%lld件</string>
+	<key>• Camera footage no recording uses — %lld files, %@</key>
+	<string>• どの収録にも使われていないカメラ映像: %lld個のファイル、%@</string>
+	<key>• Cleaned-up voice of recordings not found or changed since — %lld files, %@</key>
+	<string>• 見つからない収録や、その後変更された収録の補正済みの声: %lld個のファイル、%@</string>
+	<key>• Clipboard exports older than a day — %lld files, %@</key>
+	<string>• 1日以上前のクリップボード用の書き出し: %lld個のファイル、%@</string>
+	<key>• Edits, recording details, and camera footage of %lld recordings Shotnix can't find (%@): %@</key>
+	<string>• Shotnixが見つけられない%lld件の収録の編集内容、収録の詳細、カメラ映像（%@）: %@</string>
+	<key>• Pictures and songs no video uses — %lld files, %@</key>
+	<string>• どのビデオにも使われていない画像と曲: %lld個のファイル、%@</string>
+	<key>⇧-drag</key>
+	<string>⇧ドラッグ</string>
+	<key>⇧-drag on the timeline to select a part first.</key>
+	<string>先にタイムラインを⇧ドラッグして、部分を選択してください。</string>
+	<key>⇧-drag the timeline</key>
+	<string>タイムラインを⇧ドラッグ</string>
+	<key>⇧/⌘-click</key>
+	<string>⇧/⌘クリック</string>
+	<key>⌘ scroll</key>
+	<string>⌘スクロール</string>
+	<key>⌘-scroll</key>
+	<string>⌘スクロール</string>
+	<key>✓ Copied to clipboard</key>
+	<string>✓ クリップボードにコピーしました</string>
+	<key>✓ Saved screenshot</key>
+	<string>✓ スクリーンショットを保存しました</string>
+	<key>✓ Text copied to clipboard</key>
+	<string>✓ テキストをクリップボードにコピーしました</string>
+	<key>✓ Text copied · %@ — click for options</key>
+	<string>✓ テキストをコピーしました · %@。クリックするとオプションを表示します</string>
+</dict>
+</plist>

@@ -1,0 +1,1421 @@
+{
+  "%@ (%@)" : {
+    "ja" : "%@（%@）"
+  },
+  "%@ area" : {
+    "ja" : "%@: 範囲"
+  },
+  "%@ capture from %@" : {
+    "ja" : "%2$@に取り込んだ%1$@のスクリーンショット"
+  },
+  "%@ capture, %@" : {
+    "ja" : "%1$@のスクリーンショット、%2$@"
+  },
+  "%@ fullscreen" : {
+    "ja" : "%@: 画面全体"
+  },
+  "%@ pt" : {
+    "ja" : "%@pt"
+  },
+  "%@ window" : {
+    "ja" : "%@: ウインドウ"
+  },
+  "%@ · %@ × %@ image" : {
+    "ja" : "%@ · %@ × %@の画像"
+  },
+  "%@ — Shotnix lives in your menu bar" : {
+    "ja" : "%@。Shotnixはメニューバーにあります"
+  },
+  "%lld annotations" : {
+    "ja" : "%lld個の注釈"
+  },
+  "%lld annotations, %@ selected" : {
+    "ja" : "%lld個の注釈、%@を選択中"
+  },
+  "%lld annotations, %@ selected, cropping" : {
+    "ja" : "%lld個の注釈、%@を選択中、切り取り中"
+  },
+  "%lld annotations, cropping" : {
+    "ja" : "%lld個の注釈、切り取り中"
+  },
+  "%lld days" : {
+    "ja" : "%lld日"
+  },
+  "%lld of %lld captures" : {
+    "ja" : "%2$lld件中%1$lld件のスクリーンショット"
+  },
+  "%lld saved captures · drag any card to Finder · right-click for more actions" : {
+    "ja" : "保存済みのスクリーンショット%lld件 · カードはFinderにドラッグできます · 右クリックでその他の操作"
+  },
+  "%lld screenshots deleted — click or press ⌘Z to undo" : {
+    "ja" : "%lld件のスクリーンショットを削除しました。クリックするか⌘Zを押すと取り消せます"
+  },
+  "%lld seconds" : {
+    "ja" : "%lld秒"
+  },
+  "%lld%%" : {
+    "ja" : "%lld%%"
+  },
+  "%lld/%lld configured" : {
+    "ja" : "設定済み: %lld/%lld"
+  },
+  "A report helps fix this. You'll see everything before it's sent, and it never includes your screenshots or recordings." : {
+    "ja" : "レポートはこの問題の修正に役立ちます。送信前にすべての内容を確認でき、スクリーンショットや収録したビデオが含まれることはありません。"
+  },
+  "About" : {
+    "ja" : "情報"
+  },
+  "About Shotnix" : {
+    "ja" : "Shotnixについて"
+  },
+  "Accuracy" : {
+    "ja" : "精度"
+  },
+  "Accurate" : {
+    "ja" : "正確"
+  },
+  "Advanced Tools" : {
+    "ja" : "高度なツール"
+  },
+  "After Capture" : {
+    "ja" : "取り込み後"
+  },
+  "All Captures" : {
+    "ja" : "すべてのスクリーンショット"
+  },
+  "All captures are moved to Shotnix’s trash and permanently deleted after %lld days." : {
+    "ja" : "すべてのスクリーンショットはShotnixのゴミ箱に移動され、%lld日後に完全に削除されます。"
+  },
+  "All configured" : {
+    "ja" : "すべて設定済み"
+  },
+  "Allow Access…" : {
+    "ja" : "アクセスを許可…"
+  },
+  "Allow Screen Recording" : {
+    "ja" : "画面収録を許可"
+  },
+  "Amber Fold" : {
+    "ja" : "琥珀のひだ"
+  },
+  "Annotate Last Screenshot" : {
+    "ja" : "最後のスクリーンショットに注釈を付ける"
+  },
+  "Annotation" : {
+    "ja" : "注釈"
+  },
+  "Annotation text" : {
+    "ja" : "注釈のテキスト"
+  },
+  "Annotation tools" : {
+    "ja" : "注釈ツール"
+  },
+  "Apple Shortcuts" : {
+    "ja" : "Appleのショートカット"
+  },
+  "Apple screenshot shortcuts disabled." : {
+    "ja" : "Appleのスクリーンショット用ショートカットを無効にしました。"
+  },
+  "Apple screenshot shortcuts disabled. Shotnix shortcuts are now active." : {
+    "ja" : "Appleのスクリーンショット用ショートカットを無効にしました。Shotnixのショートカットが有効になりました。"
+  },
+  "Apple screenshot shortcuts restored." : {
+    "ja" : "Appleのスクリーンショット用ショートカットを元に戻しました。"
+  },
+  "Apple's screenshot shortcuts still own ⌘⇧3/4/5 — captures can double-trigger." : {
+    "ja" : "⌘⇧3/4/5はまだAppleのスクリーンショット用ショートカットに使われているため、二重に取り込まれることがあります。"
+  },
+  "Apple's shortcuts are out of the way." : {
+    "ja" : "Appleのショートカットと競合しません。"
+  },
+  "Apply" : {
+    "ja" : "適用"
+  },
+  "Apply background to this image" : {
+    "ja" : "この画像に背景を適用"
+  },
+  "Apply crop" : {
+    "ja" : "切り取りを適用"
+  },
+  "Apply the crop (Return)" : {
+    "ja" : "切り取りを適用（Returnキー）"
+  },
+  "Aqua Marble" : {
+    "ja" : "アクアマーブル"
+  },
+  "Area" : {
+    "ja" : "範囲"
+  },
+  "Arrow" : {
+    "ja" : "矢印"
+  },
+  "Audio" : {
+    "ja" : "オーディオ"
+  },
+  "Aurora Blue" : {
+    "ja" : "オーロラブルー"
+  },
+  "Auto-dismiss overlay" : {
+    "ja" : "サムネールを自動的に閉じる"
+  },
+  "Auto-save folder" : {
+    "ja" : "自動保存先"
+  },
+  "Auto-zoom new recordings" : {
+    "ja" : "新しい収録に自動ズームを適用"
+  },
+  "Automatic" : {
+    "ja" : "自動"
+  },
+  "Automatic detects each capture's language; pick languages when it guesses wrong. Accurate reads small text best — Fast answers sooner but knows fewer languages. Used by Capture Text, Copy Text, and History search." : {
+    "ja" : "“自動”はスクリーンショットごとに言語を検出します。判定が間違っているときは言語を選択してください。“正確”は小さな文字を最もよく読み取れます。“高速”はすぐに結果が出ますが、対応する言語が少なくなります。“テキストを取り込む”、“テキストをコピー”、履歴の検索で使用されます。"
+  },
+  "Background" : {
+    "ja" : "背景"
+  },
+  "Balanced" : {
+    "ja" : "標準"
+  },
+  "Black" : {
+    "ja" : "ブラック"
+  },
+  "Blue" : {
+    "ja" : "ブルー"
+  },
+  "Blur" : {
+    "ja" : "ぼかし"
+  },
+  "Blurred area" : {
+    "ja" : "ぼかした範囲"
+  },
+  "Bold" : {
+    "ja" : "太い"
+  },
+  "Bone" : {
+    "ja" : "生成り"
+  },
+  "Bring All to Front" : {
+    "ja" : "すべてを手前に移動"
+  },
+  "Callout" : {
+    "ja" : "吹き出し"
+  },
+  "Callout: %@" : {
+    "ja" : "吹き出し: %@"
+  },
+  "Camera" : {
+    "ja" : "カメラ"
+  },
+  "Cancel" : {
+    "ja" : "キャンセル"
+  },
+  "Canyon Silk" : {
+    "ja" : "峡谷のシルク"
+  },
+  "Capture" : {
+    "ja" : "スクリーンショット"
+  },
+  "Capture All Displays" : {
+    "ja" : "すべてのディスプレイを取り込む"
+  },
+  "Capture Area" : {
+    "ja" : "範囲を取り込む"
+  },
+  "Capture Fullscreen" : {
+    "ja" : "画面全体を取り込む"
+  },
+  "Capture Fullscreen Alt" : {
+    "ja" : "画面全体を取り込む（代替）"
+  },
+  "Capture History" : {
+    "ja" : "スクリーンショットの履歴"
+  },
+  "Capture Previous Area" : {
+    "ja" : "前回の範囲を取り込む"
+  },
+  "Capture Text" : {
+    "ja" : "テキストを取り込む"
+  },
+  "Capture Text and Scrolling Capture come without shortcuts, so ⌘⇧O and ⌘⇧S keep meaning Open and Save As in your other apps — click a field to set your own. Pressing the Scrolling Capture shortcut again finishes a scrolling capture." : {
+    "ja" : "“テキストを取り込む”と“スクロールして取り込む”には最初はショートカットが割り当てられていないため、ほかのアプリでは⌘⇧Oと⌘⇧Sを引き続き“開く”と“別名で保存”に使えます。フィールドをクリックすると独自のショートカットを設定できます。スクロール取り込み中に“スクロールして取り込む”のショートカットをもう一度押すと、取り込みが終了します。"
+  },
+  "Capture Window" : {
+    "ja" : "ウインドウを取り込む"
+  },
+  "Capture from %@" : {
+    "ja" : "%@に取り込んだスクリーンショット"
+  },
+  "Capture immediately after selecting" : {
+    "ja" : "選択後すぐに取り込む"
+  },
+  "Capture type" : {
+    "ja" : "取り込みの種類"
+  },
+  "Capture · Record · Updates" : {
+    "ja" : "取り込み · 収録 · アップデート"
+  },
+  "Capture, %@" : {
+    "ja" : "スクリーンショット、%@"
+  },
+  "Captured screenshots will appear here instantly" : {
+    "ja" : "取り込んだスクリーンショットはすぐにここに表示されます"
+  },
+  "Captures" : {
+    "ja" : "スクリーンショット"
+  },
+  "Captures stay in History until you delete them, unless you pick a limit here. Clean Up empties History's trash (deleted captures you could still undo) and removes files no capture uses anymore." : {
+    "ja" : "ここで上限を選択しない限り、スクリーンショットは削除するまで履歴に残ります。“クリーンアップ”は履歴のゴミ箱（削除を取り消せるスクリーンショット）を空にし、どのスクリーンショットにも使われなくなったファイルを削除します。"
+  },
+  "Carbon Arc" : {
+    "ja" : "カーボンアーク"
+  },
+  "Check" : {
+    "ja" : "確認"
+  },
+  "Check for Updates" : {
+    "ja" : "アップデートを確認"
+  },
+  "Choose Capture Area in the Shotnix menu to start" : {
+    "ja" : "Shotnixのメニューから“範囲を取り込む”を選択して始めましょう"
+  },
+  "Choose a writable folder for auto-save." : {
+    "ja" : "自動保存用に書き込み可能なフォルダを選択してください。"
+  },
+  "Choose a writable folder." : {
+    "ja" : "書き込み可能なフォルダを選択してください。"
+  },
+  "Choose folder" : {
+    "ja" : "フォルダを選択"
+  },
+  "Choose what happens immediately after taking a screenshot." : {
+    "ja" : "スクリーンショットを撮った直後の動作を選択します。"
+  },
+  "Choose..." : {
+    "ja" : "選択…"
+  },
+  "Clay" : {
+    "ja" : "クレイ"
+  },
+  "Clean Up" : {
+    "ja" : "クリーンアップ"
+  },
+  "Clean Up History?" : {
+    "ja" : "履歴をクリーンアップしますか?"
+  },
+  "Clean Up lists what it would remove — the data of recordings Shotnix can't find, camera footage and pictures nothing uses, and clipboard exports older than a day — and asks first. On its own, Shotnix only removes clipboard exports older than a day; the data of your recordings stays until you clean it up here." : {
+    "ja" : "“クリーンアップ”では、削除される項目（Shotnixが見つけられない収録のデータ、どこにも使われていないカメラ映像と画像、1日以上経ったクリップボード用の書き出し）が一覧表示され、削除する前に確認を求められます。Shotnixが自動で削除するのは1日以上経ったクリップボード用の書き出しだけで、収録のデータはここでクリーンアップするまで残ります。"
+  },
+  "Clean Up…" : {
+    "ja" : "クリーンアップ…"
+  },
+  "Cleaning Up…" : {
+    "ja" : "クリーンアップ中…"
+  },
+  "Clear All" : {
+    "ja" : "すべてを消去"
+  },
+  "Clear History" : {
+    "ja" : "履歴を消去"
+  },
+  "Clear History?" : {
+    "ja" : "履歴を消去しますか?"
+  },
+  "Click an annotation to edit it" : {
+    "ja" : "注釈をクリックして編集"
+  },
+  "Click to add the next step" : {
+    "ja" : "クリックで次のステップを追加"
+  },
+  "Clipboard" : {
+    "ja" : "クリップボード"
+  },
+  "Close Window" : {
+    "ja" : "ウインドウを閉じる"
+  },
+  "Coastal Haze" : {
+    "ja" : "海辺のもや"
+  },
+  "Cobalt Drapes" : {
+    "ja" : "コバルトのドレープ"
+  },
+  "Color" : {
+    "ja" : "カラー"
+  },
+  "Command Center" : {
+    "ja" : "コマンドセンター"
+  },
+  "Conflict detected" : {
+    "ja" : "競合あり"
+  },
+  "Copied to clipboard" : {
+    "ja" : "クリップボードにコピーしました"
+  },
+  "Copy" : {
+    "ja" : "コピー"
+  },
+  "Copy (⌘C)" : {
+    "ja" : "コピー（⌘C）"
+  },
+  "Copy capture to clipboard" : {
+    "ja" : "スクリーンショットをクリップボードにコピー"
+  },
+  "Copy screenshots to clipboard" : {
+    "ja" : "スクリーンショットをクリップボードにコピー"
+  },
+  "Could Not Disable Apple Shortcuts" : {
+    "ja" : "Appleのショートカットを無効にできませんでした"
+  },
+  "Could Not Save Screenshot" : {
+    "ja" : "スクリーンショットを保存できませんでした"
+  },
+  "Could not copy this capture" : {
+    "ja" : "このスクリーンショットをコピーできませんでした"
+  },
+  "Could not encode screenshot as PNG." : {
+    "ja" : "スクリーンショットをPNGにエンコードできませんでした。"
+  },
+  "Could not encode the screenshot." : {
+    "ja" : "スクリーンショットをエンコードできませんでした。"
+  },
+  "Could not restore Apple shortcuts." : {
+    "ja" : "Appleのショートカットを元に戻せませんでした。"
+  },
+  "Couldn't copy the screenshot. Try again, or save it instead." : {
+    "ja" : "スクリーンショットをコピーできませんでした。もう一度試すか、代わりに保存してください。"
+  },
+  "Couldn't save the screenshot to %@. Click to check the save folder." : {
+    "ja" : "スクリーンショットを“%@”に保存できませんでした。クリックして保存先フォルダを確認してください。"
+  },
+  "Couldn't save the screenshot: Shotnix can't write to %@. Click to choose another save folder." : {
+    "ja" : "スクリーンショットを保存できませんでした。Shotnixは“%@”に書き込めません。クリックして別の保存先フォルダを選択してください。"
+  },
+  "Couldn't save the screenshot: it could not be encoded as %@." : {
+    "ja" : "スクリーンショットを保存できませんでした。%@形式にエンコードできません。"
+  },
+  "Couldn't save the screenshot: the disk is full. Free up space or pick another save folder." : {
+    "ja" : "スクリーンショットを保存できませんでした。ディスクがいっぱいです。空き領域を増やすか、別の保存先フォルダを選択してください。"
+  },
+  "Countdown" : {
+    "ja" : "カウントダウン"
+  },
+  "Crimson Ridge" : {
+    "ja" : "深紅の尾根"
+  },
+  "Crop" : {
+    "ja" : "切り取り"
+  },
+  "Custom color" : {
+    "ja" : "カスタムカラー"
+  },
+  "Custom color #%@" : {
+    "ja" : "カスタムカラー #%@"
+  },
+  "Custom: %@" : {
+    "ja" : "カスタム: %@"
+  },
+  "Custom…" : {
+    "ja" : "カスタム…"
+  },
+  "Cut" : {
+    "ja" : "カット"
+  },
+  "Delete" : {
+    "ja" : "削除"
+  },
+  "Delete %lld Captures?" : {
+    "ja" : "%lld件のスクリーンショットを削除しますか?"
+  },
+  "Delete All" : {
+    "ja" : "すべてを削除"
+  },
+  "Delete Captures" : {
+    "ja" : "スクリーンショットを削除"
+  },
+  "Delete Screenshot" : {
+    "ja" : "スクリーンショットを削除"
+  },
+  "Delete Screenshots" : {
+    "ja" : "スクリーンショットを削除"
+  },
+  "Delete Selection" : {
+    "ja" : "選択項目を削除"
+  },
+  "Delete every saved capture" : {
+    "ja" : "保存されているすべてのスクリーンショットを削除します"
+  },
+  "Deleted captures waiting in History's trash and files no capture uses are removed for good, along with %lld captures past your History limit. The rest of your history stays." : {
+    "ja" : "履歴のゴミ箱にある削除済みのスクリーンショットと、どのスクリーンショットにも使われていないファイルが、履歴の上限を超えた%lld件のスクリーンショットとともに完全に削除されます。そのほかの履歴は残ります。"
+  },
+  "Deleted captures waiting in History's trash and files no capture uses are removed for good. The captures in your history stay." : {
+    "ja" : "履歴のゴミ箱にある削除済みのスクリーンショットと、どのスクリーンショットにも使われていないファイルが完全に削除されます。履歴内のスクリーンショットは残ります。"
+  },
+  "Desert Violet" : {
+    "ja" : "砂漠のすみれ"
+  },
+  "Directory where screenshots are saved if Auto-Save is enabled." : {
+    "ja" : "“自動的に保存”がオンのときに、スクリーンショットが保存されるフォルダです。"
+  },
+  "Disable Apple Shortcuts" : {
+    "ja" : "Appleのショートカットを無効にする"
+  },
+  "Disabled" : {
+    "ja" : "無効"
+  },
+  "Discard Changes" : {
+    "ja" : "変更内容を破棄"
+  },
+  "Do you want to review them before quitting?" : {
+    "ja" : "終了する前に確認しますか?"
+  },
+  "Don't Ask Again" : {
+    "ja" : "次回から確認しない"
+  },
+  "Don't Save" : {
+    "ja" : "保存しない"
+  },
+  "Don't ask again" : {
+    "ja" : "次回から確認しない"
+  },
+  "Done" : {
+    "ja" : "完了"
+  },
+  "Draw with the selected tool. Tool shortcuts: V select, A arrow, R rectangle, T text, O callout, H highlighter, B blur, P pixelate, S spotlight, C crop." : {
+    "ja" : "選択したツールで描画します。ツールのショートカット: V（選択）、A（矢印）、R（長方形）、T（テキスト）、O（吹き出し）、H（蛍光ペン）、B（ぼかし）、P（モザイク）、S（スポットライト）、C（切り取り）。"
+  },
+  "Drawing" : {
+    "ja" : "描画"
+  },
+  "Edit" : {
+    "ja" : "編集"
+  },
+  "Edit Last Recording" : {
+    "ja" : "最後の収録を編集"
+  },
+  "Editable cursor" : {
+    "ja" : "編集可能なポインタ"
+  },
+  "Editable cursor records the pointer separately so the editor can smooth it, resize it, and keep it crisp when zoomed — the video editor adds it back on export (the raw recording file has no pointer). Auto-zoom makes a fresh recording open already produced: the camera zooms to follow your clicks. Keyboard shortcuts records only ⌘, ⌃ and ⌥ combos (plus Esc and F-keys) so the editor can show them as keycaps — plain typing is never recorded; macOS asks for Accessibility access. High quality is the default; Max keeps more detail but creates larger files. The countdown gives you a moment after pressing Record; Esc cancels it. Stop a recording with %@ from any app — plain Esc stays with the app you're recording." : {
+    "ja" : "“編集可能なポインタ”では、ポインタが別に記録されるため、エディタでポインタの動きを滑らかにしたり、サイズを変えたり、ズームしてもくっきり表示したりできます。ポインタは書き出し時にビデオエディタで合成されます（収録したままのファイルにはポインタは入っていません）。“自動ズーム”を使うと、新しい収録が編集済みの状態で開き、クリックに合わせて画面がズームします。“キーボードショートカットを表示”では、⌘、⌃、⌥を使った組み合わせ（およびEscキーとファンクションキー）だけが記録され、エディタでキーとして表示できます。通常の入力が記録されることはありません。macOSからアクセシビリティへのアクセスを求められます。品質のデフォルトは“高”です。“最高”では細部がより保たれますが、ファイルサイズが大きくなります。カウントダウンがあると、“収録”を押してから開始までに少し時間ができます。Escキーでキャンセルできます。収録はどのアプリからでも%@で停止できます。Escキーだけを押した場合は、収録中のアプリに送られます。"
+  },
+  "Ellipse" : {
+    "ja" : "楕円"
+  },
+  "Ember Fog" : {
+    "ja" : "残り火の霧"
+  },
+  "Enable Shotnix in System Settings → Privacy & Security → Screen & System Audio Recording, then quit and reopen Shotnix so macOS applies the permission." : {
+    "ja" : "“システム設定”＞“プライバシーとセキュリティ”＞“画面収録とシステムオーディオ録音”でShotnixをオンにしたあと、アクセス許可をmacOSに反映させるためにShotnixを終了して再度開いてください。"
+  },
+  "Enable Shotnix in System Settings, then relaunch so macOS applies it." : {
+    "ja" : "“システム設定”でShotnixをオンにしたあと、macOSに反映させるためにShotnixを再度開いてください。"
+  },
+  "Enabled" : {
+    "ja" : "有効"
+  },
+  "Enjoying Shotnix? Click to star it on GitHub ★" : {
+    "ja" : "Shotnixを気に入っていただけましたか? クリックしてGitHubでスターを付けてください ★"
+  },
+  "Enjoying Shotnix? Star it on GitHub so more people find it." : {
+    "ja" : "Shotnixを気に入っていただけましたか? GitHubでスターを付けると、より多くの人に見つけてもらえます。"
+  },
+  "Everything is ready" : {
+    "ja" : "すべて準備完了"
+  },
+  "Export Format" : {
+    "ja" : "書き出しフォーマット"
+  },
+  "Fast" : {
+    "ja" : "高速"
+  },
+  "File" : {
+    "ja" : "ファイル"
+  },
+  "File Name" : {
+    "ja" : "ファイル名"
+  },
+  "Filled Rectangle" : {
+    "ja" : "塗りつぶした長方形"
+  },
+  "Filled rectangle" : {
+    "ja" : "塗りつぶした長方形"
+  },
+  "Filled rounded rectangle" : {
+    "ja" : "塗りつぶした角丸長方形"
+  },
+  "Finish and Quit" : {
+    "ja" : "完了してから終了"
+  },
+  "Fix" : {
+    "ja" : "修正"
+  },
+  "Forever" : {
+    "ja" : "無期限"
+  },
+  "Format" : {
+    "ja" : "フォーマット"
+  },
+  "Frame rate" : {
+    "ja" : "フレームレート"
+  },
+  "Free up ⌘⇧ shortcuts · optional" : {
+    "ja" : "⌘⇧のショートカットを空ける · 任意"
+  },
+  "Freed %@" : {
+    "ja" : "%@を解放しました"
+  },
+  "Freehand Draw" : {
+    "ja" : "フリーハンド"
+  },
+  "Freehand Highlighter" : {
+    "ja" : "フリーハンド蛍光ペン"
+  },
+  "Freehand highlight" : {
+    "ja" : "フリーハンドのハイライト"
+  },
+  "Full screen: %@" : {
+    "ja" : "画面全体: %@"
+  },
+  "Fullscreen" : {
+    "ja" : "画面全体"
+  },
+  "General" : {
+    "ja" : "一般"
+  },
+  "Gradient" : {
+    "ja" : "グラデーション"
+  },
+  "Grant Screen Recording first, then try it here." : {
+    "ja" : "画面収録を許可したあとで、ここで試してください。"
+  },
+  "Granted — captures, recordings, and OCR are ready." : {
+    "ja" : "許可済みです。スクリーンショット、収録、OCRを使用できます。"
+  },
+  "Graphite" : {
+    "ja" : "グラファイト"
+  },
+  "Green" : {
+    "ja" : "グリーン"
+  },
+  "Health" : {
+    "ja" : "状態"
+  },
+  "Hide Desktop Icons" : {
+    "ja" : "デスクトップのアイコンを非表示"
+  },
+  "Hide Icon" : {
+    "ja" : "アイコンを非表示"
+  },
+  "Hide desktop icons while capturing" : {
+    "ja" : "取り込み中はデスクトップのアイコンを非表示"
+  },
+  "Hide the Menu Bar Icon?" : {
+    "ja" : "メニューバーのアイコンを非表示にしますか?"
+  },
+  "High" : {
+    "ja" : "高"
+  },
+  "Highlight" : {
+    "ja" : "ハイライト"
+  },
+  "Highlighter" : {
+    "ja" : "蛍光ペン"
+  },
+  "History" : {
+    "ja" : "履歴"
+  },
+  "History cleared — click or press ⌘Z to undo" : {
+    "ja" : "履歴を消去しました。クリックするか⌘Zを押すと取り消せます"
+  },
+  "History uses %@ (%lld captures)" : {
+    "ja" : "履歴の使用量: %@（スクリーンショット%lld件）"
+  },
+  "History uses … (%lld captures)" : {
+    "ja" : "履歴の使用量: …（スクリーンショット%lld件）"
+  },
+  "History was already tidy" : {
+    "ja" : "履歴はすでに整理されています"
+  },
+  "Hotkeys are system-wide and active while Shotnix is running. The ⌘⇧3 default works best after Apple's screenshot shortcut is disabled." : {
+    "ja" : "ショートカットはShotnixの実行中、システム全体で有効です。デフォルトの⌘⇧3は、Appleのスクリーンショット用ショートカットを無効にすると最も確実に動作します。"
+  },
+  "How strongly blur and pixelate hide what's under them" : {
+    "ja" : "ぼかしとモザイクで下の内容を隠す強さ"
+  },
+  "Image" : {
+    "ja" : "画像"
+  },
+  "JPEG Quality" : {
+    "ja" : "JPEGの品質"
+  },
+  "Keep Working" : {
+    "ja" : "作業を続ける"
+  },
+  "Keep captures" : {
+    "ja" : "スクリーンショットの保存期間"
+  },
+  "Keeping 30 days removes %lld older captures from History now. This can't be undone." : {
+    "ja" : "保存期間を“30日”にすると、それより古い%lld件のスクリーンショットが今すぐ履歴から削除されます。この操作は取り消せません。"
+  },
+  "Keeping 7 days removes %lld older captures from History now. This can't be undone." : {
+    "ja" : "保存期間を“7日”にすると、それより古い%lld件のスクリーンショットが今すぐ履歴から削除されます。この操作は取り消せません。"
+  },
+  "Keeping 90 days removes %lld older captures from History now. This can't be undone." : {
+    "ja" : "保存期間を“90日”にすると、それより古い%lld件のスクリーンショットが今すぐ履歴から削除されます。この操作は取り消せません。"
+  },
+  "Keeping last 1,000 captures removes %lld older captures from History now. This can't be undone." : {
+    "ja" : "保存期間を“最新1,000件”にすると、それより古い%lld件のスクリーンショットが今すぐ履歴から削除されます。この操作は取り消せません。"
+  },
+  "Keeping last 100 captures removes %lld older captures from History now. This can't be undone." : {
+    "ja" : "保存期間を“最新100件”にすると、それより古い%lld件のスクリーンショットが今すぐ履歴から削除されます。この操作は取り消せません。"
+  },
+  "Keeping last 500 captures removes %lld older captures from History now. This can't be undone." : {
+    "ja" : "保存期間を“最新500件”にすると、それより古い%lld件のスクリーンショットが今すぐ履歴から削除されます。この操作は取り消せません。"
+  },
+  "Keyboard" : {
+    "ja" : "キーボード"
+  },
+  "Languages" : {
+    "ja" : "言語"
+  },
+  "Last %lld captures" : {
+    "ja" : "最新%lld件"
+  },
+  "Later" : {
+    "ja" : "あとで"
+  },
+  "Launch Shotnix at login" : {
+    "ja" : "ログイン時にShotnixを開く"
+  },
+  "Lavender Glass" : {
+    "ja" : "ラベンダーガラス"
+  },
+  "Left" : {
+    "ja" : "左"
+  },
+  "Lime Signal" : {
+    "ja" : "ライムシグナル"
+  },
+  "Line" : {
+    "ja" : "線"
+  },
+  "Line width" : {
+    "ja" : "線の幅"
+  },
+  "MIT License — Free and open source" : {
+    "ja" : "無料のオープンソース（MITライセンス）"
+  },
+  "Manage" : {
+    "ja" : "管理"
+  },
+  "Max" : {
+    "ja" : "最高"
+  },
+  "Menu Bar" : {
+    "ja" : "メニューバー"
+  },
+  "Menu bar is full, so macOS hid the Shotnix icon — %@ still captures. Click here for the menu." : {
+    "ja" : "メニューバーがいっぱいのため、macOSがShotnixのアイコンを非表示にしました。%@で引き続き取り込めます。ここをクリックするとメニューが開きます。"
+  },
+  "Menu bar is full, so macOS hid the Shotnix icon — your shortcuts still work. Click here for the menu." : {
+    "ja" : "メニューバーがいっぱいのため、macOSがShotnixのアイコンを非表示にしました。ショートカットは引き続き使えます。ここをクリックするとメニューが開きます。"
+  },
+  "Microphone" : {
+    "ja" : "マイク"
+  },
+  "Microphone recording requires macOS microphone permission. System audio excludes Shotnix sounds to avoid feedback." : {
+    "ja" : "マイクで録音するには、macOSでマイクへのアクセスを許可する必要があります。ハウリングを防ぐため、システムオーディオにShotnixのサウンドは含まれません。"
+  },
+  "Midnight Graphite" : {
+    "ja" : "ミッドナイトグラファイト"
+  },
+  "Minimize" : {
+    "ja" : "しまう"
+  },
+  "Moss" : {
+    "ja" : "モス"
+  },
+  "Moss Glow" : {
+    "ja" : "苔の輝き"
+  },
+  "Mute Clip" : {
+    "ja" : "クリップを消音"
+  },
+  "Needed to capture the screen. macOS will ask once." : {
+    "ja" : "画面の取り込みに必要です。macOSからの確認は一度だけです。"
+  },
+  "Neo Pop" : {
+    "ja" : "ネオポップ"
+  },
+  "Never" : {
+    "ja" : "しない"
+  },
+  "New screenshots are copied automatically. Turn this off if you only want to use the overlay or history actions." : {
+    "ja" : "新しいスクリーンショットは自動的にコピーされます。サムネールや履歴の操作だけを使いたい場合はオフにしてください。"
+  },
+  "Nice shot. You're all set." : {
+    "ja" : "うまく撮れました。準備完了です。"
+  },
+  "Night Current" : {
+    "ja" : "夜の潮流"
+  },
+  "No captures contain “%@”" : {
+    "ja" : "“%@”を含むスクリーンショットはありません"
+  },
+  "No captures of this type" : {
+    "ja" : "この種類のスクリーンショットはありません"
+  },
+  "No captures yet" : {
+    "ja" : "スクリーンショットはまだありません"
+  },
+  "No conflict" : {
+    "ja" : "競合なし"
+  },
+  "No saved captures yet" : {
+    "ja" : "保存済みのスクリーンショットはまだありません"
+  },
+  "Not Now" : {
+    "ja" : "今はしない"
+  },
+  "Not now" : {
+    "ja" : "今はしない"
+  },
+  "Numbered Steps" : {
+    "ja" : "番号付きステップ"
+  },
+  "OCR / Capture Text" : {
+    "ja" : "テキストを取り込む（OCR）"
+  },
+  "OK" : {
+    "ja" : "OK"
+  },
+  "Off" : {
+    "ja" : "オフ"
+  },
+  "Older" : {
+    "ja" : "それ以前"
+  },
+  "Open Command Center" : {
+    "ja" : "コマンドセンターを開く"
+  },
+  "Open History" : {
+    "ja" : "履歴を開く"
+  },
+  "Open Keyboard Settings" : {
+    "ja" : "キーボード設定を開く"
+  },
+  "Open Settings" : {
+    "ja" : "システム設定を開く"
+  },
+  "Open System Settings" : {
+    "ja" : "システム設定を開く"
+  },
+  "Open System Settings → Keyboard → Keyboard Shortcuts → Screenshots and turn off the screenshot shortcuts manually." : {
+    "ja" : "“システム設定”＞“キーボード”＞“キーボードショートカット…”＞“スクリーンショット”を開き、スクリーンショット用のショートカットを手動でオフにしてください。"
+  },
+  "Open Video Editor" : {
+    "ja" : "ビデオエディタを開く"
+  },
+  "Open editor after recording" : {
+    "ja" : "収録後にエディタを開く"
+  },
+  "Open in annotation editor" : {
+    "ja" : "スクリーンショットエディタで開く"
+  },
+  "Orange" : {
+    "ja" : "オレンジ"
+  },
+  "Otherwise, Shotnix switches languages the next time it opens." : {
+    "ja" : "今すぐ再起動しない場合は、次回Shotnixを開いたときに言語が切り替わります。"
+  },
+  "Overlay position" : {
+    "ja" : "サムネールの位置"
+  },
+  "Padding" : {
+    "ja" : "余白"
+  },
+  "Paste" : {
+    "ja" : "ペースト"
+  },
+  "Pause / Resume Recording" : {
+    "ja" : "収録を一時停止/再開"
+  },
+  "Pause Recording" : {
+    "ja" : "収録を一時停止"
+  },
+  "Pending" : {
+    "ja" : "未完了"
+  },
+  "Permission needed" : {
+    "ja" : "アクセス許可が必要"
+  },
+  "Pin to Screen" : {
+    "ja" : "画面に固定"
+  },
+  "Pine Dusk" : {
+    "ja" : "松林の夕暮れ"
+  },
+  "Pixelate" : {
+    "ja" : "モザイク"
+  },
+  "Pixelated area" : {
+    "ja" : "モザイクをかけた範囲"
+  },
+  "Play capture sound" : {
+    "ja" : "取り込み時にサウンドを再生"
+  },
+  "Polar Dawn" : {
+    "ja" : "極地の夜明け"
+  },
+  "Porcelain" : {
+    "ja" : "ポーセリン"
+  },
+  "Preferences" : {
+    "ja" : "設定"
+  },
+  "Preset" : {
+    "ja" : "プリセット"
+  },
+  "Press %@ anytime — or try it right now." : {
+    "ja" : "いつでも%@で取り込めます。今ここで試すこともできます。"
+  },
+  "Press %@ to take your first screenshot" : {
+    "ja" : "%@を押して最初のスクリーンショットを撮りましょう"
+  },
+  "Preview" : {
+    "ja" : "プレビュー"
+  },
+  "Prism Sweep" : {
+    "ja" : "プリズムの光"
+  },
+  "Privacy Policy" : {
+    "ja" : "プライバシーポリシー"
+  },
+  "Purple" : {
+    "ja" : "パープル"
+  },
+  "Quality" : {
+    "ja" : "品質"
+  },
+  "Quit & Reopen" : {
+    "ja" : "終了して再度開く"
+  },
+  "Quit Shotnix" : {
+    "ja" : "Shotnixを終了"
+  },
+  "Quit Shotnix?" : {
+    "ja" : "Shotnixを終了しますか?"
+  },
+  "Radius" : {
+    "ja" : "角の丸み"
+  },
+  "Re-enable Apple's ⌘⇧3/4/5 screenshot shortcuts" : {
+    "ja" : "Appleのスクリーンショット用ショートカット（⌘⇧3/4/5）を再度有効にします"
+  },
+  "Ready" : {
+    "ja" : "準備完了"
+  },
+  "Ready · %lld optional off" : {
+    "ja" : "準備完了 · 任意の%lld件は未設定"
+  },
+  "Record" : {
+    "ja" : "収録"
+  },
+  "Record Area" : {
+    "ja" : "範囲を収録"
+  },
+  "Record Fullscreen" : {
+    "ja" : "画面全体を収録"
+  },
+  "Record Window" : {
+    "ja" : "ウインドウを収録"
+  },
+  "Record camera" : {
+    "ja" : "カメラを収録"
+  },
+  "Record microphone" : {
+    "ja" : "マイクを録音"
+  },
+  "Record system audio" : {
+    "ja" : "システムオーディオを録音"
+  },
+  "Recording" : {
+    "ja" : "収録"
+  },
+  "Recording paused — click to stop (%@)" : {
+    "ja" : "収録を一時停止中。クリックすると停止します（%@）"
+  },
+  "Recording shortcuts are unassigned by default — click a field to set one. Stop Recording also cancels recording setup. While recording, %@ always stops it, from any app." : {
+    "ja" : "収録のショートカットは最初は割り当てられていません。フィールドをクリックして設定してください。“収録を停止”は収録の準備をキャンセルするときにも使えます。収録中は、どのアプリからでも%@で必ず停止できます。"
+  },
+  "Recording — click to stop (%@)" : {
+    "ja" : "収録中。クリックすると停止します（%@）"
+  },
+  "Recovered your interrupted recording “%@”. Click to open it." : {
+    "ja" : "中断された収録“%@”を復元しました。クリックすると開きます。"
+  },
+  "Rectangle" : {
+    "ja" : "長方形"
+  },
+  "Red" : {
+    "ja" : "レッド"
+  },
+  "Redaction strength" : {
+    "ja" : "ぼかしとモザイクの強さ"
+  },
+  "Redo" : {
+    "ja" : "やり直す"
+  },
+  "Redo Timeline Edit" : {
+    "ja" : "タイムラインの編集をやり直す"
+  },
+  "Releasing the mouse takes the shot. Hold ⇧ as you release to adjust the selection first — drag its edges, nudge it with the arrow keys, then press Return." : {
+    "ja" : "マウスボタンを放すと取り込まれます。放すときに⇧を押したままにすると、先に選択範囲を調整できます。端をドラッグしたり矢印キーで少しずつ動かしたりしてから、Returnキーを押してください。"
+  },
+  "Report Issue" : {
+    "ja" : "問題を報告"
+  },
+  "Report on GitHub" : {
+    "ja" : "GitHubで報告"
+  },
+  "Reset" : {
+    "ja" : "リセット"
+  },
+  "Reset Defaults" : {
+    "ja" : "デフォルトに戻す"
+  },
+  "Reset crop" : {
+    "ja" : "切り取りをリセット"
+  },
+  "Restart Now" : {
+    "ja" : "今すぐ再起動"
+  },
+  "Restart Shotnix to use %@?" : {
+    "ja" : "Shotnixを再起動して%@に切り替えますか?"
+  },
+  "Restore Apple Shortcuts" : {
+    "ja" : "Appleのショートカットを元に戻す"
+  },
+  "Resume Recording" : {
+    "ja" : "収録を再開"
+  },
+  "Review Changes…" : {
+    "ja" : "変更内容を確認…"
+  },
+  "Right" : {
+    "ja" : "右"
+  },
+  "Rose Smoke" : {
+    "ja" : "ローズスモーク"
+  },
+  "Rounded Corners (⌥R)" : {
+    "ja" : "角を丸める（⌥R）"
+  },
+  "Rounded corners" : {
+    "ja" : "角を丸める"
+  },
+  "Rounded rectangle" : {
+    "ja" : "角丸長方形"
+  },
+  "SHOTNIX LIBRARY" : {
+    "ja" : "Shotnixライブラリ"
+  },
+  "Save" : {
+    "ja" : "保存"
+  },
+  "Save (⌘S)" : {
+    "ja" : "保存（⌘S）"
+  },
+  "Save As…" : {
+    "ja" : "別名で保存…"
+  },
+  "Save Folder" : {
+    "ja" : "保存先フォルダ"
+  },
+  "Save Location" : {
+    "ja" : "保存場所"
+  },
+  "Save automatically" : {
+    "ja" : "自動的に保存"
+  },
+  "Save changes to this screenshot?" : {
+    "ja" : "このスクリーンショットへの変更内容を保存しますか?"
+  },
+  "Save folder updated." : {
+    "ja" : "保存先フォルダを更新しました。"
+  },
+  "Saved" : {
+    "ja" : "保存済み"
+  },
+  "Saved capture" : {
+    "ja" : "保存済みのスクリーンショット"
+  },
+  "Saved to %@: %@" : {
+    "ja" : "“%@”に保存しました: %@"
+  },
+  "Save…" : {
+    "ja" : "保存…"
+  },
+  "Saving captures to History" : {
+    "ja" : "スクリーンショットを履歴に保存中"
+  },
+  "Saving the recording" : {
+    "ja" : "収録を保存中"
+  },
+  "Saving…" : {
+    "ja" : "保存中…"
+  },
+  "Scan QR Code" : {
+    "ja" : "QRコードをスキャン"
+  },
+  "Screen Recording" : {
+    "ja" : "画面収録"
+  },
+  "Screen Recording Permission Required" : {
+    "ja" : "画面収録のアクセス許可が必要です"
+  },
+  "Screenshot Editor" : {
+    "ja" : "スクリーンショットエディタ"
+  },
+  "Screenshot canvas" : {
+    "ja" : "スクリーンショットのキャンバス"
+  },
+  "Screenshots" : {
+    "ja" : "スクリーンショット"
+  },
+  "Scrolling" : {
+    "ja" : "スクロール"
+  },
+  "Scrolling Capture" : {
+    "ja" : "スクロールして取り込む"
+  },
+  "Scrolling capture" : {
+    "ja" : "スクロール取り込み"
+  },
+  "Search text in captures" : {
+    "ja" : "スクリーンショット内のテキストを検索"
+  },
+  "Select" : {
+    "ja" : "選択"
+  },
+  "Select All" : {
+    "ja" : "すべてを選択"
+  },
+  "Selection" : {
+    "ja" : "選択範囲"
+  },
+  "Send by Email…" : {
+    "ja" : "メールで送信…"
+  },
+  "Set In to Playhead" : {
+    "ja" : "イン点を再生ヘッドの位置に設定"
+  },
+  "Set Out to Playhead" : {
+    "ja" : "アウト点を再生ヘッドの位置に設定"
+  },
+  "Settings" : {
+    "ja" : "設定"
+  },
+  "Settings…" : {
+    "ja" : "設定…"
+  },
+  "Shadow" : {
+    "ja" : "シャドウ"
+  },
+  "Shadow and transparent padding" : {
+    "ja" : "シャドウと透明な余白"
+  },
+  "Shape" : {
+    "ja" : "形状"
+  },
+  "Shortcut Conflict Detected" : {
+    "ja" : "ショートカットの競合が検出されました"
+  },
+  "Shortcuts" : {
+    "ja" : "ショートカット"
+  },
+  "Shotnix Preferences" : {
+    "ja" : "Shotnixの設定"
+  },
+  "Shotnix could not write the file to:\n%@" : {
+    "ja" : "Shotnixは次の場所にファイルを書き込めませんでした:\n%@"
+  },
+  "Shotnix is ready to use!" : {
+    "ja" : "Shotnixを使う準備ができました!"
+  },
+  "Shotnix lives here — setup continues next launch" : {
+    "ja" : "Shotnixはここにあります。設定は次回の起動時に再開します"
+  },
+  "Shotnix lives in your menu bar" : {
+    "ja" : "Shotnixはメニューバーにあります"
+  },
+  "Shotnix needs Screen Recording permission to capture your screen.\n\nPlease enable it in System Settings → Privacy & Security → Screen & System Audio Recording." : {
+    "ja" : "Shotnixで画面を取り込むには、画面収録のアクセス許可が必要です。\n\n“システム設定”＞“プライバシーとセキュリティ”＞“画面収録とシステムオーディオ録音”でオンにしてください。"
+  },
+  "Shotnix quit unexpectedly last time" : {
+    "ja" : "前回、Shotnixが予期せず終了しました"
+  },
+  "Shotnix restarts to switch languages. You can also set it in System Settings → General → Language & Region → Applications." : {
+    "ja" : "言語を切り替えるとShotnixが再起動します。“システム設定”＞“一般”＞“言語と地域”＞“アプリケーション”でも設定できます。"
+  },
+  "Shotnix will wrap these up before it quits." : {
+    "ja" : "Shotnixは終了する前にこれらの処理を完了します。"
+  },
+  "Shotnix – Capture History" : {
+    "ja" : "Shotnix – スクリーンショットの履歴"
+  },
+  "Show Desktop Icons" : {
+    "ja" : "デスクトップのアイコンを表示"
+  },
+  "Show Editor" : {
+    "ja" : "エディタを表示"
+  },
+  "Show Quick Access Overlay" : {
+    "ja" : "クイックアクセスのサムネールを表示"
+  },
+  "Show Video Editor" : {
+    "ja" : "ビデオエディタを表示"
+  },
+  "Show cursor" : {
+    "ja" : "ポインタを表示"
+  },
+  "Show keyboard shortcuts" : {
+    "ja" : "キーボードショートカットを表示"
+  },
+  "Show menu bar icon" : {
+    "ja" : "メニューバーにアイコンを表示"
+  },
+  "Show one kind of capture" : {
+    "ja" : "1種類のスクリーンショットだけを表示します"
+  },
+  "Show the whole screenshot again" : {
+    "ja" : "スクリーンショット全体をもう一度表示します"
+  },
+  "Silver" : {
+    "ja" : "シルバー"
+  },
+  "Size" : {
+    "ja" : "サイズ"
+  },
+  "Skip Setup" : {
+    "ja" : "設定をスキップ"
+  },
+  "Sky Wash" : {
+    "ja" : "空のにじみ"
+  },
+  "Solid Color" : {
+    "ja" : "単色"
+  },
+  "Sounds" : {
+    "ja" : "サウンド"
+  },
+  "Space Gray" : {
+    "ja" : "スペースグレイ"
+  },
+  "Split at Playhead" : {
+    "ja" : "再生ヘッドの位置で分割"
+  },
+  "Spotlight" : {
+    "ja" : "スポットライト"
+  },
+  "Spotlight shape" : {
+    "ja" : "スポットライトの形状"
+  },
+  "Star on GitHub" : {
+    "ja" : "GitHubでスターを付ける"
+  },
+  "Startup" : {
+    "ja" : "起動"
+  },
+  "Step %lld" : {
+    "ja" : "ステップ%lld"
+  },
+  "Stop Recording" : {
+    "ja" : "収録を停止"
+  },
+  "Storage" : {
+    "ja" : "ストレージ"
+  },
+  "Strength" : {
+    "ja" : "強さ"
+  },
+  "Style" : {
+    "ja" : "スタイル"
+  },
+  "Sunset Coral" : {
+    "ja" : "サンセットコーラル"
+  },
+  "Support" : {
+    "ja" : "サポート"
+  },
+  "System Default" : {
+    "ja" : "システムのデフォルト"
+  },
+  "System Default (%@)" : {
+    "ja" : "システムのデフォルト（%@）"
+  },
+  "Tahoe Ice" : {
+    "ja" : "タホの氷"
+  },
+  "Take a Test Screenshot" : {
+    "ja" : "テスト用のスクリーンショットを撮る"
+  },
+  "Take your first screenshot" : {
+    "ja" : "最初のスクリーンショットを撮る"
+  },
+  "Template" : {
+    "ja" : "テンプレート"
+  },
+  "Text" : {
+    "ja" : "テキスト"
+  },
+  "Text Recognition" : {
+    "ja" : "テキスト認識"
+  },
+  "Text size" : {
+    "ja" : "テキストサイズ"
+  },
+  "Text: %@" : {
+    "ja" : "テキスト: %@"
+  },
+  "The full report is on your clipboard. Paste it into the email." : {
+    "ja" : "レポート全文をクリップボードにコピーしました。メールにペーストしてください。"
+  },
+  "The menu bar icon is Shotnix's main entry point. While it is hidden, open Shotnix again from Finder, Launchpad, or Spotlight to bring these Preferences back." : {
+    "ja" : "メニューバーのアイコンはShotnixを使うための主な入り口です。非表示の間にこの設定を再び開くには、Finder、Launchpad、またはSpotlightからShotnixをもう一度開いてください。"
+  },
+  "The save panel did not return a destination. Please try saving again." : {
+    "ja" : "保存パネルから保存先を取得できませんでした。もう一度保存してください。"
+  },
+  "The screenshot has no image data." : {
+    "ja" : "スクリーンショットに画像データがありません。"
+  },
+  "The selection stays on screen to adjust — drag its edges, nudge it with the arrow keys, then press Return. Hold ⇧ as you release to capture right away." : {
+    "ja" : "選択範囲は調整できるように画面に残ります。端をドラッグしたり矢印キーで少しずつ動かしたりしてから、Returnキーを押してください。放すときに⇧を押したままにすると、すぐに取り込まれます。"
+  },
+  "This Week" : {
+    "ja" : "今週"
+  },
+  "Three quick steps and you're capturing." : {
+    "ja" : "3つの簡単なステップで、すぐに取り込みを始められます。"
+  },
+  "Tide Glass" : {
+    "ja" : "潮のガラス"
+  },
+  "Timed Capture" : {
+    "ja" : "タイマーで取り込む"
+  },
+  "Timed Capture (%llds)" : {
+    "ja" : "タイマーで取り込む（%lld秒）"
+  },
+  "Timed Capture selects the area first, then counts down before the shot — time to open menus or hover states. Esc cancels." : {
+    "ja" : "“タイマーで取り込む”では、先に範囲を選択し、取り込む前にカウントダウンします。その間にメニューを開いたり、ポインタを重ねたときの表示を出したりできます。Escキーでキャンセルできます。"
+  },
+  "Timeline" : {
+    "ja" : "タイムライン"
+  },
+  "To attach the full report, drag it from Finder onto the GitHub page." : {
+    "ja" : "レポート全文を添付するには、FinderからGitHubのページにドラッグしてください。"
+  },
+  "Today" : {
+    "ja" : "今日"
+  },
+  "Tools" : {
+    "ja" : "ツール"
+  },
+  "Try it right now — Capture Area is also in the menu bar." : {
+    "ja" : "今すぐ試してみましょう。“範囲を取り込む”はメニューバーからも使えます。"
+  },
+  "Type here…" : {
+    "ja" : "ここに入力…"
+  },
+  "Undo" : {
+    "ja" : "取り消す"
+  },
+  "Undo Timeline Edit" : {
+    "ja" : "タイムラインの編集を取り消す"
+  },
+  "Updates" : {
+    "ja" : "アップデート"
+  },
+  "Upload Custom Image" : {
+    "ja" : "カスタム画像を選択"
+  },
+  "Used for screenshots and recordings. Tokens: %y year, %m month, %d day, %H hour, %M minute, %S second. Leave empty to restore the default." : {
+    "ja" : "スクリーンショットと収録のファイル名に使用されます。トークン: %y（年）、%m（月）、%d（日）、%H（時）、%M（分）、%S（秒）。空欄にするとデフォルトに戻ります。"
+  },
+  "Utility" : {
+    "ja" : "ユーティリティ"
+  },
+  "Version" : {
+    "ja" : "バージョン"
+  },
+  "Version %@" : {
+    "ja" : "バージョン%@"
+  },
+  "Video" : {
+    "ja" : "ビデオ"
+  },
+  "Violet Bloom" : {
+    "ja" : "すみれの花"
+  },
+  "Website" : {
+    "ja" : "Webサイト"
+  },
+  "Welcome to Shotnix" : {
+    "ja" : "Shotnixへようこそ"
+  },
+  "What's New" : {
+    "ja" : "新機能"
+  },
+  "White" : {
+    "ja" : "ホワイト"
+  },
+  "Window" : {
+    "ja" : "ウインドウ"
+  },
+  "Window Capture" : {
+    "ja" : "ウインドウの取り込み"
+  },
+  "Window captures are isolated — nothing overlapping shows through. With this on they get transparent padding and a soft drop shadow." : {
+    "ja" : "ウインドウを取り込むと、そのウインドウだけが写り、重なっているものは写りません。オンにすると、透明な余白と柔らかいドロップシャドウが付きます。"
+  },
+  "Writable" : {
+    "ja" : "書き込み可能"
+  },
+  "Yellow" : {
+    "ja" : "イエロー"
+  },
+  "Yesterday" : {
+    "ja" : "昨日"
+  },
+  "You have unsaved edits in %lld screenshots." : {
+    "ja" : "%lld件のスクリーンショットに未保存の編集があります。"
+  },
+  "You're all set — Shotnix lives here" : {
+    "ja" : "準備完了です。Shotnixはここにあります"
+  },
+  "Your camera is recorded as its own layer: a live bubble shows while you record (it never appears in the screen capture), and the editor lets you move, resize, and restyle it — or hide it — afterwards." : {
+    "ja" : "カメラは独立したレイヤーとして収録されます。収録中はライブのワイプが表示され（画面の収録には写りません）、あとからエディタで移動、サイズ変更、スタイル変更、または非表示にできます。"
+  },
+  "Your edits will be lost if you close without saving or copying them." : {
+    "ja" : "保存またはコピーせずに閉じると、編集内容は失われます。"
+  },
+  "Zoom" : {
+    "ja" : "ズーム"
+  },
+  "macOS closed Shotnix last time because it ran out of memory" : {
+    "ja" : "前回、メモリが不足したためmacOSがShotnixを終了しました"
+  },
+  "macOS screenshot shortcuts (⌘⇧3, ⌘⇧4, ⌘⇧5) conflict with Shotnix.\n\nDisable them so Shotnix owns the capture shortcuts and screenshots do not double-trigger.\n\nYou can re-enable Apple's shortcuts anytime in System Settings → Keyboard → Keyboard Shortcuts → Screenshots." : {
+    "ja" : "macOSのスクリーンショット用ショートカット（⌘⇧3、⌘⇧4、⌘⇧5）がShotnixと競合しています。\n\nこれらを無効にすると、取り込みのショートカットをShotnixが使えるようになり、スクリーンショットが二重に撮られることもなくなります。\n\nAppleのショートカットは、“システム設定”＞“キーボード”＞“キーボードショートカット…”＞“スクリーンショット”でいつでも再度有効にできます。"
+  },
+  "© 2026 Shotnix Contributors" : {
+    "ja" : "© 2026 Shotnixのコントリビュータ"
+  },
+  "“%@” found in %lld of %lld captures" : {
+    "ja" : "%3$lld件中%2$lld件のスクリーンショットで“%1$@”が見つかりました"
+  },
+  "✓ Copied to clipboard" : {
+    "ja" : "✓ クリップボードにコピーしました"
+  }
+}

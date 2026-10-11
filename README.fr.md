@@ -14,7 +14,7 @@ Gratuit et open source. Une app native d’environ 11 Mo, et vos captures ne qu
 
 [Site web](https://shotnix.com/fr) · [Télécharger](https://github.com/OMARVII/Shotnix/releases/latest) · [Nouveautés (en anglais)](CHANGELOG.md) · [Feuille de route (en anglais)](ROADMAP.md)
 
-[English](README.md) · [Deutsch](README.de.md) · **Français** · [简体中文](README.zh-CN.md) · [Русский](README.ru.md) · [Українська](README.uk.md)
+[English](README.md) · [Deutsch](README.de.md) · **Français** · [简体中文](README.zh-CN.md) · [Русский](README.ru.md) · [Українська](README.uk.md) · [日本語](README.ja.md)
 
 <a href="https://shotnix.com/media/shotnix-editor-playback.mp4"><img src="assets/readme/hero.webp" width="100%" alt="L’éditeur vidéo de Shotnix lit une démo : l’aperçu est zoomé sur un clic, un sous-titre s’allume mot à mot, et la timeline en dessous contient les sous-titres, les zooms et les clips." /></a>
 
@@ -121,7 +121,7 @@ Gratuit et open source. Une app native d’environ 11 Mo, et vos captures ne qu
 
 ## Langues
 
-Shotnix parle **English, Deutsch, Français, 简体中文, Русский et Українська**, de la barre des menus à l’éditeur vidéo. Il suit la langue de votre Mac ; pour en choisir une autre rien que pour Shotnix, ouvrez ses Réglages → Général → Langue. Les traductions se trouvent dans [`Localization/`](Localization/), et les corrections de locuteurs natifs sont les bienvenues.
+Shotnix parle **English, Deutsch, Français, 简体中文, Русский, Українська et 日本語**, de la barre des menus à l’éditeur vidéo. Il suit la langue de votre Mac ; pour en choisir une autre rien que pour Shotnix, ouvrez ses Réglages → Général → Langue. Les traductions se trouvent dans [`Localization/`](Localization/), et les corrections de locuteurs natifs sont les bienvenues.
 
 ## Installation
 
@@ -235,7 +235,7 @@ L’app garde volontairement ses dépendances au strict minimum.
 - [x] Historique : durée de conservation, nettoyage et filtres par type
 - [x] Pause et reprise, suppression d’une prise et enregistrements à l’abri des plantages
 - [x] Éditeur vidéo : musique, images en surimpression, cartons de titre, transitions, projets à plusieurs enregistrements, styles et traduction des sous-titres
-- [x] Localisation : allemand, français, chinois simplifié, russe et ukrainien
+- [x] Localisation : allemand, français, chinois simplifié, russe, ukrainien et japonais
 
 ## Contribuer
 

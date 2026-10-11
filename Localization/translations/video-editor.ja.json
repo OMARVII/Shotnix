@@ -1,0 +1,2102 @@
+{
+  "%@ (This Mac)" : {
+    "ja" : "%@（このMac）"
+  },
+  "%@ (⇧⌘Z)" : {
+    "ja" : "%@（⇧⌘Z）"
+  },
+  "%@ (⌘Z)" : {
+    "ja" : "%@（⌘Z）"
+  },
+  "%@ Zoom" : {
+    "ja" : "%@ズーム"
+  },
+  "%@ long" : {
+    "ja" : "長さ%@"
+  },
+  "%@ of recording plays in %@." : {
+    "ja" : "収録の%@を%@で再生します。"
+  },
+  "%@ speed" : {
+    "ja" : "速度%@"
+  },
+  "%@ — %@" : {
+    "ja" : "%@（%@）"
+  },
+  "%lld annotations" : {
+    "ja" : "%lld個の注釈"
+  },
+  "%lld camera layouts" : {
+    "ja" : "%lld個のカメラのレイアウト"
+  },
+  "%lld captions" : {
+    "ja" : "%lld個の字幕"
+  },
+  "%lld clicks" : {
+    "ja" : "%lld回のクリック"
+  },
+  "%lld clips" : {
+    "ja" : "%lld個のクリップ"
+  },
+  "%lld cuts here (%@ removed) — click to restore some or all" : {
+    "ja" : "ここで%lld箇所をカット（計%@を削除）。クリックすると一部またはすべてを復元できます"
+  },
+  "%lld cuts, %@ removed" : {
+    "ja" : "%lld箇所のカット、計%@を削除"
+  },
+  "%lld parts" : {
+    "ja" : "%lld箇所"
+  },
+  "%lld pressed — select one on the timeline and press ⌫ to hide it" : {
+    "ja" : "%lld回押されています。タイムラインで1つ選択して⌫を押すと非表示にできます"
+  },
+  "%lld selected" : {
+    "ja" : "%lld項目を選択"
+  },
+  "%lld shortcuts" : {
+    "ja" : "%lld個のショートカット"
+  },
+  "%lld zooms" : {
+    "ja" : "%lld個のズーム"
+  },
+  "%lld%%" : {
+    "ja" : "%lld%%"
+  },
+  "%lld%% volume" : {
+    "ja" : "音量%lld%%"
+  },
+  ", " : {
+    "ja" : "、"
+  },
+  ", %@ to %@" : {
+    "ja" : "、%@から%@"
+  },
+  ", at %@" : {
+    "ja" : "、%@の時点"
+  },
+  "0.1s earlier" : {
+    "ja" : "0.1秒早く"
+  },
+  "0.1s later" : {
+    "ja" : "0.1秒遅く"
+  },
+  "A hairline that separates dark recordings from the background" : {
+    "ja" : "暗い映像と背景の境目に細い線を引きます"
+  },
+  "Add Arrow" : {
+    "ja" : "矢印を追加"
+  },
+  "Add Blur" : {
+    "ja" : "ぼかしを追加"
+  },
+  "Add Caption Line at Playhead" : {
+    "ja" : "再生ヘッドの位置に字幕の行を追加"
+  },
+  "Add Highlight" : {
+    "ja" : "ハイライトを追加"
+  },
+  "Add Spotlight (Dim Around a Spot)" : {
+    "ja" : "スポットライトを追加（周囲を暗くする）"
+  },
+  "Add Text" : {
+    "ja" : "テキストを追加"
+  },
+  "Add Zoom at Playhead" : {
+    "ja" : "再生ヘッドの位置にズームを追加"
+  },
+  "Add a caption at the playhead" : {
+    "ja" : "再生ヘッドの位置に字幕を追加"
+  },
+  "Add a zoom at the playhead (Z)" : {
+    "ja" : "再生ヘッドの位置にズームを追加（Z）"
+  },
+  "Add arrow at the playhead (A)" : {
+    "ja" : "再生ヘッドの位置に矢印を追加（A）"
+  },
+  "Add blur at the playhead (B)" : {
+    "ja" : "再生ヘッドの位置にぼかしを追加（B）"
+  },
+  "Add highlight at the playhead (H)" : {
+    "ja" : "再生ヘッドの位置にハイライトを追加（H）"
+  },
+  "Add image at the playhead" : {
+    "ja" : "再生ヘッドの位置に画像を追加"
+  },
+  "Add spotlight at the playhead" : {
+    "ja" : "再生ヘッドの位置にスポットライトを追加"
+  },
+  "Add text at the playhead (T)" : {
+    "ja" : "再生ヘッドの位置にテキストを追加（T）"
+  },
+  "Add zoom at playhead" : {
+    "ja" : "再生ヘッドの位置にズームを追加"
+  },
+  "Add “%@” at the playhead" : {
+    "ja" : "再生ヘッドの位置に“%@”を追加"
+  },
+  "Adjust to move it half a second" : {
+    "ja" : "調整すると0.5秒ずつ移動します"
+  },
+  "Aim by Hand" : {
+    "ja" : "手動で位置を指定"
+  },
+  "Aim by hand" : {
+    "ja" : "手動で位置を指定"
+  },
+  "All commands" : {
+    "ja" : "すべてのコマンド"
+  },
+  "All commands (⌘K)" : {
+    "ja" : "すべてのコマンド（⌘K）"
+  },
+  "Always show the arrow" : {
+    "ja" : "常に矢印を表示"
+  },
+  "Annotation" : {
+    "ja" : "注釈"
+  },
+  "Any color…" : {
+    "ja" : "その他のカラー…"
+  },
+  "Appearance" : {
+    "ja" : "外観"
+  },
+  "Apply to all zooms" : {
+    "ja" : "すべてのズームに適用"
+  },
+  "Arrow head" : {
+    "ja" : "矢印の先端"
+  },
+  "Arrow tail" : {
+    "ja" : "矢印の始点"
+  },
+  "Aspect Ratio %@ — %@" : {
+    "ja" : "アスペクト比%@（%@）"
+  },
+  "Aspect ratio" : {
+    "ja" : "アスペクト比"
+  },
+  "Audio" : {
+    "ja" : "オーディオ"
+  },
+  "Auto Zoom" : {
+    "ja" : "自動ズーム"
+  },
+  "Auto Zoom from Clicks" : {
+    "ja" : "クリックから自動ズーム"
+  },
+  "Back · pause · faster" : {
+    "ja" : "逆再生 · 一時停止 · 早送り"
+  },
+  "Background" : {
+    "ja" : "背景"
+  },
+  "Background blur" : {
+    "ja" : "背景のぼかし"
+  },
+  "Background, padding, corners, shadow" : {
+    "ja" : "背景、余白、角の丸み、シャドウ"
+  },
+  "Behavior" : {
+    "ja" : "動作"
+  },
+  "Behind you" : {
+    "ja" : "背後"
+  },
+  "Blur" : {
+    "ja" : "ぼかし"
+  },
+  "Blurs fast camera moves the way a real camera does." : {
+    "ja" : "本物のカメラのように、速いカメラの動きをぼかします。"
+  },
+  "Camera" : {
+    "ja" : "カメラ"
+  },
+  "Camera Side by Side at Playhead" : {
+    "ja" : "再生ヘッドの位置でカメラを横並びに"
+  },
+  "Camera bubble" : {
+    "ja" : "カメラのワイプ"
+  },
+  "Camera follows your cursor" : {
+    "ja" : "カメラがポインタに追従"
+  },
+  "Camera footage is missing" : {
+    "ja" : "カメラ映像が見つかりません"
+  },
+  "Camera layout" : {
+    "ja" : "カメラのレイアウト"
+  },
+  "Camera layout: %@" : {
+    "ja" : "カメラのレイアウト: %@"
+  },
+  "Camera layouts" : {
+    "ja" : "カメラのレイアウト"
+  },
+  "Camera layouts — drag to move, drag an edge to retime, click to change" : {
+    "ja" : "カメラのレイアウト: ドラッグで移動、端をドラッグで長さを変更、クリックで変更"
+  },
+  "Camera — drag to move it, click for options" : {
+    "ja" : "カメラ: ドラッグで移動、クリックでオプションを表示"
+  },
+  "Caption" : {
+    "ja" : "字幕"
+  },
+  "Caption “%@”" : {
+    "ja" : "字幕“%@”"
+  },
+  "Captions" : {
+    "ja" : "字幕"
+  },
+  "Captions from your narration — and cut the video by editing its words" : {
+    "ja" : "ナレーションから字幕を作成し、テキストを編集してビデオをカットできます"
+  },
+  "Captions tab" : {
+    "ja" : "“字幕”タブ"
+  },
+  "Center" : {
+    "ja" : "中央"
+  },
+  "Choose Image…" : {
+    "ja" : "画像を選択…"
+  },
+  "Cleaning up your voice…" : {
+    "ja" : "声を補正中…"
+  },
+  "Click" : {
+    "ja" : "クリック"
+  },
+  "Click a zoom" : {
+    "ja" : "ズームをクリック"
+  },
+  "Click it on the video" : {
+    "ja" : "ビデオ上でクリック"
+  },
+  "Click to add a zoom — or press Z at the playhead" : {
+    "ja" : "クリックしてズームを追加。再生ヘッドの位置でZキーを押しても追加できます"
+  },
+  "Clicks" : {
+    "ja" : "クリック"
+  },
+  "Clicks — drag one to retime it, ⌫ removes the selected one" : {
+    "ja" : "クリック: ドラッグでタイミングを変更、⌫で選択したクリックを削除"
+  },
+  "Clip" : {
+    "ja" : "クリップ"
+  },
+  "Clip %lld" : {
+    "ja" : "クリップ%lld"
+  },
+  "Clip starts / ends here" : {
+    "ja" : "ここをクリップの開始/終了位置に"
+  },
+  "Close" : {
+    "ja" : "閉じる"
+  },
+  "Close (Esc)" : {
+    "ja" : "閉じる（Esc）"
+  },
+  "Closing the editor stops it." : {
+    "ja" : "エディタを閉じると停止します。"
+  },
+  "Color" : {
+    "ja" : "カラー"
+  },
+  "Commands" : {
+    "ja" : "コマンド"
+  },
+  "Computer sound" : {
+    "ja" : "システムオーディオ"
+  },
+  "Copy Current Frame" : {
+    "ja" : "現在のフレームをコピー"
+  },
+  "Copy current frame" : {
+    "ja" : "現在のフレームをコピー"
+  },
+  "Couldn't open this video" : {
+    "ja" : "このビデオを開けませんでした"
+  },
+  "Crop" : {
+    "ja" : "切り取り"
+  },
+  "Crop the Recording…" : {
+    "ja" : "収録を切り取る…"
+  },
+  "Crop the recording — trim away toolbars or empty space" : {
+    "ja" : "収録を切り取って、ツールバーや余白を取り除きます"
+  },
+  "Cropped" : {
+    "ja" : "切り取り済み"
+  },
+  "Cropped — cursor, zooms, and clicks follow" : {
+    "ja" : "切り取りました。ポインタ、ズーム、クリックも合わせて調整されます"
+  },
+  "Cursor" : {
+    "ja" : "ポインタ"
+  },
+  "Cursor, clicks, and keyboard shortcuts" : {
+    "ja" : "ポインタ、クリック、キーボードショートカット"
+  },
+  "Custom" : {
+    "ja" : "カスタム"
+  },
+  "Custom color" : {
+    "ja" : "カスタムカラー"
+  },
+  "Cut filler words like um and uh" : {
+    "ja" : "えー、あのーなどのフィラーをカット"
+  },
+  "Cut from Video" : {
+    "ja" : "ビデオからカット"
+  },
+  "Cut this part" : {
+    "ja" : "この部分をカット"
+  },
+  "Delete (⌫)" : {
+    "ja" : "削除（⌫）"
+  },
+  "Delete Clip" : {
+    "ja" : "クリップを削除"
+  },
+  "Delete Zoom" : {
+    "ja" : "ズームを削除"
+  },
+  "Delete selection" : {
+    "ja" : "選択項目を削除"
+  },
+  "Delete selection (⌫)" : {
+    "ja" : "選択項目を削除（⌫）"
+  },
+  "Deselect / close" : {
+    "ja" : "選択解除/閉じる"
+  },
+  "Dismiss" : {
+    "ja" : "閉じる"
+  },
+  "Dismiss tips" : {
+    "ja" : "ヒントを閉じる"
+  },
+  "Done" : {
+    "ja" : "完了"
+  },
+  "Done (Esc)" : {
+    "ja" : "完了（Esc）"
+  },
+  "Double-click" : {
+    "ja" : "ダブルクリック"
+  },
+  "Double-click text" : {
+    "ja" : "テキストをダブルクリック"
+  },
+  "Double-click to show the recording in Finder" : {
+    "ja" : "ダブルクリックで収録をFinderに表示"
+  },
+  "Drag it on the preview to move it; drag a corner to resize. Its bar on the timeline sets when it shows." : {
+    "ja" : "プレビュー上でドラッグすると移動、角をドラッグするとサイズを変更できます。表示するタイミングはタイムライン上のバーで設定します。"
+  },
+  "Drag it on the preview to move it; drag a corner to resize; double-click it to type. Its bar on the timeline sets when it shows." : {
+    "ja" : "プレビュー上でドラッグすると移動、角をドラッグするとサイズ変更、ダブルクリックすると入力ができます。表示するタイミングはタイムライン上のバーで設定します。"
+  },
+  "Drag one of them on the timeline to move them all together; ⌫ removes them all. ⇧- or ⌘-click adds or takes one out." : {
+    "ja" : "タイムライン上でどれか1つをドラッグすると、すべてまとめて移動します。⌫を押すとすべて削除されます。⇧クリックまたは⌘クリックで1つずつ追加・除外できます。"
+  },
+  "Drag the arrow on the preview to move it; drag its head or tail to point it anywhere. Its bar on the timeline sets when it shows." : {
+    "ja" : "プレビュー上で矢印をドラッグすると移動、先端や始点をドラッグすると好きな方向に向けられます。表示するタイミングはタイムライン上のバーで設定します。"
+  },
+  "Drag the block on the Camera lane to move it, or its edges to change how long it lasts. Each change eases in and out." : {
+    "ja" : "“カメラ”トラックのブロックをドラッグすると移動、端をドラッグすると長さを変更できます。切り替わりはそれぞれ滑らかに行われます。"
+  },
+  "Drag the box on the preview over anything private. Blur follows zooms and stays until its bar ends." : {
+    "ja" : "プレビュー上で、見られたくない部分に枠をドラッグして重ねます。ぼかしはズームに追従し、バーの終わりまで表示されます。"
+  },
+  "Drag the frame on the preview to aim; drag its corners to zoom in or out." : {
+    "ja" : "プレビュー上で枠をドラッグして位置を指定し、角をドラッグしてズームイン/ズームアウトします。"
+  },
+  "Drag the spot on the preview; drag a corner to resize it. Everything around it dims while its bar on the timeline runs." : {
+    "ja" : "プレビュー上でスポットをドラッグし、角をドラッグしてサイズを変更します。タイムライン上のバーの間は、その周囲がすべて暗くなります。"
+  },
+  "Drag to change where this clip ends" : {
+    "ja" : "ドラッグしてこのクリップの終了位置を変更"
+  },
+  "Drag to change where this clip starts" : {
+    "ja" : "ドラッグしてこのクリップの開始位置を変更"
+  },
+  "Drag to move this clip to another place in the video" : {
+    "ja" : "ドラッグしてこのクリップをビデオ内の別の位置に移動"
+  },
+  "Drag to move where the arrow starts" : {
+    "ja" : "ドラッグして矢印の始点を移動"
+  },
+  "Drag to point the arrow" : {
+    "ja" : "ドラッグして矢印の向きを変更"
+  },
+  "Duplicate" : {
+    "ja" : "複製"
+  },
+  "Duplicate zoom or annotation" : {
+    "ja" : "ズームまたは注釈を複製"
+  },
+  "Edge highlight" : {
+    "ja" : "縁取り"
+  },
+  "Edit by text" : {
+    "ja" : "テキストで編集"
+  },
+  "Editing" : {
+    "ja" : "編集"
+  },
+  "End here" : {
+    "ja" : "ここで終了"
+  },
+  "Ends" : {
+    "ja" : "終了"
+  },
+  "Enhance Voice" : {
+    "ja" : "声を補正"
+  },
+  "Enhance voice" : {
+    "ja" : "声を補正"
+  },
+  "Esc" : {
+    "ja" : "Esc"
+  },
+  "Even out loudness" : {
+    "ja" : "音量を均一化"
+  },
+  "Exactly as recorded." : {
+    "ja" : "収録したままの動きです。"
+  },
+  "Export" : {
+    "ja" : "書き出す"
+  },
+  "Export (⌘E)" : {
+    "ja" : "書き出す（⌘E）"
+  },
+  "Export Video…" : {
+    "ja" : "ビデオを書き出す…"
+  },
+  "Exports at the level video sites expect (−16 LUFS) without clipping" : {
+    "ja" : "動画サイトが想定するレベル（−16 LUFS）で、音割れせずに書き出します"
+  },
+  "Exports without sound — to quiet just the preview, press M" : {
+    "ja" : "サウンドなしで書き出します。プレビューだけを消音するにはMキーを押します"
+  },
+  "Export…" : {
+    "ja" : "書き出す…"
+  },
+  "Extra-fluid curves for slow, cinematic demos." : {
+    "ja" : "映画のようにゆっくり見せるデモ向けの、より滑らかなカーブです。"
+  },
+  "Fade in" : {
+    "ja" : "フェードイン"
+  },
+  "Fade out" : {
+    "ja" : "フェードアウト"
+  },
+  "Fades out after a moment without movement" : {
+    "ja" : "しばらく動かないとフェードアウトします"
+  },
+  "Fast-forward moments where nothing happens" : {
+    "ja" : "動きのない区間を早送り"
+  },
+  "Fill the Frame, Follow the Cursor" : {
+    "ja" : "画面いっぱいに表示してポインタに追従"
+  },
+  "Find in Transcript" : {
+    "ja" : "文字起こし内を検索"
+  },
+  "Find in the transcript" : {
+    "ja" : "文字起こし内を検索"
+  },
+  "Flip like a selfie" : {
+    "ja" : "自撮りと同じ向きにします"
+  },
+  "Follow Cursor" : {
+    "ja" : "ポインタに追従"
+  },
+  "Follow cursor" : {
+    "ja" : "ポインタに追従"
+  },
+  "Follows cursor" : {
+    "ja" : "ポインタに追従"
+  },
+  "Frame" : {
+    "ja" : "枠"
+  },
+  "Framing" : {
+    "ja" : "フレーミング"
+  },
+  "Free" : {
+    "ja" : "自由形式"
+  },
+  "From your Mac" : {
+    "ja" : "このMacから"
+  },
+  "Full Camera at Playhead" : {
+    "ja" : "再生ヘッドの位置でカメラを全面に"
+  },
+  "Full Frame (No Background)" : {
+    "ja" : "全面表示（背景なし）"
+  },
+  "Full camera for intro & outro" : {
+    "ja" : "オープニングとエンディングをカメラ全面に"
+  },
+  "Full frame (no background)" : {
+    "ja" : "全面表示（背景なし）"
+  },
+  "Full-Camera Intro and Outro" : {
+    "ja" : "オープニングとエンディングをカメラ全面に"
+  },
+  "General" : {
+    "ja" : "一般"
+  },
+  "Gets out of the way during zoom moves" : {
+    "ja" : "ズーム中は邪魔にならないようにします"
+  },
+  "Glides without lagging behind — clicks still land exactly." : {
+    "ja" : "遅れずに滑らかに動き、クリック位置も正確なままです。"
+  },
+  "Go to End" : {
+    "ja" : "最後に移動"
+  },
+  "Go to Start" : {
+    "ja" : "最初に移動"
+  },
+  "Gradient" : {
+    "ja" : "グラデーション"
+  },
+  "Hide" : {
+    "ja" : "非表示にする"
+  },
+  "Hide the move to Stop" : {
+    "ja" : "“停止”への移動を非表示"
+  },
+  "Hide tips (bring them back from ⌘K or the shortcuts list)" : {
+    "ja" : "ヒントを非表示（⌘Kまたはショートカット一覧から再表示できます）"
+  },
+  "Hide when idle" : {
+    "ja" : "静止中は非表示"
+  },
+  "Highlight words" : {
+    "ja" : "単語をハイライト"
+  },
+  "Home  End" : {
+    "ja" : "Home  End"
+  },
+  "Hover the Zoom track" : {
+    "ja" : "ズームトラックをクリック"
+  },
+  "Hover the zoom track and click to add a zoom, or press Z at the playhead. Drag a zoom to move it; drag its edges to change how long it lasts." : {
+    "ja" : "ズームトラックにポインタを置いてクリックするか、再生ヘッドの位置でZキーを押すとズームを追加できます。ズームをドラッグすると移動、端をドラッグすると長さを変更できます。"
+  },
+  "Image" : {
+    "ja" : "画像"
+  },
+  "Inspector tabs" : {
+    "ja" : "インスペクタのタブ"
+  },
+  "Intro" : {
+    "ja" : "オープニング"
+  },
+  "Intro card — click to edit it in Style" : {
+    "ja" : "オープニングカード: クリックして“スタイル”で編集"
+  },
+  "Intro card “%@”, %@ to %@" : {
+    "ja" : "オープニングカード“%@”、%@から%@"
+  },
+  "Intro card, %@ to %@" : {
+    "ja" : "オープニングカード、%@から%@"
+  },
+  "It was recorded into the pixels, so it can't be resized or smoothed. New recordings capture an editable cursor by default (Settings → Recording)." : {
+    "ja" : "ポインタが映像に焼き込まれているため、サイズの変更や滑らかにする処理はできません。新しい収録では、デフォルトで編集可能なポインタが記録されます（“設定”＞“収録”）。"
+  },
+  "Jump here" : {
+    "ja" : "ここに移動"
+  },
+  "Jump one second" : {
+    "ja" : "1秒移動"
+  },
+  "Keep Editing" : {
+    "ja" : "編集を続ける"
+  },
+  "Keep editing — the words appear here when Shotnix is done listening." : {
+    "ja" : "編集を続けられます。Shotnixが聞き取りを終えると、ここにテキストが表示されます。"
+  },
+  "Keyboard Shortcuts" : {
+    "ja" : "キーボードショートカット"
+  },
+  "Keyboard shortcuts" : {
+    "ja" : "キーボードショートカット"
+  },
+  "Keyboard shortcuts (?)" : {
+    "ja" : "キーボードショートカット（?）"
+  },
+  "Keyboard shortcuts — click one to select it, ⌫ hides it" : {
+    "ja" : "キーボードショートカット: クリックで選択、⌫で非表示"
+  },
+  "Keys on screen" : {
+    "ja" : "キー表示"
+  },
+  "Language" : {
+    "ja" : "言語"
+  },
+  "Layout" : {
+    "ja" : "レイアウト"
+  },
+  "Layouts" : {
+    "ja" : "レイアウト"
+  },
+  "Letterbox Instead of Following the Cursor" : {
+    "ja" : "ポインタに追従せずレターボックスで表示"
+  },
+  "Level" : {
+    "ja" : "倍率"
+  },
+  "Lines · %lld" : {
+    "ja" : "字幕の行 · %lld"
+  },
+  "Listens on this Mac — nothing is uploaded" : {
+    "ja" : "このMac上で聞き取ります。何もアップロードされません"
+  },
+  "Look" : {
+    "ja" : "スタイル"
+  },
+  "Mirror" : {
+    "ja" : "左右反転"
+  },
+  "More" : {
+    "ja" : "その他"
+  },
+  "More caption options" : {
+    "ja" : "その他の字幕オプション"
+  },
+  "More tips" : {
+    "ja" : "次のヒント"
+  },
+  "Motion" : {
+    "ja" : "モーション"
+  },
+  "Motion blur" : {
+    "ja" : "モーションブラー"
+  },
+  "Move Earlier" : {
+    "ja" : "前に移動"
+  },
+  "Move Later" : {
+    "ja" : "後ろに移動"
+  },
+  "Move earlier" : {
+    "ja" : "前に移動"
+  },
+  "Move later" : {
+    "ja" : "後ろに移動"
+  },
+  "Movement" : {
+    "ja" : "動き"
+  },
+  "Music “%@”" : {
+    "ja" : "音楽“%@”"
+  },
+  "Mute Clip" : {
+    "ja" : "クリップを消音"
+  },
+  "Mute preview" : {
+    "ja" : "プレビューを消音"
+  },
+  "Mute the Preview (the Export Keeps Its Sound)" : {
+    "ja" : "プレビューを消音（書き出したビデオにはサウンドが残ります）"
+  },
+  "Mute the preview (M) — the export keeps its sound" : {
+    "ja" : "プレビューを消音（M）。書き出したビデオにはサウンドが残ります"
+  },
+  "Mute the preview (or the selected clip)" : {
+    "ja" : "プレビュー（または選択したクリップ）を消音"
+  },
+  "Mute this clip" : {
+    "ja" : "このクリップを消音"
+  },
+  "Mute this part" : {
+    "ja" : "この部分を消音"
+  },
+  "Mute video" : {
+    "ja" : "ビデオを消音"
+  },
+  "Never switch to the text beam or the hand" : {
+    "ja" : "Iビームや手の形のポインタに切り替えません"
+  },
+  "New recordings use this look" : {
+    "ja" : "新しい収録にはこのスタイルが使われます"
+  },
+  "New zooms" : {
+    "ja" : "新しいズーム"
+  },
+  "No Exports Yet" : {
+    "ja" : "書き出しはまだありません"
+  },
+  "No background" : {
+    "ja" : "背景なし"
+  },
+  "No background — text only" : {
+    "ja" : "背景なし（テキストのみ）"
+  },
+  "No camera in this recording" : {
+    "ja" : "この収録にはカメラ映像がありません"
+  },
+  "No clicks were recorded, so add zooms by hand: hover the zoom track and click." : {
+    "ja" : "クリックが記録されていないため、ズームは手動で追加してください。ズームトラックにポインタを置いてクリックします。"
+  },
+  "No cursor data in this video" : {
+    "ja" : "このビデオにはポインタのデータがありません"
+  },
+  "No music" : {
+    "ja" : "音楽なし"
+  },
+  "No pauses to shorten" : {
+    "ja" : "短縮できる無音部分はありません"
+  },
+  "No ums" : {
+    "ja" : "フィラーなし"
+  },
+  "None in this recording. Turn on “Show keyboard shortcuts” in Settings → Recording and every ⌘ shortcut you press appears as keycaps. Plain typing is never recorded." : {
+    "ja" : "この収録にはありません。“設定”＞“収録”で“キーボードショートカットを表示”をオンにすると、押した⌘ショートカットがすべてキーキャップで表示されます。通常の文字入力が記録されることはありません。"
+  },
+  "Not for this video" : {
+    "ja" : "このビデオでは使用しない"
+  },
+  "Open Another Video…" : {
+    "ja" : "別のビデオを開く…"
+  },
+  "Open Privacy Settings" : {
+    "ja" : "“プライバシーとセキュリティ”を開く"
+  },
+  "Open Recording Settings…" : {
+    "ja" : "収録設定を開く…"
+  },
+  "Opens its title and length in Style" : {
+    "ja" : "“スタイル”にタイトルと長さの設定を表示します"
+  },
+  "Or drag the bubble on the video — it snaps to the nearest spot." : {
+    "ja" : "またはビデオ上でワイプをドラッグします。いちばん近い位置にスナップします。"
+  },
+  "Or type one at the playhead" : {
+    "ja" : "または再生ヘッドの位置に手動で入力"
+  },
+  "Outro" : {
+    "ja" : "エンディング"
+  },
+  "Outro card — click to edit it in Style" : {
+    "ja" : "エンディングカード: クリックして“スタイル”で編集"
+  },
+  "Outro card “%@”, %@ to %@" : {
+    "ja" : "エンディングカード“%@”、%@から%@"
+  },
+  "Outro card, %@ to %@" : {
+    "ja" : "エンディングカード、%@から%@"
+  },
+  "Padding" : {
+    "ja" : "余白"
+  },
+  "Pause" : {
+    "ja" : "一時停止"
+  },
+  "Pause (Space)" : {
+    "ja" : "一時停止（スペース）"
+  },
+  "Placement" : {
+    "ja" : "配置"
+  },
+  "Plan zooms from your clicks — keeps zooms you placed by hand" : {
+    "ja" : "クリックに合わせてズームを配置します。手動で配置したズームは残ります"
+  },
+  "Plans zooms around your %lld clicks. Zooms you placed by hand are kept." : {
+    "ja" : "%lld回のクリックに合わせてズームを配置します。手動で配置したズームは残ります。"
+  },
+  "Play" : {
+    "ja" : "再生"
+  },
+  "Play (Space)" : {
+    "ja" : "再生（スペース）"
+  },
+  "Play / pause" : {
+    "ja" : "再生/一時停止"
+  },
+  "Play from Here" : {
+    "ja" : "ここから再生"
+  },
+  "Playback" : {
+    "ja" : "再生"
+  },
+  "Plays or pauses. Use Option-arrow keys to select what's on the timeline." : {
+    "ja" : "再生または一時停止します。Optionキーと矢印キーで、タイムライン上の項目を選択できます。"
+  },
+  "Position" : {
+    "ja" : "位置"
+  },
+  "Preparing your video…" : {
+    "ja" : "ビデオを準備中…"
+  },
+  "Pressed at %@. Press ⌫ to hide it from the video — handy for a stray ⌘Tab." : {
+    "ja" : "%@に押されました。⌫を押すとビデオで非表示になります。誤って押した⌘Tabなどを隠すのに便利です。"
+  },
+  "Previous / next frame" : {
+    "ja" : "前/次のフレーム"
+  },
+  "Recent Exports" : {
+    "ja" : "最近の書き出し"
+  },
+  "Recorded at %@. Drag its dot on the timeline to retime it; ripples and Auto Zoom follow." : {
+    "ja" : "%@に記録されました。タイムライン上の点をドラッグするとタイミングを変更でき、波紋と自動ズームも合わせて移動します。"
+  },
+  "Recordings made with Shotnix capture the pointer so it can be smoothed, resized, and hidden." : {
+    "ja" : "Shotnixで収録したビデオではポインタが別に記録されるため、滑らかにしたり、サイズを変えたり、非表示にしたりできます。"
+  },
+  "Redo" : {
+    "ja" : "やり直す"
+  },
+  "Redo Add Arrow" : {
+    "ja" : "矢印の追加をやり直す"
+  },
+  "Redo Add Blur" : {
+    "ja" : "ぼかしの追加をやり直す"
+  },
+  "Redo Add Camera Layout" : {
+    "ja" : "カメラのレイアウトの追加をやり直す"
+  },
+  "Redo Add Camera Layouts" : {
+    "ja" : "カメラのレイアウトの追加をやり直す"
+  },
+  "Redo Add Caption" : {
+    "ja" : "字幕の追加をやり直す"
+  },
+  "Redo Add Captions" : {
+    "ja" : "字幕の追加をやり直す"
+  },
+  "Redo Add Click" : {
+    "ja" : "クリックの追加をやり直す"
+  },
+  "Redo Add Clicks" : {
+    "ja" : "クリックの追加をやり直す"
+  },
+  "Redo Add Highlight" : {
+    "ja" : "ハイライトの追加をやり直す"
+  },
+  "Redo Add Image" : {
+    "ja" : "画像の追加をやり直す"
+  },
+  "Redo Add Intro Card" : {
+    "ja" : "オープニングカードの追加をやり直す"
+  },
+  "Redo Add Music" : {
+    "ja" : "音楽の追加をやり直す"
+  },
+  "Redo Add Outro Card" : {
+    "ja" : "エンディングカードの追加をやり直す"
+  },
+  "Redo Add Recording" : {
+    "ja" : "収録の追加をやり直す"
+  },
+  "Redo Add Spotlight" : {
+    "ja" : "スポットライトの追加をやり直す"
+  },
+  "Redo Add Text" : {
+    "ja" : "テキストの追加をやり直す"
+  },
+  "Redo Add Zoom" : {
+    "ja" : "ズームの追加をやり直す"
+  },
+  "Redo Add Zooms" : {
+    "ja" : "ズームの追加をやり直す"
+  },
+  "Redo Annotation Change" : {
+    "ja" : "注釈の変更をやり直す"
+  },
+  "Redo Annotations" : {
+    "ja" : "注釈の変更をやり直す"
+  },
+  "Redo Arrow Style" : {
+    "ja" : "矢印のスタイル変更をやり直す"
+  },
+  "Redo Aspect Ratio" : {
+    "ja" : "アスペクト比の変更をやり直す"
+  },
+  "Redo Auto Zoom" : {
+    "ja" : "自動ズームの適用をやり直す"
+  },
+  "Redo Background" : {
+    "ja" : "背景の変更をやり直す"
+  },
+  "Redo Blur Style" : {
+    "ja" : "ぼかしのスタイル変更をやり直す"
+  },
+  "Redo Camera Change" : {
+    "ja" : "カメラの変更をやり直す"
+  },
+  "Redo Camera Layout Change" : {
+    "ja" : "カメラのレイアウトの変更をやり直す"
+  },
+  "Redo Camera Layouts" : {
+    "ja" : "カメラのレイアウトの変更をやり直す"
+  },
+  "Redo Caption Style" : {
+    "ja" : "字幕のスタイル変更をやり直す"
+  },
+  "Redo Caption Translation" : {
+    "ja" : "字幕の翻訳をやり直す"
+  },
+  "Redo Captions" : {
+    "ja" : "字幕の変更をやり直す"
+  },
+  "Redo Click Sounds" : {
+    "ja" : "クリック音の変更をやり直す"
+  },
+  "Redo Clicks" : {
+    "ja" : "クリックの変更をやり直す"
+  },
+  "Redo Crop" : {
+    "ja" : "切り取りをやり直す"
+  },
+  "Redo Cursor Change" : {
+    "ja" : "ポインタの変更をやり直す"
+  },
+  "Redo Cut" : {
+    "ja" : "カットをやり直す"
+  },
+  "Redo Cut Word" : {
+    "ja" : "単語のカットをやり直す"
+  },
+  "Redo Cut Words" : {
+    "ja" : "単語のカットをやり直す"
+  },
+  "Redo Delete %lld Items" : {
+    "ja" : "%lld項目の削除をやり直す"
+  },
+  "Redo Delete Annotations" : {
+    "ja" : "注釈の削除をやり直す"
+  },
+  "Redo Delete Arrow" : {
+    "ja" : "矢印の削除をやり直す"
+  },
+  "Redo Delete Blur" : {
+    "ja" : "ぼかしの削除をやり直す"
+  },
+  "Redo Delete Camera Layout" : {
+    "ja" : "カメラのレイアウトの削除をやり直す"
+  },
+  "Redo Delete Camera Layouts" : {
+    "ja" : "カメラのレイアウトの削除をやり直す"
+  },
+  "Redo Delete Caption" : {
+    "ja" : "字幕の削除をやり直す"
+  },
+  "Redo Delete Captions" : {
+    "ja" : "字幕の削除をやり直す"
+  },
+  "Redo Delete Click" : {
+    "ja" : "クリックの削除をやり直す"
+  },
+  "Redo Delete Clicks" : {
+    "ja" : "クリックの削除をやり直す"
+  },
+  "Redo Delete Clip" : {
+    "ja" : "クリップの削除をやり直す"
+  },
+  "Redo Delete Clips" : {
+    "ja" : "クリップの削除をやり直す"
+  },
+  "Redo Delete Highlight" : {
+    "ja" : "ハイライトの削除をやり直す"
+  },
+  "Redo Delete Image" : {
+    "ja" : "画像の削除をやり直す"
+  },
+  "Redo Delete Spotlight" : {
+    "ja" : "スポットライトの削除をやり直す"
+  },
+  "Redo Delete Text" : {
+    "ja" : "テキストの削除をやり直す"
+  },
+  "Redo Delete Zoom" : {
+    "ja" : "ズームの削除をやり直す"
+  },
+  "Redo Delete Zooms" : {
+    "ja" : "ズームの削除をやり直す"
+  },
+  "Redo Edit Caption" : {
+    "ja" : "字幕の編集をやり直す"
+  },
+  "Redo Edit Text" : {
+    "ja" : "テキストの編集をやり直す"
+  },
+  "Redo Enhance Voice" : {
+    "ja" : "声の補正をやり直す"
+  },
+  "Redo Fade" : {
+    "ja" : "フェードの変更をやり直す"
+  },
+  "Redo Hide Shortcut" : {
+    "ja" : "ショートカットの非表示をやり直す"
+  },
+  "Redo Highlight Style" : {
+    "ja" : "ハイライトのスタイル変更をやり直す"
+  },
+  "Redo Image Style" : {
+    "ja" : "画像のスタイル変更をやり直す"
+  },
+  "Redo Intro and Outro" : {
+    "ja" : "カメラ全面のオープニングとエンディングをやり直す"
+  },
+  "Redo Move %lld Items" : {
+    "ja" : "%lld項目の移動をやり直す"
+  },
+  "Redo Move Arrow" : {
+    "ja" : "矢印の移動をやり直す"
+  },
+  "Redo Move Blur" : {
+    "ja" : "ぼかしの移動をやり直す"
+  },
+  "Redo Move Click" : {
+    "ja" : "クリックの移動をやり直す"
+  },
+  "Redo Move Clip" : {
+    "ja" : "クリップの移動をやり直す"
+  },
+  "Redo Move Highlight" : {
+    "ja" : "ハイライトの移動をやり直す"
+  },
+  "Redo Move Image" : {
+    "ja" : "画像の移動をやり直す"
+  },
+  "Redo Move Recording" : {
+    "ja" : "収録の移動をやり直す"
+  },
+  "Redo Move Spotlight" : {
+    "ja" : "スポットライトの移動をやり直す"
+  },
+  "Redo Move Text" : {
+    "ja" : "テキストの移動をやり直す"
+  },
+  "Redo Music Change" : {
+    "ja" : "音楽の変更をやり直す"
+  },
+  "Redo Mute Clip" : {
+    "ja" : "クリップの消音をやり直す"
+  },
+  "Redo Mute Part" : {
+    "ja" : "部分の消音をやり直す"
+  },
+  "Redo Mute Video" : {
+    "ja" : "ビデオの消音をやり直す"
+  },
+  "Redo Remove All Zooms" : {
+    "ja" : "すべてのズームの削除をやり直す"
+  },
+  "Redo Remove Captions" : {
+    "ja" : "字幕の削除をやり直す"
+  },
+  "Redo Remove Intro Card" : {
+    "ja" : "オープニングカードの削除をやり直す"
+  },
+  "Redo Remove Music" : {
+    "ja" : "音楽の削除をやり直す"
+  },
+  "Redo Remove Outro Card" : {
+    "ja" : "エンディングカードの削除をやり直す"
+  },
+  "Redo Remove Recording" : {
+    "ja" : "収録の削除をやり直す"
+  },
+  "Redo Remove Ums" : {
+    "ja" : "フィラーの削除をやり直す"
+  },
+  "Redo Replace Music" : {
+    "ja" : "音楽の置き換えをやり直す"
+  },
+  "Redo Reset Look" : {
+    "ja" : "スタイルのリセットをやり直す"
+  },
+  "Redo Restore" : {
+    "ja" : "復元をやり直す"
+  },
+  "Redo Restore Cut" : {
+    "ja" : "カットの復元をやり直す"
+  },
+  "Redo Restore Cuts" : {
+    "ja" : "カットの復元をやり直す"
+  },
+  "Redo Restore Pause" : {
+    "ja" : "無音部分の復元をやり直す"
+  },
+  "Redo Restore Word" : {
+    "ja" : "単語の復元をやり直す"
+  },
+  "Redo Restore Words" : {
+    "ja" : "単語の復元をやり直す"
+  },
+  "Redo Shortcut Style" : {
+    "ja" : "ショートカットのスタイル変更をやり直す"
+  },
+  "Redo Shortcuts" : {
+    "ja" : "ショートカットの変更をやり直す"
+  },
+  "Redo Shorten Pause" : {
+    "ja" : "無音部分の短縮をやり直す"
+  },
+  "Redo Shorten Pauses" : {
+    "ja" : "無音部分の短縮をやり直す"
+  },
+  "Redo Sound Change" : {
+    "ja" : "サウンドの変更をやり直す"
+  },
+  "Redo Speed Change" : {
+    "ja" : "速度の変更をやり直す"
+  },
+  "Redo Speed Up Idle" : {
+    "ja" : "動きのない区間の早送りをやり直す"
+  },
+  "Redo Split" : {
+    "ja" : "分割をやり直す"
+  },
+  "Redo Spotlight Style" : {
+    "ja" : "スポットライトのスタイル変更をやり直す"
+  },
+  "Redo Start Over" : {
+    "ja" : "元の収録への復元をやり直す"
+  },
+  "Redo Style Change" : {
+    "ja" : "スタイルの変更をやり直す"
+  },
+  "Redo Text Style" : {
+    "ja" : "テキストのスタイル変更をやり直す"
+  },
+  "Redo Title Card" : {
+    "ja" : "タイトルカードの変更をやり直す"
+  },
+  "Redo Transcribe" : {
+    "ja" : "文字起こしをやり直す"
+  },
+  "Redo Transitions" : {
+    "ja" : "トランジションの変更をやり直す"
+  },
+  "Redo Trim" : {
+    "ja" : "トリミングをやり直す"
+  },
+  "Redo Unmute Clip" : {
+    "ja" : "クリップの消音解除をやり直す"
+  },
+  "Redo Unmute Part" : {
+    "ja" : "部分の消音解除をやり直す"
+  },
+  "Redo Unmute Video" : {
+    "ja" : "ビデオの消音解除をやり直す"
+  },
+  "Redo Zoom Change" : {
+    "ja" : "ズームの変更をやり直す"
+  },
+  "Redo Zoom Level for All" : {
+    "ja" : "ズーム倍率の一括変更をやり直す"
+  },
+  "Redo Zooms" : {
+    "ja" : "ズームの変更をやり直す"
+  },
+  "Remove %lld ums" : {
+    "ja" : "%lld個のフィラーを削除"
+  },
+  "Remove All Zooms" : {
+    "ja" : "すべてのズームを削除"
+  },
+  "Remove Intro Card" : {
+    "ja" : "オープニングカードを削除"
+  },
+  "Remove Outro Card" : {
+    "ja" : "エンディングカードを削除"
+  },
+  "Remove Transcript & Captions" : {
+    "ja" : "文字起こしと字幕を削除"
+  },
+  "Remove Ums" : {
+    "ja" : "フィラーを削除"
+  },
+  "Remove all %lld" : {
+    "ja" : "%lld項目をすべて削除"
+  },
+  "Remove all zooms" : {
+    "ja" : "すべてのズームを削除"
+  },
+  "Remove caption" : {
+    "ja" : "字幕を削除"
+  },
+  "Remove this caption" : {
+    "ja" : "この字幕を削除"
+  },
+  "Removed %@ — click to restore" : {
+    "ja" : "%@を削除。クリックすると復元できます"
+  },
+  "Removed %lld items — ⌘Z to undo" : {
+    "ja" : "%lld項目を削除しました。⌘Zで取り消せます"
+  },
+  "Removed %lld items — ⌘Z to undo (a video keeps at least one clip)" : {
+    "ja" : "%lld項目を削除しました。⌘Zで取り消せます（ビデオにはクリップが少なくとも1つ必要です）"
+  },
+  "Removed parts can be restored from the yellow marker on the timeline." : {
+    "ja" : "削除した部分は、タイムライン上の黄色いマーカーから復元できます。"
+  },
+  "Removes background noise and hum, and evens out your level — processed on this Mac" : {
+    "ja" : "背景ノイズやハムノイズを除去し、音量を均一にします。処理はこのMac上で行われます"
+  },
+  "Removes jitter, keeps it snappy." : {
+    "ja" : "ぶれを取り除き、きびきびとした動きを保ちます。"
+  },
+  "Reset" : {
+    "ja" : "リセット"
+  },
+  "Reset %@" : {
+    "ja" : "%@をリセット"
+  },
+  "Reset to the Shotnix Look" : {
+    "ja" : "Shotnixの標準スタイルに戻す"
+  },
+  "Reset to the Shotnix look" : {
+    "ja" : "Shotnixの標準スタイルに戻す"
+  },
+  "Restore" : {
+    "ja" : "復元"
+  },
+  "Restore %@ at %@" : {
+    "ja" : "%2$@の%1$@を復元"
+  },
+  "Restore %@ cut at %@" : {
+    "ja" : "%2$@のカット（%1$@）を復元"
+  },
+  "Restore All %lld" : {
+    "ja" : "%lld箇所すべてを復元"
+  },
+  "Roundness" : {
+    "ja" : "角の丸み"
+  },
+  "Save Subtitles (.srt)…" : {
+    "ja" : "字幕を保存（.srt）…"
+  },
+  "Saves %@ — only silences where nothing happens on screen" : {
+    "ja" : "%@短縮。画面上で何も起きていない無音部分だけが対象です"
+  },
+  "Saves %@ — silences where the pointer rests and nothing is clicked or pressed (this older recording can't see typing)" : {
+    "ja" : "%@短縮。ポインタが止まっていて、クリックもキー操作もない無音部分が対象です（この古い収録では入力を検出できません）"
+  },
+  "Saves the background, frame, cursor, and zoom style." : {
+    "ja" : "背景、枠、ポインタ、ズームのスタイルを保存します。"
+  },
+  "Search commands" : {
+    "ja" : "コマンドを検索"
+  },
+  "Select a clip on the timeline to mute it or fade it in and out." : {
+    "ja" : "タイムラインでクリップを選択すると、消音やフェードイン/フェードアウトを設定できます。"
+  },
+  "Select a range to cut" : {
+    "ja" : "カットする範囲を選択"
+  },
+  "Select previous / next item" : {
+    "ja" : "前/次の項目を選択"
+  },
+  "Select several items" : {
+    "ja" : "複数の項目を選択"
+  },
+  "Select words and press ⌫ to cut them from the video — ⌫ again on crossed-out words puts them back. Click a word to jump there; ⌘F finds." : {
+    "ja" : "単語を選択して⌫を押すと、ビデオからカットされます。取り消し線の付いた単語でもう一度⌫を押すと元に戻ります。単語をクリックするとその位置に移動し、⌘Fで検索できます。"
+  },
+  "Selected %@" : {
+    "ja" : "選択中: %@"
+  },
+  "Selected part" : {
+    "ja" : "選択した部分"
+  },
+  "Shadow" : {
+    "ja" : "シャドウ"
+  },
+  "Shape" : {
+    "ja" : "形状"
+  },
+  "Shortcut" : {
+    "ja" : "ショートカット"
+  },
+  "Shortcut %@" : {
+    "ja" : "ショートカット%@"
+  },
+  "Shorten %lld pauses" : {
+    "ja" : "%lld箇所の無音部分を短縮"
+  },
+  "Shorten Pauses" : {
+    "ja" : "無音部分を短縮"
+  },
+  "Shortens every silence over a second (this video has no Shotnix pointer data to spot what happens on screen)" : {
+    "ja" : "1秒を超える無音部分をすべて短縮します（このビデオにはShotnixのポインタデータがないため、画面上の動きを判別できません）"
+  },
+  "Shotnix is still cleaning up the voice" : {
+    "ja" : "Shotnixはまだ声を補正しています"
+  },
+  "Shotnix is still transcribing" : {
+    "ja" : "Shotnixはまだ文字起こしをしています"
+  },
+  "Shotnix listens to the recording right on this Mac — nothing is uploaded. Then cut the video by deleting words, remove ums and long pauses in one click, and add captions." : {
+    "ja" : "ShotnixはこのMac上で収録を聞き取ります。何もアップロードされません。そのあと、単語を削除してビデオをカットしたり、フィラーや長い無音をワンクリックで削除したり、字幕を追加したりできます。"
+  },
+  "Show Background" : {
+    "ja" : "背景を表示"
+  },
+  "Show Editor Tips" : {
+    "ja" : "エディタのヒントを表示"
+  },
+  "Show Folder in Finder" : {
+    "ja" : "フォルダをFinderに表示"
+  },
+  "Show Recent Export “%@” in Finder" : {
+    "ja" : "最近書き出した“%@”をFinderに表示"
+  },
+  "Show Recording in Finder" : {
+    "ja" : "収録をFinderに表示"
+  },
+  "Show background" : {
+    "ja" : "背景を表示"
+  },
+  "Show camera" : {
+    "ja" : "カメラを表示"
+  },
+  "Show captions" : {
+    "ja" : "字幕を表示"
+  },
+  "Show cursor" : {
+    "ja" : "ポインタを表示"
+  },
+  "Show in Finder" : {
+    "ja" : "Finderに表示"
+  },
+  "Show in Finder — %@" : {
+    "ja" : "Finderに表示: %@"
+  },
+  "Show more / less detail" : {
+    "ja" : "拡大/縮小表示"
+  },
+  "Show more of the timeline" : {
+    "ja" : "タイムラインを縮小表示"
+  },
+  "Show shortcuts" : {
+    "ja" : "ショートカットを表示"
+  },
+  "Show the timeline in more detail" : {
+    "ja" : "タイムラインを拡大表示"
+  },
+  "Show tips under the video again" : {
+    "ja" : "ビデオの下のヒントを再表示"
+  },
+  "Shrink while zoomed" : {
+    "ja" : "ズーム中は縮小"
+  },
+  "Shuffle Background" : {
+    "ja" : "背景をシャッフル"
+  },
+  "Shuffle the background" : {
+    "ja" : "背景をシャッフル"
+  },
+  "Silences over a second get shortened — except while you click, type, scroll, or move the pointer, so the demo itself is never cut" : {
+    "ja" : "1秒を超える無音部分を短縮します。ただし、クリック、入力、スクロール、ポインタの移動中は除くため、デモ自体がカットされることはありません"
+  },
+  "Silences over a second get shortened — except while you move the pointer, click, or press a shortcut" : {
+    "ja" : "1秒を超える無音部分を短縮します。ただし、ポインタの移動中、クリック時、ショートカットの入力時は除きます"
+  },
+  "Size" : {
+    "ja" : "サイズ"
+  },
+  "Skips the dash to the Stop button at the end" : {
+    "ja" : "最後の“停止”ボタンへの素早い移動を省きます"
+  },
+  "Soft streaks on fast moves" : {
+    "ja" : "速い動きにやわらかな残像を付けます"
+  },
+  "Solid color" : {
+    "ja" : "単色"
+  },
+  "Sound" : {
+    "ja" : "サウンド"
+  },
+  "Space" : {
+    "ja" : "スペース"
+  },
+  "Speed" : {
+    "ja" : "速度"
+  },
+  "Speed Up Idle" : {
+    "ja" : "動きのない区間を早送り"
+  },
+  "Speed Up Idle Moments" : {
+    "ja" : "動きのない区間を早送り"
+  },
+  "Speed of this part" : {
+    "ja" : "この部分の速度"
+  },
+  "Split" : {
+    "ja" : "分割"
+  },
+  "Split at Playhead" : {
+    "ja" : "再生ヘッドの位置で分割"
+  },
+  "Split at playhead" : {
+    "ja" : "再生ヘッドの位置で分割"
+  },
+  "Split at the playhead (S)" : {
+    "ja" : "再生ヘッドの位置で分割（S）"
+  },
+  "Start / end" : {
+    "ja" : "最初/最後"
+  },
+  "Start Over from the Original Recording…" : {
+    "ja" : "元の収録に戻す…"
+  },
+  "Start at the playhead" : {
+    "ja" : "再生ヘッドの位置から開始"
+  },
+  "Start here" : {
+    "ja" : "ここから開始"
+  },
+  "Starts" : {
+    "ja" : "開始"
+  },
+  "Stop Enhancing Voice" : {
+    "ja" : "声の補正を停止"
+  },
+  "Stop and Close" : {
+    "ja" : "停止して閉じる"
+  },
+  "Style" : {
+    "ja" : "スタイル"
+  },
+  "Swap the arrow's head and tail" : {
+    "ja" : "矢印の先端と始点を入れ替える"
+  },
+  "Switch the camera to full screen for talking points, or put it side by side with the screen — at the playhead. Each shows on the Camera lane." : {
+    "ja" : "再生ヘッドの位置で、カメラを全面に切り替えて要点を話したり、画面と横並びにしたりできます。切り替えはそれぞれ“カメラ”トラックに表示されます。"
+  },
+  "Tag color" : {
+    "ja" : "背景のカラー"
+  },
+  "Text · highlight · arrow · blur" : {
+    "ja" : "テキスト/ハイライト/矢印/ぼかし"
+  },
+  "Text “%@”" : {
+    "ja" : "テキスト“%@”"
+  },
+  "The camera keeps your cursor in view and glides after it." : {
+    "ja" : "カメラがポインタを画面内にとらえ、滑らかに追いかけます。"
+  },
+  "The cursor is part of this video" : {
+    "ja" : "このビデオではポインタが映像に焼き込まれています"
+  },
+  "Thickness" : {
+    "ja" : "太さ"
+  },
+  "This list" : {
+    "ja" : "この一覧"
+  },
+  "This recording has no sound" : {
+    "ja" : "この収録にはサウンドがありません"
+  },
+  "This recording has no sound. Turn on the microphone before recording to narrate it." : {
+    "ja" : "この収録にはサウンドがありません。ナレーションを入れるには、収録する前にマイクをオンにしてください。"
+  },
+  "This recording only has the arrow" : {
+    "ja" : "この収録には矢印のポインタしかありません"
+  },
+  "This video was recorded with your camera, but “%@” isn't in %@ anymore. Put it back there and open the video again to get the camera bubble back." : {
+    "ja" : "このビデオはカメラを使って収録されましたが、“%@”が“%@”フォルダに見つかりません。元の場所に戻してからビデオを開き直すと、カメラのワイプが復元されます。"
+  },
+  "Timeline" : {
+    "ja" : "タイムライン"
+  },
+  "Timeline scale" : {
+    "ja" : "タイムラインの表示倍率"
+  },
+  "Timeline scale (pinch, or ⌘-scroll)" : {
+    "ja" : "タイムラインの表示倍率（ピンチまたは⌘スクロール）"
+  },
+  "Timing" : {
+    "ja" : "タイミング"
+  },
+  "Tips" : {
+    "ja" : "ヒント"
+  },
+  "Tools" : {
+    "ja" : "ツール"
+  },
+  "Transcribe" : {
+    "ja" : "文字起こし"
+  },
+  "Transcribe Again…" : {
+    "ja" : "もう一度文字起こし…"
+  },
+  "Transcribe Narration (Captions, Edit by Text)" : {
+    "ja" : "ナレーションを文字起こし（字幕、テキストで編集）"
+  },
+  "Transcribe…" : {
+    "ja" : "文字起こし…"
+  },
+  "Transcript" : {
+    "ja" : "文字起こし"
+  },
+  "Trim the clip's end to the playhead (O)" : {
+    "ja" : "クリップの最後を再生ヘッドの位置までトリミング（O）"
+  },
+  "Trim the clip's start to the playhead (I)" : {
+    "ja" : "クリップの最初を再生ヘッドの位置までトリミング（I）"
+  },
+  "Try Again" : {
+    "ja" : "再試行"
+  },
+  "Turn On" : {
+    "ja" : "オンにする"
+  },
+  "Turn around" : {
+    "ja" : "向きを反転"
+  },
+  "Turn on the camera in the recording bar before you record, and your face appears here as a bubble you can place, resize, and restyle." : {
+    "ja" : "収録する前に収録バーでカメラをオンにすると、ここに顔がワイプとして表示されます。ワイプの位置、サイズ、スタイルは自由に変更できます。"
+  },
+  "Turn on the microphone or system audio before recording to capture sound." : {
+    "ja" : "サウンドを収録するには、収録する前にマイクまたはシステムオーディオをオンにしてください。"
+  },
+  "Turn the video's sound back on" : {
+    "ja" : "ビデオのサウンドを再びオンにする"
+  },
+  "Type in a text annotation" : {
+    "ja" : "テキストの注釈に入力"
+  },
+  "Undo" : {
+    "ja" : "取り消す"
+  },
+  "Undo / redo" : {
+    "ja" : "取り消す/やり直す"
+  },
+  "Undo Add Arrow" : {
+    "ja" : "矢印の追加を取り消す"
+  },
+  "Undo Add Blur" : {
+    "ja" : "ぼかしの追加を取り消す"
+  },
+  "Undo Add Camera Layout" : {
+    "ja" : "カメラのレイアウトの追加を取り消す"
+  },
+  "Undo Add Camera Layouts" : {
+    "ja" : "カメラのレイアウトの追加を取り消す"
+  },
+  "Undo Add Caption" : {
+    "ja" : "字幕の追加を取り消す"
+  },
+  "Undo Add Captions" : {
+    "ja" : "字幕の追加を取り消す"
+  },
+  "Undo Add Click" : {
+    "ja" : "クリックの追加を取り消す"
+  },
+  "Undo Add Clicks" : {
+    "ja" : "クリックの追加を取り消す"
+  },
+  "Undo Add Highlight" : {
+    "ja" : "ハイライトの追加を取り消す"
+  },
+  "Undo Add Image" : {
+    "ja" : "画像の追加を取り消す"
+  },
+  "Undo Add Intro Card" : {
+    "ja" : "オープニングカードの追加を取り消す"
+  },
+  "Undo Add Music" : {
+    "ja" : "音楽の追加を取り消す"
+  },
+  "Undo Add Outro Card" : {
+    "ja" : "エンディングカードの追加を取り消す"
+  },
+  "Undo Add Recording" : {
+    "ja" : "収録の追加を取り消す"
+  },
+  "Undo Add Spotlight" : {
+    "ja" : "スポットライトの追加を取り消す"
+  },
+  "Undo Add Text" : {
+    "ja" : "テキストの追加を取り消す"
+  },
+  "Undo Add Zoom" : {
+    "ja" : "ズームの追加を取り消す"
+  },
+  "Undo Add Zooms" : {
+    "ja" : "ズームの追加を取り消す"
+  },
+  "Undo Annotation Change" : {
+    "ja" : "注釈の変更を取り消す"
+  },
+  "Undo Annotations" : {
+    "ja" : "注釈の変更を取り消す"
+  },
+  "Undo Arrow Style" : {
+    "ja" : "矢印のスタイル変更を取り消す"
+  },
+  "Undo Aspect Ratio" : {
+    "ja" : "アスペクト比の変更を取り消す"
+  },
+  "Undo Auto Zoom" : {
+    "ja" : "自動ズームの適用を取り消す"
+  },
+  "Undo Background" : {
+    "ja" : "背景の変更を取り消す"
+  },
+  "Undo Blur Style" : {
+    "ja" : "ぼかしのスタイル変更を取り消す"
+  },
+  "Undo Camera Change" : {
+    "ja" : "カメラの変更を取り消す"
+  },
+  "Undo Camera Layout Change" : {
+    "ja" : "カメラのレイアウトの変更を取り消す"
+  },
+  "Undo Camera Layouts" : {
+    "ja" : "カメラのレイアウトの変更を取り消す"
+  },
+  "Undo Caption Style" : {
+    "ja" : "字幕のスタイル変更を取り消す"
+  },
+  "Undo Caption Translation" : {
+    "ja" : "字幕の翻訳を取り消す"
+  },
+  "Undo Captions" : {
+    "ja" : "字幕の変更を取り消す"
+  },
+  "Undo Click Sounds" : {
+    "ja" : "クリック音の変更を取り消す"
+  },
+  "Undo Clicks" : {
+    "ja" : "クリックの変更を取り消す"
+  },
+  "Undo Crop" : {
+    "ja" : "切り取りを取り消す"
+  },
+  "Undo Cursor Change" : {
+    "ja" : "ポインタの変更を取り消す"
+  },
+  "Undo Cut" : {
+    "ja" : "カットを取り消す"
+  },
+  "Undo Cut Word" : {
+    "ja" : "単語のカットを取り消す"
+  },
+  "Undo Cut Words" : {
+    "ja" : "単語のカットを取り消す"
+  },
+  "Undo Delete %lld Items" : {
+    "ja" : "%lld項目の削除を取り消す"
+  },
+  "Undo Delete Annotations" : {
+    "ja" : "注釈の削除を取り消す"
+  },
+  "Undo Delete Arrow" : {
+    "ja" : "矢印の削除を取り消す"
+  },
+  "Undo Delete Blur" : {
+    "ja" : "ぼかしの削除を取り消す"
+  },
+  "Undo Delete Camera Layout" : {
+    "ja" : "カメラのレイアウトの削除を取り消す"
+  },
+  "Undo Delete Camera Layouts" : {
+    "ja" : "カメラのレイアウトの削除を取り消す"
+  },
+  "Undo Delete Caption" : {
+    "ja" : "字幕の削除を取り消す"
+  },
+  "Undo Delete Captions" : {
+    "ja" : "字幕の削除を取り消す"
+  },
+  "Undo Delete Click" : {
+    "ja" : "クリックの削除を取り消す"
+  },
+  "Undo Delete Clicks" : {
+    "ja" : "クリックの削除を取り消す"
+  },
+  "Undo Delete Clip" : {
+    "ja" : "クリップの削除を取り消す"
+  },
+  "Undo Delete Clips" : {
+    "ja" : "クリップの削除を取り消す"
+  },
+  "Undo Delete Highlight" : {
+    "ja" : "ハイライトの削除を取り消す"
+  },
+  "Undo Delete Image" : {
+    "ja" : "画像の削除を取り消す"
+  },
+  "Undo Delete Spotlight" : {
+    "ja" : "スポットライトの削除を取り消す"
+  },
+  "Undo Delete Text" : {
+    "ja" : "テキストの削除を取り消す"
+  },
+  "Undo Delete Zoom" : {
+    "ja" : "ズームの削除を取り消す"
+  },
+  "Undo Delete Zooms" : {
+    "ja" : "ズームの削除を取り消す"
+  },
+  "Undo Edit Caption" : {
+    "ja" : "字幕の編集を取り消す"
+  },
+  "Undo Edit Text" : {
+    "ja" : "テキストの編集を取り消す"
+  },
+  "Undo Enhance Voice" : {
+    "ja" : "声の補正を取り消す"
+  },
+  "Undo Fade" : {
+    "ja" : "フェードの変更を取り消す"
+  },
+  "Undo Hide Shortcut" : {
+    "ja" : "ショートカットの非表示を取り消す"
+  },
+  "Undo Highlight Style" : {
+    "ja" : "ハイライトのスタイル変更を取り消す"
+  },
+  "Undo Image Style" : {
+    "ja" : "画像のスタイル変更を取り消す"
+  },
+  "Undo Intro and Outro" : {
+    "ja" : "カメラ全面のオープニングとエンディングを取り消す"
+  },
+  "Undo Move %lld Items" : {
+    "ja" : "%lld項目の移動を取り消す"
+  },
+  "Undo Move Arrow" : {
+    "ja" : "矢印の移動を取り消す"
+  },
+  "Undo Move Blur" : {
+    "ja" : "ぼかしの移動を取り消す"
+  },
+  "Undo Move Click" : {
+    "ja" : "クリックの移動を取り消す"
+  },
+  "Undo Move Clip" : {
+    "ja" : "クリップの移動を取り消す"
+  },
+  "Undo Move Highlight" : {
+    "ja" : "ハイライトの移動を取り消す"
+  },
+  "Undo Move Image" : {
+    "ja" : "画像の移動を取り消す"
+  },
+  "Undo Move Recording" : {
+    "ja" : "収録の移動を取り消す"
+  },
+  "Undo Move Spotlight" : {
+    "ja" : "スポットライトの移動を取り消す"
+  },
+  "Undo Move Text" : {
+    "ja" : "テキストの移動を取り消す"
+  },
+  "Undo Music Change" : {
+    "ja" : "音楽の変更を取り消す"
+  },
+  "Undo Mute Clip" : {
+    "ja" : "クリップの消音を取り消す"
+  },
+  "Undo Mute Part" : {
+    "ja" : "部分の消音を取り消す"
+  },
+  "Undo Mute Video" : {
+    "ja" : "ビデオの消音を取り消す"
+  },
+  "Undo Remove All Zooms" : {
+    "ja" : "すべてのズームの削除を取り消す"
+  },
+  "Undo Remove Captions" : {
+    "ja" : "字幕の削除を取り消す"
+  },
+  "Undo Remove Intro Card" : {
+    "ja" : "オープニングカードの削除を取り消す"
+  },
+  "Undo Remove Music" : {
+    "ja" : "音楽の削除を取り消す"
+  },
+  "Undo Remove Outro Card" : {
+    "ja" : "エンディングカードの削除を取り消す"
+  },
+  "Undo Remove Recording" : {
+    "ja" : "収録の削除を取り消す"
+  },
+  "Undo Remove Ums" : {
+    "ja" : "フィラーの削除を取り消す"
+  },
+  "Undo Replace Music" : {
+    "ja" : "音楽の置き換えを取り消す"
+  },
+  "Undo Reset Look" : {
+    "ja" : "スタイルのリセットを取り消す"
+  },
+  "Undo Restore" : {
+    "ja" : "復元を取り消す"
+  },
+  "Undo Restore Cut" : {
+    "ja" : "カットの復元を取り消す"
+  },
+  "Undo Restore Cuts" : {
+    "ja" : "カットの復元を取り消す"
+  },
+  "Undo Restore Pause" : {
+    "ja" : "無音部分の復元を取り消す"
+  },
+  "Undo Restore Word" : {
+    "ja" : "単語の復元を取り消す"
+  },
+  "Undo Restore Words" : {
+    "ja" : "単語の復元を取り消す"
+  },
+  "Undo Shortcut Style" : {
+    "ja" : "ショートカットのスタイル変更を取り消す"
+  },
+  "Undo Shortcuts" : {
+    "ja" : "ショートカットの変更を取り消す"
+  },
+  "Undo Shorten Pause" : {
+    "ja" : "無音部分の短縮を取り消す"
+  },
+  "Undo Shorten Pauses" : {
+    "ja" : "無音部分の短縮を取り消す"
+  },
+  "Undo Sound Change" : {
+    "ja" : "サウンドの変更を取り消す"
+  },
+  "Undo Speed Change" : {
+    "ja" : "速度の変更を取り消す"
+  },
+  "Undo Speed Up Idle" : {
+    "ja" : "動きのない区間の早送りを取り消す"
+  },
+  "Undo Split" : {
+    "ja" : "分割を取り消す"
+  },
+  "Undo Spotlight Style" : {
+    "ja" : "スポットライトのスタイル変更を取り消す"
+  },
+  "Undo Start Over" : {
+    "ja" : "元の収録への復元を取り消す"
+  },
+  "Undo Style Change" : {
+    "ja" : "スタイルの変更を取り消す"
+  },
+  "Undo Text Style" : {
+    "ja" : "テキストのスタイル変更を取り消す"
+  },
+  "Undo Title Card" : {
+    "ja" : "タイトルカードの変更を取り消す"
+  },
+  "Undo Transcribe" : {
+    "ja" : "文字起こしを取り消す"
+  },
+  "Undo Transitions" : {
+    "ja" : "トランジションの変更を取り消す"
+  },
+  "Undo Trim" : {
+    "ja" : "トリミングを取り消す"
+  },
+  "Undo Unmute Clip" : {
+    "ja" : "クリップの消音解除を取り消す"
+  },
+  "Undo Unmute Part" : {
+    "ja" : "部分の消音解除を取り消す"
+  },
+  "Undo Unmute Video" : {
+    "ja" : "ビデオの消音解除を取り消す"
+  },
+  "Undo Zoom Change" : {
+    "ja" : "ズームの変更を取り消す"
+  },
+  "Undo Zoom Level for All" : {
+    "ja" : "ズーム倍率の一括変更を取り消す"
+  },
+  "Undo Zooms" : {
+    "ja" : "ズームの変更を取り消す"
+  },
+  "Unmute Clip" : {
+    "ja" : "クリップの消音を解除"
+  },
+  "Unmute preview" : {
+    "ja" : "プレビューの消音を解除"
+  },
+  "Unmute the Preview" : {
+    "ja" : "プレビューの消音を解除"
+  },
+  "Unmute the preview (M)" : {
+    "ja" : "プレビューの消音を解除（M）"
+  },
+  "Use This Look for New Recordings" : {
+    "ja" : "このスタイルを新しい収録に使用"
+  },
+  "Use for new recordings" : {
+    "ja" : "新しい収録に使用"
+  },
+  "Use this color" : {
+    "ja" : "このカラーを使用"
+  },
+  "Use this level for every zoom" : {
+    "ja" : "この倍率をすべてのズームに適用"
+  },
+  "Video preview" : {
+    "ja" : "ビデオのプレビュー"
+  },
+  "Voice" : {
+    "ja" : "声"
+  },
+  "Volume" : {
+    "ja" : "音量"
+  },
+  "Wallpaper" : {
+    "ja" : "壁紙"
+  },
+  "What was playing on your Mac" : {
+    "ja" : "Macで再生されていたサウンド"
+  },
+  "Words light up as they're spoken" : {
+    "ja" : "話している単語がハイライトされます"
+  },
+  "Your look" : {
+    "ja" : "自分のスタイル"
+  },
+  "Your microphone" : {
+    "ja" : "マイク"
+  },
+  "Your narration can become captions — then cut the video by editing its words." : {
+    "ja" : "ナレーションを字幕にできます。さらに、テキストを編集してビデオをカットできます。"
+  },
+  "Your narration can become captions — transcribe it here" : {
+    "ja" : "ここでナレーションを文字起こしすると、字幕にできます"
+  },
+  "Your video's background shows behind you — found on this Mac, frame by frame." : {
+    "ja" : "ビデオの背景が背後に表示されます。人物の切り抜きは、このMac上で1フレームずつ行われます。"
+  },
+  "Your words, as text" : {
+    "ja" : "話した内容をテキストに"
+  },
+  "Zoom" : {
+    "ja" : "ズーム"
+  },
+  "Zoom %@" : {
+    "ja" : "ズーム%@"
+  },
+  "Zoom Level" : {
+    "ja" : "ズーム倍率"
+  },
+  "Zoom in at the pointer" : {
+    "ja" : "ポインタの位置で拡大"
+  },
+  "Zoom level" : {
+    "ja" : "ズーム倍率"
+  },
+  "Zoom level (zoom selected)" : {
+    "ja" : "ズーム倍率（ズームを選択中）"
+  },
+  "Zoom moves" : {
+    "ja" : "ズームの動き"
+  },
+  "Zoom to %@ (key %@)" : {
+    "ja" : "%@にズーム（%@キー）"
+  },
+  "Zoom — drag to move, drag an edge to resize, click to edit" : {
+    "ja" : "ズーム: ドラッグで移動、端をドラッグで長さを変更、クリックで編集"
+  },
+  "Zooms" : {
+    "ja" : "ズーム"
+  },
+  "Zooms & annotations" : {
+    "ja" : "ズームと注釈"
+  },
+  "Zooms and annotations can be duplicated" : {
+    "ja" : "複製できるのはズームと注釈だけです"
+  },
+  "add a zoom" : {
+    "ja" : "ズームを追加"
+  },
+  "aim or resize it" : {
+    "ja" : "移動やサイズ変更"
+  },
+  "all shortcuts" : {
+    "ja" : "すべてのショートカット"
+  },
+  "cut by editing words" : {
+    "ja" : "テキストを編集してカット"
+  },
+  "dips under your voice" : {
+    "ja" : "話している間は音量が下がる"
+  },
+  "every command" : {
+    "ja" : "すべてのコマンド"
+  },
+  "export" : {
+    "ja" : "書き出す"
+  },
+  "follows the cursor" : {
+    "ja" : "ポインタに追従"
+  },
+  "loops" : {
+    "ja" : "ループ再生"
+  },
+  "mute the preview" : {
+    "ja" : "プレビューを消音"
+  },
+  "muted" : {
+    "ja" : "消音"
+  },
+  "play" : {
+    "ja" : "再生"
+  },
+  "select a part to cut" : {
+    "ja" : "カットする部分を選択"
+  },
+  "select it" : {
+    "ja" : "選択"
+  },
+  "split at the playhead" : {
+    "ja" : "再生ヘッドの位置で分割"
+  },
+  "step through the timeline" : {
+    "ja" : "タイムラインの項目を順に選択"
+  },
+  "text, highlight, arrow, blur" : {
+    "ja" : "テキスト、ハイライト、矢印、ぼかし"
+  },
+  "trim to the playhead" : {
+    "ja" : "再生ヘッドまでトリミング"
+  },
+  "type" : {
+    "ja" : "入力"
+  },
+  "zoom the timeline" : {
+    "ja" : "タイムラインを拡大/縮小"
+  },
+  "· aim by hand" : {
+    "ja" : "· 手動で位置を指定"
+  },
+  "· drag to aim" : {
+    "ja" : "· ドラッグで位置を指定"
+  },
+  "· follows cursor" : {
+    "ja" : "· ポインタに追従"
+  },
+  "⇧-drag" : {
+    "ja" : "⇧ドラッグ"
+  },
+  "⇧-drag the timeline" : {
+    "ja" : "タイムラインを⇧ドラッグ"
+  },
+  "⇧/⌘-click" : {
+    "ja" : "⇧/⌘クリック"
+  },
+  "⌘ scroll" : {
+    "ja" : "⌘スクロール"
+  },
+  "⌘-scroll" : {
+    "ja" : "⌘スクロール"
+  }
+}

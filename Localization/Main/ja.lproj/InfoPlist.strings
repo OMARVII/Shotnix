@@ -1,0 +1,5 @@
+"NSCameraUsageDescription" = "収録でカメラをオンにすると、Shotnixは画面と一緒にカメラも収録します。";
+"NSHumanReadableCopyright" = "Copyright © 2026 Shotnix Contributors。MITライセンス。";
+"NSMicrophoneUsageDescription" = "画面収録でマイクの音声をオンにする場合、Shotnixにはマイクへのアクセスが必要です。";
+"NSScreenCaptureUsageDescription" = "スクリーンショットの取り込みと画面収録を行うには、Shotnixに画面収録のアクセス許可が必要です。";
+"NSSpeechRecognitionUsageDescription" = "字幕を作成するため、ShotnixはこのMac上で収録を文字起こしします。";

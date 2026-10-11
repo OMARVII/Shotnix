@@ -14,7 +14,7 @@ Kostenlos und Open Source. Nativ, nur rund 11 MB groß, und deine Aufnahmen verl
 
 [Website](https://shotnix.com/de) · [Download](https://github.com/OMARVII/Shotnix/releases/latest) · [Neuigkeiten](CHANGELOG.md) · [Roadmap](ROADMAP.md) (beide auf Englisch)
 
-[English](README.md) · **Deutsch** · [Français](README.fr.md) · [简体中文](README.zh-CN.md) · [Русский](README.ru.md) · [Українська](README.uk.md)
+[English](README.md) · **Deutsch** · [Français](README.fr.md) · [简体中文](README.zh-CN.md) · [Русский](README.ru.md) · [Українська](README.uk.md) · [日本語](README.ja.md)
 
 <a href="https://shotnix.com/media/shotnix-editor-playback.mp4"><img src="assets/readme/hero.webp" width="100%" alt="Der Video-Editor von Shotnix spielt eine Demo ab: Die Vorschau ist auf einen Klick gezoomt, ein Untertitel leuchtet Wort für Wort auf, und die Zeitleiste darunter enthält Untertitel, Zooms und Clips." /></a>
 
@@ -121,7 +121,7 @@ Kostenlos und Open Source. Nativ, nur rund 11 MB groß, und deine Aufnahmen verl
 
 ## Sprachen
 
-Shotnix spricht **English, Deutsch, Français, 简体中文, Русский und Українська** – von der Menüleiste bis zum Video-Editor. Die App folgt der Sprache deines Mac; eine andere wählst du in Shotnix selbst unter „Einstellungen“ → „Allgemein“ → „Sprache“. Die Übersetzungen liegen in [`Localization/`](Localization/). Ist eine dieser Sprachen deine Muttersprache, sind Korrekturen herzlich willkommen.
+Shotnix spricht **English, Deutsch, Français, 简体中文, Русский, Українська und 日本語** – von der Menüleiste bis zum Video-Editor. Die App folgt der Sprache deines Mac; eine andere wählst du in Shotnix selbst unter „Einstellungen“ → „Allgemein“ → „Sprache“. Die Übersetzungen liegen in [`Localization/`](Localization/). Ist eine dieser Sprachen deine Muttersprache, sind Korrekturen herzlich willkommen.
 
 ## Installation
 
@@ -235,7 +235,7 @@ Die App hält ihre Abhängigkeiten weiterhin bewusst schlank.
 - [x] Verlauf: Aufbewahrungsdauer, Aufräumen und Filter nach Aufnahmeart
 - [x] Pausieren/Fortsetzen, Verwerfen und absturzsichere Aufnahmen
 - [x] Video-Editor: Musik, Bild-Overlays, Titelkarten, Übergänge, Projekte mit mehreren Aufnahmen, Untertitelstile und Übersetzung
-- [x] Lokalisierung: Deutsch, Französisch, vereinfachtes Chinesisch, Russisch und Ukrainisch
+- [x] Lokalisierung: Deutsch, Französisch, vereinfachtes Chinesisch, Russisch, Ukrainisch und Japanisch
 
 ## Mitmachen
 

@@ -1,0 +1,734 @@
+{
+  "%@ found" : {
+    "ja" : "%@が見つかりました"
+  },
+  "%@ quality · %@" : {
+    "ja" : "品質: %@ · %@"
+  },
+  "%@ · %@ px" : {
+    "ja" : "%@ · %@ px"
+  },
+  "%@ · %lld fps" : {
+    "ja" : "%@ · %lld fps"
+  },
+  "%@ × %@ px" : {
+    "ja" : "%@ × %@ px"
+  },
+  "%@, %@" : {
+    "ja" : "%@、%@"
+  },
+  "%@: %@" : {
+    "ja" : "%@: %@"
+  },
+  "%lld QR codes found" : {
+    "ja" : "%lld個のQRコードが見つかりました"
+  },
+  "%lld barcodes found" : {
+    "ja" : "%lld個のバーコードが見つかりました"
+  },
+  "%lld email addresses" : {
+    "ja" : "%lld件のメールアドレス"
+  },
+  "%lld lines" : {
+    "ja" : "%lld行"
+  },
+  "%lld lines · found %@" : {
+    "ja" : "%lld行 · %@を検出"
+  },
+  "%lld links" : {
+    "ja" : "%lld件のリンク"
+  },
+  "%lld px · Esc or Done finishes" : {
+    "ja" : "%lld px · Escキーまたは“完了”で終了"
+  },
+  "%lld s" : {
+    "ja" : "%lld秒"
+  },
+  "%lld screens" : {
+    "ja" : "%lld台のディスプレイ"
+  },
+  "%lld seconds" : {
+    "ja" : "%lld秒"
+  },
+  "All Displays" : {
+    "ja" : "すべてのディスプレイ"
+  },
+  "Allow Shotnix in Accessibility — shortcuts turn on by themselves." : {
+    "ja" : "“アクセシビリティ”でShotnixを許可すると、ショートカットの表示が自動的にオンになります。"
+  },
+  "App" : {
+    "ja" : "アプリ"
+  },
+  "Balanced" : {
+    "ja" : "標準"
+  },
+  "Barcode" : {
+    "ja" : "バーコード"
+  },
+  "Barcode copied to clipboard" : {
+    "ja" : "バーコードの内容をクリップボードにコピーしました"
+  },
+  "Barcodes" : {
+    "ja" : "バーコード"
+  },
+  "Call" : {
+    "ja" : "電話をかける"
+  },
+  "Camera" : {
+    "ja" : "カメラ"
+  },
+  "Camera access is off — allow Shotnix in System Settings → Privacy & Security → Camera." : {
+    "ja" : "カメラへのアクセスがオフになっています。“システム設定”＞“プライバシーとセキュリティ”＞“カメラ”でShotnixを許可してください。"
+  },
+  "Camera disconnected" : {
+    "ja" : "カメラ未接続"
+  },
+  "Camera disconnected." : {
+    "ja" : "カメラの接続が解除されました。"
+  },
+  "Camera disconnected. The recording continues without it." : {
+    "ja" : "カメラの接続が解除されました。カメラなしで収録を続けます。"
+  },
+  "Camera preview" : {
+    "ja" : "カメラのプレビュー"
+  },
+  "Camera stopped" : {
+    "ja" : "カメラ停止"
+  },
+  "Cancel Recording" : {
+    "ja" : "収録をキャンセル"
+  },
+  "Capture  ⏎" : {
+    "ja" : "取り込む  ⏎"
+  },
+  "Capture failed" : {
+    "ja" : "取り込みに失敗しました"
+  },
+  "Choose" : {
+    "ja" : "選択"
+  },
+  "Choose screen" : {
+    "ja" : "ディスプレイを選択"
+  },
+  "Choose window" : {
+    "ja" : "ウインドウを選択"
+  },
+  "Click a window to capture it  ·  Esc cancels" : {
+    "ja" : "ウインドウをクリックして取り込む  ·  Escキーでキャンセル"
+  },
+  "Click or press Esc to cancel" : {
+    "ja" : "クリックするかEscキーを押してキャンセル"
+  },
+  "Close" : {
+    "ja" : "閉じる"
+  },
+  "Close All Pins" : {
+    "ja" : "すべて閉じる"
+  },
+  "Close Pin" : {
+    "ja" : "閉じる"
+  },
+  "Compose Email" : {
+    "ja" : "メールを作成"
+  },
+  "Copy %@" : {
+    "ja" : "%@をコピー"
+  },
+  "Copy Text" : {
+    "ja" : "テキストをコピー"
+  },
+  "Copy as Table" : {
+    "ja" : "表としてコピー"
+  },
+  "Copy image to clipboard" : {
+    "ja" : "画像をクリップボードにコピー"
+  },
+  "Copy recognized text (OCR)" : {
+    "ja" : "認識されたテキストをコピー（OCR）"
+  },
+  "Copy the rows tab-separated, ready to paste into a spreadsheet" : {
+    "ja" : "行をタブ区切りでコピーします。スプレッドシートにそのままペーストできます。"
+  },
+  "Could not copy the screenshot" : {
+    "ja" : "スクリーンショットをコピーできませんでした"
+  },
+  "Could not list windows. Check permissions." : {
+    "ja" : "ウインドウの一覧を取得できませんでした。アクセス許可を確認してください。"
+  },
+  "Could not save the recording (%@)." : {
+    "ja" : "収録を保存できませんでした（%@）。"
+  },
+  "Could not save the recording." : {
+    "ja" : "収録を保存できませんでした。"
+  },
+  "Could not start recording (%@)." : {
+    "ja" : "収録を開始できませんでした（%@）。"
+  },
+  "Couldn't create the video file." : {
+    "ja" : "ビデオファイルを作成できませんでした。"
+  },
+  "Countdown" : {
+    "ja" : "カウントダウン"
+  },
+  "Cursor" : {
+    "ja" : "ポインタ"
+  },
+  "Decoded details" : {
+    "ja" : "読み取った内容"
+  },
+  "Discard" : {
+    "ja" : "破棄"
+  },
+  "Discard recording" : {
+    "ja" : "収録を破棄"
+  },
+  "Discard this recording?" : {
+    "ja" : "この収録を破棄しますか?"
+  },
+  "Disk almost full" : {
+    "ja" : "ディスク残量わずか"
+  },
+  "Display" : {
+    "ja" : "ディスプレイ"
+  },
+  "Display %lld" : {
+    "ja" : "ディスプレイ%lld"
+  },
+  "Display %lld · Main" : {
+    "ja" : "ディスプレイ%lld · メイン"
+  },
+  "Done" : {
+    "ja" : "完了"
+  },
+  "Double-click to edit, or drag into another app. Command-C copies, Command-S saves, Escape dismisses." : {
+    "ja" : "ダブルクリックで編集、またはほかのアプリにドラッグします。Command-Cでコピー、Command-Sで保存、Escキーで閉じます。"
+  },
+  "Drag edges or corners to resize  ·  Arrow keys nudge (⇧ ×10)  ·  Return captures  ·  Esc cancels" : {
+    "ja" : "端または角をドラッグしてサイズを変更  ·  矢印キーで微調整（⇧で×10）  ·  Returnキーで取り込む  ·  Escキーでキャンセル"
+  },
+  "Drag to capture  ·  Hold ⇧ as you let go to adjust first  ·  Space moves  ·  Esc cancels" : {
+    "ja" : "ドラッグして取り込む  ·  ⇧を押しながら放すと取り込む前に調整  ·  スペースバーで移動  ·  Escキーでキャンセル"
+  },
+  "Drag to move. Press Command-C to copy, Escape to close." : {
+    "ja" : "ドラッグして移動します。Command-Cでコピー、Escキーで閉じます。"
+  },
+  "Drag to select, then adjust  ·  Hold ⇧ as you let go to capture right away  ·  Esc cancels" : {
+    "ja" : "ドラッグして選択してから調整  ·  ⇧を押しながら放すとすぐに取り込む  ·  Escキーでキャンセル"
+  },
+  "Editable Cursor" : {
+    "ja" : "編集可能なポインタ"
+  },
+  "Email" : {
+    "ja" : "メール"
+  },
+  "Email %@" : {
+    "ja" : "%@にメールを送信"
+  },
+  "Email QR found" : {
+    "ja" : "メールのQRコードが見つかりました"
+  },
+  "Email address copied" : {
+    "ja" : "メールアドレスをコピーしました"
+  },
+  "Esc or Done finishes" : {
+    "ja" : "Escキーまたは“完了”で終了"
+  },
+  "Estimated file size. Still screens take less." : {
+    "ja" : "推定ファイルサイズです。画面の動きが少ないほど小さくなります。"
+  },
+  "Estimated size %@" : {
+    "ja" : "推定サイズ: %@"
+  },
+  "Finish or cancel the current recording setup" : {
+    "ja" : "現在の収録の準備を完了するか、キャンセルしてください"
+  },
+  "Frame rate" : {
+    "ja" : "フレームレート"
+  },
+  "Hidden network" : {
+    "ja" : "非公開ネットワーク"
+  },
+  "High" : {
+    "ja" : "高"
+  },
+  "Keep" : {
+    "ja" : "続ける"
+  },
+  "Keyboard shortcuts are on" : {
+    "ja" : "キーボードショートカットの表示がオンになりました"
+  },
+  "Link" : {
+    "ja" : "リンク"
+  },
+  "Link QR found" : {
+    "ja" : "リンクのQRコードが見つかりました"
+  },
+  "Link copied" : {
+    "ja" : "リンクをコピーしました"
+  },
+  "Links" : {
+    "ja" : "リンク"
+  },
+  "Links (%lld of %lld)" : {
+    "ja" : "リンク（%2$lld件中%1$lld件）"
+  },
+  "Max" : {
+    "ja" : "最高"
+  },
+  "Maximum length reached" : {
+    "ja" : "最大の長さに達しました"
+  },
+  "Message" : {
+    "ja" : "メッセージ"
+  },
+  "Message QR found" : {
+    "ja" : "メッセージのQRコードが見つかりました"
+  },
+  "Mic disconnected" : {
+    "ja" : "マイク未接続"
+  },
+  "Mic stopped" : {
+    "ja" : "マイク停止"
+  },
+  "Mic switched" : {
+    "ja" : "マイク切り替え"
+  },
+  "Microphone" : {
+    "ja" : "マイク"
+  },
+  "Microphone access is off, so this recording has no mic." : {
+    "ja" : "マイクへのアクセスがオフのため、この収録にはマイクの音声が入りません。"
+  },
+  "Microphone access is off. Allow Shotnix in System Settings → Privacy & Security → Microphone." : {
+    "ja" : "マイクへのアクセスがオフになっています。“システム設定”＞“プライバシーとセキュリティ”＞“マイク”でShotnixを許可してください。"
+  },
+  "Microphone disconnected. Now recording from %@." : {
+    "ja" : "マイクの接続が解除されました。現在は“%@”で録音しています。"
+  },
+  "Microphone disconnected. The recording continues without it." : {
+    "ja" : "マイクの接続が解除されました。マイクなしで収録を続けます。"
+  },
+  "Microphone level" : {
+    "ja" : "マイクの入力レベル"
+  },
+  "More recording options" : {
+    "ja" : "その他の収録オプション"
+  },
+  "Network" : {
+    "ja" : "ネットワーク"
+  },
+  "No" : {
+    "ja" : "いいえ"
+  },
+  "No barcode found in this selection" : {
+    "ja" : "選択範囲にバーコードが見つかりませんでした"
+  },
+  "No camera connected" : {
+    "ja" : "カメラが接続されていません"
+  },
+  "No camera found." : {
+    "ja" : "カメラが見つかりません。"
+  },
+  "No microphone connected" : {
+    "ja" : "マイクが接続されていません"
+  },
+  "No microphone is connected, so this recording has no mic." : {
+    "ja" : "マイクが接続されていないため、この収録にはマイクの音声が入りません。"
+  },
+  "No recordable windows found" : {
+    "ja" : "収録できるウインドウが見つかりません"
+  },
+  "No recording in progress" : {
+    "ja" : "進行中の収録はありません"
+  },
+  "No sound from the microphone" : {
+    "ja" : "マイクから音声が入力されていません"
+  },
+  "No text found in this selection" : {
+    "ja" : "選択範囲にテキストが見つかりませんでした"
+  },
+  "Not enough disk space to record." : {
+    "ja" : "ディスクの空き領域が足りないため、収録できません。"
+  },
+  "Not enough free disk space for this recording: it needs about %@ free, and %@ is available. Free up some space and try again." : {
+    "ja" : "この収録に必要なディスクの空き領域が足りません。約%@の空き領域が必要ですが、使用可能なのは%@です。空き領域を増やしてから、もう一度お試しください。"
+  },
+  "Not enough free disk space for this recording: it needs about %@ free, and %@ is available. Free up space, or choose Balanced quality or 30 fps." : {
+    "ja" : "この収録に必要なディスクの空き領域が足りません。約%@の空き領域が必要ですが、使用可能なのは%@です。空き領域を増やすか、品質“標準”または30 fpsを選択してください。"
+  },
+  "Nothing was recorded — the screen didn't send any picture. Try again." : {
+    "ja" : "何も収録されませんでした。画面から映像を受信できませんでした。もう一度お試しください。"
+  },
+  "Off" : {
+    "ja" : "オフ"
+  },
+  "Open" : {
+    "ja" : "開く"
+  },
+  "Open %@" : {
+    "ja" : "%@を開く"
+  },
+  "Open Editor After Recording" : {
+    "ja" : "収録後にエディタを開く"
+  },
+  "Open Link" : {
+    "ja" : "リンクを開く"
+  },
+  "Open Messages" : {
+    "ja" : "“メッセージ”を開く"
+  },
+  "Password" : {
+    "ja" : "パスワード"
+  },
+  "Pause recording" : {
+    "ja" : "収録を一時停止"
+  },
+  "Pause recording (%@)" : {
+    "ja" : "収録を一時停止（%@）"
+  },
+  "Paused" : {
+    "ja" : "一時停止中"
+  },
+  "Phone" : {
+    "ja" : "電話番号"
+  },
+  "Phone QR found" : {
+    "ja" : "電話番号のQRコードが見つかりました"
+  },
+  "Pin" : {
+    "ja" : "画面に固定"
+  },
+  "Pinned Screenshot" : {
+    "ja" : "固定したスクリーンショット"
+  },
+  "Pinned screenshot" : {
+    "ja" : "固定したスクリーンショット"
+  },
+  "Preview the target, then continue to recording controls." : {
+    "ja" : "対象をプレビューしてから、収録コントロールに進みます。"
+  },
+  "QR Code" : {
+    "ja" : "QRコード"
+  },
+  "QR Codes" : {
+    "ja" : "QRコード"
+  },
+  "QR copied to clipboard" : {
+    "ja" : "QRコードの内容をクリップボードにコピーしました"
+  },
+  "Quality" : {
+    "ja" : "品質"
+  },
+  "Recognized Text" : {
+    "ja" : "認識されたテキスト"
+  },
+  "Recognized text" : {
+    "ja" : "認識されたテキスト"
+  },
+  "Record" : {
+    "ja" : "収録"
+  },
+  "Record (Return)" : {
+    "ja" : "収録（Returnキー）"
+  },
+  "Recording" : {
+    "ja" : "収録"
+  },
+  "Recording already in progress" : {
+    "ja" : "すでに収録中です"
+  },
+  "Recording canceled" : {
+    "ja" : "収録をキャンセルしました"
+  },
+  "Recording controls" : {
+    "ja" : "収録コントロール"
+  },
+  "Recording discarded" : {
+    "ja" : "収録を破棄しました"
+  },
+  "Recording failed before saving." : {
+    "ja" : "保存する前に収録に失敗しました。"
+  },
+  "Recording keyboard shortcuts" : {
+    "ja" : "キーボードショートカットを記録中"
+  },
+  "Recording stopped early — saved what was captured." : {
+    "ja" : "収録が途中で停止しました。それまでの内容は保存されています。"
+  },
+  "Recording the camera" : {
+    "ja" : "カメラを収録中"
+  },
+  "Recording time" : {
+    "ja" : "収録時間"
+  },
+  "Recording without the camera." : {
+    "ja" : "カメラなしで収録します。"
+  },
+  "Records %@ × %@ pixels (%@ × %@ points)" : {
+    "ja" : "%@ × %@ピクセル（%@ × %@ポイント）を収録します"
+  },
+  "Records the pointer separately, so the editor can smooth it, resize it, and keep it crisp when zoomed." : {
+    "ja" : "ポインタを別途収録するため、エディタでポインタの動きを滑らかにしたり、サイズを変更したり、ズームしてもくっきり表示したりできます。"
+  },
+  "Resize" : {
+    "ja" : "サイズを変更"
+  },
+  "Resume recording" : {
+    "ja" : "収録を再開"
+  },
+  "Resume recording (%@)" : {
+    "ja" : "収録を再開（%@）"
+  },
+  "Review the decoded email payload before copying." : {
+    "ja" : "コピーする前に、読み取ったメールの内容を確認してください。"
+  },
+  "Review the decoded link before opening." : {
+    "ja" : "開く前に、読み取ったリンクを確認してください。"
+  },
+  "Review the decoded link before opening: %@" : {
+    "ja" : "開く前に、読み取ったリンクを確認してください: %@"
+  },
+  "Review the decoded text before copying." : {
+    "ja" : "コピーする前に、読み取ったテキストを確認してください。"
+  },
+  "Review the decoded values before copying or opening." : {
+    "ja" : "コピーしたり開いたりする前に、読み取った値を確認してください。"
+  },
+  "Review the email details before composing." : {
+    "ja" : "メールを作成する前に、メールの詳細を確認してください。"
+  },
+  "Review the message details before opening." : {
+    "ja" : "開く前に、メッセージの詳細を確認してください。"
+  },
+  "Review the network details before copying." : {
+    "ja" : "コピーする前に、ネットワークの詳細を確認してください。"
+  },
+  "Review the phone number before opening." : {
+    "ja" : "開く前に、電話番号を確認してください。"
+  },
+  "Save" : {
+    "ja" : "保存"
+  },
+  "Save screenshot to disk" : {
+    "ja" : "スクリーンショットをディスクに保存"
+  },
+  "Saved %@ to %@ — click to reveal in Finder" : {
+    "ja" : "“%1$@”を“%2$@”に保存しました。クリックするとFinderに表示します"
+  },
+  "Saved to %@: %@" : {
+    "ja" : "“%@”に保存しました: %@"
+  },
+  "Saving the last recording…" : {
+    "ja" : "前回の収録を保存中…"
+  },
+  "Saving the recording…" : {
+    "ja" : "収録を保存中…"
+  },
+  "Saving the screen recording" : {
+    "ja" : "画面収録を保存しています"
+  },
+  "Saving…" : {
+    "ja" : "保存中…"
+  },
+  "Screen recording didn't start in time. Try again." : {
+    "ja" : "画面収録が時間内に開始されませんでした。もう一度お試しください。"
+  },
+  "Screenshot captured" : {
+    "ja" : "スクリーンショットを取り込みました"
+  },
+  "Screenshot selection" : {
+    "ja" : "スクリーンショットの選択範囲"
+  },
+  "Screenshot thumbnail" : {
+    "ja" : "スクリーンショットのサムネール"
+  },
+  "Scroll down to capture" : {
+    "ja" : "下にスクロールして取り込む"
+  },
+  "Scroll down to capture more" : {
+    "ja" : "さらに下にスクロールして取り込む"
+  },
+  "Scrolled too fast — scroll back up a little" : {
+    "ja" : "速すぎます。少し戻してください"
+  },
+  "Scrolling capture controls" : {
+    "ja" : "スクロール取り込みのコントロール"
+  },
+  "Scrolling capture failed" : {
+    "ja" : "スクロール取り込みに失敗しました"
+  },
+  "Scrolling capture reached its maximum length (%lld points) and finished." : {
+    "ja" : "スクロール取り込みが最大の長さ（%lldポイント）に達したため、終了しました。"
+  },
+  "Scrolling capture stopped after %lld minutes." : {
+    "ja" : "%lld分が経過したため、スクロール取り込みを停止しました。"
+  },
+  "Security" : {
+    "ja" : "セキュリティ"
+  },
+  "Select a window to record without blocking other apps" : {
+    "ja" : "収録するウインドウを選択します。ほかのアプリはそのまま使えます。"
+  },
+  "Select which display to record fullscreen" : {
+    "ja" : "画面全体を収録するディスプレイを選択します"
+  },
+  "Selection %@ by %@ points" : {
+    "ja" : "選択範囲: 幅%@ポイント、高さ%@ポイント"
+  },
+  "Selection %@ by %@ points. Arrow keys move it, Return captures, Escape cancels." : {
+    "ja" : "選択範囲: 幅%@ポイント、高さ%@ポイント。矢印キーで移動、Returnキーで取り込み、Escキーでキャンセルします。"
+  },
+  "Shotnix can't write to the save folder. Choose another one in Settings → Screenshots." : {
+    "ja" : "Shotnixは保存先フォルダに書き込めません。“設定”＞“スクリーンショット”で別のフォルダを選択してください。"
+  },
+  "Shotnix isn't allowed to record the screen. Turn it on in System Settings → Privacy & Security → Screen & System Audio Recording." : {
+    "ja" : "Shotnixに画面収録が許可されていません。“システム設定”＞“プライバシーとセキュリティ”＞“画面収録とシステムオーディオ録音”でオンにしてください。"
+  },
+  "Show keyboard shortcuts" : {
+    "ja" : "キーボードショートカットを表示"
+  },
+  "Skipping frames" : {
+    "ja" : "フレーム落ち発生中"
+  },
+  "Still saving the last recording — try again in a moment." : {
+    "ja" : "前回の収録をまだ保存しています。しばらくしてからもう一度お試しください。"
+  },
+  "Still saving the recording…" : {
+    "ja" : "収録をまだ保存しています…"
+  },
+  "Stitching…" : {
+    "ja" : "結合中…"
+  },
+  "Stop recording" : {
+    "ja" : "収録を停止"
+  },
+  "Stop recording (%@)" : {
+    "ja" : "収録を停止（%@）"
+  },
+  "Subject" : {
+    "ja" : "件名"
+  },
+  "System Default" : {
+    "ja" : "システムのデフォルト"
+  },
+  "System audio" : {
+    "ja" : "システムオーディオ"
+  },
+  "System audio couldn't be recorded. Try again without system audio." : {
+    "ja" : "システムオーディオを録音できませんでした。システムオーディオをオフにして、もう一度お試しください。"
+  },
+  "Table copied — paste it into a spreadsheet" : {
+    "ja" : "表をコピーしました。スプレッドシートにペーストできます。"
+  },
+  "Text QR found" : {
+    "ja" : "テキストのQRコードが見つかりました"
+  },
+  "Text copied" : {
+    "ja" : "テキストをコピーしました"
+  },
+  "Text copied to clipboard" : {
+    "ja" : "テキストをクリップボードにコピーしました"
+  },
+  "Text recognition failed" : {
+    "ja" : "テキスト認識に失敗しました"
+  },
+  "That display isn't available anymore." : {
+    "ja" : "そのディスプレイは使用できなくなりました。"
+  },
+  "That display or window isn't available anymore." : {
+    "ja" : "そのディスプレイまたはウインドウは使用できなくなりました。"
+  },
+  "That window closed before recording could start." : {
+    "ja" : "収録を開始する前にウインドウが閉じられました。"
+  },
+  "The camera couldn't start." : {
+    "ja" : "カメラを起動できませんでした。"
+  },
+  "The camera stopped. The recording continues without it." : {
+    "ja" : "カメラが停止しました。カメラなしで収録を続けます。"
+  },
+  "The microphone couldn't start, so this recording has no mic." : {
+    "ja" : "マイクを起動できなかったため、この収録にはマイクの音声が入りません。"
+  },
+  "The microphone stopped working. The recording continues without it." : {
+    "ja" : "マイクが動作しなくなりました。マイクなしで収録を続けます。"
+  },
+  "The recording couldn't be finished — saved the first %@." : {
+    "ja" : "収録を完了できませんでした。最初の%@を保存しました。"
+  },
+  "The window you're recording closed. Stop when you're ready — the recording keeps going." : {
+    "ja" : "収録中のウインドウが閉じられました。収録は続いています。準備ができたら停止してください。"
+  },
+  "To" : {
+    "ja" : "宛先"
+  },
+  "URL" : {
+    "ja" : "URL"
+  },
+  "Warning" : {
+    "ja" : "警告"
+  },
+  "Wi-Fi" : {
+    "ja" : "Wi-Fi"
+  },
+  "Wi-Fi QR found" : {
+    "ja" : "Wi-FiのQRコードが見つかりました"
+  },
+  "Window capture" : {
+    "ja" : "ウインドウの取り込み"
+  },
+  "Window closed" : {
+    "ja" : "ウインドウが閉じた"
+  },
+  "Yes" : {
+    "ja" : "はい"
+  },
+  "Your Mac can't keep up with this recording and is skipping frames. Balanced quality or 30 fps will help." : {
+    "ja" : "Macの処理が収録に追いつかず、フレーム落ちが発生しています。品質“標準”または30 fpsにすると改善します。"
+  },
+  "Your disk filled up — saved the first %@." : {
+    "ja" : "ディスクがいっぱいになりました。最初の%@を保存しました。"
+  },
+  "Your disk is almost full, so the recording stopped. It's saved." : {
+    "ja" : "ディスクの空き領域が少なくなったため、収録を停止しました。収録は保存されています。"
+  },
+  "Your disk is almost full. In about %lld minutes the recording stops and saves itself." : {
+    "ja" : "ディスクの空き領域が少なくなっています。約%lld分後に収録が停止し、自動的に保存されます。"
+  },
+  "Your disk is almost full. In about %lld seconds the recording stops and saves itself." : {
+    "ja" : "ディスクの空き領域が少なくなっています。約%lld秒後に収録が停止し、自動的に保存されます。"
+  },
+  "Your disk is full, so the recording couldn't be saved." : {
+    "ja" : "ディスクがいっぱいのため、収録を保存できませんでした。"
+  },
+  "a table" : {
+    "ja" : "表"
+  },
+  "mic" : {
+    "ja" : "マイク"
+  },
+  "no audio" : {
+    "ja" : "音声なし"
+  },
+  "sys+mic" : {
+    "ja" : "内部+マイク"
+  },
+  "system" : {
+    "ja" : "内部音声"
+  },
+  "up to %@ GB/min" : {
+    "ja" : "最大%@ GB/分"
+  },
+  "up to %@ MB/min" : {
+    "ja" : "最大%@ MB/分"
+  },
+  "✓ Saved screenshot" : {
+    "ja" : "✓ スクリーンショットを保存しました"
+  },
+  "✓ Text copied to clipboard" : {
+    "ja" : "✓ テキストをクリップボードにコピーしました"
+  },
+  "✓ Text copied · %@ — click for options" : {
+    "ja" : "✓ テキストをコピーしました · %@。クリックするとオプションを表示します"
+  }
+}

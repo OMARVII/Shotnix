@@ -1,5 +1,15 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- **Shotnix speaks Japanese.** The whole app now also comes in 日本語: the menu bar, Settings, the welcome window, the screenshot editor, capture and recording, History, text recognition, and the video editor, in the words Apple's own Japanese apps use. It follows your Mac's language, or pick 日本語 in Settings → General → Language.
+- **Remove Ums catches Japanese hesitations.** In Japanese recordings, えー, えーと and えっと count as filler words, and each goes in one cut with the words around it left whole. あの and うん, which are real words too, stay.
+- **A blur has its own strength.** A blur in the video editor now has a Strength slider, from a light softening to fully unreadable, and new blurs remember the last strength you chose. The background's slider is now called Background blur, so the two are never confused.
+
+### Fixed
+- **Chinese and Japanese captions break between words.** The speech recognizer writes these languages one character at a time, so a caption line ended every seven characters, often in the middle of a word. Shotnix now joins the characters into words first: lines are as wide as English ones, end at a full stop, and the transcript cuts whole words. Generate the captions again to give an earlier recording the new lines.
+
 ## [0.26.5-beta] - 2026-10-11
 
 ### Fixed

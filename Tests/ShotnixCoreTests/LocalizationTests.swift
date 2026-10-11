@@ -99,6 +99,7 @@ final class LocalizationTests: XCTestCase {
             "zh-Hans": ("捕捉区域", "录制区域", "要清除历史记录吗？"),
             "ru": ("Снять область", "Записать область", "Очистить историю?"),
             "uk": ("Зняти область", "Записати область", "Очистити історію?"),
+            "ja": ("範囲を取り込む", "範囲を収録", "履歴を消去しますか?"),
         ]
         for (language, strings) in expected {
             L10n.use(language)
@@ -123,6 +124,9 @@ final class LocalizationTests: XCTestCase {
         XCTAssertEqual(L("\(3) screenshots deleted — click or press ⌘Z to undo"), "3 captures supprimées — cliquez ou appuyez sur ⌘Z pour annuler")
         L10n.use("zh-Hans")
         XCTAssertEqual(L("\(1) days"), "1 天", "Chinese has one form")
+        L10n.use("ja")
+        XCTAssertEqual(L("\(1) days"), "1日", "Japanese has one form, and no space before its counter")
+        XCTAssertEqual(L("\(3) screenshots deleted — click or press ⌘Z to undo"), "3件のスクリーンショットを削除しました。クリックするか⌘Zを押すと取り消せます")
         L10n.use("ru")
         XCTAssertEqual(L("\(1) days"), "1 день")
         XCTAssertEqual(L("\(3) days"), "3 дня")

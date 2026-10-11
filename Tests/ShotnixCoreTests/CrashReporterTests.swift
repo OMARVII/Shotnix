@@ -154,7 +154,7 @@ final class CrashReporterTests: XCTestCase {
         guard let path = ProcessInfo.processInfo.environment["SHOTNIX_SNAPSHOT_DIR"] else { throw XCTSkip("Set SHOTNIX_SNAPSHOT_DIR") }
         let crash = try XCTUnwrap(CrashReportFile.parse(report(), url: URL(fileURLWithPath: "/tmp/a.ips"), bundleID: bundleID))
         defer { L10n.use(nil) }
-        for language in ["en", "de", "fr", "zh-Hans", "ru", "uk"] {
+        for language in ["en", "de", "fr", "zh-Hans", "ru", "uk", "ja"] {
             L10n.use(language == "en" ? nil : language)
             for (name, reason) in [("crash", CrashPromptReason.crash(crash)), ("memory", .outOfMemory(peak: 77_000_000_000, physical: 36_000_000_000, version: "0.26.3"))] {
                 let alert = CrashReporter.makeAlert(for: reason)

@@ -23,7 +23,7 @@ final class MarketingAssetsTests: XCTestCase {
     override class func setUp() {
         super.setUp()
         // The website is in English: "14.6 MB", not the Mac's own locale.
-        let regions = ["de": "de_DE", "fr": "fr_FR", "zh-Hans": "zh_CN", "ru": "ru_RU", "uk": "uk_UA"]
+        let regions = ["de": "de_DE", "fr": "fr_FR", "zh-Hans": "zh_CN", "ru": "ru_RU", "uk": "uk_UA", "ja": "ja_JP"]
         let locale = language.flatMap { regions[$0] } ?? "en_US"
         UserDefaults.standard.setVolatileDomain(["AppleLocale": locale, "AppleLanguages": [language ?? "en-US"]], forName: UserDefaults.argumentDomain)
         VideoTestStorage.isolate()

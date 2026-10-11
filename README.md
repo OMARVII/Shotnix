@@ -14,7 +14,7 @@ Free and open source. Native, about 11 MB, and your captures never leave your Ma
 
 [Website](https://shotnix.com) · [Download](https://github.com/OMARVII/Shotnix/releases/latest) · [What’s new](CHANGELOG.md) · [Roadmap](ROADMAP.md)
 
-**English** · [Deutsch](README.de.md) · [Français](README.fr.md) · [简体中文](README.zh-CN.md) · [Русский](README.ru.md) · [Українська](README.uk.md)
+**English** · [Deutsch](README.de.md) · [Français](README.fr.md) · [简体中文](README.zh-CN.md) · [Русский](README.ru.md) · [Українська](README.uk.md) · [日本語](README.ja.md)
 
 <a href="https://shotnix.com/media/shotnix-editor-playback.mp4"><img src="assets/readme/hero.webp" width="100%" alt="The Shotnix video editor playing a demo: the preview is zoomed in on a click, a caption lights up word by word, and the timeline below holds the captions, zooms, and clips." /></a>
 
@@ -121,7 +121,7 @@ Free and open source. Native, about 11 MB, and your captures never leave your Ma
 
 ## Languages
 
-Shotnix speaks **English, Deutsch, Français, 简体中文, Русский, and Українська**, from the menu bar to the video editor. It follows your Mac’s language; to use another one, pick it in Shotnix’s Settings → General → Language. The translations live in [`Localization/`](Localization/), and corrections from native speakers are welcome.
+Shotnix speaks **English, Deutsch, Français, 简体中文, Русский, Українська, and 日本語**, from the menu bar to the video editor. It follows your Mac’s language; to use another one, pick it in Shotnix’s Settings → General → Language. The translations live in [`Localization/`](Localization/), and corrections from native speakers are welcome.
 
 ## Install
 
@@ -235,7 +235,7 @@ The app still keeps dependencies intentionally narrow.
 - [x] History retention, cleanup, and type filters
 - [x] Pause/resume, discard, and crash-safe recordings
 - [x] Video editor: music, image overlays, title cards, transitions, multi-recording projects, caption looks and translation
-- [x] Localization: German, French, Simplified Chinese, Russian, and Ukrainian
+- [x] Localization: German, French, Simplified Chinese, Russian, Ukrainian, and Japanese
 
 ## Contributing
 

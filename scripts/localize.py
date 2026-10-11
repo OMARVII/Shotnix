@@ -57,7 +57,7 @@ MAIN_LPROJ = os.path.join(LOCALIZATION, "Main")
 RESOURCES = os.path.join(ROOT, "Sources", "ShotnixCore", "Resources")
 SOURCES = os.path.join(ROOT, "Sources", "ShotnixCore")
 SCRATCH = os.path.join(ROOT, ".build", "l10n")
-LANGUAGES = ["de", "fr", "zh-Hans", "ru", "uk"]
+LANGUAGES = ["de", "fr", "zh-Hans", "ru", "uk", "ja"]
 # Plural forms each language needs for whole numbers (CLDR). Russian and
 # Ukrainian: 1 день, 2 дня, 5 дней; "other" covers fractions.
 REQUIRED_PLURALS = {"ru": {"one", "few", "many", "other"}, "uk": {"one", "few", "many", "other"}}

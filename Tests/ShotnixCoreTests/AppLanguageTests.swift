@@ -51,14 +51,14 @@ final class AppLanguageTests: XCTestCase {
     }
 
     func testAValueForARegionMeansItsLanguage() {
-        for (value, language) in [("de-AT", "de"), ("fr-CA", "fr"), ("en-GB", "en"), ("zh-CN", "zh-Hans"), ("zh-Hans-CN", "zh-Hans")] {
+        for (value, language) in [("de-AT", "de"), ("fr-CA", "fr"), ("en-GB", "en"), ("zh-CN", "zh-Hans"), ("zh-Hans-CN", "zh-Hans"), ("ja-JP", "ja")] {
             defaults.set([value], forKey: "AppleLanguages")
             XCTAssertEqual(preference.choice, language, value)
         }
     }
 
     func testALanguageShotnixDoesntShipMeansSystemDefault() {
-        for value in ["es", "ja", "ar-DE", "zh-Hant", "zh-HK"] {
+        for value in ["es", "ko", "ar-DE", "zh-Hant", "zh-HK"] {
             defaults.set([value], forKey: "AppleLanguages")
             XCTAssertNil(preference.choice, value)
         }
@@ -72,7 +72,7 @@ final class AppLanguageTests: XCTestCase {
 
     func testTheListIsEnglishAndEveryTranslationEachInItsOwnWords() {
         XCTAssertEqual(AppLanguage.all, ["en"] + L10n.translations)
-        let endonyms = ["English", "Deutsch", "Français", "简体中文", "Русский", "Українська"]
+        let endonyms = ["English", "Deutsch", "Français", "简体中文", "Русский", "Українська", "日本語"]
         XCTAssertEqual(AppLanguage.all.map(AppLanguage.endonym), endonyms)
         for language in AppLanguage.all {
             L10n.use(language)
@@ -91,6 +91,7 @@ final class AppLanguageTests: XCTestCase {
             "zh-Hans": ("系统默认（英语）", "系统默认（德语）"),
             "ru": ("Как в системе (английский)", "Как в системе (немецкий)"),
             "uk": ("Як у системі (англійська)", "Як у системі (німецька)"),
+            "ja": ("システムのデフォルト（英語）", "システムのデフォルト（ドイツ語）"),
         ]
         for (language, titles) in expected {
             L10n.use(language)
@@ -103,7 +104,8 @@ final class AppLanguageTests: XCTestCase {
         XCTAssertEqual(AppLanguage.systemLanguage(preferring: ["en-US", "ar-DE"]), "en")
         XCTAssertEqual(AppLanguage.systemLanguage(preferring: ["ar", "de-DE", "fr"]), "de", "Arabic isn't translated; German comes next")
         XCTAssertEqual(AppLanguage.systemLanguage(preferring: ["zh-Hans-CN"]), "zh-Hans")
-        XCTAssertEqual(AppLanguage.systemLanguage(preferring: ["es", "ja"]), "en", "English when Shotnix has none of them")
+        XCTAssertEqual(AppLanguage.systemLanguage(preferring: ["ja-JP"]), "ja")
+        XCTAssertEqual(AppLanguage.systemLanguage(preferring: ["es", "ko"]), "en", "English when Shotnix has none of them")
     }
 
     // MARK: Offering a restart

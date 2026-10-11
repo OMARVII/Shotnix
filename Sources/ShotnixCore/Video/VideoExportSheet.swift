@@ -343,12 +343,19 @@ struct VideoExportSheet: View {
             .fixedSize(horizontal: false, vertical: true)
     }
 
+    /// The titles' column: 78 pt, wider only when a language's titles
+    /// (Japanese フレームレート) need more, so none of them wraps.
+    static var titleColumnWidth: CGFloat {
+        let titles = [L("Resolution"), L("Frame rate"), L("Quality"), L("Encoding"), L("Size"), L("Range"), L("Captions")]
+        return max(78, (TextFitting.widest(titles, font: .systemFont(ofSize: 12, weight: .medium)) + 4).rounded(.up))
+    }
+
     private func row<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
         HStack(alignment: .top, spacing: 12) {
             Text(title)
                 .font(.system(size: 12, weight: .medium))
                 .foregroundStyle(VideoEditorTheme.textSecondary)
-                .frame(width: 78, alignment: .leading)
+                .frame(width: Self.titleColumnWidth, alignment: .leading)
                 .padding(.top, 5)
             content()
         }
