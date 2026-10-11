@@ -1422,6 +1422,15 @@ struct AboutSettingsView: View {
                         AboutLinkButton(title: L("Report Issue")) {
                             openURL("https://github.com/OMARVII/Shotnix/issues/new")
                         }
+
+                        // The developer's X profile, where new versions are
+                        // shown first: a mark like the others, not an ask.
+                        AboutLinkButton(help: "@OmarKhaledVII", action: { openURL("https://x.com/OmarKhaledVII") }) { // l10n-ignore: a name
+                            XMark()
+                                .fill(style: FillStyle(eoFill: true))
+                                .frame(width: 11, height: 11)
+                                .accessibilityLabel("X") // l10n-ignore: a name
+                        }
                     }
                 }
                 .frame(maxWidth: 378)
@@ -1439,13 +1448,24 @@ struct AboutSettingsView: View {
     }
 }
 
-private struct AboutLinkButton: View {
-    let title: String
+private struct AboutLinkButton<Label: View>: View {
+    let help: String
     let action: () -> Void
+    let label: Label
+
+    init(title: String, action: @escaping () -> Void) where Label == Text {
+        self.init(help: title, action: action) { Text(title) }
+    }
+
+    init(help: String, action: @escaping () -> Void, @ViewBuilder label: () -> Label) {
+        self.help = help
+        self.action = action
+        self.label = label()
+    }
 
     var body: some View {
         Button(action: action) {
-            Text(title)
+            label
                 .font(.system(size: 12, weight: .semibold))
                 .lineLimit(1)
                 .minimumScaleFactor(0.9)
@@ -1460,6 +1480,25 @@ private struct AboutLinkButton: View {
                 .stroke(Color.white.opacity(0.08), lineWidth: 1)
         )
         .contentShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
-        .help(title)
+        .help(help)
+    }
+}
+
+/// The X logo, drawn from its 24-point outline (fill it even-odd).
+private struct XMark: Shape {
+    func path(in rect: CGRect) -> Path {
+        let scale = min(rect.width, rect.height) / 24
+        let origin = CGPoint(x: rect.midX - 12 * scale, y: rect.midY - 12 * scale)
+        func point(_ x: CGFloat, _ y: CGFloat) -> CGPoint { CGPoint(x: origin.x + x * scale, y: origin.y + y * scale) }
+        var path = Path()
+        path.addLines([
+            point(18.901, 1.153), point(22.581, 1.153), point(14.541, 10.343), point(24, 22.846),
+            point(16.594, 22.846), point(10.794, 15.262), point(4.156, 22.846), point(0.474, 22.846),
+            point(9.074, 13.016), point(0, 1.154), point(7.594, 1.154), point(12.837, 8.086),
+        ])
+        path.closeSubpath()
+        path.addLines([point(17.61, 20.644), point(19.649, 20.644), point(6.486, 3.24), point(4.298, 3.24)])
+        path.closeSubpath()
+        return path
     }
 }
