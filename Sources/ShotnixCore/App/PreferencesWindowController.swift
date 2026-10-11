@@ -1065,7 +1065,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.26.5"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.27.0"
     
     var body: some View {
         PreferencesPane {
@@ -1109,6 +1109,12 @@ struct AboutSettingsView: View {
                 ScrollView {
                     // The release notes stay in English (l10n-ignore); everything around them is localized.
                     Text(verbatim: """
+                    Version 0.27.0
+                    • Shotnix speaks Japanese, from the menu bar to the video editor
+                    • Remove Ums catches Japanese hesitations: えー, えーと and えっと
+                    • Chinese and Japanese captions break between words, not every few characters
+                    • A blur in the video editor has its own Strength slider
+
                     Version 0.26.5
                     • Starting an area or full-screen recording no longer risks a crash on macOS 26, and neither does taking a screenshot
 

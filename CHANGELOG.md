@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [0.27.0-beta] - 2026-10-11
 
 ### Added
 - **Shotnix speaks Japanese.** The whole app now also comes in 日本語: the menu bar, Settings, the welcome window, the screenshot editor, capture and recording, History, text recognition, and the video editor, in the words Apple's own Japanese apps use. It follows your Mac's language, or pick 日本語 in Settings → General → Language.
