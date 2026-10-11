@@ -1,5 +1,6 @@
 import AVFoundation
 import Foundation
+import NaturalLanguage
 import Speech
 
 // MARK: - Line building
@@ -25,16 +26,17 @@ enum VideoCaptionBuilder {
         var current: [VideoCaptionWord] = []
         for word in words where !word.text.isEmpty {
             if let last = current.last, let first = current.first {
-                let characters = current.reduce(0) { $0 + $1.text.count + 1 } + word.text.count
-                let endsSentence = last.text.last.map { ".?!".contains($0) } ?? false
+                let lastEndsSentence = endsSentence(last)
                 // The tail of a sentence the previous line had to split
                 // never rides along into the next sentence.
-                let isSentenceTail = groups.last?.last.map { !($0.text.last.map { ".?!".contains($0) } ?? false) } ?? false
+                let isSentenceTail = groups.last?.last.map { !endsSentence($0) } ?? false
+                // Chinese and Japanese words are a few characters each, so
+                // their lines are measured by width alone.
                 let breakHere = word.start - last.end > rules.pauseBreak
-                    || current.count >= rules.maxWords
-                    || characters > rules.maxCharacters
+                    || current.filter { !isUnspaced($0) }.count >= rules.maxWords
+                    || width(of: current + [word]) > rules.maxCharacters
                     || word.end - first.start > rules.maxDuration
-                    || (endsSentence && (current.count >= 3 || isSentenceTail))
+                    || (lastEndsSentence && (current.count >= 3 || isSentenceTail))
                 if breakHere {
                     groups.append(current)
                     current = []
@@ -51,7 +53,7 @@ enum VideoCaptionBuilder {
             let current = groups[index]
             guard current.count <= 2, previous.count >= 4,
                   let tail = previous.last, let head = current.first,
-                  !(tail.text.last.map { ".?!".contains($0) } ?? false),
+                  !endsSentence(tail),
                   head.start - tail.end <= rules.pauseBreak else { continue }
             let joined = previous + current
             let split = joined.count / 2
@@ -105,6 +107,81 @@ enum VideoCaptionBuilder {
             text += word
         }
         return text
+    }
+
+    static func endsSentence(_ word: VideoCaptionWord) -> Bool {
+        word.text.last.map { ".?!。？！".contains($0) } ?? false
+    }
+
+    /// A Chinese, Japanese, or Thai word.
+    static func isUnspaced(_ word: VideoCaptionWord) -> Bool {
+        word.text.first.map(isUnspaced) ?? false
+    }
+
+    /// How wide words are as a line, in Latin characters: a Chinese or
+    /// Japanese character takes about two, and their words aren't spaced.
+    static func width(of words: [VideoCaptionWord]) -> Int {
+        var width = 0
+        var previous: String?
+        for word in words {
+            if let previous, needsSpace(between: previous, and: word.text) { width += 1 }
+            width += word.text.reduce(0) { $0 + ($1.unicodeScalars.first.map { $0.value >= 0x2E80 } ?? false ? 2 : 1) }
+            previous = word.text
+        }
+        return width
+    }
+
+    /// Recognizers write Chinese and Japanese one character at a time.
+    /// Joins those characters into words (NaturalLanguage's), so a caption
+    /// line never breaks inside a word and the transcript cuts whole words.
+    static func joiningCharacters(_ words: [VideoCaptionWord], language: String) -> [VideoCaptionWord] {
+        var result: [VideoCaptionWord] = []
+        var run: [VideoCaptionWord] = []
+        for word in words + [VideoCaptionWord(text: "", start: .infinity, end: .infinity)] {
+            if isUnspaced(word) {
+                run.append(word)
+                continue
+            }
+            result += joined(run, language: language)
+            run = []
+            if !word.text.isEmpty { result.append(word) }
+        }
+        return result
+    }
+
+    private static func joined(_ run: [VideoCaptionWord], language: String) -> [VideoCaptionWord] {
+        guard run.count > 1 else { return run }
+        let text = run.map(\.text).joined()
+        let tokenizer = NLTokenizer(unit: .word)
+        tokenizer.string = text
+        if let wordLanguage = wordLanguage(for: language) { tokenizer.setLanguage(wordLanguage) }
+        var starts = Set<Int>()
+        tokenizer.enumerateTokens(in: text.startIndex..<text.endIndex) { range, _ in
+            starts.insert(text.distance(from: text.startIndex, to: range.lowerBound))
+            return true
+        }
+        // A word starts only where a recognized piece does: the times of a
+        // piece can't be split. Punctuation stays with the word before it.
+        var words: [VideoCaptionWord] = []
+        var offset = 0
+        for piece in run {
+            if words.isEmpty || starts.contains(offset) {
+                words.append(piece)
+            } else {
+                words[words.count - 1].text += piece.text
+                words[words.count - 1].end = max(words[words.count - 1].end, piece.end)
+            }
+            offset += piece.text.count
+        }
+        return words
+    }
+
+    private static func wordLanguage(for identifier: String) -> NLLanguage? {
+        let language = Locale.Language(identifier: identifier)
+        guard let code = language.languageCode?.identifier else { return nil }
+        guard code == "zh" || code == "yue" else { return NLLanguage(rawValue: code) }
+        let traditional = language.script?.identifier == "Hant" || ["TW", "HK", "MO"].contains(language.region?.identifier ?? "") || code == "yue"
+        return traditional ? .traditionalChinese : .simplifiedChinese
     }
 
     /// Whether a space goes before `next` after `previous` word.
@@ -288,16 +365,18 @@ enum VideoCaptionTranscriber {
             var locale = await SpeechTranscriber.supportedLocale(equivalentTo: requested)
             if locale == nil, languageIdentifier == nil { locale = closest(to: requested, in: supported) }
             guard let locale else { throw Failure.unsupportedLanguage(name(of: requested)) }
-            let words = try await transcribeModern(asset: asset, tracks: audioTracks, duration: duration, locale: locale, progress: progress)
-            return Result(words: shifted(words, by: timeOffset), language: locale.identifier(.bcp47))
+            let language = locale.identifier(.bcp47)
+            let words = VideoCaptionBuilder.joiningCharacters(try await transcribeModern(asset: asset, tracks: audioTracks, duration: duration, locale: locale, progress: progress), language: language)
+            return Result(words: shifted(words, by: timeOffset), language: language)
         }
         var locale = requested
         if SFSpeechRecognizer(locale: requested) == nil, languageIdentifier == nil,
            let fallback = closest(to: requested, in: Array(SFSpeechRecognizer.supportedLocales())) {
             locale = fallback
         }
-        let words = try await transcribeLegacy(asset: asset, tracks: audioTracks, duration: duration, locale: locale, progress: progress)
-        return Result(words: shifted(words, by: timeOffset), language: locale.identifier(.bcp47))
+        let language = locale.identifier(.bcp47)
+        let words = VideoCaptionBuilder.joiningCharacters(try await transcribeLegacy(asset: asset, tracks: audioTracks, duration: duration, locale: locale, progress: progress), language: language)
+        return Result(words: shifted(words, by: timeOffset), language: language)
     }
 
     private static func shifted(_ words: [VideoCaptionWord], by offset: Double) -> [VideoCaptionWord] {

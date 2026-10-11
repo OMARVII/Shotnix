@@ -153,6 +153,70 @@ extension VideoCaptionTests {
         XCTAssertEqual(fillers(["嗯，", "那个", "我们", "呃", "打开"], "zh-Hans"), ["嗯，", "呃"], "那个 is a real word")
         XCTAssertEqual(fillers(["Ну,", "э-э", "эм,", "откроем", "Эм"], "ru-RU"), ["э-э", "эм,", "Эм"], "ну is a real word")
         XCTAssertEqual(fillers(["Ну", "ем,", "відкриємо", "е"], "uk-UA"), ["ем,", "е"])
+        XCTAssertEqual(fillers(["えーと、", "あの", "設定を", "えー", "開きます", "あのー"], "ja-JP"), ["えーと、", "えー", "あのー"], "あの is a real word; the drawn-out あのー isn't")
+    }
+
+    /// Recognizers write Chinese and Japanese one character at a time;
+    /// as words, a caption line never splits メニュー or 点击.
+    func testChineseAndJapaneseCharactersBecomeWords() throws {
+        func characters(_ text: String) -> [VideoCaptionWord] {
+            var words: [VideoCaptionWord] = []
+            for character in text {
+                if character.isPunctuation, !words.isEmpty {
+                    words[words.count - 1].text.append(character)
+                } else {
+                    let start = Double(words.count) * 0.12
+                    words.append(VideoCaptionWord(text: String(character), start: start, end: start + 0.12))
+                }
+            }
+            return words
+        }
+        let japaneseText = "まずメニューバーのアイコンをクリックして。範囲を選びます。"
+        let japanese = VideoCaptionBuilder.joiningCharacters(characters(japaneseText), language: "ja-JP")
+        XCTAssertEqual(japanese.map(\.text).joined(), japaneseText)
+        XCTAssertLessThanOrEqual(japanese.count, characters(japaneseText).count / 2)
+        for word in ["メニュー", "アイコン", "クリック", "範囲"] {
+            XCTAssertTrue(japanese.contains { $0.text == word }, word)
+        }
+        XCTAssertTrue(japanese.allSatisfy { !($0.text.first?.isPunctuation ?? true) }, "punctuation stays with the word before it")
+        XCTAssertEqual(japanese.first?.start, 0)
+        XCTAssertEqual(try XCTUnwrap(japanese.last?.end), Double(characters(japaneseText).count) * 0.12, accuracy: 0.001)
+
+        let chinese = VideoCaptionBuilder.joiningCharacters(characters("首先点击菜单栏的图标，然后选择区域"), language: "zh-CN")
+        for word in ["点击", "图标，", "然后", "选择"] {
+            XCTAssertTrue(chinese.contains { $0.text == word }, word)
+        }
+        // A Latin word in between stays as it is and keeps the runs apart.
+        let mixed = [("今", 0.0, 0.2), ("天", 0.2, 0.4), ("用", 0.4, 0.6), ("Shotnix", 0.6, 1.2), ("录", 1.2, 1.4), ("制", 1.4, 1.6)].map { VideoCaptionWord(text: $0.0, start: $0.1, end: $0.2) }
+        XCTAssertEqual(VideoCaptionBuilder.joiningCharacters(mixed, language: "zh-Hans").map(\.text), ["今天", "用", "Shotnix", "录制"])
+        // Other languages pass through.
+        let english = [VideoCaptionWord(text: "Open", start: 0, end: 0.3), VideoCaptionWord(text: "it.", start: 0.3, end: 0.5)]
+        XCTAssertEqual(VideoCaptionBuilder.joiningCharacters(english, language: "en-US"), english)
+    }
+
+    /// Chinese and Japanese lines are as wide as English ones (a character
+    /// is about two Latin letters), not seven characters, and end at 。.
+    func testChineseAndJapaneseLinesGoByWidth() {
+        let text: [(String, Double)] = [
+            ("こんにちは", 0.6), ("ショトニックス", 0.8), ("で", 0.15), ("画面", 0.35), ("を", 0.15), ("収録", 0.4), ("し", 0.12), ("て", 0.12),
+            ("クリック", 0.5), ("し", 0.1), ("た", 0.1), ("ところ", 0.4), ("を", 0.15), ("自動", 0.35), ("で", 0.15), ("ズーム", 0.4), ("する", 0.25), ("方法", 0.35), ("を", 0.15),
+            ("紹介", 0.4), ("し", 0.12), ("ます。", 0.4), ("まず", 0.3), ("メニュー", 0.4), ("バー", 0.25), ("の", 0.1), ("アイコン", 0.4), ("を", 0.15), ("クリック", 0.5), ("します。", 0.5),
+        ]
+        var time = 0.0
+        let words = text.map { piece -> VideoCaptionWord in
+            defer { time += piece.1 }
+            return VideoCaptionWord(text: piece.0, start: time, end: time + piece.1)
+        }
+        let lines = VideoCaptionBuilder.lines(from: words)
+        XCTAssertGreaterThanOrEqual(lines.count, 3)
+        XCTAssertLessThanOrEqual(lines.count, 6)
+        for line in lines {
+            XCTAssertLessThanOrEqual(VideoCaptionBuilder.width(of: line.words), VideoCaptionBuilder.Rules().maxCharacters, line.text)
+            XCTAssertFalse(line.text.contains(" "), "no spaces between Japanese words: \(line.text)")
+        }
+        XCTAssertTrue(lines.contains { $0.text.hasSuffix("紹介します。") }, "a sentence ends its line: \(lines.map(\.text))")
+        XCTAssertEqual(VideoCaptionBuilder.width(of: [VideoCaptionWord(text: "Open", start: 0, end: 1), VideoCaptionWord(text: "it", start: 1, end: 2)]), 7)
+        XCTAssertEqual(VideoCaptionBuilder.width(of: [VideoCaptionWord(text: "用", start: 0, end: 1), VideoCaptionWord(text: "Shotnix", start: 1, end: 2), VideoCaptionWord(text: "录制", start: 2, end: 3)]), 2 + 1 + 7 + 1 + 4)
     }
 
     func testRecognizedStretchesJoinUp() {
@@ -257,14 +321,31 @@ extension VideoCaptionTests {
         guard ProcessInfo.processInfo.environment["SHOTNIX_SPEECH_TEST"] == "1" else {
             throw XCTSkip("Set SHOTNIX_SPEECH_TEST=1 to run the on-device speech test")
         }
-        let directory = FileManager.default.temporaryDirectory.appendingPathComponent("shotnix-fillers-\(UUID().uuidString)", isDirectory: true)
-        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-        defer { try? FileManager.default.removeItem(at: directory) }
-        let pieces: [(text: String, filler: Bool, gap: Double)] = [
+        try await assertFillerCutsLeaveTheWords([
             ("So,", false, 0.12), ("um", true, 0.10), ("open the settings panel.", false, 0.35),
             ("Then", false, 0.10), ("uh", true, 0.12), ("turn on dark mode and", false, 0.15),
             ("um", true, 0.10), ("save your changes.", false, 0),
-        ]
+        ], voice: "Samantha", language: "en-US")
+    }
+
+    /// The same in Japanese, which the recognizer writes one character at a
+    /// time: the characters become words, a filler spelled over several of
+    /// them is cut as one, and the words around it stay whole.
+    func testJapaneseFillerCutsLeaveTheWordsAroundThem() async throws {
+        guard ProcessInfo.processInfo.environment["SHOTNIX_SPEECH_TEST"] == "1" else {
+            throw XCTSkip("Set SHOTNIX_SPEECH_TEST=1 to run the on-device speech test")
+        }
+        try await assertFillerCutsLeaveTheWords([
+            ("では、", false, 0.15), ("えーと、", true, 0.15), ("設定を開きます。", false, 0.40),
+            ("それから、", false, 0.15), ("えーっと、", true, 0.15), ("ダークモードをオンにします。", false, 0.40),
+            ("えーと、", true, 0.15), ("最後に保存します。", false, 0),
+        ], voice: "Kyoko", language: "ja-JP")
+    }
+
+    private func assertFillerCutsLeaveTheWords(_ pieces: [(text: String, filler: Bool, gap: Double)], voice: String, language: String) async throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent("shotnix-fillers-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
         var samples: [Float] = []
         var rate = 0.0
         var spans: [(filler: Bool, start: Double, end: Double)] = []
@@ -272,7 +353,7 @@ extension VideoCaptionTests {
             let spoken = directory.appendingPathComponent("piece\(index).aiff")
             let say = Process()
             say.executableURL = URL(fileURLWithPath: "/usr/bin/say")
-            say.arguments = ["-v", "Samantha", "-o", spoken.path, piece.text]
+            say.arguments = ["-v", voice, "-o", spoken.path, piece.text]
             try say.run()
             say.waitUntilExit()
             let file = try AVAudioFile(forReading: spoken)
@@ -302,12 +383,13 @@ extension VideoCaptionTests {
             try file.write(from: output)
         }
 
-        let result = try await VideoCaptionTranscriber.transcribe(url: audio, languageIdentifier: "en-US") { _ in }
+        let result = try await VideoCaptionTranscriber.transcribe(url: audio, languageIdentifier: language) { _ in }
         let words = VideoTranscript.words(from: VideoCaptionBuilder.lines(from: result.words), language: result.language)
         print("WORDS: \(words.map { String(format: "%@ %.2f-%.2f", $0.text, $0.start, $0.end) })")
         let loaded = await VideoMusicWaveform.load(url: audio)
         let sound = try XCTUnwrap(loaded)
         let cuts = VideoTranscript.fillerCuts(words: words, sound: sound) { _ in true }
+        print("CUTS: \(cuts.map { cut in cut.run.map { words[$0].text }.joined() + String(format: " %.2f-%.2f", cut.range.lowerBound, cut.range.upperBound) })")
         XCTAssertGreaterThanOrEqual(cuts.count, 2, "the recognizer heard the fillers")
         func overlap(_ range: ClosedRange<Double>, _ span: (filler: Bool, start: Double, end: Double)) -> Double {
             max(min(range.upperBound, span.end) - max(range.lowerBound, span.start), 0)

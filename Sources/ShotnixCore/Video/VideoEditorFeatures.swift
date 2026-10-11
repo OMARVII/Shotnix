@@ -440,7 +440,7 @@ extension VideoEditorModel {
     }
 
     var fillerCount: Int {
-        transcriptWords.filter { $0.isFiller && isIncluded($0) }.count
+        transcriptWords.filter { $0.isFiller && !$0.continuesFiller && isIncluded($0) }.count
     }
 
     var pauseRanges: [ClosedRange<Double>] {
@@ -458,7 +458,7 @@ extension VideoEditorModel {
         let before = timelineDuration
         mutate(label: "Remove Ums") { project in
             guard project.removeSourceRanges(VideoTranscript.merge(cuts.map(\.range)), totalDuration: sourceDuration) else { return }
-            for cut in cuts { project.retime([words[cut.index]], into: cut.range) }
+            for cut in cuts { project.retime(Array(words[cut.run]), into: cut.range) }
         }
         let shorter = Self.format(max(before - timelineDuration, 0))
         showNotice(L("Removed \(count) filler words — \(shorter) shorter"), symbol: "wand.and.stars")

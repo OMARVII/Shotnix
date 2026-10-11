@@ -10,6 +10,9 @@ struct VideoTranscriptWord: Equatable {
     let index: Int
     /// "um", "uh", "erm"… in the transcript's language.
     var isFiller = false
+    /// Part of the filler the word before starts: Japanese arrives one
+    /// character at a time, so えーと is three words.
+    var continuesFiller = false
 }
 
 enum VideoTranscript {
@@ -30,6 +33,10 @@ enum VideoTranscript {
         case "zh": set.formUnion(["嗯", "呃", "额", "唔", "嗯嗯", "呃呃"])
         case "ru": set.formUnion(["э", "ээ", "эээ", "э-э", "э-э-э", "эм", "эмм", "мм", "ммм", "хм"])
         case "uk": set.formUnion(["е", "ее", "еее", "е-е", "е-е-е", "ем", "емм", "мм", "ммм", "хм"])
+        // Not あの, その or まあ: real words people also hesitate with. The
+        // drawn-out あのー and そのー are only ever hesitation. えと is
+        // えっと as the recognizer often writes it.
+        case "ja": set.formUnion(["えー", "えーと", "えーっと", "えっと", "えと", "ええと", "ええっと", "うーん", "んー", "あー", "あのー", "そのー"])
         default: break
         }
         return set
@@ -50,7 +57,39 @@ enum VideoTranscript {
                 words.append(VideoTranscriptWord(text: word.text, start: word.start, end: word.end, lineID: line.id, index: index, isFiller: isFiller(word.text, fillers: fillers)))
             }
         }
-        return words.sorted { $0.start < $1.start }
+        words.sort { $0.start < $1.start }
+        markSpelledFillers(&words, fillers: fillers)
+        return words
+    }
+
+    /// Recognizers write Japanese one character at a time: えーと arrives as
+    /// え, ー, と (or えー, と once joined into words). There a filler is a run
+    /// of words that spells one and stands on its own, with punctuation or a
+    /// pause on both sides, so the え and と of 考えと are never one. The
+    /// longest spelling wins: えーと is one filler, not えー and a stray と.
+    static func markSpelledFillers(_ words: inout [VideoTranscriptWord], fillers: Set<String>) {
+        let longest = fillers.map(\.count).max() ?? 0
+        func endsPhrase(_ word: VideoTranscriptWord) -> Bool { word.text.last?.isPunctuation ?? false }
+        func paused(_ before: VideoTranscriptWord, _ after: VideoTranscriptWord) -> Bool { after.start - before.end >= 0.1 }
+        func apart(_ index: Int) -> Bool { index == 0 || index == words.count || endsPhrase(words[index - 1]) || paused(words[index - 1], words[index]) }
+        var start = 0
+        while start < words.count {
+            var length = 0
+            if apart(start) {
+                var spelled = ""
+                for end in start..<min(words.count, start + longest) {
+                    let word = words[end]
+                    guard let first = word.text.first, VideoCaptionBuilder.isUnspaced(first), end == start || !apart(end) else { break }
+                    spelled += word.text.lowercased().trimmingCharacters(in: .punctuationCharacters.union(.whitespaces))
+                    if end > start, apart(end + 1), fillers.contains(spelled) { length = end - start + 1 }
+                }
+            }
+            for index in start..<start + length {
+                words[index].isFiller = true
+                words[index].continuesFiller = index > start
+            }
+            start += max(length, 1)
+        }
     }
 
     /// The source span to remove for a run of consecutive words: the words
@@ -85,12 +124,15 @@ enum VideoTranscript {
         return start < end ? start...end : timed
     }
 
-    /// Each filler word still in the video, with the span its cut removes.
-    static func fillerCuts(words: [VideoTranscriptWord], sound: VideoWaveform? = nil, isIncluded: (Double) -> Bool) -> [(index: Int, range: ClosedRange<Double>)] {
-        var cuts: [(index: Int, range: ClosedRange<Double>)] = []
-        for (index, word) in words.enumerated() where word.isFiller && isIncluded((word.start + word.end) / 2) {
-            if let range = cutRange(words: words, run: index...index, sound: sound) {
-                cuts.append((index, range))
+    /// Each filler still in the video, with its words and the span its cut
+    /// removes.
+    static func fillerCuts(words: [VideoTranscriptWord], sound: VideoWaveform? = nil, isIncluded: (Double) -> Bool) -> [(run: ClosedRange<Int>, range: ClosedRange<Double>)] {
+        var cuts: [(run: ClosedRange<Int>, range: ClosedRange<Double>)] = []
+        for (index, word) in words.enumerated() where word.isFiller && !word.continuesFiller && isIncluded((word.start + word.end) / 2) {
+            var last = index
+            while words.indices.contains(last + 1), words[last + 1].continuesFiller { last += 1 }
+            if let range = cutRange(words: words, run: index...last, sound: sound) {
+                cuts.append((index...last, range))
             }
         }
         return cuts
@@ -409,7 +451,21 @@ extension VideoWaveform {
                 mine = [nearest]
             }
         } else if run.count == 1, mine.count > 1 {
-            mine = [mine.min { distance($0) < distance($1) }!]
+            let nearest = mine.firstIndex(of: mine.min { distance($0) < distance($1) }!)!
+            var kept = nearest...nearest
+            // A Chinese or Japanese word of several characters has stops
+            // inside (えーと): it keeps its sound on toward a side where it
+            // stands apart, after punctuation or a pause, as its characters
+            // did before they were joined into a word.
+            if first.text.count > 1, first.text.first.map(VideoCaptionBuilder.isUnspaced) == true {
+                func apart(_ before: VideoTranscriptWord?, _ after: VideoTranscriptWord?) -> Bool {
+                    guard let before, let after else { return true }
+                    return before.text.last?.isPunctuation == true || after.start - before.end >= 0.08
+                }
+                if apart(previous, first) { kept = 0...kept.upperBound }
+                if apart(last, next) { kept = kept.lowerBound...(mine.count - 1) }
+            }
+            mine = Array(mine[kept])
         }
         guard let lower = mine.first?.lowerBound, let upper = mine.last?.upperBound else { return nil }
         let others = owned.map(\.stretch).filter { !mine.contains($0) }

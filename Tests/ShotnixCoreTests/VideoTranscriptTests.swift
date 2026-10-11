@@ -124,6 +124,27 @@ final class VideoTranscriptTests: XCTestCase {
         VideoTranscript.words(from: VideoCaptionBuilder.lines(from: timed.map { VideoCaptionWord(text: $0.0, start: $0.1, end: $0.2) }), language: "en")
     }
 
+    /// Measured: Apple's Japanese recognizer writes one character at a time
+    /// (え, ー, と、), and NaturalLanguage joins えー and と as two words. A
+    /// filler spelled over several words is one filler, cut as one; the え
+    /// and と inside 考えと are never one.
+    func testJapaneseFillersSpelledOverSeveralWords() throws {
+        let timed: [(String, Double, Double)] = [
+            ("えー", 0.68, 1.08), ("と、", 1.08, 1.38), ("まず", 1.38, 1.62), ("設定", 1.62, 2.16), ("を", 2.16, 2.40), ("開き", 2.40, 2.82), ("ます。", 2.82, 3.18),
+            ("考", 3.40, 3.58), ("え", 3.58, 3.70), ("と", 3.70, 3.84), ("同じ", 3.84, 4.10), ("です。", 4.10, 4.40),
+            ("え", 4.70, 4.90), ("と", 4.90, 5.14), ("以上", 5.30, 5.62), ("です。", 5.62, 5.98),
+        ]
+        let words = VideoTranscript.words(from: VideoCaptionBuilder.lines(from: timed.map { VideoCaptionWord(text: $0.0, start: $0.1, end: $0.2) }), language: "ja-JP")
+        let cuts = VideoTranscript.fillerCuts(words: words) { _ in true }
+        XCTAssertEqual(cuts.map { cut in cut.run.map { words[$0].text }.joined() }, ["えーと、", "えと"])
+        XCTAssertEqual(words.filter { $0.isFiller && !$0.continuesFiller }.count, 2, "two fillers, not four words")
+        XCTAssertFalse(words.contains { $0.text == "え" && $0.start == 3.58 && $0.isFiller }, "the え of 考えと")
+        let first = try XCTUnwrap(cuts.first?.range)
+        XCTAssertLessThanOrEqual(first.lowerBound, 0.68)
+        XCTAssertGreaterThanOrEqual(first.upperBound, 1.30, "the と too")
+        XCTAssertLessThanOrEqual(first.upperBound, 1.38, "none of まず")
+    }
+
     /// Measured on real transcription: "uh" reported 80 ms late and 0.2 s
     /// long, so a cut by its times took the start of "we". The cut now
     /// takes the "uh" itself and stops before "we".
