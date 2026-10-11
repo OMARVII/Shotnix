@@ -1435,7 +1435,7 @@ struct AboutSettingsView: View {
                             XMark()
                                 .fill(style: FillStyle(eoFill: true))
                                 .frame(width: 11, height: 11)
-                                .accessibilityLabel("X") // l10n-ignore: a name
+                                .accessibilityLabel(Text(verbatim: "X")) // l10n-ignore: a name
                         }
                     }
                 }
