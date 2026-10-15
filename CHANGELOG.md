@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [0.27.1-beta] - 2026-10-15
 
 ### Fixed
 - **Zooms move straight to what they show.** Zooming in on something near the edge of the video swung toward the corner first, then stopped panning partway in while the zoom kept going, so the move bent before it landed. Now the camera zooms in one straight, steady move toward the shot and back out the same way, and a zoom that follows the pointer heads for where the pointer lands instead of trailing it on the way in. A pan between two shots with different zoom levels stays straight too. Exports and the preview both get the new moves, no new recording needed.
