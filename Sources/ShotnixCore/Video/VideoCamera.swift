@@ -57,6 +57,16 @@ enum VideoCameraEasing {
     static func lerp(_ a: Double, _ b: Double, _ t: Double) -> Double {
         a + (b - a) * t
     }
+
+    /// How far a zoom from `from` to `to` has come at `scale`, measured in
+    /// window size. Moving the center by this fraction makes the zoom one
+    /// straight move toward a fixed point, with no swing on the way in.
+    /// `fallback` covers moves that don't change the scale (plain pans).
+    static func windowProgress(from: Double, to: Double, at scale: Double, fallback: Double) -> Double {
+        let span = 1 / max(from, 1) - 1 / max(to, 1)
+        guard abs(span) > 0.000001 else { return fallback }
+        return min(max((1 / max(from, 1) - 1 / max(scale, 1)) / span, 0), 1)
+    }
 }
 
 /// The camera path for a whole edited timeline, sampled at 60Hz in
@@ -314,10 +324,12 @@ final class VideoCameraTrack: @unchecked Sendable {
 
             // Ramps in and out of the group.
             var scale = held
+            var rampingIn = false
             var rampingOut = false
             if t < groupStart + rampIn {
                 let progress = VideoCameraEasing.spring((t - groupStart) / max(rampIn, 0.0001))
                 scale = VideoCameraEasing.logLerp(1, held, progress)
+                rampingIn = true
             } else if t > groupEnd - rampOut {
                 let progress = VideoCameraEasing.spring((t - (groupEnd - rampOut)) / max(rampOut, 0.0001))
                 scale = VideoCameraEasing.logLerp(held, 1, progress)
@@ -332,7 +344,9 @@ final class VideoCameraTrack: @unchecked Sendable {
                     let lookAhead = min(max(piece.start, groupStart) + rampIn, piece.end)
                     leash = canvasCursor(atTimeline: lookAhead) ?? canvasCursor(atTimeline: t) ?? piece.focus
                 }
-                if var current = leash, let pointer = canvasCursor(atTimeline: t) {
+                // Zooming in heads for where the pointer lands; the pointer
+                // on its way there doesn't pull the aim around.
+                if !rampingIn, var current = leash, let pointer = canvasCursor(atTimeline: t) {
                     // Dead zone: small moves near the middle don't move the
                     // camera; leaving it drags the aim along.
                     let dead = 0.26 / s
@@ -346,6 +360,8 @@ final class VideoCameraTrack: @unchecked Sendable {
             }
 
             if chainBlend == nil { panOrigin = nil }
+            /// The shot's center at the held scale.
+            var shotCenter: CGPoint?
             if let blend = chainBlend {
                 let from: CGPoint
                 if let origin = panOrigin, origin.from == blend.from.start, origin.to == blend.to.start {
@@ -363,6 +379,13 @@ final class VideoCameraTrack: @unchecked Sendable {
                 aimTarget = CGPoint(
                     x: VideoCameraEasing.lerp(from.x, to.x, blend.progress),
                     y: VideoCameraEasing.lerp(from.y, to.y, blend.progress)
+                )
+                // Between the two shots' framings, so a pan that also changes
+                // the zoom stays one straight move.
+                let progress = VideoCameraEasing.windowProgress(from: blend.from.scale, to: blend.to.scale, at: held, fallback: blend.progress)
+                shotCenter = CGPoint(
+                    x: VideoCameraEasing.lerp(VideoCameraState.clampedCenter(Double(from.x), scale: blend.from.scale), VideoCameraState.clampedCenter(Double(to.x), scale: blend.to.scale), progress),
+                    y: VideoCameraEasing.lerp(VideoCameraState.clampedCenter(Double(from.y), scale: blend.from.scale), VideoCameraState.clampedCenter(Double(to.y), scale: blend.to.scale), progress)
                 )
                 springPosition = aimTarget
                 springVelocity = .zero
@@ -399,9 +422,17 @@ final class VideoCameraTrack: @unchecked Sendable {
                 aimTarget = frozenAim ?? aimTarget
             }
 
+            // Zooming in and out moves straight between the full frame and
+            // the shot. Clamping the aim at every scale instead pinned the
+            // camera to the canvas edge, then let go partway in: a bend.
+            let shot = shotCenter ?? CGPoint(
+                x: VideoCameraState.clampedCenter(Double(aimTarget.x), scale: held),
+                y: VideoCameraState.clampedCenter(Double(aimTarget.y), scale: held)
+            )
+            let zoomed = VideoCameraEasing.windowProgress(from: 1, to: held, at: scale, fallback: 1)
             scales[index] = scale
-            xs[index] = VideoCameraState.clampedCenter(Double(aimTarget.x), scale: scale)
-            ys[index] = VideoCameraState.clampedCenter(Double(aimTarget.y), scale: scale)
+            xs[index] = VideoCameraState.clampedCenter(VideoCameraEasing.lerp(VideoCameraState.rest.centerX, Double(shot.x), zoomed), scale: scale)
+            ys[index] = VideoCameraState.clampedCenter(VideoCameraEasing.lerp(VideoCameraState.rest.centerY, Double(shot.y), zoomed), scale: scale)
         }
         return VideoCameraTrack(duration: timelineDuration, scales: scales, xs: xs, ys: ys)
     }

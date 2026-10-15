@@ -293,6 +293,83 @@ final class VideoDemoProjectTests: XCTestCase {
         }
     }
 
+    /// The canvas point that stays put on screen while the camera zooms
+    /// between the full frame and a shot. One straight zoom keeps it fixed.
+    private func zoomAnchor(_ state: VideoCameraState) -> CGPoint {
+        let s = state.scale
+        return CGPoint(x: (s * state.centerX - 0.5) / (s - 1), y: (s * state.centerY - 0.5) / (s - 1))
+    }
+
+    func testZoomMovesStraightTowardTheShot() {
+        // Issue #27: a shot near the edge swung toward the canvas corner
+        // first, then stopped panning partway in while the zoom kept going.
+        let project = project()
+        let segments = project.timelineSegments(totalDuration: 10)
+        let region = VideoZoomRegion(start: 1, end: 5, scale: 2.5, followsCursor: false, focusX: 0.62, focusY: 0.3)
+        let track = VideoCameraTrack.build(regions: [region], segments: segments, timelineDuration: 10, speed: .smooth, stage: CGRect(x: 0, y: 0, width: 1, height: 1), cursor: nil)
+        let landed = track.state(at: 3)
+        XCTAssertEqual(landed.scale, 2.5, accuracy: 0.001)
+        XCTAssertEqual(landed.centerX, 0.62, accuracy: 0.001)
+        XCTAssertEqual(landed.centerY, 0.3, accuracy: 0.001)
+        let anchor = zoomAnchor(landed)
+        var checked = 0
+        for frame in 60...360 {
+            let state = track.state(at: Double(frame) / 60)
+            guard state.scale > 1.02 else { continue }
+            let point = zoomAnchor(state)
+            XCTAssertEqual(point.x, anchor.x, accuracy: 0.002, "zoom in and out at \(Double(frame) / 60) s")
+            XCTAssertEqual(point.y, anchor.y, accuracy: 0.002, "zoom in and out at \(Double(frame) / 60) s")
+            checked += 1
+        }
+        XCTAssertGreaterThan(checked, 200)
+    }
+
+    func testZoomInHeadsForWhereThePointerLands() {
+        let project = project()
+        let segments = project.timelineSegments(totalDuration: 10)
+        let region = VideoZoomRegion(start: 1, end: 6, scale: 2, followsCursor: true)
+        let landing = 1 + VideoCameraTrack.transitionDuration(scale: 2, speed: .smooth)
+        // The pointer travels in from the far corner and arrives as the zoom
+        // lands: the camera goes straight there instead of trailing it.
+        let pointer: (Double) -> CGPoint? = { t in
+            let p = min(max((t - 0.8) / (landing - 0.8), 0), 1)
+            return CGPoint(x: 0.1 + 0.55 * p, y: 0.9 - 0.55 * p)
+        }
+        let track = VideoCameraTrack.build(regions: [region], segments: segments, timelineDuration: 10, speed: .smooth, stage: CGRect(x: 0, y: 0, width: 1, height: 1), cursor: pointer)
+        let landed = track.state(at: landing + 0.05)
+        XCTAssertEqual(landed.scale, 2, accuracy: 0.001)
+        XCTAssertEqual(landed.centerX, 0.65, accuracy: 0.001)
+        XCTAssertEqual(landed.centerY, 0.35, accuracy: 0.001)
+        let anchor = zoomAnchor(landed)
+        for frame in 60...Int(landing * 60) {
+            let state = track.state(at: Double(frame) / 60)
+            guard state.scale > 1.02 else { continue }
+            let point = zoomAnchor(state)
+            XCTAssertEqual(point.x, anchor.x, accuracy: 0.002, "zoom in at \(Double(frame) / 60) s")
+            XCTAssertEqual(point.y, anchor.y, accuracy: 0.002, "zoom in at \(Double(frame) / 60) s")
+        }
+    }
+
+    func testChainedPanThatChangesTheZoomStaysStraight() {
+        let project = project()
+        let segments = project.timelineSegments(totalDuration: 10)
+        let a = VideoZoomRegion(start: 1, end: 4, scale: 1.5, followsCursor: false, focusX: 0.4, focusY: 0.5)
+        let b = VideoZoomRegion(start: 4.6, end: 8, scale: 2.5, followsCursor: false, focusX: 0.75, focusY: 0.3)
+        let track = VideoCameraTrack.build(regions: [a, b], segments: segments, timelineDuration: 10, speed: .smooth, stage: CGRect(x: 0, y: 0, width: 1, height: 1), cursor: nil)
+        let from = track.state(at: 3)
+        let to = track.state(at: 5.5)
+        XCTAssertEqual(from.centerX, 0.4, accuracy: 0.001)
+        XCTAssertEqual(to.centerX, 0.75, accuracy: 0.001)
+        // Pan window 3.75 → 4.85 s: the center moves in step with the
+        // window size, so the framing slides straight from shot to shot.
+        for frame in 225...291 {
+            let state = track.state(at: Double(frame) / 60)
+            let progress = (1 / from.scale - 1 / state.scale) / (1 / from.scale - 1 / to.scale)
+            XCTAssertEqual(state.centerX, from.centerX + (to.centerX - from.centerX) * progress, accuracy: 0.002, "pan at \(Double(frame) / 60) s")
+            XCTAssertEqual(state.centerY, from.centerY + (to.centerY - from.centerY) * progress, accuracy: 0.002, "pan at \(Double(frame) / 60) s")
+        }
+    }
+
     func testFollowCameraKeepsThePointerInView() {
         let project = project()
         let segments = project.timelineSegments(totalDuration: 10)
