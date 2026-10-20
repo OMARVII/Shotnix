@@ -378,8 +378,10 @@ struct VideoTimelineSurface: View {
                 switch phase {
                 case .active(let location):
                     hover.update(time: time(location.x), overZoomTrack: location.y >= zoomTop && location.y <= zoomTop + M.zoomTrackHeight)
+                    scroller.pointerIsOver(true)
                 case .ended:
                     hover.update(time: nil, overZoomTrack: false)
+                    scroller.pointerIsOver(false)
                 }
             }
             .gesture(
@@ -416,7 +418,10 @@ struct VideoTimelineSurface: View {
             let anchor = scroller.anchor(playhead: model.clock.time)
             let scale = pointsPerSecond
             scroller.pointsPerSecond = scale
-            DispatchQueue.main.async { scroller.restore(anchor, pointsPerSecond: scale) }
+            DispatchQueue.main.async {
+                scroller.restore(anchor, pointsPerSecond: scale)
+                scroller.revealScrollers(force: true)
+            }
         }
         .onChange(of: duration) { _ in scroller.pointsPerSecond = pointsPerSecond }
     }

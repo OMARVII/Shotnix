@@ -1,4 +1,5 @@
 import AppKit
+import ScreenCaptureKit
 import SwiftUI
 import XCTest
 @testable import ShotnixCore
@@ -146,6 +147,65 @@ final class VideoTimelineInteractionTests: XCTestCase {
         let clip = try XCTUnwrap(model.project.timelineClips.first)
         XCTAssertEqual(clip.sourceEnd, 8, accuracy: 0.06, "200 pt left = 2 s trimmed, even as the timeline shrinks")
         XCTAssertNil(model.layoutDurationLock)
+    }
+
+
+    /// Gray scroll-bar pixels along the window's bottom edge, as on screen.
+    private func scrollBarPixels() async throws -> Int {
+        let window = try XCTUnwrap(self.window)
+        let content = try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: false)
+        let target = try XCTUnwrap(content.windows.first { $0.windowID == CGWindowID(window.windowNumber) })
+        let config = SCStreamConfiguration()
+        config.width = Int(target.frame.width)
+        config.height = Int(target.frame.height)
+        let image = try await SCScreenshotManager.captureImage(contentFilter: SCContentFilter(desktopIndependentWindow: target), configuration: config)
+        let rep = NSBitmapImageRep(cgImage: image)
+        var count = 0
+        for y in (rep.pixelsHigh - 17)..<rep.pixelsHigh {
+            for x in 0..<rep.pixelsWide {
+                guard let color = rep.colorAt(x: x, y: y)?.usingColorSpace(.sRGB) else { continue }
+                let r = color.redComponent, g = color.greenComponent, b = color.blueComponent
+                if abs(r - g) < 0.05, abs(g - b) < 0.05, r > 0.35 { count += 1 }
+            }
+        }
+        return count
+    }
+
+    func testZoomedTimelineShowsItsScrollBarUnderThePointer() async throws {
+        // Issue #28: overlay scroll bars only showed while scrolling, so a
+        // zoomed-in timeline gave no sign that it scrolls.
+        try XCTSkipIf(CGDisplayIsAsleep(CGMainDisplayID()) != 0, "The display is asleep")
+        try XCTSkipIf(NSScroller.preferredScrollerStyle == .legacy, "Scroll bars are always shown on this Mac")
+        let model = try await makeModel()
+        await mount(model)
+        model.timelineZoom = 3
+        await settle(0.3)
+        guard (try? await scrollBarPixels()) != nil else { throw XCTSkip("No screen capture permission") }
+        // The real pointer resting on this window would keep them up.
+        try XCTSkipIf(window?.frame.contains(NSEvent.mouseLocation) == true, "The pointer is over the test window")
+        let afterZoom = try await scrollBarPixels()
+        XCTAssertGreaterThan(afterZoom, 40, "zooming in shows the scroll bar once")
+        await settle(2.5)
+        let faded = try await scrollBarPixels()
+        XCTAssertLessThan(faded, 10, "it fades when nothing happens")
+
+        // The pointer over the timeline calls this (synthesized moves can't
+        // reach hover tracking, which follows the real cursor). It stays up
+        // while the pointer rests there, and fades once it leaves.
+        let horizontal = try XCTUnwrap(scrollViews(in: try XCTUnwrap(window?.contentView)).first { ($0.documentView?.frame.width ?? 0) > $0.contentSize.width + 100 })
+        let scroller = VideoTimelineScroller()
+        scroller.attach(horizontal, model: model)
+        scroller.pointerIsOver(true)
+        await settle(0.25)
+        let hovered = try await scrollBarPixels()
+        XCTAssertGreaterThan(hovered, 40, "the pointer over the timeline shows it")
+        await settle(2.5)
+        let resting = try await scrollBarPixels()
+        XCTAssertGreaterThan(resting, 40, "it stays while the pointer rests there")
+        scroller.pointerIsOver(false)
+        await settle(2.5)
+        let left = try await scrollBarPixels()
+        XCTAssertLessThan(left, 10, "it fades once the pointer leaves")
     }
 
     private func scrollViews(in view: NSView) -> [NSScrollView] {

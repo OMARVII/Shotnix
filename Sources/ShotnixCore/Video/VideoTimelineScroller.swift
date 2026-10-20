@@ -14,8 +14,10 @@ final class VideoTimelineScroller {
     var followsPlayhead = true
     private nonisolated(unsafe) var scrollMonitor: Any?
     private nonisolated(unsafe) var observers: [NSObjectProtocol] = []
+    private nonisolated(unsafe) var hoverTimer: Timer?
 
     deinit {
+        hoverTimer?.invalidate()
         if let scrollMonitor { NSEvent.removeMonitor(scrollMonitor) }
         for observer in observers { NotificationCenter.default.removeObserver(observer) }
     }
@@ -99,6 +101,38 @@ final class VideoTimelineScroller {
     func restore(_ anchor: (time: Double, viewportX: CGFloat), pointsPerSecond: CGFloat) {
         self.pointsPerSecond = pointsPerSecond
         scroll(toX: inset + CGFloat(anchor.time) * pointsPerSecond - anchor.viewportX)
+    }
+
+    private var lastReveal = Date.distantPast
+
+    /// Overlay scroll bars only show while scrolling, so a zoomed-in strip
+    /// (or lanes taller than the view) gave no sign it scrolls. They show
+    /// for as long as the pointer is over the timeline, even resting.
+    func pointerIsOver(_ over: Bool) {
+        guard over else {
+            hoverTimer?.invalidate()
+            hoverTimer = nil
+            return
+        }
+        revealScrollers()
+        guard hoverTimer == nil else { return }
+        // A flash lasts about a second: renew it before it fades.
+        hoverTimer = Timer.scheduledTimer(withTimeInterval: 0.6, repeats: true) { [weak self] _ in
+            MainActor.assumeIsolated { self?.revealScrollers(force: true) }
+        }
+    }
+
+    /// Shows the scroll bars that have somewhere to go (after a zoom, once).
+    func revealScrollers(force: Bool = false) {
+        guard let scrollView, force || Date().timeIntervalSince(lastReveal) > 0.5 else { return }
+        lastReveal = Date()
+        if let document = scrollView.documentView, document.frame.width > scrollView.contentView.bounds.width + 1 {
+            scrollView.flashScrollers()
+        }
+        if let outer = scrollView.enclosingScrollView, let document = outer.documentView,
+           document.frame.height > outer.contentView.bounds.height + 1 {
+            outer.flashScrollers()
+        }
     }
 
     func scroll(toX x: CGFloat) {

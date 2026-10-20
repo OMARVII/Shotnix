@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+- **The timeline shows that it scrolls.** Zoomed in, the video editor's timeline only showed its scroll bar while you were scrolling, so nothing told you there was more to the left or right. Now the scroll bar shows whenever the pointer is over the timeline, and once right after you zoom. Lanes too tall for the view show their scroll bar the same way.
+
 ## [0.27.1-beta] - 2026-10-15
 
 ### Fixed
