@@ -1065,7 +1065,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.27.1"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.27.2"
     
     var body: some View {
         PreferencesPane {
@@ -1109,6 +1109,9 @@ struct AboutSettingsView: View {
                 ScrollView {
                     // The release notes stay in English (l10n-ignore); everything around them is localized.
                     Text(verbatim: """
+                    Version 0.27.2
+                    • The timeline shows its scroll bar while the pointer is over it, so you can tell it scrolls
+
                     Version 0.27.1
                     • Zooms move straight to what they show, without bending on the way in
 
