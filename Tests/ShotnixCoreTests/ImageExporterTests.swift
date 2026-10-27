@@ -166,6 +166,47 @@ final class ImageExporterTests: XCTestCase {
         XCTAssertEqual(Settings.screenshotFormat, "webp", "kept where macOS can encode it")
     }
 
+    func testSaveAutomaticallyIsOnForNewInstallsAndUnchangedForEarlierOnes() {
+        func launch(_ setUp: () -> Void) -> Bool {
+            let name = "ShotnixCoreTests.ImageExporter.\(UUID().uuidString)"
+            Settings.defaults = UserDefaults(suiteName: name)!
+            defer { UserDefaults().removePersistentDomain(forName: name) }
+            Settings.didMigrateLegacyToolShortcuts = true // keep this test off KeyboardShortcuts' storage
+            setUp()
+            Settings.migrateCaptureSettingsIfNeeded()
+            // The welcome window marks the install as launched; the next
+            // launch must keep the choice.
+            Settings.hasLaunchedBefore = true
+            Settings.migrateCaptureSettingsIfNeeded()
+            return Settings.afterCaptureSaveAutomatically
+        }
+        XCTAssertTrue(launch {}, "a new install saves files, and still does on its next launch")
+        XCTAssertFalse(launch { Settings.hasLaunchedBefore = true }, "an earlier install keeps saving off")
+        XCTAssertFalse(launch { Settings.captureCount = 12 }, "an earlier install keeps saving off")
+        XCTAssertTrue(launch { Settings.captureCount = 12; Settings.afterCaptureSaveAutomatically = true }, "and keeps it on if it was on")
+        Settings.defaults = defaults
+    }
+
+    func testCardSaveConfirmsTheAutoSavedFileInsteadOfWritingAnother() throws {
+        Settings.autoSaveLocation = dir.path
+        let manager = HistoryManager(storageDir: dir.appendingPathComponent("history", isDirectory: true))
+        let image = Self.makeImage()
+        let item = manager.add(image: image, rect: CGRect(x: 0, y: 0, width: 20, height: 20), type: .area)
+        let card = QuickAccessOverlay.show(image: image, historyItem: item, historyManager: manager, autoSaving: true)
+        defer { card.closeFromCommand() }
+        let autoSaved = dir.appendingPathComponent("Auto.png")
+        try XCTUnwrap(ImageExporter.pngData(from: try XCTUnwrap(image.bestCGImage))).write(to: autoSaved)
+
+        // Save pressed while the automatic save is still writing waits for it.
+        card.perform(NSSelectorFromString("saveAction"))
+        card.autoSaveFinished(autoSaved)
+        card.perform(NSSelectorFromString("saveAction"))
+        RunLoop.main.run(until: Date().addingTimeInterval(0.6))
+
+        let files = try FileManager.default.contentsOfDirectory(atPath: dir.path).filter { $0 != "history" }
+        XCTAssertEqual(files, ["Auto.png"], "Save doesn't write a second copy")
+    }
+
     func testSavedToastNamesTheFileActuallyWritten() {
         let url = URL(fileURLWithPath: "/Users/someone/Desktop/Shot 2.png")
         XCTAssertTrue(QuickAccessOverlay.savedMessage(for: url).contains("Shot 2.png"))

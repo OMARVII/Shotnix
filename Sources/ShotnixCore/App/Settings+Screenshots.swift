@@ -69,6 +69,12 @@ extension Settings {
         if screenshotFormat == "webp" && !webPSupported {
             screenshotFormat = "png"
         }
+        // Save automatically became the default; earlier installs keep it
+        // off unless they turned it on. Stored either way, so a new install
+        // isn't mistaken for an old one on its next launch.
+        if defaults.object(forKey: "afterCaptureSaveAutomatically") == nil {
+            afterCaptureSaveAutomatically = !isExistingInstall
+        }
         ShotnixShortcut.migrateLegacyToolShortcutsIfNeeded()
     }
 }

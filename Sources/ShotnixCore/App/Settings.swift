@@ -119,8 +119,14 @@ enum Settings {
         set { defaults.set(newValue, forKey: "afterCaptureCopyToClipboard") }
     }
 
+    /// On for new installs, like the Mac's own screenshots, so a shot is
+    /// never only in History without the user knowing. Installs from before
+    /// keep what they had (see `migrateCaptureSettingsIfNeeded`).
     static var afterCaptureSaveAutomatically: Bool {
-        get { defaults.bool(forKey: "afterCaptureSaveAutomatically") }
+        get {
+            if defaults.object(forKey: "afterCaptureSaveAutomatically") == nil { return true }
+            return defaults.bool(forKey: "afterCaptureSaveAutomatically")
+        }
         set { defaults.set(newValue, forKey: "afterCaptureSaveAutomatically") }
     }
 

@@ -6,7 +6,11 @@
 - **Outlined text.** Text in the screenshot editor can get an outline, so a label stays easy to spot wherever it sits on the screenshot. Turn it on with the new Outline button next to Bold. The edge is black around colored and light text and white around dark text, and new text keeps your choice.
 
 ### Changed
+- **New installs save screenshots as files.** Save automatically is now on from the start, so a screenshot lands on your Desktop, or the folder you pick in Settings > Screenshots, as well as on the clipboard and in History, like the Mac's own screenshots. If you used Shotnix before, your setting stays as it was.
 - **Shotnix says where an unsaved screenshot went.** Screenshots go to the clipboard and History unless you save them, so when the preview closed by itself it could look like the screenshot was gone. The first time that happens, Shotnix now says it's in History, opens History with a click, and points to Save automatically for anyone who wants a file every time.
+
+### Fixed
+- **Save on the preview doesn't make a second copy.** With Save automatically on, pressing Save on the preview after a screenshot wrote the same screenshot again under a new name. Now it shows the file that was already saved. Delete on the preview also moves that file to the Trash, so a deleted screenshot is gone from your folder too.
 
 ## [0.27.2-beta] - 2026-10-20
 

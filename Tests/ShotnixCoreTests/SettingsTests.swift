@@ -27,7 +27,7 @@ final class SettingsTests: XCTestCase {
         XCTAssertTrue(Settings.playSounds)
         XCTAssertTrue(Settings.afterCaptureShowOverlay)
         XCTAssertTrue(Settings.afterCaptureCopyToClipboard)
-        XCTAssertFalse(Settings.afterCaptureSaveAutomatically)
+        XCTAssertTrue(Settings.afterCaptureSaveAutomatically, "a new install saves files like the Mac's own screenshots")
         XCTAssertEqual(Settings.screenshotFormat, "png")
         XCTAssertEqual(Settings.jpegQuality, 0.95, accuracy: 0.001)
         XCTAssertEqual(Settings.recordingFPS, 60)
@@ -54,6 +54,7 @@ final class SettingsTests: XCTestCase {
 
     @MainActor
     func testHistoryTipShowsOnceAndOnlyWhenNothingSavesTheShot() {
+        Settings.afterCaptureSaveAutomatically = false
         XCTAssertTrue(QuickAccessOverlay.shouldShowHistoryTip())
         Settings.afterCaptureSaveAutomatically = true
         XCTAssertFalse(QuickAccessOverlay.shouldShowHistoryTip(), "the shot is already in the folder")

@@ -878,11 +878,12 @@ final class CaptureEngine {
         if Settings.afterCaptureCopyToClipboard {
             ImageExporter.copyToClipboardAsync(image: image)
         }
+        let card = Settings.afterCaptureShowOverlay
+            ? QuickAccessOverlay.show(image: image, historyItem: item, historyManager: historyManager,
+                                      autoSaving: Settings.afterCaptureSaveAutomatically)
+            : nil
         if Settings.afterCaptureSaveAutomatically {
-            Self.autoSave(image, on: screen)
-        }
-        if Settings.afterCaptureShowOverlay {
-            QuickAccessOverlay.show(image: image, historyItem: item, historyManager: historyManager)
+            Self.autoSave(image, on: screen) { url in card?.autoSaveFinished(url) }
         }
 
         if !Settings.onboardingCompleted {
@@ -893,9 +894,10 @@ final class CaptureEngine {
 
     /// Auto-save never replaces an existing file, and a failed save (folder
     /// gone read-only, disk full) says so instead of silently losing the shot.
-    private static func autoSave(_ image: NSImage, on screen: NSScreen?) {
+    private static func autoSave(_ image: NSImage, on screen: NSScreen?, completion: @escaping (URL?) -> Void) {
         let directory = URL(fileURLWithPath: Settings.autoSaveLocation, isDirectory: true)
         ImageExporter.autoSave(image: image, in: directory) { result in
+            completion(try? result.get())
             guard case .failure(let error) = result else { return }
             ToastWindow.show(
                 message: ImageExporter.autoSaveFailureMessage(for: error, directory: directory),

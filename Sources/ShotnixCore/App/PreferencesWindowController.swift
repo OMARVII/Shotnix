@@ -435,7 +435,7 @@ struct GeneralSettingsView: View {
     @AppStorage("showMenuBarIcon") var showMenuBarIcon = true
     @AppStorage("hideDesktopIconsWhileCapturing") var hideDesktopIcons = false
     @AppStorage("afterCaptureShowOverlay") var showOverlay = true
-    @AppStorage("afterCaptureSaveAutomatically") var saveAutomatically = false
+    @AppStorage("afterCaptureSaveAutomatically") var saveAutomatically = true
     @AppStorage("overlayOnLeft") var overlayOnLeft = true
     @AppStorage("overlayTimeout") var overlayTimeout: Double = 6.0
     

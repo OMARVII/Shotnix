@@ -7,9 +7,14 @@ import QuartzCore
 @MainActor
 final class QuickAccessOverlay {
 
-    static func show(image: NSImage, historyItem: HistoryItem, historyManager: HistoryManager) {
+    /// - Parameter autoSaving: Save automatically is writing this capture;
+    ///   the card hears the result through `autoSaveFinished`.
+    @discardableResult
+    static func show(image: NSImage, historyItem: HistoryItem, historyManager: HistoryManager, autoSaving: Bool = false) -> QuickAccessWindow {
         let window = QuickAccessWindow(image: image, historyItem: historyItem, historyManager: historyManager)
+        window.autoSaveState = autoSaving ? .writing : .none
         window.show()
+        return window
     }
 
     /// Once, and only while captures aren't saved to a folder by themselves.
@@ -727,7 +732,49 @@ final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
         }
     }
 
+    // MARK: – Save automatically
+
+    enum AutoSaveState: Equatable {
+        case none
+        case writing
+        case saved(URL)
+    }
+
+    /// What Save automatically did with this capture. Once it wrote a
+    /// file, Save points at that file instead of writing a second copy,
+    /// and Delete moves it to the Trash along with the History entry.
+    var autoSaveState = AutoSaveState.none
+    private var saveAfterAutoSave = false
+    private var deleteAfterAutoSave = false
+
+    func autoSaveFinished(_ url: URL?) {
+        autoSaveState = url.map(AutoSaveState.saved) ?? .none
+        if deleteAfterAutoSave {
+            deleteAfterAutoSave = false
+            trashAutoSavedFile()
+        } else if saveAfterAutoSave {
+            saveAfterAutoSave = false
+            saveAction()
+        }
+    }
+
+    private func trashAutoSavedFile() {
+        guard case .saved(let url) = autoSaveState else { return }
+        autoSaveState = .none
+        try? FileManager.default.trashItem(at: url, resultingItemURL: nil)
+    }
+
     @objc private func saveAction() {
+        switch autoSaveState {
+        case .saved(let url):
+            confirmSaved(url)
+            return
+        case .writing:
+            saveAfterAutoSave = true
+            return
+        case .none:
+            break
+        }
         let directory = URL(fileURLWithPath: Settings.autoSaveLocation, isDirectory: true)
         ImageExporter.autoSave(image: image, in: directory) { [weak self] result in
             guard let self else { return }
@@ -740,19 +787,23 @@ final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
                     action: { PreferencesWindowController.shared.show(tab: .screenshots) }
                 )
             case .success(let savedURL):
-                self.showConfirmation(icon: "checkmark") { [weak self] in
-                    guard let self else { return }
-                    self.animatedClose()
-                    // Clickable toast — reveals the file actually written (its
-                    // name may have gained " 2", or .png for an unwritable WebP).
-                    ToastWindow.show(
-                        message: QuickAccessOverlay.savedMessage(for: savedURL),
-                        duration: 3.0,
-                        on: self.captureScreen,
-                        action: { NSWorkspace.shared.activateFileViewerSelecting([savedURL]) }
-                    )
-                }
+                self.confirmSaved(savedURL)
             }
+        }
+    }
+
+    private func confirmSaved(_ savedURL: URL) {
+        showConfirmation(icon: "checkmark") { [weak self] in
+            guard let self else { return }
+            self.animatedClose()
+            // Clickable toast — reveals the file actually written (its
+            // name may have gained " 2", or .png for an unwritable WebP).
+            ToastWindow.show(
+                message: QuickAccessOverlay.savedMessage(for: savedURL),
+                duration: 3.0,
+                on: self.captureScreen,
+                action: { NSWorkspace.shared.activateFileViewerSelecting([savedURL]) }
+            )
         }
     }
 
@@ -852,6 +903,11 @@ final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
 
     @objc private func deleteAction() {
         historyManager.delete(historyItem)
+        if autoSaveState == .writing {
+            deleteAfterAutoSave = true
+        } else {
+            trashAutoSavedFile()
+        }
         animatedClose()
     }
 
