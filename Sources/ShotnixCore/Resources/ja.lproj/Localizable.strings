@@ -1342,6 +1342,8 @@
 	<string>保存期間を“最新100件”にすると、それより古い%lld件のスクリーンショットが今すぐ履歴から削除されます。この操作は取り消せません。</string>
 	<key>Keeping last 500 captures removes %lld older captures from History now. This can't be undone.</key>
 	<string>保存期間を“最新500件”にすると、それより古い%lld件のスクリーンショットが今すぐ履歴から削除されます。この操作は取り消せません。</string>
+	<key>Kept in History, not saved as a file. Click to open History, or turn on Save automatically in Settings.</key>
+	<string>履歴に残してあり、ファイルとしては保存されていません。クリックすると履歴を開きます。設定で“自動的に保存”をオンにすることもできます。</string>
 	<key>Keyboard</key>
 	<string>キーボード</string>
 	<key>Keyboard Shortcuts</key>

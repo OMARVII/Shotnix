@@ -35,6 +35,12 @@ enum Settings {
         set { defaults.set(newValue, forKey: "didShowReadyToast") }
     }
 
+    /// The one-time note that a screenshot left unsaved stays in History.
+    static var didShowHistoryTip: Bool {
+        get { defaults.bool(forKey: "didShowHistoryTip") }
+        set { defaults.set(newValue, forKey: "didShowHistoryTip") }
+    }
+
     /// True once the setup checklist is done — either the user took their
     /// first screenshot or explicitly skipped setup. Until then the welcome
     /// checklist reappears on every launch.

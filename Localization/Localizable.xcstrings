@@ -30770,6 +30770,47 @@
         }
       }
     },
+    "Kept in History, not saved as a file. Click to open History, or turn on Save automatically in Settings." : {
+      "comment" : "One-time toast when a screenshot's preview closes by itself and nothing saved it to a folder",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im Verlauf behalten, nicht als Datei gesichert. Klicke, um den Verlauf zu öffnen, oder aktiviere „Automatisch sichern“ in den Einstellungen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capture conservée dans l’historique, sans fichier enregistré. Cliquez pour ouvrir l’historique, ou activez « Enregistrer automatiquement » dans les Réglages."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "履歴に残してあり、ファイルとしては保存されていません。クリックすると履歴を開きます。設定で“自動的に保存”をオンにすることもできます。"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Снимок остался в истории, но не сохранен как файл. Нажмите, чтобы открыть историю, или включите «Сохранять автоматически» в настройках."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Знімок залишився в історії, але не збережений як файл. Клацніть, щоб відкрити історію, або увімкніть «Зберігати автоматично» в параметрах."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已保留在历史记录中，未存储为文件。点按以打开历史记录，或在“设置”中打开“自动存储”。"
+          }
+        }
+      }
+    },
     "Keyboard" : {
       "comment" : "VoiceOver: the conflict alert's icon",
       "localizations" : {

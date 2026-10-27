@@ -1256,6 +1256,8 @@
 	<string>Зберігати знімки</string>
 	<key>Keep editing — the words appear here when Shotnix is done listening.</key>
 	<string>Редагуйте далі — слова з’являться тут, щойно Shotnix закінчить слухати.</string>
+	<key>Kept in History, not saved as a file. Click to open History, or turn on Save automatically in Settings.</key>
+	<string>Знімок залишився в історії, але не збережений як файл. Клацніть, щоб відкрити історію, або увімкніть «Зберігати автоматично» в параметрах.</string>
 	<key>Keyboard</key>
 	<string>Клавіатура</string>
 	<key>Keyboard Shortcuts</key>

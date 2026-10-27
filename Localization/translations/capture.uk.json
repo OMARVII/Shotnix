@@ -294,6 +294,9 @@
   "Keep" : {
     "uk" : "Залишити"
   },
+  "Kept in History, not saved as a file. Click to open History, or turn on Save automatically in Settings." : {
+    "uk" : "Знімок залишився в історії, але не збережений як файл. Клацніть, щоб відкрити історію, або увімкніть «Зберігати автоматично» в параметрах."
+  },
   "Keyboard shortcuts are on" : {
     "uk" : "Клавіатурні скорочення ввімкнено"
   },

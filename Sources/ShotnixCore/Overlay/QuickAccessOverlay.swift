@@ -12,6 +12,11 @@ final class QuickAccessOverlay {
         window.show()
     }
 
+    /// Once, and only while captures aren't saved to a folder by themselves.
+    static func shouldShowHistoryTip() -> Bool {
+        !Settings.didShowHistoryTip && !Settings.afterCaptureSaveAutomatically
+    }
+
     /// Post-save toast text: the file actually written, its folder, and the
     /// reveal affordance hint.
     static func savedMessage(for url: URL) -> String {
@@ -430,7 +435,7 @@ final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
             animateTimeoutProgress(duration: timeout)
 
             dismissTimer = Timer.scheduledTimer(withTimeInterval: timeout, repeats: false) { [weak self] _ in
-                DispatchQueue.main.async { self?.animatedClose() }
+                DispatchQueue.main.async { self?.closeAfterTimeout() }
             }
         }
     }
@@ -478,7 +483,7 @@ final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
             if remaining > 0 {
                 animateTimeoutProgress(duration: remaining)
                 dismissTimer = Timer.scheduledTimer(withTimeInterval: remaining, repeats: false) { [weak self] _ in
-                    DispatchQueue.main.async { self?.animatedClose() }
+                    DispatchQueue.main.async { self?.closeAfterTimeout() }
                 }
             }
         }
@@ -852,6 +857,21 @@ final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
 
     @objc private func dismissAction() {
         animatedClose()
+    }
+
+    /// The card left on its own, so the shot may look gone to someone used
+    /// to finding a file afterwards. The first time, say where it went.
+    private func closeAfterTimeout() {
+        guard !isClosing else { return }
+        animatedClose()
+        guard QuickAccessOverlay.shouldShowHistoryTip() else { return }
+        Settings.didShowHistoryTip = true
+        ToastWindow.show(
+            message: L("Kept in History, not saved as a file. Click to open History, or turn on Save automatically in Settings."),
+            duration: 8,
+            on: captureScreen,
+            action: { [historyManager] in HistoryPanelController.shared.show(historyManager: historyManager) }
+        )
     }
 
     func show() {

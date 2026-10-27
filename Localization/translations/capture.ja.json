@@ -254,6 +254,9 @@
   "Keep" : {
     "ja" : "続ける"
   },
+  "Kept in History, not saved as a file. Click to open History, or turn on Save automatically in Settings." : {
+    "ja" : "履歴に残してあり、ファイルとしては保存されていません。クリックすると履歴を開きます。設定で“自動的に保存”をオンにすることもできます。"
+  },
   "Keyboard shortcuts are on" : {
     "ja" : "キーボードショートカットの表示がオンになりました"
   },

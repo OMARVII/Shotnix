@@ -1260,6 +1260,8 @@
 	<string>Bildschirmfotos behalten</string>
 	<key>Keep editing — the words appear here when Shotnix is done listening.</key>
 	<string>Bearbeite ruhig weiter – die Wörter erscheinen hier, sobald Shotnix fertig zugehört hat.</string>
+	<key>Kept in History, not saved as a file. Click to open History, or turn on Save automatically in Settings.</key>
+	<string>Im Verlauf behalten, nicht als Datei gesichert. Klicke, um den Verlauf zu öffnen, oder aktiviere „Automatisch sichern“ in den Einstellungen.</string>
 	<key>Keyboard</key>
 	<string>Tastatur</string>
 	<key>Keyboard Shortcuts</key>

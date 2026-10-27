@@ -52,6 +52,16 @@ final class SettingsTests: XCTestCase {
         XCTAssertFalse(Settings.annotationTextBold)
     }
 
+    @MainActor
+    func testHistoryTipShowsOnceAndOnlyWhenNothingSavesTheShot() {
+        XCTAssertTrue(QuickAccessOverlay.shouldShowHistoryTip())
+        Settings.afterCaptureSaveAutomatically = true
+        XCTAssertFalse(QuickAccessOverlay.shouldShowHistoryTip(), "the shot is already in the folder")
+        Settings.afterCaptureSaveAutomatically = false
+        Settings.didShowHistoryTip = true
+        XCTAssertFalse(QuickAccessOverlay.shouldShowHistoryTip(), "shown once")
+    }
+
     func testRecordingSettingsClampInvalidValues() {
         Settings.recordingFPS = 99
         Settings.recordingQuality = "cinematic"

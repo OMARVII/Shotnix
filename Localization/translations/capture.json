@@ -1431,5 +1431,11 @@
     "de": "✓ Text kopiert · %@ – für Optionen klicken",
     "fr": "✓ Texte copié · %@ — cliquez pour les options",
     "zh-Hans": "✓ 已拷贝文字 · %@ — 点按查看选项"
+  },
+  "Kept in History, not saved as a file. Click to open History, or turn on Save automatically in Settings.": {
+    "comment": "One-time toast when a screenshot's preview closes by itself and nothing saved it to a folder",
+    "de": "Im Verlauf behalten, nicht als Datei gesichert. Klicke, um den Verlauf zu öffnen, oder aktiviere „Automatisch sichern“ in den Einstellungen.",
+    "fr": "Capture conservée dans l’historique, sans fichier enregistré. Cliquez pour ouvrir l’historique, ou activez « Enregistrer automatiquement » dans les Réglages.",
+    "zh-Hans": "已保留在历史记录中，未存储为文件。点按以打开历史记录，或在“设置”中打开“自动存储”。"
   }
 }

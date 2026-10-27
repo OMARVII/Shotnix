@@ -1342,6 +1342,8 @@
 	<string>选择“最近 100 张截屏”将立即从历史记录中移除 %lld 张较早的截屏。此操作无法撤销。</string>
 	<key>Keeping last 500 captures removes %lld older captures from History now. This can't be undone.</key>
 	<string>选择“最近 500 张截屏”将立即从历史记录中移除 %lld 张较早的截屏。此操作无法撤销。</string>
+	<key>Kept in History, not saved as a file. Click to open History, or turn on Save automatically in Settings.</key>
+	<string>已保留在历史记录中，未存储为文件。点按以打开历史记录，或在“设置”中打开“自动存储”。</string>
 	<key>Keyboard</key>
 	<string>键盘</string>
 	<key>Keyboard Shortcuts</key>

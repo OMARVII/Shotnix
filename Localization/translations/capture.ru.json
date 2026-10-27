@@ -294,6 +294,9 @@
   "Keep" : {
     "ru" : "Оставить"
   },
+  "Kept in History, not saved as a file. Click to open History, or turn on Save automatically in Settings." : {
+    "ru" : "Снимок остался в истории, но не сохранен как файл. Нажмите, чтобы открыть историю, или включите «Сохранять автоматически» в настройках."
+  },
   "Keyboard shortcuts are on" : {
     "ru" : "Сочетания клавиш включены"
   },

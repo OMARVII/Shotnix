@@ -1254,6 +1254,8 @@
 	<string>Conserver les captures</string>
 	<key>Keep editing — the words appear here when Shotnix is done listening.</key>
 	<string>Continuez à modifier — les mots apparaîtront ici quand Shotnix aura fini d’écouter.</string>
+	<key>Kept in History, not saved as a file. Click to open History, or turn on Save automatically in Settings.</key>
+	<string>Capture conservée dans l’historique, sans fichier enregistré. Cliquez pour ouvrir l’historique, ou activez « Enregistrer automatiquement » dans les Réglages.</string>
 	<key>Keyboard</key>
 	<string>Clavier</string>
 	<key>Keyboard Shortcuts</key>
