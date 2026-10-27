@@ -1738,6 +1738,8 @@
 	<string>出点提前</string>
 	<key>Out later</key>
 	<string>出点延后</string>
+	<key>Outline</key>
+	<string>轮廓</string>
 	<key>Outro</key>
 	<string>片尾</string>
 	<key>Outro card</key>

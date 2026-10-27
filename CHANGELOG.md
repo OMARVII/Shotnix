@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- **Outlined text.** Text in the screenshot editor can get an outline, so a label stays easy to spot wherever it sits on the screenshot. Turn it on with the new Outline button next to Bold. The edge is black around colored and light text and white around dark text, and new text keeps your choice.
+
 ## [0.27.2-beta] - 2026-10-20
 
 ### Fixed

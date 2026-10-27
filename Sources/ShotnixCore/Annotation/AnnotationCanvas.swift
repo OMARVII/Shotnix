@@ -60,6 +60,9 @@ final class AnnotationCanvas: NSView {
     var activeTextBold = true {
         didSet { Settings.annotationTextBold = activeTextBold }
     }
+    var activeTextOutlined = false {
+        didSet { Settings.annotationTextOutlined = activeTextOutlined }
+    }
     var activeRedactionStrength = AnnotationRedaction.defaultStrength {
         didSet { Settings.annotationRedactionStrength = Double(activeRedactionStrength) }
     }
@@ -222,9 +225,9 @@ final class AnnotationCanvas: NSView {
 
     private func setHoveredObject(_ id: UUID?) {
         guard hoveredObjectID != id else { return }
-        let previous = hoveredObjectID.flatMap { old in objects.first(where: { $0.id == old })?.bounds }
+        let previous = hoveredObjectID.flatMap { old in objects.first(where: { $0.id == old }).map(selectionFrame(for:)) }
         hoveredObjectID = id
-        let current = id.flatMap { new in objects.first(where: { $0.id == new })?.bounds }
+        let current = id.flatMap { new in objects.first(where: { $0.id == new }).map(selectionFrame(for:)) }
         for rect in [previous, current].compactMap({ $0 }) {
             setNeedsDisplay(documentRect: rect, padding: 8 * chromeScale)
         }
@@ -330,6 +333,7 @@ final class AnnotationCanvas: NSView {
     /// The rect selection handles surround.
     private func selectionFrame(for obj: any AnnotationObject) -> CGRect {
         if let callout = obj as? CalloutAnnotation { return callout.bubbleRect }
+        if let text = obj as? TextAnnotation { return text.visibleBounds }
         return obj.bounds
     }
 
@@ -1182,6 +1186,7 @@ final class AnnotationCanvas: NSView {
         let originalText: String
         let originalFontSize: CGFloat
         let originalBold: Bool
+        let originalOutlined: Bool
         let originalColor: NSColor
     }
 
@@ -1204,6 +1209,7 @@ final class AnnotationCanvas: NSView {
         annotation.color = activeColor
         annotation.fontSize = activeFontSize
         annotation.isBold = activeTextBold
+        annotation.isOutlined = activeTextOutlined
         // The first line sits centered on the click.
         annotation.origin.y -= annotation.textSize.height / 2
         objects.append(annotation)
@@ -1220,13 +1226,15 @@ final class AnnotationCanvas: NSView {
             editor = AnnotationTextEditor(font: text.font, color: text.color)
             editor.string = text.text
             session = TextEditingSession(target: text, isNew: isNew, originalText: text.text,
-                                         originalFontSize: text.fontSize, originalBold: text.isBold, originalColor: text.color)
+                                         originalFontSize: text.fontSize, originalBold: text.isBold,
+                                         originalOutlined: text.isOutlined, originalColor: text.color)
             text.isEditing = true
         case let callout as CalloutAnnotation:
             editor = AnnotationTextEditor(font: callout.font, color: callout.textColor)
             editor.string = callout.text
             session = TextEditingSession(target: callout, isNew: isNew, originalText: callout.text,
-                                         originalFontSize: callout.fontSize, originalBold: callout.isBold, originalColor: callout.color)
+                                         originalFontSize: callout.fontSize, originalBold: callout.isBold,
+                                         originalOutlined: false, originalColor: callout.color)
             callout.isEditing = true
         default:
             return
@@ -1312,7 +1320,7 @@ final class AnnotationCanvas: NSView {
         switch session.target {
         case let annotation as TextAnnotation:
             return annotation.fontSize == session.originalFontSize && annotation.isBold == session.originalBold
-                && annotation.color == session.originalColor
+                && annotation.isOutlined == session.originalOutlined && annotation.color == session.originalColor
         case let callout as CalloutAnnotation:
             return callout.fontSize == session.originalFontSize && callout.isBold == session.originalBold
                 && callout.color == session.originalColor
@@ -1342,6 +1350,7 @@ final class AnnotationCanvas: NSView {
         activeLineWidth = CGFloat(Settings.annotationLastLineWidth)
         activeFontSize = CGFloat(Settings.annotationTextFontSize)
         activeTextBold = Settings.annotationTextBold
+        activeTextOutlined = Settings.annotationTextOutlined
         activeRedactionStrength = CGFloat(Settings.annotationRedactionStrength)
         roundedRectangles = Settings.annotationRoundedRectangles
         spotlightEllipse = Settings.annotationSpotlightEllipse
@@ -1407,6 +1416,12 @@ final class AnnotationCanvas: NSView {
     func setActiveTextBold(_ bold: Bool) {
         activeTextBold = bold
         applyTextStyle(coalescing: "bold") { text in text.isBold = bold } callout: { callout in callout.isBold = bold }
+    }
+
+    /// Callouts sit on their own bubble, so only plain text takes an outline.
+    func setActiveTextOutlined(_ outlined: Bool) {
+        activeTextOutlined = outlined
+        applyTextStyle(coalescing: "outline") { text in text.isOutlined = outlined } callout: { _ in }
     }
 
     private func applyTextStyle(coalescing key: String, text: (TextAnnotation) -> Void, callout: (CalloutAnnotation) -> Void) {
@@ -1481,6 +1496,8 @@ final class AnnotationCanvas: NSView {
             roundedCorners: roundedRectangles,
             fontSize: activeFontSize,
             isBold: activeTextBold,
+            isOutlined: activeTextOutlined,
+            canOutline: activeTool == .text,
             redactionStrength: activeRedactionStrength,
             spotlightEllipse: spotlightEllipse,
             canApplyCrop: canApplyCrop,
@@ -1503,9 +1520,12 @@ final class AnnotationCanvas: NSView {
         case let text as TextAnnotation:
             options.fontSize = text.fontSize
             options.isBold = text.isBold
+            options.isOutlined = text.isOutlined
+            options.canOutline = true
         case let callout as CalloutAnnotation:
             options.fontSize = callout.fontSize
             options.isBold = callout.isBold
+            options.canOutline = false
         case let blur as BlurAnnotation:
             options.redactionStrength = blur.strength
         case let pixelate as PixelateAnnotation:
@@ -1933,6 +1953,9 @@ struct AnnotationToolOptions: Equatable {
     var roundedCorners = false
     var fontSize: CGFloat = 18
     var isBold = true
+    var isOutlined = false
+    /// False for callouts, which sit on their own bubble.
+    var canOutline = true
     var redactionStrength: CGFloat = AnnotationRedaction.defaultStrength
     var spotlightEllipse = false
     var canApplyCrop = false

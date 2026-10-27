@@ -746,6 +746,9 @@
   "Otherwise, Shotnix switches languages the next time it opens." : {
     "ru" : "Иначе Shotnix сменит язык при следующем открытии."
   },
+  "Outline" : {
+    "ru" : "Контур"
+  },
   "Overlay position" : {
     "ru" : "Положение миниатюры"
   },

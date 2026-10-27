@@ -298,6 +298,41 @@ final class AnnotationEditingTests: XCTestCase {
         XCTAssertTrue((canvas.objects.first as? TextAnnotation)?.isBold ?? false, "weight change undoes on its own")
     }
 
+    func testOutlineAppliesToTextButNotCalloutsAndIsRemembered() throws {
+        let text = TextAnnotation(origin: CGPoint(x: 40, y: 40))
+        text.text = "Label"
+        let callout = CalloutAnnotation(origin: CGPoint(x: 180, y: 120), tail: CGPoint(x: 160, y: 170))
+        callout.text = "Bubble"
+        canvas.objects = [text, callout]
+        canvas.selectedObjects = [callout]
+        XCTAssertFalse(canvas.toolOptions.canOutline, "a callout has its own bubble")
+        canvas.selectedObjects = [text]
+        XCTAssertTrue(canvas.toolOptions.canOutline)
+        XCTAssertFalse(canvas.toolOptions.isOutlined, "text starts without an outline")
+
+        canvas.setActiveTextOutlined(true)
+        XCTAssertTrue(text.isOutlined)
+        XCTAssertTrue(canvas.toolOptions.isOutlined)
+        XCTAssertTrue(Settings.annotationTextOutlined, "remembered for next time")
+        XCTAssertTrue((text.copy() as? TextAnnotation)?.isOutlined ?? false)
+        XCTAssertGreaterThan(text.visibleBounds.width, text.bounds.width, "the selection frame takes in the outline")
+
+        canvas.selectedObjects = []
+        canvas.activeTool = .callout
+        XCTAssertFalse(canvas.toolOptions.canOutline)
+        canvas.activeTool = .text
+        XCTAssertTrue(canvas.toolOptions.canOutline)
+        canvas.mouseDown(with: mouse(.leftMouseDown, at: CGPoint(x: 60, y: 150)))
+        try XCTUnwrap(canvas.textEditor).insertText("New", replacementRange: NSRange(location: NSNotFound, length: 0))
+        canvas.commitTextField()
+        let new = try XCTUnwrap(canvas.objects.last as? TextAnnotation)
+        XCTAssertTrue(new.isOutlined, "new text takes the remembered outline")
+
+        canvas.performUndo()
+        canvas.performUndo()
+        XCTAssertFalse((canvas.objects.first as? TextAnnotation)?.isOutlined ?? true, "the outline undoes on its own")
+    }
+
     func testStyleChangesWhileTypingApplyToTheTextBeingTyped() throws {
         canvas.activeTool = .text
         canvas.mouseDown(with: mouse(.leftMouseDown, at: CGPoint(x: 60, y: 60)))

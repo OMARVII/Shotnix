@@ -729,6 +729,37 @@ enum AnnotationText {
         (text as NSString).draw(with: rect, options: drawingOptions, attributes: attributes)
         NSGraphicsContext.restoreGraphicsState()
     }
+
+    /// How far outlined text's edge reaches past its letters, in points.
+    static func outlineWidth(fontSize: CGFloat) -> CGFloat {
+        max(1.5, fontSize * 0.1)
+    }
+
+    /// The edge around outlined text: black, so it shows on the light
+    /// screenshots most annotations sit on, and white only around dark text,
+    /// which would vanish in a black edge.
+    static func outlineColor(for color: NSColor) -> NSColor {
+        guard let rgb = color.usingColorSpace(.sRGB) else { return .black }
+        let luminance = 0.2126 * rgb.redComponent + 0.7152 * rgb.greenComponent + 0.0722 * rgb.blueComponent
+        return luminance > 0.3 ? .black : .white
+    }
+
+    /// Just the outline, drawn under the letters: a stroke twice `width`
+    /// thick whose inner half the fill covers. Round joins keep the corners
+    /// of the letters soft.
+    static func drawOutline(_ text: String, font: NSFont, color: NSColor, width: CGFloat, in rect: CGRect, context ctx: CGContext) {
+        ctx.saveGState()
+        ctx.setLineJoin(.round)
+        ctx.setLineCap(.round)
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: font,
+            .strokeColor: color,
+            // A positive width strokes without filling, in percent of the font size.
+            .strokeWidth: 2 * width / font.pointSize * 100
+        ]
+        draw(text, attributes: attributes, in: rect, context: ctx)
+        ctx.restoreGState()
+    }
 }
 
 // MARK: – Text
@@ -742,6 +773,8 @@ final class TextAnnotation: AnnotationObject {
     var text: String = ""
     var fontSize: CGFloat = 18
     var isBold = true
+    /// A contrasting edge around the letters (see `AnnotationText.outlineColor`).
+    var isOutlined = false
     /// Hidden while the in-place editor shows its text.
     var isEditing = false
     var font: NSFont { AnnotationText.font(size: fontSize, bold: isBold) }
@@ -755,16 +788,28 @@ final class TextAnnotation: AnnotationObject {
         return CGRect(origin: origin, size: CGSize(width: max(size.width, 40), height: max(size.height, 24)))
     }
 
+    var outlineWidth: CGFloat { isOutlined ? AnnotationText.outlineWidth(fontSize: fontSize) : 0 }
+
+    /// `bounds` plus the outline, which reaches past the letters.
+    var visibleBounds: CGRect { bounds.insetBy(dx: -outlineWidth, dy: -outlineWidth) }
+
     func draw(in ctx: CGContext, scale: CGFloat) {
-        guard !text.isEmpty, !isEditing else { return }
+        guard !text.isEmpty else { return }
+        let rect = CGRect(origin: origin, size: textSize)
+        // While editing, the editor draws the letters over this outline.
+        if isOutlined {
+            AnnotationText.drawOutline(text, font: font, color: AnnotationText.outlineColor(for: color),
+                                       width: outlineWidth, in: rect, context: ctx)
+        }
+        guard !isEditing else { return }
         let attrs: [NSAttributedString.Key: Any] = [
             .font: font,
             .foregroundColor: color
         ]
-        AnnotationText.draw(text, attributes: attrs, in: CGRect(origin: origin, size: textSize), context: ctx)
+        AnnotationText.draw(text, attributes: attrs, in: rect, context: ctx)
     }
 
-    func contains(point: CGPoint) -> Bool { bounds.insetBy(dx: -8, dy: -8).contains(point) }
+    func contains(point: CGPoint) -> Bool { visibleBounds.insetBy(dx: -8, dy: -8).contains(point) }
     func move(by delta: CGPoint) { origin.x += delta.x; origin.y += delta.y }
     func copy() -> any AnnotationObject {
         let annotation = TextAnnotation(origin: origin)
@@ -774,6 +819,7 @@ final class TextAnnotation: AnnotationObject {
         annotation.text = text
         annotation.fontSize = fontSize
         annotation.isBold = isBold
+        annotation.isOutlined = isOutlined
         return annotation
     }
 }

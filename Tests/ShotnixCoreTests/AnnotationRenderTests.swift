@@ -446,6 +446,59 @@ final class AnnotationRenderTests: XCTestCase {
         try AnnotationSnapshots.write(canvas.flatten().bestCGImage!, name: "annotation-showcase-2x")
     }
 
+    func testOutlinedTextGetsAContrastingEdgeOnAnyBackground() throws {
+        let size = CGSize(width: 220, height: 70)
+        // Light text gets a dark edge, dark text a white one.
+        for (background, fill) in [(NSColor.white, NSColor.systemYellow), (NSColor.black, NSColor.black)] {
+            var counts: [Bool: Int] = [:]
+            for outlined in [false, true] {
+                let canvas = makeCanvas(AnnotationTestImages.solid(background, pointSize: size, density: 2))
+                let text = TextAnnotation(origin: CGPoint(x: 12, y: 12))
+                text.text = "Outline"
+                text.fontSize = 32
+                text.color = fill
+                text.isOutlined = outlined
+                canvas.objects = [text]
+                let output = AnnotationPixels(canvas.flatten())
+                let edge = AnnotationText.outlineColor(for: fill) == .black ? 0 : 255
+                var count = 0
+                for y in 0..<output.height {
+                    for x in 0..<output.width where abs(output.luminance(x, y) - edge) < 30 {
+                        count += 1
+                    }
+                }
+                counts[outlined] = count
+            }
+            let background = background == .white ? "white" : "black"
+            XCTAssertEqual(counts[false], 0, "no edge color without the outline on \(background)")
+            XCTAssertGreaterThan(counts[true] ?? 0, 1500, "the outline shows on \(background)")
+        }
+    }
+
+    func testOutlinedTextSnapshot() throws {
+        let size = CGSize(width: 520, height: 300)
+        let image = AnnotationTestImages.make(pointSize: size, density: 2) { ctx, pixels in
+            ctx.setFillColor(NSColor.white.cgColor)
+            ctx.fill(CGRect(x: 0, y: 0, width: pixels.width / 2, height: pixels.height))
+            ctx.setFillColor(NSColor(srgbRed: 0.12, green: 0.13, blue: 0.16, alpha: 1).cgColor)
+            ctx.fill(CGRect(x: pixels.width / 2, y: 0, width: pixels.width / 2, height: pixels.height))
+        }
+        let canvas = makeCanvas(image)
+        let styles: [(NSColor, CGFloat, Bool)] = [
+            (.systemYellow, 28, true), (.systemRed, 22, true), (.systemBlue, 18, true),
+            (.white, 40, true), (.black, 18, true), (.systemRed, 22, false)
+        ]
+        canvas.objects = styles.enumerated().map { index, style in
+            let text = TextAnnotation(origin: CGPoint(x: 150, y: 14 + CGFloat(index) * 46))
+            text.text = style.2 ? "I am outline text" : "Plain text, no outline"
+            text.color = style.0
+            text.fontSize = style.1
+            text.isOutlined = style.2
+            return text
+        }
+        try AnnotationSnapshots.write(canvas.flatten().bestCGImage!, name: "annotation-outline-text-2x")
+    }
+
     // MARK: – Helpers
 
     private func viewPixels(_ view: NSView) -> AnnotationPixels {

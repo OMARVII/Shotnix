@@ -1738,6 +1738,8 @@
 	<string>アウト点を早める</string>
 	<key>Out later</key>
 	<string>アウト点を遅らせる</string>
+	<key>Outline</key>
+	<string>アウトライン</string>
 	<key>Outro</key>
 	<string>エンディング</string>
 	<key>Outro card</key>

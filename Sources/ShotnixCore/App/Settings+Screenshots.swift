@@ -100,6 +100,12 @@ extension Settings {
         set { defaults.set(newValue, forKey: "annotationTextBold") }
     }
 
+    /// Outlined text, off until the user turns it on.
+    static var annotationTextOutlined: Bool {
+        get { defaults.bool(forKey: "annotationTextOutlined") }
+        set { defaults.set(newValue, forKey: "annotationTextOutlined") }
+    }
+
     /// Blur radius / pixel block size for new redactions, in points (4–40, default 12).
     static var annotationRedactionStrength: Double {
         get {

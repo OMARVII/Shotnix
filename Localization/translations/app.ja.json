@@ -827,6 +827,9 @@
   "Otherwise, Shotnix switches languages the next time it opens." : {
     "ja" : "今すぐ再起動しない場合は、次回Shotnixを開いたときに言語が切り替わります。"
   },
+  "Outline" : {
+    "ja" : "アウトライン"
+  },
   "Overlay position" : {
     "ja" : "サムネールの位置"
   },

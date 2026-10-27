@@ -42,6 +42,7 @@ final class SettingsTests: XCTestCase {
         XCTAssertTrue(Settings.annotationTextBold, "text stays bold until the user turns it off")
         XCTAssertEqual(Settings.annotationRedactionStrength, 12)
         XCTAssertFalse(Settings.annotationSpotlightEllipse)
+        XCTAssertFalse(Settings.annotationTextOutlined, "outlined text is opt-in")
 
         Settings.annotationTextFontSize = 500
         Settings.annotationRedactionStrength = 1

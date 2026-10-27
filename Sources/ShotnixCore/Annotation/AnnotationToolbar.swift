@@ -78,6 +78,7 @@ final class AnnotationToolbar: NSView {
     var onLineWidthChanged: ((CGFloat) -> Void)?
     var onFontSizeChanged: ((CGFloat) -> Void)?
     var onBoldChanged: ((Bool) -> Void)?
+    var onOutlineChanged: ((Bool) -> Void)?
     var onRedactionStrengthChanged: ((CGFloat) -> Void)?
     var onRoundedCornersChanged: ((Bool) -> Void)?
     var onSpotlightShapeChanged: ((_ ellipse: Bool) -> Void)?
@@ -108,6 +109,7 @@ final class AnnotationToolbar: NSView {
     private let roundedCornersButton = ToolbarToggleButton(symbol: "app", label: L("Rounded corners"), toolTip: L("Rounded Corners (\u{2325}R)"))
     private let fontSizePopUp = NSPopUpButton(frame: .zero, pullsDown: false)
     private let boldButton = ToolbarToggleButton(symbol: "bold", label: L("Bold"), toolTip: L("Bold"))
+    private let outlineButton = ToolbarToggleButton(image: AnnotationToolbar.outlineSymbol, label: L("Outline"), toolTip: L("Outline"))
     private let strengthLabel = NSTextField(labelWithString: L("Strength"))
     private let strengthSlider = NSSlider(
         value: Double(AnnotationRedaction.defaultStrength),
@@ -272,6 +274,10 @@ final class AnnotationToolbar: NSView {
         boldButton.action = #selector(boldToggled(_:))
         optionsContainer.addSubview(boldButton)
 
+        outlineButton.target = self
+        outlineButton.action = #selector(outlineToggled(_:))
+        optionsContainer.addSubview(outlineButton)
+
         strengthSlider.target = self
         strengthSlider.action = #selector(strengthChanged(_:))
         strengthSlider.toolTip = L("How strongly blur and pixelate hide what's under them")
@@ -311,7 +317,7 @@ final class AnnotationToolbar: NSView {
     }
 
     private var optionControls: [NSView] {
-        [sizeLabel, lineWidthSlider, roundedCornersButton, fontSizePopUp, boldButton,
+        [sizeLabel, lineWidthSlider, roundedCornersButton, fontSizePopUp, boldButton, outlineButton,
          strengthLabel, strengthSlider, shapeLabel, spotlightShapeControl,
          applyCropButton, resetCropButton, hintLabel]
     }
@@ -337,9 +343,10 @@ final class AnnotationToolbar: NSView {
             roundedCornersButton.frame = NSRect(x: 124, y: 10, width: 30, height: 30)
             visible = [sizeLabel, lineWidthSlider, roundedCornersButton]
         case .text:
-            fontSizePopUp.frame = NSRect(x: 0, y: 11, width: 92, height: 28)
-            boldButton.frame = NSRect(x: 98, y: 10, width: 30, height: 30)
-            visible = [fontSizePopUp, boldButton]
+            fontSizePopUp.frame = NSRect(x: 0, y: 11, width: 84, height: 28)
+            boldButton.frame = NSRect(x: 88, y: 10, width: 30, height: 30)
+            outlineButton.frame = NSRect(x: 122, y: 10, width: 30, height: 30)
+            visible = newOptions.canOutline ? [fontSizePopUp, boldButton, outlineButton] : [fontSizePopUp, boldButton]
         case .redaction:
             let label = Self.labelWidth(strengthLabel, atLeast: 50)
             strengthLabel.frame = NSRect(x: 0, y: 17, width: label, height: 16)
@@ -367,6 +374,7 @@ final class AnnotationToolbar: NSView {
         roundedCornersButton.state = newOptions.roundedCorners ? .on : .off
         rebuildFontSizeItems(selecting: newOptions.fontSize)
         boldButton.state = newOptions.isBold ? .on : .off
+        outlineButton.state = newOptions.isOutlined ? .on : .off
         strengthSlider.doubleValue = Double(newOptions.redactionStrength)
         spotlightShapeControl.selectedSegment = newOptions.spotlightEllipse ? 1 : 0
         applyCropButton.isEnabled = newOptions.canApplyCrop
@@ -589,6 +597,42 @@ final class AnnotationToolbar: NSView {
         onBoldChanged?(sender.state == .on)
     }
 
+    @objc private func outlineToggled(_ sender: NSButton) {
+        outlineButton.refreshAppearance()
+        onOutlineChanged?(sender.state == .on)
+    }
+
+    /// An "A" inside a ring, for the outline toggle; SF Symbols has no
+    /// outlined letter. Stroking the glyph's own contours would show where
+    /// they overlap, so the ring is a thick stroke with the middle cleared.
+    static let outlineSymbol: NSImage = {
+        let image = NSImage(size: NSSize(width: 18, height: 18), flipped: false) { rect in
+            guard let ctx = NSGraphicsContext.current?.cgContext else { return false }
+            let font = NSFont.systemFont(ofSize: 12, weight: .heavy)
+            let letter = "A" as NSString
+            let size = letter.size(withAttributes: [.font: font])
+            let origin = NSPoint(x: rect.midX - size.width / 2, y: rect.midY - size.height / 2)
+            // `reach` is how far past the letter the shape goes.
+            func drawLetter(reach: CGFloat) {
+                var attributes: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: NSColor.black]
+                if reach > 0 {
+                    attributes[.strokeColor] = NSColor.black
+                    attributes[.strokeWidth] = -2 * reach / font.pointSize * 100
+                }
+                letter.draw(at: origin, withAttributes: attributes)
+            }
+            ctx.setLineJoin(.round)
+            drawLetter(reach: 2.4)
+            ctx.setBlendMode(.clear)
+            drawLetter(reach: 1.2)
+            ctx.setBlendMode(.normal)
+            drawLetter(reach: 0)
+            return true
+        }
+        image.isTemplate = true
+        return image
+    }()
+
     @objc private func strengthChanged(_ sender: NSSlider) { onRedactionStrengthChanged?(CGFloat(sender.doubleValue)) }
 
     @objc private func spotlightShapeChanged(_ sender: NSSegmentedControl) {
@@ -626,8 +670,12 @@ final class AnnotationToolbar: NSView {
 @MainActor
 final class ToolbarToggleButton: NSButton {
     convenience init(symbol: String, label: String, toolTip: String) {
+        self.init(image: NSImage(systemSymbolName: symbol, accessibilityDescription: label), label: label, toolTip: toolTip)
+    }
+
+    convenience init(image: NSImage?, label: String, toolTip: String) {
         self.init(frame: .zero)
-        image = NSImage(systemSymbolName: symbol, accessibilityDescription: label)
+        self.image = image
         setButtonType(.pushOnPushOff)
         bezelStyle = .regularSquare
         isBordered = false

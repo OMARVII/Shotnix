@@ -233,6 +233,7 @@ final class AnnotationWindowController: NSWindowController {
         toolbar.onLineWidthChanged         = { [weak self] width in self?.canvas.setActiveLineWidth(width) }
         toolbar.onFontSizeChanged          = { [weak self] size in self?.canvas.setActiveFontSize(size) }
         toolbar.onBoldChanged              = { [weak self] bold in self?.canvas.setActiveTextBold(bold) }
+        toolbar.onOutlineChanged           = { [weak self] outlined in self?.canvas.setActiveTextOutlined(outlined) }
         toolbar.onRedactionStrengthChanged = { [weak self] strength in self?.canvas.setActiveRedactionStrength(strength) }
         toolbar.onRoundedCornersChanged    = { [weak self] rounded in self?.canvas.setRoundedRectangles(rounded) }
         toolbar.onSpotlightShapeChanged    = { [weak self] ellipse in self?.canvas.setSpotlightEllipse(ellipse) }

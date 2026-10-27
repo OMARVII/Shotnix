@@ -1648,6 +1648,8 @@
 	<string>Конец раньше</string>
 	<key>Out later</key>
 	<string>Конец позже</string>
+	<key>Outline</key>
+	<string>Контур</string>
 	<key>Outro</key>
 	<string>Концовка</string>
 	<key>Outro card</key>

@@ -36,6 +36,7 @@ final class LocalizedLayoutTests: XCTestCase {
         let design: [(AnnotationToolOptions.Context, [NSRect])] = [
             (.stroke, [NSRect(x: 0, y: 17, width: 30, height: 16), NSRect(x: 32, y: 11, width: 122, height: 28)]),
             (.rectangle, [NSRect(x: 0, y: 17, width: 30, height: 16), NSRect(x: 32, y: 11, width: 84, height: 28), NSRect(x: 124, y: 10, width: 30, height: 30)]),
+            (.text, [NSRect(x: 0, y: 11, width: 84, height: 28), NSRect(x: 88, y: 10, width: 30, height: 30), NSRect(x: 122, y: 10, width: 30, height: 30)]),
             (.redaction, [NSRect(x: 0, y: 17, width: 50, height: 16), NSRect(x: 52, y: 11, width: 102, height: 28)]),
             (.spotlight, [NSRect(x: 0, y: 17, width: 38, height: 16), NSRect(x: 42, y: 13, width: 84, height: 24)]),
             (.crop, [NSRect(x: 0, y: 10, width: 74, height: 30), NSRect(x: 80, y: 10, width: 74, height: 30)]),
@@ -65,7 +66,7 @@ final class LocalizedLayoutTests: XCTestCase {
             }
 
             // The options area: labels and crop buttons fit, controls stay inside it.
-            let contexts: [AnnotationToolOptions.Context] = [.stroke, .rectangle, .redaction, .spotlight, .crop, .none]
+            let contexts: [AnnotationToolOptions.Context] = [.stroke, .rectangle, .text, .redaction, .spotlight, .crop, .none]
             for context in contexts {
                 toolbar.showOptions(AnnotationToolOptions(context: context, canApplyCrop: true, canResetCrop: true))
                 for control in toolbar.visibleOptionControls {
@@ -88,7 +89,7 @@ final class LocalizedLayoutTests: XCTestCase {
             (.numberedStep, AnnotationToolOptions(context: .none)),
             (.arrow, AnnotationToolOptions(context: .stroke)),
             (.rectangle, AnnotationToolOptions(context: .rectangle, roundedCorners: true)),
-            (.text, AnnotationToolOptions(context: .text)),
+            (.text, AnnotationToolOptions(context: .text, isOutlined: true)),
             (.blur, AnnotationToolOptions(context: .redaction)),
             (.spotlight, AnnotationToolOptions(context: .spotlight)),
             (.crop, AnnotationToolOptions(context: .crop, canApplyCrop: true, canResetCrop: true)),

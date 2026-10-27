@@ -1315,6 +1315,12 @@
     "fr" : "Sinon, Shotnix changera de langue à sa prochaine ouverture.",
     "zh-Hans" : "否则，Shotnix 会在下次打开时切换语言。"
   },
+  "Outline" : {
+    "comment" : "Toggle that draws a contrasting edge around annotation text",
+    "de" : "Kontur",
+    "fr" : "Contour",
+    "zh-Hans" : "轮廓"
+  },
   "Overlay position" : {
     "de" : "Position der Miniatur",
     "fr" : "Position de la vignette",

@@ -337,6 +337,9 @@ final class AnnotationWindowControllerTests: XCTestCase {
         controller.canvas.activeTool = .text
         XCTAssertTrue(toolbar.visibleOptionControls.compactMap { $0.accessibilityLabel() }.contains("Text size"))
         XCTAssertTrue(toolbar.visibleOptionControls.compactMap { $0.accessibilityLabel() }.contains("Bold"))
+        XCTAssertTrue(toolbar.visibleOptionControls.compactMap { $0.accessibilityLabel() }.contains("Outline"))
+        controller.canvas.activeTool = .callout
+        XCTAssertFalse(toolbar.visibleOptionControls.compactMap { $0.accessibilityLabel() }.contains("Outline"), "callouts have no outline")
         controller.canvas.activeTool = .rectangle
         XCTAssertTrue(toolbar.visibleOptionControls.compactMap { $0.accessibilityLabel() }.contains("Rounded corners"))
         controller.canvas.activeTool = .crop
