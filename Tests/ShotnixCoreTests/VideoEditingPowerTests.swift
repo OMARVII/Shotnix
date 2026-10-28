@@ -107,6 +107,34 @@ final class VideoEditingPowerTests: XCTestCase {
         XCTAssertEqual(model.timelineDuration, 10, accuracy: 0.02)
     }
 
+    func testOwnVolumeForJustAPart() async throws {
+        let model = try await T.make(in: directory, T.Options(seconds: 10, pointer: false))
+        let range = VideoDemoTimelineRange(start: 2, end: 4)
+        model.selection = .range(range)
+        model.setRangeVolume(range, \.systemVolume, 0.5)
+        model.setRangeVolume(range, \.systemVolume, 0.2)   // the same drag
+        model.endGesture()
+        XCTAssertEqual(model.segments.map { $0.clip.systemVolume }, [1, 0.2, 1])
+        XCTAssertEqual(model.segments.map { $0.clip.voiceVolume }, [1, 1, 1], "the voice stays")
+        XCTAssertEqual(model.timelineDuration, 10, accuracy: 0.02)
+        guard case .range(let part) = model.selection else { return XCTFail("the part stays selected") }
+        XCTAssertEqual(model.rangeVolume(part, \.systemVolume), 0.2, accuracy: 0.001)
+        XCTAssertEqual(model.undoLabel, "Sound Change")
+
+        // Splitting the quieter clip keeps its level on both sides.
+        model.seek(to: 3)
+        model.splitAtPlayhead()
+        XCTAssertEqual(model.segments.map { $0.clip.systemVolume }, [1, 0.2, 0.2, 1])
+        model.undo()
+        model.undo()
+        XCTAssertEqual(model.segments.count, 1, "the drag was one step")
+
+        let clip = try XCTUnwrap(model.segments.first?.id)
+        model.setClipVolume(clip, \.volume, 0.4)
+        XCTAssertEqual(model.segments.first?.clip.volume, 0.4)
+        XCTAssertEqual(model.undoLabel, "Sound Change")
+    }
+
     func testSeveralItemsDeleteAndMoveTogether() async throws {
         let model = try await T.make(in: directory, T.Options(seconds: 10, pointer: false))
         let zoom = try XCTUnwrap(model.addZoom(at: 1, length: 1))

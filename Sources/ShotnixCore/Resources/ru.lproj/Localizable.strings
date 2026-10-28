@@ -2366,8 +2366,8 @@
 	<string>Выбор</string>
 	<key>Select All</key>
 	<string>Выбрать все</string>
-	<key>Select a clip on the timeline to mute it or fade it in and out.</key>
-	<string>Выберите клип на шкале времени, чтобы выключить его звук или настроить нарастание и затухание.</string>
+	<key>Select a clip, or ⇧-drag across the timeline, to give just that part its own volume or mute it. A clip can also fade in and out.</key>
+	<string>Выберите клип или выделите фрагмент на шкале времени, перетянув с ⇧, чтобы задать только ему свою громкость или выключить его звук. Для клипа можно также настроить нарастание и затухание.</string>
 	<key>Select a range to cut</key>
 	<string>Выделить фрагмент для вырезания</string>
 	<key>Select a window to record without blocking other apps</key>
@@ -2898,6 +2898,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>Перед записью включите камеру на панели записи — и ваше лицо появится здесь в окошке, которое можно перемещать, масштабировать и оформлять.</string>
 	<key>Turn on the microphone or system audio before recording to capture sound.</key>
 	<string>Чтобы записать звук, перед записью включите микрофон или системный звук.</string>
+	<key>Turn the computer sound down here to talk over it.</key>
+	<string>Сделайте звук компьютера здесь тише, чтобы говорить поверх него.</string>
 	<key>Turn the video's sound back on</key>
 	<string>Снова включить звук видео</string>
 	<key>Type here…</key>
@@ -3360,6 +3362,8 @@ You can re-enable Apple's shortcuts anytime in System Settings → Keyboard → 
 	<string>воспроизвести</string>
 	<key>pointer</key>
 	<string>указатель</string>
+	<key>quieter</key>
+	<string>звук тише</string>
 	<key>select a part to cut</key>
 	<string>выделить фрагмент для вырезания</string>
 	<key>select it</key>

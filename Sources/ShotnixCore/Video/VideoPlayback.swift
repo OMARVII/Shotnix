@@ -51,6 +51,9 @@ final class VideoPlaybackController: NSObject {
             let muted: Bool
             let fadeIn: Double
             let fadeOut: Double
+            let volume: Double
+            let voiceVolume: Double
+            let systemVolume: Double
         }
         let audio: VideoAudioSettings
         let clips: [ClipSound]
@@ -156,7 +159,7 @@ final class VideoPlaybackController: NSObject {
         )
         next.leadIn = segments.first?.timelineStart ?? 0
         next.extras = extras.structureKey
-        var nextMix = MixKey(audio: audio, clips: segments.map { MixKey.ClipSound(muted: $0.clip.muted, fadeIn: $0.clip.fadeIn, fadeOut: $0.clip.fadeOut) })
+        var nextMix = MixKey(audio: audio, clips: segments.map { MixKey.ClipSound(muted: $0.clip.muted, fadeIn: $0.clip.fadeIn, fadeOut: $0.clip.fadeOut, volume: $0.clip.volume, voiceVolume: $0.clip.voiceVolume, systemVolume: $0.clip.systemVolume) })
         nextMix.extras = extras.mixKey
         if next == structure, let edit, let item = player.currentItem {
             if nextMix != mixKey {

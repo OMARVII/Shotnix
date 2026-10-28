@@ -168,7 +168,7 @@ extension VideoEditorModel {
     static func spokenClip(index: Int, segment: VideoDemoTimelineSegment) -> String {
         var parts = [L("Clip \(index + 1)"), L("\(format(segment.duration)) long")]
         if abs(segment.clip.normalizedSpeed - 1) > 0.01 { parts.append(L("\(formatScale(segment.clip.normalizedSpeed)) speed")) }
-        if segment.clip.muted { parts.append(L("muted")) }
+        if segment.clip.muted { parts.append(L("muted")) } else if segment.clip.isQuieter { parts.append(L("quieter")) }
         return spokenList(parts) + spokenSpan(segment.timelineStart, segment.timelineEnd)
     }
 

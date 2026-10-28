@@ -2366,8 +2366,8 @@
 	<string>Sélection</string>
 	<key>Select All</key>
 	<string>Tout sélectionner</string>
-	<key>Select a clip on the timeline to mute it or fade it in and out.</key>
-	<string>Sélectionnez un clip dans la timeline pour couper son son ou lui appliquer un fondu.</string>
+	<key>Select a clip, or ⇧-drag across the timeline, to give just that part its own volume or mute it. A clip can also fade in and out.</key>
+	<string>Sélectionnez un clip, ou faites ⇧-glisser dans la timeline, pour régler le volume de ce passage seul ou couper son son. Un clip peut aussi recevoir un fondu.</string>
 	<key>Select a range to cut</key>
 	<string>Sélectionner un passage à couper</string>
 	<key>Select a window to record without blocking other apps</key>
@@ -2898,6 +2898,8 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Activez la caméra dans la barre d’enregistrement avant d’enregistrer : votre visage apparaîtra ici dans une bulle que vous pourrez placer, redimensionner et personnaliser.</string>
 	<key>Turn on the microphone or system audio before recording to capture sound.</key>
 	<string>Activez le micro ou le son de l’ordinateur avant l’enregistrement pour capturer le son.</string>
+	<key>Turn the computer sound down here to talk over it.</key>
+	<string>Baissez ici le son de l’ordinateur pour parler par-dessus.</string>
 	<key>Turn the video's sound back on</key>
 	<string>Réactiver le son de la vidéo</string>
 	<key>Type here…</key>
@@ -3360,6 +3362,8 @@ Vous pouvez réactiver les raccourcis d’Apple à tout moment dans Réglages Sy
 	<string>lire</string>
 	<key>pointer</key>
 	<string>pointeur</string>
+	<key>quieter</key>
+	<string>son baissé</string>
 	<key>select a part to cut</key>
 	<string>choisir un passage à couper</string>
 	<key>select it</key>

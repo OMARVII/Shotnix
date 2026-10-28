@@ -659,7 +659,7 @@ struct VideoAudioInspector: View {
                     )
                 }
 
-                Text(L("Select a clip on the timeline to mute it or fade it in and out."))
+                Text(L("Select a clip, or ⇧-drag across the timeline, to give just that part its own volume or mute it. A clip can also fade in and out."))
                     .font(.system(size: 10.5))
                     .foregroundStyle(VideoEditorTheme.textTertiary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -958,6 +958,16 @@ struct VideoSelectionInspector: View {
             }
             VideoInspectorSection(L("Sound")) {
                 VideoToggleRow(title: L("Mute this part"), isOn: Binding(get: { model.rangeIsMuted(range) }, set: { _ in model.toggleRangeMute(range) }))
+                if model.hasAudio {
+                    levelSliders(get: { model.rangeVolume(range, $0) }, set: { model.setRangeVolume(range, $0, $1) })
+                        .disabled(model.rangeIsMuted(range))
+                    if model.hasSeparateVoiceAndSystem {
+                        Text(L("Turn the computer sound down here to talk over it."))
+                            .font(.system(size: 10.5))
+                            .foregroundStyle(VideoEditorTheme.textTertiary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
             }
         case .none:
             EmptyView()
@@ -1113,6 +1123,37 @@ struct VideoSelectionInspector: View {
 
     // MARK: Clip
 
+    /// A clip's (or a part's) own levels: Voice and Computer sound when the
+    /// recording has them on their own tracks, else one Volume.
+    @ViewBuilder
+    private func levelSliders(
+        get: @escaping (KeyPath<VideoDemoTimelineClip, Double>) -> Double,
+        set: @escaping (WritableKeyPath<VideoDemoTimelineClip, Double>, Double) -> Void
+    ) -> some View {
+        if model.hasSeparateVoiceAndSystem {
+            levelSlider(L("Voice"), \.voiceVolume, get: get, set: set)
+            levelSlider(L("Computer sound"), \.systemVolume, get: get, set: set)
+        } else {
+            levelSlider(L("Volume"), \.volume, get: get, set: set)
+        }
+    }
+
+    private func levelSlider(
+        _ title: String,
+        _ level: WritableKeyPath<VideoDemoTimelineClip, Double>,
+        get: @escaping (KeyPath<VideoDemoTimelineClip, Double>) -> Double,
+        set: @escaping (WritableKeyPath<VideoDemoTimelineClip, Double>, Double) -> Void
+    ) -> some View {
+        VideoSliderRow(
+            title: title,
+            value: Binding(get: { get(level) }, set: { set(level, $0) }),
+            range: VideoAudioSettings.volumeRange,
+            defaultValue: 1,
+            format: { VideoEditorFormat.percent($0) },
+            onEditingEnded: { model.endGesture() }
+        )
+    }
+
     @ViewBuilder
     private func clipEditor(_ segment: VideoDemoTimelineSegment) -> some View {
         VideoInspectorSection(L("Speed")) {
@@ -1140,6 +1181,10 @@ struct VideoSelectionInspector: View {
 
         VideoInspectorSection(L("Sound")) {
             VideoToggleRow(title: L("Mute this clip"), isOn: Binding(get: { segment.clip.muted }, set: { model.setClipMuted(segment.id, $0) }))
+            if model.hasAudio {
+                levelSliders(get: { segment.clip[keyPath: $0] }, set: { model.setClipVolume(segment.id, $0, $1) })
+                    .disabled(segment.clip.muted)
+            }
             VideoSliderRow(
                 title: L("Fade in"),
                 value: Binding(get: { segment.clip.fadeIn }, set: { model.setClipFade(segment.id, fadeIn: $0) }),

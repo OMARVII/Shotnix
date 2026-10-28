@@ -44,6 +44,7 @@ enum VideoEditDescription {
             if pairs.contains(where: { $0.speed != $1.speed }) { return "Speed Change" }
             if pairs.contains(where: { $0.muted != $1.muted }) { return pairs.contains(where: { !$0.muted && $1.muted }) ? "Mute Clip" : "Unmute Clip" }
             if pairs.contains(where: { $0.fadeIn != $1.fadeIn || $0.fadeOut != $1.fadeOut }) { return "Fade" }
+            if pairs.contains(where: { $0.volume != $1.volume || $0.voiceVolume != $1.voiceVolume || $0.systemVolume != $1.systemVolume }) { return "Sound Change" }
             return "Trim"
         }
         if new.count == old.count + 1, Set(oldIDs).isSubset(of: Set(newIDs)) { return "Split" }

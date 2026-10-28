@@ -134,6 +134,24 @@ final class VideoDemoProjectTests: XCTestCase {
         XCTAssertEqual(clip.fadeIn, clip.outputDuration / 2, accuracy: 0.001)
     }
 
+    func testRestoringMergesOnlyClipsThatSoundAlike() {
+        var project = project()
+        project.timelineClips = [
+            VideoDemoTimelineClip(sourceStart: 0, sourceEnd: 3),
+            VideoDemoTimelineClip(sourceStart: 4, sourceEnd: 10, systemVolume: 0.2),
+        ]
+        project.restoreSourceRange(3...4, totalDuration: 10)
+        XCTAssertEqual(project.timelineClips.map(\.systemVolume), [1, 0.2], "a quieter clip stays its own")
+        XCTAssertEqual(project.timelineClips.first?.sourceEnd ?? 0, 4, accuracy: 0.001)
+
+        project.timelineClips = [
+            VideoDemoTimelineClip(sourceStart: 0, sourceEnd: 3),
+            VideoDemoTimelineClip(sourceStart: 4, sourceEnd: 10),
+        ]
+        project.restoreSourceRange(3...4, totalDuration: 10)
+        XCTAssertEqual(project.timelineClips.count, 1)
+    }
+
     func testTrimCannotGrowIntoNeighbour() {
         let first = UUID()
         var project = project()

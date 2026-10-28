@@ -2482,8 +2482,8 @@
 	<string>選択</string>
 	<key>Select All</key>
 	<string>すべてを選択</string>
-	<key>Select a clip on the timeline to mute it or fade it in and out.</key>
-	<string>タイムラインでクリップを選択すると、消音やフェードイン/フェードアウトを設定できます。</string>
+	<key>Select a clip, or ⇧-drag across the timeline, to give just that part its own volume or mute it. A clip can also fade in and out.</key>
+	<string>クリップを選択するか、タイムラインを⇧ドラッグすると、その部分だけの音量を設定したり消音したりできます。クリップにはフェードイン/フェードアウトも設定できます。</string>
 	<key>Select a range to cut</key>
 	<string>カットする範囲を選択</string>
 	<key>Select a window to record without blocking other apps</key>
@@ -3024,6 +3024,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>収録する前に収録バーでカメラをオンにすると、ここに顔がワイプとして表示されます。ワイプの位置、サイズ、スタイルは自由に変更できます。</string>
 	<key>Turn on the microphone or system audio before recording to capture sound.</key>
 	<string>サウンドを収録するには、収録する前にマイクまたはシステムオーディオをオンにしてください。</string>
+	<key>Turn the computer sound down here to talk over it.</key>
+	<string>この部分のシステムオーディオを下げると、声を重ねやすくなります。</string>
 	<key>Turn the video's sound back on</key>
 	<string>ビデオのサウンドを再びオンにする</string>
 	<key>Type here…</key>
@@ -3496,6 +3498,8 @@ Appleのショートカットは、“システム設定”＞“キーボード
 	<string>再生</string>
 	<key>pointer</key>
 	<string>ポインタ</string>
+	<key>quieter</key>
+	<string>小さめの音量</string>
 	<key>select a part to cut</key>
 	<string>カットする部分を選択</string>
 	<key>select it</key>

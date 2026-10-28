@@ -1289,8 +1289,8 @@
   "Search commands" : {
     "ja" : "コマンドを検索"
   },
-  "Select a clip on the timeline to mute it or fade it in and out." : {
-    "ja" : "タイムラインでクリップを選択すると、消音やフェードイン/フェードアウトを設定できます。"
+  "Select a clip, or ⇧-drag across the timeline, to give just that part its own volume or mute it. A clip can also fade in and out." : {
+    "ja" : "クリップを選択するか、タイムラインを⇧ドラッグすると、その部分だけの音量を設定したり消音したりできます。クリップにはフェードイン/フェードアウトも設定できます。"
   },
   "Select a range to cut" : {
     "ja" : "カットする範囲を選択"
@@ -1561,6 +1561,9 @@
   },
   "Turn on the microphone or system audio before recording to capture sound." : {
     "ja" : "サウンドを収録するには、収録する前にマイクまたはシステムオーディオをオンにしてください。"
+  },
+  "Turn the computer sound down here to talk over it." : {
+    "ja" : "この部分のシステムオーディオを下げると、声を重ねやすくなります。"
   },
   "Turn the video's sound back on" : {
     "ja" : "ビデオのサウンドを再びオンにする"
@@ -2050,6 +2053,9 @@
   },
   "play" : {
     "ja" : "再生"
+  },
+  "quieter" : {
+    "ja" : "小さめの音量"
   },
   "select a part to cut" : {
     "ja" : "カットする部分を選択"

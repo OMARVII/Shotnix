@@ -14,6 +14,12 @@ struct VideoDemoTimelineClip: Codable, Equatable, Identifiable {
     var muted: Bool
     var fadeIn: Double
     var fadeOut: Double
+    /// This clip's own level, on top of the whole video's (VideoAudioSettings).
+    var volume: Double
+    /// Your microphone in this clip, when it has its own track.
+    var voiceVolume: Double
+    /// Sound from the Mac in this clip, when it has its own track.
+    var systemVolume: Double
 
     init(
         id: UUID = UUID(),
@@ -22,7 +28,10 @@ struct VideoDemoTimelineClip: Codable, Equatable, Identifiable {
         speed: Double = 1,
         muted: Bool = false,
         fadeIn: Double = 0,
-        fadeOut: Double = 0
+        fadeOut: Double = 0,
+        volume: Double = 1,
+        voiceVolume: Double = 1,
+        systemVolume: Double = 1
     ) {
         self.id = id
         self.sourceStart = sourceStart
@@ -31,6 +40,9 @@ struct VideoDemoTimelineClip: Codable, Equatable, Identifiable {
         self.muted = muted
         self.fadeIn = fadeIn
         self.fadeOut = fadeOut
+        self.volume = volume
+        self.voiceVolume = voiceVolume
+        self.systemVolume = systemVolume
     }
 
     var sourceDuration: Double {
@@ -45,8 +57,33 @@ struct VideoDemoTimelineClip: Codable, Equatable, Identifiable {
         sourceDuration / normalizedSpeed
     }
 
+    /// This clip's level for one kind of sound (1 plays it as recorded).
+    func volume(for kind: VideoAudioKind) -> Double {
+        let level: Double
+        switch kind {
+        case .microphone: level = voiceVolume
+        case .system: level = systemVolume
+        case .mixed: level = 1
+        }
+        return Self.clampVolume(volume) * Self.clampVolume(level)
+    }
+
+    /// Plays quieter than recorded, without being muted.
+    var isQuieter: Bool {
+        !muted && [volume, voiceVolume, systemVolume].contains { Self.clampVolume($0) < 0.995 }
+    }
+
+    /// Mute and levels match, so the two clips sound alike.
+    func soundsLike(_ other: VideoDemoTimelineClip) -> Bool {
+        muted == other.muted && volume == other.volume && voiceVolume == other.voiceVolume && systemVolume == other.systemVolume
+    }
+
+    private static func clampVolume(_ value: Double) -> Double {
+        min(max(value, VideoAudioSettings.volumeRange.lowerBound), VideoAudioSettings.volumeRange.upperBound)
+    }
+
     private enum CodingKeys: String, CodingKey {
-        case id, sourceStart, sourceEnd, speed, muted, fadeIn, fadeOut
+        case id, sourceStart, sourceEnd, speed, muted, fadeIn, fadeOut, volume, voiceVolume, systemVolume
     }
 
     init(from decoder: Decoder) throws {
@@ -58,6 +95,9 @@ struct VideoDemoTimelineClip: Codable, Equatable, Identifiable {
         muted = try container.decodeIfPresent(Bool.self, forKey: .muted) ?? false
         fadeIn = try container.decodeIfPresent(Double.self, forKey: .fadeIn) ?? 0
         fadeOut = try container.decodeIfPresent(Double.self, forKey: .fadeOut) ?? 0
+        volume = try container.decodeIfPresent(Double.self, forKey: .volume) ?? 1
+        voiceVolume = try container.decodeIfPresent(Double.self, forKey: .voiceVolume) ?? 1
+        systemVolume = try container.decodeIfPresent(Double.self, forKey: .systemVolume) ?? 1
     }
 }
 
@@ -821,15 +861,10 @@ struct VideoDemoProject: Codable, Equatable, Identifiable {
             let start = min(max(clip.sourceStart, 0), max(total - Self.minimumClipDuration, 0))
             let end = min(max(clip.sourceEnd, start + Self.minimumClipDuration), total)
             guard end - start >= Self.minimumClipDuration else { return nil }
-            return VideoDemoTimelineClip(
-                id: clip.id,
-                sourceStart: start,
-                sourceEnd: end,
-                speed: clip.speed,
-                muted: clip.muted,
-                fadeIn: clip.fadeIn,
-                fadeOut: clip.fadeOut
-            )
+            var normalized = clip
+            normalized.sourceStart = start
+            normalized.sourceEnd = end
+            return normalized
         }
     }
 
@@ -927,23 +962,13 @@ struct VideoDemoProject: Codable, Equatable, Identifiable {
         }
 
         let original = clips[index]
-        let first = VideoDemoTimelineClip(
-            id: original.id,
-            sourceStart: original.sourceStart,
-            sourceEnd: sourceTime,
-            speed: original.speed,
-            muted: original.muted,
-            fadeIn: original.fadeIn,
-            fadeOut: 0
-        )
-        let second = VideoDemoTimelineClip(
-            sourceStart: sourceTime,
-            sourceEnd: original.sourceEnd,
-            speed: original.speed,
-            muted: original.muted,
-            fadeIn: 0,
-            fadeOut: original.fadeOut
-        )
+        var first = original
+        first.sourceEnd = sourceTime
+        first.fadeOut = 0
+        var second = original
+        second.id = UUID()
+        second.sourceStart = sourceTime
+        second.fadeIn = 0
         clips.replaceSubrange(index...index, with: [first, second])
         timelineClips = clips
         syncTrimToTimeline(totalDuration: totalDuration)
@@ -980,29 +1005,21 @@ struct VideoDemoProject: Codable, Equatable, Identifiable {
             if rangeStart > segment.timelineStart + Self.minimumClipDuration {
                 let sourceEnd = segment.sourceTime(forTimelineTime: min(rangeStart, segment.timelineEnd))
                 if sourceEnd - segment.clip.sourceStart >= Self.minimumClipDuration {
-                    remaining.append(VideoDemoTimelineClip(
-                        id: segment.clip.id,
-                        sourceStart: segment.clip.sourceStart,
-                        sourceEnd: sourceEnd,
-                        speed: segment.clip.speed,
-                        muted: segment.clip.muted,
-                        fadeIn: segment.clip.fadeIn,
-                        fadeOut: 0
-                    ))
+                    var before = segment.clip
+                    before.sourceEnd = sourceEnd
+                    before.fadeOut = 0
+                    remaining.append(before)
                 }
             }
 
             if rangeEnd < segment.timelineEnd - Self.minimumClipDuration {
                 let sourceStart = segment.sourceTime(forTimelineTime: max(rangeEnd, segment.timelineStart))
                 if segment.clip.sourceEnd - sourceStart >= Self.minimumClipDuration {
-                    remaining.append(VideoDemoTimelineClip(
-                        sourceStart: sourceStart,
-                        sourceEnd: segment.clip.sourceEnd,
-                        speed: segment.clip.speed,
-                        muted: segment.clip.muted,
-                        fadeIn: 0,
-                        fadeOut: segment.clip.fadeOut
-                    ))
+                    var after = segment.clip
+                    after.id = UUID()
+                    after.sourceStart = sourceStart
+                    after.fadeIn = 0
+                    remaining.append(after)
                 }
             }
         }

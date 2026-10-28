@@ -54890,42 +54890,43 @@
         }
       }
     },
-    "Select a clip on the timeline to mute it or fade it in and out." : {
+    "Select a clip, or ⇧-drag across the timeline, to give just that part its own volume or mute it. A clip can also fade in and out." : {
+      "comment" : "Hint at the bottom of the video editor's Audio tab",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wähle einen Clip in der Zeitleiste aus, um ihn stummzuschalten oder ein- und auszublenden."
+            "value" : "Wähle einen Clip aus oder markiere mit ⇧-Ziehen einen Abschnitt in der Zeitleiste, um nur diesem Teil eine eigene Lautstärke zu geben oder ihn stummzuschalten. Ein Clip lässt sich außerdem ein- und ausblenden."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sélectionnez un clip dans la timeline pour couper son son ou lui appliquer un fondu."
+            "value" : "Sélectionnez un clip, ou faites ⇧-glisser dans la timeline, pour régler le volume de ce passage seul ou couper son son. Un clip peut aussi recevoir un fondu."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "タイムラインでクリップを選択すると、消音やフェードイン/フェードアウトを設定できます。"
+            "value" : "クリップを選択するか、タイムラインを⇧ドラッグすると、その部分だけの音量を設定したり消音したりできます。クリップにはフェードイン/フェードアウトも設定できます。"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Выберите клип на шкале времени, чтобы выключить его звук или настроить нарастание и затухание."
+            "value" : "Выберите клип или выделите фрагмент на шкале времени, перетянув с ⇧, чтобы задать только ему свою громкость или выключить его звук. Для клипа можно также настроить нарастание и затухание."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Виберіть кліп на шкалі часу, щоб вимкнути його звук або додати плавну появу й зникнення."
+            "value" : "Виберіть кліп або виділіть проміжок на шкалі часу, перетягнувши з ⇧, щоб задати лише йому власну гучність або вимкнути його звук. Для кліпу можна також додати плавну появу й зникнення."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在时间线上选择一个片段即可将其静音或设置淡入淡出。"
+            "value" : "选择一个片段，或按住 ⇧ 拖移时间线，即可单独设置这一部分的音量或将其静音。片段还可以设置淡入淡出。"
           }
         }
       }
@@ -66099,6 +66100,47 @@
         }
       }
     },
+    "Turn the computer sound down here to talk over it." : {
+      "comment" : "Under a timeline part's own Voice and Computer sound sliders",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dreh den Systemton hier leiser, damit du darüber sprechen kannst."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baissez ici le son de l’ordinateur pour parler par-dessus."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この部分のシステムオーディオを下げると、声を重ねやすくなります。"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сделайте звук компьютера здесь тише, чтобы говорить поверх него."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Зробіть звук комп’ютера тут тихішим, щоб говорити поверх нього."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "调低这一部分的电脑声音，方便你在上面解说。"
+          }
+        }
+      }
+    },
     "Turn the video's sound back on" : {
       "localizations" : {
         "de" : {
@@ -75849,6 +75891,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "指针"
+          }
+        }
+      }
+    },
+    "quieter" : {
+      "comment" : "Spoken in a clip's description when its own volume is turned down, like “muted”",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "leiser"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "son baissé"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小さめの音量"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "звук тише"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "звук тихіше"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音量已调低"
           }
         }
       }

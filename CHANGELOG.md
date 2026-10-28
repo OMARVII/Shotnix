@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- **Turn one sound down for just part of a video.** In the video editor, a clip, or a part you mark by ⇧-dragging across the timeline, now has its own Voice and Computer sound sliders, or one Volume slider when the recording has a single sound track. Turn the computer sound down while you talk over a demo and your voice stays as it is. The level glides to the new setting at a split instead of jumping, and the preview, the export and Even out loudness all follow it. Until now the only choice was muting the clip, which silenced your voice too.
+
 ## [0.27.3-beta] - 2026-10-28
 
 ### Added

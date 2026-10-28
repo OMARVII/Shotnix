@@ -979,6 +979,9 @@ struct VideoTimelineClipView: View, Equatable {
                     if segment.clip.muted {
                         Image(systemName: "speaker.slash.fill")
                             .font(.system(size: 9, weight: .bold))
+                    } else if segment.clip.isQuieter {
+                        Image(systemName: "speaker.wave.1.fill")
+                            .font(.system(size: 9, weight: .bold))
                     }
                 }
                 .foregroundStyle(.white)

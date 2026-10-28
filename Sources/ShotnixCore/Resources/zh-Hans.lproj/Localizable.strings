@@ -2482,8 +2482,8 @@
 	<string>选择</string>
 	<key>Select All</key>
 	<string>全选</string>
-	<key>Select a clip on the timeline to mute it or fade it in and out.</key>
-	<string>在时间线上选择一个片段即可将其静音或设置淡入淡出。</string>
+	<key>Select a clip, or ⇧-drag across the timeline, to give just that part its own volume or mute it. A clip can also fade in and out.</key>
+	<string>选择一个片段，或按住 ⇧ 拖移时间线，即可单独设置这一部分的音量或将其静音。片段还可以设置淡入淡出。</string>
 	<key>Select a range to cut</key>
 	<string>选择要剪掉的范围</string>
 	<key>Select a window to record without blocking other apps</key>
@@ -3024,6 +3024,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>录制前在录制栏中打开摄像头，你的脸就会以气泡形式显示在这里，你可以调整它的位置、大小和样式。</string>
 	<key>Turn on the microphone or system audio before recording to capture sound.</key>
 	<string>录制前打开麦克风或电脑声音即可录制声音。</string>
+	<key>Turn the computer sound down here to talk over it.</key>
+	<string>调低这一部分的电脑声音，方便你在上面解说。</string>
 	<key>Turn the video's sound back on</key>
 	<string>重新打开视频声音</string>
 	<key>Type here…</key>
@@ -3496,6 +3498,8 @@ You can re-enable Apple's shortcuts anytime in System Settings → Keyboard → 
 	<string>播放</string>
 	<key>pointer</key>
 	<string>指针</string>
+	<key>quieter</key>
+	<string>音量已调低</string>
 	<key>select a part to cut</key>
 	<string>选择要剪掉的部分</string>
 	<key>select it</key>

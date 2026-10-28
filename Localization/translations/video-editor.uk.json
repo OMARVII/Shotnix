@@ -1374,8 +1374,8 @@
   "Search commands" : {
     "uk" : "Шукати команди"
   },
-  "Select a clip on the timeline to mute it or fade it in and out." : {
-    "uk" : "Виберіть кліп на шкалі часу, щоб вимкнути його звук або додати плавну появу й зникнення."
+  "Select a clip, or ⇧-drag across the timeline, to give just that part its own volume or mute it. A clip can also fade in and out." : {
+    "uk" : "Виберіть кліп або виділіть проміжок на шкалі часу, перетягнувши з ⇧, щоб задати лише йому власну гучність або вимкнути його звук. Для кліпу можна також додати плавну появу й зникнення."
   },
   "Select a range to cut" : {
     "uk" : "Вибрати проміжок для вирізання"
@@ -1651,6 +1651,9 @@
   },
   "Turn on the microphone or system audio before recording to capture sound." : {
     "uk" : "Щоб записати звук, перед записом увімкніть мікрофон або системний звук."
+  },
+  "Turn the computer sound down here to talk over it." : {
+    "uk" : "Зробіть звук комп’ютера тут тихішим, щоб говорити поверх нього."
   },
   "Turn the video's sound back on" : {
     "uk" : "Знову ввімкнути звук відео"
@@ -2150,6 +2153,9 @@
   },
   "play" : {
     "uk" : "відтворити"
+  },
+  "quieter" : {
+    "uk" : "звук тихіше"
   },
   "select a part to cut" : {
     "uk" : "вибрати частину для вирізання"

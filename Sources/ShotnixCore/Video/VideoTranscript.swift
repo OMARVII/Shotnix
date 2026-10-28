@@ -318,7 +318,7 @@ extension VideoDemoProject {
                clip.sourceStart >= last.sourceStart,
                clip.sourceStart <= last.sourceEnd + epsilon,
                abs(last.normalizedSpeed - clip.normalizedSpeed) < 0.001,
-               last.muted == clip.muted {
+               last.soundsLike(clip) {
                 last.sourceEnd = max(last.sourceEnd, clip.sourceEnd)
                 last.fadeOut = clip.fadeOut
                 merged[merged.count - 1] = last

@@ -2372,8 +2372,8 @@
 	<string>Auswählen</string>
 	<key>Select All</key>
 	<string>Alles auswählen</string>
-	<key>Select a clip on the timeline to mute it or fade it in and out.</key>
-	<string>Wähle einen Clip in der Zeitleiste aus, um ihn stummzuschalten oder ein- und auszublenden.</string>
+	<key>Select a clip, or ⇧-drag across the timeline, to give just that part its own volume or mute it. A clip can also fade in and out.</key>
+	<string>Wähle einen Clip aus oder markiere mit ⇧-Ziehen einen Abschnitt in der Zeitleiste, um nur diesem Teil eine eigene Lautstärke zu geben oder ihn stummzuschalten. Ein Clip lässt sich außerdem ein- und ausblenden.</string>
 	<key>Select a range to cut</key>
 	<string>Bereich zum Schneiden auswählen</string>
 	<key>Select a window to record without blocking other apps</key>
@@ -2904,6 +2904,8 @@ Aktiviere sie unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherhei
 	<string>Schalte vor der Aufzeichnung die Kamera in der Aufzeichnungsleiste ein – dann erscheint dein Gesicht hier als Blase, die du platzieren, skalieren und neu gestalten kannst.</string>
 	<key>Turn on the microphone or system audio before recording to capture sound.</key>
 	<string>Schalte vor der Aufzeichnung das Mikrofon oder den Systemton ein, um Ton aufzuzeichnen.</string>
+	<key>Turn the computer sound down here to talk over it.</key>
+	<string>Dreh den Systemton hier leiser, damit du darüber sprechen kannst.</string>
 	<key>Turn the video's sound back on</key>
 	<string>Ton des Videos wieder einschalten</string>
 	<key>Type here…</key>
@@ -3366,6 +3368,8 @@ Du kannst Apples Kurzbefehle jederzeit unter „Systemeinstellungen“ → „Ta
 	<string>abspielen</string>
 	<key>pointer</key>
 	<string>Zeiger</string>
+	<key>quieter</key>
+	<string>leiser</string>
 	<key>select a part to cut</key>
 	<string>Abschnitt zum Schneiden wählen</string>
 	<key>select it</key>

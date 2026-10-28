@@ -1379,8 +1379,8 @@
   "Search commands" : {
     "ru" : "Поиск команд"
   },
-  "Select a clip on the timeline to mute it or fade it in and out." : {
-    "ru" : "Выберите клип на шкале времени, чтобы выключить его звук или настроить нарастание и затухание."
+  "Select a clip, or ⇧-drag across the timeline, to give just that part its own volume or mute it. A clip can also fade in and out." : {
+    "ru" : "Выберите клип или выделите фрагмент на шкале времени, перетянув с ⇧, чтобы задать только ему свою громкость или выключить его звук. Для клипа можно также настроить нарастание и затухание."
   },
   "Select a range to cut" : {
     "ru" : "Выделить фрагмент для вырезания"
@@ -1656,6 +1656,9 @@
   },
   "Turn on the microphone or system audio before recording to capture sound." : {
     "ru" : "Чтобы записать звук, перед записью включите микрофон или системный звук."
+  },
+  "Turn the computer sound down here to talk over it." : {
+    "ru" : "Сделайте звук компьютера здесь тише, чтобы говорить поверх него."
   },
   "Turn the video's sound back on" : {
     "ru" : "Снова включить звук видео"
@@ -2155,6 +2158,9 @@
   },
   "play" : {
     "ru" : "воспроизвести"
+  },
+  "quieter" : {
+    "ru" : "звук тише"
   },
   "select a part to cut" : {
     "ru" : "выделить фрагмент для вырезания"

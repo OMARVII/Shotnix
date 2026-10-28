@@ -2367,10 +2367,11 @@
     "fr": "Rechercher des commandes",
     "zh-Hans": "搜索命令"
   },
-  "Select a clip on the timeline to mute it or fade it in and out.": {
-    "de": "Wähle einen Clip in der Zeitleiste aus, um ihn stummzuschalten oder ein- und auszublenden.",
-    "fr": "Sélectionnez un clip dans la timeline pour couper son son ou lui appliquer un fondu.",
-    "zh-Hans": "在时间线上选择一个片段即可将其静音或设置淡入淡出。"
+  "Select a clip, or ⇧-drag across the timeline, to give just that part its own volume or mute it. A clip can also fade in and out.": {
+    "comment": "Hint at the bottom of the video editor's Audio tab",
+    "de": "Wähle einen Clip aus oder markiere mit ⇧-Ziehen einen Abschnitt in der Zeitleiste, um nur diesem Teil eine eigene Lautstärke zu geben oder ihn stummzuschalten. Ein Clip lässt sich außerdem ein- und ausblenden.",
+    "fr": "Sélectionnez un clip, ou faites ⇧-glisser dans la timeline, pour régler le volume de ce passage seul ou couper son son. Un clip peut aussi recevoir un fondu.",
+    "zh-Hans": "选择一个片段，或按住 ⇧ 拖移时间线，即可单独设置这一部分的音量或将其静音。片段还可以设置淡入淡出。"
   },
   "Select a range to cut": {
     "de": "Bereich zum Schneiden auswählen",
@@ -2839,6 +2840,12 @@
     "de": "Schalte vor der Aufzeichnung das Mikrofon oder den Systemton ein, um Ton aufzuzeichnen.",
     "fr": "Activez le micro ou le son de l’ordinateur avant l’enregistrement pour capturer le son.",
     "zh-Hans": "录制前打开麦克风或电脑声音即可录制声音。"
+  },
+  "Turn the computer sound down here to talk over it.": {
+    "comment": "Under a timeline part's own Voice and Computer sound sliders",
+    "de": "Dreh den Systemton hier leiser, damit du darüber sprechen kannst.",
+    "fr": "Baissez ici le son de l’ordinateur pour parler par-dessus.",
+    "zh-Hans": "调低这一部分的电脑声音，方便你在上面解说。"
   },
   "Turn the video's sound back on": {
     "de": "Ton des Videos wieder einschalten",
@@ -3684,6 +3691,12 @@
     "de": "abspielen",
     "fr": "lire",
     "zh-Hans": "播放"
+  },
+  "quieter": {
+    "comment": "Spoken in a clip's description when its own volume is turned down, like “muted”",
+    "de": "leiser",
+    "fr": "son baissé",
+    "zh-Hans": "音量已调低"
   },
   "select a part to cut": {
     "de": "Abschnitt zum Schneiden wählen",

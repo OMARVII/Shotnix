@@ -1,4 +1,6 @@
+import AppKit
 import AVFoundation
+import SwiftUI
 import XCTest
 @testable import ShotnixCore
 
@@ -167,6 +169,73 @@ final class VideoAudioTests: XCTestCase {
         XCTAssertEqual(volume(1), 0.3, accuracy: 0.001)
     }
 
+    func testClipLevelsLowerOneKindAndGlideAcrossASplit() throws {
+        let composition = AVMutableComposition()
+        let video = composition.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid)!
+        let mic = composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid)!
+        let system = composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid)!
+        // As recorded, the computer sound dipped under the voice (a split),
+        // muted, then back at half after the mute.
+        let clips = [
+            VideoDemoTimelineClip(sourceStart: 0, sourceEnd: 2),
+            VideoDemoTimelineClip(sourceStart: 2, sourceEnd: 4, systemVolume: 0.2),
+            VideoDemoTimelineClip(sourceStart: 4, sourceEnd: 6, muted: true),
+            VideoDemoTimelineClip(sourceStart: 6, sourceEnd: 8, systemVolume: 0.5),
+        ]
+        let segments = clips.enumerated().map { VideoDemoTimelineSegment(clip: $1, timelineStart: Double($0) * 2) }
+        let placements = segments.map {
+            VideoCompositionBuilder.Placement(start: CMTime(seconds: $0.timelineStart, preferredTimescale: 600), duration: CMTime(seconds: 2, preferredTimescale: 600), segment: $0)
+        }
+        let edit = VideoEditComposition(
+            composition: composition, videoTrack: video, audioTracks: [mic, system], audioKinds: [.microphone, .system],
+            audioMix: nil, placements: placements,
+            duration: CMTime(seconds: 8, preferredTimescale: 600), sourceSize: CGSize(width: 640, height: 400), orientation: .identity
+        )
+        let mix = try XCTUnwrap(VideoCompositionBuilder.audioMix(for: edit, segments: segments, audio: VideoAudioSettings()))
+        func volume(_ index: Int, at seconds: Double) -> (start: Float, end: Float, range: CMTimeRange) {
+            var start: Float = -1, end: Float = -1
+            var range = CMTimeRange()
+            _ = mix.inputParameters[index].getVolumeRamp(for: CMTime(seconds: seconds, preferredTimescale: 600), startVolume: &start, endVolume: &end, timeRange: &range)
+            return (start, end, range)
+        }
+        XCTAssertEqual(volume(1, at: 1).start, 1, accuracy: 0.001)
+        let glide = volume(1, at: 2.1)
+        XCTAssertEqual(glide.start, 1, accuracy: 0.001, "the dip glides from the level before")
+        XCTAssertEqual(glide.end, 0.2, accuracy: 0.001)
+        XCTAssertEqual(glide.range.duration.seconds, VideoCompositionBuilder.levelGlide, accuracy: 0.01)
+        XCTAssertEqual(volume(1, at: 3).start, 0.2, accuracy: 0.001)
+        XCTAssertEqual(volume(0, at: 3).start, 1, accuracy: 0.001, "the voice stays as it was")
+        XCTAssertEqual(volume(0, at: 2.1).end, 1, accuracy: 0.001)
+        XCTAssertEqual(volume(1, at: 5).start, 0, accuracy: 0.001)
+        let afterMute = volume(1, at: 6.1)
+        XCTAssertEqual(afterMute.start, 0.5, accuracy: 0.001, "a mute keeps its hard edge")
+        XCTAssertEqual(afterMute.end, 0.5, accuracy: 0.001)
+
+        // A clip's levels multiply the whole video's.
+        var audio = VideoAudioSettings()
+        audio.systemVolume = 0.5
+        let quieter = try XCTUnwrap(VideoCompositionBuilder.audioMix(for: edit, segments: segments, audio: audio))
+        var start: Float = -1, end: Float = -1
+        var range = CMTimeRange()
+        _ = quieter.inputParameters[1].getVolumeRamp(for: CMTime(seconds: 3, preferredTimescale: 600), startVolume: &start, endVolume: &end, timeRange: &range)
+        XCTAssertEqual(start, 0.1, accuracy: 0.001)
+
+        XCTAssertEqual(clips[1].volume(for: .system), 0.2, accuracy: 0.001)
+        XCTAssertEqual(clips[1].volume(for: .microphone), 1, accuracy: 0.001)
+        XCTAssertEqual(clips[1].volume(for: .mixed), 1, accuracy: 0.001)
+        XCTAssertTrue(clips[1].isQuieter)
+        XCTAssertFalse(clips[2].isQuieter, "muted, not quieter")
+    }
+
+    func testClipLevelsSaveAndOldDraftsPlayAsRecorded() throws {
+        let old = try JSONDecoder().decode(VideoDemoTimelineClip.self, from: Data(#"{"fadeIn":0,"fadeOut":0,"id":"39B84C79-6A09-4B45-BB49-BAA9969B19AB","muted":false,"sourceEnd":40,"sourceStart":0,"speed":1}"#.utf8))
+        XCTAssertEqual([old.volume, old.voiceVolume, old.systemVolume], [1, 1, 1])
+        XCTAssertFalse(old.isQuieter)
+        let ducked = VideoDemoTimelineClip(sourceStart: 0, sourceEnd: 4, volume: 0.9, voiceVolume: 0.8, systemVolume: 0.2)
+        let saved = try JSONDecoder().decode(VideoDemoTimelineClip.self, from: JSONEncoder().encode(ducked))
+        XCTAssertEqual(saved, ducked)
+    }
+
     func testExportLoudnessAndMutedExport() async throws {
         let model = try await makeModel()
         var settings = VideoExportSettings()
@@ -274,6 +343,94 @@ final class VideoAudioTests: XCTestCase {
         print("MIX: peak \(peak), rms \(rms), crest \(crest)")
         XCTAssertLessThanOrEqual(peak, 1.0)
         XCTAssertGreaterThan(crest, 1.3, "the loud mix is lowered, not clipped")
+    }
+
+    func testExportTurnsTheComputerSoundDownForJustOnePart() async throws {
+        let url = directory.appendingPathComponent("rec.mov")
+        try await writeTwoTrackRecording(to: url, amplitude: 0.3, seconds: 4)
+        let metadata = VideoDemoRecordingMetadata(videoURLPath: url.path, createdAt: Date(), duration: 4, sourceWidth: 320, sourceHeight: 200, fps: 30, nativeCursorVisible: true, cursorSamples: [], clickEvents: [], audioTracks: [.microphone, .system])
+        var project = VideoDemoProject.make(sourceURL: url, duration: 4, sourceSize: CGSize(width: 320, height: 200))
+        project.apply(metadata: metadata)
+        project.audio.normalizeLoudness = false
+        project.timelineClips = [
+            VideoDemoTimelineClip(sourceStart: 0, sourceEnd: 2),
+            VideoDemoTimelineClip(sourceStart: 2, sourceEnd: 4, systemVolume: 0),
+        ]
+        var settings = VideoExportSettings()
+        settings.resolution = .p720
+        settings.fps = 30
+        settings.endCard = false
+        let output = directory.appendingPathComponent("ducked.mp4")
+        try await VideoDemoExporter.export(project: project, recording: metadata, destinationURL: output, settings: settings)
+
+        let asset = AVURLAsset(url: output)
+        let tracks = try await asset.loadTracks(withMediaType: .audio)
+        let reader = try AVAssetReader(asset: asset)
+        let readout = AVAssetReaderAudioMixOutput(audioTracks: tracks, audioSettings: [
+            AVFormatIDKey: kAudioFormatLinearPCM, AVSampleRateKey: 48_000, AVNumberOfChannelsKey: 2,
+            AVLinearPCMBitDepthKey: 32, AVLinearPCMIsFloatKey: true, AVLinearPCMIsBigEndianKey: false, AVLinearPCMIsNonInterleaved: false,
+        ])
+        reader.add(readout)
+        reader.startReading()
+        // Sums of squares for a second of each part, away from the edges.
+        var both = (sum: 0.0, count: 0), voiceOnly = (sum: 0.0, count: 0)
+        var frame = 0
+        while let sample = readout.copyNextSampleBuffer(), let block = CMSampleBufferGetDataBuffer(sample) {
+            var length = 0
+            var pointer: UnsafeMutablePointer<Int8>?
+            CMBlockBufferGetDataPointer(block, atOffset: 0, lengthAtOffsetOut: nil, totalLengthOut: &length, dataPointerOut: &pointer)
+            guard let pointer else { continue }
+            pointer.withMemoryRebound(to: Float.self, capacity: length / 4) { floats in
+                for index in stride(from: 0, to: length / 4, by: 2) {
+                    let seconds = Double(frame) / 48_000
+                    let square = Double(floats[index] * floats[index])
+                    if seconds >= 0.5, seconds < 1.5 { both.sum += square; both.count += 1 }
+                    if seconds >= 2.7, seconds < 3.7 { voiceOnly.sum += square; voiceOnly.count += 1 }
+                    frame += 1
+                }
+            }
+        }
+        let loud = (both.sum / Double(max(both.count, 1))).squareRoot()
+        let quiet = (voiceOnly.sum / Double(max(voiceOnly.count, 1))).squareRoot()
+        print("PART LEVELS: both \(loud), voice only \(quiet)")
+        XCTAssertGreaterThan(quiet, 0.1, "the voice keeps playing")
+        XCTAssertEqual(quiet / loud, 0.5, accuracy: 0.08, "only the computer sound went")
+    }
+
+    /// A part of a two-track recording: Voice and Computer sound sliders
+    /// fit in every language.
+    func testPartSoundControlsFitInEachLanguage() async throws {
+        let url = directory.appendingPathComponent("rec.mov")
+        try await writeTwoTrackRecording(to: url, amplitude: 0.3, seconds: 6)
+        let metadata = VideoDemoRecordingMetadata(videoURLPath: url.path, createdAt: Date(), duration: 6, sourceWidth: 320, sourceHeight: 200, fps: 30, nativeCursorVisible: true, cursorSamples: [], clickEvents: [], audioTracks: [.microphone, .system])
+        XCTAssertTrue(VideoDemoSidecarStore.save(metadata, for: url))
+        VideoDemoDraftStore.delete(for: url)
+        defer { VideoDemoDraftStore.delete(for: url) }
+        let model = VideoEditorModel(videoURL: url)
+        await model.load()
+        XCTAssertTrue(model.hasSeparateVoiceAndSystem)
+        let range = VideoDemoTimelineRange(start: 2, end: 4)
+        model.selection = .range(range)
+        model.setRangeVolume(range, \.systemVolume, 0.25)
+        model.endGesture()
+        XCTAssertTrue(model.segments[1].clip.isQuieter)
+        defer { L10n.use(nil) }
+        for language in [nil, "de", "ja"] as [String?] {
+            L10n.use(language)
+            let host = NSHostingView(rootView: VideoInspectorView(model: model).frame(width: 318, height: 900).environment(\.colorScheme, .dark))
+            host.frame = NSRect(x: 0, y: 0, width: 318, height: 900)
+            let window = NSWindow(contentRect: host.frame, styleMask: [.borderless], backing: .buffered, defer: false)
+            window.appearance = NSAppearance(named: .darkAqua)
+            window.contentView = host
+            host.layoutSubtreeIfNeeded()
+            try await Task.sleep(nanoseconds: 300_000_000)
+            let rep = try XCTUnwrap(host.bitmapImageRepForCachingDisplay(in: host.bounds))
+            host.cacheDisplay(in: host.bounds, to: rep)
+            let snapshot = FileManager.default.temporaryDirectory.appendingPathComponent("shotnix-part-sound-\(language ?? "en").png")
+            try XCTUnwrap(rep.representation(using: .png, properties: [:])).write(to: snapshot)
+            print("SNAPSHOT: \(snapshot.path)")
+            window.contentView = nil
+        }
     }
 
     func testVoiceEnhancementRemovesNoise() async throws {

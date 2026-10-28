@@ -1067,10 +1067,10 @@ final class VideoEditorModel: ObservableObject {
 
     /// Changes just the selected part (speed, sound): its clips split at the
     /// range's edges, and the range follows the same material afterwards.
-    func applyToRange(_ range: VideoDemoTimelineRange, label: String, _ change: (inout VideoDemoTimelineClip) -> Void) {
+    func applyToRange(_ range: VideoDemoTimelineRange, label: String, coalesce: String? = nil, _ change: (inout VideoDemoTimelineClip) -> Void) {
         let pieces = sourcePieces(of: range)
         guard !pieces.isEmpty else { return }
-        mutate(label: label) { project in
+        mutate(coalesce: coalesce, label: label) { project in
             for piece in pieces {
                 _ = project.splitClip(atSourceTime: piece.lowerBound, totalDuration: sourceDuration)
                 _ = project.splitClip(atSourceTime: piece.upperBound, totalDuration: sourceDuration)
@@ -1115,6 +1115,17 @@ final class VideoEditorModel: ObservableObject {
         applyToRange(range, label: muted ? "Unmute Part" : "Mute Part") { $0.muted = !muted }
     }
 
+    /// A level the range plays at (its first clip's, when they differ).
+    func rangeVolume(_ range: VideoDemoTimelineRange, _ level: KeyPath<VideoDemoTimelineClip, Double>) -> Double {
+        segments(in: range).first?.clip[keyPath: level] ?? 1
+    }
+
+    /// Sets one level for just this part (splitting clips at its edges),
+    /// such as the computer sound turned down while you talk over it.
+    func setRangeVolume(_ range: VideoDemoTimelineRange, _ level: WritableKeyPath<VideoDemoTimelineClip, Double>, _ value: Double) {
+        applyToRange(range, label: "Sound Change", coalesce: "range-volume") { $0[keyPath: level] = value }
+    }
+
     func setClipSpeed(_ id: UUID, _ speed: Double) {
         mutate(coalesce: "speed-\(id)") { project in
             _ = project.updateClip(id: id, totalDuration: sourceDuration) { $0.speed = speed }
@@ -1124,6 +1135,12 @@ final class VideoEditorModel: ObservableObject {
     func setClipMuted(_ id: UUID, _ muted: Bool) {
         mutate { project in
             _ = project.updateClip(id: id, totalDuration: sourceDuration) { $0.muted = muted }
+        }
+    }
+
+    func setClipVolume(_ id: UUID, _ level: WritableKeyPath<VideoDemoTimelineClip, Double>, _ value: Double) {
+        mutate(coalesce: "volume-\(id)") { project in
+            _ = project.updateClip(id: id, totalDuration: sourceDuration) { $0[keyPath: level] = value }
         }
     }
 
