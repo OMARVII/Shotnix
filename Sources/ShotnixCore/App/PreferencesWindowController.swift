@@ -1065,7 +1065,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.27.2"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.27.3"
     
     var body: some View {
         PreferencesPane {
@@ -1109,6 +1109,11 @@ struct AboutSettingsView: View {
                 ScrollView {
                     // The release notes stay in English (l10n-ignore); everything around them is localized.
                     Text(verbatim: """
+                    Version 0.27.3
+                    • Text in the screenshot editor can have an outline that stands out on any background
+                    • New installs save every screenshot as a file, and Shotnix says once where an unsaved one went
+                    • Save on the preview no longer makes a second copy of an auto-saved screenshot
+
                     Version 0.27.2
                     • The timeline shows its scroll bar while the pointer is over it, so you can tell it scrolls
 
