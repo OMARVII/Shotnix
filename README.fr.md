@@ -79,7 +79,7 @@ Gratuit et open source. Une app native d’environ 11 Mo, et vos captures ne qu
 **Annoter et modifier**
 
 - Flèches, rectangles (coins droits ou arrondis), ellipses, lignes, dessin à main levée
-- Texte et bulles : toutes les tailles de 10 à 96 pt, en gras ou non, sur plusieurs lignes ; double-cliquez pour modifier à nouveau
+- Texte et bulles : toutes les tailles de 10 à 96 pt, en gras ou non, sur plusieurs lignes, avec un contour en option qui ressort sur n’importe quel fond ; double-cliquez pour modifier à nouveau
 - Surligneur et surligneur à main levée pour mettre un passage en valeur
 - Projecteur pour assombrir tout sauf l’essentiel
 - Flou et pixélisation d’intensité réglable, qui couvrent toujours toute la zone, sur n’importe quel écran
@@ -110,7 +110,7 @@ Gratuit et open source. Une app native d’environ 11 Mo, et vos captures ne qu
 - Recherche de mises à jour intégrée, grâce à Sparkle, pour les versions officielles
 - Export en PNG ou JPEG, avec un curseur de qualité JPEG (et en WebP, sur les Mac dont le système sait l’écrire)
 - Choix du dossier d’enregistrement automatique ; les captures prises dans la même seconde ont chacune leur propre fichier numéroté
-- Actions automatiques après la capture (copie dans le presse-papiers, enregistrement sur le disque)
+- Actions automatiques après la capture (copie dans le presse-papiers, enregistrement sur le disque ; une nouvelle installation enregistre chaque capture dans un fichier, comme le Mac)
 - Position (à gauche ou à droite) et durée d’affichage de la vignette réglables
 - Sons de capture (désactivables)
 - Masquage des icônes du bureau pendant la capture (sans redémarrer le Finder)

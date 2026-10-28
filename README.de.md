@@ -79,7 +79,7 @@ Kostenlos und Open Source. Nativ, nur rund 11 MB groß, und deine Aufnahmen verl
 **Beschriften und bearbeiten**
 
 - Pfeile, Rechtecke (eckig oder abgerundet), Ellipsen, Linien, Freihandzeichnen
-- Text und Sprechblasen: jede Größe von 10 bis 96 pt, fett oder normal, mehrzeilig; per Doppelklick wieder bearbeitbar
+- Text und Sprechblasen: jede Größe von 10 bis 96 pt, fett oder normal, mehrzeilig, auf Wunsch mit Kontur, die sich von jedem Hintergrund abhebt; per Doppelklick wieder bearbeitbar
 - Textmarker und Freihand-Textmarker zum Hervorheben
 - Fokus, der alles außer dem Wichtigen abdunkelt
 - Weichzeichnen und Verpixeln mit einstellbarer Stärke, die immer das ganze Feld verdecken, auf jedem Bildschirm
@@ -110,7 +110,7 @@ Kostenlos und Open Source. Nativ, nur rund 11 MB groß, und deine Aufnahmen verl
 - Integrierte Suche nach Updates über Sparkle (für offizielle Builds)
 - Export als PNG oder JPEG, mit Regler für die JPEG-Qualität (auch WebP, auf Macs, deren System es schreiben kann)
 - Frei wählbarer Ordner für automatisches Sichern; Aufnahmen aus derselben Sekunde bekommen eigene, nummerierte Dateien
-- Automatische Aktionen nach der Aufnahme (automatisch kopieren, automatisch sichern)
+- Automatische Aktionen nach der Aufnahme (automatisch kopieren, automatisch sichern; neue Installationen sichern jedes Bildschirmfoto als Datei, wie der Mac selbst)
 - Einstellbare Position der Miniatur (links oder rechts) und Anzeigedauer
 - Ton beim Aufnehmen (abschaltbar)
 - Schreibtischsymbole beim Aufnehmen ausblenden (ohne den Finder neu zu starten)

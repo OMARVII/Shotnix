@@ -79,7 +79,7 @@ Free and open source. Native, about 11 MB, and your captures never leave your Ma
 **Annotate and edit**
 
 - Arrows, rectangles (square or rounded corners), ellipses, lines, freehand drawing
-- Text and callout bubbles: any size from 10 to 96 pt, bold or regular, several lines; double-click to edit again
+- Text and callout bubbles: any size from 10 to 96 pt, bold or regular, several lines, with an optional outline that stands out on any background; double-click to edit again
 - Highlighter and freehand highlighter for emphasizing content
 - Spotlight to dim everything except what matters
 - Blur and pixelate with adjustable strength that always covers the whole box, on any display
@@ -110,7 +110,7 @@ Free and open source. Native, about 11 MB, and your captures never leave your Ma
 - Sparkle-powered in-app update checks for official builds
 - Export as PNG or JPEG, with a JPEG quality slider (WebP too, on Macs whose system can write it)
 - Auto-save location picker; captures taken in the same second get their own numbered files
-- After-capture auto-actions (auto-copy, auto-save)
+- After-capture auto-actions (auto-copy, auto-save; new installs save every screenshot as a file, like the Mac does)
 - Configurable overlay position (left or right) and timeout
 - Capture sound effects (toggleable)
 - Hide desktop icons during capture (without restarting Finder)
