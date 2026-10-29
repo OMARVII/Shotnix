@@ -52,8 +52,8 @@ struct VideoInspectorView: View {
                 // stays where it was (its list keeps its scroll position).
                 if model.selection != .none {
                     // The tab keeps room to work in — the transcript most.
-                    let keep: CGFloat = model.inspectorTab == .captions ? 330 : 220
-                    VideoSelectionInspector(model: model, maxHeight: max(min(proxy.size.height * 0.6, proxy.size.height - 58 - keep), 170))
+                    let keep: CGFloat = model.inspectorTab == .captions ? 330 : 160
+                    VideoSelectionInspector(model: model, maxHeight: max(min(proxy.size.height * 0.7, proxy.size.height - 58 - keep), 170))
                     Rectangle().fill(VideoEditorTheme.hairline).frame(height: 1)
                 }
                 tabContent
