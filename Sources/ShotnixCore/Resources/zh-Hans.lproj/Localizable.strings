@@ -130,6 +130,8 @@
 	<string>%lld 秒</string>
 	<key>%lld selected</key>
 	<string>已选择 %lld 项</string>
+	<key>%lld set by hand on the timeline</key>
+	<string>%lld 处已在时间线上手动调整</string>
 	<key>%lld shortcuts</key>
 	<string>%lld 个快捷键</string>
 	<key>%lld zooms</key>
@@ -672,6 +674,16 @@
 	<string>撰写邮件</string>
 	<key>Computer sound</key>
 	<string>电脑声音</string>
+	<key>Computer sound at %@ while you talk — drag to change, right-click for more</key>
+	<string>说话时电脑声音为 %@ — 拖移可更改，右键点按查看更多</string>
+	<key>Computer sound at %@ while you talk, %@ to %@</key>
+	<string>说话时电脑声音为 %@，%@ 至 %@</string>
+	<key>Computer sound not lowered, %@ to %@</key>
+	<string>电脑声音未降低，%@ 至 %@</string>
+	<key>Computer sound — drag a dip to change it, or click for its settings in Audio</key>
+	<string>电脑声音 — 拖移降低处可更改，或点按以在“音频”中打开其设置</string>
+	<key>Computer sound, lowered in %lld places while you talk</key>
+	<string>电脑声音，说话时在 %lld 处降低</string>
 	<key>Conflict detected</key>
 	<string>检测到冲突</string>
 	<key>Copied</key>
@@ -900,6 +912,8 @@
 	<string>文档、幻灯片</string>
 	<key>Don't Ask Again</key>
 	<string>不再询问</string>
+	<key>Don't Lower Here</key>
+	<string>此处不降低</string>
 	<key>Don't Save</key>
 	<string>不存储</string>
 	<key>Don't ask again</key>
@@ -1044,6 +1058,8 @@
 	<string>此视频上的所有剪切、缩放、标注、字幕和样式更改都会被移除 — 你添加的录制内容会保留。你可以撤销此操作。</string>
 	<key>Every cut, zoom, annotation, caption, and style change on this video is removed. You can undo this.</key>
 	<string>此视频上的所有剪切、缩放、标注、字幕和样式更改都会被移除。你可以撤销此操作。</string>
+	<key>Every place back to the level above</key>
+	<string>将所有位置恢复为上方的音量</string>
 	<key>Every sound level is at 0 (Audio tab) — this export will have no sound.</key>
 	<string>所有音量都为 0（“音频”标签页）— 此导出将没有声音。</string>
 	<key>Everything is ready</key>
@@ -1412,6 +1428,8 @@
 	<string>链接</string>
 	<key>Links (%lld of %lld)</key>
 	<string>链接（前 %1$lld 个，共 %2$lld 个）</string>
+	<key>Listening for your voice…</key>
+	<string>正在查找你的说话声…</string>
 	<key>Listening…</key>
 	<string>正在聆听…</string>
 	<key>Listens on this Mac — nothing is uploaded</key>
@@ -1420,8 +1438,14 @@
 	<string>外观</string>
 	<key>Loop to fill</key>
 	<string>循环填满</string>
+	<key>Lower Here Again</key>
+	<string>在此处重新降低</string>
 	<key>Lower under your voice</key>
 	<string>避让人声</string>
+	<key>Lowered in %lld places — see the lane under the clips</key>
+	<string>已在 %lld 处降低 — 见片段下方的轨道</string>
+	<key>Lowering Settings…</key>
+	<string>降低设置…</string>
 	<key>M</key>
 	<string>中</string>
 	<key>MIT License — Free and open source</key>
@@ -1634,6 +1658,8 @@
 	<string>麦克风没有声音</string>
 	<key>No speech was found in this recording. If it has narration, check its level in the Audio tab, then try again.</key>
 	<string>此录制内容中未检测到语音。如果其中有旁白，请在“音频”标签页中检查其音量，然后重试。</string>
+	<key>No talking found, so nothing is lowered</key>
+	<string>未发现说话声，因此不会降低</string>
 	<key>No text found in this selection</key>
 	<string>此选区中未找到文字</string>
 	<key>No ums</key>
@@ -1654,6 +1680,10 @@
 	<string>磁盘空间不足，无法进行此录制：大约需要 %@ 可用空间，当前可用 %@。请释放空间，或选择“均衡”质量或 30 fps。</string>
 	<key>Not for this video</key>
 	<string>此视频不需要</string>
+	<key>Not lowered</key>
+	<string>未降低</string>
+	<key>Not lowered here — right-click to lower it again</key>
+	<string>此处未降低 — 右键点按可重新降低</string>
 	<key>Not now</key>
 	<string>以后再说</string>
 	<key>Nothing to clean up — everything belongs to recordings you still have</key>
@@ -1712,6 +1742,8 @@
 	<string>打开视频编辑器</string>
 	<key>Open editor after recording</key>
 	<string>录制后打开编辑器</string>
+	<key>Open in Audio</key>
+	<string>在“音频”中打开</string>
 	<key>Open in annotation editor</key>
 	<string>在截屏编辑器中打开</string>
 	<key>Opens its title and length in Style</key>
@@ -2294,6 +2326,8 @@
 	<string>重置%@</string>
 	<key>Reset Defaults</key>
 	<string>恢复默认设置</string>
+	<key>Reset This Place</key>
+	<string>重置此处</string>
 	<key>Reset crop</key>
 	<string>重置裁剪</string>
 	<key>Reset to the Shotnix Look</key>
@@ -3284,6 +3318,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>更新</string>
 	<key>Upload Custom Image</key>
 	<string>选取自定图像</string>
+	<key>Use %@ Everywhere</key>
+	<string>全部使用 %@</string>
 	<key>Use This Look for New Recordings</key>
 	<string>为新录制内容使用此风格</string>
 	<key>Use for new recordings</key>

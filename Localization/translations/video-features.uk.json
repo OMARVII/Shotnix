@@ -51,6 +51,14 @@
       "other" : "%lld записаного клацання — у перегляді й експорті"
     }
   },
+  "%lld set by hand on the timeline" : {
+    "uk" : {
+      "one" : "%lld місце налаштовано вручну на шкалі часу",
+      "few" : "%lld місця налаштовано вручну на шкалі часу",
+      "many" : "%lld місць налаштовано вручну на шкалі часу",
+      "other" : "%lld місця налаштовано вручну на шкалі часу"
+    }
+  },
   "%lld%%" : {
     "uk" : "%lld%%"
   },
@@ -309,6 +317,26 @@
   "Close (Esc)" : {
     "uk" : "Закрити (Esc)"
   },
+  "Computer sound at %@ while you talk — drag to change, right-click for more" : {
+    "uk" : "Звук комп’ютера на %@, поки ви говорите, — перетягніть, щоб змінити; правий клік — інші дії"
+  },
+  "Computer sound at %@ while you talk, %@ to %@" : {
+    "uk" : "Звук комп’ютера на %@, поки ви говорите, з %@ до %@"
+  },
+  "Computer sound not lowered, %@ to %@" : {
+    "uk" : "Звук комп’ютера не стишується, з %@ до %@"
+  },
+  "Computer sound — drag a dip to change it, or click for its settings in Audio" : {
+    "uk" : "Звук комп’ютера — перетягніть приглушення, щоб змінити його, або клацніть, щоб відкрити налаштування у вкладці «Аудіо»"
+  },
+  "Computer sound, lowered in %lld places while you talk" : {
+    "uk" : {
+      "one" : "Звук комп’ютера, стишується в %lld місці, поки ви говорите",
+      "few" : "Звук комп’ютера, стишується в %lld місцях, поки ви говорите",
+      "many" : "Звук комп’ютера, стишується в %lld місцях, поки ви говорите",
+      "other" : "Звук комп’ютера, стишується в %lld місцях, поки ви говорите"
+    }
+  },
   "Copied" : {
     "uk" : "Скопійовано"
   },
@@ -413,6 +441,9 @@
   "Docs, slides" : {
     "uk" : "Документи, слайди"
   },
+  "Don't Lower Here" : {
+    "uk" : "Не стишувати тут"
+  },
   "Done" : {
     "uk" : "Готово"
   },
@@ -463,6 +494,9 @@
   },
   "Every cut, zoom, annotation, caption, and style change on this video is removed. You can undo this." : {
     "uk" : "Усі вирізання, наближення, розмітку, субтитри й зміни стилю в цьому відео буде вилучено. Цю дію можна відмінити."
+  },
+  "Every place back to the level above" : {
+    "uk" : "Повернути всі місця до рівня вище"
   },
   "Every sound level is at 0 (Audio tab) — this export will have no sound." : {
     "uk" : "Усі рівні звуку на 0 (вкладка «Аудіо») — цей експорт буде без звуку."
@@ -658,14 +692,31 @@
   "Linen" : {
     "uk" : "Льон"
   },
+  "Listening for your voice…" : {
+    "uk" : "Пошук вашого голосу…"
+  },
   "Listening…" : {
     "uk" : "Слухання…"
   },
   "Loop to fill" : {
     "uk" : "Повторювати до кінця"
   },
+  "Lower Here Again" : {
+    "uk" : "Знову стишувати тут"
+  },
   "Lower under your voice" : {
     "uk" : "Стишувати під голос"
+  },
+  "Lowered in %lld places — see the lane under the clips" : {
+    "uk" : {
+      "one" : "Стишується в %lld місці — див. доріжку під кліпами",
+      "few" : "Стишується в %lld місцях — див. доріжку під кліпами",
+      "many" : "Стишується в %lld місцях — див. доріжку під кліпами",
+      "other" : "Стишується в %lld місцях — див. доріжку під кліпами"
+    }
+  },
+  "Lowering Settings…" : {
+    "uk" : "Налаштування приглушення…"
   },
   "M" : {
     "uk" : "M"
@@ -763,11 +814,20 @@
   "No speech was found in this recording. If it has narration, check its level in the Audio tab, then try again." : {
     "uk" : "У цьому записі не знайдено мовлення. Якщо в ньому є коментар, перевірте рівень у вкладці «Аудіо», а потім спробуйте ще раз."
   },
+  "No talking found, so nothing is lowered" : {
+    "uk" : "Мовлення не знайдено, тож нічого не стишується"
+  },
   "No ums or uhs left" : {
     "uk" : "Слів-паразитів не залишилося"
   },
   "None" : {
     "uk" : "Немає"
+  },
+  "Not lowered" : {
+    "uk" : "Не стишується"
+  },
+  "Not lowered here — right-click to lower it again" : {
+    "uk" : "Тут не стишується — правий клік, щоб знову стишувати"
   },
   "Nothing to clean up — everything belongs to recordings you still have" : {
     "uk" : "Нічого прибирати — усе належить записам, які у вас досі є"
@@ -789,6 +849,9 @@
   },
   "Opacity" : {
     "uk" : "Непрозорість"
+  },
+  "Open in Audio" : {
+    "uk" : "Відкрити у вкладці «Аудіо»"
   },
   "Opens its volume, fades, and ducking in Audio" : {
     "uk" : "Відкриває гучність, появу/згасання та приглушення у вкладці «Аудіо»"
@@ -967,6 +1030,9 @@
   },
   "Replace…" : {
     "uk" : "Замінити…"
+  },
+  "Reset This Place" : {
+    "uk" : "Скинути це місце"
   },
   "Resolution" : {
     "uk" : "Роздільність"
@@ -1306,6 +1372,9 @@
   },
   "Under the voice" : {
     "uk" : "Під голосом"
+  },
+  "Use %@ Everywhere" : {
+    "uk" : "Використовувати %@ скрізь"
   },
   "Video copied" : {
     "uk" : "Відео скопійовано"

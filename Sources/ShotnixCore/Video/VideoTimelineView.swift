@@ -60,12 +60,12 @@ enum VideoTimelineMetrics {
     /// and shortcuts (always in front), annotation lanes (the highest lane
     /// is the frontmost layer), the camera, clicks, and the recording
     /// itself at the base.
-    static func contentHeight(_ project: VideoDemoProject) -> CGFloat {
+    static func contentHeight(_ project: VideoDemoProject, computerSoundLane: Bool = false) -> CGFloat {
         var height = rulerHeight + gap + textLanesHeight(project) + overlayAreaHeight(project) + zoomTrackHeight + gap
         if !project.clickEvents.isEmpty { height += clickLaneHeight + 3 }
         height += clipTrackHeight
         // Music and other lanes under the clips (VideoTimelineExtras.swift).
-        height += bottomLanesHeight(project)
+        height += bottomLanesHeight(project, computerSoundLane: computerSoundLane)
         return height + 12
     }
 }
@@ -287,7 +287,7 @@ struct VideoTimelineSurface: View {
     }
 
     var body: some View {
-        let height = max(M.contentHeight(model.project), viewport.height)
+        let height = max(M.contentHeight(model.project, computerSoundLane: model.showsComputerSoundLane), viewport.height)
         let overflows = height > viewport.height + 0.5
         // Lanes that don't fit scroll vertically. It opens (and starts
         // overflowing) at the bottom, where the recording itself is.

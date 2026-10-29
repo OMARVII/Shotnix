@@ -95,6 +95,22 @@
     },
     "zh-Hans" : "已录制 %lld 次点按 — 预览和导出中都会播放"
   },
+  "%lld set by hand on the timeline" : {
+    "comment" : "Audio tab, under 'Lower under your voice': how many places where the computer sound dips were changed by hand on the timeline",
+    "de" : {
+      "one" : "%lld Stelle von Hand in der Zeitleiste angepasst",
+      "other" : "%lld Stellen von Hand in der Zeitleiste angepasst"
+    },
+    "en" : {
+      "one" : "%lld set by hand on the timeline",
+      "other" : "%lld set by hand on the timeline"
+    },
+    "fr" : {
+      "one" : "%lld passage réglé à la main dans la timeline",
+      "other" : "%lld passages réglés à la main dans la timeline"
+    },
+    "zh-Hans" : "%lld 处已在时间线上手动调整"
+  },
   "%lld%%" : {
     "comment" : "A level in percent, on its own (volume, opacity, progress)",
     "de" : "%lld %%",
@@ -535,6 +551,46 @@
     "fr" : "Fermer (Échap)",
     "zh-Hans" : "关闭（Esc）"
   },
+  "Computer sound at %@ while you talk — drag to change, right-click for more" : {
+    "comment" : "Tooltip on one dip; %@ is a percentage",
+    "de" : "Systemton bei %@, während du sprichst – ziehen zum Ändern, Rechtsklick für mehr",
+    "fr" : "Son de l’ordinateur à %@ pendant que vous parlez — faites glisser pour modifier, clic droit pour plus d’options",
+    "zh-Hans" : "说话时电脑声音为 %@ — 拖移可更改，右键点按查看更多"
+  },
+  "Computer sound at %@ while you talk, %@ to %@" : {
+    "comment" : "VoiceOver, one dip: a percentage, then its start and end times",
+    "de" : "Systemton bei %@, während du sprichst, %@ bis %@",
+    "fr" : "Son de l’ordinateur à %@ pendant que vous parlez, de %@ à %@",
+    "zh-Hans" : "说话时电脑声音为 %@，%@ 至 %@"
+  },
+  "Computer sound not lowered, %@ to %@" : {
+    "comment" : "VoiceOver, a place left alone: start and end times",
+    "de" : "Systemton nicht abgesenkt, %@ bis %@",
+    "fr" : "Son de l’ordinateur non atténué, de %@ à %@",
+    "zh-Hans" : "电脑声音未降低，%@ 至 %@"
+  },
+  "Computer sound — drag a dip to change it, or click for its settings in Audio" : {
+    "comment" : "Tooltip on the computer sound's lane under the clips; a dip is where it gets quieter while you talk",
+    "de" : "Systemton – Absenkung ziehen, um sie zu ändern, oder klicken für die Einstellungen unter „Audio“",
+    "fr" : "Son de l’ordinateur — faites glisser une atténuation pour la modifier, ou cliquez pour ses réglages dans Audio",
+    "zh-Hans" : "电脑声音 — 拖移降低处可更改，或点按以在“音频”中打开其设置"
+  },
+  "Computer sound, lowered in %lld places while you talk" : {
+    "comment" : "VoiceOver, the computer sound's lane",
+    "de" : {
+      "one" : "Systemton, an %lld Stelle leiser, während du sprichst",
+      "other" : "Systemton, an %lld Stellen leiser, während du sprichst"
+    },
+    "en" : {
+      "one" : "Computer sound, lowered in %lld place while you talk",
+      "other" : "Computer sound, lowered in %lld places while you talk"
+    },
+    "fr" : {
+      "one" : "Son de l’ordinateur, atténué à %lld endroit pendant que vous parlez",
+      "other" : "Son de l’ordinateur, atténué à %lld endroits pendant que vous parlez"
+    },
+    "zh-Hans" : "电脑声音，说话时在 %lld 处降低"
+  },
   "Copied" : {
     "de" : "Kopiert",
     "fr" : "Copié",
@@ -711,6 +767,12 @@
     "fr" : "Documents, diapositives",
     "zh-Hans" : "文档、幻灯片"
   },
+  "Don't Lower Here" : {
+    "comment" : "Menu on a dip: keep the computer sound at its level in this place",
+    "de" : "Hier nicht absenken",
+    "fr" : "Ne pas atténuer ici",
+    "zh-Hans" : "此处不降低"
+  },
   "Done" : {
     "de" : "Fertig",
     "fr" : "Terminé",
@@ -795,6 +857,12 @@
     "de" : "Alle Schnitte, Zooms, Beschriftungen, Untertitel und Stiländerungen an diesem Video werden entfernt. Du kannst das widerrufen.",
     "fr" : "Toutes les coupes, les zooms, les annotations, les sous-titres et les modifications de style de cette vidéo sont supprimés. Vous pouvez annuler cette action.",
     "zh-Hans" : "此视频上的所有剪切、缩放、标注、字幕和样式更改都会被移除。你可以撤销此操作。"
+  },
+  "Every place back to the level above" : {
+    "comment" : "Tooltip on Reset: every hand-set place goes back to the 'Under the voice' slider's level",
+    "de" : "Alle Stellen wieder auf den Wert darüber setzen",
+    "fr" : "Remettre tous les passages au niveau ci-dessus",
+    "zh-Hans" : "将所有位置恢复为上方的音量"
   },
   "Every sound level is at 0 (Audio tab) — this export will have no sound." : {
     "de" : "Alle Lautstärken stehen auf 0 (Tab „Audio“) – dieser Export hat keinen Ton.",
@@ -1126,6 +1194,12 @@
     "fr" : "Lin",
     "zh-Hans" : "亚麻"
   },
+  "Listening for your voice…" : {
+    "comment" : "While it finds where you talk in the recording",
+    "de" : "Deine Stimme wird gesucht …",
+    "fr" : "Recherche de votre voix…",
+    "zh-Hans" : "正在查找你的说话声…"
+  },
   "Listening…" : {
     "de" : "Hört zu …",
     "fr" : "Écoute…",
@@ -1136,10 +1210,36 @@
     "fr" : "Boucler pour remplir",
     "zh-Hans" : "循环填满"
   },
+  "Lower Here Again" : {
+    "de" : "Hier wieder absenken",
+    "fr" : "Atténuer à nouveau ici",
+    "zh-Hans" : "在此处重新降低"
+  },
   "Lower under your voice" : {
     "de" : "Unter deiner Stimme leiser",
     "fr" : "Baisser sous votre voix",
     "zh-Hans" : "避让人声"
+  },
+  "Lowered in %lld places — see the lane under the clips" : {
+    "comment" : "Audio tab status: how many places the computer sound dips while you talk",
+    "de" : {
+      "one" : "An %lld Stelle leiser – siehe die Spur unter den Clips",
+      "other" : "An %lld Stellen leiser – siehe die Spur unter den Clips"
+    },
+    "en" : {
+      "one" : "Lowered in %lld place — see the lane under the clips",
+      "other" : "Lowered in %lld places — see the lane under the clips"
+    },
+    "fr" : {
+      "one" : "Atténué à %lld endroit — voir la piste sous les clips",
+      "other" : "Atténué à %lld endroits — voir la piste sous les clips"
+    },
+    "zh-Hans" : "已在 %lld 处降低 — 见片段下方的轨道"
+  },
+  "Lowering Settings…" : {
+    "de" : "Einstellungen zum Absenken …",
+    "fr" : "Réglages d’atténuation…",
+    "zh-Hans" : "降低设置…"
   },
   "M" : {
     "comment" : "Caption text size: medium",
@@ -1303,6 +1403,11 @@
     "fr" : "Aucune parole n’a été détectée dans cet enregistrement. S’il contient une narration, vérifiez son niveau dans l’onglet Audio, puis réessayez.",
     "zh-Hans" : "此录制内容中未检测到语音。如果其中有旁白，请在“音频”标签页中检查其音量，然后重试。"
   },
+  "No talking found, so nothing is lowered" : {
+    "de" : "Kein Sprechen gefunden, daher wird nichts leiser",
+    "fr" : "Aucune parole trouvée, rien n’est donc atténué",
+    "zh-Hans" : "未发现说话声，因此不会降低"
+  },
   "No ums or uhs left" : {
     "de" : "Keine Füllwörter mehr",
     "fr" : "Plus aucun mot de remplissage",
@@ -1313,6 +1418,17 @@
     "de" : "Ohne",
     "fr" : "Aucun",
     "zh-Hans" : "无"
+  },
+  "Not lowered" : {
+    "comment" : "Small label on a dip that was set to not lower the computer sound",
+    "de" : "Nicht leiser",
+    "fr" : "Non atténué",
+    "zh-Hans" : "未降低"
+  },
+  "Not lowered here — right-click to lower it again" : {
+    "de" : "Hier nicht leiser – Rechtsklick, um wieder abzusenken",
+    "fr" : "Non atténué ici — clic droit pour l’atténuer à nouveau",
+    "zh-Hans" : "此处未降低 — 右键点按可重新降低"
   },
   "Nothing to clean up — everything belongs to recordings you still have" : {
     "de" : "Nichts aufzuräumen – alles gehört zu Aufnahmen, die du noch hast",
@@ -1348,6 +1464,12 @@
     "de" : "Deckkraft",
     "fr" : "Opacité",
     "zh-Hans" : "不透明度"
+  },
+  "Open in Audio" : {
+    "comment" : "VoiceOver action: opens the Audio tab",
+    "de" : "Unter „Audio“ öffnen",
+    "fr" : "Ouvrir dans Audio",
+    "zh-Hans" : "在“音频”中打开"
   },
   "Opens its volume, fades, and ducking in Audio" : {
     "de" : "Öffnet Lautstärke, Blenden und Absenkung unter „Audio“",
@@ -1652,6 +1774,11 @@
     "de" : "Ersetzen …",
     "fr" : "Remplacer…",
     "zh-Hans" : "替换…"
+  },
+  "Reset This Place" : {
+    "de" : "Diese Stelle zurücksetzen",
+    "fr" : "Réinitialiser ce passage",
+    "zh-Hans" : "重置此处"
   },
   "Resolution" : {
     "de" : "Auflösung",
@@ -2236,6 +2363,12 @@
     "de" : "Unter der Stimme",
     "fr" : "Sous la voix",
     "zh-Hans" : "人声时音量"
+  },
+  "Use %@ Everywhere" : {
+    "comment" : "Menu on a dip set by hand; %@ is its percentage",
+    "de" : "Überall %@ verwenden",
+    "fr" : "Utiliser %@ partout",
+    "zh-Hans" : "全部使用 %@"
   },
   "Video copied" : {
     "de" : "Video kopiert",

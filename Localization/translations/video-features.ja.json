@@ -41,6 +41,9 @@
   "%lld recorded clicks — in the preview and the export" : {
     "ja" : "記録されたクリック%lld回。プレビューと書き出しで鳴ります"
   },
+  "%lld set by hand on the timeline" : {
+    "ja" : "%lld箇所をタイムラインで手動調整済み"
+  },
   "%lld%%" : {
     "ja" : "%lld%%"
   },
@@ -284,6 +287,21 @@
   "Close (Esc)" : {
     "ja" : "閉じる（Esc）"
   },
+  "Computer sound at %@ while you talk — drag to change, right-click for more" : {
+    "ja" : "話している間のシステムオーディオ: %@。ドラッグで変更、右クリックでその他の操作"
+  },
+  "Computer sound at %@ while you talk, %@ to %@" : {
+    "ja" : "話している間のシステムオーディオ %@、%@〜%@"
+  },
+  "Computer sound not lowered, %@ to %@" : {
+    "ja" : "システムオーディオを下げない、%@〜%@"
+  },
+  "Computer sound — drag a dip to change it, or click for its settings in Audio" : {
+    "ja" : "システムオーディオ: 下げた部分をドラッグして変更、クリックで“オーディオ”の設定を開く"
+  },
+  "Computer sound, lowered in %lld places while you talk" : {
+    "ja" : "システムオーディオ、話している間%lld箇所で音量を下げます"
+  },
   "Copied" : {
     "ja" : "コピーしました"
   },
@@ -383,6 +401,9 @@
   "Docs, slides" : {
     "ja" : "ドキュメント、スライド"
   },
+  "Don't Lower Here" : {
+    "ja" : "ここでは下げない"
+  },
   "Done" : {
     "ja" : "完了"
   },
@@ -433,6 +454,9 @@
   },
   "Every cut, zoom, annotation, caption, and style change on this video is removed. You can undo this." : {
     "ja" : "このビデオのカット、ズーム、注釈、字幕、スタイルの変更がすべて削除されます。この操作は取り消せます。"
+  },
+  "Every place back to the level above" : {
+    "ja" : "すべての箇所を上の音量に戻す"
   },
   "Every sound level is at 0 (Audio tab) — this export will have no sound." : {
     "ja" : "すべての音量が0になっているため（“オーディオ”タブ）、書き出したビデオにはサウンドが入りません。"
@@ -623,14 +647,26 @@
   "Linen" : {
     "ja" : "リネン"
   },
+  "Listening for your voice…" : {
+    "ja" : "声を検出中…"
+  },
   "Listening…" : {
     "ja" : "聞き取り中…"
   },
   "Loop to fill" : {
     "ja" : "ループして最後まで再生"
   },
+  "Lower Here Again" : {
+    "ja" : "ここで再び音量を下げる"
+  },
   "Lower under your voice" : {
     "ja" : "話している間は音量を下げる"
+  },
+  "Lowered in %lld places — see the lane under the clips" : {
+    "ja" : "%lld箇所で音量を下げています。クリップの下のトラックを参照"
+  },
+  "Lowering Settings…" : {
+    "ja" : "音量を下げる設定…"
   },
   "M" : {
     "ja" : "中"
@@ -728,11 +764,20 @@
   "No speech was found in this recording. If it has narration, check its level in the Audio tab, then try again." : {
     "ja" : "この収録には音声が見つかりませんでした。ナレーションが入っている場合は、“オーディオ”タブで音量を確認してから、もう一度お試しください。"
   },
+  "No talking found, so nothing is lowered" : {
+    "ja" : "話している部分が見つからないため、音量は下げません"
+  },
   "No ums or uhs left" : {
     "ja" : "フィラー（えー、あのー）はもうありません"
   },
   "None" : {
     "ja" : "なし"
+  },
+  "Not lowered" : {
+    "ja" : "下げない"
+  },
+  "Not lowered here — right-click to lower it again" : {
+    "ja" : "ここでは下げません。右クリックで再び下げる"
   },
   "Nothing to clean up — everything belongs to recordings you still have" : {
     "ja" : "クリーンアップするものはありません。すべて現在ある収録のデータです"
@@ -754,6 +799,9 @@
   },
   "Opacity" : {
     "ja" : "不透明度"
+  },
+  "Open in Audio" : {
+    "ja" : "“オーディオ”で開く"
   },
   "Opens its volume, fades, and ducking in Audio" : {
     "ja" : "“オーディオ”で音量、フェード、話している間の音量の設定を開きます"
@@ -922,6 +970,9 @@
   },
   "Replace…" : {
     "ja" : "置き換える…"
+  },
+  "Reset This Place" : {
+    "ja" : "この箇所をリセット"
   },
   "Resolution" : {
     "ja" : "解像度"
@@ -1231,6 +1282,9 @@
   },
   "Under the voice" : {
     "ja" : "話している間の音量"
+  },
+  "Use %@ Everywhere" : {
+    "ja" : "すべてに%@を使用"
   },
   "Video copied" : {
     "ja" : "ビデオをコピーしました"

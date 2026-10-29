@@ -45,9 +45,10 @@ extension VideoEditorModel {
 }
 
 extension VideoTimelineMetrics {
-    /// Lanes under the clips (music) — 0 when there are none.
-    static func bottomLanesHeight(_ project: VideoDemoProject) -> CGFloat {
-        project.music == nil ? 0 : gap + musicLaneHeight
+    /// Lanes under the clips (the computer sound, music) — 0 when there are
+    /// none.
+    static func bottomLanesHeight(_ project: VideoDemoProject, computerSoundLane: Bool = false) -> CGFloat {
+        (computerSoundLane ? gap + computerSoundLaneHeight : 0) + (project.music == nil ? 0 : gap + musicLaneHeight)
     }
 }
 
@@ -76,6 +77,19 @@ struct VideoTimelineExtrasLayer: View {
                 VideoSourceBoundaryMarkers(boundaries: boundaries, geometry: geometry, clipTop: clipTop)
             }
             VideoTransitionMarkers(model: model, geometry: geometry, clipTop: clipTop)
+            let computerLane = model.showsComputerSoundLane
+            if computerLane {
+                VideoComputerSoundLane(
+                    model: model,
+                    segments: model.segments,
+                    audio: project.audio,
+                    dips: model.computerSoundDips,
+                    loudnessReady: !model.media.computerLoudness.isEmpty,
+                    geometry: geometry
+                )
+                .equatable()
+                .offset(y: clipTop + M.clipTrackHeight + M.gap)
+            }
             if let music = project.music {
                 VideoMusicLane(
                     music: music,
@@ -86,7 +100,7 @@ struct VideoTimelineExtrasLayer: View {
                     model: model
                 )
                 .equatable()
-                .offset(y: clipTop + M.clipTrackHeight + M.gap)
+                .offset(y: clipTop + M.clipTrackHeight + M.gap + (computerLane ? M.computerSoundLaneHeight + M.gap : 0))
             }
         }
     }

@@ -100,7 +100,7 @@ struct VideoEditorRootView: View {
     /// Tall enough for every lane, but the picture keeps at least half the
     /// space under the toolbar (the lanes scroll when they don't fit).
     private func timelineHeight(windowHeight: CGFloat) -> CGFloat {
-        let content = VideoTimelineMetrics.contentHeight(model.project)
+        let content = VideoTimelineMetrics.contentHeight(model.project, computerSoundLane: model.showsComputerSoundLane)
         let limit = max((windowHeight - 53) * 0.5, 190)
         return min(max(44 + 1 + content + 10, 190), limit)
     }

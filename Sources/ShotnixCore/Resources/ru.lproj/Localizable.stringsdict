@@ -542,6 +542,26 @@
 			<string>Выбрано: %lld</string>
 		</dict>
 	</dict>
+	<key>%lld set by hand on the timeline</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld места настроены вручную на шкале времени</string>
+			<key>many</key>
+			<string>%lld мест настроено вручную на шкале времени</string>
+			<key>one</key>
+			<string>%lld место настроено вручную на шкале времени</string>
+			<key>other</key>
+			<string>%lld места настроены вручную на шкале времени</string>
+		</dict>
+	</dict>
 	<key>%lld shortcuts</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -640,6 +660,26 @@
 			<string>Субтитры готовы — %lld строка</string>
 			<key>other</key>
 			<string>Субтитры готовы — %lld строки</string>
+		</dict>
+	</dict>
+	<key>Computer sound, lowered in %lld places while you talk</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Звук компьютера, приглушается в %lld местах, пока вы говорите</string>
+			<key>many</key>
+			<string>Звук компьютера, приглушается в %lld местах, пока вы говорите</string>
+			<key>one</key>
+			<string>Звук компьютера, приглушается в %lld месте, пока вы говорите</string>
+			<key>other</key>
+			<string>Звук компьютера, приглушается в %lld местах, пока вы говорите</string>
 		</dict>
 	</dict>
 	<key>Cut %lld words — ⌘Z to undo</key>
@@ -900,6 +940,26 @@
 			<string>Последний %lld снимок</string>
 			<key>other</key>
 			<string>Последние %lld снимка</string>
+		</dict>
+	</dict>
+	<key>Lowered in %lld places — see the lane under the clips</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Приглушается в %lld местах — см. дорожку под клипами</string>
+			<key>many</key>
+			<string>Приглушается в %lld местах — см. дорожку под клипами</string>
+			<key>one</key>
+			<string>Приглушается в %lld месте — см. дорожку под клипами</string>
+			<key>other</key>
+			<string>Приглушается в %lld местах — см. дорожку под клипами</string>
 		</dict>
 	</dict>
 	<key>Plans zooms around your %lld clicks. Zooms you placed by hand are kept.</key>

@@ -56,6 +56,14 @@
       "other" : "%lld записанного нажатия — в предпросмотре и при экспорте"
     }
   },
+  "%lld set by hand on the timeline" : {
+    "ru" : {
+      "one" : "%lld место настроено вручную на шкале времени",
+      "few" : "%lld места настроены вручную на шкале времени",
+      "many" : "%lld мест настроено вручную на шкале времени",
+      "other" : "%lld места настроены вручную на шкале времени"
+    }
+  },
   "%lld%%" : {
     "ru" : "%lld %%"
   },
@@ -314,6 +322,26 @@
   "Close (Esc)" : {
     "ru" : "Закрыть (Esc)"
   },
+  "Computer sound at %@ while you talk — drag to change, right-click for more" : {
+    "ru" : "Звук компьютера на %@, пока вы говорите, — перетяните, чтобы изменить; правый клик — другие действия"
+  },
+  "Computer sound at %@ while you talk, %@ to %@" : {
+    "ru" : "Звук компьютера на %@, пока вы говорите, с %@ до %@"
+  },
+  "Computer sound not lowered, %@ to %@" : {
+    "ru" : "Звук компьютера не приглушается, с %@ до %@"
+  },
+  "Computer sound — drag a dip to change it, or click for its settings in Audio" : {
+    "ru" : "Звук компьютера — перетяните приглушение, чтобы изменить его, или нажмите, чтобы открыть настройки во вкладке «Аудио»"
+  },
+  "Computer sound, lowered in %lld places while you talk" : {
+    "ru" : {
+      "one" : "Звук компьютера, приглушается в %lld месте, пока вы говорите",
+      "few" : "Звук компьютера, приглушается в %lld местах, пока вы говорите",
+      "many" : "Звук компьютера, приглушается в %lld местах, пока вы говорите",
+      "other" : "Звук компьютера, приглушается в %lld местах, пока вы говорите"
+    }
+  },
   "Copied" : {
     "ru" : "Скопировано"
   },
@@ -418,6 +446,9 @@
   "Docs, slides" : {
     "ru" : "Документы, слайды"
   },
+  "Don't Lower Here" : {
+    "ru" : "Не приглушать здесь"
+  },
   "Done" : {
     "ru" : "Готово"
   },
@@ -468,6 +499,9 @@
   },
   "Every cut, zoom, annotation, caption, and style change on this video is removed. You can undo this." : {
     "ru" : "Все вырезки, увеличения, разметка, субтитры и изменения стиля в этом видео будут удалены. Это действие можно отменить."
+  },
+  "Every place back to the level above" : {
+    "ru" : "Вернуть все места к уровню выше"
   },
   "Every sound level is at 0 (Audio tab) — this export will have no sound." : {
     "ru" : "Все уровни звука на нуле (вкладка «Аудио») — экспорт будет без звука."
@@ -663,14 +697,31 @@
   "Linen" : {
     "ru" : "Лен"
   },
+  "Listening for your voice…" : {
+    "ru" : "Поиск вашего голоса…"
+  },
   "Listening…" : {
     "ru" : "Прослушивание…"
   },
   "Loop to fill" : {
     "ru" : "Повторять до конца"
   },
+  "Lower Here Again" : {
+    "ru" : "Снова приглушать здесь"
+  },
   "Lower under your voice" : {
     "ru" : "Приглушать под голос"
+  },
+  "Lowered in %lld places — see the lane under the clips" : {
+    "ru" : {
+      "one" : "Приглушается в %lld месте — см. дорожку под клипами",
+      "few" : "Приглушается в %lld местах — см. дорожку под клипами",
+      "many" : "Приглушается в %lld местах — см. дорожку под клипами",
+      "other" : "Приглушается в %lld местах — см. дорожку под клипами"
+    }
+  },
+  "Lowering Settings…" : {
+    "ru" : "Настройки приглушения…"
   },
   "M" : {
     "ru" : "M"
@@ -768,11 +819,20 @@
   "No speech was found in this recording. If it has narration, check its level in the Audio tab, then try again." : {
     "ru" : "В этой записи не найдено речи. Если в ней есть голос, проверьте его уровень во вкладке «Аудио» и повторите попытку."
   },
+  "No talking found, so nothing is lowered" : {
+    "ru" : "Речь не найдена, поэтому ничего не приглушается"
+  },
   "No ums or uhs left" : {
     "ru" : "Слов-паразитов не осталось"
   },
   "None" : {
     "ru" : "Нет"
+  },
+  "Not lowered" : {
+    "ru" : "Не приглушается"
+  },
+  "Not lowered here — right-click to lower it again" : {
+    "ru" : "Здесь не приглушается — правый клик, чтобы снова приглушать"
   },
   "Nothing to clean up — everything belongs to recordings you still have" : {
     "ru" : "Убирать нечего — все данные относятся к вашим записям"
@@ -794,6 +854,9 @@
   },
   "Opacity" : {
     "ru" : "Непрозрачность"
+  },
+  "Open in Audio" : {
+    "ru" : "Открыть во вкладке «Аудио»"
   },
   "Opens its volume, fades, and ducking in Audio" : {
     "ru" : "Открывает громкость, нарастание, затухание и приглушение во вкладке «Аудио»"
@@ -972,6 +1035,9 @@
   },
   "Replace…" : {
     "ru" : "Заменить…"
+  },
+  "Reset This Place" : {
+    "ru" : "Сбросить это место"
   },
   "Resolution" : {
     "ru" : "Разрешение"
@@ -1311,6 +1377,9 @@
   },
   "Under the voice" : {
     "ru" : "Под голосом"
+  },
+  "Use %@ Everywhere" : {
+    "ru" : "Использовать %@ везде"
   },
   "Video copied" : {
     "ru" : "Видео скопировано"

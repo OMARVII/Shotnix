@@ -608,6 +608,14 @@
 	<string>Rédiger un e-mail</string>
 	<key>Computer sound</key>
 	<string>Son de l’ordinateur</string>
+	<key>Computer sound at %@ while you talk — drag to change, right-click for more</key>
+	<string>Son de l’ordinateur à %@ pendant que vous parlez — faites glisser pour modifier, clic droit pour plus d’options</string>
+	<key>Computer sound at %@ while you talk, %@ to %@</key>
+	<string>Son de l’ordinateur à %@ pendant que vous parlez, de %@ à %@</string>
+	<key>Computer sound not lowered, %@ to %@</key>
+	<string>Son de l’ordinateur non atténué, de %@ à %@</string>
+	<key>Computer sound — drag a dip to change it, or click for its settings in Audio</key>
+	<string>Son de l’ordinateur — faites glisser une atténuation pour la modifier, ou cliquez pour ses réglages dans Audio</string>
 	<key>Conflict detected</key>
 	<string>Conflit détecté</string>
 	<key>Copied</key>
@@ -830,6 +838,8 @@
 	<string>Documents, diapositives</string>
 	<key>Don't Ask Again</key>
 	<string>Ne plus demander</string>
+	<key>Don't Lower Here</key>
+	<string>Ne pas atténuer ici</string>
 	<key>Don't Save</key>
 	<string>Ne pas enregistrer</string>
 	<key>Don't ask again</key>
@@ -974,6 +984,8 @@
 	<string>Toutes les coupes, les zooms, les annotations, les sous-titres et les modifications de style de cette vidéo sont supprimés — les enregistrements ajoutés sont conservés. Vous pouvez annuler cette action.</string>
 	<key>Every cut, zoom, annotation, caption, and style change on this video is removed. You can undo this.</key>
 	<string>Toutes les coupes, les zooms, les annotations, les sous-titres et les modifications de style de cette vidéo sont supprimés. Vous pouvez annuler cette action.</string>
+	<key>Every place back to the level above</key>
+	<string>Remettre tous les passages au niveau ci-dessus</string>
 	<key>Every sound level is at 0 (Audio tab) — this export will have no sound.</key>
 	<string>Tous les niveaux sonores sont à 0 (onglet Audio) — cette exportation n’aura pas de son.</string>
 	<key>Everything is ready</key>
@@ -1322,6 +1334,8 @@
 	<string>Liens</string>
 	<key>Links (%lld of %lld)</key>
 	<string>Liens (%lld sur %lld)</string>
+	<key>Listening for your voice…</key>
+	<string>Recherche de votre voix…</string>
 	<key>Listening…</key>
 	<string>Écoute…</string>
 	<key>Listens on this Mac — nothing is uploaded</key>
@@ -1330,8 +1344,12 @@
 	<string>Apparence</string>
 	<key>Loop to fill</key>
 	<string>Boucler pour remplir</string>
+	<key>Lower Here Again</key>
+	<string>Atténuer à nouveau ici</string>
 	<key>Lower under your voice</key>
 	<string>Baisser sous votre voix</string>
+	<key>Lowering Settings…</key>
+	<string>Réglages d’atténuation…</string>
 	<key>M</key>
 	<string>M</string>
 	<key>MIT License — Free and open source</key>
@@ -1544,6 +1562,8 @@
 	<string>Aucun son du micro</string>
 	<key>No speech was found in this recording. If it has narration, check its level in the Audio tab, then try again.</key>
 	<string>Aucune parole n’a été détectée dans cet enregistrement. S’il contient une narration, vérifiez son niveau dans l’onglet Audio, puis réessayez.</string>
+	<key>No talking found, so nothing is lowered</key>
+	<string>Aucune parole trouvée, rien n’est donc atténué</string>
 	<key>No text found in this selection</key>
 	<string>Aucun texte dans cette sélection</string>
 	<key>No ums</key>
@@ -1564,6 +1584,10 @@
 	<string>Espace disque insuffisant pour cet enregistrement : il faut environ %@ d’espace libre, et il reste %@. Libérez de l’espace, ou choisissez la qualité Équilibrée ou 30 fps.</string>
 	<key>Not for this video</key>
 	<string>Pas pour cette vidéo</string>
+	<key>Not lowered</key>
+	<string>Non atténué</string>
+	<key>Not lowered here — right-click to lower it again</key>
+	<string>Non atténué ici — clic droit pour l’atténuer à nouveau</string>
 	<key>Not now</key>
 	<string>Plus tard</string>
 	<key>Nothing to clean up — everything belongs to recordings you still have</key>
@@ -1622,6 +1646,8 @@
 	<string>Ouvrir l’éditeur vidéo</string>
 	<key>Open editor after recording</key>
 	<string>Ouvrir l’éditeur après l’enregistrement</string>
+	<key>Open in Audio</key>
+	<string>Ouvrir dans Audio</string>
 	<key>Open in annotation editor</key>
 	<string>Ouvrir dans l’éditeur de captures</string>
 	<key>Opens its title and length in Style</key>
@@ -2186,6 +2212,8 @@
 	<string>Réinitialiser %@</string>
 	<key>Reset Defaults</key>
 	<string>Rétablir les valeurs par défaut</string>
+	<key>Reset This Place</key>
+	<string>Réinitialiser ce passage</string>
 	<key>Reset crop</key>
 	<string>Réinitialiser le rognage</string>
 	<key>Reset to the Shotnix Look</key>
@@ -3154,6 +3182,8 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Mises à jour</string>
 	<key>Upload Custom Image</key>
 	<string>Choisir une image personnalisée</string>
+	<key>Use %@ Everywhere</key>
+	<string>Utiliser %@ partout</string>
 	<key>Use This Look for New Recordings</key>
 	<string>Utiliser ce style pour les nouveaux enregistrements</string>
 	<key>Use for new recordings</key>

@@ -580,6 +580,41 @@ struct VideoAudioInspector: View {
 
     private var audio: VideoAudioSettings { model.project.audio }
 
+    /// Where it found you talking, and what was set by hand.
+    @ViewBuilder
+    private var duckingStatus: some View {
+        let counts = model.computerSoundDipCounts
+        HStack(spacing: 6) {
+            if model.listeningForVoice {
+                ProgressView().controlSize(.mini)
+                Text(L("Listening for your voice…"))
+            } else if counts.places == 0 {
+                Image(systemName: "waveform.slash")
+                Text(L("No talking found, so nothing is lowered"))
+            } else {
+                Image(systemName: "waveform")
+                    .foregroundStyle(VideoEditorTheme.computerSound)
+                Text(L("Lowered in \(counts.places) places — see the lane under the clips"))
+            }
+            Spacer(minLength: 0)
+        }
+        .font(.system(size: 10.5))
+        .foregroundStyle(VideoEditorTheme.textTertiary)
+        .fixedSize(horizontal: false, vertical: true)
+        if counts.custom > 0 {
+            HStack(spacing: 6) {
+                Text(L("\(counts.custom) set by hand on the timeline"))
+                    .font(.system(size: 10.5))
+                    .foregroundStyle(VideoEditorTheme.textTertiary)
+                Spacer(minLength: 0)
+                Button(L("Reset")) { model.resetComputerSoundDips() }
+                    .buttonStyle(.link)
+                    .font(.system(size: 10.5, weight: .semibold))
+                    .help(L("Every place back to the level above"))
+            }
+        }
+    }
+
     private func binding<T>(_ keyPath: WritableKeyPath<VideoAudioSettings, T>, coalesce: String? = nil) -> Binding<T> {
         Binding(get: { model.project.audio[keyPath: keyPath] }, set: { value in model.setStyle(coalesce: coalesce) { $0.audio[keyPath: keyPath] = value } })
     }
@@ -615,6 +650,18 @@ struct VideoAudioInspector: View {
                         if model.hasSeparateVoiceAndSystem {
                             level(L("Voice"), \.voiceVolume, detail: L("Your microphone"))
                             level(L("Computer sound"), \.systemVolume, detail: L("What was playing on your Mac"))
+                            VideoToggleRow(title: L("Lower under your voice"), detail: L("Dips while you talk, comes back in the pauses"), isOn: binding(\.duckSystem))
+                            if audio.duckSystem {
+                                VideoSliderRow(
+                                    title: L("Under the voice"),
+                                    value: binding(\.systemDuckLevel, coalesce: "system-duck"),
+                                    range: 0...1,
+                                    defaultValue: 0.3,
+                                    format: { VideoEditorFormat.percent($0) },
+                                    onEditingEnded: { model.endGesture() }
+                                )
+                                duckingStatus
+                            }
                         } else {
                             level(L("Volume"), \.volume)
                         }

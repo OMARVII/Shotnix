@@ -608,6 +608,14 @@
 	<string>Написать письмо</string>
 	<key>Computer sound</key>
 	<string>Звук компьютера</string>
+	<key>Computer sound at %@ while you talk — drag to change, right-click for more</key>
+	<string>Звук компьютера на %@, пока вы говорите, — перетяните, чтобы изменить; правый клик — другие действия</string>
+	<key>Computer sound at %@ while you talk, %@ to %@</key>
+	<string>Звук компьютера на %@, пока вы говорите, с %@ до %@</string>
+	<key>Computer sound not lowered, %@ to %@</key>
+	<string>Звук компьютера не приглушается, с %@ до %@</string>
+	<key>Computer sound — drag a dip to change it, or click for its settings in Audio</key>
+	<string>Звук компьютера — перетяните приглушение, чтобы изменить его, или нажмите, чтобы открыть настройки во вкладке «Аудио»</string>
 	<key>Conflict detected</key>
 	<string>Обнаружен конфликт</string>
 	<key>Copied</key>
@@ -830,6 +838,8 @@
 	<string>Документы, слайды</string>
 	<key>Don't Ask Again</key>
 	<string>Больше не спрашивать</string>
+	<key>Don't Lower Here</key>
+	<string>Не приглушать здесь</string>
 	<key>Don't Save</key>
 	<string>Не сохранять</string>
 	<key>Don't ask again</key>
@@ -974,6 +984,8 @@
 	<string>Все вырезки, увеличения, разметка, субтитры и изменения стиля в этом видео будут удалены — добавленные записи останутся. Это действие можно отменить.</string>
 	<key>Every cut, zoom, annotation, caption, and style change on this video is removed. You can undo this.</key>
 	<string>Все вырезки, увеличения, разметка, субтитры и изменения стиля в этом видео будут удалены. Это действие можно отменить.</string>
+	<key>Every place back to the level above</key>
+	<string>Вернуть все места к уровню выше</string>
 	<key>Every sound level is at 0 (Audio tab) — this export will have no sound.</key>
 	<string>Все уровни звука на нуле (вкладка «Аудио») — экспорт будет без звука.</string>
 	<key>Everything is ready</key>
@@ -1322,6 +1334,8 @@
 	<string>Ссылки</string>
 	<key>Links (%lld of %lld)</key>
 	<string>Ссылки (%lld из %lld)</string>
+	<key>Listening for your voice…</key>
+	<string>Поиск вашего голоса…</string>
 	<key>Listening…</key>
 	<string>Прослушивание…</string>
 	<key>Listens on this Mac — nothing is uploaded</key>
@@ -1330,8 +1344,12 @@
 	<string>Вид</string>
 	<key>Loop to fill</key>
 	<string>Повторять до конца</string>
+	<key>Lower Here Again</key>
+	<string>Снова приглушать здесь</string>
 	<key>Lower under your voice</key>
 	<string>Приглушать под голос</string>
+	<key>Lowering Settings…</key>
+	<string>Настройки приглушения…</string>
 	<key>M</key>
 	<string>M</string>
 	<key>MIT License — Free and open source</key>
@@ -1544,6 +1562,8 @@
 	<string>Нет звука с микрофона</string>
 	<key>No speech was found in this recording. If it has narration, check its level in the Audio tab, then try again.</key>
 	<string>В этой записи не найдено речи. Если в ней есть голос, проверьте его уровень во вкладке «Аудио» и повторите попытку.</string>
+	<key>No talking found, so nothing is lowered</key>
+	<string>Речь не найдена, поэтому ничего не приглушается</string>
 	<key>No text found in this selection</key>
 	<string>В выделенной области не найден текст</string>
 	<key>No ums</key>
@@ -1564,6 +1584,10 @@
 	<string>Недостаточно места на диске для этой записи: нужно около %@, а свободно %@. Освободите место или выберите качество «Среднее» либо 30 fps.</string>
 	<key>Not for this video</key>
 	<string>Не для этого видео</string>
+	<key>Not lowered</key>
+	<string>Не приглушается</string>
+	<key>Not lowered here — right-click to lower it again</key>
+	<string>Здесь не приглушается — правый клик, чтобы снова приглушать</string>
 	<key>Not now</key>
 	<string>Не сейчас</string>
 	<key>Nothing to clean up — everything belongs to recordings you still have</key>
@@ -1622,6 +1646,8 @@
 	<string>Открыть видеоредактор</string>
 	<key>Open editor after recording</key>
 	<string>Открывать редактор после записи</string>
+	<key>Open in Audio</key>
+	<string>Открыть во вкладке «Аудио»</string>
 	<key>Open in annotation editor</key>
 	<string>Открыть в редакторе снимков</string>
 	<key>Opens its title and length in Style</key>
@@ -2186,6 +2212,8 @@
 	<string>Сбросить: %@</string>
 	<key>Reset Defaults</key>
 	<string>Восстановить стандартные</string>
+	<key>Reset This Place</key>
+	<string>Сбросить это место</string>
 	<key>Reset crop</key>
 	<string>Сбросить обрезку</string>
 	<key>Reset to the Shotnix Look</key>
@@ -3154,6 +3182,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>Обновления</string>
 	<key>Upload Custom Image</key>
 	<string>Выбрать свое изображение</string>
+	<key>Use %@ Everywhere</key>
+	<string>Использовать %@ везде</string>
 	<key>Use This Look for New Recordings</key>
 	<string>Использовать этот стиль для новых записей</string>
 	<key>Use for new recordings</key>

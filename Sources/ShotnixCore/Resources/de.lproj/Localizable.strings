@@ -614,6 +614,14 @@
 	<string>E-Mail verfassen</string>
 	<key>Computer sound</key>
 	<string>Systemton</string>
+	<key>Computer sound at %@ while you talk — drag to change, right-click for more</key>
+	<string>Systemton bei %@, während du sprichst – ziehen zum Ändern, Rechtsklick für mehr</string>
+	<key>Computer sound at %@ while you talk, %@ to %@</key>
+	<string>Systemton bei %@, während du sprichst, %@ bis %@</string>
+	<key>Computer sound not lowered, %@ to %@</key>
+	<string>Systemton nicht abgesenkt, %@ bis %@</string>
+	<key>Computer sound — drag a dip to change it, or click for its settings in Audio</key>
+	<string>Systemton – Absenkung ziehen, um sie zu ändern, oder klicken für die Einstellungen unter „Audio“</string>
 	<key>Conflict detected</key>
 	<string>Konflikt erkannt</string>
 	<key>Copied</key>
@@ -836,6 +844,8 @@
 	<string>Dokumente, Folien</string>
 	<key>Don't Ask Again</key>
 	<string>Nicht mehr fragen</string>
+	<key>Don't Lower Here</key>
+	<string>Hier nicht absenken</string>
 	<key>Don't Save</key>
 	<string>Nicht sichern</string>
 	<key>Don't ask again</key>
@@ -980,6 +990,8 @@
 	<string>Alle Schnitte, Zooms, Beschriftungen, Untertitel und Stiländerungen an diesem Video werden entfernt – hinzugefügte Aufnahmen bleiben erhalten. Du kannst das widerrufen.</string>
 	<key>Every cut, zoom, annotation, caption, and style change on this video is removed. You can undo this.</key>
 	<string>Alle Schnitte, Zooms, Beschriftungen, Untertitel und Stiländerungen an diesem Video werden entfernt. Du kannst das widerrufen.</string>
+	<key>Every place back to the level above</key>
+	<string>Alle Stellen wieder auf den Wert darüber setzen</string>
 	<key>Every sound level is at 0 (Audio tab) — this export will have no sound.</key>
 	<string>Alle Lautstärken stehen auf 0 (Tab „Audio“) – dieser Export hat keinen Ton.</string>
 	<key>Everything is ready</key>
@@ -1328,6 +1340,8 @@
 	<string>Links</string>
 	<key>Links (%lld of %lld)</key>
 	<string>Links (%lld von %lld)</string>
+	<key>Listening for your voice…</key>
+	<string>Deine Stimme wird gesucht …</string>
 	<key>Listening…</key>
 	<string>Hört zu …</string>
 	<key>Listens on this Mac — nothing is uploaded</key>
@@ -1336,8 +1350,12 @@
 	<string>Aussehen</string>
 	<key>Loop to fill</key>
 	<string>Bis zum Ende wiederholen</string>
+	<key>Lower Here Again</key>
+	<string>Hier wieder absenken</string>
 	<key>Lower under your voice</key>
 	<string>Unter deiner Stimme leiser</string>
+	<key>Lowering Settings…</key>
+	<string>Einstellungen zum Absenken …</string>
 	<key>M</key>
 	<string>M</string>
 	<key>MIT License — Free and open source</key>
@@ -1550,6 +1568,8 @@
 	<string>Kein Ton vom Mikrofon</string>
 	<key>No speech was found in this recording. If it has narration, check its level in the Audio tab, then try again.</key>
 	<string>In dieser Aufnahme wurde keine Sprache gefunden. Wenn sie gesprochenen Text enthält, prüfe die Lautstärke im Tab „Audio“ und versuche es erneut.</string>
+	<key>No talking found, so nothing is lowered</key>
+	<string>Kein Sprechen gefunden, daher wird nichts leiser</string>
 	<key>No text found in this selection</key>
 	<string>In dieser Auswahl wurde kein Text gefunden</string>
 	<key>No ums</key>
@@ -1570,6 +1590,10 @@
 	<string>Nicht genug Speicherplatz für diese Aufzeichnung: Benötigt werden etwa %@, frei sind %@. Gib Speicherplatz frei oder wähle die Qualität „Ausgewogen“ oder 30 fps.</string>
 	<key>Not for this video</key>
 	<string>Nicht für dieses Video</string>
+	<key>Not lowered</key>
+	<string>Nicht leiser</string>
+	<key>Not lowered here — right-click to lower it again</key>
+	<string>Hier nicht leiser – Rechtsklick, um wieder abzusenken</string>
 	<key>Not now</key>
 	<string>Nicht jetzt</string>
 	<key>Nothing to clean up — everything belongs to recordings you still have</key>
@@ -1628,6 +1652,8 @@
 	<string>Video-Editor öffnen</string>
 	<key>Open editor after recording</key>
 	<string>Editor nach der Aufzeichnung öffnen</string>
+	<key>Open in Audio</key>
+	<string>Unter „Audio“ öffnen</string>
 	<key>Open in annotation editor</key>
 	<string>Im Bildschirmfoto-Editor öffnen</string>
 	<key>Opens its title and length in Style</key>
@@ -2192,6 +2218,8 @@
 	<string>%@ zurücksetzen</string>
 	<key>Reset Defaults</key>
 	<string>Standards wiederherstellen</string>
+	<key>Reset This Place</key>
+	<string>Diese Stelle zurücksetzen</string>
 	<key>Reset crop</key>
 	<string>Zuschnitt zurücksetzen</string>
 	<key>Reset to the Shotnix Look</key>
@@ -3160,6 +3188,8 @@ Aktiviere sie unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherhei
 	<string>Updates</string>
 	<key>Upload Custom Image</key>
 	<string>Eigenes Bild auswählen</string>
+	<key>Use %@ Everywhere</key>
+	<string>Überall %@ verwenden</string>
 	<key>Use This Look for New Recordings</key>
 	<string>Diesen Stil für neue Aufnahmen verwenden</string>
 	<key>Use for new recordings</key>

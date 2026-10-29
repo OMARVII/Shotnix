@@ -104,6 +104,8 @@ struct VideoEditExtras {
     var layout: VideoSourceLayout?
     var music: VideoMusicInput?
     var clicks: VideoClickSoundInput?
+    /// Where the computer sound dips under the voice.
+    var computerSoundDips: [VideoSoundDip] = []
 
     static let none = VideoEditExtras()
 
@@ -120,13 +122,14 @@ struct VideoEditExtras {
     struct MixKey: Equatable {
         let music: VideoMusicInput.MixKey?
         let clickVolume: Double?
+        let computerSoundDips: [VideoSoundDip]
     }
 
     var structureKey: StructureKey {
         StructureKey(tail: (tail * 1000).rounded() / 1000, musicTail: musicTail, layout: layout?.identity ?? [], music: music?.structureKey, clicks: clicks?.structureKey)
     }
 
-    var mixKey: MixKey { MixKey(music: music?.mixKey, clickVolume: clicks?.volume) }
+    var mixKey: MixKey { MixKey(music: music?.mixKey, clickVolume: clicks?.volume, computerSoundDips: computerSoundDips) }
 }
 
 enum VideoCompositionBuilder {
@@ -379,9 +382,10 @@ enum VideoCompositionBuilder {
     /// on from the clip before at another level (a dip under your voice).
     static let levelGlide = 0.3
 
-    /// Volumes, per-clip levels, mutes, and fades for the edit's sound (and
-    /// the music's level line). Built on its own so a volume change swaps
-    /// only this on the playing item.
+    /// Volumes, per-clip levels, mutes, fades, and the computer sound's
+    /// dips under the voice for the edit's sound (and the music's level
+    /// line). Built on its own so a volume change swaps only this on the
+    /// playing item.
     static func audioMix(for edit: VideoEditComposition, segments: [VideoDemoTimelineSegment], audio: VideoAudioSettings, extras: VideoEditExtras = .none) -> AVMutableAudioMix? {
         guard !edit.mixedAudioTracks.isEmpty else { return nil }
         // Segments still line up with placements one to one when only
@@ -392,21 +396,16 @@ enum VideoCompositionBuilder {
         for (index, track) in edit.audioTracks.enumerated() {
             let kind = edit.audioKinds.indices.contains(index) ? edit.audioKinds[index] : .mixed
             let volume = audio.effectiveVolume(for: kind)
+            let dips = kind == .system ? extras.computerSoundDips : []
             let params = AVMutableAudioMixInputParameters(track: track)
             var previous: (clip: VideoDemoTimelineClip, level: Float)?
             for (placementIndex, placement) in edit.placements.enumerated() {
                 let clip = aligned ? current[placementIndex].clip : placement.segment.clip
                 let level = clip.muted ? 0 : volume * Float(clip.volume(for: kind))
-                // The recording plays straight on at another level: glide
-                // there instead of jumping (mutes and fades keep their edges).
-                let glideFrom = previous.flatMap { previous -> Float? in
-                    guard !previous.clip.muted, !clip.muted,
-                          previous.clip.fadeOut <= 0.001, clip.fadeIn <= 0.001,
-                          abs(previous.clip.sourceEnd - clip.sourceStart) < 0.01,
-                          abs(previous.level - level) > 0.001 else { return nil }
-                    return previous.level
-                }
-                applyVolume(level, fades: clip, start: placement.start, duration: placement.duration, glideFrom: glideFrom, to: params)
+                let glideFrom = previous.flatMap { glide(from: $0.clip, level: $0.level, to: clip, level: level) }
+                let start = placement.start.seconds
+                let keyframes = levelKeyframes(level: level, clip: clip, start: start, end: start + placement.duration.seconds, glideFrom: glideFrom, dips: dips)
+                apply(keyframes, to: params)
                 previous = (clip, level)
             }
             parameters.append(params)
@@ -429,31 +428,70 @@ enum VideoCompositionBuilder {
         return mix
     }
 
-    private static func applyVolume(
-        _ volume: Float,
-        fades clip: VideoDemoTimelineClip,
-        start: CMTime,
-        duration: CMTime,
-        glideFrom: Float? = nil,
-        to parameters: AVMutableAudioMixInputParameters
-    ) {
-        let total = duration.seconds
-        parameters.setVolume(volume, at: start)
-        if let glideFrom {
-            let glide = min(levelGlide, total / 2)
-            parameters.setVolumeRamp(fromStartVolume: glideFrom, toEndVolume: volume, timeRange: CMTimeRange(start: start, duration: time(glide)))
-            // The ramp takes the place of the level set at its start; hold
-            // the new level from its end.
-            parameters.setVolume(volume, at: start + time(glide))
-        }
+    /// The recording plays straight on from the clip before at another
+    /// level: glide there from its level instead of jumping (mutes and
+    /// fades keep their edges).
+    static func glide(from previous: VideoDemoTimelineClip, level previousLevel: Float, to clip: VideoDemoTimelineClip, level: Float) -> Float? {
+        guard !previous.muted, !clip.muted,
+              previous.fadeOut <= 0.001, clip.fadeIn <= 0.001,
+              abs(previous.sourceEnd - clip.sourceStart) < 0.01,
+              abs(previousLevel - level) > 0.001 else { return nil }
+        return previousLevel
+    }
+
+    /// One track's level through one clip (timeline seconds), as points
+    /// joined by straight lines: the clip's level, gliding there from the
+    /// clip before, its fades, and the dips under the voice.
+    static func levelKeyframes(level: Float, clip: VideoDemoTimelineClip, start: Double, end: Double, glideFrom: Float?, dips: [VideoSoundDip]) -> [VideoMusicMix.Keyframe] {
+        let total = end - start
+        guard total > 0.0005 else { return [] }
+        let target = Double(level)
+        let glide = glideFrom == nil ? 0 : min(levelGlide, total / 2)
         let fadeIn = min(max(clip.fadeIn, 0), total / 2)
-        if fadeIn > 0.001 {
-            parameters.setVolumeRamp(fromStartVolume: 0, toEndVolume: volume, timeRange: CMTimeRange(start: start, duration: time(fadeIn)))
-        }
         let fadeOut = min(max(clip.fadeOut, 0), total / 2)
-        if fadeOut > 0.001 {
-            let end = start + duration
-            parameters.setVolumeRamp(fromStartVolume: volume, toEndVolume: 0, timeRange: CMTimeRange(start: end - time(fadeOut), duration: time(fadeOut)))
+        func gain(_ t: Double) -> Double {
+            var value = target
+            if let glideFrom, glide > 0.0001, t < start + glide {
+                value = Double(glideFrom) + (target - Double(glideFrom)) * max(t - start, 0) / glide
+            }
+            if fadeIn > 0.001 { value *= min(max((t - start) / fadeIn, 0), 1) }
+            if fadeOut > 0.001 { value *= min(max((end - t) / fadeOut, 0), 1) }
+            return dips.isEmpty ? value : value * VideoComputerSoundDucking.duck(at: t, dips: dips)
+        }
+        var times: Set<Double> = [start, end, start + glide, start + fadeIn, end - fadeOut]
+        if !dips.isEmpty {
+            times.formUnion(VideoComputerSoundDucking.corners(of: dips))
+            // Where a glide or fade meets a dip, the two multiply into a
+            // curve: follow it closely.
+            for (from, to) in [(start, start + max(glide, fadeIn)), (end - fadeOut, end)] where to - from > 0.001 {
+                for step in stride(from: from, through: to, by: 0.1) { times.insert(step) }
+            }
+        }
+        let sorted = times.filter { $0 >= start && $0 <= end }.sorted()
+        var keyframes = sorted.map { VideoMusicMix.Keyframe(time: $0, volume: gain($0)) }
+        // Points on a straight line between their neighbours add nothing.
+        var index = 1
+        while index + 1 < keyframes.count {
+            let a = keyframes[index - 1], b = keyframes[index], c = keyframes[index + 1]
+            let expected = a.volume + (c.volume - a.volume) * (b.time - a.time) / max(c.time - a.time, 0.000001)
+            if abs(expected - b.volume) < 0.0005 {
+                keyframes.remove(at: index)
+            } else {
+                index += 1
+            }
+        }
+        return keyframes
+    }
+
+    /// A clip's level line onto the track: straight ramps end to end (a
+    /// flat stretch is a ramp too, so nothing is left to the level before).
+    private static func apply(_ keyframes: [VideoMusicMix.Keyframe], to parameters: AVMutableAudioMixInputParameters) {
+        for (a, b) in zip(keyframes, keyframes.dropFirst()) where b.time > a.time + 0.0005 {
+            parameters.setVolumeRamp(
+                fromStartVolume: Float(a.volume),
+                toEndVolume: Float(b.volume),
+                timeRange: CMTimeRange(start: time(a.time), end: time(b.time))
+            )
         }
     }
 

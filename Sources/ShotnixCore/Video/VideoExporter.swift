@@ -92,17 +92,22 @@ enum VideoDemoExporter {
             extras.layout = layout
         }
         let allKinds = kinds + project.sources.filter { !$0.isPrimary }.flatMap(\.audioKinds)
-        if let music = project.music, let file = await VideoAudioFile.load(music.url) {
-            var speech: [String: [ClosedRange<Double>]] = [:]
-            if music.ducking {
-                if let index = VideoAudioKind.voiceTrackIndex(in: kinds) {
-                    speech[""] = await VideoVoiceActivity.speech(url: project.sourceURL, trackIndex: index)
-                }
-                for added in project.sources where !added.isPrimary {
-                    guard let index = VideoAudioKind.voiceTrackIndex(in: added.audioKinds), let url = VideoSourceLocator.resolve(added) else { continue }
-                    speech[added.id.uuidString] = await VideoVoiceActivity.speech(url: url, trackIndex: index)
-                }
+        // Where you talk: the music and the computer sound dip under it.
+        let ducksComputerSound = project.audio.duckSystem && allKinds.contains(.microphone) && allKinds.contains(.system)
+        var speech: [String: [ClosedRange<Double>]] = [:]
+        if project.music?.ducking == true || ducksComputerSound {
+            if let index = VideoAudioKind.voiceTrackIndex(in: kinds) {
+                speech[""] = await VideoVoiceActivity.speech(url: project.sourceURL, trackIndex: index, systemTrackIndex: kinds.firstIndex(of: .system))
             }
+            for added in project.sources where !added.isPrimary {
+                guard let index = VideoAudioKind.voiceTrackIndex(in: added.audioKinds), let url = VideoSourceLocator.resolve(added) else { continue }
+                speech[added.id.uuidString] = await VideoVoiceActivity.speech(url: url, trackIndex: index, systemTrackIndex: added.audioKinds.firstIndex(of: .system))
+            }
+        }
+        if ducksComputerSound {
+            extras.computerSoundDips = VideoComputerSoundDucking.dips(project: project, primaryKinds: kinds, speech: speech, segments: segments)
+        }
+        if let music = project.music, let file = await VideoAudioFile.load(music.url) {
             let voice = VideoMusicDucking.voiceOnTimeline(project: project, primaryKinds: kinds, speech: speech, segments: segments)
             extras.music = VideoMusicInput(file: file, settings: music, voice: voice, timelineOffset: musicOffset)
             // The song carries on under the end card and fades out at the

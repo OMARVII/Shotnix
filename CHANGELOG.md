@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- **The computer sound gets quieter while you talk.** In a recording with your voice and your Mac's sound on separate tracks, the computer sound now dips under your voice on its own and comes back up when you stop, easing in and out so it doesn't jump, with short pauses between sentences bridged. Sound from your speakers that the microphone picks up isn't mistaken for talking. A new Computer sound lane under the clips shows what played, what you'll hear and where it dips. Drag a dip to make just that place quieter or louder, or right-click it to leave the sound alone there. Under Sound in the Audio tab, "Lower under your voice" turns it on or off and "Under the voice" sets how far it dips (30% to start). It's on for new videos; videos you were already editing stay as they were. The preview, the export and Even out loudness all follow the dips.
 - **Turn one sound down for just part of a video.** In the video editor, a clip, or a part you mark by ⇧-dragging across the timeline, now has its own Voice and Computer sound sliders, or one Volume slider when the recording has a single sound track. Turn the computer sound down while you talk over a demo and your voice stays as it is. The level glides to the new setting at a split instead of jumping, and the preview, the export and Even out loudness all follow it. Until now the only choice was muting the clip, which silenced your voice too.
 
 ## [0.27.3-beta] - 2026-10-28

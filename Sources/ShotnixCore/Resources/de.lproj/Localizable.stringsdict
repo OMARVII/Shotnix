@@ -386,6 +386,22 @@
 			<string>%lld Sekunden</string>
 		</dict>
 	</dict>
+	<key>%lld set by hand on the timeline</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld Stelle von Hand in der Zeitleiste angepasst</string>
+			<key>other</key>
+			<string>%lld Stellen von Hand in der Zeitleiste angepasst</string>
+		</dict>
+	</dict>
 	<key>%lld shortcuts</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -464,6 +480,22 @@
 			<string>Untertitel fertig – %lld Zeile</string>
 			<key>other</key>
 			<string>Untertitel fertig – %lld Zeilen</string>
+		</dict>
+	</dict>
+	<key>Computer sound, lowered in %lld places while you talk</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Systemton, an %lld Stelle leiser, während du sprichst</string>
+			<key>other</key>
+			<string>Systemton, an %lld Stellen leiser, während du sprichst</string>
 		</dict>
 	</dict>
 	<key>Cut %lld words — ⌘Z to undo</key>
@@ -672,6 +704,22 @@
 			<string>Letztes Bildschirmfoto</string>
 			<key>other</key>
 			<string>Letzte %lld Bildschirmfotos</string>
+		</dict>
+	</dict>
+	<key>Lowered in %lld places — see the lane under the clips</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>An %lld Stelle leiser – siehe die Spur unter den Clips</string>
+			<key>other</key>
+			<string>An %lld Stellen leiser – siehe die Spur unter den Clips</string>
 		</dict>
 	</dict>
 	<key>Plans zooms around your %lld clicks. Zooms you placed by hand are kept.</key>

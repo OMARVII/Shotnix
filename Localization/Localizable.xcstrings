@@ -4887,6 +4887,137 @@
         }
       }
     },
+    "%lld set by hand on the timeline" : {
+      "comment" : "Audio tab, under 'Lower under your voice': how many places where the computer sound dips were changed by hand on the timeline",
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Stelle von Hand in der Zeitleiste angepasst"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Stellen von Hand in der Zeitleiste angepasst"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld set by hand on the timeline"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld set by hand on the timeline"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld passage réglé à la main dans la timeline"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld passages réglés à la main dans la timeline"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld箇所をタイムラインで手動調整済み"
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld места настроены вручную на шкале времени"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld мест настроено вручную на шкале времени"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld место настроено вручную на шкале времени"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld места настроены вручную на шкале времени"
+                }
+              }
+            }
+          }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld місця налаштовано вручну на шкалі часу"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld місць налаштовано вручну на шкалі часу"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld місце налаштовано вручну на шкалі часу"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld місця налаштовано вручну на шкалі часу"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 处已在时间线上手动调整"
+          }
+        }
+      }
+    },
     "%lld shortcuts" : {
       "localizations" : {
         "de" : {
@@ -16242,6 +16373,301 @@
         }
       }
     },
+    "Computer sound at %@ while you talk — drag to change, right-click for more" : {
+      "comment" : "Tooltip on one dip; %@ is a percentage",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Systemton bei %@, während du sprichst – ziehen zum Ändern, Rechtsklick für mehr"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son de l’ordinateur à %@ pendant que vous parlez — faites glisser pour modifier, clic droit pour plus d’options"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "話している間のシステムオーディオ: %@。ドラッグで変更、右クリックでその他の操作"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Звук компьютера на %@, пока вы говорите, — перетяните, чтобы изменить; правый клик — другие действия"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Звук комп’ютера на %@, поки ви говорите, — перетягніть, щоб змінити; правий клік — інші дії"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "说话时电脑声音为 %@ — 拖移可更改，右键点按查看更多"
+          }
+        }
+      }
+    },
+    "Computer sound at %@ while you talk, %@ to %@" : {
+      "comment" : "VoiceOver, one dip: a percentage, then its start and end times",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Systemton bei %@, während du sprichst, %@ bis %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son de l’ordinateur à %@ pendant que vous parlez, de %@ à %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "話している間のシステムオーディオ %@、%@〜%@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Звук компьютера на %@, пока вы говорите, с %@ до %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Звук комп’ютера на %@, поки ви говорите, з %@ до %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "说话时电脑声音为 %@，%@ 至 %@"
+          }
+        }
+      }
+    },
+    "Computer sound not lowered, %@ to %@" : {
+      "comment" : "VoiceOver, a place left alone: start and end times",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Systemton nicht abgesenkt, %@ bis %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son de l’ordinateur non atténué, de %@ à %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "システムオーディオを下げない、%@〜%@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Звук компьютера не приглушается, с %@ до %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Звук комп’ютера не стишується, з %@ до %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "电脑声音未降低，%@ 至 %@"
+          }
+        }
+      }
+    },
+    "Computer sound — drag a dip to change it, or click for its settings in Audio" : {
+      "comment" : "Tooltip on the computer sound's lane under the clips; a dip is where it gets quieter while you talk",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Systemton – Absenkung ziehen, um sie zu ändern, oder klicken für die Einstellungen unter „Audio“"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son de l’ordinateur — faites glisser une atténuation pour la modifier, ou cliquez pour ses réglages dans Audio"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "システムオーディオ: 下げた部分をドラッグして変更、クリックで“オーディオ”の設定を開く"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Звук компьютера — перетяните приглушение, чтобы изменить его, или нажмите, чтобы открыть настройки во вкладке «Аудио»"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Звук комп’ютера — перетягніть приглушення, щоб змінити його, або клацніть, щоб відкрити налаштування у вкладці «Аудіо»"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "电脑声音 — 拖移降低处可更改，或点按以在“音频”中打开其设置"
+          }
+        }
+      }
+    },
+    "Computer sound, lowered in %lld places while you talk" : {
+      "comment" : "VoiceOver, the computer sound's lane",
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Systemton, an %lld Stelle leiser, während du sprichst"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Systemton, an %lld Stellen leiser, während du sprichst"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Computer sound, lowered in %lld place while you talk"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Computer sound, lowered in %lld places while you talk"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Son de l’ordinateur, atténué à %lld endroit pendant que vous parlez"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Son de l’ordinateur, atténué à %lld endroits pendant que vous parlez"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "システムオーディオ、話している間%lld箇所で音量を下げます"
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Звук компьютера, приглушается в %lld местах, пока вы говорите"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Звук компьютера, приглушается в %lld местах, пока вы говорите"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Звук компьютера, приглушается в %lld месте, пока вы говорите"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Звук компьютера, приглушается в %lld местах, пока вы говорите"
+                }
+              }
+            }
+          }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Звук комп’ютера, стишується в %lld місцях, поки ви говорите"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Звук комп’ютера, стишується в %lld місцях, поки ви говорите"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Звук комп’ютера, стишується в %lld місці, поки ви говорите"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Звук комп’ютера, стишується в %lld місцях, поки ви говорите"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "电脑声音，说话时在 %lld 处降低"
+          }
+        }
+      }
+    },
     "Conflict detected" : {
       "localizations" : {
         "de" : {
@@ -21089,6 +21515,47 @@
         }
       }
     },
+    "Don't Lower Here" : {
+      "comment" : "Menu on a dip: keep the computer sound at its level in this place",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hier nicht absenken"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ne pas atténuer ici"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ここでは下げない"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не приглушать здесь"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не стишувати тут"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此处不降低"
+          }
+        }
+      }
+    },
     "Don't Save" : {
       "localizations" : {
         "de" : {
@@ -23974,6 +24441,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "此视频上的所有剪切、缩放、标注、字幕和样式更改都会被移除。你可以撤销此操作。"
+          }
+        }
+      }
+    },
+    "Every place back to the level above" : {
+      "comment" : "Tooltip on Reset: every hand-set place goes back to the 'Under the voice' slider's level",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Stellen wieder auf den Wert darüber setzen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remettre tous les passages au niveau ci-dessus"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべての箇所を上の音量に戻す"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вернуть все места к уровню выше"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Повернути всі місця до рівня вище"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将所有位置恢复为上方的音量"
           }
         }
       }
@@ -32268,6 +32776,47 @@
         }
       }
     },
+    "Listening for your voice…" : {
+      "comment" : "While it finds where you talk in the recording",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Stimme wird gesucht …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recherche de votre voix…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "声を検出中…"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поиск вашего голоса…"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пошук вашого голосу…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在查找你的说话声…"
+          }
+        }
+      }
+    },
     "Listening…" : {
       "localizations" : {
         "de" : {
@@ -32429,6 +32978,46 @@
         }
       }
     },
+    "Lower Here Again" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hier wieder absenken"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atténuer à nouveau ici"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ここで再び音量を下げる"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Снова приглушать здесь"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Знову стишувати тут"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在此处重新降低"
+          }
+        }
+      }
+    },
     "Lower under your voice" : {
       "localizations" : {
         "de" : {
@@ -32465,6 +33054,177 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "避让人声"
+          }
+        }
+      }
+    },
+    "Lowered in %lld places — see the lane under the clips" : {
+      "comment" : "Audio tab status: how many places the computer sound dips while you talk",
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "An %lld Stelle leiser – siehe die Spur unter den Clips"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "An %lld Stellen leiser – siehe die Spur unter den Clips"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Lowered in %lld place — see the lane under the clips"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Lowered in %lld places — see the lane under the clips"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Atténué à %lld endroit — voir la piste sous les clips"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Atténué à %lld endroits — voir la piste sous les clips"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld箇所で音量を下げています。クリップの下のトラックを参照"
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Приглушается в %lld местах — см. дорожку под клипами"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Приглушается в %lld местах — см. дорожку под клипами"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Приглушается в %lld месте — см. дорожку под клипами"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Приглушается в %lld местах — см. дорожку под клипами"
+                }
+              }
+            }
+          }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Стишується в %lld місцях — див. доріжку під кліпами"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Стишується в %lld місцях — див. доріжку під кліпами"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Стишується в %lld місці — див. доріжку під кліпами"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Стишується в %lld місцях — див. доріжку під кліпами"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已在 %lld 处降低 — 见片段下方的轨道"
+          }
+        }
+      }
+    },
+    "Lowering Settings…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungen zum Absenken …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réglages d’atténuation…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音量を下げる設定…"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настройки приглушения…"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налаштування приглушення…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "降低设置…"
           }
         }
       }
@@ -36720,6 +37480,46 @@
         }
       }
     },
+    "No talking found, so nothing is lowered" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Sprechen gefunden, daher wird nichts leiser"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune parole trouvée, rien n’est donc atténué"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "話している部分が見つからないため、音量は下げません"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Речь не найдена, поэтому ничего не приглушается"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Мовлення не знайдено, тож нічого не стишується"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未发现说话声，因此不会降低"
+          }
+        }
+      }
+    },
     "No text found in this selection" : {
       "localizations" : {
         "de" : {
@@ -37120,6 +37920,87 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "此视频不需要"
+          }
+        }
+      }
+    },
+    "Not lowered" : {
+      "comment" : "Small label on a dip that was set to not lower the computer sound",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht leiser"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non atténué"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下げない"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не приглушается"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не стишується"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未降低"
+          }
+        }
+      }
+    },
+    "Not lowered here — right-click to lower it again" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hier nicht leiser – Rechtsklick, um wieder abzusenken"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non atténué ici — clic droit pour l’atténuer à nouveau"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ここでは下げません。右クリックで再び下げる"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Здесь не приглушается — правый клик, чтобы снова приглушать"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тут не стишується — правий клік, щоб знову стишувати"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此处未降低 — 右键点按可重新降低"
           }
         }
       }
@@ -38285,6 +39166,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "录制后打开编辑器"
+          }
+        }
+      }
+    },
+    "Open in Audio" : {
+      "comment" : "VoiceOver action: opens the Audio tab",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unter „Audio“ öffnen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir dans Audio"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“オーディオ”で開く"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открыть во вкладке «Аудио»"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Відкрити у вкладці «Аудіо»"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在“音频”中打开"
           }
         }
       }
@@ -50748,6 +51670,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "恢复默认设置"
+          }
+        }
+      }
+    },
+    "Reset This Place" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Stelle zurücksetzen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réinitialiser ce passage"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この箇所をリセット"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сбросить это место"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скинути це місце"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重置此处"
           }
         }
       }
@@ -71480,6 +72442,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "选取自定图像"
+          }
+        }
+      }
+    },
+    "Use %@ Everywhere" : {
+      "comment" : "Menu on a dip set by hand; %@ is its percentage",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Überall %@ verwenden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utiliser %@ partout"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべてに%@を使用"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Использовать %@ везде"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Використовувати %@ скрізь"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全部使用 %@"
           }
         }
       }

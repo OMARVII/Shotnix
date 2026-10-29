@@ -610,6 +610,14 @@
 	<string>Написати лист</string>
 	<key>Computer sound</key>
 	<string>Звук комп’ютера</string>
+	<key>Computer sound at %@ while you talk — drag to change, right-click for more</key>
+	<string>Звук комп’ютера на %@, поки ви говорите, — перетягніть, щоб змінити; правий клік — інші дії</string>
+	<key>Computer sound at %@ while you talk, %@ to %@</key>
+	<string>Звук комп’ютера на %@, поки ви говорите, з %@ до %@</string>
+	<key>Computer sound not lowered, %@ to %@</key>
+	<string>Звук комп’ютера не стишується, з %@ до %@</string>
+	<key>Computer sound — drag a dip to change it, or click for its settings in Audio</key>
+	<string>Звук комп’ютера — перетягніть приглушення, щоб змінити його, або клацніть, щоб відкрити налаштування у вкладці «Аудіо»</string>
 	<key>Conflict detected</key>
 	<string>Виявлено конфлікт</string>
 	<key>Copied</key>
@@ -832,6 +840,8 @@
 	<string>Документи, слайди</string>
 	<key>Don't Ask Again</key>
 	<string>Більше не питати</string>
+	<key>Don't Lower Here</key>
+	<string>Не стишувати тут</string>
 	<key>Don't Save</key>
 	<string>Не зберігати</string>
 	<key>Don't ask again</key>
@@ -976,6 +986,8 @@
 	<string>Усі вирізання, наближення, розмітку, субтитри й зміни стилю в цьому відео буде вилучено — додані записи залишаться. Цю дію можна відмінити.</string>
 	<key>Every cut, zoom, annotation, caption, and style change on this video is removed. You can undo this.</key>
 	<string>Усі вирізання, наближення, розмітку, субтитри й зміни стилю в цьому відео буде вилучено. Цю дію можна відмінити.</string>
+	<key>Every place back to the level above</key>
+	<string>Повернути всі місця до рівня вище</string>
 	<key>Every sound level is at 0 (Audio tab) — this export will have no sound.</key>
 	<string>Усі рівні звуку на 0 (вкладка «Аудіо») — цей експорт буде без звуку.</string>
 	<key>Everything is ready</key>
@@ -1324,6 +1336,8 @@
 	<string>Посилання</string>
 	<key>Links (%lld of %lld)</key>
 	<string>Посилання (%lld з %lld)</string>
+	<key>Listening for your voice…</key>
+	<string>Пошук вашого голосу…</string>
 	<key>Listening…</key>
 	<string>Слухання…</string>
 	<key>Listens on this Mac — nothing is uploaded</key>
@@ -1332,8 +1346,12 @@
 	<string>Вигляд</string>
 	<key>Loop to fill</key>
 	<string>Повторювати до кінця</string>
+	<key>Lower Here Again</key>
+	<string>Знову стишувати тут</string>
 	<key>Lower under your voice</key>
 	<string>Стишувати під голос</string>
+	<key>Lowering Settings…</key>
+	<string>Налаштування приглушення…</string>
 	<key>M</key>
 	<string>M</string>
 	<key>MIT License — Free and open source</key>
@@ -1546,6 +1564,8 @@
 	<string>Немає звуку з мікрофона</string>
 	<key>No speech was found in this recording. If it has narration, check its level in the Audio tab, then try again.</key>
 	<string>У цьому записі не знайдено мовлення. Якщо в ньому є коментар, перевірте рівень у вкладці «Аудіо», а потім спробуйте ще раз.</string>
+	<key>No talking found, so nothing is lowered</key>
+	<string>Мовлення не знайдено, тож нічого не стишується</string>
 	<key>No text found in this selection</key>
 	<string>У вибраній області не знайдено тексту</string>
 	<key>No ums</key>
@@ -1566,6 +1586,10 @@
 	<string>Недостатньо вільного місця на диску для цього запису: потрібно приблизно %@, а доступно %@. Звільніть місце або виберіть якість «Збалансована» чи 30 fps.</string>
 	<key>Not for this video</key>
 	<string>Не для цього відео</string>
+	<key>Not lowered</key>
+	<string>Не стишується</string>
+	<key>Not lowered here — right-click to lower it again</key>
+	<string>Тут не стишується — правий клік, щоб знову стишувати</string>
 	<key>Not now</key>
 	<string>Не зараз</string>
 	<key>Nothing to clean up — everything belongs to recordings you still have</key>
@@ -1624,6 +1648,8 @@
 	<string>Відкрити відеоредактор</string>
 	<key>Open editor after recording</key>
 	<string>Відкривати редактор після запису</string>
+	<key>Open in Audio</key>
+	<string>Відкрити у вкладці «Аудіо»</string>
 	<key>Open in annotation editor</key>
 	<string>Відкрити в редакторі знімків</string>
 	<key>Opens its title and length in Style</key>
@@ -2188,6 +2214,8 @@
 	<string>Скинути: %@</string>
 	<key>Reset Defaults</key>
 	<string>Відновити типові</string>
+	<key>Reset This Place</key>
+	<string>Скинути це місце</string>
 	<key>Reset crop</key>
 	<string>Скинути обрізання</string>
 	<key>Reset to the Shotnix Look</key>
@@ -3156,6 +3184,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>Оновлення</string>
 	<key>Upload Custom Image</key>
 	<string>Вибрати власне зображення</string>
+	<key>Use %@ Everywhere</key>
+	<string>Використовувати %@ скрізь</string>
 	<key>Use This Look for New Recordings</key>
 	<string>Використовувати цей стиль для нових записів</string>
 	<key>Use for new recordings</key>

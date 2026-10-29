@@ -259,29 +259,128 @@ enum VideoVoiceActivity {
         return bridged.filter { $0.upperBound - $0.lowerBound >= 0.12 }
     }
 
-    private static let lock = NSLock()
-    nonisolated(unsafe) private static var cache: [String: [ClosedRange<Double>]] = [:]
-
-    static func cacheKey(url: URL, trackIndex: Int) -> String {
-        let stamp = (try? FileManager.default.attributesOfItem(atPath: url.path)[.modificationDate] as? Date)?.timeIntervalSince1970 ?? 0
-        return "\(url.standardizedFileURL.path)#\(trackIndex)#\(Int(stamp))"
+    /// Speech on the voice track with the computer sound the microphone
+    /// picked up from the speakers taken out (`system`: that sound's own
+    /// loudness, same rate and start).
+    static func speech(levels: [Float], system: [Float], rate: Double = rate) -> [ClosedRange<Double>] {
+        speech(levels: withoutBleed(levels, system: system, rate: rate), rate: rate)
     }
 
-    static func cached(url: URL, trackIndex: Int) -> [ClosedRange<Double>]? {
+    /// The voice track's loudness minus what came in through the speakers.
+    /// Only when the two move together (headphones: they don't, and the
+    /// voice is left as it is).
+    static func withoutBleed(_ voice: [Float], system: [Float], rate: Double = rate) -> [Float] {
+        let count = min(voice.count, system.count)
+        guard count > Int(rate) else { return voice }
+        // The speakers reach the mic a little late, and the two tracks can
+        // be a frame or two apart: hold the computer's loudness ±100 ms.
+        let reach = Int(rate * 0.1)
+        var held = [Float](repeating: 0, count: count)
+        for index in 0..<count {
+            var value: Float = 0
+            for other in max(index - reach, 0)...min(index + reach, count - 1) { value = max(value, system[other]) }
+            held[index] = value
+        }
+        let playing = (0..<count).filter { held[$0] > 0.01 }
+        guard playing.count > Int(rate) else { return voice }
+        // Does the mic follow the computer's loudness?
+        func log(_ value: Float) -> Double { Double(20 * log10(max(value, 0.0001))) }
+        let xs = playing.map { log(held[$0]) }, ys = playing.map { log(voice[$0]) }
+        let mx = xs.reduce(0, +) / Double(xs.count), my = ys.reduce(0, +) / Double(ys.count)
+        var sxy = 0.0, sxx = 0.0, syy = 0.0
+        for (x, y) in zip(xs, ys) {
+            sxy += (x - mx) * (y - my)
+            sxx += (x - mx) * (x - mx)
+            syy += (y - my) * (y - my)
+        }
+        let correlation = sxx > 0 && syy > 0 ? sxy / (sxx * syy).squareRoot() : 0
+        guard correlation > 0.3 else { return voice }
+        // How loud the speakers come through: the mic's quietest share of
+        // the computer's level while it plays (between your words, it's
+        // only the speakers).
+        let ratios = playing.map { voice[$0] / held[$0] }.sorted()
+        let bleed = min(ratios[Int(Double(ratios.count - 1) * 0.1)], 0.5)
+        // Keep what's clearly louder than that (8 dB).
+        return (0..<voice.count).map { index in
+            index < count ? max(voice[index] - 2.5 * bleed * held[index], 0) : voice[index]
+        }
+    }
+
+    private struct Levels {
+        let values: [Float]
+        /// The track's own start, seconds.
+        let start: Double
+    }
+
+    private static let lock = NSLock()
+    nonisolated(unsafe) private static var cache: [String: [ClosedRange<Double>]] = [:]
+    nonisolated(unsafe) private static var levelCache: [String: Levels] = [:]
+
+    static func cacheKey(url: URL, trackIndex: Int, systemTrackIndex: Int? = nil) -> String {
+        let stamp = (try? FileManager.default.attributesOfItem(atPath: url.path)[.modificationDate] as? Date)?.timeIntervalSince1970 ?? 0
+        return "\(url.standardizedFileURL.path)#\(trackIndex)#\(systemTrackIndex.map(String.init) ?? "")#\(Int(stamp))"
+    }
+
+    static func cached(url: URL, trackIndex: Int, systemTrackIndex: Int? = nil) -> [ClosedRange<Double>]? {
         lock.lock()
         defer { lock.unlock() }
-        return cache[cacheKey(url: url, trackIndex: trackIndex)]
+        return cache[cacheKey(url: url, trackIndex: trackIndex, systemTrackIndex: systemTrackIndex)]
     }
 
     /// Speech on one track of a file, in that file's own seconds (cached).
-    static func speech(url: URL, trackIndex: Int) async -> [ClosedRange<Double>] {
-        if let cached = cached(url: url, trackIndex: trackIndex) { return cached }
+    /// With the file's computer-sound track too, what the mic heard from
+    /// the speakers doesn't count as talking.
+    static func speech(url: URL, trackIndex: Int, systemTrackIndex: Int? = nil) async -> [ClosedRange<Double>] {
+        if let cached = cached(url: url, trackIndex: trackIndex, systemTrackIndex: systemTrackIndex) { return cached }
+        guard let voice = await levels(url: url, trackIndex: trackIndex) else { return [] }
+        var values = voice.values
+        if let systemTrackIndex, systemTrackIndex != trackIndex, let system = await levels(url: url, trackIndex: systemTrackIndex) {
+            // Line the computer's loudness up with the voice's.
+            let shift = Int(((voice.start - system.start) * rate).rounded())
+            let aligned = values.indices.map { index -> Float in
+                let other = index + shift
+                return system.values.indices.contains(other) ? system.values[other] : 0
+            }
+            values = withoutBleed(values, system: aligned)
+        }
+        let ranges = speech(levels: values).map { ($0.lowerBound + voice.start)...($0.upperBound + voice.start) }
+        store(ranges, key: cacheKey(url: url, trackIndex: trackIndex, systemTrackIndex: systemTrackIndex))
+        return ranges
+    }
+
+    private static func store(_ ranges: [ClosedRange<Double>], key: String) {
+        lock.lock()
+        cache[key] = ranges
+        lock.unlock()
+    }
+
+    private static func cachedLevels(_ key: String) -> Levels? {
+        lock.lock()
+        defer { lock.unlock() }
+        return levelCache[key]
+    }
+
+    private static func store(_ levels: Levels, key: String) {
+        lock.lock()
+        levelCache[key] = levels
+        lock.unlock()
+    }
+
+    /// One track's loudness, `rate` values a second from its own start —
+    /// the computer sound's lane draws it as its waveform (cached).
+    static func loudness(url: URL, trackIndex: Int) async -> (values: [Float], start: Double)? {
+        await levels(url: url, trackIndex: trackIndex).map { ($0.values, $0.start) }
+    }
+
+    private static func levels(url: URL, trackIndex: Int) async -> Levels? {
+        let key = cacheKey(url: url, trackIndex: trackIndex) + "#levels"
+        if let hit = cachedLevels(key) { return hit }
         let asset = AVURLAsset(url: url)
         guard let tracks = try? await asset.loadTracks(withMediaType: .audio), tracks.indices.contains(trackIndex),
-              let format = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: 16_000, channels: 1, interleaved: false) else { return [] }
+              let format = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: 16_000, channels: 1, interleaved: false) else { return nil }
         let offset = (try? await tracks[trackIndex].load(.timeRange))?.start.seconds ?? 0
         let window = Int(16_000 / rate)
-        var levels: [Float] = []
+        var values: [Float] = []
         var sum: Float = 0
         var count = 0
         var firstStart: Double?
@@ -293,25 +392,18 @@ enum VideoVoiceActivity {
                     sum += data[index] * data[index]
                     count += 1
                     if count == window {
-                        levels.append((sum / Float(window)).squareRoot())
+                        values.append((sum / Float(window)).squareRoot())
                         sum = 0
                         count = 0
                     }
                 }
             }
         } catch {
-            return []
+            return nil
         }
-        let shift = firstStart ?? offset
-        let ranges = speech(levels: levels).map { ($0.lowerBound + shift)...($0.upperBound + shift) }
-        store(ranges, key: cacheKey(url: url, trackIndex: trackIndex))
-        return ranges
-    }
-
-    private static func store(_ ranges: [ClosedRange<Double>], key: String) {
-        lock.lock()
-        cache[key] = ranges
-        lock.unlock()
+        let levels = Levels(values: values, start: firstStart ?? offset)
+        store(levels, key: key)
+        return levels
     }
 
     /// Source-time speech → timeline stretches that are still heard (cut

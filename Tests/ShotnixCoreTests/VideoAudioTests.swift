@@ -352,6 +352,8 @@ final class VideoAudioTests: XCTestCase {
         var project = VideoDemoProject.make(sourceURL: url, duration: 4, sourceSize: CGSize(width: 320, height: 200))
         project.apply(metadata: metadata)
         project.audio.normalizeLoudness = false
+        // The tone on the mic would count as talking all the way through.
+        project.audio.duckSystem = false
         project.timelineClips = [
             VideoDemoTimelineClip(sourceStart: 0, sourceEnd: 2),
             VideoDemoTimelineClip(sourceStart: 2, sourceEnd: 4, systemVolume: 0),

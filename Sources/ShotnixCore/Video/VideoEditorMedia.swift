@@ -132,6 +132,9 @@ final class VideoEditorMedia {
     /// Speech on each recording's voice track, in its own seconds ("" is
     /// the project's own recording; others by source ID).
     var speech: [String: [ClosedRange<Double>]] = [:]
+    /// The computer sound's loudness on each recording (same keys), for
+    /// its lane.
+    var computerLoudness: [String: VideoLoudness] = [:]
     /// Added recordings, loaded.
     var layout: VideoSourceLayout?
     /// Added recordings' own data (pointer pictures), by source ID.
@@ -172,6 +175,7 @@ extension VideoEditorModel {
         if let music = project.music, let loaded = media.music, loaded.path == music.path {
             extras.music = VideoMusicInput(file: loaded.file, settings: music, voice: voiceTimelineRanges)
         }
+        extras.computerSoundDips = computerSoundDips
         if project.clickSounds.enabled, let click = media.clickSound {
             let times = VideoClickSound.times(project: project, segments: segments)
             if !times.isEmpty {
@@ -218,6 +222,9 @@ extension VideoEditorModel {
         if project.music?.path != old.music?.path || (project.music?.ducking == true && old.music?.ducking != true) {
             loadMusic()
         }
+        if project.audio.duckSystem, !old.audio.duckSystem {
+            loadComputerSoundDucking()
+        }
         if project.clickSounds.enabled, media.clickSound == nil {
             loadClickSound()
         }
@@ -232,6 +239,20 @@ extension VideoEditorModel {
         if project.hasAppendedSources { await reloadSources() }
         if project.music != nil { loadMusic() }
         if project.clickSounds.enabled { loadClickSound() }
+        if project.audio.duckSystem { loadComputerSoundDucking() }
+    }
+
+    /// Finds where you talk (and how loud the computer sound is, for its
+    /// lane), then dips the computer sound under it.
+    private func loadComputerSoundDucking() {
+        guard hasSeparateVoiceAndSystem, media.begin("computer-sound") else { return }
+        Task {
+            defer { media.end("computer-sound") }
+            listeningForVoice = true
+            await loadSpeech()
+            listeningForVoice = false
+            refreshPlayback()
+        }
     }
 
     /// Re-applies the edit to the player (music, clicks, recordings loaded).
@@ -265,14 +286,19 @@ extension VideoEditorModel {
         }
     }
 
-    /// Speech on every recording's voice track (for ducking).
+    /// Speech on every recording's voice track (for ducking), and how loud
+    /// its computer sound is.
     func loadSpeech() async {
         if media.speech[""] == nil, let index = VideoAudioKind.voiceTrackIndex(in: audioKinds) {
-            media.speech[""] = await VideoVoiceActivity.speech(url: project.sourceURL, trackIndex: index)
+            let system = audioKinds.firstIndex(of: .system)
+            media.speech[""] = await VideoVoiceActivity.speech(url: project.sourceURL, trackIndex: index, systemTrackIndex: system)
+            if let system { media.computerLoudness[""] = await VideoLoudness.load(url: project.sourceURL, trackIndex: system) }
         }
         for source in project.sources where !source.isPrimary && media.speech[source.id.uuidString] == nil {
             guard let index = VideoAudioKind.voiceTrackIndex(in: source.audioKinds), let url = VideoSourceLocator.resolve(source) else { continue }
-            media.speech[source.id.uuidString] = await VideoVoiceActivity.speech(url: url, trackIndex: index)
+            let system = source.audioKinds.firstIndex(of: .system)
+            media.speech[source.id.uuidString] = await VideoVoiceActivity.speech(url: url, trackIndex: index, systemTrackIndex: system)
+            if let system { media.computerLoudness[source.id.uuidString] = await VideoLoudness.load(url: url, trackIndex: system) }
         }
     }
 
@@ -304,7 +330,7 @@ extension VideoEditorModel {
         )
         refreshPlan()
         refreshPlayback()
-        if project.music?.ducking == true { await loadSpeech(); refreshPlayback() }
+        if project.music?.ducking == true || project.audio.duckSystem { await loadSpeech(); refreshPlayback() }
         if project.hasAppendedSources { await loadSourceMedia() }
     }
 
@@ -412,6 +438,10 @@ extension VideoEditorModel {
             music: project.music,
             musicWaveform: media.musicWaveform?.waveform.peaks.count ?? -1,
             voice: project.music?.ducking == true ? voiceTimelineRanges : [],
+            computerSoundLane: showsComputerSoundLane,
+            computerSoundDips: computerSoundDips,
+            computerLoudness: media.computerLoudness.count,
+            audio: project.audio,
             cards: project.cards,
             transitions: project.transitions,
             sources: project.sources
@@ -423,6 +453,10 @@ struct VideoTimelineExtrasSignature: Equatable {
     let music: VideoMusicTrack?
     let musicWaveform: Int
     let voice: [ClosedRange<Double>]
+    let computerSoundLane: Bool
+    let computerSoundDips: [VideoSoundDip]
+    let computerLoudness: Int
+    let audio: VideoAudioSettings
     let cards: VideoTitleCards
     let transitions: VideoTransitionSettings
     let sources: [VideoProjectSource]
@@ -434,6 +468,11 @@ enum VideoMusicDucking {
     /// silent voice ducks nothing.
     static func voiceOnTimeline(project: VideoDemoProject, primaryKinds: [VideoAudioKind], speech: [String: [ClosedRange<Double>]], segments: [VideoDemoTimelineSegment]) -> [ClosedRange<Double>] {
         guard project.music?.ducking == true else { return [] }
+        return VideoVoiceActivity.timelineRanges(voiceOnAxis(project: project, primaryKinds: primaryKinds, speech: speech), segments: segments)
+    }
+
+    /// Speech from every recording whose voice is heard, on the source axis.
+    static func voiceOnAxis(project: VideoDemoProject, primaryKinds: [VideoAudioKind], speech: [String: [ClosedRange<Double>]]) -> [ClosedRange<Double>] {
         var axis: [ClosedRange<Double>] = []
         let primaryVoice = VideoAudioKind.voiceTrackIndex(in: primaryKinds).map { primaryKinds[$0] } ?? .mixed
         if project.audio.effectiveVolume(for: primaryVoice) > 0.01 {
@@ -448,7 +487,7 @@ enum VideoMusicDucking {
                 return b > a ? (a + source.offset)...(b + source.offset) : nil
             }
         }
-        return VideoVoiceActivity.timelineRanges(axis, segments: segments)
+        return axis.sorted { $0.lowerBound < $1.lowerBound }
     }
 }
 

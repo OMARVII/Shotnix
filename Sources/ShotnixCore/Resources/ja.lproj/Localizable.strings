@@ -130,6 +130,8 @@
 	<string>%lld秒</string>
 	<key>%lld selected</key>
 	<string>%lld項目を選択</string>
+	<key>%lld set by hand on the timeline</key>
+	<string>%lld箇所をタイムラインで手動調整済み</string>
 	<key>%lld shortcuts</key>
 	<string>%lld個のショートカット</string>
 	<key>%lld zooms</key>
@@ -672,6 +674,16 @@
 	<string>メールを作成</string>
 	<key>Computer sound</key>
 	<string>システムオーディオ</string>
+	<key>Computer sound at %@ while you talk — drag to change, right-click for more</key>
+	<string>話している間のシステムオーディオ: %@。ドラッグで変更、右クリックでその他の操作</string>
+	<key>Computer sound at %@ while you talk, %@ to %@</key>
+	<string>話している間のシステムオーディオ %@、%@〜%@</string>
+	<key>Computer sound not lowered, %@ to %@</key>
+	<string>システムオーディオを下げない、%@〜%@</string>
+	<key>Computer sound — drag a dip to change it, or click for its settings in Audio</key>
+	<string>システムオーディオ: 下げた部分をドラッグして変更、クリックで“オーディオ”の設定を開く</string>
+	<key>Computer sound, lowered in %lld places while you talk</key>
+	<string>システムオーディオ、話している間%lld箇所で音量を下げます</string>
 	<key>Conflict detected</key>
 	<string>競合あり</string>
 	<key>Copied</key>
@@ -900,6 +912,8 @@
 	<string>ドキュメント、スライド</string>
 	<key>Don't Ask Again</key>
 	<string>次回から確認しない</string>
+	<key>Don't Lower Here</key>
+	<string>ここでは下げない</string>
 	<key>Don't Save</key>
 	<string>保存しない</string>
 	<key>Don't ask again</key>
@@ -1044,6 +1058,8 @@
 	<string>このビデオのカット、ズーム、注釈、字幕、スタイルの変更がすべて削除されます。追加した収録はそのまま残ります。この操作は取り消せます。</string>
 	<key>Every cut, zoom, annotation, caption, and style change on this video is removed. You can undo this.</key>
 	<string>このビデオのカット、ズーム、注釈、字幕、スタイルの変更がすべて削除されます。この操作は取り消せます。</string>
+	<key>Every place back to the level above</key>
+	<string>すべての箇所を上の音量に戻す</string>
 	<key>Every sound level is at 0 (Audio tab) — this export will have no sound.</key>
 	<string>すべての音量が0になっているため（“オーディオ”タブ）、書き出したビデオにはサウンドが入りません。</string>
 	<key>Everything is ready</key>
@@ -1412,6 +1428,8 @@
 	<string>リンク</string>
 	<key>Links (%lld of %lld)</key>
 	<string>リンク（%2$lld件中%1$lld件）</string>
+	<key>Listening for your voice…</key>
+	<string>声を検出中…</string>
 	<key>Listening…</key>
 	<string>聞き取り中…</string>
 	<key>Listens on this Mac — nothing is uploaded</key>
@@ -1420,8 +1438,14 @@
 	<string>スタイル</string>
 	<key>Loop to fill</key>
 	<string>ループして最後まで再生</string>
+	<key>Lower Here Again</key>
+	<string>ここで再び音量を下げる</string>
 	<key>Lower under your voice</key>
 	<string>話している間は音量を下げる</string>
+	<key>Lowered in %lld places — see the lane under the clips</key>
+	<string>%lld箇所で音量を下げています。クリップの下のトラックを参照</string>
+	<key>Lowering Settings…</key>
+	<string>音量を下げる設定…</string>
 	<key>M</key>
 	<string>中</string>
 	<key>MIT License — Free and open source</key>
@@ -1634,6 +1658,8 @@
 	<string>マイクから音声が入力されていません</string>
 	<key>No speech was found in this recording. If it has narration, check its level in the Audio tab, then try again.</key>
 	<string>この収録には音声が見つかりませんでした。ナレーションが入っている場合は、“オーディオ”タブで音量を確認してから、もう一度お試しください。</string>
+	<key>No talking found, so nothing is lowered</key>
+	<string>話している部分が見つからないため、音量は下げません</string>
 	<key>No text found in this selection</key>
 	<string>選択範囲にテキストが見つかりませんでした</string>
 	<key>No ums</key>
@@ -1654,6 +1680,10 @@
 	<string>この収録に必要なディスクの空き領域が足りません。約%@の空き領域が必要ですが、使用可能なのは%@です。空き領域を増やすか、品質“標準”または30 fpsを選択してください。</string>
 	<key>Not for this video</key>
 	<string>このビデオでは使用しない</string>
+	<key>Not lowered</key>
+	<string>下げない</string>
+	<key>Not lowered here — right-click to lower it again</key>
+	<string>ここでは下げません。右クリックで再び下げる</string>
 	<key>Not now</key>
 	<string>今はしない</string>
 	<key>Nothing to clean up — everything belongs to recordings you still have</key>
@@ -1712,6 +1742,8 @@
 	<string>ビデオエディタを開く</string>
 	<key>Open editor after recording</key>
 	<string>収録後にエディタを開く</string>
+	<key>Open in Audio</key>
+	<string>“オーディオ”で開く</string>
 	<key>Open in annotation editor</key>
 	<string>スクリーンショットエディタで開く</string>
 	<key>Opens its title and length in Style</key>
@@ -2294,6 +2326,8 @@
 	<string>%@をリセット</string>
 	<key>Reset Defaults</key>
 	<string>デフォルトに戻す</string>
+	<key>Reset This Place</key>
+	<string>この箇所をリセット</string>
 	<key>Reset crop</key>
 	<string>切り取りをリセット</string>
 	<key>Reset to the Shotnix Look</key>
@@ -3284,6 +3318,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>アップデート</string>
 	<key>Upload Custom Image</key>
 	<string>カスタム画像を選択</string>
+	<key>Use %@ Everywhere</key>
+	<string>すべてに%@を使用</string>
 	<key>Use This Look for New Recordings</key>
 	<string>このスタイルを新しい収録に使用</string>
 	<key>Use for new recordings</key>

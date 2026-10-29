@@ -193,6 +193,8 @@ final class VideoEditorModel: ObservableObject {
     @Published private(set) var sourceDuration: Double = 0
     @Published private(set) var sourceFrameRate: Double = 60
     @Published private(set) var hasAudio = false
+    /// Finding where you talk, so the computer sound can dip under it.
+    @Published var listeningForVoice = false
     /// The recording came with camera footage that's still on disk.
     @Published private(set) var hasWebcamFootage = false
     /// What each of the recording's audio tracks carries.

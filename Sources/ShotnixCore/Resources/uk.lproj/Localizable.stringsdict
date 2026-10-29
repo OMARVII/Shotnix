@@ -502,6 +502,26 @@
 			<string>%lld секунди</string>
 		</dict>
 	</dict>
+	<key>%lld set by hand on the timeline</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld місця налаштовано вручну на шкалі часу</string>
+			<key>many</key>
+			<string>%lld місць налаштовано вручну на шкалі часу</string>
+			<key>one</key>
+			<string>%lld місце налаштовано вручну на шкалі часу</string>
+			<key>other</key>
+			<string>%lld місця налаштовано вручну на шкалі часу</string>
+		</dict>
+	</dict>
 	<key>%lld shortcuts</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -620,6 +640,26 @@
 			<string>Субтитри готові — %lld рядок</string>
 			<key>other</key>
 			<string>Субтитри готові — %lld рядка</string>
+		</dict>
+	</dict>
+	<key>Computer sound, lowered in %lld places while you talk</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Звук комп’ютера, стишується в %lld місцях, поки ви говорите</string>
+			<key>many</key>
+			<string>Звук комп’ютера, стишується в %lld місцях, поки ви говорите</string>
+			<key>one</key>
+			<string>Звук комп’ютера, стишується в %lld місці, поки ви говорите</string>
+			<key>other</key>
+			<string>Звук комп’ютера, стишується в %lld місцях, поки ви говорите</string>
 		</dict>
 	</dict>
 	<key>Cut %lld words — ⌘Z to undo</key>
@@ -880,6 +920,26 @@
 			<string>Останній %lld знімок</string>
 			<key>other</key>
 			<string>Останні %lld знімка</string>
+		</dict>
+	</dict>
+	<key>Lowered in %lld places — see the lane under the clips</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Стишується в %lld місцях — див. доріжку під кліпами</string>
+			<key>many</key>
+			<string>Стишується в %lld місцях — див. доріжку під кліпами</string>
+			<key>one</key>
+			<string>Стишується в %lld місці — див. доріжку під кліпами</string>
+			<key>other</key>
+			<string>Стишується в %lld місцях — див. доріжку під кліпами</string>
 		</dict>
 	</dict>
 	<key>Plans zooms around your %lld clicks. Zooms you placed by hand are kept.</key>

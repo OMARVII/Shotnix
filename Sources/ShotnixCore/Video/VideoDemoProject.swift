@@ -560,6 +560,14 @@ struct VideoAudioSettings: Codable, Equatable {
     var enhanceVoice = false
     /// Exports at a steady −16 LUFS (peaks kept under −1 dBFS).
     var normalizeLoudness = true
+    /// Lowers the computer sound while you talk (when your voice has a
+    /// track of its own). New projects start with it on; older drafts
+    /// play as they did.
+    var duckSystem = false
+    /// The computer sound's level while you talk, as a fraction of its own.
+    var systemDuckLevel = 0.3
+    /// Places you talk whose dip was changed by hand.
+    var systemDuckSpots: [VideoDuckSpot] = []
 
     init() {}
 
@@ -580,7 +588,7 @@ struct VideoAudioSettings: Codable, Equatable {
         kinds.isEmpty || kinds.allSatisfy { effectiveVolume(for: $0) < 0.0005 }
     }
 
-    private enum CodingKeys: String, CodingKey { case volume, muted, voiceVolume, systemVolume, enhanceVoice, normalizeLoudness }
+    private enum CodingKeys: String, CodingKey { case volume, muted, voiceVolume, systemVolume, enhanceVoice, normalizeLoudness, duckSystem, systemDuckLevel, systemDuckSpots }
 
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -591,6 +599,24 @@ struct VideoAudioSettings: Codable, Equatable {
         systemVolume = try c.decodeIfPresent(Double.self, forKey: .systemVolume) ?? d.systemVolume
         enhanceVoice = try c.decodeIfPresent(Bool.self, forKey: .enhanceVoice) ?? d.enhanceVoice
         normalizeLoudness = try c.decodeIfPresent(Bool.self, forKey: .normalizeLoudness) ?? d.normalizeLoudness
+        duckSystem = try c.decodeIfPresent(Bool.self, forKey: .duckSystem) ?? d.duckSystem
+        systemDuckLevel = try c.decodeIfPresent(Double.self, forKey: .systemDuckLevel) ?? d.systemDuckLevel
+        systemDuckSpots = try c.decodeIfPresent([VideoDuckSpot].self, forKey: .systemDuckSpots) ?? d.systemDuckSpots
+    }
+}
+
+/// A place you talk whose dip under your voice was set by hand, in
+/// recording seconds (the source axis): it keeps its level through cuts.
+struct VideoDuckSpot: Codable, Equatable {
+    var start: Double
+    var end: Double
+    /// The computer sound's level there (1: not lowered at all).
+    var level: Double
+
+    /// The spot belongs to this stretch of talking: they share most of it.
+    func matches(_ talk: ClosedRange<Double>) -> Bool {
+        let shared = min(end, talk.upperBound) - max(start, talk.lowerBound)
+        return shared > 0.5 * min(end - start, talk.upperBound - talk.lowerBound)
     }
 }
 
@@ -804,6 +830,8 @@ struct VideoDemoProject: Codable, Equatable, Identifiable {
             keystrokeStyle: VideoKeystrokeStyle(),
             crop: .full
         )
+        // A new video lowers the computer sound under your voice.
+        project.audio.duckSystem = true
         if let style = VideoStylePreset.savedDefault {
             project.apply(style: style)
         }
