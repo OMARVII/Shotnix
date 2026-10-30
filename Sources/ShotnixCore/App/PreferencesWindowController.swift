@@ -1065,7 +1065,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.27.3"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.28.0"
     
     var body: some View {
         PreferencesPane {
@@ -1109,6 +1109,10 @@ struct AboutSettingsView: View {
                 ScrollView {
                     // The release notes stay in English (l10n-ignore); everything around them is localized.
                     Text(verbatim: """
+                    Version 0.28.0
+                    • The computer sound dips under your voice by itself, and a lane on the timeline shows every dip
+                    • A clip or any part of the video can have its own Voice and Computer sound levels
+
                     Version 0.27.3
                     • Text in the screenshot editor can have an outline that stands out on any background
                     • New installs save every screenshot as a file, and Shotnix says once where an unsaved one went
