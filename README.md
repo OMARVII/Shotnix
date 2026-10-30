@@ -53,7 +53,7 @@ Free and open source. Native, about 11 MB, and your captures never leave your Ma
 
 - **Record** an area, a window, or a display at 60 fps, with your voice, the computer’s sound, and your camera. Pause, resume, and never lose a take, even after a crash.
 - **It opens already edited:** zooms on your clicks, the real macOS cursor redrawn smoothly, and your saved look.
-- **Finish it on your Mac:** captions and edit-by-text from your narration (with translation on macOS 15+), music that dips under your voice, title cards, transitions, and your logo.
+- **Finish it on your Mac:** captions and edit-by-text from your narration (with translation on macOS 15+), music and the computer’s sound that dip under your voice, title cards, transitions, and your logo.
 - **Export** MP4 up to 4K at 60 fps or GIF, in the background, or straight to the clipboard.
 
 <img src="assets/readme/recording-bar.png" width="100%" alt="The Shotnix recording bar: area, audio, microphone, pointer, camera and shortcut toggles, quality and frame rate, and the record button." />
@@ -72,7 +72,7 @@ Free and open source. Native, about 11 MB, and your captures never leave your Ma
 - **Scrolling** — scroll a long page and Shotnix stitches it into one tall image; press Esc or the shortcut again to stop
 - **Timed** — a cancellable 3/5/10-second countdown before the shot
 - **Screen recording** — record an area, window, or display to MP4 at 60 fps with system audio, microphone audio, and your camera. Pause and resume, discard a take, or start after a 3/5/10-second countdown. Window recordings follow the window and include its menus and sheets. Recordings survive crashes and are recovered on the next launch, a microphone that drops out is replaced without shifting the audio, and 5K and larger displays record in HEVC. Stop from anywhere with `Ctrl + Cmd + Esc`
-- **Video editor** — turn any recording into a polished demo: zooms that follow your cursor, the real macOS cursor redrawn smoothly, backgrounds, annotations (text, arrows, highlights, blur, spotlight), your camera as its own layer (with layouts), captions in four looks and edit-by-text made on your Mac (with on-device translation on macOS 15+), background music that ducks under your voice, logos and image overlays, intro and outro cards, transitions, several recordings in one video, cleaner sound, vertical videos, crop, and exports to MP4 or GIF that run in the background
+- **Video editor** — turn any recording into a polished demo: zooms that follow your cursor, the real macOS cursor redrawn smoothly, backgrounds, annotations (text, arrows, highlights, blur, spotlight), your camera as its own layer (with layouts), captions in four looks and edit-by-text made on your Mac (with on-device translation on macOS 15+), background music and the computer’s sound that duck under your voice, a sound level for any part of the video, logos and image overlays, intro and outro cards, transitions, several recordings in one video, cleaner sound, vertical videos, crop, and exports to MP4 or GIF that run in the background
 - **OCR** — extract text from any part of the screen, keeping columns and tables in reading order; links in the result are clickable, and you choose the recognition languages
 - **QR and barcode scanning** — decode QR, Code 128, EAN, UPC, Aztec, Data Matrix, PDF417 and more from a selected screen area
 
