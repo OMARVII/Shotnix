@@ -474,6 +474,7 @@ extension VideoEditorModel {
             withAnimation(.easeOut(duration: 0.15)) { isExportPresented = true }
             return true
         case ([.command], "b"): splitAtPlayhead(); return true
+        case ([.command], "a"): selectWholeVideo(); return true
         case ([.command], "c"): copyCurrentFrame(); return true
         case ([.command], "f"): findInTranscript(); return true
         case ([.command], "d"):
@@ -666,6 +667,7 @@ struct VideoCommandPalette: View {
             Command(id: "export", title: L("Export…"), symbol: "square.and.arrow.up", shortcut: "⌘E") { model.isExportPresented = true },
             Command(id: "play", title: model.isPlaying ? L("Pause") : L("Play"), symbol: "playpause.fill", shortcut: L("Space")) { model.togglePlay() },
             Command(id: "split", title: L("Split at Playhead"), symbol: "scissors", shortcut: "S") { model.splitAtPlayhead() },
+            Command(id: "select-all", title: L("Select the Whole Video"), symbol: "selection.pin.in.out", shortcut: "⌘A") { model.selectWholeVideo() },
             Command(id: "zoom", title: L("Add Zoom at Playhead"), symbol: "plus.magnifyingglass", shortcut: "Z") { model.addZoom(at: model.clock.time) },
             Command(id: "auto", title: L("Auto Zoom from Clicks"), symbol: "sparkles", shortcut: "") { model.autoZoom() },
             Command(id: "remove-zooms", title: L("Remove All Zooms"), symbol: "trash", shortcut: "") { model.removeAllZooms() },
@@ -812,7 +814,7 @@ struct VideoShortcutsSheet: View {
     static var groups: [(String, [(String, String)])] {
         [
             (L("Playback"), [(L("Space"), L("Play / pause")), ("J  K  L", L("Back · pause · faster")), ("← →", L("Previous / next frame")), ("⇧← ⇧→", L("Jump one second")), ("⌘← ⌘→", L("Start / end")), (L("Home  End"), L("Start / end")), ("M", L("Mute the preview (or the selected clip)"))]),
-            (L("Editing"), [("S  C  ⌘B", L("Split at playhead")), (L("⇧-drag"), L("Select a range to cut")), (L("⇧/⌘-click"), L("Select several items")), ("I  O", L("Clip starts / ends here")), ("⌫", L("Delete selection")), ("⌥← ⌥→", L("Select previous / next item")), ("⌘Z  ⇧⌘Z", L("Undo / redo"))]),
+            (L("Editing"), [("S  C  ⌘B", L("Split at playhead")), (L("⇧-drag"), L("Select a part to cut, or to change its speed or sound")), ("⌘A", L("Select the whole video")), (L("⇧/⌘-click"), L("Select several items")), ("I  O", L("Clip starts / ends here")), ("⌫", L("Delete selection")), ("⌥← ⌥→", L("Select previous / next item")), ("⌘Z  ⇧⌘Z", L("Undo / redo"))]),
             (L("Zooms & annotations"), [("Z", L("Add zoom at playhead")), ("1 – 5", L("Zoom level (zoom selected)")), ("⌘D", L("Duplicate zoom or annotation")), ("T  H  A  B", L("Text · highlight · arrow · blur")), (L("Double-click"), L("Type in a text annotation"))]),
             (L("Timeline"), [("=  −", L("Show more / less detail")), ("⌘=  ⌘−", L("Show more / less detail")), (L("⌘ scroll"), L("Zoom in at the pointer"))]),
             (L("General"), [("⌘E", L("Export")), ("⌘K", L("All commands")), ("⌘C", L("Copy current frame")), ("⌘F", L("Find in the transcript")), ("?", L("This list")), (L("Esc"), L("Deselect / close"))]),
@@ -1150,7 +1152,7 @@ struct VideoTipsBar: View {
     static var pages: [[(String, String)]] {
         [
             [(L("Space"), L("play")), (L("Hover the Zoom track"), L("add a zoom")), (L("Click a zoom"), L("aim or resize it")), ("⌘E", L("export"))],
-            [("S", L("split at the playhead")), (L("⇧-drag the timeline"), L("select a part to cut")), ("I  O", L("trim to the playhead"))],
+            [("S", L("split at the playhead")), (L("⇧-drag the timeline"), L("select a part: cut, speed, sound")), ("I  O", L("trim to the playhead"))],
             [("T H A B", L("text, highlight, arrow, blur")), (L("Click it on the video"), L("select it")), (L("Double-click text"), L("type"))],
             [("⌥← ⌥→", L("step through the timeline")), (L("⌘-scroll"), L("zoom the timeline")), ("M", L("mute the preview"))],
             [(L("Captions tab"), L("cut by editing words")), ("⌘K", L("every command")), ("?", L("all shortcuts"))],

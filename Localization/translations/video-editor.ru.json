@@ -725,12 +725,6 @@
   "Mirror" : {
     "ru" : "Зеркальное отражение"
   },
-  "More" : {
-    "ru" : "Еще"
-  },
-  "More caption options" : {
-    "ru" : "Другие параметры субтитров"
-  },
   "More tips" : {
     "ru" : "Еще подсказки"
   },
@@ -1297,6 +1291,9 @@
   "Remove Ums" : {
     "ru" : "Удалить слова-паразиты"
   },
+  "Remove all" : {
+    "ru" : "Удалить все"
+  },
   "Remove all %lld" : {
     "ru" : "Удалить все (%lld)"
   },
@@ -1333,6 +1330,9 @@
   },
   "Removes background noise and hum, and evens out your level — processed on this Mac" : {
     "ru" : "Убирает фоновый шум и гул и выравнивает громкость — обработка на этом Mac"
+  },
+  "Removes every line and the transcript — ⌘Z brings them back" : {
+    "ru" : "Удаляет все строки и расшифровку — ⌘Z вернет их"
   },
   "Removes jitter, keeps it snappy." : {
     "ru" : "Убирает дрожание, сохраняя отзывчивость."
@@ -1382,14 +1382,20 @@
   "Select a clip, or ⇧-drag across the timeline, to give just that part its own volume or mute it. A clip can also fade in and out." : {
     "ru" : "Выберите клип или выделите фрагмент на шкале времени, перетянув с ⇧, чтобы задать только ему свою громкость или выключить его звук. Для клипа можно также настроить нарастание и затухание."
   },
-  "Select a range to cut" : {
-    "ru" : "Выделить фрагмент для вырезания"
+  "Select a part to cut, or to change its speed or sound" : {
+    "ru" : "Выделить фрагмент, чтобы вырезать его или изменить скорость и звук"
   },
   "Select previous / next item" : {
     "ru" : "Выбрать предыдущий / следующий объект"
   },
   "Select several items" : {
     "ru" : "Выбрать несколько объектов"
+  },
+  "Select the Whole Video" : {
+    "ru" : "Выделить все видео"
+  },
+  "Select the whole video" : {
+    "ru" : "Выделить все видео"
   },
   "Select words and press ⌫ to cut them from the video — ⌫ again on crossed-out words puts them back. Click a word to jump there; ⌘F finds." : {
     "ru" : "Выделите слова и нажмите ⌫, чтобы вырезать их из видео, — повторное ⌫ на зачеркнутых словах возвращает их. Нажмите слово, чтобы перейти к нему; ⌘F — поиск."
@@ -1525,6 +1531,9 @@
   "Speed Up Idle Moments" : {
     "ru" : "Ускорить моменты простоя"
   },
+  "Speed and sound here change only this clip. To change a longer part, ⇧-drag across it on the timeline." : {
+    "ru" : "Скорость и звук здесь меняются только у этого клипа. Чтобы изменить фрагмент длиннее, выделите его на шкале времени, перетянув с ⇧."
+  },
   "Speed of this part" : {
     "ru" : "Скорость этого фрагмента"
   },
@@ -1629,6 +1638,9 @@
   },
   "Transcribe Narration (Captions, Edit by Text)" : {
     "ru" : "Расшифровать речь (субтитры, монтаж по тексту)"
+  },
+  "Transcribe again, pick the language, or remove the transcript" : {
+    "ru" : "Расшифровать заново, выбрать язык или удалить расшифровку"
   },
   "Transcribe…" : {
     "ru" : "Расшифровать…"
@@ -2162,8 +2174,8 @@
   "quieter" : {
     "ru" : "звук тише"
   },
-  "select a part to cut" : {
-    "ru" : "выделить фрагмент для вырезания"
+  "select a part: cut, speed, sound" : {
+    "ru" : "выделить фрагмент: вырезать, скорость, звук"
   },
   "select it" : {
     "ru" : "выбрать"

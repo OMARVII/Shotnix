@@ -1420,10 +1420,6 @@
 	<string>Spiegeln</string>
 	<key>Mist</key>
 	<string>Dunst</string>
-	<key>More</key>
-	<string>Mehr</string>
-	<key>More caption options</key>
-	<string>Weitere Untertiteloptionen</string>
 	<key>More recording options</key>
 	<string>Weitere Aufzeichnungsoptionen</string>
 	<key>More tips</key>
@@ -2174,6 +2170,8 @@
 	<string>Transkript und Untertitel entfernen</string>
 	<key>Remove Ums</key>
 	<string>Füllwörter entfernen</string>
+	<key>Remove all</key>
+	<string>Alle entfernen</string>
 	<key>Remove all %lld</key>
 	<string>Alle entfernen (%lld)</string>
 	<key>Remove all zooms</key>
@@ -2198,6 +2196,8 @@
 	<string>Entfernt – ⌘Z zum Widerrufen</string>
 	<key>Removes background noise and hum, and evens out your level — processed on this Mac</key>
 	<string>Entfernt Hintergrundgeräusche und Brummen und gleicht deinen Pegel aus – direkt auf diesem Mac</string>
+	<key>Removes every line and the transcript — ⌘Z brings them back</key>
+	<string>Entfernt alle Zeilen und das Transkript – ⌘Z holt sie zurück</string>
 	<key>Removes jitter, keeps it snappy.</key>
 	<string>Entfernt Zittern, bleibt aber flott.</string>
 	<key>Rendering for the clipboard… %lld%%</key>
@@ -2402,14 +2402,18 @@
 	<string>Alles auswählen</string>
 	<key>Select a clip, or ⇧-drag across the timeline, to give just that part its own volume or mute it. A clip can also fade in and out.</key>
 	<string>Wähle einen Clip aus oder markiere mit ⇧-Ziehen einen Abschnitt in der Zeitleiste, um nur diesem Teil eine eigene Lautstärke zu geben oder ihn stummzuschalten. Ein Clip lässt sich außerdem ein- und ausblenden.</string>
-	<key>Select a range to cut</key>
-	<string>Bereich zum Schneiden auswählen</string>
+	<key>Select a part to cut, or to change its speed or sound</key>
+	<string>Abschnitt wählen, um ihn zu schneiden oder Tempo und Ton zu ändern</string>
 	<key>Select a window to record without blocking other apps</key>
 	<string>Wähle ein Fenster zum Aufzeichnen, ohne andere Apps zu blockieren</string>
 	<key>Select previous / next item</key>
 	<string>Vorheriges/nächstes Objekt auswählen</string>
 	<key>Select several items</key>
 	<string>Mehrere Objekte auswählen</string>
+	<key>Select the Whole Video</key>
+	<string>Ganzes Video auswählen</string>
+	<key>Select the whole video</key>
+	<string>Ganzes Video auswählen</string>
 	<key>Select which display to record fullscreen</key>
 	<string>Wähle den Bildschirm für die Vollbildaufzeichnung</string>
 	<key>Select words and press ⌫ to cut them from the video — ⌫ again on crossed-out words puts them back. Click a word to jump there; ⌘F finds.</key>
@@ -2622,6 +2626,8 @@ Aktiviere sie unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherhei
 	<string>Leerlauf beschleunigen</string>
 	<key>Speed Up Idle works on Shotnix recordings — it watches the pointer</key>
 	<string>„Leerlauf beschleunigen“ funktioniert mit Shotnix-Aufnahmen – es beobachtet den Zeiger</string>
+	<key>Speed and sound here change only this clip. To change a longer part, ⇧-drag across it on the timeline.</key>
+	<string>Tempo und Ton hier gelten nur für diesen Clip. Um einen längeren Abschnitt zu ändern, markiere ihn mit ⇧-⁠Ziehen in der Zeitleiste.</string>
 	<key>Speed of this part</key>
 	<string>Tempo dieses Abschnitts</string>
 	<key>Split</key>
@@ -2896,6 +2902,8 @@ Aktiviere sie unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherhei
 	<string>Erneut transkribieren …</string>
 	<key>Transcribe Narration (Captions, Edit by Text)</key>
 	<string>Kommentar transkribieren (Untertitel, per Text bearbeiten)</string>
+	<key>Transcribe again, pick the language, or remove the transcript</key>
+	<string>Erneut transkribieren, Sprache wählen oder Transkript entfernen</string>
 	<key>Transcribe again?</key>
 	<string>Erneut transkribieren?</string>
 	<key>Transcribe the narration to search its words</key>
@@ -3400,8 +3408,8 @@ Du kannst Apples Kurzbefehle jederzeit unter „Systemeinstellungen“ → „Ta
 	<string>Zeiger</string>
 	<key>quieter</key>
 	<string>leiser</string>
-	<key>select a part to cut</key>
-	<string>Abschnitt zum Schneiden wählen</string>
+	<key>select a part: cut, speed, sound</key>
+	<string>Abschnitt wählen: schneiden, Tempo, Ton</string>
 	<key>select it</key>
 	<string>auswählen</string>
 	<key>split at the playhead</key>

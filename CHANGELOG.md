@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- **⌘A selects the whole video.** In the video editor, ⌘A (or Edit > Select All when you're not typing) selects the whole video as one part, so one click sets the speed or sound of every clip.
+
+### Changed
+- **The video editor says how to change more than one clip.** A selected clip's panel now says its speed and sound change only that clip, that ⇧-dragging across the timeline selects a longer part, and offers to select the whole video. The shortcut list and the tips under the video now say a selected part is for cutting and for its speed and sound, not just cutting.
+- **Remove all captions in one click.** A Remove all button sits next to the caption lines, and the menu below them (Transcribe Again, Language, Remove) is now called Transcript instead of an unlabeled "···" button. ⌘Z brings removed captions back.
+
 ## [0.28.0-beta] - 2026-10-30
 
 ### Added

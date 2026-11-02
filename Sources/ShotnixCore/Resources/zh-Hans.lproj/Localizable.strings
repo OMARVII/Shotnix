@@ -1510,10 +1510,6 @@
 	<string>镜像</string>
 	<key>Mist</key>
 	<string>薄雾</string>
-	<key>More</key>
-	<string>更多</string>
-	<key>More caption options</key>
-	<string>更多字幕选项</string>
 	<key>More recording options</key>
 	<string>更多录制选项</string>
 	<key>More tips</key>
@@ -2274,6 +2270,8 @@
 	<string>移除文字稿和字幕</string>
 	<key>Remove Ums</key>
 	<string>移除语气词</string>
+	<key>Remove all</key>
+	<string>全部移除</string>
 	<key>Remove all %lld</key>
 	<string>全部移除（%lld）</string>
 	<key>Remove all zooms</key>
@@ -2306,6 +2304,8 @@
 	<string>已移除 — 按 ⌘Z 撤销</string>
 	<key>Removes background noise and hum, and evens out your level — processed on this Mac</key>
 	<string>去除背景噪音和嗡嗡声，并平衡你的音量 — 在这台 Mac 上处理</string>
+	<key>Removes every line and the transcript — ⌘Z brings them back</key>
+	<string>移除所有字幕行和文字稿 — 按 ⌘Z 可恢复</string>
 	<key>Removes jitter, keeps it snappy.</key>
 	<string>去除抖动，保持灵敏。</string>
 	<key>Rendering for the clipboard… %lld%%</key>
@@ -2518,14 +2518,18 @@
 	<string>全选</string>
 	<key>Select a clip, or ⇧-drag across the timeline, to give just that part its own volume or mute it. A clip can also fade in and out.</key>
 	<string>选择一个片段，或按住 ⇧ 拖移时间线，即可单独设置这一部分的音量或将其静音。片段还可以设置淡入淡出。</string>
-	<key>Select a range to cut</key>
-	<string>选择要剪掉的范围</string>
+	<key>Select a part to cut, or to change its speed or sound</key>
+	<string>选择一部分来剪掉，或更改它的速度或声音</string>
 	<key>Select a window to record without blocking other apps</key>
 	<string>选择要录制的窗口，不影响其他 App 的使用</string>
 	<key>Select previous / next item</key>
 	<string>选择上一个/下一个项目</string>
 	<key>Select several items</key>
 	<string>选择多个项目</string>
+	<key>Select the Whole Video</key>
+	<string>选择整个视频</string>
+	<key>Select the whole video</key>
+	<string>选择整个视频</string>
 	<key>Select which display to record fullscreen</key>
 	<string>选择要全屏录制的显示器</string>
 	<key>Select words and press ⌫ to cut them from the video — ⌫ again on crossed-out words puts them back. Click a word to jump there; ⌘F finds.</key>
@@ -2746,6 +2750,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>加速空闲片段</string>
 	<key>Speed Up Idle works on Shotnix recordings — it watches the pointer</key>
 	<string>“加速空闲片段”适用于 Shotnix 录制内容 — 它会追踪指针</string>
+	<key>Speed and sound here change only this clip. To change a longer part, ⇧-drag across it on the timeline.</key>
+	<string>这里的速度和声音只会更改这个片段。要更改更长的部分，请在时间线上按住 ⇧ 拖移选中它。</string>
 	<key>Speed of this part</key>
 	<string>此部分的速度</string>
 	<key>Split</key>
@@ -3022,6 +3028,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>重新转录…</string>
 	<key>Transcribe Narration (Captions, Edit by Text)</key>
 	<string>转录解说（字幕、按文字编辑）</string>
+	<key>Transcribe again, pick the language, or remove the transcript</key>
+	<string>重新转录、选择语言或移除文字稿</string>
 	<key>Transcribe again?</key>
 	<string>要重新转录吗？</string>
 	<key>Transcribe the narration to search its words</key>
@@ -3536,8 +3544,8 @@ You can re-enable Apple's shortcuts anytime in System Settings → Keyboard → 
 	<string>指针</string>
 	<key>quieter</key>
 	<string>音量已调低</string>
-	<key>select a part to cut</key>
-	<string>选择要剪掉的部分</string>
+	<key>select a part: cut, speed, sound</key>
+	<string>选择一部分：剪掉、速度、声音</string>
 	<key>select it</key>
 	<string>选中它</string>
 	<key>split at the playhead</key>

@@ -48,6 +48,13 @@ final class VideoDemoEditorWindowController: NSWindowController, NSWindowDelegat
         model.redo()
     }
 
+    /// Edit ▸ Select All with no text being edited (⌘A itself is caught by
+    /// the editor's keys first): the whole video.
+    static func selectWholeVideoInActiveEditor() {
+        guard let model = keyModel, model.isReady, !model.hasOverlayOpen, !model.isCropping else { return }
+        model.selectWholeVideo()
+    }
+
     static func muteActiveClip() {
         guard let model = frontController()?.model, let id = model.selectedClipID,
               let clip = model.project.timelineClips.first(where: { $0.id == id }) else { return }

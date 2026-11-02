@@ -665,12 +665,6 @@
   "Mirror" : {
     "ja" : "左右反転"
   },
-  "More" : {
-    "ja" : "その他"
-  },
-  "More caption options" : {
-    "ja" : "その他の字幕オプション"
-  },
   "More tips" : {
     "ja" : "次のヒント"
   },
@@ -1217,6 +1211,9 @@
   "Remove Ums" : {
     "ja" : "フィラーを削除"
   },
+  "Remove all" : {
+    "ja" : "すべて削除"
+  },
   "Remove all %lld" : {
     "ja" : "%lld項目をすべて削除"
   },
@@ -1243,6 +1240,9 @@
   },
   "Removes background noise and hum, and evens out your level — processed on this Mac" : {
     "ja" : "背景ノイズやハムノイズを除去し、音量を均一にします。処理はこのMac上で行われます"
+  },
+  "Removes every line and the transcript — ⌘Z brings them back" : {
+    "ja" : "すべての行と文字起こしを削除します。⌘Zで元に戻せます"
   },
   "Removes jitter, keeps it snappy." : {
     "ja" : "ぶれを取り除き、きびきびとした動きを保ちます。"
@@ -1292,14 +1292,20 @@
   "Select a clip, or ⇧-drag across the timeline, to give just that part its own volume or mute it. A clip can also fade in and out." : {
     "ja" : "クリップを選択するか、タイムラインを⇧ドラッグすると、その部分だけの音量を設定したり消音したりできます。クリップにはフェードイン/フェードアウトも設定できます。"
   },
-  "Select a range to cut" : {
-    "ja" : "カットする範囲を選択"
+  "Select a part to cut, or to change its speed or sound" : {
+    "ja" : "部分を選択してカット、または速度やサウンドを変更"
   },
   "Select previous / next item" : {
     "ja" : "前/次の項目を選択"
   },
   "Select several items" : {
     "ja" : "複数の項目を選択"
+  },
+  "Select the Whole Video" : {
+    "ja" : "ビデオ全体を選択"
+  },
+  "Select the whole video" : {
+    "ja" : "ビデオ全体を選択"
   },
   "Select words and press ⌫ to cut them from the video — ⌫ again on crossed-out words puts them back. Click a word to jump there; ⌘F finds." : {
     "ja" : "単語を選択して⌫を押すと、ビデオからカットされます。取り消し線の付いた単語でもう一度⌫を押すと元に戻ります。単語をクリックするとその位置に移動し、⌘Fで検索できます。"
@@ -1430,6 +1436,9 @@
   "Speed Up Idle Moments" : {
     "ja" : "動きのない区間を早送り"
   },
+  "Speed and sound here change only this clip. To change a longer part, ⇧-drag across it on the timeline." : {
+    "ja" : "ここで変えた速度とサウンドは、このクリップだけに適用されます。もっと長い部分を変えるには、タイムラインでその部分を⇧ドラッグしてください。"
+  },
   "Speed of this part" : {
     "ja" : "この部分の速度"
   },
@@ -1534,6 +1543,9 @@
   },
   "Transcribe Narration (Captions, Edit by Text)" : {
     "ja" : "ナレーションを文字起こし（字幕、テキストで編集）"
+  },
+  "Transcribe again, pick the language, or remove the transcript" : {
+    "ja" : "もう一度文字起こしする、言語を選ぶ、または文字起こしを削除する"
   },
   "Transcribe…" : {
     "ja" : "文字起こし…"
@@ -2057,8 +2069,8 @@
   "quieter" : {
     "ja" : "小さめの音量"
   },
-  "select a part to cut" : {
-    "ja" : "カットする部分を選択"
+  "select a part: cut, speed, sound" : {
+    "ja" : "部分を選択：カット、速度、サウンド"
   },
   "select it" : {
     "ja" : "選択"

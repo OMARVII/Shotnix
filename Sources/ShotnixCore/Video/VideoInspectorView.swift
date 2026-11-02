@@ -970,16 +970,20 @@ struct VideoSelectionInspector: View {
                 Text(verbatim: "\(VideoEditorModel.timecode(range.start)) → \(VideoEditorModel.timecode(range.end))")
                     .font(.system(size: 12, weight: .semibold, design: .monospaced))
                     .foregroundStyle(VideoEditorTheme.textPrimary)
-                Button {
-                    model.deleteRange(range)
-                } label: {
-                    Label(L("Cut this part"), systemImage: "scissors")
-                        .frame(maxWidth: .infinity)
+                // The whole video (⌘A) is there for speed and sound: a video
+                // can't be cut down to nothing.
+                if !model.isWholeVideo(range) {
+                    Button {
+                        model.deleteRange(range)
+                    } label: {
+                        Label(L("Cut this part"), systemImage: "scissors")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(VideoPrimaryButtonStyle())
+                    Text(L("Removed parts can be restored from the yellow marker on the timeline."))
+                        .font(.system(size: 10.5))
+                        .foregroundStyle(VideoEditorTheme.textTertiary)
                 }
-                .buttonStyle(VideoPrimaryButtonStyle())
-                Text(L("Removed parts can be restored from the yellow marker on the timeline."))
-                    .font(.system(size: 10.5))
-                    .foregroundStyle(VideoEditorTheme.textTertiary)
             }
             // Or change just this part.
             VideoInspectorSection(L("Speed of this part")) {
@@ -1224,6 +1228,26 @@ struct VideoSelectionInspector: View {
             Text(L("\(VideoEditorModel.format(segment.clip.sourceDuration)) of recording plays in \(VideoEditorModel.format(segment.duration))."))
                 .font(.system(size: 10.5))
                 .foregroundStyle(VideoEditorTheme.textTertiary)
+        }
+
+        // These change one clip: say how to change more (nothing else on
+        // screen tells that a part of the timeline can be selected).
+        VStack(alignment: .leading, spacing: 5) {
+            Text(L("Speed and sound here change only this clip. To change a longer part, ⇧-drag across it on the timeline."))
+                .font(.system(size: 10.5))
+                .foregroundStyle(VideoEditorTheme.textTertiary)
+                .fixedSize(horizontal: false, vertical: true)
+            Button {
+                model.selectWholeVideo()
+            } label: {
+                HStack(spacing: 5) {
+                    Text(L("Select the whole video"))
+                    Text(verbatim: "⌘A")
+                        .foregroundStyle(VideoEditorTheme.textTertiary)
+                }
+                .font(.system(size: 10.5, weight: .semibold))
+            }
+            .buttonStyle(.link)
         }
 
         VideoInspectorSection(L("Sound")) {

@@ -286,15 +286,28 @@ struct VideoCaptionsInspector: View {
                 .disabled(model.captionJob != nil)
 
                 VideoInspectorSection(L("Lines · \(model.project.captions.count)"), trailing: {
-                    Button {
-                        model.addCaptionAtPlayhead()
-                    } label: {
-                        Image(systemName: "plus")
-                            .font(.system(size: 11, weight: .bold))
-                            .frame(width: 22, height: 20)
+                    HStack(spacing: 4) {
+                        // In sight, beside the lines it removes.
+                        Button {
+                            model.clearCaptions()
+                        } label: {
+                            Text(L("Remove all"))
+                                .font(.system(size: 11, weight: .semibold))
+                                .padding(.horizontal, 7)
+                                .frame(height: 20)
+                        }
+                        .buttonStyle(VideoToolButtonStyle(destructive: true))
+                        .help(L("Removes every line and the transcript — ⌘Z brings them back"))
+                        Button {
+                            model.addCaptionAtPlayhead()
+                        } label: {
+                            Image(systemName: "plus")
+                                .font(.system(size: 11, weight: .bold))
+                                .frame(width: 22, height: 20)
+                        }
+                        .buttonStyle(VideoToolButtonStyle())
+                        .help(L("Add a caption at the playhead"))
                     }
-                    .buttonStyle(VideoToolButtonStyle())
-                    .help(L("Add a caption at the playhead"))
                 }) {
                     VideoCaptionLinesList(model: model, clock: model.clock)
                 }
@@ -302,25 +315,10 @@ struct VideoCaptionsInspector: View {
                 // Translated caption tracks (VideoCaptionTranslation.swift).
                 VideoCaptionTranslationSection(model: model)
 
-                HStack(spacing: 8) {
-                    // .srt or .vtt (VideoCaptionStyles.swift).
-                    VideoSubtitlesButton(model: model)
-                    Menu {
-                        Button(model.hasTranscript ? L("Transcribe Again…") : L("Transcribe…")) { model.transcribeAgain() }
-                            .disabled(model.captionTask != nil)
-                        Menu(L("Language")) { languageItems }
-                            .disabled(model.captionTask != nil)
-                        Divider()
-                        Button(L("Remove Transcript & Captions"), role: .destructive) { model.clearCaptions() }
-                    } label: {
-                        Image(systemName: "ellipsis")
-                            .frame(width: 30, height: 26)
-                    }
-                    .menuStyle(.borderlessButton)
-                    .menuIndicator(.hidden)
-                    .fixedSize()
-                    .help(L("More"))
-                    .accessibilityLabel(L("More caption options"))
+                // Side by side, or one above the other where the names run long.
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 8) { subtitlesAndTranscript }
+                    VStack(spacing: 8) { subtitlesAndTranscript }
                 }
             }
         }
@@ -335,6 +333,32 @@ struct VideoCaptionsInspector: View {
                 .frame(width: VideoEditorTheme.rowTitleWidth([L("Size"), L("Position")]), alignment: .leading)
             content()
         }
+    }
+
+    /// The subtitles file, and the transcript's own menu — named, so its
+    /// Transcribe Again, Language and Remove are found.
+    @ViewBuilder
+    private var subtitlesAndTranscript: some View {
+        // .srt or .vtt (VideoCaptionStyles.swift).
+        VideoSubtitlesButton(model: model)
+        Menu {
+            Button(model.hasTranscript ? L("Transcribe Again…") : L("Transcribe…")) { model.transcribeAgain() }
+                .disabled(model.captionTask != nil)
+            Menu(L("Language")) { languageItems }
+                .disabled(model.captionTask != nil)
+            Divider()
+            Button(L("Remove Transcript & Captions"), role: .destructive) { model.clearCaptions() }
+        } label: {
+            Label(L("Transcript"), systemImage: "text.quote")
+                .font(.system(size: 12, weight: .semibold))
+                .frame(maxWidth: .infinity)
+        }
+        .menuStyle(.borderlessButton)
+        .padding(.horizontal, 12)
+        .frame(minHeight: 28)
+        .background(RoundedRectangle(cornerRadius: 7, style: .continuous).fill(Color.white.opacity(0.06)))
+        .overlay(RoundedRectangle(cornerRadius: 7, style: .continuous).strokeBorder(VideoEditorTheme.cardStroke, lineWidth: 1))
+        .help(L("Transcribe again, pick the language, or remove the transcript"))
     }
 
     @ViewBuilder

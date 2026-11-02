@@ -720,12 +720,6 @@
   "Mirror" : {
     "uk" : "Віддзеркалити"
   },
-  "More" : {
-    "uk" : "Більше"
-  },
-  "More caption options" : {
-    "uk" : "Інші параметри субтитрів"
-  },
   "More tips" : {
     "uk" : "Інші поради"
   },
@@ -1292,6 +1286,9 @@
   "Remove Ums" : {
     "uk" : "Вилучити слова-паразити"
   },
+  "Remove all" : {
+    "uk" : "Вилучити всі"
+  },
   "Remove all %lld" : {
     "uk" : "Вилучити всі (%lld)"
   },
@@ -1328,6 +1325,9 @@
   },
   "Removes background noise and hum, and evens out your level — processed on this Mac" : {
     "uk" : "Прибирає фоновий шум і гудіння та вирівнює рівень — обробка на цьому Mac"
+  },
+  "Removes every line and the transcript — ⌘Z brings them back" : {
+    "uk" : "Вилучає всі рядки й розшифровку — ⌘Z поверне їх"
   },
   "Removes jitter, keeps it snappy." : {
     "uk" : "Прибирає тремтіння, зберігаючи жвавість."
@@ -1377,14 +1377,20 @@
   "Select a clip, or ⇧-drag across the timeline, to give just that part its own volume or mute it. A clip can also fade in and out." : {
     "uk" : "Виберіть кліп або виділіть проміжок на шкалі часу, перетягнувши з ⇧, щоб задати лише йому власну гучність або вимкнути його звук. Для кліпу можна також додати плавну появу й зникнення."
   },
-  "Select a range to cut" : {
-    "uk" : "Вибрати проміжок для вирізання"
+  "Select a part to cut, or to change its speed or sound" : {
+    "uk" : "Виділити проміжок, щоб вирізати його або змінити швидкість і звук"
   },
   "Select previous / next item" : {
     "uk" : "Вибрати попередній/наступний елемент"
   },
   "Select several items" : {
     "uk" : "Вибрати кілька елементів"
+  },
+  "Select the Whole Video" : {
+    "uk" : "Виділити все відео"
+  },
+  "Select the whole video" : {
+    "uk" : "Виділити все відео"
   },
   "Select words and press ⌫ to cut them from the video — ⌫ again on crossed-out words puts them back. Click a word to jump there; ⌘F finds." : {
     "uk" : "Виберіть слова й натисніть ⌫, щоб вирізати їх з відео, — повторне ⌫ на закреслених словах повертає їх. Клацніть слово, щоб перейти до нього; ⌘F — пошук."
@@ -1520,6 +1526,9 @@
   "Speed Up Idle Moments" : {
     "uk" : "Прискорити моменти простою"
   },
+  "Speed and sound here change only this clip. To change a longer part, ⇧-drag across it on the timeline." : {
+    "uk" : "Швидкість і звук тут змінюються лише для цього кліпу. Щоб змінити довший проміжок, виділіть його на шкалі часу, перетягнувши з ⇧."
+  },
   "Speed of this part" : {
     "uk" : "Швидкість цієї частини"
   },
@@ -1624,6 +1633,9 @@
   },
   "Transcribe Narration (Captions, Edit by Text)" : {
     "uk" : "Розшифрувати мовлення (субтитри, монтаж за текстом)"
+  },
+  "Transcribe again, pick the language, or remove the transcript" : {
+    "uk" : "Розшифрувати знову, вибрати мову або вилучити розшифровку"
   },
   "Transcribe…" : {
     "uk" : "Розшифрувати…"
@@ -2157,8 +2169,8 @@
   "quieter" : {
     "uk" : "звук тихіше"
   },
-  "select a part to cut" : {
-    "uk" : "вибрати частину для вирізання"
+  "select a part: cut, speed, sound" : {
+    "uk" : "виділити проміжок: вирізати, швидкість, звук"
   },
   "select it" : {
     "uk" : "вибрати"

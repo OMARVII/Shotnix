@@ -166,4 +166,93 @@ final class VideoEditorDiscoverabilityTests: XCTestCase {
         XCTAssertFalse(quiet.suggestsTranscript)
         VideoDemoDraftStore.delete(for: directory.appendingPathComponent("quiet.mp4"))
     }
+
+    // MARK: Parts of the timeline
+
+    func testCommandASelectsTheWholeVideoSoSpeedAndSoundCoverEveryClip() async throws {
+        var options = T.Options(seconds: 6)
+        options.audio = true
+        let model = try await T.make(in: directory, options)
+        model.seek(to: 2)
+        model.splitAtPlayhead()
+        model.seek(to: 4)
+        model.splitAtPlayhead()
+        XCTAssertEqual(model.segments.count, 3)
+
+        XCTAssertTrue(model.handleKey(T.key("a", code: 0, modifiers: [.command])))
+        guard case .range(let range) = model.selection else { return XCTFail("⌘A selects a part: \(model.selection)") }
+        XCTAssertEqual(range.start, 0, accuracy: 0.001)
+        XCTAssertEqual(range.end, model.timelineDuration, accuracy: 0.001)
+        XCTAssertTrue(model.isWholeVideo(range))
+        XCTAssertEqual(model.project.timelineClips.count, 3, "selecting cuts nothing")
+
+        // "Same speed everywhere" is two keystrokes and a click.
+        model.setRangeSpeed(range, 2)
+        XCTAssertEqual(Set(model.project.timelineClips.map(\.speed)), [2], "every clip")
+        XCTAssertEqual(model.timelineDuration, 3, accuracy: 0.05)
+        guard case .range(let faster) = model.selection else { return XCTFail("still selected") }
+        XCTAssertTrue(model.isWholeVideo(faster), "the selection follows the shorter video")
+        model.setRangeVolume(faster, \.volume, 0.25)
+        XCTAssertEqual(Set(model.project.timelineClips.map(\.volume)), [0.25])
+        XCTAssertEqual(model.project.timelineClips.count, 3, "no clip split at the edges")
+
+        // A video can't be cut down to nothing.
+        model.deleteSelection()
+        XCTAssertEqual(model.project.timelineClips.count, 3)
+        // Part of it can.
+        let part = VideoDemoTimelineRange(start: 0.5, end: 1)
+        XCTAssertFalse(model.isWholeVideo(part))
+
+        // Not behind the export sheet (Select All there is the sheet's).
+        model.selection = .none
+        model.isExportPresented = true
+        XCTAssertFalse(model.handleKey(T.key("a", code: 0, modifiers: [.command])))
+        XCTAssertEqual(model.selection, .none)
+        model.isExportPresented = false
+
+        // Listed with the shortcuts, in the command palette and the tips.
+        XCTAssertTrue(VideoShortcutsSheet.groups.flatMap(\.1).contains { $0.0 == "⌘A" && $0.1 == "Select the whole video" })
+        XCTAssertTrue(VideoShortcutsSheet.groups.flatMap(\.1).contains { $0.1 == "Select a part to cut, or to change its speed or sound" })
+        XCTAssertTrue(VideoCommandPalette(model: model).commands.contains { $0.id == "select-all" && $0.shortcut == "⌘A" })
+        XCTAssertTrue(VideoTipsBar.pages.joined().contains { $0.1 == "select a part: cut, speed, sound" })
+    }
+
+    /// The clip panel says it changes one clip and how to change more; the
+    /// caption lines have Remove all in sight. Rendered in English and
+    /// French (it runs longer).
+    func testPartsAndCaptionsRenderInEnglishAndFrench() async throws {
+        var options = T.Options(seconds: 12, size: CGSize(width: 1440, height: 900))
+        options.audio = true
+        options.audioTracks = [.microphone]
+        let model = try await T.make(in: directory, options)
+        let words: [(String, Double)] = [("So", 0.6), ("open", 1.2), ("the", 1.45), ("settings", 1.6), ("panel.", 2.0), ("Then", 4.2), ("pick", 4.45), ("a", 4.65), ("theme", 4.75), ("and", 5.2), ("save", 5.9), ("it.", 6.15)]
+        model.mutate { $0.captions = VideoCaptionBuilder.lines(from: words.map { VideoCaptionWord(text: $0.0, start: $0.1, end: $0.1 + 0.22) }) }
+        model.seek(to: 4)
+        model.splitAtPlayhead()
+        model.endGesture()
+        let clip = try XCTUnwrap(model.segments.last?.id)
+        let mode = UserDefaults.standard.string(forKey: "videoScriptMode")
+        VideoStageView.drawsStills = true
+        defer {
+            VideoStageView.drawsStills = false
+            L10n.use(nil)
+            UserDefaults.standard.set(mode, forKey: "videoScriptMode")
+        }
+        let full = CGSize(width: 1512, height: 944)
+        for language in ["en", "fr"] {
+            L10n.use(language == "en" ? nil : language)
+            // The captions tab leaves the clip panel the least room.
+            UserDefaults.standard.set("transcript", forKey: "videoScriptMode")
+            model.inspectorTab = .captions
+            model.selectClip(clip)
+            try await VideoEditorFixesSnapshotTests.render(VideoEditorRootView(model: model), size: full, name: "parts-clip-panel-\(language)")
+            model.selection = .none
+            UserDefaults.standard.set("captions", forKey: "videoScriptMode")
+            try await VideoEditorFixesSnapshotTests.render(VideoEditorRootView(model: model), size: full, name: "parts-caption-lines-\(language)")
+            model.isShortcutsPresented = true
+            try await VideoEditorFixesSnapshotTests.render(VideoEditorRootView(model: model), size: full, name: "parts-shortcuts-\(language)")
+            model.isShortcutsPresented = false
+        }
+        model.stop()
+    }
 }

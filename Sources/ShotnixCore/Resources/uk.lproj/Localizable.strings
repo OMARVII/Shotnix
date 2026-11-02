@@ -1416,10 +1416,6 @@
 	<string>Віддзеркалити</string>
 	<key>Mist</key>
 	<string>Імла</string>
-	<key>More</key>
-	<string>Більше</string>
-	<key>More caption options</key>
-	<string>Інші параметри субтитрів</string>
 	<key>More recording options</key>
 	<string>Інші параметри запису</string>
 	<key>More tips</key>
@@ -2170,6 +2166,8 @@
 	<string>Вилучити розшифровку й субтитри</string>
 	<key>Remove Ums</key>
 	<string>Вилучити слова-паразити</string>
+	<key>Remove all</key>
+	<string>Вилучити всі</string>
 	<key>Remove all %lld</key>
 	<string>Вилучити всі (%lld)</string>
 	<key>Remove all zooms</key>
@@ -2194,6 +2192,8 @@
 	<string>Вилучено — ⌘Z, щоб відмінити</string>
 	<key>Removes background noise and hum, and evens out your level — processed on this Mac</key>
 	<string>Прибирає фоновий шум і гудіння та вирівнює рівень — обробка на цьому Mac</string>
+	<key>Removes every line and the transcript — ⌘Z brings them back</key>
+	<string>Вилучає всі рядки й розшифровку — ⌘Z поверне їх</string>
 	<key>Removes jitter, keeps it snappy.</key>
 	<string>Прибирає тремтіння, зберігаючи жвавість.</string>
 	<key>Rendering for the clipboard… %lld%%</key>
@@ -2398,14 +2398,18 @@
 	<string>Вибрати все</string>
 	<key>Select a clip, or ⇧-drag across the timeline, to give just that part its own volume or mute it. A clip can also fade in and out.</key>
 	<string>Виберіть кліп або виділіть проміжок на шкалі часу, перетягнувши з ⇧, щоб задати лише йому власну гучність або вимкнути його звук. Для кліпу можна також додати плавну появу й зникнення.</string>
-	<key>Select a range to cut</key>
-	<string>Вибрати проміжок для вирізання</string>
+	<key>Select a part to cut, or to change its speed or sound</key>
+	<string>Виділити проміжок, щоб вирізати його або змінити швидкість і звук</string>
 	<key>Select a window to record without blocking other apps</key>
 	<string>Виберіть вікно для запису, не блокуючи інших програм</string>
 	<key>Select previous / next item</key>
 	<string>Вибрати попередній/наступний елемент</string>
 	<key>Select several items</key>
 	<string>Вибрати кілька елементів</string>
+	<key>Select the Whole Video</key>
+	<string>Виділити все відео</string>
+	<key>Select the whole video</key>
+	<string>Виділити все відео</string>
 	<key>Select which display to record fullscreen</key>
 	<string>Виберіть дисплей для запису на весь екран</string>
 	<key>Select words and press ⌫ to cut them from the video — ⌫ again on crossed-out words puts them back. Click a word to jump there; ⌘F finds.</key>
@@ -2618,6 +2622,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>Прискорити моменти простою</string>
 	<key>Speed Up Idle works on Shotnix recordings — it watches the pointer</key>
 	<string>«Прискорити простої» працює із записами Shotnix — функція стежить за курсором</string>
+	<key>Speed and sound here change only this clip. To change a longer part, ⇧-drag across it on the timeline.</key>
+	<string>Швидкість і звук тут змінюються лише для цього кліпу. Щоб змінити довший проміжок, виділіть його на шкалі часу, перетягнувши з ⇧.</string>
 	<key>Speed of this part</key>
 	<string>Швидкість цієї частини</string>
 	<key>Split</key>
@@ -2892,6 +2898,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>Розшифрувати знову…</string>
 	<key>Transcribe Narration (Captions, Edit by Text)</key>
 	<string>Розшифрувати мовлення (субтитри, монтаж за текстом)</string>
+	<key>Transcribe again, pick the language, or remove the transcript</key>
+	<string>Розшифрувати знову, вибрати мову або вилучити розшифровку</string>
 	<key>Transcribe again?</key>
 	<string>Розшифрувати знову?</string>
 	<key>Transcribe the narration to search its words</key>
@@ -3396,8 +3404,8 @@ You can re-enable Apple's shortcuts anytime in System Settings → Keyboard → 
 	<string>курсор</string>
 	<key>quieter</key>
 	<string>звук тихіше</string>
-	<key>select a part to cut</key>
-	<string>вибрати частину для вирізання</string>
+	<key>select a part: cut, speed, sound</key>
+	<string>виділити проміжок: вирізати, швидкість, звук</string>
 	<key>select it</key>
 	<string>вибрати</string>
 	<key>split at the playhead</key>

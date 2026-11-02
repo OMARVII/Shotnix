@@ -1056,6 +1056,20 @@ final class VideoEditorModel: ObservableObject {
 
     // MARK: Range actions
 
+    /// ⌘A: the whole video as one part, so a speed or sound change covers
+    /// every clip at once.
+    func selectWholeVideo() {
+        guard timelineDuration > 0.1 else { return }
+        selection = .range(VideoDemoTimelineRange(start: 0, end: timelineDuration))
+    }
+
+    /// The range covers every clip.
+    func isWholeVideo(_ range: VideoDemoTimelineRange) -> Bool {
+        let normalized = range.normalized
+        guard let first = segments.first, let last = segments.last else { return false }
+        return normalized.start <= first.timelineStart + 0.01 && normalized.end >= last.timelineEnd - 0.01
+    }
+
     /// The recording spans a timeline range covers (one per clip it crosses).
     func sourcePieces(of range: VideoDemoTimelineRange) -> [ClosedRange<Double>] {
         let normalized = range.normalized

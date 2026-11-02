@@ -1254,16 +1254,6 @@
     "fr": "Miroir",
     "zh-Hans": "镜像"
   },
-  "More": {
-    "de": "Mehr",
-    "fr": "Plus",
-    "zh-Hans": "更多"
-  },
-  "More caption options": {
-    "de": "Weitere Untertiteloptionen",
-    "fr": "Autres options de sous-titres",
-    "zh-Hans": "更多字幕选项"
-  },
   "More tips": {
     "de": "Weitere Tipps",
     "fr": "Plus d’astuces",
@@ -2223,6 +2213,12 @@
     "fr": "Supprimer les mots de remplissage",
     "zh-Hans": "移除语气词"
   },
+  "Remove all": {
+    "comment": "Button beside the caption lines: removes every line (and the transcript)",
+    "de": "Alle entfernen",
+    "fr": "Tout supprimer",
+    "zh-Hans": "全部移除"
+  },
   "Remove all %lld": {
     "de": "Alle entfernen (%lld)",
     "fr": "Tout supprimer (%lld)",
@@ -2288,6 +2284,12 @@
     "de": "Entfernt Hintergrundgeräusche und Brummen und gleicht deinen Pegel aus – direkt auf diesem Mac",
     "fr": "Supprime le bruit de fond et le ronflement, et égalise votre niveau — traité sur ce Mac",
     "zh-Hans": "去除背景噪音和嗡嗡声，并平衡你的音量 — 在这台 Mac 上处理"
+  },
+  "Removes every line and the transcript — ⌘Z brings them back": {
+    "comment": "Tooltip of Remove all beside the caption lines",
+    "de": "Entfernt alle Zeilen und das Transkript – ⌘Z holt sie zurück",
+    "fr": "Supprime toutes les lignes et la transcription — ⌘Z les rétablit",
+    "zh-Hans": "移除所有字幕行和文字稿 — 按 ⌘Z 可恢复"
   },
   "Removes jitter, keeps it snappy.": {
     "de": "Entfernt Zittern, bleibt aber flott.",
@@ -2373,10 +2375,11 @@
     "fr": "Sélectionnez un clip, ou faites ⇧-glisser dans la timeline, pour régler le volume de ce passage seul ou couper son son. Un clip peut aussi recevoir un fondu.",
     "zh-Hans": "选择一个片段，或按住 ⇧ 拖移时间线，即可单独设置这一部分的音量或将其静音。片段还可以设置淡入淡出。"
   },
-  "Select a range to cut": {
-    "de": "Bereich zum Schneiden auswählen",
-    "fr": "Sélectionner un passage à couper",
-    "zh-Hans": "选择要剪掉的范围"
+  "Select a part to cut, or to change its speed or sound": {
+    "comment": "Shortcut list: what ⇧-drag on the timeline does",
+    "de": "Abschnitt wählen, um ihn zu schneiden oder Tempo und Ton zu ändern",
+    "fr": "Sélectionner un passage pour le couper ou en régler la vitesse et le son",
+    "zh-Hans": "选择一部分来剪掉，或更改它的速度或声音"
   },
   "Select previous / next item": {
     "de": "Vorheriges/nächstes Objekt auswählen",
@@ -2387,6 +2390,18 @@
     "de": "Mehrere Objekte auswählen",
     "fr": "Sélectionner plusieurs éléments",
     "zh-Hans": "选择多个项目"
+  },
+  "Select the Whole Video": {
+    "comment": "Command palette item (⌘A)",
+    "de": "Ganzes Video auswählen",
+    "fr": "Sélectionner toute la vidéo",
+    "zh-Hans": "选择整个视频"
+  },
+  "Select the whole video": {
+    "comment": "Link under a selected clip's speed, and the ⌘A line in the shortcut list",
+    "de": "Ganzes Video auswählen",
+    "fr": "Sélectionner toute la vidéo",
+    "zh-Hans": "选择整个视频"
   },
   "Select words and press ⌫ to cut them from the video — ⌫ again on crossed-out words puts them back. Click a word to jump there; ⌘F finds.": {
     "de": "Wähle Wörter aus und drücke ⌫, um sie aus dem Video zu schneiden – ⌫ auf durchgestrichenen Wörtern holt sie zurück. Klicke auf ein Wort, um dorthin zu springen; ⌘F sucht.",
@@ -2618,6 +2633,12 @@
     "fr": "Accélérer les temps morts",
     "zh-Hans": "加速空闲片段"
   },
+  "Speed and sound here change only this clip. To change a longer part, ⇧-drag across it on the timeline.": {
+    "comment": "Under a selected clip's speed: how to change more than one clip (a word joiner after “⇧-” keeps the gesture on one line)",
+    "de": "Tempo und Ton hier gelten nur für diesen Clip. Um einen längeren Abschnitt zu ändern, markiere ihn mit ⇧-⁠Ziehen in der Zeitleiste.",
+    "fr": "La vitesse et le son réglés ici ne concernent que ce clip. Pour modifier un passage plus long, faites ⇧-⁠glisser dessus dans la timeline.",
+    "zh-Hans": "这里的速度和声音只会更改这个片段。要更改更长的部分，请在时间线上按住 ⇧ 拖移选中它。"
+  },
   "Speed of this part": {
     "de": "Tempo dieses Abschnitts",
     "fr": "Vitesse de ce passage",
@@ -2795,6 +2816,12 @@
     "de": "Kommentar transkribieren (Untertitel, per Text bearbeiten)",
     "fr": "Transcrire la narration (sous-titres, montage par le texte)",
     "zh-Hans": "转录解说（字幕、按文字编辑）"
+  },
+  "Transcribe again, pick the language, or remove the transcript": {
+    "comment": "Tooltip of the Transcript menu under the caption lines",
+    "de": "Erneut transkribieren, Sprache wählen oder Transkript entfernen",
+    "fr": "Transcrire à nouveau, choisir la langue ou supprimer la transcription",
+    "zh-Hans": "重新转录、选择语言或移除文字稿"
   },
   "Transcribe…": {
     "de": "Transkribieren …",
@@ -3698,10 +3725,11 @@
     "fr": "son baissé",
     "zh-Hans": "音量已调低"
   },
-  "select a part to cut": {
-    "de": "Abschnitt zum Schneiden wählen",
-    "fr": "choisir un passage à couper",
-    "zh-Hans": "选择要剪掉的部分"
+  "select a part: cut, speed, sound": {
+    "comment": "Tip under the preview, after “⇧-drag the timeline”",
+    "de": "Abschnitt wählen: schneiden, Tempo, Ton",
+    "fr": "choisir un passage : couper, vitesse, son",
+    "zh-Hans": "选择一部分：剪掉、速度、声音"
   },
   "select it": {
     "de": "auswählen",

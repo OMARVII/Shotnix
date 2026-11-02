@@ -34516,86 +34516,6 @@
         }
       }
     },
-    "More" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mehr"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Plus"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "その他"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Еще"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Більше"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "更多"
-          }
-        }
-      }
-    },
-    "More caption options" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Weitere Untertiteloptionen"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Autres options de sous-titres"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "その他の字幕オプション"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Другие параметры субтитров"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Інші параметри субтитрів"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "更多字幕选项"
-          }
-        }
-      }
-    },
     "More recording options" : {
       "localizations" : {
         "de" : {
@@ -50270,6 +50190,47 @@
         }
       }
     },
+    "Remove all" : {
+      "comment" : "Button beside the caption lines: removes every line (and the transcript)",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle entfernen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tout supprimer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべて削除"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить все"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вилучити всі"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全部移除"
+          }
+        }
+      }
+    },
     "Remove all %lld" : {
       "localizations" : {
         "de" : {
@@ -51267,6 +51228,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "去除背景噪音和嗡嗡声，并平衡你的音量 — 在这台 Mac 上处理"
+          }
+        }
+      }
+    },
+    "Removes every line and the transcript — ⌘Z brings them back" : {
+      "comment" : "Tooltip of Remove all beside the caption lines",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entfernt alle Zeilen und das Transkript – ⌘Z holt sie zurück"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprime toutes les lignes et la transcription — ⌘Z les rétablit"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべての行と文字起こしを削除します。⌘Zで元に戻せます"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удаляет все строки и расшифровку — ⌘Z вернет их"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вилучає всі рядки й розшифровку — ⌘Z поверне їх"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除所有字幕行和文字稿 — 按 ⌘Z 可恢复"
           }
         }
       }
@@ -55893,42 +55895,43 @@
         }
       }
     },
-    "Select a range to cut" : {
+    "Select a part to cut, or to change its speed or sound" : {
+      "comment" : "Shortcut list: what ⇧-drag on the timeline does",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bereich zum Schneiden auswählen"
+            "value" : "Abschnitt wählen, um ihn zu schneiden oder Tempo und Ton zu ändern"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sélectionner un passage à couper"
+            "value" : "Sélectionner un passage pour le couper ou en régler la vitesse et le son"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "カットする範囲を選択"
+            "value" : "部分を選択してカット、または速度やサウンドを変更"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Выделить фрагмент для вырезания"
+            "value" : "Выделить фрагмент, чтобы вырезать его или изменить скорость и звук"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Вибрати проміжок для вирізання"
+            "value" : "Виділити проміжок, щоб вирізати його або змінити швидкість і звук"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "选择要剪掉的范围"
+            "value" : "选择一部分来剪掉，或更改它的速度或声音"
           }
         }
       }
@@ -56049,6 +56052,88 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "选择多个项目"
+          }
+        }
+      }
+    },
+    "Select the Whole Video" : {
+      "comment" : "Command palette item (⌘A)",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ganzes Video auswählen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sélectionner toute la vidéo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ビデオ全体を選択"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выделить все видео"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Виділити все відео"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择整个视频"
+          }
+        }
+      }
+    },
+    "Select the whole video" : {
+      "comment" : "Link under a selected clip's speed, and the ⌘A line in the shortcut list",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ganzes Video auswählen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sélectionner toute la vidéo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ビデオ全体を選択"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выделить все видео"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Виділити все відео"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择整个视频"
           }
         }
       }
@@ -60708,6 +60793,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“加速空闲片段”适用于 Shotnix 录制内容 — 它会追踪指针"
+          }
+        }
+      }
+    },
+    "Speed and sound here change only this clip. To change a longer part, ⇧-drag across it on the timeline." : {
+      "comment" : "Under a selected clip's speed: how to change more than one clip (a word joiner after “⇧-” keeps the gesture on one line)",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tempo und Ton hier gelten nur für diesen Clip. Um einen längeren Abschnitt zu ändern, markiere ihn mit ⇧-⁠Ziehen in der Zeitleiste."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La vitesse et le son réglés ici ne concernent que ce clip. Pour modifier un passage plus long, faites ⇧-⁠glisser dessus dans la timeline."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ここで変えた速度とサウンドは、このクリップだけに適用されます。もっと長い部分を変えるには、タイムラインでその部分を⇧ドラッグしてください。"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скорость и звук здесь меняются только у этого клипа. Чтобы изменить фрагмент длиннее, выделите его на шкале времени, перетянув с ⇧."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Швидкість і звук тут змінюються лише для цього кліпу. Щоб змінити довший проміжок, виділіть його на шкалі часу, перетягнувши з ⇧."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这里的速度和声音只会更改这个片段。要更改更长的部分，请在时间线上按住 ⇧ 拖移选中它。"
           }
         }
       }
@@ -66338,6 +66464,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "转录解说（字幕、按文字编辑）"
+          }
+        }
+      }
+    },
+    "Transcribe again, pick the language, or remove the transcript" : {
+      "comment" : "Tooltip of the Transcript menu under the caption lines",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erneut transkribieren, Sprache wählen oder Transkript entfernen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transcrire à nouveau, choisir la langue ou supprimer la transcription"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "もう一度文字起こしする、言語を選ぶ、または文字起こしを削除する"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Расшифровать заново, выбрать язык или удалить расшифровку"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Розшифрувати знову, вибрати мову або вилучити розшифровку"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新转录、选择语言或移除文字稿"
           }
         }
       }
@@ -76939,42 +77106,43 @@
         }
       }
     },
-    "select a part to cut" : {
+    "select a part: cut, speed, sound" : {
+      "comment" : "Tip under the preview, after “⇧-drag the timeline”",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abschnitt zum Schneiden wählen"
+            "value" : "Abschnitt wählen: schneiden, Tempo, Ton"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "choisir un passage à couper"
+            "value" : "choisir un passage : couper, vitesse, son"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "カットする部分を選択"
+            "value" : "部分を選択：カット、速度、サウンド"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "выделить фрагмент для вырезания"
+            "value" : "выделить фрагмент: вырезать, скорость, звук"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "вибрати частину для вирізання"
+            "value" : "виділити проміжок: вирізати, швидкість, звук"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "选择要剪掉的部分"
+            "value" : "选择一部分：剪掉、速度、声音"
           }
         }
       }

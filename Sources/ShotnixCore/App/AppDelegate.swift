@@ -628,7 +628,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func editCut(_ sender: Any?)       { dispatchEditAction(#selector(NSText.cut(_:)), characters: "x", keyCode: 7) }
     @objc func editCopy(_ sender: Any?)      { dispatchEditAction(#selector(NSText.copy(_:)), characters: "c", keyCode: 8) }
     @objc func editPaste(_ sender: Any?)     { dispatchEditAction(#selector(NSText.paste(_:)), characters: "v", keyCode: 9) }
-    @objc func editSelectAll(_ sender: Any?) { dispatchEditAction(#selector(NSText.selectAll(_:)), characters: "a", keyCode: 0) }
+    @objc func editSelectAll(_ sender: Any?) {
+        // The video editor selects the whole video, unless text is being edited.
+        if let window = NSApp.keyWindow, window.delegate is VideoDemoEditorWindowController, !(window.firstResponder is NSText) {
+            VideoDemoEditorWindowController.selectWholeVideoInActiveEditor()
+            return
+        }
+        dispatchEditAction(#selector(NSText.selectAll(_:)), characters: "a", keyCode: 0)
+    }
 
     /// Sends a standard editing action through the responder chain (text views,
     /// field editors). If nothing claims it, replays the shortcut as a plain

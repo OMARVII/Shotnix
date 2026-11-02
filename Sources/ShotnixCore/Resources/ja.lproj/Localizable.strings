@@ -1510,10 +1510,6 @@
 	<string>左右反転</string>
 	<key>Mist</key>
 	<string>ミスト</string>
-	<key>More</key>
-	<string>その他</string>
-	<key>More caption options</key>
-	<string>その他の字幕オプション</string>
 	<key>More recording options</key>
 	<string>その他の収録オプション</string>
 	<key>More tips</key>
@@ -2274,6 +2270,8 @@
 	<string>文字起こしと字幕を削除</string>
 	<key>Remove Ums</key>
 	<string>フィラーを削除</string>
+	<key>Remove all</key>
+	<string>すべて削除</string>
 	<key>Remove all %lld</key>
 	<string>%lld項目をすべて削除</string>
 	<key>Remove all zooms</key>
@@ -2306,6 +2304,8 @@
 	<string>削除しました。⌘Zで取り消せます</string>
 	<key>Removes background noise and hum, and evens out your level — processed on this Mac</key>
 	<string>背景ノイズやハムノイズを除去し、音量を均一にします。処理はこのMac上で行われます</string>
+	<key>Removes every line and the transcript — ⌘Z brings them back</key>
+	<string>すべての行と文字起こしを削除します。⌘Zで元に戻せます</string>
 	<key>Removes jitter, keeps it snappy.</key>
 	<string>ぶれを取り除き、きびきびとした動きを保ちます。</string>
 	<key>Rendering for the clipboard… %lld%%</key>
@@ -2518,14 +2518,18 @@
 	<string>すべてを選択</string>
 	<key>Select a clip, or ⇧-drag across the timeline, to give just that part its own volume or mute it. A clip can also fade in and out.</key>
 	<string>クリップを選択するか、タイムラインを⇧ドラッグすると、その部分だけの音量を設定したり消音したりできます。クリップにはフェードイン/フェードアウトも設定できます。</string>
-	<key>Select a range to cut</key>
-	<string>カットする範囲を選択</string>
+	<key>Select a part to cut, or to change its speed or sound</key>
+	<string>部分を選択してカット、または速度やサウンドを変更</string>
 	<key>Select a window to record without blocking other apps</key>
 	<string>収録するウインドウを選択します。ほかのアプリはそのまま使えます。</string>
 	<key>Select previous / next item</key>
 	<string>前/次の項目を選択</string>
 	<key>Select several items</key>
 	<string>複数の項目を選択</string>
+	<key>Select the Whole Video</key>
+	<string>ビデオ全体を選択</string>
+	<key>Select the whole video</key>
+	<string>ビデオ全体を選択</string>
 	<key>Select which display to record fullscreen</key>
 	<string>画面全体を収録するディスプレイを選択します</string>
 	<key>Select words and press ⌫ to cut them from the video — ⌫ again on crossed-out words puts them back. Click a word to jump there; ⌘F finds.</key>
@@ -2746,6 +2750,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>動きのない区間を早送り</string>
 	<key>Speed Up Idle works on Shotnix recordings — it watches the pointer</key>
 	<string>“動きのない区間を早送り”はShotnixで収録したビデオで使えます。ポインタの動きをもとに判断します</string>
+	<key>Speed and sound here change only this clip. To change a longer part, ⇧-drag across it on the timeline.</key>
+	<string>ここで変えた速度とサウンドは、このクリップだけに適用されます。もっと長い部分を変えるには、タイムラインでその部分を⇧ドラッグしてください。</string>
 	<key>Speed of this part</key>
 	<string>この部分の速度</string>
 	<key>Split</key>
@@ -3022,6 +3028,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>もう一度文字起こし…</string>
 	<key>Transcribe Narration (Captions, Edit by Text)</key>
 	<string>ナレーションを文字起こし（字幕、テキストで編集）</string>
+	<key>Transcribe again, pick the language, or remove the transcript</key>
+	<string>もう一度文字起こしする、言語を選ぶ、または文字起こしを削除する</string>
 	<key>Transcribe again?</key>
 	<string>もう一度文字起こししますか?</string>
 	<key>Transcribe the narration to search its words</key>
@@ -3536,8 +3544,8 @@ Appleのショートカットは、“システム設定”＞“キーボード
 	<string>ポインタ</string>
 	<key>quieter</key>
 	<string>小さめの音量</string>
-	<key>select a part to cut</key>
-	<string>カットする部分を選択</string>
+	<key>select a part: cut, speed, sound</key>
+	<string>部分を選択：カット、速度、サウンド</string>
 	<key>select it</key>
 	<string>選択</string>
 	<key>split at the playhead</key>
