@@ -24,6 +24,8 @@
 	<string>Знімок (%@) від %@</string>
 	<key>%@ capture, %@</key>
 	<string>Знімок (%@), %@</string>
+	<key>%@ dB</key>
+	<string>%@ дБ</string>
 	<key>%@ found</key>
 	<string>Знайдено: %@</string>
 	<key>%@ fullscreen</key>
@@ -72,6 +74,8 @@
 	<string>%@ с</string>
 	<key>%@–%@ only</key>
 	<string>лише %@–%@</string>
+	<key>%lld Hz</key>
+	<string>%lld Гц</string>
 	<key>%lld of %lld captures</key>
 	<string>%lld з %lld знімків</string>
 	<key>%lld px · Esc or Done finishes</key>
@@ -346,6 +350,8 @@
 	<string>Унизу праворуч</string>
 	<key>Bring All to Front</key>
 	<string>Вивести все на передній план</string>
+	<key>Brings your voice forward. Lower it if it sounds sharp.</key>
+	<string>Виводить голос на передній план. Зменште, якщо він звучить різко.</string>
 	<key>Burn captions into the video</key>
 	<string>Вшити субтитри у відео</string>
 	<key>Call</key>
@@ -1346,6 +1352,8 @@
 	<string>Вигляд</string>
 	<key>Loop to fill</key>
 	<string>Повторювати до кінця</string>
+	<key>Low cut</key>
+	<string>Зріз низьких частот</string>
 	<key>Lower Here Again</key>
 	<string>Знову стишувати тут</string>
 	<key>Lower under your voice</key>
@@ -1786,6 +1794,8 @@
 	<string>Підготовка відео…</string>
 	<key>Preparing…</key>
 	<string>Підготовка…</string>
+	<key>Presence</key>
+	<string>Присутність</string>
 	<key>Preset</key>
 	<string>Шаблон</string>
 	<key>Press</key>
@@ -2724,6 +2734,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>Зробити пробний знімок</string>
 	<key>Take your first screenshot</key>
 	<string>Зробіть перший знімок екрана</string>
+	<key>Takes out rumble and boom below this</key>
+	<string>Прибирає гул і бубніння нижче цієї частоти</string>
 	<key>Tangerine</key>
 	<string>Мандарин</string>
 	<key>Template</key>

@@ -317,7 +317,7 @@ extension VideoEditorModel {
         guard let primary = playback.source else { return }
         if project.hasAppendedSources {
             let audio = playback.audioSources ?? VideoAudioSource.sources(from: primary, kinds: audioKinds)
-            media.layout = await VideoSourceLayout.load(project: project, primary: primary, primaryAudio: audio, primaryCamera: playback.camera, enhanceVoice: project.audio.enhanceVoice)
+            media.layout = await VideoSourceLayout.load(project: project, primary: primary, primaryAudio: audio, primaryCamera: playback.camera, enhancedVoice: project.audio.enhancedVoice)
             await loadAppendedMetadata()
         } else {
             media.layout = nil
@@ -361,7 +361,7 @@ extension VideoEditorModel {
     func reloadSourceAudio() async {
         guard project.hasAppendedSources, let primary = playback.source else { return }
         let audio = playback.audioSources ?? VideoAudioSource.sources(from: primary, kinds: audioKinds)
-        media.layout = await VideoSourceLayout.load(project: project, primary: primary, primaryAudio: audio, primaryCamera: playback.camera, enhanceVoice: project.audio.enhanceVoice)
+        media.layout = await VideoSourceLayout.load(project: project, primary: primary, primaryAudio: audio, primaryCamera: playback.camera, enhancedVoice: project.audio.enhancedVoice)
     }
 
     /// Filmstrip thumbnails and the waveform across every recording.

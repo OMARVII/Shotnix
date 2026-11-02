@@ -11,6 +11,9 @@
   "%@ Zoom" : {
     "ja" : "%@ズーム"
   },
+  "%@ dB" : {
+    "ja" : "%@ dB"
+  },
   "%@ long" : {
     "ja" : "長さ%@"
   },
@@ -22,6 +25,9 @@
   },
   "%@ — %@" : {
     "ja" : "%@（%@）"
+  },
+  "%lld Hz" : {
+    "ja" : "%lld Hz"
   },
   "%lld annotations" : {
     "ja" : "%lld個の注釈"
@@ -208,6 +214,9 @@
   },
   "Blurs fast camera moves the way a real camera does." : {
     "ja" : "本物のカメラのように、速いカメラの動きをぼかします。"
+  },
+  "Brings your voice forward. Lower it if it sounds sharp." : {
+    "ja" : "声を前に出します。耳障りに聞こえる場合は下げてください。"
   },
   "Camera" : {
     "ja" : "カメラ"
@@ -662,6 +671,9 @@
   "Look" : {
     "ja" : "スタイル"
   },
+  "Low cut" : {
+    "ja" : "ローカット"
+  },
   "Mirror" : {
     "ja" : "左右反転"
   },
@@ -829,6 +841,9 @@
   },
   "Preparing your video…" : {
     "ja" : "ビデオを準備中…"
+  },
+  "Presence" : {
+    "ja" : "プレゼンス"
   },
   "Pressed at %@. Press ⌫ to hide it from the video — handy for a stray ⌘Tab." : {
     "ja" : "%@に押されました。⌫を押すとビデオで非表示になります。誤って押した⌘Tabなどを隠すのに便利です。"
@@ -1486,6 +1501,9 @@
   },
   "Tag color" : {
     "ja" : "背景のカラー"
+  },
+  "Takes out rumble and boom below this" : {
+    "ja" : "この周波数より下の低いうなりやこもりを取り除きます"
   },
   "Text · highlight · arrow · blur" : {
     "ja" : "テキスト/ハイライト/矢印/ぼかし"

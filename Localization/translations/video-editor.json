@@ -23,6 +23,12 @@
     "fr": "Zoom %@",
     "zh-Hans": "缩放 %@"
   },
+  "%@ dB": {
+    "comment": "A boost or cut in decibels, like “+1.5 dB” (the number comes signed and formatted)",
+    "de": "%@ dB",
+    "fr": "%@ dB",
+    "zh-Hans": "%@ dB"
+  },
   "%@ long": {
     "comment": "VoiceOver: a clip's length",
     "de": "%@ lang",
@@ -46,6 +52,12 @@
     "de": "%@ – %@",
     "fr": "%@ — %@",
     "zh-Hans": "%@ — %@"
+  },
+  "%lld Hz": {
+    "comment": "A filter's frequency, like the voice's low cut",
+    "de": "%lld Hz",
+    "fr": "%lld Hz",
+    "zh-Hans": "%lld Hz"
   },
   "%lld annotations": {
     "de": {
@@ -474,6 +486,12 @@
     "de": "Zeichnet schnelle Kamerabewegungen weich wie eine echte Kamera.",
     "fr": "Floute les mouvements de caméra rapides, comme une vraie caméra.",
     "zh-Hans": "像真实摄像机一样模糊快速的镜头移动。"
+  },
+  "Brings your voice forward. Lower it if it sounds sharp.": {
+    "comment": "Under the Presence slider",
+    "de": "Holt deine Stimme nach vorn. Verringere den Wert, wenn sie scharf klingt.",
+    "fr": "Met votre voix en avant. Baissez la valeur si elle paraît agressive.",
+    "zh-Hans": "让你的声音更靠前。如果听起来刺耳，就调低一些。"
   },
   "Camera": {
     "comment": "Inspector tab and section: the webcam",
@@ -1249,6 +1267,12 @@
     "fr": "Apparence",
     "zh-Hans": "外观"
   },
+  "Low cut": {
+    "comment": "Enhance voice slider: the low-cut filter's frequency",
+    "de": "Low Cut",
+    "fr": "Coupe-bas",
+    "zh-Hans": "低切"
+  },
   "Mirror": {
     "de": "Spiegeln",
     "fr": "Miroir",
@@ -1542,6 +1566,12 @@
     "de": "Dein Video wird vorbereitet …",
     "fr": "Préparation de votre vidéo…",
     "zh-Hans": "正在准备你的视频…"
+  },
+  "Presence": {
+    "comment": "Enhance voice slider: the presence band (a lift around 3 kHz)",
+    "de": "Präsenz",
+    "fr": "Présence",
+    "zh-Hans": "临场感"
   },
   "Pressed at %@. Press ⌫ to hide it from the video — handy for a stray ⌘Tab.": {
     "de": "Gedrückt bei %@. Drücke ⌫, um ihn im Video auszublenden – praktisch bei einem versehentlichen ⌘Tab.",
@@ -2720,6 +2750,12 @@
     "de": "Hintergrundfarbe",
     "fr": "Couleur de l’étiquette",
     "zh-Hans": "标签颜色"
+  },
+  "Takes out rumble and boom below this": {
+    "comment": "Under the Low cut slider",
+    "de": "Entfernt Rumpeln und Dröhnen unterhalb dieser Frequenz",
+    "fr": "Retire le grondement et les basses qui résonnent sous cette fréquence",
+    "zh-Hans": "去除这个频率以下的隆隆声和低频轰鸣"
   },
   "Text · highlight · arrow · blur": {
     "de": "Text · Markierung · Pfeil · Weichzeichnen",

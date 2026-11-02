@@ -24,6 +24,8 @@
 	<string>%2$@ 的%1$@截屏</string>
 	<key>%@ capture, %@</key>
 	<string>%1$@截屏，%2$@</string>
+	<key>%@ dB</key>
+	<string>%@ dB</string>
 	<key>%@ found</key>
 	<string>已找到：%@</string>
 	<key>%@ fullscreen</key>
@@ -72,6 +74,8 @@
 	<string>%@ 秒</string>
 	<key>%@–%@ only</key>
 	<string>仅 %@–%@</string>
+	<key>%lld Hz</key>
+	<string>%lld Hz</string>
 	<key>%lld QR codes found</key>
 	<string>找到 %lld 个二维码</string>
 	<key>%lld annotations</key>
@@ -408,6 +412,8 @@
 	<string>右下</string>
 	<key>Bring All to Front</key>
 	<string>前置全部窗口</string>
+	<key>Brings your voice forward. Lower it if it sounds sharp.</key>
+	<string>让你的声音更靠前。如果听起来刺耳，就调低一些。</string>
 	<key>Burn captions into the video</key>
 	<string>将字幕嵌入视频</string>
 	<key>Call</key>
@@ -1438,6 +1444,8 @@
 	<string>外观</string>
 	<key>Loop to fill</key>
 	<string>循环填满</string>
+	<key>Low cut</key>
+	<string>低切</string>
 	<key>Lower Here Again</key>
 	<string>在此处重新降低</string>
 	<key>Lower under your voice</key>
@@ -1882,6 +1890,8 @@
 	<string>正在准备你的视频…</string>
 	<key>Preparing…</key>
 	<string>正在准备…</string>
+	<key>Presence</key>
+	<string>临场感</string>
 	<key>Preset</key>
 	<string>预设</string>
 	<key>Press</key>
@@ -2852,6 +2862,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>进行测试截屏</string>
 	<key>Take your first screenshot</key>
 	<string>截取你的第一张截屏</string>
+	<key>Takes out rumble and boom below this</key>
+	<string>去除这个频率以下的隆隆声和低频轰鸣</string>
 	<key>Tangerine</key>
 	<string>橘色</string>
 	<key>Template</key>

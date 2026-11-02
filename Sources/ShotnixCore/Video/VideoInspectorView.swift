@@ -619,6 +619,19 @@ struct VideoAudioInspector: View {
         Binding(get: { model.project.audio[keyPath: keyPath] }, set: { value in model.setStyle(coalesce: coalesce) { $0.audio[keyPath: keyPath] = value } })
     }
 
+    /// A tone setting, kept on its steps (5 Hz, 0.5 dB): each step is a
+    /// version of the voice made on this Mac.
+    private func toneBinding(_ keyPath: WritableKeyPath<VideoAudioSettings, Double>, coalesce: String) -> Binding<Double> {
+        Binding(get: { model.project.audio[keyPath: keyPath] }, set: { value in
+            model.setStyle(coalesce: coalesce) { project in
+                project.audio[keyPath: keyPath] = value
+                let tone = project.audio.voiceTone
+                project.audio.voiceLowCut = tone.lowCut
+                project.audio.voicePresence = tone.presence
+            }
+        })
+    }
+
     private func level(_ title: String, _ keyPath: WritableKeyPath<VideoAudioSettings, Double>, detail: String? = nil) -> some View {
         VideoSliderRow(
             title: title,
@@ -676,6 +689,28 @@ struct VideoAudioInspector: View {
                             detail: L("Removes background noise and hum, and evens out your level — processed on this Mac"),
                             isOn: binding(\.enhanceVoice)
                         )
+                        if audio.enhanceVoice {
+                            // Its tone, for a voice that changes between
+                            // recordings (another room, a cold, the mic moved).
+                            VideoSliderRow(
+                                title: L("Low cut"),
+                                value: toneBinding(\.voiceLowCut, coalesce: "voice-low-cut"),
+                                range: VideoVoiceTone.lowCutRange,
+                                defaultValue: VideoVoiceTone.standard.lowCut,
+                                format: { VideoEditorModel.formatHertz($0) },
+                                detail: L("Takes out rumble and boom below this"),
+                                onEditingEnded: { model.endGesture() }
+                            )
+                            VideoSliderRow(
+                                title: L("Presence"),
+                                value: toneBinding(\.voicePresence, coalesce: "voice-presence"),
+                                range: VideoVoiceTone.presenceRange,
+                                defaultValue: VideoVoiceTone.standard.presence,
+                                format: { VideoEditorModel.formatDecibels($0) },
+                                detail: L("Brings your voice forward. Lower it if it sounds sharp."),
+                                onEditingEnded: { model.endGesture() }
+                            )
+                        }
                         if let progress = model.voiceJob {
                             VStack(alignment: .leading, spacing: 5) {
                                 HStack {

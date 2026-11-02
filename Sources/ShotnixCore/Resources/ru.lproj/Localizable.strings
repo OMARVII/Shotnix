@@ -24,6 +24,8 @@
 	<string>Снимок (%@) от %@</string>
 	<key>%@ capture, %@</key>
 	<string>Снимок (%@), %@</string>
+	<key>%@ dB</key>
+	<string>%@ дБ</string>
 	<key>%@ found</key>
 	<string>Найдено: %@</string>
 	<key>%@ fullscreen</key>
@@ -70,6 +72,8 @@
 	<string>%@ с</string>
 	<key>%@–%@ only</key>
 	<string>только %@–%@</string>
+	<key>%lld Hz</key>
+	<string>%lld Гц</string>
 	<key>%lld of %lld captures</key>
 	<string>Снимков: %lld из %lld</string>
 	<key>%lld px · Esc or Done finishes</key>
@@ -344,6 +348,8 @@
 	<string>Внизу справа</string>
 	<key>Bring All to Front</key>
 	<string>Все окна — на передний план</string>
+	<key>Brings your voice forward. Lower it if it sounds sharp.</key>
+	<string>Выводит голос на передний план. Уменьшите, если он звучит резко.</string>
 	<key>Burn captions into the video</key>
 	<string>Встроить субтитры в видео</string>
 	<key>Call</key>
@@ -1344,6 +1350,8 @@
 	<string>Вид</string>
 	<key>Loop to fill</key>
 	<string>Повторять до конца</string>
+	<key>Low cut</key>
+	<string>Срез низких частот</string>
 	<key>Lower Here Again</key>
 	<string>Снова приглушать здесь</string>
 	<key>Lower under your voice</key>
@@ -1784,6 +1792,8 @@
 	<string>Подготовка видео…</string>
 	<key>Preparing…</key>
 	<string>Подготовка…</string>
+	<key>Presence</key>
+	<string>Присутствие</string>
 	<key>Preset</key>
 	<string>Вариант</string>
 	<key>Press</key>
@@ -2722,6 +2732,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>Сделать пробный снимок</string>
 	<key>Take your first screenshot</key>
 	<string>Сделать первый снимок экрана</string>
+	<key>Takes out rumble and boom below this</key>
+	<string>Убирает гул и бубнение ниже этой частоты</string>
 	<key>Tangerine</key>
 	<string>Мандарин</string>
 	<key>Template</key>

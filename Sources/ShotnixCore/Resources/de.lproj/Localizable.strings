@@ -24,6 +24,8 @@
 	<string>Bildschirmfoto: %1$@ vom %2$@</string>
 	<key>%@ capture, %@</key>
 	<string>Bildschirmfoto: %1$@, %2$@</string>
+	<key>%@ dB</key>
+	<string>%@ dB</string>
 	<key>%@ found</key>
 	<string>%@ gefunden</string>
 	<key>%@ fullscreen</key>
@@ -72,6 +74,8 @@
 	<string>%@ s</string>
 	<key>%@–%@ only</key>
 	<string>nur %@–%@</string>
+	<key>%lld Hz</key>
+	<string>%lld Hz</string>
 	<key>%lld captions</key>
 	<string>%lld Untertitel</string>
 	<key>%lld of %lld captures</key>
@@ -350,6 +354,8 @@
 	<string>Unten rechts</string>
 	<key>Bring All to Front</key>
 	<string>Alle nach vorne bringen</string>
+	<key>Brings your voice forward. Lower it if it sounds sharp.</key>
+	<string>Holt deine Stimme nach vorn. Verringere den Wert, wenn sie scharf klingt.</string>
 	<key>Burn captions into the video</key>
 	<string>Untertitel ins Video einbrennen</string>
 	<key>Call</key>
@@ -1350,6 +1356,8 @@
 	<string>Aussehen</string>
 	<key>Loop to fill</key>
 	<string>Bis zum Ende wiederholen</string>
+	<key>Low cut</key>
+	<string>Low Cut</string>
 	<key>Lower Here Again</key>
 	<string>Hier wieder absenken</string>
 	<key>Lower under your voice</key>
@@ -1790,6 +1798,8 @@
 	<string>Dein Video wird vorbereitet …</string>
 	<key>Preparing…</key>
 	<string>Wird vorbereitet …</string>
+	<key>Presence</key>
+	<string>Präsenz</string>
 	<key>Preset</key>
 	<string>Vorgabe</string>
 	<key>Press</key>
@@ -2728,6 +2738,8 @@ Aktiviere sie unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherhei
 	<string>Test-Bildschirmfoto aufnehmen</string>
 	<key>Take your first screenshot</key>
 	<string>Dein erstes Bildschirmfoto aufnehmen</string>
+	<key>Takes out rumble and boom below this</key>
+	<string>Entfernt Rumpeln und Dröhnen unterhalb dieser Frequenz</string>
 	<key>Tangerine</key>
 	<string>Mandarine</string>
 	<key>Template</key>

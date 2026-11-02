@@ -558,6 +558,9 @@ struct VideoAudioSettings: Codable, Equatable {
     var systemVolume: Double = 1
     /// Voice isolation + rumble filter + gentle compression on the mic.
     var enhanceVoice = false
+    /// Enhance voice's low cut (Hz) and presence (dB at 3 kHz).
+    var voiceLowCut = VideoVoiceTone.standard.lowCut
+    var voicePresence = VideoVoiceTone.standard.presence
     /// Exports at a steady −16 LUFS (peaks kept under −1 dBFS).
     var normalizeLoudness = true
     /// Lowers the computer sound while you talk (when your voice has a
@@ -588,7 +591,14 @@ struct VideoAudioSettings: Codable, Equatable {
         kinds.isEmpty || kinds.allSatisfy { effectiveVolume(for: $0) < 0.0005 }
     }
 
-    private enum CodingKeys: String, CodingKey { case volume, muted, voiceVolume, systemVolume, enhanceVoice, normalizeLoudness, duckSystem, systemDuckLevel, systemDuckSpots }
+    var voiceTone: VideoVoiceTone { VideoVoiceTone(lowCut: voiceLowCut, presence: voicePresence).stepped }
+
+    /// The cleaned-up voice to play, in its tone (nil: the voice as recorded).
+    var enhancedVoice: VideoVoiceTone? { enhanceVoice ? voiceTone : nil }
+
+    private enum CodingKeys: String, CodingKey {
+        case volume, muted, voiceVolume, systemVolume, enhanceVoice, voiceLowCut, voicePresence, normalizeLoudness, duckSystem, systemDuckLevel, systemDuckSpots
+    }
 
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -598,6 +608,8 @@ struct VideoAudioSettings: Codable, Equatable {
         voiceVolume = try c.decodeIfPresent(Double.self, forKey: .voiceVolume) ?? d.voiceVolume
         systemVolume = try c.decodeIfPresent(Double.self, forKey: .systemVolume) ?? d.systemVolume
         enhanceVoice = try c.decodeIfPresent(Bool.self, forKey: .enhanceVoice) ?? d.enhanceVoice
+        voiceLowCut = try c.decodeIfPresent(Double.self, forKey: .voiceLowCut) ?? d.voiceLowCut
+        voicePresence = try c.decodeIfPresent(Double.self, forKey: .voicePresence) ?? d.voicePresence
         normalizeLoudness = try c.decodeIfPresent(Bool.self, forKey: .normalizeLoudness) ?? d.normalizeLoudness
         duckSystem = try c.decodeIfPresent(Bool.self, forKey: .duckSystem) ?? d.duckSystem
         systemDuckLevel = try c.decodeIfPresent(Double.self, forKey: .systemDuckLevel) ?? d.systemDuckLevel

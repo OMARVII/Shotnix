@@ -452,6 +452,47 @@
         }
       }
     },
+    "%@ dB" : {
+      "comment" : "A boost or cut in decibels, like “+1.5 dB” (the number comes signed and formatted)",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ dB"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ dB"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ dB"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ дБ"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ дБ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ dB"
+          }
+        }
+      }
+    },
     "%@ found" : {
       "comment" : "A barcode type, like “Code 128”",
       "localizations" : {
@@ -1461,6 +1502,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "仅 %@–%@"
+          }
+        }
+      }
+    },
+    "%lld Hz" : {
+      "comment" : "A filter's frequency, like the voice's low cut",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Hz"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Hz"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Hz"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Гц"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Гц"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Hz"
           }
         }
       }
@@ -10942,6 +11024,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "前置全部窗口"
+          }
+        }
+      }
+    },
+    "Brings your voice forward. Lower it if it sounds sharp." : {
+      "comment" : "Under the Presence slider",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Holt deine Stimme nach vorn. Verringere den Wert, wenn sie scharf klingt."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Met votre voix en avant. Baissez la valeur si elle paraît agressive."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "声を前に出します。耳障りに聞こえる場合は下げてください。"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выводит голос на передний план. Уменьшите, если он звучит резко."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Виводить голос на передній план. Зменште, якщо він звучить різко."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "让你的声音更靠前。如果听起来刺耳，就调低一些。"
           }
         }
       }
@@ -32978,6 +33101,47 @@
         }
       }
     },
+    "Low cut" : {
+      "comment" : "Enhance voice slider: the low-cut filter's frequency",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Low Cut"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coupe-bas"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ローカット"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Срез низких частот"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Зріз низьких частот"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "低切"
+          }
+        }
+      }
+    },
     "Lower Here Again" : {
       "localizations" : {
         "de" : {
@@ -42069,6 +42233,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在准备…"
+          }
+        }
+      }
+    },
+    "Presence" : {
+      "comment" : "Enhance voice slider: the presence band (a lift around 3 kHz)",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Präsenz"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Présence"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プレゼンス"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Присутствие"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Присутність"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "临场感"
           }
         }
       }
@@ -62845,6 +63050,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "截取你的第一张截屏"
+          }
+        }
+      }
+    },
+    "Takes out rumble and boom below this" : {
+      "comment" : "Under the Low cut slider",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entfernt Rumpeln und Dröhnen unterhalb dieser Frequenz"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retire le grondement et les basses qui résonnent sous cette fréquence"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この周波数より下の低いうなりやこもりを取り除きます"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Убирает гул и бубнение ниже этой частоты"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прибирає гул і бубніння нижче цієї частоти"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "去除这个频率以下的隆隆声和低频轰鸣"
           }
         }
       }

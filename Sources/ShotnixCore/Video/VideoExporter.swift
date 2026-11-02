@@ -71,7 +71,7 @@ enum VideoDemoExporter {
             camera = await VideoCameraSource.load(webcam)
         }
         let kinds = VideoAudioKind.resolve(recorded: recording?.audioTracks, channelCounts: source.audioChannelCounts)
-        let audioSources = await VideoAudioSource.resolved(from: source, kinds: kinds, enhanceVoice: project.audio.enhanceVoice)
+        let audioSources = await VideoAudioSource.resolved(from: source, kinds: kinds, enhancedVoice: project.audio.enhancedVoice)
 
         var extras = VideoEditExtras()
         extras.tail = project.timelineTail
@@ -83,7 +83,7 @@ enum VideoDemoExporter {
                 }
                 if let metadata = VideoDemoSidecarStore.load(for: url) { appendedMetadata[added.id] = metadata }
             }
-            let layout = await VideoSourceLayout.load(project: project, primary: source, primaryAudio: audioSources, primaryCamera: camera, includeCameras: project.webcam.visible, enhanceVoice: project.audio.enhanceVoice)
+            let layout = await VideoSourceLayout.load(project: project, primary: source, primaryAudio: audioSources, primaryCamera: camera, includeCameras: project.webcam.visible, enhancedVoice: project.audio.enhancedVoice)
             // There but unreadable (damaged, not a video): say so, rather
             // than export its part as silent black.
             if let unreadable = project.sources.first(where: { added in !added.isPrimary && !(layout?.entries.contains { $0.source.id == added.id } ?? false) }) {

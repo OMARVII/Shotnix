@@ -371,12 +371,16 @@ enum VideoDataCleanup {
         let keptCameras = Set(known.compactMap { $0.camera?.standardizedFileURL.path })
         plan.unusedCameraFootage = files(in: "VideoCameras").filter { !keptCameras.contains($0.standardizedFileURL.path) && isOld($0, now: now) }
 
-        // Cleaned-up voice of recordings not found (or changed since).
+        // Cleaned-up voice of recordings not found (or changed since): every
+        // tone of a voice and its isolated version share the voice's name.
         var keptVoice = Set<String>()
         for url in foundURLs {
-            for track in 0..<4 { keptVoice.insert(VideoVoiceEnhancer.cacheURL(for: url, trackIndex: track).standardizedFileURL.path) }
+            for track in 0..<4 { keptVoice.insert(VideoVoiceEnhancer.cacheName(for: url, trackIndex: track)) }
         }
-        plan.unusedVoice = files(in: "VideoAudio").filter { !keptVoice.contains($0.standardizedFileURL.path) && isOld($0, now: now) }
+        plan.unusedVoice = files(in: "VideoAudio").filter { file in
+            let name = file.deletingPathExtension().lastPathComponent
+            return !keptVoice.contains { name == $0 || name.hasPrefix($0 + "-") } && isOld(file, now: now)
+        }
 
         // Pictures and songs no remaining draft, open editor, or export uses.
         let draftTexts = live.compactMap { $0.draft }.compactMap { try? String(contentsOf: $0, encoding: .utf8) }

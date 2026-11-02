@@ -247,6 +247,24 @@ final class VideoDataCleanupTests: XCTestCase {
         XCTAssertTrue(VideoDataCleanup.plan(finder: .nowhere, inUse: [undoneSong.path]).isEmpty, "nothing more to remove")
     }
 
+    func testEveryToneOfAVoiceGoesWithItsRecording() throws {
+        let kept = try recording("Lesson 3.mov")
+        let gone = try recording("Lesson 2.mov")
+        let tone = VideoVoiceTone(lowCut: 120, presence: -2)
+        var voices: [URL: [URL]] = [:]
+        for made in [kept, gone] {
+            let toned = VideoVoiceEnhancer.cacheURL(for: made.video, trackIndex: 0, tone: tone)
+            let isolated = VideoVoiceEnhancer.isolatedURL(for: made.video, trackIndex: 0)
+            for url in [toned, isolated] { try write("voice", to: url) }
+            voices[made.video] = [made.voice, toned, isolated]
+        }
+        try FileManager.default.removeItem(at: gone.video)
+
+        VideoDataCleanup.perform(VideoDataCleanup.plan(finder: .nowhere))
+        for url in voices[kept.video] ?? [] { XCTAssertTrue(exists(url), "\(url.lastPathComponent) of a recording still there") }
+        for url in voices[gone.video] ?? [] { XCTAssertFalse(exists(url), "\(url.lastPathComponent) of a recording that's gone") }
+    }
+
     func testAJustAddedPictureWaitsForItsDraft() throws {
         // A logo last touched long ago, added to an edit no draft has saved yet.
         let logo = recordings.appendingPathComponent("logo.png")

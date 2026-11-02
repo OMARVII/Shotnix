@@ -11,6 +11,9 @@
   "%@ Zoom" : {
     "uk" : "Масштаб %@"
   },
+  "%@ dB" : {
+    "uk" : "%@ дБ"
+  },
   "%@ long" : {
     "uk" : "тривалість %@"
   },
@@ -22,6 +25,9 @@
   },
   "%@ — %@" : {
     "uk" : "%@ — %@"
+  },
+  "%lld Hz" : {
+    "uk" : "%lld Гц"
   },
   "%lld annotations" : {
     "uk" : {
@@ -263,6 +269,9 @@
   },
   "Blurs fast camera moves the way a real camera does." : {
     "uk" : "Розмиває швидкі рухи камери, як справжня камера."
+  },
+  "Brings your voice forward. Lower it if it sounds sharp." : {
+    "uk" : "Виводить голос на передній план. Зменште, якщо він звучить різко."
   },
   "Camera" : {
     "uk" : "Камера"
@@ -717,6 +726,9 @@
   "Look" : {
     "uk" : "Вигляд"
   },
+  "Low cut" : {
+    "uk" : "Зріз низьких частот"
+  },
   "Mirror" : {
     "uk" : "Віддзеркалити"
   },
@@ -889,6 +901,9 @@
   },
   "Preparing your video…" : {
     "uk" : "Підготовка відео…"
+  },
+  "Presence" : {
+    "uk" : "Присутність"
   },
   "Pressed at %@. Press ⌫ to hide it from the video — handy for a stray ⌘Tab." : {
     "uk" : "Натиснуто на %@. Натисніть ⌫, щоб сховати його з відео, — зручно для випадкового ⌘Tab."
@@ -1576,6 +1591,9 @@
   },
   "Tag color" : {
     "uk" : "Колір плашки"
+  },
+  "Takes out rumble and boom below this" : {
+    "uk" : "Прибирає гул і бубніння нижче цієї частоти"
   },
   "Text · highlight · arrow · blur" : {
     "uk" : "Текст · виділення · стрілка · розмиття"

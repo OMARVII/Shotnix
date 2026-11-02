@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- **Shape how Enhance voice sounds.** With Enhance voice on, two new sliders in the Audio tab set the voice's tone: Low cut takes out rumble and boom below the frequency you pick (80 Hz to start), and Presence brings the voice forward, or softens it when it sounds sharp. Handy when your voice changes between recordings: another room, a cold, the mic in a new place. Each video keeps its own setting, in steps easy to repeat on the next one. The first change takes as long as cleaning up the voice did; after that a change is ready in a few seconds, because the cleaned-up voice is kept and only the tone is made again. Voices you already enhanced sound exactly as before.
 - **⌘A selects the whole video.** In the video editor, ⌘A (or Edit > Select All when you're not typing) selects the whole video as one part, so one click sets the speed or sound of every clip.
 
 ### Changed

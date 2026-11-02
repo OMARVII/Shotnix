@@ -218,9 +218,9 @@ final class VideoEditorDiscoverabilityTests: XCTestCase {
     }
 
     /// The clip panel says it changes one clip and how to change more; the
-    /// caption lines have Remove all in sight. Rendered in English and
-    /// French (it runs longer).
-    func testPartsAndCaptionsRenderInEnglishAndFrench() async throws {
+    /// caption lines have Remove all in sight; Enhance voice has its tone.
+    /// Rendered in English and French (it runs longer).
+    func testPartsCaptionsAndVoiceToneRenderInEnglishAndFrench() async throws {
         var options = T.Options(seconds: 12, size: CGSize(width: 1440, height: 900))
         options.audio = true
         options.audioTracks = [.microphone]
@@ -249,9 +249,13 @@ final class VideoEditorDiscoverabilityTests: XCTestCase {
             model.selection = .none
             UserDefaults.standard.set("captions", forKey: "videoScriptMode")
             try await VideoEditorFixesSnapshotTests.render(VideoEditorRootView(model: model), size: full, name: "parts-caption-lines-\(language)")
+            model.inspectorTab = .audio
+            model.mutate { $0.audio.enhanceVoice = true; $0.audio.voicePresence = 3 }
+            try await VideoEditorFixesSnapshotTests.render(VideoEditorRootView(model: model), size: full, name: "parts-voice-tone-\(language)")
             model.isShortcutsPresented = true
             try await VideoEditorFixesSnapshotTests.render(VideoEditorRootView(model: model), size: full, name: "parts-shortcuts-\(language)")
             model.isShortcutsPresented = false
+            model.mutate { $0.audio.enhanceVoice = false }
         }
         model.stop()
     }

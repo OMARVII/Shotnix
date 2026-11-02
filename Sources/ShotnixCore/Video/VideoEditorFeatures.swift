@@ -142,7 +142,7 @@ extension VideoEditorModel {
         return VideoCaptionTranscriber.source(
             recording: project.sourceURL,
             kinds: audioKinds,
-            enhancedVoice: enhancedVoiceReady ? enhancedVoiceURL : nil,
+            enhancedVoice: voiceTrackIndex.flatMap { VideoVoiceEnhancer.readyURL(for: project.sourceURL, trackIndex: $0, preferring: project.audio.voiceTone) },
             voiceStart: voiceStart.isFinite ? voiceStart : 0
         )
     }
@@ -526,35 +526,56 @@ extension VideoEditorModel {
         return nil
     }
 
-    private var enhancedVoiceURL: URL? {
-        voiceTrackIndex.map { VideoVoiceEnhancer.cacheURL(for: project.sourceURL, trackIndex: $0) }
-    }
-
-    /// This recording's cleaned-up voice is ready (added recordings each
-    /// have their own — see `voiceTargets`).
-    var enhancedVoiceReady: Bool {
-        enhancedVoiceURL.map { FileManager.default.fileExists(atPath: $0.path) } ?? false
-    }
-
     /// The toggle (or an undo) changed: process if needed, then swap sources.
     func enhanceVoiceChanged() {
         if project.audio.enhanceVoice { startVoiceEnhancementIfNeeded() }
         Task { await refreshAudioSources() }
     }
 
-    /// Runs voice enhancement once per recording (the result is cached).
+    /// The tone changed (a slider, an undo): once it settles, the voice is
+    /// made in it — quickly, from the isolated voice after the first time.
+    /// The preview keeps the last tone until the new one is ready.
+    func voiceToneChanged() {
+        voiceToneTask?.cancel()
+        voiceToneTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: 400_000_000)
+            guard let self, !Task.isCancelled else { return }
+            self.voiceToneTask = nil
+            guard self.project.audio.enhanceVoice else { return }
+            // A cleanup in another tone starts over in this one.
+            if self.voiceTask != nil { self.cancelVoiceEnhancement() }
+            if self.startVoiceEnhancementIfNeeded(announces: false) == nil {
+                // Made before (an undo, or back to the standard tone).
+                await self.refreshAudioSources()
+            }
+        }
+    }
+
+    /// Stops a cleanup that's running (its result would be the wrong tone).
+    func cancelVoiceEnhancement() {
+        voiceTask?.cancel()
+        voiceTask = nil
+        voiceRun += 1
+        voiceJob = nil
+        endVoiceQuitToken()
+    }
+
+    /// Runs voice enhancement once per recording and tone (the result is
+    /// cached).
     @discardableResult
-    func startVoiceEnhancementIfNeeded() -> Task<Bool, Never>? {
+    func startVoiceEnhancementIfNeeded(announces: Bool = true) -> Task<Bool, Never>? {
         if let voiceTask { return voiceTask }
         // Every recording's voice (added recordings too), one after another.
         let pending = project.voiceTargets(primaryKinds: audioKinds).filter { !$0.isReady }
         guard project.audio.enhanceVoice, !pending.isEmpty else { return nil }
         voiceJob = 0
         voiceError = nil
+        voiceRun += 1
+        let run = voiceRun
         let report: @Sendable (Double) -> Void = { [weak self] value in
             guard let self else { return }
             Task { @MainActor in
-                if self.voiceTask != nil { self.voiceJob = value }
+                if self.voiceRun == run, self.voiceTask != nil { self.voiceJob = value }
             }
         }
         // The cleaned-up voice is a cache (it runs again next time), so a
@@ -570,17 +591,18 @@ extension VideoEditorModel {
             defer { AppTermination.end(token) }
             do {
                 try await VideoVoiceEnhancer.enhance(pending, progress: report)
-                guard let self else { return false }
+                guard let self, self.voiceRun == run else { return false }
                 self.voiceTask = nil
                 self.voiceJob = nil
                 self.endVoiceQuitToken()
                 await self.refreshAudioSources()
-                if self.project.audio.enhanceVoice {
+                self.removeOtherVoiceTones()
+                if announces, self.project.audio.enhanceVoice {
                     self.showNotice(L("Voice enhanced — background noise removed"), symbol: "waveform")
                 }
                 return true
             } catch {
-                guard let self else { return false }
+                guard let self, self.voiceRun == run else { return false }
                 self.voiceTask = nil
                 self.voiceJob = nil
                 self.endVoiceQuitToken()
@@ -599,10 +621,22 @@ extension VideoEditorModel {
         voiceQuitToken = nil
     }
 
+    /// Every tone tried leaves a file: once the new one plays, the others
+    /// go — not the standard one, nor one a queued export still needs.
+    private func removeOtherVoiceTones() {
+        var keeping: Set<VideoVoiceTone> = [project.audio.voiceTone]
+        for job in VideoExportQueue.shared.jobs where !job.isDone {
+            keeping.insert(job.project.audio.voiceTone)
+        }
+        for target in project.voiceTargets(primaryKinds: audioKinds) {
+            VideoVoiceEnhancer.removeTones(of: target.url, trackIndex: target.trackIndex, keeping: keeping)
+        }
+    }
+
     /// Rebuilds the sound sources (e.g. the enhanced voice became ready).
     func refreshAudioSources() async {
         guard let source = playback.source else { return }
-        let sources = await VideoAudioSource.resolved(from: source, kinds: audioKinds, enhanceVoice: project.audio.enhanceVoice)
+        let sources = await VideoAudioSource.resolved(from: source, kinds: audioKinds, enhancedVoice: project.audio.enhancedVoice)
         playback.setAudioSources(sources)
         await reloadSourceAudio()
         if let moved = playback.apply(segments: segments, audio: project.audio, keepSourceTime: sourceTime(forTimeline: clock.time), extras: editExtras), !isPlaying {

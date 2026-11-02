@@ -24,6 +24,8 @@
 	<string>Capture (%1$@) du %2$@</string>
 	<key>%@ capture, %@</key>
 	<string>Capture (%1$@), %2$@</string>
+	<key>%@ dB</key>
+	<string>%@ dB</string>
 	<key>%@ found</key>
 	<string>%@ détecté</string>
 	<key>%@ fullscreen</key>
@@ -70,6 +72,8 @@
 	<string>%@ s</string>
 	<key>%@–%@ only</key>
 	<string>%@–%@ uniquement</string>
+	<key>%lld Hz</key>
+	<string>%lld Hz</string>
 	<key>%lld of %lld captures</key>
 	<string>%lld sur %lld captures</string>
 	<key>%lld px · Esc or Done finishes</key>
@@ -344,6 +348,8 @@
 	<string>En bas à droite</string>
 	<key>Bring All to Front</key>
 	<string>Tout ramener au premier plan</string>
+	<key>Brings your voice forward. Lower it if it sounds sharp.</key>
+	<string>Met votre voix en avant. Baissez la valeur si elle paraît agressive.</string>
 	<key>Burn captions into the video</key>
 	<string>Incruster les sous-titres dans la vidéo</string>
 	<key>Call</key>
@@ -1344,6 +1350,8 @@
 	<string>Apparence</string>
 	<key>Loop to fill</key>
 	<string>Boucler pour remplir</string>
+	<key>Low cut</key>
+	<string>Coupe-bas</string>
 	<key>Lower Here Again</key>
 	<string>Atténuer à nouveau ici</string>
 	<key>Lower under your voice</key>
@@ -1784,6 +1792,8 @@
 	<string>Préparation de votre vidéo…</string>
 	<key>Preparing…</key>
 	<string>Préparation…</string>
+	<key>Presence</key>
+	<string>Présence</string>
 	<key>Preset</key>
 	<string>Préréglage</string>
 	<key>Press</key>
@@ -2722,6 +2732,8 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Faire une capture d’essai</string>
 	<key>Take your first screenshot</key>
 	<string>Faire votre première capture</string>
+	<key>Takes out rumble and boom below this</key>
+	<string>Retire le grondement et les basses qui résonnent sous cette fréquence</string>
 	<key>Tangerine</key>
 	<string>Mandarine</string>
 	<key>Template</key>

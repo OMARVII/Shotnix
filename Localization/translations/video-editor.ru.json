@@ -11,6 +11,9 @@
   "%@ Zoom" : {
     "ru" : "Масштаб %@"
   },
+  "%@ dB" : {
+    "ru" : "%@ дБ"
+  },
   "%@ long" : {
     "ru" : "длительность %@"
   },
@@ -22,6 +25,9 @@
   },
   "%@ — %@" : {
     "ru" : "%@ — %@"
+  },
+  "%lld Hz" : {
+    "ru" : "%lld Гц"
   },
   "%lld annotations" : {
     "ru" : {
@@ -268,6 +274,9 @@
   },
   "Blurs fast camera moves the way a real camera does." : {
     "ru" : "Размывает быстрые движения камеры, как настоящая камера."
+  },
+  "Brings your voice forward. Lower it if it sounds sharp." : {
+    "ru" : "Выводит голос на передний план. Уменьшите, если он звучит резко."
   },
   "Camera" : {
     "ru" : "Камера"
@@ -722,6 +731,9 @@
   "Look" : {
     "ru" : "Вид"
   },
+  "Low cut" : {
+    "ru" : "Срез низких частот"
+  },
   "Mirror" : {
     "ru" : "Зеркальное отражение"
   },
@@ -894,6 +906,9 @@
   },
   "Preparing your video…" : {
     "ru" : "Подготовка видео…"
+  },
+  "Presence" : {
+    "ru" : "Присутствие"
   },
   "Pressed at %@. Press ⌫ to hide it from the video — handy for a stray ⌘Tab." : {
     "ru" : "Нажато в %@. Нажмите ⌫, чтобы скрыть его в видео, — удобно для случайного ⌘Tab."
@@ -1581,6 +1596,9 @@
   },
   "Tag color" : {
     "ru" : "Цвет плашки"
+  },
+  "Takes out rumble and boom below this" : {
+    "ru" : "Убирает гул и бубнение ниже этой частоты"
   },
   "Text · highlight · arrow · blur" : {
     "ru" : "Текст · выделение · стрелка · размытие"

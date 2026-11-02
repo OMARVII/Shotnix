@@ -203,6 +203,11 @@ final class VideoEditorModel: ObservableObject {
     @Published var voiceJob: Double?
     @Published var voiceError: String?
     var voiceTask: Task<Bool, Never>?
+    /// Counts voice cleanups: one stopped for a new tone mustn't touch what
+    /// the next one shows.
+    var voiceRun = 0
+    /// Waits for a tone change (a slider) to settle.
+    var voiceToneTask: Task<Void, Never>?
     @Published private(set) var isReady = false
     @Published var loadError: String?
     @Published private(set) var loadFailure: VideoLoadFailure?
@@ -567,6 +572,8 @@ final class VideoEditorModel: ObservableObject {
         }
         if isReady, old.audio.enhanceVoice != project.audio.enhanceVoice {
             enhanceVoiceChanged()
+        } else if isReady, project.audio.enhanceVoice, old.audio.voiceTone != project.audio.voiceTone {
+            voiceToneChanged()
         }
         if isReady, hasWebcamFootage, old.webcam.needsPersonMask != project.webcam.needsPersonMask {
             if playback.cameraStore.setFindsPerson(project.webcam.needsPersonMask) {
@@ -1979,6 +1986,7 @@ final class VideoEditorModel: ObservableObject {
     func stop() {
         playback.pause()
         cancelCaptions()
+        voiceToneTask?.cancel()
         voiceTask?.cancel()
         // Nothing left running asks about the quit (or holds an update).
         endVoiceQuitToken()
@@ -2231,6 +2239,18 @@ final class VideoEditorModel: ObservableObject {
     /// "2×", "1.5×" ("1,5×" in German and French).
     static func formatScale(_ scale: Double) -> String {
         decimal(scale, digits: abs(scale - scale.rounded()) < 0.05 ? 0 : 1) + "×"
+    }
+
+    /// "80 Hz" (a filter's frequency).
+    static func formatHertz(_ hertz: Double) -> String {
+        L("\(Int(hertz.rounded())) Hz")
+    }
+
+    /// "+1.5 dB", "−3 dB", "0 dB" (a boost or cut).
+    static func formatDecibels(_ decibels: Double) -> String {
+        let magnitude = decimal(abs(decibels), digits: abs(decibels - decibels.rounded()) < 0.05 ? 0 : 1)
+        let sign = decibels > 0.04 ? "+" : decibels < -0.04 ? "−" : ""
+        return L("\(sign + magnitude) dB")
     }
 
     static func formatBytes(_ bytes: Int64) -> String {

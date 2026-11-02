@@ -47,13 +47,14 @@ struct VideoAudioSource {
     var file: AVAsset? = nil
 
     /// The recording's tracks, with the voice replaced by its enhanced
-    /// version when that's wanted and already processed.
-    static func resolved(from source: VideoSourceTracks, kinds: [VideoAudioKind], enhanceVoice: Bool) async -> [VideoAudioSource] {
+    /// version (in `enhancedVoice`'s tone; nil: Enhance voice is off) when
+    /// that's already processed.
+    static func resolved(from source: VideoSourceTracks, kinds: [VideoAudioKind], enhancedVoice: VideoVoiceTone?) async -> [VideoAudioSource] {
         var sources = self.sources(from: source, kinds: kinds)
-        guard enhanceVoice,
+        guard let tone = enhancedVoice,
               let index = VideoAudioKind.voiceTrackIndex(in: kinds),
               sources.indices.contains(index) else { return sources }
-        let url = VideoVoiceEnhancer.cacheURL(for: source.asset.url, trackIndex: index)
+        let url = VideoVoiceEnhancer.cacheURL(for: source.asset.url, trackIndex: index, tone: tone)
         guard FileManager.default.fileExists(atPath: url.path) else { return sources }
         let asset = AVURLAsset(url: url)
         guard let track = try? await asset.loadTracks(withMediaType: .audio).first,
@@ -77,6 +78,38 @@ struct VideoAudioSource {
 
 // MARK: - Voice enhancement
 
+/// How Enhance voice shapes the voice once the noise is gone: a low cut
+/// under rumble and boom, and a lift (or dip) around 3 kHz that brings the
+/// voice forward. Stepped (5 Hz, 0.5 dB) so a setting is easy to repeat on
+/// the next recording; each tone is cached on its own.
+struct VideoVoiceTone: Hashable, Sendable {
+    static let lowCutRange: ClosedRange<Double> = 40...200
+    static let presenceRange: ClosedRange<Double> = -6...6
+    /// What Enhance voice has always done.
+    static let standard = VideoVoiceTone(lowCut: 80, presence: 1.5)
+
+    /// Hz.
+    var lowCut: Double
+    /// dB at 3 kHz.
+    var presence: Double
+
+    /// In range and on the steps.
+    var stepped: VideoVoiceTone {
+        VideoVoiceTone(
+            lowCut: (min(max(lowCut, Self.lowCutRange.lowerBound), Self.lowCutRange.upperBound) / 5).rounded() * 5,
+            presence: (min(max(presence, Self.presenceRange.lowerBound), Self.presenceRange.upperBound) * 2).rounded() / 2
+        )
+    }
+
+    var isStandard: Bool { stepped == Self.standard }
+
+    /// Names its cached file: "lc120p30" is 120 Hz and +3 dB.
+    var cacheTag: String {
+        let tone = stepped
+        return "lc\(Int(tone.lowCut))p\(Int((tone.presence * 10).rounded()))"
+    }
+}
+
 /// Cleans up a voice track on this Mac: Apple's voice isolation (removes
 /// room noise, fans, keyboard clatter), a rumble filter, and gentle
 /// compression so quiet and loud words sit closer together.
@@ -95,8 +128,28 @@ enum VideoVoiceEnhancer {
         }
     }
 
-    /// Where the enhanced version of `track` in `recording` is cached.
-    static func cacheURL(for recording: URL, trackIndex: Int) -> URL {
+    /// Where the enhanced version of `track` in `recording` is cached: the
+    /// standard tone under the name it always had, other tones beside it.
+    static func cacheURL(for recording: URL, trackIndex: Int, tone: VideoVoiceTone = .standard) -> URL {
+        let name = cacheName(for: recording, trackIndex: trackIndex)
+        return folder.appendingPathComponent(tone.isStandard ? name + ".m4a" : "\(name)-\(tone.cacheTag).m4a")
+    }
+
+    /// A cleaned-up version of this voice that's already made, to listen to
+    /// (transcription): in `tone`, else in the standard one.
+    static func readyURL(for recording: URL, trackIndex: Int, preferring tone: VideoVoiceTone) -> URL? {
+        [tone, .standard].map { cacheURL(for: recording, trackIndex: trackIndex, tone: $0) }
+            .first { FileManager.default.fileExists(atPath: $0.path) }
+    }
+
+    /// The voice with only the noise taken out (lossless). Other tones start
+    /// from it, so changing the tone doesn't run voice isolation again.
+    static func isolatedURL(for recording: URL, trackIndex: Int) -> URL {
+        folder.appendingPathComponent(cacheName(for: recording, trackIndex: trackIndex) + "-isolated.caf")
+    }
+
+    /// What the names of every cached file of this voice start with.
+    static func cacheName(for recording: URL, trackIndex: Int) -> String {
         let attributes = try? FileManager.default.attributesOfItem(atPath: recording.path)
         let stamp = (attributes?[.modificationDate] as? Date)?.timeIntervalSince1970 ?? 0
         let key = Data("\(recording.standardizedFileURL.path)|\(trackIndex)|\(Int(stamp))|v\(version)".utf8)
@@ -104,10 +157,24 @@ enum VideoVoiceEnhancer {
             .replacingOccurrences(of: "/", with: "_")
             .replacingOccurrences(of: "+", with: "-")
             .replacingOccurrences(of: "=", with: "")
-        return VideoStorageLocation.root
+        return String(key.suffix(80))
+    }
+
+    private static var folder: URL {
+        VideoStorageLocation.root
             .appendingPathComponent("Shotnix", isDirectory: true)
             .appendingPathComponent("VideoAudio", isDirectory: true)
-            .appendingPathComponent(String(key.suffix(80)) + ".m4a")
+    }
+
+    /// Removes this voice's other tones (every change makes a file), but
+    /// never the standard one or the isolated voice.
+    static func removeTones(of recording: URL, trackIndex: Int, keeping: Set<VideoVoiceTone>) {
+        let prefix = cacheName(for: recording, trackIndex: trackIndex) + "-lc"
+        let kept = Set(keeping.map { cacheURL(for: recording, trackIndex: trackIndex, tone: $0).lastPathComponent })
+        let files = (try? FileManager.default.contentsOfDirectory(at: folder, includingPropertiesForKeys: nil)) ?? []
+        for file in files where file.lastPathComponent.hasPrefix(prefix) && !kept.contains(file.lastPathComponent) {
+            try? FileManager.default.removeItem(at: file)
+        }
     }
 
     static var isAvailable: Bool {
@@ -126,12 +193,16 @@ enum VideoVoiceEnhancer {
     }
 
     /// Writes the enhanced track to `destination` (mono AAC, starting at
-    /// the track's first sample). Returns that start, in recording time.
+    /// the track's first sample). Given `isolated`, a tone other than the
+    /// standard one starts from the isolated voice there (made first when
+    /// it's missing). Returns where the track starts, in recording time.
     @discardableResult
     static func enhance(
         asset: AVAsset,
         track: AVAssetTrack,
         to destination: URL,
+        tone: VideoVoiceTone = .standard,
+        isolated: URL? = nil,
         progress: @escaping @Sendable (Double) -> Void
     ) async throws -> Double {
         guard isAvailable else { throw Failure.unavailable }
@@ -140,90 +211,96 @@ enum VideoVoiceEnhancer {
         let work = fileManager.temporaryDirectory.appendingPathComponent("shotnix-voice-\(UUID().uuidString)", isDirectory: true)
         try fileManager.createDirectory(at: work, withIntermediateDirectories: true)
         defer { try? fileManager.removeItem(at: work) }
-
-        // 1. The raw voice as 48 kHz mono float PCM.
         guard let format = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: 48_000, channels: 1, interleaved: false) else {
             throw Failure.unavailable
         }
-        let rawURL = work.appendingPathComponent("raw.caf")
-        let raw = try AVAudioFile(forWriting: rawURL, settings: format.settings, commonFormat: .pcmFormatFloat32, interleaved: false)
-        var firstTime: Double?
-        let duration = max(try await asset.load(.duration).seconds, 0.1)
-        try await VideoAudioReader.read(asset: asset, tracks: [track], format: format) { buffer, start in
-            if firstTime == nil { firstTime = start.seconds }
-            try raw.write(from: buffer)
-            progress(min(start.seconds / duration, 1) * 0.15)
-        }
-        let rawLength = raw.length
-        guard rawLength > 0 else { throw Failure.failed(L("The voice track is empty, so there's nothing to clean up. Turn off Enhance voice to keep the original sound.")) }
-        let input = try AVAudioFile(forReading: rawURL, commonFormat: .pcmFormatFloat32, interleaved: false)
 
-        // 2. Isolation → rumble filter → compressor, rendered offline.
+        let outputURL = work.appendingPathComponent("voice.m4a")
+        let start: Double
+        if let isolated, !tone.isStandard {
+            // Isolation (the slow part) once; each tone after that is quick.
+            var done = 0.0
+            if !fileManager.fileExists(atPath: isolated.path) {
+                let raw = try await readRaw(asset: asset, track: track, format: format, into: work) { progress($0 * 0.15) }
+                let isolatedURL = work.appendingPathComponent("isolated.caf")
+                try render(raw.file, through: [isolation()], to: losslessFile(at: isolatedURL), tail: 0.1, format: format) { progress(0.15 + 0.75 * $0) }
+                try? fileManager.removeItem(at: isolated)
+                try fileManager.moveItem(at: isolatedURL, to: isolated)
+                done = 0.9
+            }
+            let input = try AVAudioFile(forReading: isolated, commonFormat: .pcmFormatFloat32, interleaved: false)
+            try render(input, through: [equalizer(tone), compressor()], to: voiceFile(at: outputURL), tail: 0, format: format) { progress(done + (1 - done) * $0) }
+            start = (try? await track.load(.timeRange))?.start.seconds ?? 0
+        } else {
+            // 1. The raw voice; 2. isolation → rumble filter → compressor.
+            let raw = try await readRaw(asset: asset, track: track, format: format, into: work) { progress($0 * 0.15) }
+            try render(raw.file, through: [isolation(), equalizer(tone), compressor()], to: voiceFile(at: outputURL), tail: 0.1, format: format) { progress(0.15 + 0.85 * $0) }
+            start = raw.start
+        }
+
+        try? fileManager.removeItem(at: destination)
+        try fileManager.moveItem(at: outputURL, to: destination)
+        progress(1)
+        return start
+    }
+
+    /// The raw voice as 48 kHz mono float PCM (in `folder`), and the time of
+    /// its first sample in the recording.
+    private static func readRaw(
+        asset: AVAsset,
+        track: AVAssetTrack,
+        format: AVAudioFormat,
+        into folder: URL,
+        progress: @escaping @Sendable (Double) -> Void
+    ) async throws -> (file: AVAudioFile, start: Double) {
+        let rawURL = folder.appendingPathComponent("raw.caf")
+        var firstTime: Double?
+        do {
+            let raw = try AVAudioFile(forWriting: rawURL, settings: format.settings, commonFormat: .pcmFormatFloat32, interleaved: false)
+            let duration = max(try await asset.load(.duration).seconds, 0.1)
+            try await VideoAudioReader.read(asset: asset, tracks: [track], format: format) { buffer, start in
+                if firstTime == nil { firstTime = start.seconds }
+                try raw.write(from: buffer)
+                progress(min(start.seconds / duration, 1))
+            }
+            guard raw.length > 0 else { throw Failure.failed(L("The voice track is empty, so there's nothing to clean up. Turn off Enhance voice to keep the original sound.")) }
+        }
+        return (try AVAudioFile(forReading: rawURL, commonFormat: .pcmFormatFloat32, interleaved: false), firstTime ?? 0)
+    }
+
+    /// Plays `input` through `units` offline into `output`. The units' delay
+    /// (the isolation model looks ahead ~0.1 s) is dropped from the start so
+    /// the voice stays in sync with the picture, and `tail` seconds past the
+    /// end are kept so the last word isn't cut.
+    private static func render(
+        _ input: AVAudioFile,
+        through units: [AVAudioUnit],
+        to output: AVAudioFile,
+        tail: Double,
+        format: AVAudioFormat,
+        progress: (Double) -> Void
+    ) throws {
         let engine = AVAudioEngine()
         let player = AVAudioPlayerNode()
-        let isolation = AVAudioUnitEffect(audioComponentDescription: isolationDescription)
-        let equalizer = AVAudioUnitEQ(numberOfBands: 2)
-        let compressor = AVAudioUnitEffect(audioComponentDescription: AudioComponentDescription(
-            componentType: kAudioUnitType_Effect,
-            componentSubType: kAudioUnitSubType_DynamicsProcessor,
-            componentManufacturer: kAudioUnitManufacturer_Apple,
-            componentFlags: 0,
-            componentFlagsMask: 0
-        ))
         engine.attach(player)
-        engine.attach(isolation)
-        engine.attach(equalizer)
-        engine.attach(compressor)
-
-        let isolationUnit = isolation.audioUnit
-        AudioUnitSetParameter(isolationUnit, kAUSoundIsolationParam_WetDryMixPercent, kAudioUnitScope_Global, 0, 100, 0)
-        if #available(macOS 15.0, *) {
-            AudioUnitSetParameter(isolationUnit, kAUSoundIsolationParam_SoundToIsolate, kAudioUnitScope_Global, 0, AudioUnitParameterValue(kAUSoundIsolationSoundType_HighQualityVoice), 0)
+        var previous: AVAudioNode = player
+        for unit in units {
+            engine.attach(unit)
+            engine.connect(previous, to: unit, format: format)
+            previous = unit
         }
-
-        let rumble = equalizer.bands[0]
-        rumble.filterType = .highPass
-        rumble.frequency = 80
-        rumble.bypass = false
-        let presence = equalizer.bands[1]
-        presence.filterType = .parametric
-        presence.frequency = 3_000
-        presence.bandwidth = 1.2
-        presence.gain = 1.5
-        presence.bypass = false
-
-        let compressorUnit = compressor.audioUnit
-        AudioUnitSetParameter(compressorUnit, kDynamicsProcessorParam_Threshold, kAudioUnitScope_Global, 0, -24, 0)
-        AudioUnitSetParameter(compressorUnit, kDynamicsProcessorParam_HeadRoom, kAudioUnitScope_Global, 0, 8, 0)
-        AudioUnitSetParameter(compressorUnit, kDynamicsProcessorParam_AttackTime, kAudioUnitScope_Global, 0, 0.004, 0)
-        AudioUnitSetParameter(compressorUnit, kDynamicsProcessorParam_ReleaseTime, kAudioUnitScope_Global, 0, 0.15, 0)
-        AudioUnitSetParameter(compressorUnit, kDynamicsProcessorParam_OverallGain, kAudioUnitScope_Global, 0, 4, 0)
-
-        engine.connect(player, to: isolation, format: format)
-        engine.connect(isolation, to: equalizer, format: format)
-        engine.connect(equalizer, to: compressor, format: format)
-        engine.connect(compressor, to: engine.mainMixerNode, format: format)
+        engine.connect(previous, to: engine.mainMixerNode, format: format)
         try engine.enableManualRenderingMode(.offline, format: format, maximumFrameCount: 4_096)
         try engine.start()
-        // The isolation model looks ahead (~0.1 s): drop that much from the
-        // start of the output so the voice stays in sync with the picture.
-        let latency = isolation.auAudioUnit.latency + equalizer.auAudioUnit.latency + compressor.auAudioUnit.latency
+        let latency = units.reduce(0) { $0 + $1.auAudioUnit.latency }
         var framesToSkip = AVAudioFramePosition((latency * format.sampleRate).rounded())
         player.scheduleFile(input, at: nil, completionHandler: nil)
         player.play()
 
-        let outputURL = work.appendingPathComponent("voice.m4a")
-        let output = try AVAudioFile(forWriting: outputURL, settings: [
-            AVFormatIDKey: kAudioFormatMPEG4AAC,
-            AVSampleRateKey: 48_000,
-            AVNumberOfChannelsKey: 1,
-            AVEncoderBitRateKey: 128_000,
-        ], commonFormat: .pcmFormatFloat32, interleaved: false)
         guard let buffer = AVAudioPCMBuffer(pcmFormat: engine.manualRenderingFormat, frameCapacity: engine.manualRenderingMaximumFrameCount) else {
             throw Failure.unavailable
         }
-        // Render the latency plus a short tail so the last word isn't cut.
-        let total = rawLength + framesToSkip + AVAudioFramePosition(format.sampleRate * 0.1)
+        let total = input.length + framesToSkip + AVAudioFramePosition(format.sampleRate * tail)
         while engine.manualRenderingSampleTime < total {
             try Task.checkCancellation()
             let frames = AVAudioFrameCount(min(Int64(buffer.frameCapacity), total - engine.manualRenderingSampleTime))
@@ -253,15 +330,77 @@ enum VideoVoiceEnhancer {
             @unknown default:
                 throw Failure.failed(L("Voice enhancement stopped partway. Turn Enhance voice off and on again to retry."))
             }
-            progress(0.15 + 0.85 * Double(engine.manualRenderingSampleTime) / Double(max(total, 1)))
+            progress(Double(engine.manualRenderingSampleTime) / Double(max(total, 1)))
         }
         player.stop()
         engine.stop()
+    }
 
-        try? fileManager.removeItem(at: destination)
-        try fileManager.moveItem(at: outputURL, to: destination)
-        progress(1)
-        return firstTime ?? 0
+    /// Apple's voice isolation, fully on.
+    private static func isolation() -> AVAudioUnitEffect {
+        let isolation = AVAudioUnitEffect(audioComponentDescription: isolationDescription)
+        let unit = isolation.audioUnit
+        AudioUnitSetParameter(unit, kAUSoundIsolationParam_WetDryMixPercent, kAudioUnitScope_Global, 0, 100, 0)
+        if #available(macOS 15.0, *) {
+            AudioUnitSetParameter(unit, kAUSoundIsolationParam_SoundToIsolate, kAudioUnitScope_Global, 0, AudioUnitParameterValue(kAUSoundIsolationSoundType_HighQualityVoice), 0)
+        }
+        return isolation
+    }
+
+    /// The low cut and the presence band.
+    private static func equalizer(_ tone: VideoVoiceTone) -> AVAudioUnitEQ {
+        let tone = tone.stepped
+        let equalizer = AVAudioUnitEQ(numberOfBands: 2)
+        let rumble = equalizer.bands[0]
+        rumble.filterType = .highPass
+        rumble.frequency = Float(tone.lowCut)
+        rumble.bypass = false
+        let presence = equalizer.bands[1]
+        presence.filterType = .parametric
+        presence.frequency = 3_000
+        presence.bandwidth = 1.2
+        presence.gain = Float(tone.presence)
+        presence.bypass = false
+        return equalizer
+    }
+
+    /// Gentle compression, so quiet and loud words sit closer together.
+    private static func compressor() -> AVAudioUnitEffect {
+        let compressor = AVAudioUnitEffect(audioComponentDescription: AudioComponentDescription(
+            componentType: kAudioUnitType_Effect,
+            componentSubType: kAudioUnitSubType_DynamicsProcessor,
+            componentManufacturer: kAudioUnitManufacturer_Apple,
+            componentFlags: 0,
+            componentFlagsMask: 0
+        ))
+        let unit = compressor.audioUnit
+        AudioUnitSetParameter(unit, kDynamicsProcessorParam_Threshold, kAudioUnitScope_Global, 0, -24, 0)
+        AudioUnitSetParameter(unit, kDynamicsProcessorParam_HeadRoom, kAudioUnitScope_Global, 0, 8, 0)
+        AudioUnitSetParameter(unit, kDynamicsProcessorParam_AttackTime, kAudioUnitScope_Global, 0, 0.004, 0)
+        AudioUnitSetParameter(unit, kDynamicsProcessorParam_ReleaseTime, kAudioUnitScope_Global, 0, 0.15, 0)
+        AudioUnitSetParameter(unit, kDynamicsProcessorParam_OverallGain, kAudioUnitScope_Global, 0, 4, 0)
+        return compressor
+    }
+
+    /// The finished voice: mono AAC.
+    private static func voiceFile(at url: URL) throws -> AVAudioFile {
+        try AVAudioFile(forWriting: url, settings: [
+            AVFormatIDKey: kAudioFormatMPEG4AAC,
+            AVSampleRateKey: 48_000,
+            AVNumberOfChannelsKey: 1,
+            AVEncoderBitRateKey: 128_000,
+        ], commonFormat: .pcmFormatFloat32, interleaved: false)
+    }
+
+    /// The isolated voice: Apple Lossless, so the tone made from it is as
+    /// clean as one made in a single pass.
+    private static func losslessFile(at url: URL) throws -> AVAudioFile {
+        try AVAudioFile(forWriting: url, settings: [
+            AVFormatIDKey: kAudioFormatAppleLossless,
+            AVSampleRateKey: 48_000,
+            AVNumberOfChannelsKey: 1,
+            AVEncoderBitDepthHintKey: 16,
+        ], commonFormat: .pcmFormatFloat32, interleaved: false)
     }
 }
 
