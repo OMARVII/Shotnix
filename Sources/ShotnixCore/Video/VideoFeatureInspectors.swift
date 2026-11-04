@@ -285,6 +285,13 @@ struct VideoCaptionsInspector: View {
                 }
                 .disabled(model.captionJob != nil)
 
+                // Above the lines, which run to hundreds in a long lesson.
+                // Side by side, or one above the other where the names run long.
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 8) { subtitlesAndTranscript }
+                    VStack(alignment: .leading, spacing: 8) { subtitlesAndTranscript }
+                }
+
                 VideoInspectorSection(L("Lines · \(model.project.captions.count)"), trailing: {
                     HStack(spacing: 4) {
                         // In sight, beside the lines it removes.
@@ -314,12 +321,6 @@ struct VideoCaptionsInspector: View {
 
                 // Translated caption tracks (VideoCaptionTranslation.swift).
                 VideoCaptionTranslationSection(model: model)
-
-                // Side by side, or one above the other where the names run long.
-                ViewThatFits(in: .horizontal) {
-                    HStack(spacing: 8) { subtitlesAndTranscript }
-                    VStack(spacing: 8) { subtitlesAndTranscript }
-                }
             }
         }
         .onAppear { model.loadCaptionLanguages() }

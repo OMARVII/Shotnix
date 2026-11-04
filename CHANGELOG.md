@@ -8,7 +8,7 @@
 
 ### Changed
 - **The video editor says how to change more than one clip.** A selected clip's panel now says its speed and sound change only that clip, that ⇧-dragging across the timeline selects a longer part, and offers to select the whole video. The shortcut list and the tips under the video now say a selected part is for cutting and for its speed and sound, not just cutting.
-- **Remove all captions in one click.** A Remove all button sits next to the caption lines, and the menu below them (Transcribe Again, Language, Remove) is now called Transcript instead of an unlabeled "···" button. ⌘Z brings removed captions back.
+- **Remove all captions in one click.** A Remove all button sits next to the caption lines, and the menu that held Transcribe Again, Language and Remove is now called Transcript instead of an unlabeled "···" button. It also moved above the lines with Save Subtitles, so a long video's hundreds of lines no longer push them out of reach. ⌘Z brings removed captions back.
 
 ## [0.28.0-beta] - 2026-10-30
 
