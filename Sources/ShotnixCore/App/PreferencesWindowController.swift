@@ -1065,7 +1065,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.28.0"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.29.0"
     
     var body: some View {
         PreferencesPane {
@@ -1109,6 +1109,11 @@ struct AboutSettingsView: View {
                 ScrollView {
                     // The release notes stay in English (l10n-ignore); everything around them is localized.
                     Text(verbatim: """
+                    Version 0.29.0
+                    • Enhance voice has Low cut and Presence sliders to shape how your voice sounds
+                    • ⌘A selects the whole video, so one click sets the speed or sound of every clip
+                    • Remove all clears every caption line, and the Transcript menu sits above the lines
+
                     Version 0.28.0
                     • The computer sound dips under your voice by itself, and a lane on the timeline shows every dip
                     • A clip or any part of the video can have its own Voice and Computer sound levels
