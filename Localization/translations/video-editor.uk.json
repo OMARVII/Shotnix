@@ -1688,6 +1688,9 @@
   "Turn the video's sound back on" : {
     "uk" : "Знову ввімкнути звук відео"
   },
+  "Type any speed from 0.25× to 16×" : {
+    "uk" : "Ввести будь-яку швидкість від 0,25× до 16×"
+  },
   "Type in a text annotation" : {
     "uk" : "Вводити текст у текстовий елемент"
   },

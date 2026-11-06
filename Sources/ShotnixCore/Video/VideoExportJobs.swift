@@ -294,6 +294,20 @@ final class VideoExportQueue: ObservableObject {
         @Published fileprivate(set) var note: String?
         /// Subtitles written next to it.
         fileprivate(set) var subtitlesURL: URL?
+
+        /// The video and what was saved beside it (subtitles, its sound
+        /// files): Show in Finder selects them all.
+        var savedFiles: [URL] {
+            var urls = [destination]
+            if let subtitlesURL { urls.append(subtitlesURL) }
+            if settings.format == .mp4, settings.separateSound {
+                for kind in [VideoAudioKind.microphone, .system] {
+                    let url = VideoDemoExporter.separateSoundURL(kind, beside: destination)
+                    if FileManager.default.fileExists(atPath: url.path) { urls.append(url) }
+                }
+            }
+            return urls
+        }
         fileprivate var cancelRequested = false
         /// The work itself: cancelling it stops a voice cleanup mid-way.
         fileprivate var task: Task<Void, Never>?
@@ -335,6 +349,7 @@ final class VideoExportQueue: ObservableObject {
             case .running(.rendering(let value)):
                 let percent = Int((value * 100).rounded())
                 return toClipboard ? L("Rendering for the clipboard… \(percent)%") : L("Exporting… \(percent)%")
+            case .running(.savingSound): return L("Saving the voice and computer sound…")
             case .finished(let bytes):
                 let size = VideoEditorModel.formatBytes(bytes)
                 return toClipboard ? L("On your clipboard · \(size)") : L("Exported · \(size)")
@@ -434,7 +449,7 @@ final class VideoExportQueue: ObservableObject {
             if job.cancelRequested { throw VideoDemoExportError.cancelled }
             job.state = .running(.preparing)
             let bridge = JobBridge(job: job)
-            _ = try await VideoDemoExporter.export(
+            let warnings = try await VideoDemoExporter.export(
                 project: job.project,
                 recording: job.recording,
                 destinationURL: job.destination,
@@ -451,7 +466,11 @@ final class VideoExportQueue: ObservableObject {
                 VideoDemoRecentExportStore.add(exportURL: job.destination, sourceURL: job.project.sourceURL)
                 job.subtitlesURL = writeSubtitles(for: job)
             }
-            if voiceFailed { job.note = L("Exported without Enhance voice — it couldn't finish.") }
+            if voiceFailed {
+                job.note = L("Exported without Enhance voice — it couldn't finish.")
+            } else if let warning = warnings.first {
+                job.note = warning
+            }
             finish(job, .finished(bytes: bytes))
         } catch {
             var cancelled = job.cancelRequested
@@ -680,6 +699,7 @@ private struct VideoExportStatusChip: View {
         case .running(.rendering(let value)):
             let percent = Int((value * 100).rounded())
             return job.toClipboard ? L("Copying \(percent)%") : L("Exporting \(percent)%")
+        case .running(.savingSound): return L("Saving sound files…")
         case .finished: return job.toClipboard ? L("Copied") : L("Exported")
         case .failed: return L("Export failed")
         case .cancelled: return L("Cancelled")
@@ -697,7 +717,7 @@ private struct VideoExportStatusChip: View {
             Image(systemName: "xmark.circle").foregroundStyle(Color.white.opacity(0.6)).font(.system(size: 13))
         case .queued:
             Image(systemName: "clock").foregroundStyle(Color.white.opacity(0.7)).font(.system(size: 12))
-        case .enhancingVoice(let value), .running(.balancingLoudness(let value)), .running(.rendering(let value)):
+        case .enhancingVoice(let value), .running(.balancingLoudness(let value)), .running(.rendering(let value)), .running(.savingSound(let value)):
             ring(value)
         case .running(.preparing):
             ring(0)
@@ -720,7 +740,7 @@ private struct VideoExportStatusChip: View {
         if case .finished = job.state, !job.toClipboard {
             VideoShareButton(url: job.destination, compact: true)
             Button {
-                NSWorkspace.shared.activateFileViewerSelecting([job.destination])
+                NSWorkspace.shared.activateFileViewerSelecting(job.savedFiles)
             } label: {
                 Image(systemName: "folder").frame(width: 24, height: 24)
             }
@@ -822,7 +842,7 @@ private struct VideoExportJobRow: View {
             if case .finished = job.state, !job.toClipboard {
                 VideoShareButton(url: job.destination, compact: true)
                 Button {
-                    NSWorkspace.shared.activateFileViewerSelecting([job.destination])
+                    NSWorkspace.shared.activateFileViewerSelecting(job.savedFiles)
                 } label: {
                     Image(systemName: "folder").frame(width: 24, height: 24)
                 }
@@ -979,7 +999,7 @@ private struct VideoExportCompletionView: View {
                     HStack(spacing: 8) {
                         VideoShareButton(url: job.destination)
                         Button(L("Show in Finder")) {
-                            NSWorkspace.shared.activateFileViewerSelecting([job.destination])
+                            NSWorkspace.shared.activateFileViewerSelecting(job.savedFiles)
                             close()
                         }
                         .controlSize(.small)

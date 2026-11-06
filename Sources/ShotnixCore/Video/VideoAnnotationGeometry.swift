@@ -66,6 +66,28 @@ extension VideoOverlayStyleMemory {
         get { UserDefaults.standard.object(forKey: "videoOverlayBlurStrength") as? Double }
         set { UserDefaults.standard.set(newValue, forKey: "videoOverlayBlurStrength") }
     }
+
+    /// How far the last spotlight dimmed (new spotlights start with it).
+    static var spotlightDim: Double? {
+        get { UserDefaults.standard.object(forKey: "videoOverlaySpotlightDim") as? Double }
+        set { UserDefaults.standard.set(newValue, forKey: "videoOverlaySpotlightDim") }
+    }
+
+    /// The typeface, weight and letter color picked last for text.
+    static var textFont: VideoTextFont? {
+        get { UserDefaults.standard.string(forKey: "videoOverlayTextFont").flatMap(VideoTextFont.init(rawValue:)) }
+        set { UserDefaults.standard.set(newValue?.rawValue, forKey: "videoOverlayTextFont") }
+    }
+
+    static var textWeight: VideoTextWeight? {
+        get { UserDefaults.standard.string(forKey: "videoOverlayTextWeight").flatMap(VideoTextWeight.init(rawValue:)) }
+        set { UserDefaults.standard.set(newValue?.rawValue, forKey: "videoOverlayTextWeight") }
+    }
+
+    static var textColor: VideoRGBA? {
+        get { UserDefaults.standard.data(forKey: "videoOverlayTextColor").flatMap { try? JSONDecoder().decode(VideoRGBA.self, from: $0) } }
+        set { UserDefaults.standard.set(newValue.flatMap { try? JSONEncoder().encode($0) }, forKey: "videoOverlayTextColor") }
+    }
 }
 
 // MARK: - Hit testing

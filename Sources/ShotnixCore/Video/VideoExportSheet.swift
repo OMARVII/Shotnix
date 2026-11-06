@@ -225,6 +225,9 @@ struct VideoExportSheet: View {
             }
 
             if settings.format == .mp4 {
+                if model.hasSeparateVoiceAndSystem {
+                    VideoToggleRow(title: L("Separate sound files"), detail: L("Also saves the voice and the computer sound as their own files next to the video, to mix somewhere else"), isOn: $model.exportSettings.separateSound)
+                }
                 VideoToggleRow(title: L("End card"), detail: L("A 2-second “Made with Shotnix” outro on your background — your own outro card is in Style"), isOn: $model.exportSettings.endCard)
             } else {
                 note(L("GIFs embed anywhere — READMEs, pull requests, docs. Keep them short: they get big fast."))
@@ -410,6 +413,7 @@ struct VideoExportSheet: View {
         if model.project.cards.outro.enabled { pieces.append(L("outro card")) }
         if model.project.music != nil { pieces.append(L("music")) }
         if !model.project.captions.isEmpty { pieces.append(settings.burnCaptions && model.project.captionStyle.visible ? L("captions burned in") : L("no captions in the picture")) }
+        if settings.format == .mp4, settings.separateSound, model.hasSeparateVoiceAndSystem { pieces.append(L("voice and computer sound as their own files")) }
         if settings.format == .mp4 { pieces.append(endCard ? L("“Made with Shotnix” end card (2s)") : L("no end card")) }
         if let range = exportRange {
             let start = VideoEditorModel.timecode(range.lowerBound)

@@ -79,6 +79,154 @@ struct VideoOverlayColorPicker: View {
     }
 }
 
+/// A text annotation's letters: "Auto" (dark on a light tag, white
+/// otherwise), a few swatches, or any color.
+struct VideoTextColorPicker: View {
+    @ObservedObject var model: VideoEditorModel
+    let overlay: VideoDemoOverlayEffect
+
+    /// White and black, then the colors arrows and tags have, so letters
+    /// can match them: with Automatic and Any color, two rows like the tag's.
+    static let palette: [VideoRGBA] = [
+        VideoRGBA(hex: 0xFFFFFF), VideoRGBA(hex: 0x1C1C1E), VideoRGBA(hex: 0xFFD60A),
+        VideoRGBA(hex: 0xFF9F0A), VideoRGBA(hex: 0xFF453A), VideoRGBA(hex: 0xFF375F),
+        VideoRGBA(hex: 0xBF5AF2), VideoRGBA(hex: 0x0A84FF), VideoRGBA(hex: 0x30D158),
+    ]
+
+    private func same(_ a: VideoRGBA, _ b: VideoRGBA) -> Bool {
+        abs(a.r - b.r) < 0.01 && abs(a.g - b.g) < 0.01 && abs(a.b - b.b) < 0.01
+    }
+
+    var body: some View {
+        let columns = Array(repeating: GridItem(.fixed(30), spacing: 8), count: 6)
+        let current = overlay.textColor
+        LazyVGrid(columns: columns, alignment: .leading, spacing: 8) {
+            Button {
+                model.setTextColor(nil, of: overlay.id)
+                model.endGesture()
+            } label: {
+                Text(verbatim: "A")
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundStyle(VideoEditorTheme.textPrimary)
+                    .frame(width: 24, height: 24)
+                    .background(Circle().fill(LinearGradient(colors: [Color.white.opacity(0.35), Color.black.opacity(0.6)], startPoint: .topLeading, endPoint: .bottomTrailing)))
+                    .overlay(Circle().strokeBorder(Color.white.opacity(0.18), lineWidth: 1))
+                    .padding(3)
+                    .overlay(Circle().strokeBorder(current == nil ? Color.white : Color.clear, lineWidth: 2))
+                    .contentShape(Circle())
+            }
+            .buttonStyle(.plain)
+            .help(L("Automatic: dark on a light tag, white otherwise"))
+            .accessibilityLabel(L("Automatic"))
+            ForEach(Array(Self.palette.enumerated()), id: \.offset) { _, color in
+                let selected = current.map { same($0, color) } ?? false
+                Button {
+                    model.setTextColor(color, of: overlay.id)
+                    model.endGesture()
+                } label: {
+                    ZStack {
+                        Circle().fill(Color(nsColor: color.nsColor))
+                        Circle().strokeBorder(Color.white.opacity(0.18), lineWidth: 1)
+                    }
+                    .frame(width: 24, height: 24)
+                    .padding(3)
+                    .overlay(Circle().strokeBorder(selected ? Color.white : Color.clear, lineWidth: 2))
+                    .contentShape(Circle())
+                }
+                .buttonStyle(.plain)
+                .help(L("Use this color"))
+                .accessibilityLabel(L("Color"))
+            }
+            VideoCustomColorSwatch(
+                color: current ?? VideoRGBA(hex: 0xFFFFFF),
+                isCustom: current.map { color in !Self.palette.contains { same($0, color) } } ?? false,
+                showsAlpha: false
+            ) { [weak model, id = overlay.id] picked in
+                guard let model, model.selection == .overlay(id) else { return }
+                model.setTextColor(picked.withAlpha(1), of: id, coalesce: "text-color-panel-\(id)")
+            }
+        }
+    }
+}
+
+extension VideoTextFont {
+    /// The typeface's own name (not translated, like any font's).
+    var familyName: String {
+        switch self {
+        case .system: return "SF Pro"
+        case .rounded: return "SF Rounded"
+        case .serif: return "New York"
+        case .mono: return "SF Mono"
+        }
+    }
+
+    var swiftUIDesign: Font.Design {
+        switch self {
+        case .system: return .default
+        case .rounded: return .rounded
+        case .serif: return .serif
+        case .mono: return .monospaced
+        }
+    }
+}
+
+extension VideoTextWeight {
+    var swiftUIWeight: Font.Weight {
+        switch self {
+        case .regular: return .regular
+        case .semibold: return .semibold
+        case .bold: return .bold
+        case .heavy: return .heavy
+        }
+    }
+}
+
+/// One of a few looks, each shown as "Aa" drawn that way (a font or a
+/// weight), with its typeface's name under it when there is one, named in
+/// its tooltip.
+struct VideoGlyphChoice<Value: Hashable>: View {
+    let options: [(value: Value, font: Font, name: String, caption: String?)]
+    @Binding var selection: Value
+
+    var body: some View {
+        HStack(spacing: 2) {
+            ForEach(Array(options.enumerated()), id: \.offset) { _, option in
+                let selected = option.value == selection
+                Button {
+                    selection = option.value
+                } label: {
+                    VStack(spacing: 1) {
+                        Text(verbatim: "Aa")
+                            .font(option.font)
+                        if let caption = option.caption {
+                            Text(verbatim: caption)
+                                .font(.system(size: 9.5, weight: .medium))
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.8)
+                        }
+                    }
+                    .foregroundStyle(selected ? VideoEditorTheme.textPrimary : VideoEditorTheme.textSecondary)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: option.caption == nil ? 26 : 44)
+                    .background(
+                        RoundedRectangle(cornerRadius: 6, style: .continuous)
+                            .fill(selected ? Color.white.opacity(0.14) : Color.clear)
+                    )
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .help(option.name)
+                .accessibilityLabel(option.name)
+                .accessibilityAddTraits(selected ? .isSelected : [])
+            }
+        }
+        .accessibilityElement(children: .contain)
+        .padding(2)
+        .background(RoundedRectangle(cornerRadius: 8, style: .continuous).fill(Color.black.opacity(0.28)))
+        .overlay(RoundedRectangle(cornerRadius: 8, style: .continuous).strokeBorder(VideoEditorTheme.cardStroke, lineWidth: 1))
+    }
+}
+
 /// "Any color": a rainbow swatch that opens the system color panel. Shows
 /// the chosen color (ringed) when it isn't one of the swatches.
 struct VideoCustomColorSwatch: View {

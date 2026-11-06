@@ -248,6 +248,88 @@
         }
       }
     },
+    "%@ - Computer sound" : {
+      "comment" : "A file of the computer's sound saved next to an exported video: its name, then this",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ - Systemton"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ - Son de l’ordinateur"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ - システムオーディオ"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ - Звук компьютера"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ - Звук комп’ютера"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ - 电脑声音"
+          }
+        }
+      }
+    },
+    "%@ - Voice" : {
+      "comment" : "A file of the voice saved next to an exported video: its name, then this",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ - Stimme"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ - Voix"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ - 声"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ - Голос"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ - Голос"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ - 人声"
+          }
+        }
+      }
+    },
     "%@ Zoom" : {
       "comment" : "A zoom on the timeline with its level (2× Zoom)",
       "localizations" : {
@@ -7995,6 +8077,46 @@
         }
       }
     },
+    "Also saves the voice and the computer sound as their own files next to the video, to mix somewhere else" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sichert Stimme und Systemton zusätzlich als eigene Dateien neben dem Video, um sie woanders abzumischen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistre aussi la voix et le son de l’ordinateur dans leurs propres fichiers à côté de la vidéo, pour les mixer ailleurs"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "声とシステムオーディオも、ビデオの横に個別のファイルとして保存します（ほかのアプリでミックスする場合に）"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Также сохраняет голос и звук компьютера в отдельные файлы рядом с видео, чтобы свести их в другой программе"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Також зберігає голос і звук комп’ютера в окремі файли поруч із відео, щоб звести їх в іншій програмі"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同时将人声和电脑声音分别存储为视频旁边的独立文件，方便在别处混音"
+          }
+        }
+      }
+    },
     "Always show the arrow" : {
       "localizations" : {
         "de" : {
@@ -9897,6 +10019,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“自动”会检测每张截屏的语言；识别有误时可手动选择语言。“精确”最适合识别小字 — “快速”响应更快，但支持的语言更少。用于“提取文字”、“拷贝文字”和历史记录搜索。"
+          }
+        }
+      }
+    },
+    "Automatic: dark on a light tag, white otherwise" : {
+      "comment" : "Tooltip of the text color that follows the tag",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatisch: dunkel auf hellem Hintergrund, sonst weiß"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatique : foncé sur une étiquette claire, blanc sinon"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自動：明るい背景では暗い色、それ以外は白"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автоматически: темный на светлой плашке, иначе белый"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автоматично: темний на світлій плашці, інакше білий"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动：浅色标签上用深色，其他情况用白色"
           }
         }
       }
@@ -20832,6 +20995,47 @@
         }
       }
     },
+    "Dimming" : {
+      "comment" : "How far a spotlight darkens the picture around the spot",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abdunkeln"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assombrissement"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "周囲の暗さ"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Затемнение"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Затемнення"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "压暗"
+          }
+        }
+      }
+    },
     "Dip to black" : {
       "localizations" : {
         "de" : {
@@ -26613,6 +26817,47 @@
         }
       }
     },
+    "Font" : {
+      "comment" : "A text annotation's typeface",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schrift"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Police"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォント"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Шрифт"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Шрифт"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "字体"
+          }
+        }
+      }
+    },
     "Forever" : {
       "localizations" : {
         "de" : {
@@ -28265,6 +28510,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "状态"
+          }
+        }
+      }
+    },
+    "Heavy" : {
+      "comment" : "A font weight",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extrafett"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extra-gras"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "極太"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сверхжирный"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Наджирний"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "特粗体"
           }
         }
       }
@@ -34676,6 +34962,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "薄雾"
+          }
+        }
+      }
+    },
+    "Monospaced font" : {
+      "comment" : "Tooltip of a typeface choice",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Festbreitenschrift"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Police à chasse fixe"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "等幅フォント"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Моноширинный шрифт"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Моноширинний шрифт"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "等宽字体"
           }
         }
       }
@@ -53548,6 +53875,47 @@
         }
       }
     },
+    "Rounded font" : {
+      "comment" : "Tooltip of a typeface choice",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abgerundete Schrift"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Police arrondie"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "丸みのあるフォント"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скругленный шрифт"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заокруглений шрифт"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "圆体"
+          }
+        }
+      }
+    },
     "Rounded rectangle" : {
       "localizations" : {
         "de" : {
@@ -54672,6 +55040,46 @@
         }
       }
     },
+    "Saving sound files…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tondateien werden gesichert …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrement des fichiers audio…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音声ファイルを保存中…"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сохранение звуковых файлов…"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Збереження звукових файлів…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在存储音频文件…"
+          }
+        }
+      }
+    },
     "Saving the last recording…" : {
       "localizations" : {
         "de" : {
@@ -54829,6 +55237,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在存储屏幕录制内容"
+          }
+        }
+      }
+    },
+    "Saving the voice and computer sound…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stimme und Systemton werden gesichert …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrement de la voix et du son de l’ordinateur…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "声とシステムオーディオを保存中…"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сохранение голоса и звука компьютера…"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Збереження голосу і звуку комп’ютера…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在存储人声和电脑声音…"
           }
         }
       }
@@ -56626,6 +57074,47 @@
         }
       }
     },
+    "Semibold" : {
+      "comment" : "A font weight",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Halbfett"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demi-gras"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "やや太い"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Полужирный"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Напівжирний"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "中粗体"
+          }
+        }
+      }
+    },
     "Send by Email…" : {
       "comment" : "Crash report alert button: opens Mail with the report attached",
       "localizations" : {
@@ -56663,6 +57152,88 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "通过电子邮件发送…"
+          }
+        }
+      }
+    },
+    "Separate sound files" : {
+      "comment" : "Export option: the voice and the computer sound also go to their own files",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Separate Tondateien"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fichiers audio séparés"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音声を別ファイルに"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отдельные звуковые файлы"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Окремі звукові файли"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "单独的音频文件"
+          }
+        }
+      }
+    },
+    "Serif font" : {
+      "comment" : "Tooltip of a typeface choice",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serifenschrift"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Police à empattements"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "セリフ体"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Шрифт с засечками"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Шрифт із засічками"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "衬线字体"
           }
         }
       }
@@ -62812,6 +63383,47 @@
         }
       }
     },
+    "System font" : {
+      "comment" : "Tooltip of a typeface choice",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Systemschrift"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Police système"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "システムフォント"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Системный шрифт"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Системний шрифт"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "系统字体"
+          }
+        }
+      }
+    },
     "Table copied — paste it into a spreadsheet" : {
       "localizations" : {
         "de" : {
@@ -63291,6 +63903,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "文字识别"
+          }
+        }
+      }
+    },
+    "Text color" : {
+      "comment" : "The color of a text annotation's letters",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Textfarbe"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couleur du texte"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文字のカラー"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Цвет текста"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Колір тексту"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文字颜色"
           }
         }
       }
@@ -64734,6 +65387,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "视频编码器正忙 — 可能有其他 App 正在录制或导出。请稍候再试，或选择 H.264。"
+          }
+        }
+      }
+    },
+    "The video is saved, but the voice and computer sound couldn't all be saved as their own files." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Video ist gesichert, aber Stimme und Systemton konnten nicht beide als eigene Dateien gesichert werden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La vidéo est enregistrée, mais la voix et le son de l’ordinateur n’ont pas pu être enregistrés tous les deux dans leurs propres fichiers."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ビデオは保存されましたが、声とシステムオーディオの一部を個別のファイルとして保存できませんでした。"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видео сохранено, но не удалось сохранить голос и звук компьютера в отдельные файлы."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Відео збережено, але не вдалося зберегти голос і звук комп’ютера в окремі файли."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "视频已存储，但人声和电脑声音未能全部存储为独立文件。"
           }
         }
       }
@@ -67552,6 +68245,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "重新打开视频声音"
+          }
+        }
+      }
+    },
+    "Type any speed from 0.25× to 16×" : {
+      "comment" : "Tooltip of the field beside the speed buttons",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beliebiges Tempo von 0,25× bis 16× eingeben"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saisir une vitesse de 0,25× à 16×"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0.25×〜16×の好きな速度を入力"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ввести любую скорость от 0,25× до 16×"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ввести будь-яку швидкість від 0,25× до 16×"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "输入 0.25× 到 16× 之间的任意速度"
           }
         }
       }
@@ -73944,6 +74678,47 @@
         }
       }
     },
+    "Weight" : {
+      "comment" : "How heavy a text annotation's letters are",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schriftstärke"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Graisse"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ウエイト"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Насыщенность"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Насиченість"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "字重"
+          }
+        }
+      }
+    },
     "Welcome" : {
       "comment" : "Default intro card title, which the user edits",
       "localizations" : {
@@ -74021,6 +74796,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "欢迎使用 Shotnix"
+          }
+        }
+      }
+    },
+    "What the picture around the spot dims toward" : {
+      "comment" : "Tooltip of a spotlight's dim color",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Farbe, zu der das Bild rund um den Fokus abgedunkelt wird"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La couleur vers laquelle l’image s’assombrit autour du projecteur"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スポットライトの周囲を暗くするときの色"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Цвет, к которому затемняется изображение вокруг прожектора"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Колір, до якого затемнюється зображення навколо прожектора"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "聚光灯周围画面压暗时趋向的颜色"
           }
         }
       }
@@ -77874,6 +78690,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "最多 %@ MB/分钟"
+          }
+        }
+      }
+    },
+    "voice and computer sound as their own files" : {
+      "comment" : "In the export summary's list of what's included: the voice and the computer sound also get saved as separate files",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stimme und Systemton als eigene Dateien"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "voix et son de l’ordinateur en fichiers séparés"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "声とシステムオーディオの個別ファイル"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "голос и звук компьютера отдельными файлами"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "голос і звук комп’ютера окремими файлами"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "人声和电脑声音的独立文件"
           }
         }
       }

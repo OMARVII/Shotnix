@@ -14,6 +14,10 @@
 	<string>%@ (⇧⌘Z)</string>
 	<key>%@ (⌘Z)</key>
 	<string>%@ (⌘Z)</string>
+	<key>%@ - Computer sound</key>
+	<string>%@ - Звук комп’ютера</string>
+	<key>%@ - Voice</key>
+	<string>%@ - Голос</string>
 	<key>%@ Zoom</key>
 	<string>Масштаб %@</string>
 	<key>%@ area</key>
@@ -212,6 +216,8 @@
 	<string>Дозвольте Shotnix у розділі «Доступність» — скорочення ввімкнуться самі.</string>
 	<key>Almost done</key>
 	<string>Майже готово</string>
+	<key>Also saves the voice and the computer sound as their own files next to the video, to mix somewhere else</key>
+	<string>Також зберігає голос і звук комп’ютера в окремі файли поруч із відео, щоб звести їх в іншій програмі</string>
 	<key>Always show the arrow</key>
 	<string>Завжди показувати стрілку</string>
 	<key>Amber Fold</key>
@@ -294,6 +300,8 @@
 	<string>Автоматично</string>
 	<key>Automatic detects each capture's language; pick languages when it guesses wrong. Accurate reads small text best — Fast answers sooner but knows fewer languages. Used by Capture Text, Copy Text, and History search.</key>
 	<string>«Автоматично» визначає мову кожного знімка; якщо мову визначено неправильно, виберіть мови самостійно. «Точне» найкраще читає дрібний текст — «Швидке» дає результат швидше, але знає менше мов. Використовується для «Розпізнати текст», «Скопіювати текст» і пошуку в історії.</string>
+	<key>Automatic: dark on a light tag, white otherwise</key>
+	<string>Автоматично: темний на світлій плашці, інакше білий</string>
 	<key>Back</key>
 	<string>Назад</string>
 	<key>Back to the Shotnix look</key>
@@ -806,6 +814,8 @@
 	<string>Зняти вибір/закрити</string>
 	<key>Desert Violet</key>
 	<string>Фіолет пустелі</string>
+	<key>Dimming</key>
+	<string>Затемнення</string>
 	<key>Dip to black</key>
 	<string>Затемнення</string>
 	<key>Dips while you talk, comes back in the pauses</key>
@@ -1094,6 +1104,8 @@
 	<string>Стежити за курсором</string>
 	<key>Follows cursor</key>
 	<string>Стежить за курсором</string>
+	<key>Font</key>
+	<string>Шрифт</string>
 	<key>Forever</key>
 	<string>Назавжди</string>
 	<key>Format</key>
@@ -1170,6 +1182,8 @@
 	<string>Пряма склейка</string>
 	<key>Health</key>
 	<string>Стан</string>
+	<key>Heavy</key>
+	<string>Наджирний</string>
 	<key>Hidden</key>
 	<string>Сховано</string>
 	<key>Hidden network</key>
@@ -1424,6 +1438,8 @@
 	<string>Віддзеркалити</string>
 	<key>Mist</key>
 	<string>Імла</string>
+	<key>Monospaced font</key>
+	<string>Моноширинний шрифт</string>
 	<key>More recording options</key>
 	<string>Інші параметри запису</string>
 	<key>More tips</key>
@@ -2294,6 +2310,8 @@
 	<string>Заокруглені кути (⌥R)</string>
 	<key>Rounded corners</key>
 	<string>Заокруглені кути</string>
+	<key>Rounded font</key>
+	<string>Заокруглений шрифт</string>
 	<key>Rounded rectangle</key>
 	<string>Заокруглений прямокутник</string>
 	<key>Roundness</key>
@@ -2350,6 +2368,8 @@
 	<string>Зберегти…</string>
 	<key>Saving captures to History</key>
 	<string>Збереження знімків в історію</string>
+	<key>Saving sound files…</key>
+	<string>Збереження звукових файлів…</string>
 	<key>Saving the last recording…</key>
 	<string>Збереження останнього запису…</string>
 	<key>Saving the recording</key>
@@ -2358,6 +2378,8 @@
 	<string>Збереження запису…</string>
 	<key>Saving the screen recording</key>
 	<string>Збереження запису екрана</string>
+	<key>Saving the voice and computer sound…</key>
+	<string>Збереження голосу і звуку комп’ютера…</string>
 	<key>Saving…</key>
 	<string>Збереження…</string>
 	<key>Scan QR Code</key>
@@ -2434,8 +2456,14 @@
 	<string>Вибір: %@ на %@ точок</string>
 	<key>Selection %@ by %@ points. Arrow keys move it, Return captures, Escape cancels.</key>
 	<string>Вибір: %@ на %@ точок. Клавіші зі стрілками переміщують його, Return знімає, Escape скасовує.</string>
+	<key>Semibold</key>
+	<string>Напівжирний</string>
 	<key>Send by Email…</key>
 	<string>Надіслати електронною поштою…</string>
+	<key>Separate sound files</key>
+	<string>Окремі звукові файли</string>
+	<key>Serif font</key>
+	<string>Шрифт із засічками</string>
 	<key>Set In to Playhead</key>
 	<string>Встановити початок на покажчику відтворення</string>
 	<key>Set Out to Playhead</key>
@@ -2722,6 +2750,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>Системний звук</string>
 	<key>System audio couldn't be recorded. Try again without system audio.</key>
 	<string>Не вдалося записати системний звук. Спробуйте ще раз без системного звуку.</string>
+	<key>System font</key>
+	<string>Системний шрифт</string>
 	<key>Table copied — paste it into a spreadsheet</key>
 	<string>Таблицю скопійовано — вставте її в електронну таблицю</string>
 	<key>Tag</key>
@@ -2746,6 +2776,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>Знайдено QR-код із текстом</string>
 	<key>Text Recognition</key>
 	<string>Розпізнавання тексту</string>
+	<key>Text color</key>
+	<string>Колір тексту</string>
 	<key>Text copied</key>
 	<string>Текст скопійовано</string>
 	<key>Text copied to clipboard</key>
@@ -2818,6 +2850,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>Шкала часу порожня. Відновіть кліп, а потім експортуйте ще раз.</string>
 	<key>The video encoder is busy — another app may be recording or exporting. Wait a moment and try again, or choose H.264.</key>
 	<string>Відеокодер зайнятий — можливо, інша програма записує чи експортує. Зачекайте трохи й спробуйте ще раз або виберіть H.264.</string>
+	<key>The video is saved, but the voice and computer sound couldn't all be saved as their own files.</key>
+	<string>Відео збережено, але не вдалося зберегти голос і звук комп’ютера в окремі файли.</string>
 	<key>The video's own recording can't be removed</key>
 	<string>Основний запис відео не можна вилучити</string>
 	<key>The voice track is empty, so there's nothing to clean up. Turn off Enhance voice to keep the original sound.</key>
@@ -2952,6 +2986,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>Зробіть звук комп’ютера тут тихішим, щоб говорити поверх нього.</string>
 	<key>Turn the video's sound back on</key>
 	<string>Знову ввімкнути звук відео</string>
+	<key>Type any speed from 0.25× to 16×</key>
+	<string>Ввести будь-яку швидкість від 0,25× до 16×</string>
 	<key>Type here…</key>
 	<string>Введіть текст…</string>
 	<key>Type in a text annotation</key>
@@ -3258,10 +3294,14 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>Веб</string>
 	<key>Website</key>
 	<string>Вебсайт</string>
+	<key>Weight</key>
+	<string>Насиченість</string>
 	<key>Welcome</key>
 	<string>Вітаємо</string>
 	<key>Welcome to Shotnix</key>
 	<string>Вітаємо в Shotnix</string>
+	<key>What the picture around the spot dims toward</key>
+	<string>Колір, до якого затемнюється зображення навколо прожектора</string>
 	<key>What was playing on your Mac</key>
 	<string>Те, що звучало на вашому Mac</string>
 	<key>What's New</key>
@@ -3442,6 +3482,8 @@ You can re-enable Apple's shortcuts anytime in System Settings → Keyboard → 
 	<string>до %@ ГБ/хв</string>
 	<key>up to %@ MB/min</key>
 	<string>до %@ МБ/хв</string>
+	<key>voice and computer sound as their own files</key>
+	<string>голос і звук комп’ютера окремими файлами</string>
 	<key>zoom the timeline</key>
 	<string>масштабувати шкалу часу</string>
 	<key>© 2026 Shotnix Contributors</key>

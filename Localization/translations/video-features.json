@@ -10,6 +10,18 @@
     "fr" : "%@ (original)",
     "zh-Hans" : "%@（原文）"
   },
+  "%@ - Computer sound" : {
+    "comment" : "A file of the computer's sound saved next to an exported video: its name, then this",
+    "de" : "%@ - Systemton",
+    "fr" : "%@ - Son de l’ordinateur",
+    "zh-Hans" : "%@ - 电脑声音"
+  },
+  "%@ - Voice" : {
+    "comment" : "A file of the voice saved next to an exported video: its name, then this",
+    "de" : "%@ - Stimme",
+    "fr" : "%@ - Voix",
+    "zh-Hans" : "%@ - 人声"
+  },
   "%@ can't be transcribed on this Mac without sending your voice to a server. To add it, turn on Dictation for %@ in System Settings → Keyboard, or pick another language." : {
     "de" : "%@ kann auf diesem Mac nicht transkribiert werden, ohne deine Stimme an einen Server zu senden. Aktiviere dazu das Diktat für %@ unter „Systemeinstellungen“ → „Tastatur“ oder wähle eine andere Sprache.",
     "fr" : "La langue %@ ne peut pas être transcrite sur ce Mac sans envoyer votre voix à un serveur. Pour l’ajouter, activez la dictée (%@) dans Réglages Système → Clavier, ou choisissez une autre langue.",
@@ -218,6 +230,11 @@
     "fr" : "Presque terminé",
     "zh-Hans" : "即将完成"
   },
+  "Also saves the voice and the computer sound as their own files next to the video, to mix somewhere else" : {
+    "de" : "Sichert Stimme und Systemton zusätzlich als eigene Dateien neben dem Video, um sie woanders abzumischen",
+    "fr" : "Enregistre aussi la voix et le son de l’ordinateur dans leurs propres fichiers à côté de la vidéo, pour les mixer ailleurs",
+    "zh-Hans" : "同时将人声和电脑声音分别存储为视频旁边的独立文件，方便在别处混音"
+  },
   "Append Video…" : {
     "de" : "Video anhängen …",
     "fr" : "Ajouter une vidéo à la suite…",
@@ -278,6 +295,12 @@
       "other" : "Zoom auto — %lld zooms"
     },
     "zh-Hans" : "自动缩放 — %lld 个缩放"
+  },
+  "Automatic: dark on a light tag, white otherwise" : {
+    "comment" : "Tooltip of the text color that follows the tag",
+    "de" : "Automatisch: dunkel auf hellem Hintergrund, sonst weiß",
+    "fr" : "Automatique : foncé sur une étiquette claire, blanc sinon",
+    "zh-Hans" : "自动：浅色标签上用深色，其他情况用白色"
   },
   "Back" : {
     "de" : "Zurück",
@@ -736,6 +759,12 @@
     "fr" : "Détouré",
     "zh-Hans" : "抠像"
   },
+  "Dimming" : {
+    "comment" : "How far a spotlight darkens the picture around the spot",
+    "de" : "Abdunkeln",
+    "fr" : "Assombrissement",
+    "zh-Hans" : "压暗"
+  },
   "Dip to black" : {
     "de" : "Schwarzblende",
     "fr" : "Fondu au noir",
@@ -984,6 +1013,12 @@
     "fr" : "Flamant",
     "zh-Hans" : "火烈鸟"
   },
+  "Font" : {
+    "comment" : "A text annotation's typeface",
+    "de" : "Schrift",
+    "fr" : "Police",
+    "zh-Hans" : "字体"
+  },
   "Frame copied" : {
     "de" : "Bild kopiert",
     "fr" : "Image copiée",
@@ -1049,6 +1084,12 @@
     "de" : "Schnitt",
     "fr" : "Coupe",
     "zh-Hans" : "硬切"
+  },
+  "Heavy" : {
+    "comment" : "A font weight",
+    "de" : "Extrafett",
+    "fr" : "Extra-gras",
+    "zh-Hans" : "特粗体"
   },
   "Hidden" : {
     "comment" : "Camera layout, short form of “Camera hidden”",
@@ -1291,6 +1332,12 @@
     "de" : "Dunst",
     "fr" : "Brume",
     "zh-Hans" : "薄雾"
+  },
+  "Monospaced font" : {
+    "comment" : "Tooltip of a typeface choice",
+    "de" : "Festbreitenschrift",
+    "fr" : "Police à chasse fixe",
+    "zh-Hans" : "等宽字体"
   },
   "Move %@ earlier" : {
     "de" : "%@ nach vorn verschieben",
@@ -1846,6 +1893,12 @@
     "fr" : "Arrondi",
     "zh-Hans" : "圆角"
   },
+  "Rounded font" : {
+    "comment" : "Tooltip of a typeface choice",
+    "de" : "Abgerundete Schrift",
+    "fr" : "Police arrondie",
+    "zh-Hans" : "圆体"
+  },
   "S" : {
     "comment" : "Caption text size: small",
     "de" : "S",
@@ -1877,10 +1930,38 @@
     "fr" : "Enregistré — les nouveaux enregistrements utiliseront ce style",
     "zh-Hans" : "已存储 — 新录制内容将使用此风格"
   },
+  "Saving sound files…" : {
+    "de" : "Tondateien werden gesichert …",
+    "fr" : "Enregistrement des fichiers audio…",
+    "zh-Hans" : "正在存储音频文件…"
+  },
+  "Saving the voice and computer sound…" : {
+    "de" : "Stimme und Systemton werden gesichert …",
+    "fr" : "Enregistrement de la voix et du son de l’ordinateur…",
+    "zh-Hans" : "正在存储人声和电脑声音…"
+  },
   "Selection" : {
     "de" : "Auswahl",
     "fr" : "Sélection",
     "zh-Hans" : "选区"
+  },
+  "Semibold" : {
+    "comment" : "A font weight",
+    "de" : "Halbfett",
+    "fr" : "Demi-gras",
+    "zh-Hans" : "中粗体"
+  },
+  "Separate sound files" : {
+    "comment" : "Export option: the voice and the computer sound also go to their own files",
+    "de" : "Separate Tondateien",
+    "fr" : "Fichiers audio séparés",
+    "zh-Hans" : "单独的音频文件"
+  },
+  "Serif font" : {
+    "comment" : "Tooltip of a typeface choice",
+    "de" : "Serifenschrift",
+    "fr" : "Police à empattements",
+    "zh-Hans" : "衬线字体"
   },
   "Set the in point to the playhead (%@)" : {
     "de" : "Startpunkt auf die Abspielposition setzen (%@)",
@@ -2111,6 +2192,12 @@
     "fr" : "Coucher de soleil",
     "zh-Hans" : "日落"
   },
+  "System font" : {
+    "comment" : "Tooltip of a typeface choice",
+    "de" : "Systemschrift",
+    "fr" : "Police système",
+    "zh-Hans" : "系统字体"
+  },
   "Tag" : {
     "comment" : "The colored tag behind the spoken word (Highlight caption style); names its color picker",
     "de" : "Hinterlegung",
@@ -2121,6 +2208,12 @@
     "de" : "Mandarine",
     "fr" : "Mandarine",
     "zh-Hans" : "橘色"
+  },
+  "Text color" : {
+    "comment" : "The color of a text annotation's letters",
+    "de" : "Textfarbe",
+    "fr" : "Couleur du texte",
+    "zh-Hans" : "文字颜色"
   },
   "Thanks for watching" : {
     "comment" : "Default outro card title, which the user edits",
@@ -2192,6 +2285,11 @@
     "de" : "Der Video-Encoder ist belegt – eventuell zeichnet oder exportiert gerade eine andere App. Warte einen Moment und versuche es erneut, oder wähle H.264.",
     "fr" : "L’encodeur vidéo est occupé — une autre app enregistre ou exporte peut-être. Patientez un instant et réessayez, ou choisissez H.264.",
     "zh-Hans" : "视频编码器正忙 — 可能有其他 App 正在录制或导出。请稍候再试，或选择 H.264。"
+  },
+  "The video is saved, but the voice and computer sound couldn't all be saved as their own files." : {
+    "de" : "Das Video ist gesichert, aber Stimme und Systemton konnten nicht beide als eigene Dateien gesichert werden.",
+    "fr" : "La vidéo est enregistrée, mais la voix et le son de l’ordinateur n’ont pas pu être enregistrés tous les deux dans leurs propres fichiers.",
+    "zh-Hans" : "视频已存储，但人声和电脑声音未能全部存储为独立文件。"
   },
   "The video's own recording can't be removed" : {
     "de" : "Die eigene Aufnahme des Videos kann nicht entfernt werden",
@@ -2426,11 +2524,23 @@
     "fr" : "Web",
     "zh-Hans" : "网页"
   },
+  "Weight" : {
+    "comment" : "How heavy a text annotation's letters are",
+    "de" : "Schriftstärke",
+    "fr" : "Graisse",
+    "zh-Hans" : "字重"
+  },
   "Welcome" : {
     "comment" : "Default intro card title, which the user edits",
     "de" : "Willkommen",
     "fr" : "Bienvenue",
     "zh-Hans" : "欢迎"
+  },
+  "What the picture around the spot dims toward" : {
+    "comment" : "Tooltip of a spotlight's dim color",
+    "de" : "Die Farbe, zu der das Bild rund um den Fokus abgedunkelt wird",
+    "fr" : "La couleur vers laquelle l’image s’assombrit autour du projecteur",
+    "zh-Hans" : "聚光灯周围画面压暗时趋向的颜色"
   },
   "Whole video" : {
     "de" : "Ganzes Video",
@@ -2517,6 +2627,12 @@
     "de" : "diese Aufnahme",
     "fr" : "cet enregistrement",
     "zh-Hans" : "此录制内容"
+  },
+  "voice and computer sound as their own files" : {
+    "comment" : "In the export summary's list of what's included: the voice and the computer sound also get saved as separate files",
+    "de" : "Stimme und Systemton als eigene Dateien",
+    "fr" : "voix et son de l’ordinateur en fichiers séparés",
+    "zh-Hans" : "人声和电脑声音的独立文件"
   },
   "“%@” (was in %@)" : {
     "de" : "„%@“ (war in %@)",

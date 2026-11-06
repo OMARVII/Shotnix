@@ -1623,8 +1623,16 @@ final class VideoEditorModel: ObservableObject {
             color: VideoOverlayStyleMemory.color(for: kind),
             thickness: VideoOverlayStyleMemory.thickness(for: kind)
         )
-        if kind == .spotlight { effect.shape = VideoOverlayStyleMemory.shape }
+        if kind == .spotlight {
+            effect.shape = VideoOverlayStyleMemory.shape
+            effect.strength = VideoOverlayStyleMemory.spotlightDim
+        }
         if kind == .blur { effect.strength = VideoOverlayStyleMemory.blurStrength }
+        if kind == .text {
+            effect.font = VideoOverlayStyleMemory.textFont.flatMap { $0 == .system ? nil : $0 }
+            effect.weight = VideoOverlayStyleMemory.textWeight.flatMap { $0 == .semibold ? nil : $0 }
+            effect.textColor = VideoOverlayStyleMemory.textColor
+        }
         // Land where it can be seen: zooms and vertical reframing show only
         // part of the frame, so place (and if needed shrink) it inside that.
         let visible = visibleRegion(at: time)
@@ -2002,8 +2010,11 @@ final class VideoEditorModel: ObservableObject {
     /// Exports queue up and run in the background (VideoExportJobs.swift).
     func beginExport(toClipboard: Bool, range: VideoExportRange = .whole) {
         followRenamedRecording()
-        let settings = exportSettings
+        var settings = exportSettings
         settings.saveAsDefaults()
+        // Sound files only beside a saved video, and only when the voice and
+        // the computer sound were recorded apart.
+        settings.separateSound = settings.separateSound && !toClipboard && hasSeparateVoiceAndSystem
         let destination: URL
         if toClipboard {
             let folder = FileManager.default.temporaryDirectory.appendingPathComponent("Shotnix Exports", isDirectory: true)
@@ -2239,6 +2250,33 @@ final class VideoEditorModel: ObservableObject {
     /// "2×", "1.5×" ("1,5×" in German and French).
     static func formatScale(_ scale: Double) -> String {
         decimal(scale, digits: abs(scale - scale.rounded()) < 0.05 ? 0 : 1) + "×"
+    }
+
+    /// A clip's speed: "2×", "1.3×", "1.25×" (a typed speed keeps its
+    /// second decimal, where a zoom's scale rounds to one).
+    static func formatSpeed(_ speed: Double) -> String {
+        speedNumber(speed) + "×"
+    }
+
+    /// The number alone, as the speed field shows it ("1.3", "1,3").
+    static func speedNumber(_ speed: Double) -> String {
+        let hundredths = (speed * 100).rounded() / 100
+        let digits = abs(hundredths - hundredths.rounded()) < 0.001 ? 0
+            : abs(hundredths * 10 - (hundredths * 10).rounded()) < 0.01 ? 1 : 2
+        return decimal(hundredths, digits: digits)
+    }
+
+    /// A typed speed ("1.3", "1,3", "1.3x"), to the hundredth and within what
+    /// a clip can play at; nil when it isn't a number.
+    static func parseSpeed(_ text: String) -> Double? {
+        let number = text.lowercased()
+            .replacingOccurrences(of: "×", with: "")
+            .replacingOccurrences(of: "x", with: "")
+            .replacingOccurrences(of: ",", with: ".")
+            .trimmingCharacters(in: .whitespaces)
+        guard let value = Double(number), value.isFinite, value > 0 else { return nil }
+        let range = VideoDemoTimelineClip.speedRange
+        return (min(max(value, range.lowerBound), range.upperBound) * 100).rounded() / 100
     }
 
     /// "80 Hz" (a filter's frequency).

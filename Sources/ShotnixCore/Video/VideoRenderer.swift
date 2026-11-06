@@ -1075,13 +1075,15 @@ final class VideoFrameRenderer {
             guard let arrow = arrowImage(from: output(ends.tail), to: output(ends.head), unit: unit, color: effect.resolvedColor, thickness: effect.thickness) else { return scene }
             return faded(arrow.image, opacity).transformed(by: CGAffineTransform(translationX: arrow.origin.x, y: arrow.origin.y)).composited(over: scene)
         case .spotlight:
-            // The picture dims around the spot (inside the recording's frame).
+            // The picture dims around the spot (inside the recording's frame),
+            // toward black unless another color was picked.
             let stageOut = geometry.rect(plan.stageRect)
-            let dim = roundedRect(stageOut, radius: CGFloat(plan.cornerRadius) * geometry.pixelScale, color: CIColor(red: 0, green: 0, blue: 0, alpha: 0.58 * opacity))
+            let tone = effect.color ?? VideoRGBA(0, 0, 0)
+            let dim = roundedRect(stageOut, radius: CGFloat(plan.cornerRadius) * geometry.pixelScale, color: CIColor(red: tone.r, green: tone.g, blue: tone.b, alpha: effect.spotlightDim * opacity))
             let hole = effect.shape == .ellipse ? ellipseMask(rect, feather: 3 * unit) : roundedRect(rect, radius: 12 * unit, color: CIColor.white)
             return dim.applyingFilter("CISourceOutCompositing", parameters: [kCIInputBackgroundImageKey: hole]).composited(over: scene)
         case .text:
-            guard let image = textImage(effect.text, box: rect.size, unit: unit, background: effect.resolvedColor) else { return scene }
+            guard let image = textImage(effect.text, box: rect.size, unit: unit, background: effect.resolvedColor, font: effect.textFont, weight: effect.textWeight, ink: effect.textColor) else { return scene }
             let x = rect.midX - image.extent.width / 2
             let y = rect.midY - image.extent.height / 2
             return faded(image, opacity).transformed(by: CGAffineTransform(translationX: x.rounded(), y: y.rounded())).composited(over: scene)
@@ -1172,20 +1174,24 @@ final class VideoFrameRenderer {
         return image.map { ($0, origin) }
     }
 
-    private func textImage(_ text: String, box: CGSize, unit: CGFloat, background: VideoRGBA) -> CIImage? {
+    private func textImage(_ text: String, box: CGSize, unit: CGFloat, background: VideoRGBA, font typeface: VideoTextFont = .system, weight: VideoTextWeight = .semibold, ink picked: VideoRGBA? = nil) -> CIImage? {
         let content = text.isEmpty ? " " : text
         let fontSize = max(min(box.height * 0.46, 64 * unit), 8)
-        let key = "text-\(content.hashValue)-\(Int(fontSize * 4))-\(Int(box.width))-\(background.hashValue)"
+        let key = "text-\(content.hashValue)-\(Int(fontSize * 4))-\(Int(box.width))-\(background.hashValue)-\(typeface.rawValue)-\(weight.rawValue)-\(picked?.hashValue ?? 0)"
         return cached(key) {
-            let font = NSFont.systemFont(ofSize: fontSize, weight: .semibold)
+            let system = NSFont.systemFont(ofSize: fontSize, weight: weight.weight)
+            let font = typeface == .system ? system : system.fontDescriptor.withDesign(typeface.design).flatMap { NSFont(descriptor: $0, size: fontSize) } ?? system
             let paragraph = NSMutableParagraphStyle()
             paragraph.alignment = .center
             paragraph.lineBreakMode = .byTruncatingTail
             // No tag: white text with a soft shadow. A light, mostly solid
             // tag gets dark text; a see-through one keeps white text (with
-            // the shadow once it's faint), whatever its hue.
+            // the shadow once it's faint), whatever its hue. A picked color
+            // wins (dark letters get a light shadow).
             let plain = background.a < 0.05
-            let ink: NSColor = background.a >= 0.6 && background.luminance > 0.62 ? NSColor(white: 0.08, alpha: 1) : .white
+            let automatic: NSColor = background.a >= 0.6 && background.luminance > 0.62 ? NSColor(white: 0.08, alpha: 1) : .white
+            let ink = picked.map { $0.withAlpha(1).nsColor } ?? automatic
+            let darkInk = (picked?.luminance ?? 1) < 0.35
             var attributes: [NSAttributedString.Key: Any] = [
                 .font: font,
                 .foregroundColor: ink,
@@ -1193,7 +1199,7 @@ final class VideoFrameRenderer {
             ]
             if background.a < 0.5 {
                 let shadow = NSShadow()
-                shadow.shadowColor = NSColor.black.withAlphaComponent(0.75)
+                shadow.shadowColor = darkInk ? NSColor.white.withAlphaComponent(0.7) : NSColor.black.withAlphaComponent(0.75)
                 shadow.shadowBlurRadius = fontSize * 0.22
                 shadow.shadowOffset = NSSize(width: 0, height: -fontSize * 0.05)
                 attributes[.shadow] = shadow

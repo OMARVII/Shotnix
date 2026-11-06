@@ -14,6 +14,10 @@
 	<string>%@（⇧⌘Z）</string>
 	<key>%@ (⌘Z)</key>
 	<string>%@（⌘Z）</string>
+	<key>%@ - Computer sound</key>
+	<string>%@ - 电脑声音</string>
+	<key>%@ - Voice</key>
+	<string>%@ - 人声</string>
 	<key>%@ Zoom</key>
 	<string>缩放 %@</string>
 	<key>%@ area</key>
@@ -270,6 +274,8 @@
 	<string>请在“辅助功能”中允许 Shotnix — 快捷键会自动开启。</string>
 	<key>Almost done</key>
 	<string>即将完成</string>
+	<key>Also saves the voice and the computer sound as their own files next to the video, to mix somewhere else</key>
+	<string>同时将人声和电脑声音分别存储为视频旁边的独立文件，方便在别处混音</string>
 	<key>Always show the arrow</key>
 	<string>始终显示箭头</string>
 	<key>Amber Fold</key>
@@ -356,6 +362,8 @@
 	<string>自动</string>
 	<key>Automatic detects each capture's language; pick languages when it guesses wrong. Accurate reads small text best — Fast answers sooner but knows fewer languages. Used by Capture Text, Copy Text, and History search.</key>
 	<string>“自动”会检测每张截屏的语言；识别有误时可手动选择语言。“精确”最适合识别小字 — “快速”响应更快，但支持的语言更少。用于“提取文字”、“拷贝文字”和历史记录搜索。</string>
+	<key>Automatic: dark on a light tag, white otherwise</key>
+	<string>自动：浅色标签上用深色，其他情况用白色</string>
 	<key>Back</key>
 	<string>返回</string>
 	<key>Back to the Shotnix look</key>
@@ -878,6 +886,8 @@
 	<string>取消选择/关闭</string>
 	<key>Desert Violet</key>
 	<string>沙漠紫罗兰</string>
+	<key>Dimming</key>
+	<string>压暗</string>
 	<key>Dip to black</key>
 	<string>黑场过渡</string>
 	<key>Dips while you talk, comes back in the pauses</key>
@@ -1166,6 +1176,8 @@
 	<string>跟随指针</string>
 	<key>Follows cursor</key>
 	<string>跟随指针</string>
+	<key>Font</key>
+	<string>字体</string>
 	<key>Forever</key>
 	<string>永久</string>
 	<key>Format</key>
@@ -1244,6 +1256,8 @@
 	<string>硬切</string>
 	<key>Health</key>
 	<string>状态</string>
+	<key>Heavy</key>
+	<string>特粗体</string>
 	<key>Hidden</key>
 	<string>隐藏</string>
 	<key>Hidden network</key>
@@ -1518,6 +1532,8 @@
 	<string>镜像</string>
 	<key>Mist</key>
 	<string>薄雾</string>
+	<key>Monospaced font</key>
+	<string>等宽字体</string>
 	<key>More recording options</key>
 	<string>更多录制选项</string>
 	<key>More tips</key>
@@ -2410,6 +2426,8 @@
 	<string>圆角（⌥R）</string>
 	<key>Rounded corners</key>
 	<string>圆角</string>
+	<key>Rounded font</key>
+	<string>圆体</string>
 	<key>Rounded rectangle</key>
 	<string>圆角矩形</string>
 	<key>Roundness</key>
@@ -2466,6 +2484,8 @@
 	<string>存储…</string>
 	<key>Saving captures to History</key>
 	<string>正在将截屏存储到历史记录</string>
+	<key>Saving sound files…</key>
+	<string>正在存储音频文件…</string>
 	<key>Saving the last recording…</key>
 	<string>正在存储上一段录制内容…</string>
 	<key>Saving the recording</key>
@@ -2474,6 +2494,8 @@
 	<string>正在存储录制内容…</string>
 	<key>Saving the screen recording</key>
 	<string>正在存储屏幕录制内容</string>
+	<key>Saving the voice and computer sound…</key>
+	<string>正在存储人声和电脑声音…</string>
 	<key>Saving…</key>
 	<string>正在存储…</string>
 	<key>Scan QR Code</key>
@@ -2554,8 +2576,14 @@
 	<string>选区宽 %@ 点、高 %@ 点</string>
 	<key>Selection %@ by %@ points. Arrow keys move it, Return captures, Escape cancels.</key>
 	<string>选区宽 %@ 点、高 %@ 点。方向键可移动选区，按 Return 键捕捉，按 Esc 键取消。</string>
+	<key>Semibold</key>
+	<string>中粗体</string>
 	<key>Send by Email…</key>
 	<string>通过电子邮件发送…</string>
+	<key>Separate sound files</key>
+	<string>单独的音频文件</string>
+	<key>Serif font</key>
+	<string>衬线字体</string>
 	<key>Set In to Playhead</key>
 	<string>将入点设为播放头位置</string>
 	<key>Set Out to Playhead</key>
@@ -2850,6 +2878,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>电脑声音</string>
 	<key>System audio couldn't be recorded. Try again without system audio.</key>
 	<string>无法录制电脑声音。请关闭“电脑声音”后重试。</string>
+	<key>System font</key>
+	<string>系统字体</string>
 	<key>Table copied — paste it into a spreadsheet</key>
 	<string>已拷贝表格 — 可粘贴到电子表格中</string>
 	<key>Tag</key>
@@ -2874,6 +2904,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>找到文字二维码</string>
 	<key>Text Recognition</key>
 	<string>文字识别</string>
+	<key>Text color</key>
+	<string>文字颜色</string>
 	<key>Text copied</key>
 	<string>已拷贝文字</string>
 	<key>Text copied to clipboard</key>
@@ -2946,6 +2978,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>时间线为空。请恢复一个片段，然后重新导出。</string>
 	<key>The video encoder is busy — another app may be recording or exporting. Wait a moment and try again, or choose H.264.</key>
 	<string>视频编码器正忙 — 可能有其他 App 正在录制或导出。请稍候再试，或选择 H.264。</string>
+	<key>The video is saved, but the voice and computer sound couldn't all be saved as their own files.</key>
+	<string>视频已存储，但人声和电脑声音未能全部存储为独立文件。</string>
 	<key>The video's own recording can't be removed</key>
 	<string>无法移除视频本身的录制内容</string>
 	<key>The voice track is empty, so there's nothing to clean up. Turn off Enhance voice to keep the original sound.</key>
@@ -3082,6 +3116,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>调低这一部分的电脑声音，方便你在上面解说。</string>
 	<key>Turn the video's sound back on</key>
 	<string>重新打开视频声音</string>
+	<key>Type any speed from 0.25× to 16×</key>
+	<string>输入 0.25× 到 16× 之间的任意速度</string>
 	<key>Type here…</key>
 	<string>在此输入…</string>
 	<key>Type in a text annotation</key>
@@ -3392,10 +3428,14 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>网页</string>
 	<key>Website</key>
 	<string>网站</string>
+	<key>Weight</key>
+	<string>字重</string>
 	<key>Welcome</key>
 	<string>欢迎</string>
 	<key>Welcome to Shotnix</key>
 	<string>欢迎使用 Shotnix</string>
+	<key>What the picture around the spot dims toward</key>
+	<string>聚光灯周围画面压暗时趋向的颜色</string>
 	<key>What was playing on your Mac</key>
 	<string>你的 Mac 上播放的声音</string>
 	<key>What's New</key>
@@ -3582,6 +3622,8 @@ You can re-enable Apple's shortcuts anytime in System Settings → Keyboard → 
 	<string>最多 %@ GB/分钟</string>
 	<key>up to %@ MB/min</key>
 	<string>最多 %@ MB/分钟</string>
+	<key>voice and computer sound as their own files</key>
+	<string>人声和电脑声音的独立文件</string>
 	<key>zoom the timeline</key>
 	<string>缩放时间线</string>
 	<key>© 2026 Shotnix Contributors</key>

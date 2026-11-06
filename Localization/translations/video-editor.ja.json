@@ -1598,6 +1598,9 @@
   "Turn the video's sound back on" : {
     "ja" : "ビデオのサウンドを再びオンにする"
   },
+  "Type any speed from 0.25× to 16×" : {
+    "ja" : "0.25×〜16×の好きな速度を入力"
+  },
   "Type in a text annotation" : {
     "ja" : "テキストの注釈に入力"
   },

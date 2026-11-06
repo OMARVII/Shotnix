@@ -304,6 +304,95 @@ final class VideoComputerSoundTests: XCTestCase {
         override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
     }
 
+    /// "Separate sound files": the voice and the computer sound also land
+    /// beside the video, one sound each, as long as it, the computer's
+    /// without the dips (those were for the mix).
+    func testSeparateSoundFilesHoldOneSoundEachWithoutTheDips() async throws {
+        let (url, metadata) = try await writeTalkingRecording(seconds: 6, talkStart: 1.5)
+        var project = VideoDemoProject.make(sourceURL: url, duration: 6, sourceSize: CGSize(width: 640, height: 400))
+        project.apply(metadata: metadata)
+        XCTAssertTrue(project.audio.duckSystem)
+        var settings = VideoExportSettings()
+        settings.resolution = .p720
+        settings.fps = 30
+        settings.endCard = false
+        settings.separateSound = true
+        let video = directory.appendingPathComponent("Lesson.mp4")
+        try await VideoDemoExporter.export(project: project, recording: metadata, destinationURL: video, settings: settings)
+        let voice = VideoDemoExporter.separateSoundURL(.microphone, beside: video)
+        let computer = VideoDemoExporter.separateSoundURL(.system, beside: video)
+        XCTAssertEqual(voice.lastPathComponent, "Lesson - Voice.m4a")
+        XCTAssertEqual(computer.lastPathComponent, "Lesson - Computer sound.m4a")
+
+        // One sound each: the tone is the computer's (the voice has only
+        // what the mic heard of the speakers).
+        let computerBefore = try await tone(in: computer, from: 0.2, to: 1.0)
+        let voiceBefore = try await tone(in: voice, from: 0.2, to: 1.0)
+        print("SEPARATE: computer tone \(computerBefore), in the voice file \(voiceBefore)")
+        XCTAssertGreaterThan(computerBefore, 0.05)
+        XCTAssertLessThan(voiceBefore, computerBefore * 0.2)
+
+        // The video dips the computer sound while you talk; its own file doesn't.
+        let computerDuring = try await tone(in: computer, from: 1.9, to: 2.9)
+        let mixBefore = try await tone(in: video, from: 0.2, to: 1.0)
+        let mixDuring = try await tone(in: video, from: 1.9, to: 2.9)
+        print("SEPARATE: computer file while talking \(computerDuring); video \(mixBefore) → \(mixDuring)")
+        XCTAssertEqual(computerDuring / computerBefore, 1, accuracy: 0.15)
+        XCTAssertLessThan(mixDuring, mixBefore * 0.6)
+
+        // As long as the video, so they line up from the start.
+        let length = try await AVURLAsset(url: video).load(.duration).seconds
+        for file in [voice, computer] {
+            let fileLength = try await AVURLAsset(url: file).load(.duration).seconds
+            XCTAssertEqual(fileLength, length, accuracy: 0.15, file.lastPathComponent)
+        }
+
+        // Show in Finder selects the video and both of them.
+        let job = VideoExportQueue.Job(project: project, recording: metadata, settings: settings, range: .whole, destination: video, toClipboard: false)
+        XCTAssertEqual(job.savedFiles, [video, voice, computer])
+
+        // Off: only the video.
+        settings.separateSound = false
+        let plain = directory.appendingPathComponent("Plain.mp4")
+        try await VideoDemoExporter.export(project: project, recording: metadata, destinationURL: plain, settings: settings)
+        XCTAssertTrue(FileManager.default.fileExists(atPath: plain.path))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: VideoDemoExporter.separateSoundURL(.microphone, beside: plain).path))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: VideoDemoExporter.separateSoundURL(.system, beside: plain).path))
+        let plainJob = VideoExportQueue.Job(project: project, recording: metadata, settings: settings, range: .whole, destination: plain, toClipboard: false)
+        XCTAssertEqual(plainJob.savedFiles, [plain])
+
+        // The choice is remembered for the next export.
+        let saved = VideoExportSettings.fromSettings
+        defer { saved.saveAsDefaults() }
+        var remembered = saved
+        remembered.separateSound = true
+        remembered.saveAsDefaults()
+        XCTAssertTrue(VideoExportSettings.fromSettings.separateSound)
+        VideoDemoDraftStore.delete(for: url)
+    }
+
+    /// The export sheet offers them only for a recording like this one, with
+    /// the voice and the computer sound apart (English and French).
+    func testTheExportSheetOffersSeparateSoundFiles() async throws {
+        let (url, _) = try await writeTalkingRecording(seconds: 3, talkStart: 1)
+        let model = VideoEditorModel(videoURL: url)
+        await model.load()
+        XCTAssertTrue(model.hasSeparateVoiceAndSystem)
+        model.exportSettings.separateSound = true
+        model.isExportPresented = true
+        VideoStageView.drawsStills = true
+        defer {
+            VideoStageView.drawsStills = false
+            L10n.use(nil)
+        }
+        for language in ["en", "fr"] {
+            L10n.use(language == "en" ? nil : language)
+            try await VideoEditorFixesSnapshotTests.render(VideoEditorRootView(model: model), size: CGSize(width: 1512, height: 944), name: "styles-export-sound-\(language)")
+        }
+        model.stop()
+        VideoDemoDraftStore.delete(for: url)
+    }
+
     func testDraggingADipOnTheTimelineChangesJustThatPlace() async throws {
         let (url, _) = try await writeTalkingRecording(seconds: 10, talkStart: 2)
         let model = VideoEditorModel(videoURL: url)

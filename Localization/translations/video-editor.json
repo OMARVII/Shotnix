@@ -2915,6 +2915,12 @@
     "fr": "Réactiver le son de la vidéo",
     "zh-Hans": "重新打开视频声音"
   },
+  "Type any speed from 0.25× to 16×": {
+    "comment": "Tooltip of the field beside the speed buttons",
+    "de": "Beliebiges Tempo von 0,25× bis 16× eingeben",
+    "fr": "Saisir une vitesse de 0,25× à 16×",
+    "zh-Hans": "输入 0.25× 到 16× 之间的任意速度"
+  },
   "Type in a text annotation": {
     "de": "In einer Textbeschriftung tippen",
     "fr": "Saisir du texte dans une annotation",

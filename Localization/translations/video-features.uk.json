@@ -1525,5 +1525,65 @@
   },
   "⇧-drag on the timeline to select a part first." : {
     "uk" : "Спершу виділіть частину, перетягнувши з ⇧ на шкалі часу."
+  },
+  "Font" : {
+    "uk" : "Шрифт"
+  },
+  "Weight" : {
+    "uk" : "Насиченість"
+  },
+  "System font" : {
+    "uk" : "Системний шрифт"
+  },
+  "Rounded font" : {
+    "uk" : "Заокруглений шрифт"
+  },
+  "Serif font" : {
+    "uk" : "Шрифт із засічками"
+  },
+  "Monospaced font" : {
+    "uk" : "Моноширинний шрифт"
+  },
+  "Semibold" : {
+    "uk" : "Напівжирний"
+  },
+  "Heavy" : {
+    "uk" : "Наджирний"
+  },
+  "Text color" : {
+    "uk" : "Колір тексту"
+  },
+  "Automatic: dark on a light tag, white otherwise" : {
+    "uk" : "Автоматично: темний на світлій плашці, інакше білий"
+  },
+  "Dimming" : {
+    "uk" : "Затемнення"
+  },
+  "%@ - Voice" : {
+    "uk" : "%@ - Голос"
+  },
+  "%@ - Computer sound" : {
+    "uk" : "%@ - Звук комп’ютера"
+  },
+  "Separate sound files" : {
+    "uk" : "Окремі звукові файли"
+  },
+  "Also saves the voice and the computer sound as their own files next to the video, to mix somewhere else" : {
+    "uk" : "Також зберігає голос і звук комп’ютера в окремі файли поруч із відео, щоб звести їх в іншій програмі"
+  },
+  "Saving the voice and computer sound…" : {
+    "uk" : "Збереження голосу і звуку комп’ютера…"
+  },
+  "Saving sound files…" : {
+    "uk" : "Збереження звукових файлів…"
+  },
+  "The video is saved, but the voice and computer sound couldn't all be saved as their own files." : {
+    "uk" : "Відео збережено, але не вдалося зберегти голос і звук комп’ютера в окремі файли."
+  },
+  "What the picture around the spot dims toward" : {
+    "uk" : "Колір, до якого затемнюється зображення навколо прожектора"
+  },
+  "voice and computer sound as their own files" : {
+    "uk" : "голос і звук комп’ютера окремими файлами"
   }
 }

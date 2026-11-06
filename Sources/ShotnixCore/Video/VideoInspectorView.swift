@@ -761,12 +761,30 @@ private struct VideoSelectionHeightKey: PreferenceKey {
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = max(value, nextValue()) }
 }
 
+/// How far the selection's settings have scrolled up.
+private struct VideoSelectionScrollKey: PreferenceKey {
+    static let defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = nextValue() }
+}
+
 struct VideoSelectionInspector: View {
     @ObservedObject var model: VideoEditorModel
     /// The most room it takes above the tab (it scrolls past that).
     var maxHeight: CGFloat = .infinity
     @FocusState private var textFocused: Bool
     @State private var contentHeight: CGFloat = 0
+    @State private var scrolled: CGFloat = 0
+    /// Settings below the fold: the bottom edge fades so the row it cuts
+    /// reads as "scroll for more", not as a clipped panel.
+    @State private var moreBelow = false
+
+    /// As tall as its settings, up to the limit.
+    private var shownHeight: CGFloat { min(max(contentHeight, 40), max(maxHeight - 51, 80)) }
+
+    private func updateMoreBelow() {
+        let more = contentHeight - scrolled > shownHeight + 2
+        if more != moreBelow { moreBelow = more }
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -778,12 +796,27 @@ struct VideoSelectionInspector: View {
                 }
                 .padding(16)
                 .background(GeometryReader { proxy in
-                    Color.clear.preference(key: VideoSelectionHeightKey.self, value: proxy.size.height)
+                    Color.clear
+                        .preference(key: VideoSelectionHeightKey.self, value: proxy.size.height)
+                        .preference(key: VideoSelectionScrollKey.self, value: -proxy.frame(in: .named("selection-scroll")).minY)
                 })
             }
-            // As tall as its settings, up to the limit.
-            .frame(height: min(max(contentHeight, 40), max(maxHeight - 51, 80)))
-            .onPreferenceChange(VideoSelectionHeightKey.self) { contentHeight = $0 }
+            .coordinateSpace(name: "selection-scroll")
+            .frame(height: shownHeight)
+            .mask(VStack(spacing: 0) {
+                Color.black
+                LinearGradient(colors: [.black, moreBelow ? .clear : .black], startPoint: .top, endPoint: .bottom)
+                    .frame(height: 30)
+            })
+            .onPreferenceChange(VideoSelectionHeightKey.self) {
+                contentHeight = $0
+                updateMoreBelow()
+            }
+            .onPreferenceChange(VideoSelectionScrollKey.self) {
+                scrolled = $0
+                updateMoreBelow()
+            }
+            .onChange(of: maxHeight) { _ in updateMoreBelow() }
         }
         .background(Color.white.opacity(0.02))
         .accessibilityElement(children: .contain)
@@ -1021,15 +1054,17 @@ struct VideoSelectionInspector: View {
                 }
             }
             // Or change just this part.
-            VideoInspectorSection(L("Speed of this part")) {
+            VideoInspectorSection(L("Speed of this part"), trailing: {
+                VideoSpeedField(speed: model.rangeSpeed(range)) { model.setRangeSpeed(range, $0) }
+            }) {
                 let current = model.rangeSpeed(range)
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 4), spacing: 6) {
-                    ForEach([0.5, 1.0, 1.5, 2.0, 3.0, 4.0, 8.0, 16.0], id: \.self) { speed in
+                    ForEach(VideoDemoTimelineClip.speedPresets, id: \.self) { speed in
                         let selected = current.map { abs($0 - speed) < 0.01 } ?? false
                         Button {
                             model.setRangeSpeed(range, speed)
                         } label: {
-                            Text(VideoEditorModel.formatScale(speed))
+                            Text(VideoEditorModel.formatSpeed(speed))
                                 .font(.system(size: 11.5, weight: selected ? .bold : .semibold))
                                 .foregroundStyle(selected ? Color.black : VideoEditorTheme.textPrimary)
                                 .frame(maxWidth: .infinity)
@@ -1037,7 +1072,7 @@ struct VideoSelectionInspector: View {
                                 .background(RoundedRectangle(cornerRadius: 6, style: .continuous).fill(selected ? VideoEditorTheme.clip : VideoEditorTheme.card))
                         }
                         .buttonStyle(.plain)
-                        .accessibilityLabel(L("\(VideoEditorModel.formatScale(speed)) speed"))
+                        .accessibilityLabel(L("\(VideoEditorModel.formatSpeed(speed)) speed"))
                         .accessibilityAddTraits(selected ? .isSelected : [])
                     }
                 }
@@ -1242,15 +1277,21 @@ struct VideoSelectionInspector: View {
 
     @ViewBuilder
     private func clipEditor(_ segment: VideoDemoTimelineSegment) -> some View {
-        VideoInspectorSection(L("Speed")) {
+        VideoInspectorSection(L("Speed"), trailing: {
+            VideoSpeedField(speed: segment.clip.normalizedSpeed) { speed in
+                model.setClipSpeed(segment.id, speed)
+                model.endGesture()
+            }
+            .id(segment.id)
+        }) {
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 4), spacing: 6) {
-                ForEach([0.5, 1.0, 1.5, 2.0, 3.0, 4.0, 8.0, 16.0], id: \.self) { speed in
+                ForEach(VideoDemoTimelineClip.speedPresets, id: \.self) { speed in
                     let selected = abs(segment.clip.normalizedSpeed - speed) < 0.01
                     Button {
                         model.setClipSpeed(segment.id, speed)
                         model.endGesture()
                     } label: {
-                        Text(VideoEditorModel.formatScale(speed))
+                        Text(VideoEditorModel.formatSpeed(speed))
                             .font(.system(size: 11.5, weight: selected ? .bold : .semibold))
                             .foregroundStyle(selected ? Color.black : VideoEditorTheme.textPrimary)
                             .frame(maxWidth: .infinity)
@@ -1388,6 +1429,19 @@ struct VideoSelectionInspector: View {
                     format: { "\(Int($0.rounded()))" },
                     onEditingEnded: { model.endGesture() }
                 )
+                // Each sample shows the other row's pick too: the fonts in
+                // this weight, the weights in this font.
+                textStyleRow(L("Font"), VideoGlyphChoice(
+                    options: VideoTextFont.allCases.map { ($0, Font.system(size: 18, weight: overlay.textWeight.swiftUIWeight, design: $0.swiftUIDesign), $0.title, $0.familyName) },
+                    selection: Binding(get: { overlay.textFont }, set: { model.setTextFont($0, of: overlay.id) })
+                ))
+                textStyleRow(L("Weight"), VideoGlyphChoice(
+                    options: VideoTextWeight.allCases.map { ($0, Font.system(size: 18, weight: $0.swiftUIWeight, design: overlay.textFont.swiftUIDesign), $0.title, $0.title) },
+                    selection: Binding(get: { overlay.textWeight }, set: { model.setTextWeight($0, of: overlay.id) })
+                ))
+            }
+            VideoInspectorSection(L("Text color")) {
+                VideoTextColorPicker(model: model, overlay: overlay)
             }
         }
         if overlay.kind.hasColor {
@@ -1432,6 +1486,19 @@ struct VideoSelectionInspector: View {
                     selection: Binding(get: { overlay.shape ?? .rectangle }, set: { model.setOverlayShape(overlay.id, $0) })
                 )
             }
+            // How far everything around the spot dims, and toward what.
+            VideoInspectorSection(L("Dimming")) {
+                VideoSliderRow(
+                    title: L("Strength"),
+                    value: Binding(get: { overlay.spotlightDim }, set: { model.setSpotlightDim($0, of: overlay.id) }),
+                    range: VideoDemoOverlayEffect.spotlightDimRange,
+                    defaultValue: VideoDemoOverlayEffect.spotlightDimDefault,
+                    format: { VideoEditorFormat.percent($0) },
+                    onEditingEnded: { model.endGesture() }
+                )
+                textStyleRow(L("Color"), VideoOverlayColorPicker(model: model, overlay: overlay))
+                    .help(L("What the picture around the spot dims toward"))
+            }
         }
         // Images have their own placement controls (VideoImageOverlays.swift).
         if overlay.kind != .image {
@@ -1444,6 +1511,16 @@ struct VideoSelectionInspector: View {
         }
     }
 
+    /// A label over a choice that takes the panel's whole width.
+    private func textStyleRow<Choice: View>(_ title: String, _ choice: Choice) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(title)
+                .font(.system(size: 12, weight: .medium))
+                .foregroundStyle(VideoEditorTheme.textPrimary)
+            choice
+        }
+    }
+
     private func placementHelp(_ kind: VideoDemoOverlayEffectKind) -> String {
         switch kind {
         case .blur: return L("Drag the box on the preview over anything private. Blur follows zooms and stays until its bar ends.")
@@ -1453,4 +1530,125 @@ struct VideoSelectionInspector: View {
         default: return L("Drag it on the preview to move it; drag a corner to resize. Its bar on the timeline sets when it shows.")
         }
     }
+}
+
+/// Any speed, typed: 1.3× sits between the buttons. Takes it on Return or
+/// when the field is left, and Esc puts back what was there; the button with
+/// the same speed lights up.
+struct VideoSpeedField: View {
+    /// nil: a part whose clips run at different speeds.
+    let speed: Double?
+    let apply: (Double) -> Void
+    @State private var text = ""
+    @State private var cancelled = false
+    @State private var anchor = VideoViewAnchor.Box()
+    @FocusState private var focused: Bool
+
+    /// A speed no button has: the field is what's lit, as a button would be.
+    private var lit: Bool {
+        guard let speed, !focused else { return false }
+        return !VideoDemoTimelineClip.speedPresets.contains { abs($0 - speed) < 0.01 }
+    }
+
+    var body: some View {
+        HStack(spacing: 2) {
+            TextField("", text: $text, prompt: Text(verbatim: "–"))
+                .textFieldStyle(.plain)
+                .multilineTextAlignment(.trailing)
+                .font(.system(size: 11.5, weight: lit ? .bold : .semibold).monospacedDigit())
+                .foregroundStyle(lit ? Color.black : VideoEditorTheme.textPrimary)
+                .frame(width: 36)
+                .focused($focused)
+                .onSubmit(commit)
+                .accessibilityLabel(L("Speed"))
+                .background(VideoViewAnchor(box: anchor))
+            Text(verbatim: "×")
+                .font(.system(size: 11.5, weight: .semibold))
+                .foregroundStyle(lit ? Color.black.opacity(0.6) : VideoEditorTheme.textSecondary)
+                .accessibilityHidden(true)
+        }
+        .padding(.horizontal, 6)
+        .frame(height: 22)
+        .background(RoundedRectangle(cornerRadius: 6, style: .continuous).fill(lit ? VideoEditorTheme.clip : Color.black.opacity(0.3)))
+        .overlay(RoundedRectangle(cornerRadius: 6, style: .continuous).strokeBorder(focused ? VideoEditorTheme.accent.opacity(0.8) : lit ? Color.clear : VideoEditorTheme.cardStroke, lineWidth: 1))
+        .onAppear { text = shown }
+        .onChange(of: speed) { _ in
+            if !focused { text = shown }
+        }
+        .onChange(of: focused) { isFocused in
+            if isFocused {
+                cancelled = false
+                // A click leaves the caret where it lands, after the "1" the
+                // field shows. Once the click is over (its tracking runs in
+                // another run loop mode), select the number, so typing 1.3
+                // replaces it instead of making 11.3.
+                let box = anchor
+                RunLoop.main.perform(inModes: [.default]) {
+                    MainActor.assumeIsolated { box.selectAllInFocusedField() }
+                }
+            } else if cancelled {
+                cancelled = false
+                text = shown
+            } else {
+                commit()
+            }
+        }
+        // The editor's Esc leaves the field: what was typed doesn't count.
+        .onReceive(NotificationCenter.default.publisher(for: .videoEditorTypingWillCancel)) { note in
+            if focused, anchor.isIn(note.object) { cancelled = true }
+        }
+        .help(L("Type any speed from 0.25× to 16×"))
+    }
+
+    private var shown: String { speed.map(VideoEditorModel.speedNumber) ?? "" }
+
+    private func commit() {
+        guard let value = VideoEditorModel.parseSpeed(text) else {
+            // Not a speed ("fast", "0"): the Mac's beep, and the number
+            // comes back. A field left empty just comes back.
+            if !text.trimmingCharacters(in: .whitespaces).isEmpty, text != shown { NSSound.beep() }
+            text = shown
+            return
+        }
+        if speed.map({ abs($0 - value) > 0.001 }) ?? true { apply(value) }
+        text = VideoEditorModel.speedNumber(value)
+    }
+}
+
+/// The window a SwiftUI view sits in, for what SwiftUI can't do itself:
+/// select all of a field's text once it has focus.
+struct VideoViewAnchor: NSViewRepresentable {
+    @MainActor
+    final class Box {
+        fileprivate weak var view: NSView?
+
+        /// In that window (another editor's Esc isn't this one's).
+        func isIn(_ window: Any?) -> Bool {
+            guard let window = window as? NSWindow else { return false }
+            return view?.window === window
+        }
+
+        func selectAllInFocusedField() {
+            guard let editor = view?.window?.firstResponder as? NSTextView, editor.isFieldEditor else { return }
+            editor.selectAll(nil)
+        }
+    }
+
+    let box: Box
+
+    func makeNSView(context: Context) -> NSView {
+        let view = NSView(frame: .zero)
+        box.view = view
+        return view
+    }
+
+    func updateNSView(_ view: NSView, context: Context) {
+        box.view = view
+    }
+}
+
+extension Notification.Name {
+    /// Esc in one of the editor's fields: it's about to lose focus, and what
+    /// was typed in it shouldn't be kept.
+    static let videoEditorTypingWillCancel = Notification.Name("ShotnixVideoEditorTypingWillCancel")
 }

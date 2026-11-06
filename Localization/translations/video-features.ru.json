@@ -1530,5 +1530,65 @@
   },
   "⇧-drag on the timeline to select a part first." : {
     "ru" : "Сначала выделите фрагмент, перетянув с ⇧ по шкале времени."
+  },
+  "Font" : {
+    "ru" : "Шрифт"
+  },
+  "Weight" : {
+    "ru" : "Насыщенность"
+  },
+  "System font" : {
+    "ru" : "Системный шрифт"
+  },
+  "Rounded font" : {
+    "ru" : "Скругленный шрифт"
+  },
+  "Serif font" : {
+    "ru" : "Шрифт с засечками"
+  },
+  "Monospaced font" : {
+    "ru" : "Моноширинный шрифт"
+  },
+  "Semibold" : {
+    "ru" : "Полужирный"
+  },
+  "Heavy" : {
+    "ru" : "Сверхжирный"
+  },
+  "Text color" : {
+    "ru" : "Цвет текста"
+  },
+  "Automatic: dark on a light tag, white otherwise" : {
+    "ru" : "Автоматически: темный на светлой плашке, иначе белый"
+  },
+  "Dimming" : {
+    "ru" : "Затемнение"
+  },
+  "%@ - Voice" : {
+    "ru" : "%@ - Голос"
+  },
+  "%@ - Computer sound" : {
+    "ru" : "%@ - Звук компьютера"
+  },
+  "Separate sound files" : {
+    "ru" : "Отдельные звуковые файлы"
+  },
+  "Also saves the voice and the computer sound as their own files next to the video, to mix somewhere else" : {
+    "ru" : "Также сохраняет голос и звук компьютера в отдельные файлы рядом с видео, чтобы свести их в другой программе"
+  },
+  "Saving the voice and computer sound…" : {
+    "ru" : "Сохранение голоса и звука компьютера…"
+  },
+  "Saving sound files…" : {
+    "ru" : "Сохранение звуковых файлов…"
+  },
+  "The video is saved, but the voice and computer sound couldn't all be saved as their own files." : {
+    "ru" : "Видео сохранено, но не удалось сохранить голос и звук компьютера в отдельные файлы."
+  },
+  "What the picture around the spot dims toward" : {
+    "ru" : "Цвет, к которому затемняется изображение вокруг прожектора"
+  },
+  "voice and computer sound as their own files" : {
+    "ru" : "голос и звук компьютера отдельными файлами"
   }
 }

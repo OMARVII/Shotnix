@@ -110,6 +110,9 @@ struct VideoExportSettings: Equatable {
     var burnCaptions: Bool = true
     /// A subtitles file saved next to the video (nil: none).
     var subtitles: VideoSubtitleFormat?
+    /// The voice and the computer sound saved next to the video as their
+    /// own files too (MP4, when they were recorded apart).
+    var separateSound: Bool = false
 
     static let frameRates = [24, 30, 60]
     static let gifFrameRates = [10, 15, 20, 24]
@@ -212,6 +215,7 @@ struct VideoExportSettings: Equatable {
         }
         settings.burnCaptions = Settings.videoExportBurnCaptions
         settings.subtitles = VideoSubtitleFormat(rawValue: Settings.videoExportSubtitles)
+        settings.separateSound = defaults.bool(forKey: "videoExportSeparateSound")
         return settings
     }
 
@@ -227,5 +231,6 @@ struct VideoExportSettings: Equatable {
         defaults.set(gifFPS, forKey: "videoExportGIFFPS")
         Settings.videoExportBurnCaptions = burnCaptions
         Settings.videoExportSubtitles = subtitles?.rawValue ?? ""
+        defaults.set(separateSound, forKey: "videoExportSeparateSound")
     }
 }

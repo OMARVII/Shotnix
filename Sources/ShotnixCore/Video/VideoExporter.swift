@@ -27,6 +27,8 @@ enum VideoDemoExporter {
         /// Measuring the whole mix once to even out its loudness.
         case balancingLoudness(Double)
         case rendering(Double)
+        /// Writing the voice and the computer sound to their own files.
+        case savingSound(Double)
     }
 
     /// Returns non-fatal warnings.
@@ -162,7 +164,8 @@ enum VideoDemoExporter {
         defer { watcher.cancel() }
         defer { VideoExportFiles.cleanUp(temporaryURL) }
 
-        let warnings: [String]
+        var warnings: [String]
+        var audioGain = 1.0
         if settings.format == .gif {
             await phase(.rendering(0))
             try await writeGIF(
@@ -178,7 +181,7 @@ enum VideoDemoExporter {
             )
             warnings = []
         } else {
-            warnings = try await writeMovie(
+            (warnings, audioGain) = try await writeMovie(
                 edit: edit,
                 plan: plan,
                 frames: frames,
@@ -195,8 +198,124 @@ enum VideoDemoExporter {
 
         // Swapped in whole: an existing file stays until the new one is ready.
         try VideoExportFiles.replace(destinationURL, with: temporaryURL)
+        if settings.format == .mp4, settings.separateSound {
+            await phase(.savingSound(0))
+            warnings += try await writeSeparateSound(edit: edit, segments: segments, audio: project.audio, extras: extras, gain: audioGain, beside: destinationURL, cancel: cancel) { fraction in
+                Task { await phase(.savingSound(fraction)) }
+            }
+        }
         await progress(1)
         return warnings
+    }
+
+    /// "Demo - Voice.m4a" or "Demo - Computer sound.m4a" beside "Demo.mp4".
+    static func separateSoundURL(_ kind: VideoAudioKind, beside destination: URL) -> URL {
+        let base = destination.deletingPathExtension()
+        let name = kind == .system ? L("\(base.lastPathComponent) - Computer sound") : L("\(base.lastPathComponent) - Voice")
+        return base.deletingLastPathComponent().appendingPathComponent(name).appendingPathExtension("m4a")
+    }
+
+    /// The voice and the computer sound, each in its own file beside the
+    /// video, cut, timed and leveled as in it. The computer sound keeps its
+    /// level where it dipped under the voice (that was for the mix), both get
+    /// the video's loudness gain so they add up as they sounded there, and
+    /// neither has the music or clicks. Returns a warning for a file that
+    /// couldn't be written (the video itself is saved).
+    private static func writeSeparateSound(edit: VideoEditComposition, segments: [VideoDemoTimelineSegment], audio: VideoAudioSettings, extras: VideoEditExtras, gain: Double, beside destination: URL, cancel: CancellationFlag, progress: @escaping @Sendable (Double) -> Void) async throws -> [String] {
+        var undipped = extras
+        undipped.computerSoundDips = []
+        let kinds = [VideoAudioKind.microphone, .system].filter(edit.audioKinds.contains)
+        var failed = false
+        for (index, kind) in kinds.enumerated() {
+            let tracks = zip(edit.audioTracks, edit.audioKinds).filter { $0.1 == kind }.map(\.0)
+            let mix = VideoCompositionBuilder.audioMix(for: edit, segments: segments, audio: audio, extras: kind == .system ? undipped : extras)
+            let ids = Set(tracks.map(\.trackID))
+            mix?.inputParameters = mix?.inputParameters.filter { ids.contains($0.trackID) } ?? []
+            do {
+                try await writeSound(edit: edit, tracks: tracks, mix: mix, gain: gain, to: separateSoundURL(kind, beside: destination), cancel: cancel) { fraction in
+                    progress((Double(index) + fraction) / Double(kinds.count))
+                }
+            } catch VideoDemoExportError.cancelled {
+                throw VideoDemoExportError.cancelled
+            } catch {
+                failed = true
+            }
+        }
+        return failed ? [L("The video is saved, but the voice and computer sound couldn't all be saved as their own files.")] : []
+    }
+
+    /// Some of the edit's sound tracks, mixed and written as an .m4a.
+    private static func writeSound(edit: VideoEditComposition, tracks: [AVMutableCompositionTrack], mix: AVAudioMix?, gain: Double, to url: URL, cancel: CancellationFlag, progress: @escaping @Sendable (Double) -> Void) async throws {
+        let reader = try AVAssetReader(asset: edit.composition)
+        let output = AVAssetReaderAudioMixOutput(audioTracks: tracks, audioSettings: [
+            AVFormatIDKey: kAudioFormatLinearPCM,
+            AVSampleRateKey: 48_000,
+            AVNumberOfChannelsKey: 2,
+            AVLinearPCMBitDepthKey: 32,
+            AVLinearPCMIsFloatKey: true,
+            AVLinearPCMIsBigEndianKey: false,
+            AVLinearPCMIsNonInterleaved: false,
+        ])
+        output.audioMix = mix
+        output.audioTimePitchAlgorithm = .spectral
+        output.alwaysCopiesSampleData = false
+        guard reader.canAdd(output) else { throw VideoDemoExportError.exportFailed(L("Couldn't read the recording. Check that its file is still there, then export again.")) }
+        reader.add(output)
+        let temporary = VideoExportFiles.temporaryURL(beside: url, fileExtension: "m4a")
+        VideoExportFiles.remember(temporary)
+        defer { VideoExportFiles.cleanUp(temporary) }
+        let writer = try AVAssetWriter(outputURL: temporary, fileType: .m4a)
+        let input = AVAssetWriterInput(mediaType: .audio, outputSettings: [
+            AVFormatIDKey: kAudioFormatMPEG4AAC,
+            AVSampleRateKey: 48_000,
+            AVNumberOfChannelsKey: 2,
+            AVEncoderBitRateKey: 192_000,
+        ])
+        input.expectsMediaDataInRealTime = false
+        guard writer.canAdd(input) else { throw VideoDemoExportError.exportFailed(L("Couldn't write the video. Check that there's free space and that you can save to that folder, then export again.")) }
+        writer.add(input)
+        guard reader.startReading() else {
+            throw reader.error.map { VideoDemoExportError.system($0) } ?? VideoDemoExportError.exportFailed(L("Couldn't read the recording. Check that its file is still there, then export again."))
+        }
+        guard writer.startWriting() else {
+            throw writer.error.map { VideoDemoExportError.system($0) } ?? VideoDemoExportError.exportFailed(L("Couldn't write the video. Check that there's free space and that you can save to that folder, then export again."))
+        }
+        writer.startSession(atSourceTime: .zero)
+        let total = max(edit.duration.seconds, 0.001)
+        let queue = DispatchQueue(label: "com.shotnix.export.sound")
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            var finished = false
+            input.requestMediaDataWhenReady(on: queue) {
+                guard !finished else { return }
+                while input.isReadyForMoreMediaData {
+                    let appended = autoreleasepool { () -> Bool in
+                        guard !cancel.isSet, let raw = output.copyNextSampleBuffer() else { return false }
+                        progress(min(max(CMSampleBufferGetPresentationTimeStamp(raw).seconds / total, 0), 1))
+                        return input.append(VideoAudioGain.apply(gain, to: raw) ?? raw)
+                    }
+                    if !appended {
+                        finished = true
+                        input.markAsFinished()
+                        continuation.resume()
+                        return
+                    }
+                }
+            }
+        }
+        if cancel.isSet {
+            reader.cancelReading()
+            writer.cancelWriting()
+            throw VideoDemoExportError.cancelled
+        }
+        if reader.status == .failed {
+            writer.cancelWriting()
+            throw reader.error.map { VideoDemoExportError.system($0) } ?? VideoDemoExportError.exportFailed(L("Couldn't read the recording. Check that its file is still there, then export again."))
+        }
+        await writer.finishWriting()
+        guard writer.status == .completed else {
+            throw writer.error.map { VideoDemoExportError.system($0) } ?? VideoDemoExportError.exportFailed(L("Couldn't write the video. Check that there's free space and that you can save to that folder, then export again."))
+        }
+        try VideoExportFiles.replace(url, with: temporary)
     }
 
     static func makePlan(project: VideoDemoProject, sourceDuration: Double, recording: VideoDemoRecordingMetadata?, hasWebcam: Bool = false, appendedMetadata: [UUID: VideoDemoRecordingMetadata] = [:]) -> VideoRenderPlan {
@@ -278,7 +397,7 @@ enum VideoDemoExporter {
         cancel: CancellationFlag,
         progress: @escaping @Sendable (Double) async -> Void,
         phase: @escaping @Sendable (Phase) async -> Void
-    ) async throws -> [String] {
+    ) async throws -> (warnings: [String], audioGain: Double) {
         let fps = Double(settings.fps)
         let reader = try AVAssetReader(asset: edit.composition)
         let cameraStore = VideoCameraFrameStore(capacity: 48)
@@ -404,7 +523,7 @@ enum VideoDemoExporter {
             }
         )
         try await job.run()
-        return job.warnings
+        return (job.warnings, audioGain)
     }
 
     private struct EndCard {

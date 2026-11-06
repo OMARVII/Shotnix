@@ -14,6 +14,10 @@
 	<string>%@ (⇧⌘Z)</string>
 	<key>%@ (⌘Z)</key>
 	<string>%@ (⌘Z)</string>
+	<key>%@ - Computer sound</key>
+	<string>%@ - Son de l’ordinateur</string>
+	<key>%@ - Voice</key>
+	<string>%@ - Voix</string>
 	<key>%@ Zoom</key>
 	<string>Zoom %@</string>
 	<key>%@ area</key>
@@ -210,6 +214,8 @@
 	<string>Autorisez Shotnix dans Accessibilité — les raccourcis s’activeront d’eux-mêmes.</string>
 	<key>Almost done</key>
 	<string>Presque terminé</string>
+	<key>Also saves the voice and the computer sound as their own files next to the video, to mix somewhere else</key>
+	<string>Enregistre aussi la voix et le son de l’ordinateur dans leurs propres fichiers à côté de la vidéo, pour les mixer ailleurs</string>
 	<key>Always show the arrow</key>
 	<string>Toujours afficher la flèche</string>
 	<key>Amber Fold</key>
@@ -292,6 +298,8 @@
 	<string>Automatique</string>
 	<key>Automatic detects each capture's language; pick languages when it guesses wrong. Accurate reads small text best — Fast answers sooner but knows fewer languages. Used by Capture Text, Copy Text, and History search.</key>
 	<string>« Automatique » détecte la langue de chaque capture ; choisissez des langues s’il se trompe. « Précise » lit mieux les petits textes — « Rapide » répond plus vite mais connaît moins de langues. Ces réglages s’appliquent à « Capturer du texte », à « Copier le texte » et à la recherche dans l’historique.</string>
+	<key>Automatic: dark on a light tag, white otherwise</key>
+	<string>Automatique : foncé sur une étiquette claire, blanc sinon</string>
 	<key>Back</key>
 	<string>Retour</string>
 	<key>Back to the Shotnix look</key>
@@ -804,6 +812,8 @@
 	<string>Désélectionner/fermer</string>
 	<key>Desert Violet</key>
 	<string>Violet du désert</string>
+	<key>Dimming</key>
+	<string>Assombrissement</string>
 	<key>Dip to black</key>
 	<string>Fondu au noir</string>
 	<key>Dips while you talk, comes back in the pauses</key>
@@ -1092,6 +1102,8 @@
 	<string>Suivre le pointeur</string>
 	<key>Follows cursor</key>
 	<string>Suit le pointeur</string>
+	<key>Font</key>
+	<string>Police</string>
 	<key>Forever</key>
 	<string>Indéfiniment</string>
 	<key>Format</key>
@@ -1168,6 +1180,8 @@
 	<string>Coupe</string>
 	<key>Health</key>
 	<string>État</string>
+	<key>Heavy</key>
+	<string>Extra-gras</string>
 	<key>Hidden</key>
 	<string>Masqué</string>
 	<key>Hidden network</key>
@@ -1422,6 +1436,8 @@
 	<string>Miroir</string>
 	<key>Mist</key>
 	<string>Brume</string>
+	<key>Monospaced font</key>
+	<string>Police à chasse fixe</string>
 	<key>More recording options</key>
 	<string>Autres options d’enregistrement</string>
 	<key>More tips</key>
@@ -2292,6 +2308,8 @@
 	<string>Coins arrondis (⌥R)</string>
 	<key>Rounded corners</key>
 	<string>Coins arrondis</string>
+	<key>Rounded font</key>
+	<string>Police arrondie</string>
 	<key>Rounded rectangle</key>
 	<string>Rectangle arrondi</string>
 	<key>Roundness</key>
@@ -2348,6 +2366,8 @@
 	<string>Enregistrer…</string>
 	<key>Saving captures to History</key>
 	<string>Ajout des captures à l’historique</string>
+	<key>Saving sound files…</key>
+	<string>Enregistrement des fichiers audio…</string>
 	<key>Saving the last recording…</key>
 	<string>Finalisation du dernier enregistrement…</string>
 	<key>Saving the recording</key>
@@ -2356,6 +2376,8 @@
 	<string>Finalisation de l’enregistrement…</string>
 	<key>Saving the screen recording</key>
 	<string>Finalisation de l’enregistrement de l’écran</string>
+	<key>Saving the voice and computer sound…</key>
+	<string>Enregistrement de la voix et du son de l’ordinateur…</string>
 	<key>Saving…</key>
 	<string>Finalisation…</string>
 	<key>Scan QR Code</key>
@@ -2432,8 +2454,14 @@
 	<string>Sélection de %@ sur %@ points</string>
 	<key>Selection %@ by %@ points. Arrow keys move it, Return captures, Escape cancels.</key>
 	<string>Sélection de %@ sur %@ points. Les flèches la déplacent, Retour capture, Échap annule.</string>
+	<key>Semibold</key>
+	<string>Demi-gras</string>
 	<key>Send by Email…</key>
 	<string>Envoyer par e-mail…</string>
+	<key>Separate sound files</key>
+	<string>Fichiers audio séparés</string>
+	<key>Serif font</key>
+	<string>Police à empattements</string>
 	<key>Set In to Playhead</key>
 	<string>Placer le point d’entrée sur la tête de lecture</string>
 	<key>Set Out to Playhead</key>
@@ -2720,6 +2748,8 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Son de l’ordinateur</string>
 	<key>System audio couldn't be recorded. Try again without system audio.</key>
 	<string>Le son de l’ordinateur n’a pas pu être enregistré. Réessayez sans le son de l’ordinateur.</string>
+	<key>System font</key>
+	<string>Police système</string>
 	<key>Table copied — paste it into a spreadsheet</key>
 	<string>Tableau copié — collez-le dans un tableur</string>
 	<key>Tag</key>
@@ -2744,6 +2774,8 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Code QR avec texte détecté</string>
 	<key>Text Recognition</key>
 	<string>Reconnaissance de texte</string>
+	<key>Text color</key>
+	<string>Couleur du texte</string>
 	<key>Text copied</key>
 	<string>Texte copié</string>
 	<key>Text copied to clipboard</key>
@@ -2816,6 +2848,8 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>La timeline est vide. Restaurez un clip, puis exportez à nouveau.</string>
 	<key>The video encoder is busy — another app may be recording or exporting. Wait a moment and try again, or choose H.264.</key>
 	<string>L’encodeur vidéo est occupé — une autre app enregistre ou exporte peut-être. Patientez un instant et réessayez, ou choisissez H.264.</string>
+	<key>The video is saved, but the voice and computer sound couldn't all be saved as their own files.</key>
+	<string>La vidéo est enregistrée, mais la voix et le son de l’ordinateur n’ont pas pu être enregistrés tous les deux dans leurs propres fichiers.</string>
 	<key>The video's own recording can't be removed</key>
 	<string>L’enregistrement d’origine de la vidéo ne peut pas être retiré</string>
 	<key>The voice track is empty, so there's nothing to clean up. Turn off Enhance voice to keep the original sound.</key>
@@ -2950,6 +2984,8 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Baissez ici le son de l’ordinateur pour parler par-dessus.</string>
 	<key>Turn the video's sound back on</key>
 	<string>Réactiver le son de la vidéo</string>
+	<key>Type any speed from 0.25× to 16×</key>
+	<string>Saisir une vitesse de 0,25× à 16×</string>
 	<key>Type here…</key>
 	<string>Saisissez du texte…</string>
 	<key>Type in a text annotation</key>
@@ -3256,10 +3292,14 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>Web</string>
 	<key>Website</key>
 	<string>Site web</string>
+	<key>Weight</key>
+	<string>Graisse</string>
 	<key>Welcome</key>
 	<string>Bienvenue</string>
 	<key>Welcome to Shotnix</key>
 	<string>Bienvenue dans Shotnix</string>
+	<key>What the picture around the spot dims toward</key>
+	<string>La couleur vers laquelle l’image s’assombrit autour du projecteur</string>
 	<key>What was playing on your Mac</key>
 	<string>Ce qui était diffusé sur votre Mac</string>
 	<key>What's New</key>
@@ -3440,6 +3480,8 @@ Vous pouvez réactiver les raccourcis d’Apple à tout moment dans Réglages Sy
 	<string>jusqu’à %@ Go/min</string>
 	<key>up to %@ MB/min</key>
 	<string>jusqu’à %@ Mo/min</string>
+	<key>voice and computer sound as their own files</key>
+	<string>voix et son de l’ordinateur en fichiers séparés</string>
 	<key>zoom the timeline</key>
 	<string>zoomer dans la timeline</string>
 	<key>© 2026 Shotnix Contributors</key>

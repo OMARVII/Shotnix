@@ -815,6 +815,30 @@ extension VideoEditorModel {
         VideoOverlayStyleMemory.blurStrength = value
     }
 
+    /// How far a spotlight dims around the spot (new spotlights start with it).
+    func setSpotlightDim(_ dim: Double, of id: UUID) {
+        let value = min(max(dim, VideoDemoOverlayEffect.spotlightDimRange.lowerBound), VideoDemoOverlayEffect.spotlightDimRange.upperBound)
+        updateOverlay(id, coalesce: "spotlight-dim-\(id)") { $0.strength = value }
+        VideoOverlayStyleMemory.spotlightDim = value
+    }
+
+    /// A text annotation's typeface, weight and letter color (new texts
+    /// start with the last ones picked).
+    func setTextFont(_ font: VideoTextFont, of id: UUID) {
+        updateOverlay(id) { $0.font = font == .system ? nil : font }
+        VideoOverlayStyleMemory.textFont = font
+    }
+
+    func setTextWeight(_ weight: VideoTextWeight, of id: UUID) {
+        updateOverlay(id) { $0.weight = weight == .semibold ? nil : weight }
+        VideoOverlayStyleMemory.textWeight = weight
+    }
+
+    func setTextColor(_ color: VideoRGBA?, of id: UUID, coalesce: String? = nil) {
+        updateOverlay(id, coalesce: coalesce ?? "text-color-\(id)") { $0.textColor = color }
+        VideoOverlayStyleMemory.textColor = color
+    }
+
     /// Turns an arrow around (tail and head swap places).
     func flipArrow(_ id: UUID) {
         updateOverlay(id) { effect in

@@ -971,7 +971,7 @@ struct VideoTimelineClipView: View, Equatable {
                         .font(.system(size: 10, weight: .semibold))
                         .foregroundStyle(.white.opacity(0.75))
                     if abs(segment.clip.normalizedSpeed - 1) > 0.01 {
-                        Text(VideoEditorModel.formatScale(segment.clip.normalizedSpeed))
+                        Text(VideoEditorModel.formatSpeed(segment.clip.normalizedSpeed))
                             .font(.system(size: 9.5, weight: .heavy))
                             .padding(.horizontal, 4)
                             .background(Capsule().fill(Color.black.opacity(0.45)))
@@ -1133,15 +1133,15 @@ struct VideoTimelineClipView: View, Equatable {
             model.splitAtPlayhead()
         }
         Menu(L("Speed")) {
-            ForEach([0.5, 1, 1.5, 2, 3, 4, 8, 16], id: \.self) { speed in
+            ForEach(VideoDemoTimelineClip.speedPresets, id: \.self) { speed in
                 Button {
                     model.setClipSpeed(segment.id, speed)
                     model.endGesture()
                 } label: {
                     if abs(segment.clip.normalizedSpeed - speed) < 0.01 {
-                        Label(VideoEditorModel.formatScale(speed), systemImage: "checkmark")
+                        Label(VideoEditorModel.formatSpeed(speed), systemImage: "checkmark")
                     } else {
-                        Text(VideoEditorModel.formatScale(speed))
+                        Text(VideoEditorModel.formatSpeed(speed))
                     }
                 }
             }

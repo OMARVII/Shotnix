@@ -14,6 +14,10 @@
 	<string>%@（⇧⌘Z）</string>
 	<key>%@ (⌘Z)</key>
 	<string>%@（⌘Z）</string>
+	<key>%@ - Computer sound</key>
+	<string>%@ - システムオーディオ</string>
+	<key>%@ - Voice</key>
+	<string>%@ - 声</string>
 	<key>%@ Zoom</key>
 	<string>%@ズーム</string>
 	<key>%@ area</key>
@@ -270,6 +274,8 @@
 	<string>“アクセシビリティ”でShotnixを許可すると、ショートカットの表示が自動的にオンになります。</string>
 	<key>Almost done</key>
 	<string>まもなく完了</string>
+	<key>Also saves the voice and the computer sound as their own files next to the video, to mix somewhere else</key>
+	<string>声とシステムオーディオも、ビデオの横に個別のファイルとして保存します（ほかのアプリでミックスする場合に）</string>
 	<key>Always show the arrow</key>
 	<string>常に矢印を表示</string>
 	<key>Amber Fold</key>
@@ -356,6 +362,8 @@
 	<string>自動</string>
 	<key>Automatic detects each capture's language; pick languages when it guesses wrong. Accurate reads small text best — Fast answers sooner but knows fewer languages. Used by Capture Text, Copy Text, and History search.</key>
 	<string>“自動”はスクリーンショットごとに言語を検出します。判定が間違っているときは言語を選択してください。“正確”は小さな文字を最もよく読み取れます。“高速”はすぐに結果が出ますが、対応する言語が少なくなります。“テキストを取り込む”、“テキストをコピー”、履歴の検索で使用されます。</string>
+	<key>Automatic: dark on a light tag, white otherwise</key>
+	<string>自動：明るい背景では暗い色、それ以外は白</string>
 	<key>Back</key>
 	<string>戻る</string>
 	<key>Back to the Shotnix look</key>
@@ -878,6 +886,8 @@
 	<string>選択解除/閉じる</string>
 	<key>Desert Violet</key>
 	<string>砂漠のすみれ</string>
+	<key>Dimming</key>
+	<string>周囲の暗さ</string>
 	<key>Dip to black</key>
 	<string>黒にフェード</string>
 	<key>Dips while you talk, comes back in the pauses</key>
@@ -1166,6 +1176,8 @@
 	<string>ポインタに追従</string>
 	<key>Follows cursor</key>
 	<string>ポインタに追従</string>
+	<key>Font</key>
+	<string>フォント</string>
 	<key>Forever</key>
 	<string>無期限</string>
 	<key>Format</key>
@@ -1244,6 +1256,8 @@
 	<string>カット</string>
 	<key>Health</key>
 	<string>状態</string>
+	<key>Heavy</key>
+	<string>極太</string>
 	<key>Hidden</key>
 	<string>非表示</string>
 	<key>Hidden network</key>
@@ -1518,6 +1532,8 @@
 	<string>左右反転</string>
 	<key>Mist</key>
 	<string>ミスト</string>
+	<key>Monospaced font</key>
+	<string>等幅フォント</string>
 	<key>More recording options</key>
 	<string>その他の収録オプション</string>
 	<key>More tips</key>
@@ -2410,6 +2426,8 @@
 	<string>角を丸める（⌥R）</string>
 	<key>Rounded corners</key>
 	<string>角を丸める</string>
+	<key>Rounded font</key>
+	<string>丸みのあるフォント</string>
 	<key>Rounded rectangle</key>
 	<string>角丸長方形</string>
 	<key>Roundness</key>
@@ -2466,6 +2484,8 @@
 	<string>保存…</string>
 	<key>Saving captures to History</key>
 	<string>スクリーンショットを履歴に保存中</string>
+	<key>Saving sound files…</key>
+	<string>音声ファイルを保存中…</string>
 	<key>Saving the last recording…</key>
 	<string>前回の収録を保存中…</string>
 	<key>Saving the recording</key>
@@ -2474,6 +2494,8 @@
 	<string>収録を保存中…</string>
 	<key>Saving the screen recording</key>
 	<string>画面収録を保存しています</string>
+	<key>Saving the voice and computer sound…</key>
+	<string>声とシステムオーディオを保存中…</string>
 	<key>Saving…</key>
 	<string>保存中…</string>
 	<key>Scan QR Code</key>
@@ -2554,8 +2576,14 @@
 	<string>選択範囲: 幅%@ポイント、高さ%@ポイント</string>
 	<key>Selection %@ by %@ points. Arrow keys move it, Return captures, Escape cancels.</key>
 	<string>選択範囲: 幅%@ポイント、高さ%@ポイント。矢印キーで移動、Returnキーで取り込み、Escキーでキャンセルします。</string>
+	<key>Semibold</key>
+	<string>やや太い</string>
 	<key>Send by Email…</key>
 	<string>メールで送信…</string>
+	<key>Separate sound files</key>
+	<string>音声を別ファイルに</string>
+	<key>Serif font</key>
+	<string>セリフ体</string>
 	<key>Set In to Playhead</key>
 	<string>イン点を再生ヘッドの位置に設定</string>
 	<key>Set Out to Playhead</key>
@@ -2850,6 +2878,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>システムオーディオ</string>
 	<key>System audio couldn't be recorded. Try again without system audio.</key>
 	<string>システムオーディオを録音できませんでした。システムオーディオをオフにして、もう一度お試しください。</string>
+	<key>System font</key>
+	<string>システムフォント</string>
 	<key>Table copied — paste it into a spreadsheet</key>
 	<string>表をコピーしました。スプレッドシートにペーストできます。</string>
 	<key>Tag</key>
@@ -2874,6 +2904,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>テキストのQRコードが見つかりました</string>
 	<key>Text Recognition</key>
 	<string>テキスト認識</string>
+	<key>Text color</key>
+	<string>文字のカラー</string>
 	<key>Text copied</key>
 	<string>テキストをコピーしました</string>
 	<key>Text copied to clipboard</key>
@@ -2946,6 +2978,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>タイムラインが空です。クリップを復元してから、もう一度書き出してください。</string>
 	<key>The video encoder is busy — another app may be recording or exporting. Wait a moment and try again, or choose H.264.</key>
 	<string>ビデオエンコーダが使用中です。別のアプリが収録中または書き出し中の可能性があります。しばらく待ってからもう一度試すか、H.264を選択してください。</string>
+	<key>The video is saved, but the voice and computer sound couldn't all be saved as their own files.</key>
+	<string>ビデオは保存されましたが、声とシステムオーディオの一部を個別のファイルとして保存できませんでした。</string>
 	<key>The video's own recording can't be removed</key>
 	<string>このビデオ自体の収録は削除できません</string>
 	<key>The voice track is empty, so there's nothing to clean up. Turn off Enhance voice to keep the original sound.</key>
@@ -3082,6 +3116,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>この部分のシステムオーディオを下げると、声を重ねやすくなります。</string>
 	<key>Turn the video's sound back on</key>
 	<string>ビデオのサウンドを再びオンにする</string>
+	<key>Type any speed from 0.25× to 16×</key>
+	<string>0.25×〜16×の好きな速度を入力</string>
 	<key>Type here…</key>
 	<string>ここに入力…</string>
 	<key>Type in a text annotation</key>
@@ -3392,10 +3428,14 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>Web</string>
 	<key>Website</key>
 	<string>Webサイト</string>
+	<key>Weight</key>
+	<string>ウエイト</string>
 	<key>Welcome</key>
 	<string>ようこそ</string>
 	<key>Welcome to Shotnix</key>
 	<string>Shotnixへようこそ</string>
+	<key>What the picture around the spot dims toward</key>
+	<string>スポットライトの周囲を暗くするときの色</string>
 	<key>What was playing on your Mac</key>
 	<string>Macで再生されていたサウンド</string>
 	<key>What's New</key>
@@ -3582,6 +3622,8 @@ Appleのショートカットは、“システム設定”＞“キーボード
 	<string>最大%@ GB/分</string>
 	<key>up to %@ MB/min</key>
 	<string>最大%@ MB/分</string>
+	<key>voice and computer sound as their own files</key>
+	<string>声とシステムオーディオの個別ファイル</string>
 	<key>zoom the timeline</key>
 	<string>タイムラインを拡大/縮小</string>
 	<key>© 2026 Shotnix Contributors</key>

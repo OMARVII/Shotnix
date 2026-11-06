@@ -1,5 +1,16 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- **Type any speed.** Next to the speed buttons for a clip or a selected part, a small field takes any speed from 0.25× to 16×, like 1.3×. Click it and type over the speed shown, then press Return (Esc keeps the old one): the button with the same speed lights up, and the timeline shows the exact speed.
+- **Pick a font, a weight and a color for text.** A text annotation can use the rounded, serif or monospaced version of the system font, in four weights from Regular to Heavy, and its letters can have their own color. Auto keeps the choice made for you: dark letters on a light tag, white otherwise. New text starts with the last font, weight and color you picked.
+- **Set how far a spotlight dims.** A spotlight's Dimming goes from 20% to 100% (58%, as before, to start), and it can dim toward white or any color instead of black. New spotlights start with your last setting.
+- **Save the voice and the computer sound as their own files.** When they were recorded on separate tracks, the export sheet's Separate sound files option also saves "Name - Voice.m4a" and "Name - Computer sound.m4a" next to the video, cut and timed like it, to mix somewhere else. The computer sound keeps its level where the video lowered it under your voice, and both get the same loudness change as the video, so their balance matches it. Music and click sounds aren't in either file. Show in Finder selects them along with the video.
+
+### Changed
+- When a selected clip's settings run past the bottom of the panel, the last visible row fades out instead of being cut in half, so it's clear there's more to scroll to.
+
 ## [0.29.0-beta] - 2026-11-06
 
 ### Added

@@ -5,6 +5,12 @@
   "%@ (original)" : {
     "ja" : "%@（オリジナル）"
   },
+  "%@ - Computer sound" : {
+    "ja" : "%@ - システムオーディオ"
+  },
+  "%@ - Voice" : {
+    "ja" : "%@ - 声"
+  },
   "%@ can't be transcribed on this Mac without sending your voice to a server. To add it, turn on Dictation for %@ in System Settings → Keyboard, or pick another language." : {
     "ja" : "このMacでは、声をサーバに送信せずに%@を文字起こしすることはできません。追加するには、“システム設定”＞“キーボード”で%@の音声入力をオンにするか、別の言語を選択してください。"
   },
@@ -107,6 +113,9 @@
   "Almost done" : {
     "ja" : "まもなく完了"
   },
+  "Also saves the voice and the computer sound as their own files next to the video, to mix somewhere else" : {
+    "ja" : "声とシステムオーディオも、ビデオの横に個別のファイルとして保存します（ほかのアプリでミックスする場合に）"
+  },
   "Append Video…" : {
     "ja" : "ビデオを末尾に追加…"
   },
@@ -130,6 +139,9 @@
   },
   "Auto zoom — %lld zooms" : {
     "ja" : "自動ズーム: %lld個のズーム"
+  },
+  "Automatic: dark on a light tag, white otherwise" : {
+    "ja" : "自動：明るい背景では暗い色、それ以外は白"
   },
   "Back" : {
     "ja" : "戻る"
@@ -383,6 +395,9 @@
   "Cutout" : {
     "ja" : "切り抜き"
   },
+  "Dimming" : {
+    "ja" : "周囲の暗さ"
+  },
   "Dip to black" : {
     "ja" : "黒にフェード"
   },
@@ -530,6 +545,9 @@
   "Flamingo" : {
     "ja" : "フラミンゴ"
   },
+  "Font" : {
+    "ja" : "フォント"
+  },
   "Frame copied" : {
     "ja" : "フレームをコピーしました"
   },
@@ -562,6 +580,9 @@
   },
   "Hard cut" : {
     "ja" : "カット"
+  },
+  "Heavy" : {
+    "ja" : "極太"
   },
   "Hidden" : {
     "ja" : "非表示"
@@ -697,6 +718,9 @@
   },
   "Mist" : {
     "ja" : "ミスト"
+  },
+  "Monospaced font" : {
+    "ja" : "等幅フォント"
   },
   "Move %@ earlier" : {
     "ja" : "“%@”を前に移動"
@@ -1001,6 +1025,9 @@
   "Rounded" : {
     "ja" : "角丸"
   },
+  "Rounded font" : {
+    "ja" : "丸みのあるフォント"
+  },
   "S" : {
     "ja" : "小"
   },
@@ -1019,8 +1046,23 @@
   "Saved — new recordings will use this look" : {
     "ja" : "保存しました。新しい収録にはこのスタイルが使われます"
   },
+  "Saving sound files…" : {
+    "ja" : "音声ファイルを保存中…"
+  },
+  "Saving the voice and computer sound…" : {
+    "ja" : "声とシステムオーディオを保存中…"
+  },
   "Selection" : {
     "ja" : "選択範囲"
+  },
+  "Semibold" : {
+    "ja" : "やや太い"
+  },
+  "Separate sound files" : {
+    "ja" : "音声を別ファイルに"
+  },
+  "Serif font" : {
+    "ja" : "セリフ体"
   },
   "Set the in point to the playhead (%@)" : {
     "ja" : "イン点を再生ヘッドの位置（%@）に設定"
@@ -1139,11 +1181,17 @@
   "Sunset" : {
     "ja" : "サンセット"
   },
+  "System font" : {
+    "ja" : "システムフォント"
+  },
   "Tag" : {
     "ja" : "背景"
   },
   "Tangerine" : {
     "ja" : "タンジェリン"
+  },
+  "Text color" : {
+    "ja" : "文字のカラー"
   },
   "Thanks for watching" : {
     "ja" : "ご視聴ありがとうございました"
@@ -1186,6 +1234,9 @@
   },
   "The video encoder is busy — another app may be recording or exporting. Wait a moment and try again, or choose H.264." : {
     "ja" : "ビデオエンコーダが使用中です。別のアプリが収録中または書き出し中の可能性があります。しばらく待ってからもう一度試すか、H.264を選択してください。"
+  },
+  "The video is saved, but the voice and computer sound couldn't all be saved as their own files." : {
+    "ja" : "ビデオは保存されましたが、声とシステムオーディオの一部を個別のファイルとして保存できませんでした。"
   },
   "The video's own recording can't be removed" : {
     "ja" : "このビデオ自体の収録は削除できません"
@@ -1319,8 +1370,14 @@
   "Web" : {
     "ja" : "Web"
   },
+  "Weight" : {
+    "ja" : "ウエイト"
+  },
   "Welcome" : {
     "ja" : "ようこそ"
+  },
+  "What the picture around the spot dims toward" : {
+    "ja" : "スポットライトの周囲を暗くするときの色"
   },
   "Whole video" : {
     "ja" : "ビデオ全体"
@@ -1372,6 +1429,9 @@
   },
   "this recording" : {
     "ja" : "この収録"
+  },
+  "voice and computer sound as their own files" : {
+    "ja" : "声とシステムオーディオの個別ファイル"
   },
   "“%@” (was in %@)" : {
     "ja" : "“%@”（%@にありました）"

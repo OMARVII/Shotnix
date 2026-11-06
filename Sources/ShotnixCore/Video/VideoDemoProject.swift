@@ -6,6 +6,8 @@ import Foundation
 
 struct VideoDemoTimelineClip: Codable, Equatable, Identifiable {
     static let speedRange: ClosedRange<Double> = 0.25...16
+    /// The speeds with a button of their own (any other can be typed).
+    static let speedPresets: [Double] = [0.5, 1, 1.5, 2, 3, 4, 8, 16]
 
     var id: UUID
     var sourceStart: Double
@@ -200,6 +202,60 @@ enum VideoOverlayShape: String, Codable, CaseIterable, Identifiable {
     var title: String { self == .rectangle ? L("Rectangle") : L("Ellipse") }
 }
 
+/// A text annotation's typeface (the system font's own designs).
+enum VideoTextFont: String, Codable, CaseIterable, Identifiable {
+    case system
+    case rounded
+    case serif
+    case mono
+
+    var id: String { rawValue }
+    var title: String {
+        switch self {
+        case .system: return L("System font")
+        case .rounded: return L("Rounded font")
+        case .serif: return L("Serif font")
+        case .mono: return L("Monospaced font")
+        }
+    }
+
+    var design: NSFontDescriptor.SystemDesign {
+        switch self {
+        case .system: return .default
+        case .rounded: return .rounded
+        case .serif: return .serif
+        case .mono: return .monospaced
+        }
+    }
+}
+
+/// How heavy a text annotation's letters are.
+enum VideoTextWeight: String, Codable, CaseIterable, Identifiable {
+    case regular
+    case semibold
+    case bold
+    case heavy
+
+    var id: String { rawValue }
+    var title: String {
+        switch self {
+        case .regular: return L("Regular")
+        case .semibold: return L("Semibold")
+        case .bold: return L("Bold")
+        case .heavy: return L("Heavy")
+        }
+    }
+
+    var weight: NSFont.Weight {
+        switch self {
+        case .regular: return .regular
+        case .semibold: return .semibold
+        case .bold: return .bold
+        case .heavy: return .heavy
+        }
+    }
+}
+
 struct VideoDemoOverlayEffect: Codable, Equatable, Identifiable {
     var id: UUID
     var kind: VideoDemoOverlayEffectKind
@@ -227,8 +283,15 @@ struct VideoDemoOverlayEffect: Codable, Equatable, Identifiable {
     var shape: VideoOverlayShape?
     /// The picture an image annotation shows.
     var image: VideoOverlayImage?
-    /// How strongly a blur hides what's under it, 0.1–1 (nil: fully).
+    /// How strongly a blur hides what's under it, 0.1–1 (nil: fully), or
+    /// how far a spotlight dims around the spot (nil: 58%).
     var strength: Double?
+    /// A text annotation's typeface and weight (nil: the system font,
+    /// semibold) and its letters' color (nil: dark on a light tag, white
+    /// otherwise). A spotlight's `color` is what it dims toward (nil: black).
+    var font: VideoTextFont?
+    var weight: VideoTextWeight?
+    var textColor: VideoRGBA?
 
     init(
         id: UUID = UUID(),
@@ -265,6 +328,14 @@ struct VideoDemoOverlayEffect: Codable, Equatable, Identifiable {
     var blurStrength: Double { min(max(strength ?? 1, Self.blurStrengthRange.lowerBound), Self.blurStrengthRange.upperBound) }
     static let blurStrengthRange: ClosedRange<Double> = 0.1...1
 
+    /// How far a spotlight dims the picture around the spot.
+    var spotlightDim: Double { min(max(strength ?? Self.spotlightDimDefault, Self.spotlightDimRange.lowerBound), Self.spotlightDimRange.upperBound) }
+    static let spotlightDimRange: ClosedRange<Double> = 0.2...1
+    static let spotlightDimDefault = 0.58
+
+    var textFont: VideoTextFont { font ?? .system }
+    var textWeight: VideoTextWeight { weight ?? .semibold }
+
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(UUID.self, forKey: .id)
@@ -283,6 +354,9 @@ struct VideoDemoOverlayEffect: Codable, Equatable, Identifiable {
         shape = try? container.decodeIfPresent(VideoOverlayShape.self, forKey: .shape)
         image = try? container.decodeIfPresent(VideoOverlayImage.self, forKey: .image)
         strength = try? container.decodeIfPresent(Double.self, forKey: .strength)
+        font = try? container.decodeIfPresent(VideoTextFont.self, forKey: .font)
+        weight = try? container.decodeIfPresent(VideoTextWeight.self, forKey: .weight)
+        textColor = try? container.decodeIfPresent(VideoRGBA.self, forKey: .textColor)
     }
 }
 
@@ -311,7 +385,8 @@ extension VideoDemoOverlayEffectKind {
         switch self {
         case .arrow, .highlight: return VideoRGBA(hex: 0xFFD60A)
         case .text: return VideoRGBA(0.06, 0.06, 0.06, 0.84)
-        case .blur, .spotlight, .image: return VideoRGBA(0.5, 0.5, 0.5)
+        case .spotlight: return VideoRGBA(0, 0, 0)
+        case .blur, .image: return VideoRGBA(0.5, 0.5, 0.5)
         }
     }
 
@@ -329,7 +404,10 @@ extension VideoDemoOverlayEffectKind {
             return [defaultColor] + bright + [VideoRGBA(0, 0, 0, 0)]
         case .arrow, .highlight:
             return bright + [VideoRGBA(hex: 0x1C1C1E)]
-        case .blur, .spotlight, .image:
+        case .spotlight:
+            // What it dims toward.
+            return [VideoRGBA(0, 0, 0), VideoRGBA(hex: 0xFFFFFF)]
+        case .blur, .image:
             return []
         }
     }

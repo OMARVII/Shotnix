@@ -398,6 +398,9 @@ struct VideoKeyboardBridge: NSViewRepresentable {
                         // Esc leaves a text field (and closes the command
                         // palette it belongs to); everything else types.
                         if event.keyCode == 53 {
+                            // A field that keeps what's typed only when it's
+                            // left (the speed) drops it.
+                            NotificationCenter.default.post(name: .videoEditorTypingWillCancel, object: window)
                             window.makeFirstResponder(nil)
                             if self.model.isCommandPalettePresented { self.model.isCommandPalettePresented = false }
                             return true
