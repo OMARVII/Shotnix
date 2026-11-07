@@ -5,6 +5,9 @@
 ### Added
 - **Turn a sound up past 100%.** Volume, Voice and Computer sound now go up to 300%, for the whole video, a clip or a part you ⇧-drag, so a quiet recording gets louder without another app. 100% sits two-thirds along the slider and the knob catches there on the way past, so turning a sound down is as precise as before. Past 100% the value turns orange and says how many decibels it adds (a lowered level says its decibels too), and the clip shows a louder speaker on the timeline. The preview, the export and the separate sound files all play it. Loud moments are turned down just enough that they never crackle, instead of being clipped; the same limiter now also catches the moment where your voice and the computer sound add up past full scale, which used to clip. The video's and a clip's levels together go up to four times as loud (+12 dB).
 
+### Changed
+- **Even out loudness gets quiet recordings all the way to −16 LUFS, even with a click or a cough in them.** One loud moment used to stop it short, sometimes several decibels too quiet. Now the limiter holds those moments under −1 dBFS and the rest of the recording comes up to the level video sites expect. Recordings without such a moment export exactly as before.
+
 ## [0.30.0-beta] - 2026-11-07
 
 ### Added

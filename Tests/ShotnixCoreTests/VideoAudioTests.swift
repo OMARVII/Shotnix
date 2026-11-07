@@ -84,13 +84,15 @@ final class VideoAudioTests: XCTestCase {
         // Gain to −16 is +7 dB, and the peak (−23 dBFS) leaves room.
         XCTAssertEqual(20 * log10(meter.gain()), 7, accuracy: 0.25)
 
-        // A loud, peaky signal: the peak ceiling limits the boost.
+        // A quiet, peaky signal: the boost may take the peaks past −1 dBFS
+        // (the export's limiter holds them there), but by 12 dB at most.
         let peaky = VideoLoudnessMeter(channels: 2, sampleRate: 48_000)
         var quiet = sine(frequency: 1000, amplitude: 0.02, seconds: 5)
         for index in stride(from: 0, to: quiet.count, by: 48_000) { quiet[index] = 0.9 }
         quiet.withUnsafeBufferPointer { peaky.add(interleaved: $0) }
         let boosted = peaky.peak * peaky.gain()
-        XCTAssertLessThanOrEqual(20 * log10(boosted), -0.99, "never pushes peaks past −1 dBFS")
+        XCTAssertEqual(20 * log10(boosted), -1 + 12, accuracy: 0.05, "the limiter is never left more than 12 dB to take back")
+        XCTAssertEqual(20 * log10(peaky.peak * peaky.gain(limiting: 0)), -1, accuracy: 0.05, "with no limiter, peaks stop at −1 dBFS")
         XCTAssertNil(VideoLoudnessMeter(channels: 2, sampleRate: 48_000).integratedLoudness, "silence has no loudness")
     }
 
@@ -343,6 +345,34 @@ final class VideoAudioTests: XCTestCase {
         print("MIX: peak \(peak), rms \(rms), crest \(crest)")
         XCTAssertLessThanOrEqual(peak, 1.0)
         XCTAssertGreaterThan(crest, 1.3, "the loud mix is lowered, not clipped")
+    }
+
+    func testEvenLoudnessReachesTheTargetPastAClick() async throws {
+        // A quiet voice (about −29 LUFS) with a click every second: the
+        // clicks used to leave only +5 dB of room, so the export stayed near
+        // −24 LUFS. Now the limiter holds them and the voice reaches −16.
+        let url = directory.appendingPathComponent("rec.mov")
+        let voice = try VideoTestSupport.writeTone(in: directory, amplitude: 0.05, frequency: 1_000, seconds: 6, clicks: [0.5, 1.5, 2.5, 3.5, 4.5, 5.5], clickLevel: 0.5)
+        let silence = try VideoTestSupport.writeTone(in: directory, amplitude: 0, frequency: 1_000, seconds: 6)
+        try await VideoTestSupport.writeRecording(to: url, seconds: 6, tones: [voice, silence])
+        let metadata = VideoDemoRecordingMetadata(videoURLPath: url.path, createdAt: Date(), duration: 6, sourceWidth: 320, sourceHeight: 200, fps: 30, nativeCursorVisible: true, cursorSamples: [], clickEvents: [], audioTracks: [.microphone, .system])
+        var project = VideoDemoProject.make(sourceURL: url, duration: 6, sourceSize: CGSize(width: 320, height: 200))
+        project.apply(metadata: metadata)
+        project.audio.duckSystem = false
+        XCTAssertTrue(project.audio.normalizeLoudness)
+        var settings = VideoExportSettings()
+        settings.resolution = .p720
+        settings.fps = 30
+        settings.endCard = false
+        let output = directory.appendingPathComponent("even-past-clicks.mp4")
+        try await VideoDemoExporter.export(project: project, recording: metadata, destinationURL: output, settings: settings)
+        let samples = try await VideoTestSupport.readSound(output)
+        let meter = VideoLoudnessMeter(channels: 2, sampleRate: 48_000)
+        samples.withUnsafeBufferPointer { meter.add(interleaved: $0) }
+        let lufs = try XCTUnwrap(meter.integratedLoudness)
+        print("EVEN LOUDNESS PAST CLICKS: \(lufs) LUFS, peak \(20 * log10(meter.peak)) dBFS")
+        XCTAssertEqual(lufs, -16, accuracy: 1, "reaches the target")
+        XCTAssertLessThanOrEqual(meter.peak, 1.0, "the clicks are held, not clipped")
     }
 
     func testExportTurnsTheComputerSoundDownForJustOnePart() async throws {

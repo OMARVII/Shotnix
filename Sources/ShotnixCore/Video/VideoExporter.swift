@@ -532,7 +532,7 @@ enum VideoDemoExporter {
     }
 
     /// Reads the edit's final mix once to find the gain that lands it at
-    /// −16 LUFS without letting peaks pass −1 dBFS.
+    /// −16 LUFS (the limiter then keeps peaks under −1 dBFS).
     private static func measureLoudnessGain(edit: VideoEditComposition, cancel: CancellationFlag, progress: @escaping (Double) -> Void = { _ in }) async throws -> Double {
         guard !edit.mixedAudioTracks.isEmpty else { return 1 }
         let reader = try AVAssetReader(asset: edit.composition)

@@ -469,13 +469,17 @@ final class VideoLoudnessMeter {
         return loudness(gated.reduce(0, +) / Double(gated.count))
     }
 
-    /// Gain (linear) that brings the mix to `target` LUFS without letting
-    /// peaks pass `ceiling` dBFS; clamped to ±20 dB.
-    func gain(target: Double = -16, ceiling: Double = -1) -> Double {
+    /// Gain (linear) that brings the mix to `target` LUFS, clamped to
+    /// ±20 dB. The export's limiter holds peaks at `ceiling` dBFS, so one
+    /// loud moment (a click, a cough) no longer stops a quiet recording
+    /// short of the target: the gain may take the loudest peak up to
+    /// `limiting` dB past the ceiling, and stops there so the limiter is
+    /// never left squashing much.
+    func gain(target: Double = -16, ceiling: Double = -1, limiting: Double = 12) -> Double {
         guard let loudness = integratedLoudness else { return 1 }
         var decibels = min(max(target - loudness, -20), 20)
         if peak > 0 {
-            let peakRoom = ceiling - 20 * log10(peak)
+            let peakRoom = ceiling - 20 * log10(peak) + limiting
             decibels = min(decibels, peakRoom)
         }
         return pow(10, decibels / 20)
