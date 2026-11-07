@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [0.30.0-beta] - 2026-11-07
 
 ### Added
 - **Type any speed.** Next to the speed buttons for a clip or a selected part, a small field takes any speed from 0.25× to 16×, like 1.3×. Click it and type over the speed shown, then press Return (Esc keeps the old one): the button with the same speed lights up, and the timeline shows the exact speed.

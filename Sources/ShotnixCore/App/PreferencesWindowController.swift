@@ -1065,7 +1065,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.29.0"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.30.0"
     
     var body: some View {
         PreferencesPane {
@@ -1109,6 +1109,11 @@ struct AboutSettingsView: View {
                 ScrollView {
                     // The release notes stay in English (l10n-ignore); everything around them is localized.
                     Text(verbatim: """
+                    Version 0.30.0
+                    • Type any speed, like 1.3×, in the field next to the speed buttons
+                    • Text gets a font, a weight and a color, and a spotlight sets how far it dims
+                    • The export can also save the voice and the computer sound as their own files
+
                     Version 0.29.0
                     • Enhance voice has Low cut and Presence sliders to shape how your voice sounds
                     • ⌘A selects the whole video, so one click sets the speed or sound of every clip
