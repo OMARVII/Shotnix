@@ -1552,6 +1552,12 @@
     "fr": "Lecture",
     "zh-Hans": "播放"
   },
+  "Plays louder than recorded, without crackling": {
+    "comment": "Note under a sound level set past 100% (like 150%): the sound plays louder than it was recorded, and Shotnix keeps it from distorting",
+    "de": "Spielt lauter als aufgenommen, ohne zu verzerren",
+    "fr": "Plus fort que l’enregistrement, sans saturer",
+    "zh-Hans": "比录制时更响，不会爆音"
+  },
   "Plays or pauses. Use Option-arrow keys to select what's on the timeline.": {
     "de": "Spielt ab oder pausiert. Mit der Wahltaste und den Pfeiltasten wählst du aus, was in der Zeitleiste liegt.",
     "fr": "Lance ou met en pause la lecture. Utilisez Option et les touches fléchées pour sélectionner les éléments de la timeline.",
@@ -3744,6 +3750,12 @@
     "de": "wiederholt sich",
     "fr": "en boucle",
     "zh-Hans": "循环播放"
+  },
+  "louder": {
+    "comment": "Spoken in a clip's description when its own volume is turned up past 100%, like “quieter”",
+    "de": "lauter",
+    "fr": "son monté",
+    "zh-Hans": "音量已调高"
   },
   "mute the preview": {
     "de": "Vorschau stummschalten",

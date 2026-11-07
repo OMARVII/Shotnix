@@ -191,6 +191,7 @@ enum VideoCompositionBuilder {
     /// pass resolved kinds / enhanced replacements to control the mix.
     /// `includeAudio: false` leaves the recording's sound out (a muted
     /// export); music and click sounds in `extras` still go in.
+    /// `limitsPeaks`: the preview's mix (see `audioMix`).
     static func build(
         source: VideoSourceTracks,
         segments: [VideoDemoTimelineSegment],
@@ -198,7 +199,8 @@ enum VideoCompositionBuilder {
         camera: VideoCameraSource? = nil,
         audioSources: [VideoAudioSource]? = nil,
         includeAudio: Bool = true,
-        extras: VideoEditExtras = .none
+        extras: VideoEditExtras = .none,
+        limitsPeaks: Bool = false
     ) throws -> VideoEditComposition {
         let composition = AVMutableComposition()
         guard let videoTrack = composition.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid) else {
@@ -374,7 +376,7 @@ enum VideoCompositionBuilder {
             clickTrack: clicks,
             pieceTransforms: pieceTransforms
         )
-        edit.audioMix = audioMix(for: edit, segments: segments, audio: audio, extras: extras)
+        edit.audioMix = audioMix(for: edit, segments: segments, audio: audio, extras: extras, limitsPeaks: limitsPeaks)
         return edit
     }
 
@@ -386,7 +388,12 @@ enum VideoCompositionBuilder {
     /// dips under the voice for the edit's sound (and the music's level
     /// line). Built on its own so a volume change swaps only this on the
     /// playing item.
-    static func audioMix(for edit: VideoEditComposition, segments: [VideoDemoTimelineSegment], audio: VideoAudioSettings, extras: VideoEditExtras = .none) -> AVMutableAudioMix? {
+    ///
+    /// Levels past 100% play louder, straight from the level line.
+    /// `limitsPeaks` (the preview) gives each track turned up past 100% a
+    /// limiter, so it doesn't crackle as it plays; an export instead limits
+    /// the whole mix as it writes it (`VideoLimitedAudio`).
+    static func audioMix(for edit: VideoEditComposition, segments: [VideoDemoTimelineSegment], audio: VideoAudioSettings, extras: VideoEditExtras = .none, limitsPeaks: Bool = false) -> AVMutableAudioMix? {
         guard !edit.mixedAudioTracks.isEmpty else { return nil }
         // Segments still line up with placements one to one when only
         // sound settings changed; fall back to the placed ones otherwise.
@@ -399,14 +406,19 @@ enum VideoCompositionBuilder {
             let dips = kind == .system ? extras.computerSoundDips : []
             let params = AVMutableAudioMixInputParameters(track: track)
             var previous: (clip: VideoDemoTimelineClip, level: Float)?
+            var line: [VideoMusicMix.Keyframe] = []
             for (placementIndex, placement) in edit.placements.enumerated() {
                 let clip = aligned ? current[placementIndex].clip : placement.segment.clip
-                let level = clip.muted ? 0 : volume * Float(clip.volume(for: kind))
+                let level = clip.muted ? 0 : VideoAudioSettings.combinedLevel(volume, clip.volume(for: kind))
                 let glideFrom = previous.flatMap { glide(from: $0.clip, level: $0.level, to: clip, level: level) }
                 let start = placement.start.seconds
                 let keyframes = levelKeyframes(level: level, clip: clip, start: start, end: start + placement.duration.seconds, glideFrom: glideFrom, dips: dips)
                 apply(keyframes, to: params)
+                line += keyframes
                 previous = (clip, level)
+            }
+            if limitsPeaks, let tap = VideoPreviewLimiter.tap(levels: line) {
+                params.audioTapProcessor = tap
             }
             parameters.append(params)
         }

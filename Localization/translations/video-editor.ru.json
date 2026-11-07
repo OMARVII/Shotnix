@@ -898,6 +898,9 @@
   "Playback" : {
     "ru" : "Воспроизведение"
   },
+  "Plays louder than recorded, without crackling" : {
+    "ru" : "Громче, чем было записано, без искажений"
+  },
   "Plays or pauses. Use Option-arrow keys to select what's on the timeline." : {
     "ru" : "Запускает или приостанавливает воспроизведение. Чтобы выбирать объекты на шкале времени, используйте Option и клавиши со стрелками."
   },
@@ -2182,6 +2185,9 @@
   },
   "loops" : {
     "ru" : "повторяется"
+  },
+  "louder" : {
+    "ru" : "звук громче"
   },
   "mute the preview" : {
     "ru" : "выключить звук предпросмотра"

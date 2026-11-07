@@ -42204,6 +42204,47 @@
         }
       }
     },
+    "Plays louder than recorded, without crackling" : {
+      "comment" : "Note under a sound level set past 100% (like 150%): the sound plays louder than it was recorded, and Shotnix keeps it from distorting",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spielt lauter als aufgenommen, ohne zu verzerren"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus fort que l’enregistrement, sans saturer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "録音より大きな音で再生（音割れしません）"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Громче, чем было записано, без искажений"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Гучніше, ніж було записано, без спотворень"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "比录制时更响，不会爆音"
+          }
+        }
+      }
+    },
     "Plays or pauses. Use Option-arrow keys to select what's on the timeline." : {
       "localizations" : {
         "de" : {
@@ -77599,6 +77640,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "循环播放"
+          }
+        }
+      }
+    },
+    "louder" : {
+      "comment" : "Spoken in a clip's description when its own volume is turned up past 100%, like “quieter”",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "lauter"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "son monté"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "大きめの音量"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "звук громче"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "звук гучніше"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音量已调高"
           }
         }
       }

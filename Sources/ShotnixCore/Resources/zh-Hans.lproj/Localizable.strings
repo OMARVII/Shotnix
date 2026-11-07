@@ -1888,6 +1888,8 @@
 	<string>在第一个片段之前播放</string>
 	<key>Plays everywhere</key>
 	<string>随处可播放</string>
+	<key>Plays louder than recorded, without crackling</key>
+	<string>比录制时更响，不会爆音</string>
 	<key>Plays or pauses. Use Option-arrow keys to select what's on the timeline.</key>
 	<string>播放或暂停。使用 Option 键和箭头键可选择时间线上的内容。</string>
 	<key>Plum</key>
@@ -3560,6 +3562,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>片头卡</string>
 	<key>loops</key>
 	<string>循环播放</string>
+	<key>louder</key>
+	<string>音量已调高</string>
 	<key>macOS closed Shotnix last time because it ran out of memory</key>
 	<string>上次 macOS 因内存不足关闭了 Shotnix</string>
 	<key>macOS downloads %@ once, then translates right here — nothing is uploaded.</key>

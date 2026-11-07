@@ -299,6 +299,82 @@ enum VideoTestSupport {
     }
 
     /// Captured pointer shapes, when the environment can provide one.
+    /// A stereo tone file in `directory`, with optional clicks (a few loud
+    /// samples) at the given seconds.
+    static func writeTone(in directory: URL, amplitude: Double, frequency: Double, seconds: Double, clicks: [Double] = [], clickLevel: Float = 0.5) throws -> URL {
+        let url = directory.appendingPathComponent("tone-\(UUID().uuidString).caf")
+        let format = try XCTUnwrap(AVAudioFormat(standardFormatWithSampleRate: 48_000, channels: 2))
+        let file = try AVAudioFile(forWriting: url, settings: format.settings)
+        let frames = AVAudioFrameCount(seconds * 48_000)
+        let buffer = try XCTUnwrap(AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frames))
+        buffer.frameLength = frames
+        for frame in 0..<Int(frames) {
+            let value = Float(sin(2 * .pi * frequency * Double(frame) / 48_000) * amplitude)
+            buffer.floatChannelData![0][frame] = value
+            buffer.floatChannelData![1][frame] = value
+        }
+        for click in clicks {
+            let at = Int(click * 48_000)
+            for frame in at..<min(at + 24, Int(frames)) {
+                let value = frame % 2 == 0 ? clickLevel : -clickLevel
+                buffer.floatChannelData![0][frame] = value
+                buffer.floatChannelData![1][frame] = value
+            }
+        }
+        try file.write(from: buffer)
+        return url
+    }
+
+    /// A recording with a picture and one sound track per tone (the voice
+    /// first, then the computer's sound), written as `url`.
+    static func writeRecording(to url: URL, seconds: Double, tones: [URL]) async throws {
+        let video = url.deletingLastPathComponent().appendingPathComponent("picture-\(UUID().uuidString).mp4")
+        try await writeFakeRecording(to: video, size: CGSize(width: 320, height: 200), seconds: seconds, fps: 30)
+        let composition = AVMutableComposition()
+        let asset = AVURLAsset(url: video)
+        let videoTracks = try await asset.loadTracks(withMediaType: .video)
+        let source = try XCTUnwrap(videoTracks.first)
+        let track = try XCTUnwrap(composition.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid))
+        let range = CMTimeRange(start: .zero, duration: CMTime(seconds: seconds, preferredTimescale: 600))
+        try track.insertTimeRange(range, of: source, at: .zero)
+        var keep: [AVURLAsset] = [asset]
+        for tone in tones {
+            let toneAsset = AVURLAsset(url: tone)
+            keep.append(toneAsset)
+            let audioTracks = try await toneAsset.loadTracks(withMediaType: .audio)
+            let audio = try XCTUnwrap(audioTracks.first)
+            let lane = try XCTUnwrap(composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid))
+            try lane.insertTimeRange(range, of: audio, at: .zero)
+        }
+        let session = try XCTUnwrap(AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality))
+        session.outputURL = url
+        session.outputFileType = .mov
+        await session.export()
+        XCTAssertEqual(session.status, .completed, session.error?.localizedDescription ?? "")
+        withExtendedLifetime(keep) {}
+    }
+
+    /// Interleaved stereo 48 kHz float sound of a file's (mixed) tracks.
+    static func readSound(_ url: URL) async throws -> [Float] {
+        let asset = AVURLAsset(url: url)
+        let tracks = try await asset.loadTracks(withMediaType: .audio)
+        let reader = try AVAssetReader(asset: asset)
+        let output = AVAssetReaderAudioMixOutput(audioTracks: tracks, audioSettings: [
+            AVFormatIDKey: kAudioFormatLinearPCM, AVSampleRateKey: 48_000, AVNumberOfChannelsKey: 2,
+            AVLinearPCMBitDepthKey: 32, AVLinearPCMIsFloatKey: true, AVLinearPCMIsBigEndianKey: false, AVLinearPCMIsNonInterleaved: false,
+        ])
+        reader.add(output)
+        XCTAssertTrue(reader.startReading())
+        var samples: [Float] = []
+        while let sample = output.copyNextSampleBuffer(), let block = CMSampleBufferGetDataBuffer(sample) {
+            let count = CMBlockBufferGetDataLength(block) / 4
+            let start = samples.count
+            samples += [Float](repeating: 0, count: count)
+            _ = samples.withUnsafeMutableBytes { CMBlockBufferCopyDataBytes(block, atOffset: 0, dataLength: count * 4, destination: $0.baseAddress! + start * 4) }
+        }
+        return samples
+    }
+
     static func currentCursorShape() -> VideoCursorShape? {
         guard let cursor = NSCursor.currentSystem else { return nil }
         let reps = cursor.image.representations.compactMap { $0 as? NSBitmapImageRep }

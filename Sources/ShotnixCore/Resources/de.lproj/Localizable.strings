@@ -1796,6 +1796,8 @@
 	<string>Läuft vor dem ersten Clip</string>
 	<key>Plays everywhere</key>
 	<string>Läuft überall</string>
+	<key>Plays louder than recorded, without crackling</key>
+	<string>Spielt lauter als aufgenommen, ohne zu verzerren</string>
 	<key>Plays or pauses. Use Option-arrow keys to select what's on the timeline.</key>
 	<string>Spielt ab oder pausiert. Mit der Wahltaste und den Pfeiltasten wählst du aus, was in der Zeitleiste liegt.</string>
 	<key>Plum</key>
@@ -3424,6 +3426,8 @@ Aktiviere sie unter „Systemeinstellungen“ → „Datenschutz &amp; Sicherhei
 	<string>Intro-Karte</string>
 	<key>loops</key>
 	<string>wiederholt sich</string>
+	<key>louder</key>
+	<string>lauter</string>
 	<key>macOS closed Shotnix last time because it ran out of memory</key>
 	<string>macOS hat Shotnix beim letzten Mal beendet, weil der Arbeitsspeicher nicht mehr gereicht hat</string>
 	<key>macOS downloads %@ once, then translates right here — nothing is uploaded.</key>

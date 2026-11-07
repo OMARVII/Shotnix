@@ -283,15 +283,16 @@ enum VideoDemoExporter {
         writer.startSession(atSourceTime: .zero)
         let total = max(edit.duration.seconds, 0.001)
         let queue = DispatchQueue(label: "com.shotnix.export.sound")
+        let sound = VideoLimitedAudio(gain: gain) { output.copyNextSampleBuffer() }
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
             var finished = false
             input.requestMediaDataWhenReady(on: queue) {
                 guard !finished else { return }
                 while input.isReadyForMoreMediaData {
                     let appended = autoreleasepool { () -> Bool in
-                        guard !cancel.isSet, let raw = output.copyNextSampleBuffer() else { return false }
-                        progress(min(max(CMSampleBufferGetPresentationTimeStamp(raw).seconds / total, 0), 1))
-                        return input.append(VideoAudioGain.apply(gain, to: raw) ?? raw)
+                        guard !cancel.isSet, let sample = sound.next() else { return false }
+                        progress(min(max(CMSampleBufferGetPresentationTimeStamp(sample).seconds / total, 0), 1))
+                        return input.append(sample)
                     }
                     if !appended {
                         finished = true
@@ -674,13 +675,15 @@ enum VideoDemoExporter {
             if let audioOutput, let audioInput {
                 group.enter()
                 var finished = false
+                // Even out loudness's gain, then the limiter (so a level
+                // past 100% never crackles).
+                let sound = VideoLimitedAudio(gain: audioGain) { audioOutput.copyNextSampleBuffer() }
                 audioInput.requestMediaDataWhenReady(on: audioQueue) {
                     guard !finished else { return }
                     while audioInput.isReadyForMoreMediaData {
                         // A pool per buffer, like the video's.
                         let appended = autoreleasepool { () -> Bool in
-                            guard !self.cancel.isSet, let raw = audioOutput.copyNextSampleBuffer() else { return false }
-                            let sample = VideoAudioGain.apply(self.audioGain, to: raw) ?? raw
+                            guard !self.cancel.isSet, let sample = sound.next() else { return false }
                             return audioInput.append(sample)
                         }
                         if !appended {

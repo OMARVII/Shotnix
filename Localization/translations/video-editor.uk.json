@@ -893,6 +893,9 @@
   "Playback" : {
     "uk" : "Відтворення"
   },
+  "Plays louder than recorded, without crackling" : {
+    "uk" : "Гучніше, ніж було записано, без спотворень"
+  },
   "Plays or pauses. Use Option-arrow keys to select what's on the timeline." : {
     "uk" : "Відтворює або призупиняє. Щоб вибирати елементи на шкалі часу, використовуйте Option і клавіші зі стрілками."
   },
@@ -2177,6 +2180,9 @@
   },
   "loops" : {
     "uk" : "повторюється"
+  },
+  "louder" : {
+    "uk" : "звук гучніше"
   },
   "mute the preview" : {
     "uk" : "вимкнути звук перегляду"

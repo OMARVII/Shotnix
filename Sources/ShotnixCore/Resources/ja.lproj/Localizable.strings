@@ -1888,6 +1888,8 @@
 	<string>最初のクリップの前に再生</string>
 	<key>Plays everywhere</key>
 	<string>どこでも再生できます</string>
+	<key>Plays louder than recorded, without crackling</key>
+	<string>録音より大きな音で再生（音割れしません）</string>
 	<key>Plays or pauses. Use Option-arrow keys to select what's on the timeline.</key>
 	<string>再生または一時停止します。Optionキーと矢印キーで、タイムライン上の項目を選択できます。</string>
 	<key>Plum</key>
@@ -3560,6 +3562,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>オープニングカード</string>
 	<key>loops</key>
 	<string>ループ再生</string>
+	<key>louder</key>
+	<string>大きめの音量</string>
 	<key>macOS closed Shotnix last time because it ran out of memory</key>
 	<string>前回、メモリが不足したためmacOSがShotnixを終了しました</string>
 	<key>macOS downloads %@ once, then translates right here — nothing is uploaded.</key>

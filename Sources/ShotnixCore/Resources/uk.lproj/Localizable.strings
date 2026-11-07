@@ -1792,6 +1792,8 @@
 	<string>Перед першим кліпом</string>
 	<key>Plays everywhere</key>
 	<string>Відтворюється всюди</string>
+	<key>Plays louder than recorded, without crackling</key>
+	<string>Гучніше, ніж було записано, без спотворень</string>
 	<key>Plays or pauses. Use Option-arrow keys to select what's on the timeline.</key>
 	<string>Відтворює або призупиняє. Щоб вибирати елементи на шкалі часу, використовуйте Option і клавіші зі стрілками.</string>
 	<key>Plum</key>
@@ -3420,6 +3422,8 @@ Please enable it in System Settings → Privacy &amp; Security → Screen &amp; 
 	<string>вступна заставка</string>
 	<key>loops</key>
 	<string>повторюється</string>
+	<key>louder</key>
+	<string>звук гучніше</string>
 	<key>macOS closed Shotnix last time because it ran out of memory</key>
 	<string>Минулого разу macOS закрила Shotnix через нестачу пам’яті</string>
 	<key>macOS downloads %@ once, then translates right here — nothing is uploaded.</key>

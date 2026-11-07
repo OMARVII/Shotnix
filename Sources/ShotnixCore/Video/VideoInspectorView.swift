@@ -632,14 +632,14 @@ struct VideoAudioInspector: View {
         })
     }
 
-    private func level(_ title: String, _ keyPath: WritableKeyPath<VideoAudioSettings, Double>, detail: String? = nil) -> some View {
-        VideoSliderRow(
+    /// `boostNote`: this is the first level turned past 100% here, so it
+    /// says the boost won't crackle.
+    private func level(_ title: String, _ keyPath: WritableKeyPath<VideoAudioSettings, Double>, detail: String? = nil, boostNote: Bool = true) -> some View {
+        VideoLevelRow(
             title: title,
             value: binding(keyPath, coalesce: "volume-\(title)"),
-            range: VideoAudioSettings.volumeRange,
-            defaultValue: 1,
-            format: { VideoEditorFormat.percent($0) },
             detail: detail,
+            boostNote: boostNote,
             onEditingEnded: { model.endGesture() }
         )
     }
@@ -662,7 +662,7 @@ struct VideoAudioInspector: View {
                     Group {
                         if model.hasSeparateVoiceAndSystem {
                             level(L("Voice"), \.voiceVolume, detail: L("Your microphone"))
-                            level(L("Computer sound"), \.systemVolume, detail: L("What was playing on your Mac"))
+                            level(L("Computer sound"), \.systemVolume, detail: L("What was playing on your Mac"), boostNote: !VideoLevelRow.isLouder(audio.voiceVolume))
                             VideoToggleRow(title: L("Lower under your voice"), detail: L("Dips while you talk, comes back in the pauses"), isOn: binding(\.duckSystem))
                             if audio.duckSystem {
                                 VideoSliderRow(
@@ -1259,18 +1259,17 @@ struct VideoSelectionInspector: View {
         }
     }
 
+    /// No note under a boosted level here: the panel is short, and the
+    /// orange value says it (its tooltip says the rest).
     private func levelSlider(
         _ title: String,
         _ level: WritableKeyPath<VideoDemoTimelineClip, Double>,
         get: @escaping (KeyPath<VideoDemoTimelineClip, Double>) -> Double,
         set: @escaping (WritableKeyPath<VideoDemoTimelineClip, Double>, Double) -> Void
     ) -> some View {
-        VideoSliderRow(
+        VideoLevelRow(
             title: title,
             value: Binding(get: { get(level) }, set: { set(level, $0) }),
-            range: VideoAudioSettings.volumeRange,
-            defaultValue: 1,
-            format: { VideoEditorFormat.percent($0) },
             onEditingEnded: { model.endGesture() }
         )
     }

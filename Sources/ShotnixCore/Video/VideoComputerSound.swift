@@ -172,11 +172,11 @@ extension VideoEditorModel {
         guard segments.indices.contains(index) else { return [] }
         let segment = segments[index]
         let clip = segment.clip
-        let level = clip.muted ? 0 : project.audio.effectiveVolume(for: .system) * Float(clip.volume(for: .system))
+        let level = clip.muted ? 0 : VideoAudioSettings.combinedLevel(project.audio.effectiveVolume(for: .system), clip.volume(for: .system))
         var glideFrom: Float?
         if index > 0 {
             let previous = segments[index - 1].clip
-            let before = previous.muted ? 0 : project.audio.effectiveVolume(for: .system) * Float(previous.volume(for: .system))
+            let before = previous.muted ? 0 : VideoAudioSettings.combinedLevel(project.audio.effectiveVolume(for: .system), previous.volume(for: .system))
             glideFrom = VideoCompositionBuilder.glide(from: previous, level: before, to: clip, level: level)
         }
         return VideoCompositionBuilder.levelKeyframes(level: level, clip: clip, start: segment.timelineStart, end: segment.timelineEnd, glideFrom: glideFrom, dips: dips)
@@ -231,8 +231,15 @@ struct VideoComputerSoundLane: View, Equatable {
     private typealias M = VideoTimelineMetrics
     private var height: CGFloat { M.computerSoundLaneHeight }
 
-    /// Level 0…1 → y (full volume at the top).
-    private func y(_ level: Double) -> CGFloat { height - 4 - CGFloat(min(max(level, 0), 1)) * (height - 8) }
+    /// Level → y: as recorded at the top, or the loudest part when one
+    /// is turned up past 100%.
+    private func y(_ level: Double) -> CGFloat { height - 4 - CGFloat(min(max(level / levelScale, 0), 1)) * (height - 8) }
+
+    /// The level the lane's top stands for (1, or the loudest part's).
+    private var levelScale: Double {
+        let loudest = segments.map { $0.clip.muted ? 0 : Double(VideoAudioSettings.combinedLevel(audio.effectiveVolume(for: .system), $0.clip.volume(for: .system))) }.max() ?? 1
+        return max(loudest, 1)
+    }
 
     var body: some View {
         let lines = segments.indices.map { model.computerSoundLevels(for: $0, dips: dips) }
@@ -279,7 +286,7 @@ struct VideoComputerSoundLane: View, Equatable {
                     let full = max(CGFloat(loud) * (size.height - 6), 1)
                     played.addRect(CGRect(x: x, y: (size.height - full) / 2, width: 2, height: full))
                     let gain = CGFloat(Self.value(at: t, in: line))
-                    let h = max(full * gain, gain > 0.005 ? 1 : 0)
+                    let h = min(max(full * gain, gain > 0.005 ? 1 : 0), size.height - 2)
                     if h > 0 { heard.addRect(CGRect(x: x, y: (size.height - h) / 2, width: 2, height: h)) }
                 }
                 x += step
@@ -337,7 +344,7 @@ struct VideoComputerSoundLane: View, Equatable {
     private func base(_ dip: VideoSoundDip) -> Double {
         let middle = (dip.range.lowerBound + dip.range.upperBound) / 2
         guard let segment = segments.first(where: { $0.contains(timelineTime: middle) }) else { return 1 }
-        return segment.clip.muted ? 0 : Double(audio.effectiveVolume(for: .system)) * segment.clip.volume(for: .system)
+        return segment.clip.muted ? 0 : Double(VideoAudioSettings.combinedLevel(audio.effectiveVolume(for: .system), segment.clip.volume(for: .system)))
     }
 
     private func dipHandle(_ dip: VideoSoundDip, index: Int) -> some View {
@@ -360,7 +367,7 @@ struct VideoComputerSoundLane: View, Equatable {
                         .frame(height: 15)
                         .background(Capsule().fill(Color.white))
                         .fixedSize()
-                        .position(x: width / 2, y: dip.lowered && dip.level * base > 0.5 ? height - 9 : 9)
+                        .position(x: width / 2, y: dip.lowered && dip.level * base / levelScale > 0.5 ? height - 9 : 9)
                 }
             }
         }
@@ -385,7 +392,7 @@ struct VideoComputerSoundLane: View, Equatable {
                         model.pause()
                     }
                     // The line's full height is the whole range.
-                    let moved = -Double(value.translation.height / (height - 8)) / base
+                    let moved = -Double(value.translation.height / (height - 8)) * levelScale / base
                     model.setComputerSoundDip(dip.talk, level: min(max((dragStart ?? dip.level) + moved, 0), 1), coalesce: true)
                 }
                 .onEnded { _ in

@@ -236,6 +236,109 @@ struct VideoSliderRow: View {
     }
 }
 
+/// A sound level, from off to three times as loud as recorded. 100% sits
+/// two-thirds along, so turning a sound down is as fine-grained as ever,
+/// and the knob catches there on the way past. Past 100% the value turns
+/// orange and says how much louder, in dB; a limiter keeps it from
+/// crackling.
+struct VideoLevelRow: View {
+    let title: String
+    @Binding var value: Double
+    var detail: String?
+    /// Says under the level, once it's past 100%, that it won't crackle
+    /// (the value's tooltip always does).
+    var boostNote = false
+    var onEditingEnded: () -> Void = {}
+
+    /// Where 100% sits along the slider.
+    static let unity = 2.0 / 3.0
+    /// How close to 100% the knob catches (a few points either side).
+    static let catchDistance = 0.014
+
+    static var loudest: Double { VideoAudioSettings.volumeRange.upperBound }
+
+    /// The slider's position (0…1) for a level.
+    static func position(for level: Double) -> Double {
+        let level = min(max(level, 0), loudest)
+        return level <= 1 ? level * unity : unity + (level - 1) / (loudest - 1) * (1 - unity)
+    }
+
+    /// The level at a slider position, to the whole percent, caught at 100%.
+    static func level(at position: Double) -> Double {
+        let position = min(max(position, 0), 1)
+        if abs(position - unity) < catchDistance { return 1 }
+        let level = position <= unity ? position / unity : 1 + (position - unity) / (1 - unity) * (loudest - 1)
+        return (level * 100).rounded() / 100
+    }
+
+    static func isLouder(_ level: Double) -> Bool { level > 1.005 }
+
+    /// "−6 dB", "+3.5 dB": how much quieter or louder than recorded.
+    static func decibels(_ level: Double) -> String? {
+        guard level > 0.004, abs(level - 1) > 0.004 else { return nil }
+        return VideoEditorModel.formatDecibels(20 * log10(level))
+    }
+
+    var body: some View {
+        let louder = Self.isLouder(value)
+        VStack(alignment: .leading, spacing: 5) {
+            HStack(spacing: 6) {
+                Text(title)
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(VideoEditorTheme.textPrimary)
+                    .lineLimit(1)
+                Spacer(minLength: 4)
+                if abs(value - 1) > 0.004 {
+                    Button {
+                        value = 1
+                        onEditingEnded()
+                    } label: {
+                        Image(systemName: "arrow.counterclockwise")
+                            .font(.system(size: 9.5, weight: .bold))
+                            .foregroundStyle(VideoEditorTheme.textTertiary)
+                    }
+                    .buttonStyle(.plain)
+                    .help(L("Reset"))
+                    .accessibilityLabel(L("Reset \(title)"))
+                }
+                if let decibels = Self.decibels(value) {
+                    Text(decibels)
+                        .font(.system(size: 10, weight: .medium, design: .monospaced))
+                        .foregroundStyle(louder ? VideoEditorTheme.clip.opacity(0.8) : VideoEditorTheme.textTertiary)
+                        .lineLimit(1)
+                        .fixedSize()
+                }
+                Text(VideoEditorFormat.percent(value))
+                    .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(louder ? VideoEditorTheme.clip : VideoEditorTheme.textSecondary)
+                    .frame(minWidth: 38, alignment: .trailing)
+                    .fixedSize()
+            }
+            .help(louder ? L("Plays louder than recorded, without crackling") : "")
+            Slider(value: Binding(get: { Self.position(for: value) }, set: { value = Self.level(at: $0) }), in: 0...1, onEditingChanged: { editing in
+                if !editing { onEditingEnded() }
+            })
+            .controlSize(.small)
+            // Always a color: back at nil, AppKit's slider keeps the orange.
+            .tint(louder ? VideoEditorTheme.clip : VideoEditorTheme.accent)
+            .accessibilityLabel(title)
+            .accessibilityValue([VideoEditorFormat.percent(value), Self.decibels(value)].compactMap { $0 }.joined(separator: ", "))
+            if let detail {
+                Text(detail)
+                    .font(.system(size: 10.5))
+                    .foregroundStyle(VideoEditorTheme.textTertiary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            if boostNote, louder {
+                Text(L("Plays louder than recorded, without crackling"))
+                    .font(.system(size: 10.5))
+                    .foregroundStyle(VideoEditorTheme.clip.opacity(0.85))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+    }
+}
+
 struct VideoToggleRow: View {
     let title: String
     var detail: String?

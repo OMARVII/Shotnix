@@ -833,6 +833,9 @@
   "Playback" : {
     "ja" : "再生"
   },
+  "Plays louder than recorded, without crackling" : {
+    "ja" : "録音より大きな音で再生（音割れしません）"
+  },
   "Plays or pauses. Use Option-arrow keys to select what's on the timeline." : {
     "ja" : "再生または一時停止します。Optionキーと矢印キーで、タイムライン上の項目を選択できます。"
   },
@@ -2077,6 +2080,9 @@
   },
   "loops" : {
     "ja" : "ループ再生"
+  },
+  "louder" : {
+    "ja" : "大きめの音量"
   },
   "mute the preview" : {
     "ja" : "プレビューを消音"

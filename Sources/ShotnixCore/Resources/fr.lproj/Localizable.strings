@@ -1790,6 +1790,8 @@
 	<string>Avant le premier clip</string>
 	<key>Plays everywhere</key>
 	<string>Lisible partout</string>
+	<key>Plays louder than recorded, without crackling</key>
+	<string>Plus fort que l’enregistrement, sans saturer</string>
 	<key>Plays or pauses. Use Option-arrow keys to select what's on the timeline.</key>
 	<string>Lance ou met en pause la lecture. Utilisez Option et les touches fléchées pour sélectionner les éléments de la timeline.</string>
 	<key>Plum</key>
@@ -3418,6 +3420,8 @@ Activez-la dans Réglages Système → Confidentialité et sécurité → Enregi
 	<string>carton d’intro</string>
 	<key>loops</key>
 	<string>en boucle</string>
+	<key>louder</key>
+	<string>son monté</string>
 	<key>macOS closed Shotnix last time because it ran out of memory</key>
 	<string>macOS a fermé Shotnix la dernière fois, faute de mémoire disponible</string>
 	<key>macOS downloads %@ once, then translates right here — nothing is uploaded.</key>

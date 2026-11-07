@@ -164,14 +164,14 @@ final class VideoPlaybackController: NSObject {
         if next == structure, let edit, let item = player.currentItem {
             if nextMix != mixKey {
                 mixKey = nextMix
-                item.audioMix = VideoCompositionBuilder.audioMix(for: edit, segments: segments, audio: audio, extras: extras)
+                item.audioMix = VideoCompositionBuilder.audioMix(for: edit, segments: segments, audio: audio, extras: extras, limitsPeaks: true)
             }
             return nil
         }
         structure = next
         mixKey = nextMix
 
-        guard let built = try? VideoCompositionBuilder.build(source: source, segments: segments, audio: audio, camera: camera, audioSources: audioSources, extras: extras) else { return nil }
+        guard let built = try? VideoCompositionBuilder.build(source: source, segments: segments, audio: audio, camera: camera, audioSources: audioSources, extras: extras, limitsPeaks: true) else { return nil }
         edit = built
         timelineDuration = built.duration.seconds
         itemRebuilds += 1

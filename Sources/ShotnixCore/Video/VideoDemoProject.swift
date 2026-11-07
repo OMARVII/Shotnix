@@ -75,6 +75,11 @@ struct VideoDemoTimelineClip: Codable, Equatable, Identifiable {
         !muted && [volume, voiceVolume, systemVolume].contains { Self.clampVolume($0) < 0.995 }
     }
 
+    /// Plays louder than recorded (a level past 100%).
+    var isLouder: Bool {
+        !muted && [volume, voiceVolume, systemVolume].contains { Self.clampVolume($0) > 1.005 }
+    }
+
     /// Mute and levels match, so the two clips sound alike.
     func soundsLike(_ other: VideoDemoTimelineClip) -> Bool {
         muted == other.muted && volume == other.volume && voiceVolume == other.voiceVolume && systemVolume == other.systemVolume
@@ -626,7 +631,17 @@ struct VideoCursorSettings: Codable, Equatable {
 // MARK: - Audio
 
 struct VideoAudioSettings: Codable, Equatable {
-    static let volumeRange: ClosedRange<Double> = 0...1
+    /// A level: off, as recorded (1), up to three times as loud.
+    static let volumeRange: ClosedRange<Double> = 0...3
+    /// The most any sound plays above its recording, with the video's and
+    /// the clip's levels together (+12 dB); past full scale, the limiter
+    /// turns peaks down instead of letting them crackle.
+    static let loudest = 4.0
+
+    /// One track's level through a clip: the video's level times the clip's.
+    static func combinedLevel(_ video: Float, _ clip: Double) -> Float {
+        min(video * Float(clip), Float(loudest))
+    }
 
     var volume: Double = 1
     var muted: Bool = false
@@ -661,7 +676,7 @@ struct VideoAudioSettings: Codable, Equatable {
         case .system: level = systemVolume
         case .mixed: level = 1
         }
-        return effectiveVolume * Float(min(max(level, Self.volumeRange.lowerBound), Self.volumeRange.upperBound))
+        return Self.combinedLevel(effectiveVolume, min(max(level, Self.volumeRange.lowerBound), Self.volumeRange.upperBound))
     }
 
     /// Nothing audible would come out.
