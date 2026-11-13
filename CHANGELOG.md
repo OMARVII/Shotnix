@@ -8,6 +8,9 @@
 ### Changed
 - **Even out loudness gets quiet recordings all the way to −16 LUFS, even with a click or a cough in them.** One loud moment used to stop it short, sometimes several decibels too quiet. Now the limiter holds those moments under −1 dBFS and the rest of the recording comes up to the level video sites expect. Recordings without such a moment export exactly as before.
 
+### Fixed
+- **The first screenshot after waking the Mac, plugging in a display or opening Shotnix is quick again.** On a Mac that had been running for weeks it could take several seconds to appear, over 10 with two displays or if you pressed the shortcut again while waiting. Shotnix asked macOS for every window the Mac had, thousands of hidden ones included, several times in a row, and macOS takes longer and longer the more windows there are. Now it asks once, for the windows on screen, which takes a few hundredths of a second. Starting a recording no longer waits on that list either, and recordings of the whole screen no longer risk failing on a Mac with that many windows.
+- Shotnix's preview and pinned screenshots stay out of every screenshot, including the first one after a display change, when they could sometimes end up in it.
 ## [0.30.0-beta] - 2026-11-07
 
 ### Added

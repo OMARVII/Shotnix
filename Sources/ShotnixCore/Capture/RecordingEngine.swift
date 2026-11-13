@@ -171,10 +171,24 @@ final class RecordingEngine: NSObject {
         var createdURL: URL?
         var createdWriter: AVAssetWriter?
         do {
-            let content = try await Self.withTimeout(10) {
-                try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: false)
+            // The on-screen list, fresh: quick whatever the Mac holds. A
+            // window recording also hides its app's other windows, so when
+            // some of those are out of sight now (minimized, another Space)
+            // and could come back over it, it asks for every window.
+            let needsEveryWindow: Bool
+            if case .window(let window, _) = source {
+                let windowList = CGWindowListCopyWindowInfo([.optionAll], kCGNullWindowID) as? [[String: Any]] ?? []
+                needsEveryWindow = RecordingCaptureFilter.hasHiddenSiblings(of: window.windowID, in: windowList)
+            } else {
+                needsEveryWindow = false
             }
-            let prepared = try prepareCaptureSource(source, configuration: configuration, content: content)
+            let content = try await Self.withTimeout(10) {
+                needsEveryWindow
+                    ? try await ShareableContentStore.everyWindow(purpose: "recording")
+                    : try await ShareableContentStore.content(fresh: true, purpose: "recording")
+            }
+            let ownApplication = await ShareableContentStore.ownApplication()
+            let prepared = try prepareCaptureSource(source, configuration: configuration, content: content, ownApplication: ownApplication)
             let format = RecordingVideoFormat.plan(width: prepared.pixelWidth, height: prepared.pixelHeight, fps: configuration.fps)
             if format.width != prepared.pixelWidth || format.height != prepared.pixelHeight {
                 // No encoder here takes the full size: scale the capture to fit.
@@ -514,7 +528,8 @@ final class RecordingEngine: NSObject {
     private func prepareCaptureSource(
         _ source: RecordingSource,
         configuration: RecordingConfiguration,
-        content: SCShareableContent
+        content: SCShareableContent,
+        ownApplication: SCRunningApplication?
     ) throws -> PreparedCaptureSource {
         switch source {
         case .displayRect(let rect, let screen):
@@ -523,9 +538,9 @@ final class RecordingEngine: NSObject {
             guard let display = ScreenCoordinates.display(for: screen, in: content.displays) else {
                 throw RecordingError.noDisplay
             }
-            let filter = RecordingCaptureFilter.displayFilter(display: display, content: content)
+            let filter = RecordingCaptureFilter.displayFilter(display: display, content: content, ownApplication: ownApplication)
             var prepared = prepareGeometry(rect: rect, on: screen, configuration: configuration, filter: filter)
-            prepared.excludesOwnApp = content.applications.contains { $0.processID == pid_t(ProcessInfo.processInfo.processIdentifier) }
+            prepared.excludesOwnApp = ownApplication != nil
             return prepared
 
         case .window(let window, let screen):
@@ -864,11 +879,12 @@ final class RecordingEngine: NSObject {
         guard signature != ownWindowsSignature else { return }
         ownWindowsSignature = signature
         Task { @MainActor in
-            guard let content = try? await Self.withTimeout(5, { try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: false) }),
+            guard let content = try? await Self.withTimeout(5, { try await ShareableContentStore.content(fresh: true, purpose: "recording filter") }),
                   self.isRecording,
                   let display = ScreenCoordinates.display(for: screen, in: content.displays) else { return }
+            let ownApplication = await ShareableContentStore.ownApplication()
             do {
-                try await stream.updateContentFilter(RecordingCaptureFilter.displayFilter(display: display, content: content))
+                try await stream.updateContentFilter(RecordingCaptureFilter.displayFilter(display: display, content: content, ownApplication: ownApplication))
             } catch {
                 print("[Shotnix] Recording filter update failed: \(error)")
             }

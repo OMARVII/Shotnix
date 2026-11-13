@@ -7,15 +7,6 @@ import ScreenCaptureKit
 import AudioToolbox
 import os.log
 
-private enum CapturePerformance {
-    private static let log = OSLog(subsystem: "com.shotnix.app", category: "CapturePerformance")
-
-    static func mark(_ label: String, since start: CFAbsoluteTime) {
-        let elapsedMS = (CFAbsoluteTimeGetCurrent() - start) * 1000
-        os_log("%{public}@ took %.1f ms", log: log, type: .debug, label, elapsedMS)
-    }
-}
-
 extension Notification.Name {
     /// Posted once, when the very first capture completes onboarding.
     static let shotnixDidFinishFirstCapture = Notification.Name("shotnixDidFinishFirstCapture")
@@ -97,61 +88,13 @@ final class CaptureEngine {
         cover?.remove()
     }
 
-    // Cached SCShareableContent. `SCShareableContent.excludingDesktopWindows`
-    // enumerates every on-screen window and routinely costs 30–100 ms. For
-    // area/fullscreen/previous capture modes we only need the display list, and
-    // the display list only changes when the user plugs/unplugs a monitor or
-    // changes resolution — NSApplication.didChangeScreenParametersNotification
-    // is the perfect invalidator.
-    @available(macOS 14.0, *)
-    private static var cachedContent: SCShareableContent?
-    private static var cachedContentIncludesWindows = false
-    private static var observerInstalled = false
-
     init() {
-        installScreenChangeObserverIfNeeded()
+        // The display and window list (ShareableContentStore) is kept until
+        // the displays change.
+        ShareableContentStore.installDisplayChangeObserver()
         // A take finishing while the next one is set up doesn't open its
         // editor over the new recording.
         recordingEngine.nextTakeInProgress = { [weak self] in self?.recordingSetupActive ?? false }
-    }
-
-    private func installScreenChangeObserverIfNeeded() {
-        guard !Self.observerInstalled else { return }
-        Self.observerInstalled = true
-        NotificationCenter.default.addObserver(
-            forName: NSApplication.didChangeScreenParametersNotification,
-            object: nil,
-            queue: .main
-        ) { _ in
-            Task { @MainActor in
-                if #available(macOS 14.0, *) {
-                    Self.cachedContent = nil
-                    Self.cachedContentIncludesWindows = false
-                }
-            }
-        }
-    }
-
-    @available(macOS 14.0, *)
-    private static func invalidateCachedContent() {
-        cachedContent = nil
-        cachedContentIncludesWindows = false
-    }
-
-    @available(macOS 14.0, *)
-    private static func shareableContent(includeWindows: Bool) async throws -> SCShareableContent {
-        // Only reuse the cache if it covers what the caller needs. A cache
-        // populated for "displays only" can't serve window-capture mode.
-        if let cached = cachedContent, cachedContentIncludesWindows || !includeWindows {
-            return cached
-        }
-        let content = try await SCShareableContent.excludingDesktopWindows(
-            false,
-            onScreenWindowsOnly: includeWindows
-        )
-        cachedContent = content
-        cachedContentIncludesWindows = includeWindows
-        return content
     }
 
     // MARK: – Area Capture
@@ -252,11 +195,10 @@ final class CaptureEngine {
     @available(macOS 14.0, *)
     private func captureIsolatedWindowImage(windowID: CGWindowID, expectedSize: CGSize) async -> NSImage? {
         do {
-            // Try the cached shareable content first — a fresh fetch costs
-            // 30-100ms on every window capture. The cached window list can be
-            // stale, so refetch when the clicked window is missing or its
-            // cached frame no longer matches the just-measured size
-            // (expectedSize comes from a ≤150ms-old CGWindowList snapshot).
+            // The kept window list first. It can be stale, so fetch a fresh
+            // one when the clicked window is missing or its kept frame no
+            // longer matches the just-measured size (expectedSize comes
+            // from a ≤150ms-old CGWindowList snapshot).
             func lookup(_ content: SCShareableContent) -> SCWindow? {
                 content.windows.first { $0.windowID == windowID }
             }
@@ -264,10 +206,9 @@ final class CaptureEngine {
                 abs(window.frame.width - expectedSize.width) < 2
                     && abs(window.frame.height - expectedSize.height) < 2
             }
-            var window = lookup(try await Self.shareableContent(includeWindows: true))
+            var window = lookup(try await ShareableContentStore.content(purpose: "window shot"))
             if window.map(sizeMatches) != true {
-                Self.invalidateCachedContent()
-                window = lookup(try await Self.shareableContent(includeWindows: true))
+                window = lookup(try await ShareableContentStore.content(fresh: true, purpose: "window shot"))
             }
             guard let window else { return nil }
 
@@ -747,7 +688,7 @@ final class CaptureEngine {
         guard !selectionInProgress else { return }
         let hiddenByCapture = await hideDesktopIconsBeforeSelecting()
         let controller = ScrollingCaptureController(frameProvider: { [weak self] rect, screen in
-            await self?.captureRectToImage(rect, on: screen)
+            await self?.captureRectToImage(rect, on: screen, purpose: "scrolling frame")
         }) { [weak self] outcome in
             self?.restoreDesktopIconsIfNeeded(hiddenByCapture)
             guard let self else { return }
@@ -784,7 +725,7 @@ final class CaptureEngine {
                 return
             }
             Task {
-                guard let image = await self.captureRectToImage(rect, on: screen) else {
+                guard let image = await self.captureRectToImage(rect, on: screen, purpose: "captured text") else {
                     ToastWindow.show(message: L("Capture failed"), on: screen)
                     self.restoreDesktopIconsIfNeeded(hiddenByCapture)
                     return
@@ -832,7 +773,7 @@ final class CaptureEngine {
                 return
             }
             Task {
-                guard let image = await self.captureRectToImage(rect, on: screen) else {
+                guard let image = await self.captureRectToImage(rect, on: screen, purpose: "QR code") else {
                     ToastWindow.show(message: L("Capture failed"), on: screen)
                     self.restoreDesktopIconsIfNeeded(hiddenByCapture)
                     return
@@ -856,11 +797,13 @@ final class CaptureEngine {
     func captureRect(_ rect: CGRect, on screen: NSScreen, type: CaptureType = .area, historyManager: HistoryManager, playSound: Bool = true) async {
         let clamped = rect.intersection(screen.frame)
         let rect = clamped.isNull ? rect : clamped
-        guard let image = await captureRectToImage(rect, on: screen) else {
+        let started = CFAbsoluteTimeGetCurrent()
+        guard let image = await captureRectToImage(rect, on: screen, purpose: "\(type.rawValue) shot") else {
             print("[Shotnix] Capture failed for rect \(rect)")
             ToastWindow.show(message: L("Capture failed"), on: screen)
             return
         }
+        CapturePerformance.mark("\(type.rawValue) shot, start to image", since: started)
         finishCapture(image: image, rect: rect, type: type, historyManager: historyManager, playSound: playSound, on: screen)
     }
 
@@ -938,13 +881,14 @@ final class CaptureEngine {
         _ = bundledCaptureSoundID
     }
 
-    func captureRectToImage(_ rect: CGRect, on screen: NSScreen) async -> NSImage? {
+    /// `purpose` labels the timing log (CapturePerformance).
+    func captureRectToImage(_ rect: CGRect, on screen: NSScreen, purpose: String = "capture") async -> NSImage? {
         // A capture never spans displays: whatever lies past this screen's
         // edge would come back black.
         let rect = rect.intersection(screen.frame)
         guard !rect.isNull, rect.width >= 1, rect.height >= 1 else { return nil }
         if #available(macOS 14.0, *) {
-            return await captureRectSCK(rect, on: screen)
+            return await captureRectSCK(rect, on: screen, purpose: purpose)
         } else {
             return fallbackCapture(rect: rect)
         }
@@ -987,11 +931,24 @@ final class CaptureEngine {
     }
 
     @available(macOS 14.0, *)
-    private func captureRectSCK(_ rect: CGRect, on screen: NSScreen) async -> NSImage? {
+    private func captureRectSCK(_ rect: CGRect, on screen: NSScreen, purpose: String) async -> NSImage? {
         do {
-            // captureRectSCK only needs the display and application lists —
-            // no on-screen window enumeration.
-            let content = try await Self.shareableContent(includeWindows: false)
+            // Shotnix's floating chrome (selection overlays, toasts, the
+            // quick-access thumbnail, pinned screenshots, countdowns,
+            // recording HUDs) stays out of every capture, but its REAL
+            // windows (video editor, annotation editor, history,
+            // preferences) stay in: users screenshot the editor itself.
+            // Chrome is always borderless; content windows are titled or
+            // normal-level, and so are the desktop covers that hide the icons.
+            let currentProcessID = pid_t(ProcessInfo.processInfo.processIdentifier)
+            let contentWindowIDs = Set(NSApp.windows.compactMap { window -> CGWindowID? in
+                guard window.isVisible, Self.isCapturableOwnWindow(window) else { return nil }
+                return CGWindowID(exactly: window.windowNumber)
+            })
+            // The kept list only changes with the displays, so it's fetched
+            // fresh when a content window is up (one opened since must be in
+            // the list to be let back in). On-screen windows only: quick.
+            let content = try await ShareableContentStore.content(fresh: !contentWindowIDs.isEmpty, purpose: purpose)
             // SCDisplay frames are CG-space (top-left origin) while `rect` and
             // `screen` are AppKit-space (bottom-left origin) — the spaces only
             // agree on the primary display, so match by display ID. Geometric
@@ -1000,35 +957,15 @@ final class CaptureEngine {
             guard let display = ScreenCoordinates.display(for: screen, in: content.displays) else {
                 return fallbackCapture(rect: rect)
             }
-            // Exclude Shotnix's floating chrome (selection overlays, toasts,
-            // the quick-access thumbnail, pinned screenshots, countdowns,
-            // recording HUDs) so it never bakes into captures — but the app's
-            // REAL windows (video editor, annotation editor, history,
-            // preferences) must stay capturable: users screenshot the editor
-            // itself. Chrome is always borderless; content windows are titled
-            // or normal-level, so except those (and the desktop covers that
-            // hide the icons) back into the capture.
-            let currentProcessID = pid_t(ProcessInfo.processInfo.processIdentifier)
+            let ownWindows = content.windows.filter { $0.owningApplication?.processID == currentProcessID }
             let filter: SCContentFilter
-            if let ownApp = content.applications.first(where: { $0.processID == currentProcessID }) {
-                let contentWindowIDs = Set(NSApp.windows.compactMap { window -> CGWindowID? in
-                    guard window.isVisible, Self.isCapturableOwnWindow(window) else { return nil }
-                    return CGWindowID(exactly: window.windowNumber)
-                })
-                var exceptedWindows: [SCWindow] = []
-                if !contentWindowIDs.isEmpty {
-                    // The cached shareable content's window list can be stale
-                    // (it only refreshes on display changes) — fetch fresh so
-                    // a just-opened editor window is actually in the filter.
-                    let windowContent = try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: true)
-                    exceptedWindows = windowContent.windows.filter {
-                        $0.owningApplication?.processID == currentProcessID && contentWindowIDs.contains($0.windowID)
-                    }
-                }
+            if let ownApp = await ShareableContentStore.ownApplication() {
+                // Leaving out the whole app also leaves out chrome that
+                // opened after the list was made.
+                let exceptedWindows = ownWindows.filter { contentWindowIDs.contains($0.windowID) }
                 filter = SCContentFilter(display: display, excludingApplications: [ownApp], exceptingWindows: exceptedWindows)
             } else {
-                let ownWindows = content.windows.filter { $0.owningApplication?.processID == currentProcessID }
-                filter = SCContentFilter(display: display, excludingWindows: ownWindows)
+                filter = SCContentFilter(display: display, excludingWindows: ownWindows.filter { !contentWindowIDs.contains($0.windowID) })
             }
             let s: CGFloat = CGFloat(filter.pointPixelScale)
 
@@ -1059,13 +996,18 @@ final class CaptureEngine {
             // Forcing sRGB or Display P3 overrides the display calibration.
 
             let logicalSize = NSSize(width: w, height: h)
+            let shotStarted = CFAbsoluteTimeGetCurrent()
             let cgImage = try await SCScreenshotManager.captureImage(contentFilter: filter, configuration: config)
+            CapturePerformance.mark("\(purpose): captureImage \(pixelW)x\(pixelH) px", since: shotStarted)
             if Self.isEffectivelyBlack(cgImage) {
                 // Diagnostic breadcrumb: a black frame here either means the
                 // content really is black or SCScreenshotManager glitched —
                 // the stream retry rescues the latter at ~0.5-1.5s cost.
                 os_log("Screenshot came back black for rect %{public}@ — retrying via SCStream", type: .info, NSStringFromRect(rect))
-                if let streamImage = try? await captureRectStream(filter: filter, configuration: config) {
+                let retryStarted = CFAbsoluteTimeGetCurrent()
+                let streamImage = try? await captureRectStream(filter: filter, configuration: config)
+                CapturePerformance.mark("\(purpose): black-frame SCStream retry", since: retryStarted)
+                if let streamImage {
                     return Self.nsImage(from: streamImage, logicalSize: logicalSize)
                 }
             }
@@ -1229,18 +1171,8 @@ private final class SingleFrameImageCapture: NSObject, SCStreamOutput, SCStreamD
         self.stream = nil
         lock.unlock()
 
-        Task {
-            if let stream {
-                try? await stream.stopCapture()
-                try? stream.removeStreamOutput(self, type: .screen)
-            }
-            switch result {
-            case .success(let image):
-                continuation.resume(returning: image)
-            case .failure(let error):
-                continuation.resume(throwing: error)
-            }
-        }
+        continuation.resume(with: result)
+        stop(stream)
     }
 
     private func cancelCapture() {
@@ -1251,12 +1183,17 @@ private final class SingleFrameImageCapture: NSObject, SCStreamOutput, SCStreamD
         self.continuation = nil
         lock.unlock()
 
+        continuation?.resume(throwing: CancellationError())
+        stop(stream)
+    }
+
+    /// Stops after the result is handed back: a stop can queue behind other
+    /// ScreenCaptureKit work, and the shot shouldn't wait for the teardown.
+    private func stop(_ stream: SCStream?) {
+        guard let stream else { return }
         Task {
-            if let stream {
-                try? await stream.stopCapture()
-                try? stream.removeStreamOutput(self, type: .screen)
-            }
-            continuation?.resume(throwing: CancellationError())
+            try? await stream.stopCapture()
+            try? stream.removeStreamOutput(self, type: .screen)
         }
     }
 

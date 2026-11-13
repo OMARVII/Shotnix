@@ -56,12 +56,14 @@ enum RecordingCaptureFilter {
 
     /// A display (or area) recording: the display without Shotnix, except
     /// its real windows. Excluding the whole app keeps windows created
-    /// after the filter was built out of the video too.
-    static func displayFilter(display: SCDisplay, content: SCShareableContent) -> SCContentFilter {
+    /// after the filter was built out of the video too. `content` lists the
+    /// windows on screen; `ownApplication` is Shotnix's app entry, which
+    /// such a list names only while one of its windows is on screen.
+    static func displayFilter(display: SCDisplay, content: SCShareableContent, ownApplication: SCRunningApplication?) -> SCContentFilter {
         let processID = pid_t(ProcessInfo.processInfo.processIdentifier)
         let keep = recordableOwnWindowIDs()
         let ownWindows = content.windows.filter { $0.owningApplication?.processID == processID }
-        if let app = content.applications.first(where: { $0.processID == processID }) {
+        if let app = ownApplication ?? content.applications.first(where: { $0.processID == processID }) {
             return SCContentFilter(
                 display: display,
                 excludingApplications: [app],
@@ -100,6 +102,28 @@ enum RecordingCaptureFilter {
             if untitled, other.frame.intersects(chosen.frame) { return nil }
             return other.id
         })
+    }
+
+    /// Whether the recorded window's app has normal windows out of sight
+    /// now (minimized, or on another Space) that `windowsToHide` would
+    /// leave out: only an every-window list holds those. `windowList` is
+    /// CGWindowListCopyWindowInfo(.optionAll), quick however many windows
+    /// the Mac holds. Untitled, tiny windows are an app's own machinery,
+    /// never shown.
+    static func hasHiddenSiblings(of windowID: CGWindowID, in windowList: [[String: Any]]) -> Bool {
+        func number(_ info: [String: Any], _ key: CFString) -> Int? { (info[key as String] as? NSNumber)?.intValue }
+        guard let owner = windowList.first(where: { number($0, kCGWindowNumber) == Int(windowID) }).flatMap({ number($0, kCGWindowOwnerPID) }) else {
+            return false
+        }
+        return windowList.contains { info in
+            guard number(info, kCGWindowOwnerPID) == owner,
+                  number(info, kCGWindowNumber) != Int(windowID),
+                  number(info, kCGWindowLayer) == 0,
+                  (info[kCGWindowIsOnscreen as String] as? Bool) != true else { return false }
+            let bounds = (info[kCGWindowBounds as String] as? NSDictionary).flatMap { CGRect(dictionaryRepresentation: $0 as CFDictionary) } ?? .zero
+            let titled = !((info[kCGWindowName as String] as? String) ?? "").trimmingCharacters(in: .whitespaces).isEmpty
+            return titled && bounds.width >= 80 && bounds.height >= 60
+        }
     }
 
     /// The chosen window's app, minus its other windows present now.

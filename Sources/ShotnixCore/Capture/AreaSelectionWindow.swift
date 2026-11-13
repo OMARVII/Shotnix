@@ -64,7 +64,7 @@ final class AreaSelectionWindow: NSObject {
         if mode == .area {
             for (screen, overlay) in zip(screens, overlays) {
                 Task { @MainActor [weak overlay] in
-                    let image = await engine.captureRectToImage(screen.frame, on: screen)
+                    let image = await engine.captureRectToImage(screen.frame, on: screen, purpose: "loupe snapshot")
                     var rect = NSRect(origin: .zero, size: screen.frame.size)
                     let frozenCG = image?.cgImage(forProposedRect: &rect, context: nil, hints: nil)
                     overlay?.updateFrozenImage(frozenCG)
