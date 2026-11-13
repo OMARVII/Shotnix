@@ -1065,7 +1065,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.30.0"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.31.0"
     
     var body: some View {
         PreferencesPane {
@@ -1109,6 +1109,11 @@ struct AboutSettingsView: View {
                 ScrollView {
                     // The release notes stay in English (l10n-ignore); everything around them is localized.
                     Text(verbatim: """
+                    Version 0.31.0
+                    • Turn a sound up to 300%, with loud moments held back so they never crackle
+                    • Even out loudness gets quiet recordings with a loud click all the way up
+                    • The first screenshot after waking the Mac or plugging in a display is quick again
+
                     Version 0.30.0
                     • Type any speed, like 1.3×, in the field next to the speed buttons
                     • Text gets a font, a weight and a color, and a spotlight sets how far it dims

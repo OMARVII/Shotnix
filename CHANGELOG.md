@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [0.31.0-beta] - 2026-11-13
 
 ### Added
 - **Turn a sound up past 100%.** Volume, Voice and Computer sound now go up to 300%, for the whole video, a clip or a part you ⇧-drag, so a quiet recording gets louder without another app. 100% sits two-thirds along the slider and the knob catches there on the way past, so turning a sound down is as precise as before. Past 100% the value turns orange and says how many decibels it adds (a lowered level says its decibels too), and the clip shows a louder speaker on the timeline. The preview, the export and the separate sound files all play it. Loud moments are turned down just enough that they never crackle, instead of being clipped; the same limiter now also catches the moment where your voice and the computer sound add up past full scale, which used to clip. The video's and a clip's levels together go up to four times as loud (+12 dB).
@@ -11,6 +11,7 @@
 ### Fixed
 - **The first screenshot after waking the Mac, plugging in a display or opening Shotnix is quick again.** On a Mac that had been running for weeks it could take several seconds to appear, over 10 with two displays or if you pressed the shortcut again while waiting. Shotnix asked macOS for every window the Mac had, thousands of hidden ones included, several times in a row, and macOS takes longer and longer the more windows there are. Now it asks once, for the windows on screen, which takes a few hundredths of a second. Starting a recording no longer waits on that list either, and recordings of the whole screen no longer risk failing on a Mac with that many windows.
 - Shotnix's preview and pinned screenshots stay out of every screenshot, including the first one after a display change, when they could sometimes end up in it.
+
 ## [0.30.0-beta] - 2026-11-07
 
 ### Added
