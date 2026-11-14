@@ -551,6 +551,7 @@ struct VideoExportSheet: View {
             }
             .buttonStyle(VideoPrimaryButtonStyle())
             .keyboardShortcut(.defaultAction)
+            VideoStarAskLine()
         }
     }
 
@@ -598,6 +599,52 @@ struct VideoExportSheet: View {
                 }
                 .buttonStyle(VideoPrimaryButtonStyle())
             }
+        }
+    }
+}
+
+/// The one-time star ask under a finished export (see StarNudge): there
+/// from the third finished export until Star or Not now, then never again.
+struct VideoStarAskLine: View {
+    @State private var answered = false
+
+    var body: some View {
+        if !answered, StarNudge.shouldShowWithExports {
+            VStack(alignment: .leading, spacing: 12) {
+                Rectangle().fill(VideoEditorTheme.hairline).frame(height: 1)
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    Image(systemName: "star.fill")
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundStyle(Color(red: 0.96, green: 0.71, blue: 0.0))
+                        .accessibilityHidden(true)
+                    Text(L("Enjoying Shotnix? Star it on GitHub so more people find it."))
+                        .font(.system(size: 12))
+                        .foregroundStyle(VideoEditorTheme.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                HStack(spacing: 6) {
+                    Spacer(minLength: 0)
+                    Button {
+                        StarNudge.markDismissed()
+                        withAnimation(.easeOut(duration: 0.15)) { answered = true }
+                    } label: {
+                        Text(L("Not now"))
+                            .font(.system(size: 12, weight: .medium))
+                            .padding(.horizontal, 10)
+                            .frame(minHeight: 28)
+                    }
+                    .buttonStyle(VideoToolButtonStyle())
+                    Button {
+                        StarNudge.openRepository()
+                        withAnimation(.easeOut(duration: 0.15)) { answered = true }
+                    } label: {
+                        Text(L("Star on GitHub"))
+                    }
+                    .buttonStyle(VideoSecondaryButtonStyle())
+                }
+            }
+            .onAppear { StarNudge.exportLineIsOnShow = true }
+            .onDisappear { StarNudge.exportLineIsOnShow = false }
         }
     }
 }

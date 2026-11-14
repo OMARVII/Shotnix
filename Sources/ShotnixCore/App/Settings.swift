@@ -384,6 +384,12 @@ enum Settings {
         set { defaults.set(newValue, forKey: "captureCount") }
     }
 
+    /// Videos exported on this Mac (finished ones only). Drives the same nudge for people who record.
+    static var videoExportCount: Int {
+        get { defaults.integer(forKey: "videoExportCount") }
+        set { defaults.set(newValue, forKey: "videoExportCount") }
+    }
+
     /// Raw `StarNudge.State`. Empty until the nudge machinery first runs.
     static var starNudgeState: String {
         get { defaults.string(forKey: "starNudgeState") ?? "" }

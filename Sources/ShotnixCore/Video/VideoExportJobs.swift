@@ -422,6 +422,7 @@ final class VideoExportQueue: ObservableObject {
         let waiters = job.quitWaiters
         job.quitWaiters.removeAll()
         waiters.forEach { $0() }
+        if case .finished = state { StarNudge.exportDidFinish() }
         if (openEditors[job.sourcePath] ?? 0) == 0, !isRunningTests {
             if case .finished = state { VideoExportCompletionPanel.show(for: job) }
             if case .failed = state { VideoExportCompletionPanel.show(for: job) }
