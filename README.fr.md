@@ -210,32 +210,13 @@ Localization/          Catalogue de chaînes, traductions et glossaire (scripts/
 
 L’app garde volontairement ses dépendances au strict minimum.
 
-## Feuille de route
+## La suite
 
-- [x] Corrections de la capture multi-écran
-- [x] Prise en main au premier lancement
-- [x] Export WebP
-- [x] Actions automatiques après la capture
-- [x] Refonte haut de gamme de la vignette (commandes au survol, animations à ressort, balayage pour fermer)
-- [x] Barre d’outils d’annotation épurée (boutons contextuels, canevas centré, fond d’éditeur sombre)
-- [x] Outil d’annotation à étapes numérotées
-- [x] Identité visuelle haut de gamme (icône de l’app, icône de la barre des menus, écran de bienvenue)
-- [x] Interface des réglages et moteur de capture modernisés
-- [x] Animations de vignette plus vives + retour haptique + boutons au pixel près
-- [x] API natives de macOS (à la place des anciens appels shell `Process()`)
-- [x] Raccourcis personnalisables
-- [x] Capture de fenêtre avec ombre et marge
-- [x] Capture avec délai ou minuteur (3 s, 5 s, 10 s)
-- [x] Mise à jour automatique
-- [x] Signature développeur + processus de notarisation
-- [x] Vignettes empilées après la capture
-- [x] Éditeur vidéo : zooms, pointeur fluide, arrière-plans, caméra, sous-titres, montage par texte, export MP4/GIF
-- [x] Sélection ajustable, un vrai moteur d’assemblage pour la capture défilante et un OCR qui respecte la mise en page
-- [x] Nouveaux outils d’annotation : projecteur, bulle, surligneur à main levée, rectangles arrondis
-- [x] Historique : durée de conservation, nettoyage et filtres par type
-- [x] Pause et reprise, suppression d’une prise et enregistrements à l’abri des plantages
-- [x] Éditeur vidéo : musique, images en surimpression, cartons de titre, transitions, projets à plusieurs enregistrements, styles et traduction des sous-titres
-- [x] Localisation : allemand, français, chinois simplifié, russe, ukrainien et japonais
+- **Installation avec Homebrew.** Homebrew n’accepte une app proposée par son propre développeur qu’une fois que le dépôt compte 225 étoiles. Shotnix n’y est pas encore, et chaque ⭐ l’en rapproche.
+- **Version 1.0.** Celle où l’étiquette bêta disparaît.
+- **À l’étude :** des actions pour l’app Raccourcis et des liens `shotnix://`, les enregistrements d’iPhone et d’iPad dans le cadre de l’appareil, et d’autres langues.
+
+Les détails sont dans la [feuille de route](ROADMAP.md) (en anglais). Il vous manque quelque chose ? [Ouvrez une issue](https://github.com/OMARVII/Shotnix/issues/new) : le niveau sonore par clip, la vitesse saisie au clavier, les styles de texte et le volume au-delà de 100 % ont tous commencé ainsi.
 
 ## Contribuer
 

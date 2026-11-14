@@ -210,32 +210,13 @@ Localization/          String Catalog, Übersetzungen und Glossar (scripts/local
 
 Die App hält ihre Abhängigkeiten weiterhin bewusst schlank.
 
-## Roadmap
+## Was als Nächstes kommt
 
-- [x] Korrekturen für Aufnahmen mit mehreren Bildschirmen
-- [x] Einführung beim ersten Start
-- [x] WebP-Export
-- [x] Automatische Aktionen nach der Aufnahme
-- [x] Neu gestaltete Miniatur (Steuerelemente beim Darüberfahren, federnde Animationen, Wegwischen)
-- [x] Aufgeräumte Symbolleiste zum Beschriften (kontextbezogene Tasten, zentrierte Arbeitsfläche, dunkler Editor-Hintergrund)
-- [x] Werkzeug für nummerierte Schritte
-- [x] Hochwertiges Branding (App-Symbol, Menüleistensymbol, Willkommensbildschirm)
-- [x] Modernisierte Einstellungen und Aufnahme-Engine
-- [x] Flotte Animationen der Miniatur + haptisches Feedback + pixelgenaue Tasten
-- [x] Native macOS-APIs (statt veralteter Shell-Aufrufe per `Process()`)
-- [x] Anpassbare Kurzbefehle
-- [x] Fensteraufnahme mit Schatten und Rand
-- [x] Aufnahme mit Timer (3 s, 5 s, 10 s)
-- [x] Automatische Updates
-- [x] Signierung mit Developer ID + Notarisierung
-- [x] Gestapelte Miniaturen nach der Aufnahme
-- [x] Video-Editor: Zooms, flüssiger Zeiger, Hintergründe, Kamera, Untertitel, „Per Text bearbeiten“, Export als MP4/GIF
-- [x] Anpassbare Auswahl, eine Scroll-Aufnahme, die Bilder wirklich sauber zusammensetzt, und OCR, die das Layout versteht
-- [x] Neue Beschriftungswerkzeuge: Fokus, Sprechblase, Freihand-Textmarker, abgerundete Rechtecke
-- [x] Verlauf: Aufbewahrungsdauer, Aufräumen und Filter nach Aufnahmeart
-- [x] Pausieren/Fortsetzen, Verwerfen und absturzsichere Aufnahmen
-- [x] Video-Editor: Musik, Bild-Overlays, Titelkarten, Übergänge, Projekte mit mehreren Aufnahmen, Untertitelstile und Übersetzung
-- [x] Lokalisierung: Deutsch, Französisch, vereinfachtes Chinesisch, Russisch, Ukrainisch und Japanisch
+- **Installation mit Homebrew.** Homebrew nimmt eine App von ihrem eigenen Entwickler erst auf, wenn das Repository 225 Sterne hat. So weit ist Shotnix noch nicht, jeder ⭐ bringt es näher.
+- **Version 1.0.** Die Version, mit der das Beta-Etikett verschwindet.
+- **In Überlegung:** Aktionen für die Kurzbefehle-App und `shotnix://`-Links, iPhone- und iPad-Aufnahmen im Geräterahmen und weitere Sprachen.
+
+Die Einzelheiten stehen in der [Roadmap](ROADMAP.md) (auf Englisch). Dir fehlt etwas? [Eröffne ein Issue](https://github.com/OMARVII/Shotnix/issues/new): Lautstärke pro Clip, eingetippte Geschwindigkeiten, Textstile und Lautstärke über 100% haben alle so angefangen.
 
 ## Mitmachen
 

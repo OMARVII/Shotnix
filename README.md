@@ -210,32 +210,13 @@ Localization/          String Catalog, translations, and glossary (scripts/local
 
 The app still keeps dependencies intentionally narrow.
 
-## Roadmap
+## What’s next
 
-- [x] Multi-display capture fixes
-- [x] First-launch onboarding
-- [x] WebP export
-- [x] After-capture auto-actions
-- [x] Premium overlay redesign (hover controls, spring animations, swipe-to-dismiss)
-- [x] Clean annotation toolbar (contextual buttons, centered canvas, dark editor background)
-- [x] Numbered step counter annotation tool
-- [x] Premium branding (app icon, menu bar icon, welcome screen)
-- [x] Modernized preferences UI and capture engine
-- [x] Snappy overlay animations + haptic feedback + pixel-perfect buttons
-- [x] Native macOS APIs (replaced legacy shell `Process()` calls)
-- [x] Customizable hotkeys
-- [x] Window capture with shadow and padding
-- [x] Delay/timer capture (3s, 5s, 10s)
-- [x] Auto-update mechanism
-- [x] Developer signing + notarization workflow
-- [x] Stacked post-capture thumbnails
-- [x] Video editor: zooms, smooth cursor, backgrounds, camera, captions, edit by text, export to MP4/GIF
-- [x] Adjustable selection, a real scrolling-capture stitcher, and layout-aware OCR
-- [x] New annotation tools: spotlight, callout, freehand highlighter, rounded rectangles
-- [x] History retention, cleanup, and type filters
-- [x] Pause/resume, discard, and crash-safe recordings
-- [x] Video editor: music, image overlays, title cards, transitions, multi-recording projects, caption looks and translation
-- [x] Localization: German, French, Simplified Chinese, Russian, Ukrainian, and Japanese
+- **Install with Homebrew.** Homebrew takes an app from its own developer once the repository has 225 stars. Shotnix isn’t there yet, so a ⭐ gets it closer.
+- **Version 1.0.** The release where the beta label comes off.
+- **Being considered:** actions for the Shortcuts app and `shotnix://` links, iPhone and iPad recordings in a device frame, and more languages.
+
+The [roadmap](ROADMAP.md) has the details. Missing something? [Open an issue](https://github.com/OMARVII/Shotnix/issues/new): per-clip sound levels, typed speeds, text styles and volume past 100% all started as one.
 
 ## Contributing
 
