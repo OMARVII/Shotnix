@@ -171,12 +171,14 @@ final class ScreenshotWindowListTests: XCTestCase {
         XCTFail("the test windows never came on screen")
     }
 
-    private func centerColor(of image: NSImage) throws -> (r: Double, g: Double, b: Double) {
+    /// The center pixel as the capture holds it, and the color space it's in:
+    /// the display's own, where a color has other numbers than in sRGB.
+    private func centerColor(of image: NSImage) throws -> (r: Double, g: Double, b: Double, space: NSColorSpace) {
         var rect = NSRect(origin: .zero, size: image.size)
         let cgImage = try XCTUnwrap(image.cgImage(forProposedRect: &rect, context: nil, hints: nil))
         let rep = NSBitmapImageRep(cgImage: cgImage)
-        let color = try XCTUnwrap(rep.colorAt(x: rep.pixelsWide / 2, y: rep.pixelsHigh / 2)?.usingColorSpace(.sRGB))
-        return (Double(color.redComponent), Double(color.greenComponent), Double(color.blueComponent))
+        let color = try XCTUnwrap(rep.colorAt(x: rep.pixelsWide / 2, y: rep.pixelsHigh / 2))
+        return (Double(color.redComponent), Double(color.greenComponent), Double(color.blueComponent), rep.colorSpace)
     }
 
     /// The windows at the middle of `rect`, front to back, as the window
@@ -232,14 +234,16 @@ final class ScreenshotWindowListTests: XCTestCase {
             throw XCTSkip("another window came over the test window during the shot: \(windowsAtCenter(of: pin.frame).prefix(3))")
         }
         let color = try centerColor(of: image)
-        let green = try XCTUnwrap(NSColor.systemGreen.usingColorSpace(.sRGB))
-        print("FIRST SHOT: \(Int(elapsed * 1000)) ms, center \(color)")
+        // The editor's green in the capture's color space. Compared as sRGB,
+        // it only matched on a display close to sRGB, not on a wide-gamut one.
+        let green = try XCTUnwrap(NSColor.systemGreen.usingColorSpace(color.space))
+        print("FIRST SHOT: \(Int(elapsed * 1000)) ms, center \(color.r) \(color.g) \(color.b) in \(color.space.localizedName ?? "?")")
         // The editor's own green, give or take the display's color matching
         // (about 0.1): not the red pin, and not whatever is behind the editor.
         let matchesEditor = abs(color.r - Double(green.redComponent)) < 0.15
             && abs(color.g - Double(green.greenComponent)) < 0.15
             && abs(color.b - Double(green.blueComponent)) < 0.15
-        XCTAssertTrue(matchesEditor, "the shot shows the green editor, with the red pin left out: got \(color)")
+        XCTAssertTrue(matchesEditor, "the shot shows the green editor, with the red pin left out: got \(color.r) \(color.g) \(color.b), editor green \(green.redComponent) \(green.greenComponent) \(green.blueComponent)")
         XCTAssertLessThan(elapsed, 2, "no every-window list on the way")
         if #available(macOS 14.4, *) {
             let own = await ShareableContentStore.ownApplication()
