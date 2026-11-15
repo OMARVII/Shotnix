@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [0.31.1-beta] - 2026-11-15
 
 ### Changed
 - **The one-time GitHub star ask reaches people who record, too.** Shotnix has asked once after your tenth screenshot; now it also asks once after your third finished video export, with a line under "Export complete". It's still a single ask: click Star on GitHub or Not now and it's gone for good, in the export sheet and in History.

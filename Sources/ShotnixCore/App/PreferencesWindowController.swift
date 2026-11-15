@@ -1065,7 +1065,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.31.0"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.31.1"
     
     var body: some View {
         PreferencesPane {
@@ -1109,6 +1109,9 @@ struct AboutSettingsView: View {
                 ScrollView {
                     // The release notes stay in English (l10n-ignore); everything around them is localized.
                     Text(verbatim: """
+                    Version 0.31.1
+                    • The one-time GitHub star ask also shows once after your third finished video export
+
                     Version 0.31.0
                     • Turn a sound up to 300%, with loud moments held back so they never crackle
                     • Even out loudness gets quiet recordings with a loud click all the way up
