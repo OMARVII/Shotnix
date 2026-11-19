@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+- **Area screenshots on a Retina display are sharp wherever the selection lands.** When the edges of a selection fell on half points, the shot could come out slightly soft, with text and thin lines losing a little of their edge. Every area screenshot is now pixel for pixel what's on the screen.
+
 ## [0.31.1-beta] - 2026-11-15
 
 ### Changed

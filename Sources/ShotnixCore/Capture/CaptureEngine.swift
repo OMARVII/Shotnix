@@ -967,27 +967,12 @@ final class CaptureEngine {
             } else {
                 filter = SCContentFilter(display: display, excludingWindows: ownWindows.filter { !contentWindowIDs.contains($0.windowID) })
             }
-            let s: CGFloat = CGFloat(filter.pointPixelScale)
-
-            // Snap rect to integer pixel boundaries to avoid subpixel sampling.
-            // Fractional sourceRect coords cause SCK to interpolate between pixels,
-            // softening text and sharp edges.
-            let ox = floor((rect.origin.x - screen.frame.origin.x) * s) / s
-            let oy = floor((rect.origin.y - screen.frame.origin.y) * s) / s
-            let w  = ceil(rect.width * s) / s
-            let h  = ceil(rect.height * s) / s
-
-            // Convert from AppKit (bottom-left origin) to ScreenCaptureKit (top-left origin)
-            let screenHeight = screen.frame.height
-            let sckRect = CGRect(x: ox, y: screenHeight - oy - h, width: w, height: h)
-
-            let pixelW = Int(w * s)
-            let pixelH = Int(h * s)
+            let geometry = Self.stillGeometry(rect: rect, screenFrame: screen.frame, scale: CGFloat(filter.pointPixelScale))
 
             let config = SCStreamConfiguration()
-            config.sourceRect = sckRect
-            config.width = pixelW
-            config.height = pixelH
+            config.sourceRect = geometry.sourceRect
+            config.width = geometry.pixelWidth
+            config.height = geometry.pixelHeight
             config.scalesToFit = false
             config.showsCursor = false
             config.captureResolution = .best
@@ -995,10 +980,9 @@ final class CaptureEngine {
             // calibrated ICC profile, preserving exact on-screen colors.
             // Forcing sRGB or Display P3 overrides the display calibration.
 
-            let logicalSize = NSSize(width: w, height: h)
             let shotStarted = CFAbsoluteTimeGetCurrent()
             let cgImage = try await SCScreenshotManager.captureImage(contentFilter: filter, configuration: config)
-            CapturePerformance.mark("\(purpose): captureImage \(pixelW)x\(pixelH) px", since: shotStarted)
+            CapturePerformance.mark("\(purpose): captureImage \(geometry.pixelWidth)x\(geometry.pixelHeight) px", since: shotStarted)
             if Self.isEffectivelyBlack(cgImage) {
                 // Diagnostic breadcrumb: a black frame here either means the
                 // content really is black or SCScreenshotManager glitched —
@@ -1008,15 +992,64 @@ final class CaptureEngine {
                 let streamImage = try? await captureRectStream(filter: filter, configuration: config)
                 CapturePerformance.mark("\(purpose): black-frame SCStream retry", since: retryStarted)
                 if let streamImage {
-                    return Self.nsImage(from: streamImage, logicalSize: logicalSize)
+                    return Self.nsImage(from: geometry.ownPixels(of: streamImage), logicalSize: geometry.logicalSize)
                 }
             }
 
-            return Self.nsImage(from: cgImage, logicalSize: logicalSize)
+            return Self.nsImage(from: geometry.ownPixels(of: cgImage), logicalSize: geometry.logicalSize)
         } catch {
             print("[Shotnix] ScreenCaptureKit capture failed, falling back to CGWindowListCreateImage: \(error)")
             return fallbackCapture(rect: rect)
         }
+    }
+
+    /// What a capture of a rect asks ScreenCaptureKit for, and what it
+    /// keeps of the answer.
+    struct StillGeometry: Equatable {
+        /// On whole points, in the screen's own space with a top-left origin.
+        let sourceRect: CGRect
+        let pixelWidth: Int
+        let pixelHeight: Int
+        /// The rect's own pixels in that picture, top row first. nil when
+        /// they are all of it.
+        let crop: CGRect?
+        let logicalSize: NSSize
+
+        func ownPixels(of image: CGImage) -> CGImage {
+            guard let crop, image.width == pixelWidth, image.height == pixelHeight else { return image }
+            return image.cropping(to: crop) ?? image
+        }
+    }
+
+    /// `rect` (AppKit space) is put on whole pixels, so no edge has to be
+    /// interpolated: its corner down to one, its size up to them. On a
+    /// Retina display those can be half points, and a source rect on half
+    /// points isn't taken as it is: ScreenCaptureKit
+    /// rounds it out to whole points and scales that to fit, which softens
+    /// text and every sharp edge. So the whole points around the pixels are
+    /// captured one to one, and the extra row or column is cut off.
+    nonisolated static func stillGeometry(rect: CGRect, screenFrame: CGRect, scale: CGFloat) -> StillGeometry {
+        let left = floor((rect.minX - screenFrame.minX) * scale)
+        let bottom = floor((rect.minY - screenFrame.minY) * scale)
+        let width = ceil(rect.width * scale)
+        let height = ceil(rect.height * scale)
+        let outerLeft = floor(left / scale)
+        let outerBottom = floor(bottom / scale)
+        let outerWidth = ceil((left + width) / scale) - outerLeft
+        let outerTop = ceil((bottom + height) / scale)
+        let outerHeight = outerTop - outerBottom
+        let pixelWidth = Int((outerWidth * scale).rounded())
+        let pixelHeight = Int((outerHeight * scale).rounded())
+        let crop = CGRect(x: left - outerLeft * scale, y: outerTop * scale - (bottom + height), width: width, height: height)
+        let isWhole = crop.minX == 0 && crop.minY == 0 && Int(width) == pixelWidth && Int(height) == pixelHeight
+        return StillGeometry(
+            // AppKit's rows run from the bottom, ScreenCaptureKit's from the top.
+            sourceRect: CGRect(x: outerLeft, y: screenFrame.height - outerTop, width: outerWidth, height: outerHeight),
+            pixelWidth: pixelWidth,
+            pixelHeight: pixelHeight,
+            crop: isWhole ? nil : crop,
+            logicalSize: NSSize(width: width / scale, height: height / scale)
+        )
     }
 
     @available(macOS 14.0, *)
