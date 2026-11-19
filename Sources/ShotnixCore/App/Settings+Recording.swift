@@ -14,6 +14,21 @@ extension Settings {
         set { defaults.set(recordingCountdownChoices.contains(newValue) ? newValue : 0, forKey: "recordingCountdownSeconds") }
     }
 
+    /// Display recordings leave the icons and the clock on the right of the
+    /// menu bar out of the video. They stay on screen.
+    static var recordingHidesMenuBarIcons: Bool {
+        get { defaults.bool(forKey: "recordingHidesMenuBarIcons") }
+        set { defaults.set(newValue, forKey: "recordingHidesMenuBarIcons") }
+    }
+
+    /// Display recordings cover the desktop's files, folders and widgets
+    /// until they stop. Its own setting, apart from the screenshot one: a
+    /// screenshot hides them for a moment, a recording for as long as it runs.
+    static var recordingHidesDesktopIcons: Bool {
+        get { defaults.bool(forKey: "recordingHidesDesktopIcons") }
+        set { defaults.set(newValue, forKey: "recordingHidesDesktopIcons") }
+    }
+
     /// Where the recording HUD was last dragged to: its top-center, relative
     /// to the top-center of the screen's visible area (y grows downward).
     /// nil = the default spot.

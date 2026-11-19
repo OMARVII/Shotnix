@@ -16,6 +16,14 @@ extension Settings {
         set { defaults.set(newValue, forKey: "captureImmediatelyAfterSelecting") }
     }
 
+    /// The screen holds still from the capture shortcut until the selection
+    /// is made, and the shot is cut from that still: what was on screen at
+    /// the shortcut is what gets captured, however long selecting takes.
+    static var freezeScreenWhileSelecting: Bool {
+        get { defaults.bool(forKey: "freezeScreenWhileSelecting") }
+        set { defaults.set(newValue, forKey: "freezeScreenWhileSelecting") }
+    }
+
     /// How long captures stay in History. Forever unless the user picks a
     /// limit — an update must never start deleting someone's history.
     static var historyRetention: HistoryRetention {

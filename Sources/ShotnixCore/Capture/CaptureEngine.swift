@@ -105,8 +105,10 @@ final class CaptureEngine {
         }
         guard !selectionInProgress else { return } // already selecting
         let hiddenByCapture = await hideDesktopIconsBeforeSelecting()
-        areaSelectionWindow = AreaSelectionWindow(mode: .area) { [weak self] rect, screen in
+        areaSelectionWindow = AreaSelectionWindow(mode: .area, freezesScreen: Settings.freezeScreenWhileSelecting) { [weak self] rect, screen in
             guard let self else { return }
+            // Read before releasing the selection window.
+            let frozen = self.areaSelectionWindow?.selectedFrozenScreen
             self.areaSelectionWindow = nil
             guard let rect else {
                 self.restoreDesktopIconsIfNeeded(hiddenByCapture)
@@ -114,7 +116,7 @@ final class CaptureEngine {
             }
             self.lastCaptureRect = rect
             Task {
-                await self.captureRect(rect, on: screen, type: .area, historyManager: historyManager)
+                await self.captureRect(rect, on: screen, type: .area, historyManager: historyManager, frozen: frozen)
                 self.restoreDesktopIconsIfNeeded(hiddenByCapture)
             }
         }
@@ -717,15 +719,16 @@ final class CaptureEngine {
         }
         guard !selectionInProgress else { return }
         let hiddenByCapture = await hideDesktopIconsBeforeSelecting()
-        areaSelectionWindow = AreaSelectionWindow(mode: .area) { [weak self] rect, screen in
+        areaSelectionWindow = AreaSelectionWindow(mode: .area, freezesScreen: Settings.freezeScreenWhileSelecting) { [weak self] rect, screen in
             guard let self else { return }
+            let frozen = self.areaSelectionWindow?.selectedFrozenScreen
             self.areaSelectionWindow = nil
             guard let rect else {
                 self.restoreDesktopIconsIfNeeded(hiddenByCapture)
                 return
             }
             Task {
-                guard let image = await self.captureRectToImage(rect, on: screen, purpose: "captured text") else {
+                guard let image = await self.image(of: rect, on: screen, frozen: frozen, purpose: "captured text") else {
                     ToastWindow.show(message: L("Capture failed"), on: screen)
                     self.restoreDesktopIconsIfNeeded(hiddenByCapture)
                     return
@@ -765,15 +768,16 @@ final class CaptureEngine {
         }
         guard !selectionInProgress else { return }
         let hiddenByCapture = await hideDesktopIconsBeforeSelecting()
-        areaSelectionWindow = AreaSelectionWindow(mode: .area) { [weak self] rect, screen in
+        areaSelectionWindow = AreaSelectionWindow(mode: .area, freezesScreen: Settings.freezeScreenWhileSelecting) { [weak self] rect, screen in
             guard let self else { return }
+            let frozen = self.areaSelectionWindow?.selectedFrozenScreen
             self.areaSelectionWindow = nil
             guard let rect else {
                 self.restoreDesktopIconsIfNeeded(hiddenByCapture)
                 return
             }
             Task {
-                guard let image = await self.captureRectToImage(rect, on: screen, purpose: "QR code") else {
+                guard let image = await self.image(of: rect, on: screen, frozen: frozen, purpose: "QR code") else {
                     ToastWindow.show(message: L("Capture failed"), on: screen)
                     self.restoreDesktopIconsIfNeeded(hiddenByCapture)
                     return
@@ -794,11 +798,13 @@ final class CaptureEngine {
 
     // MARK: – Core capture
 
-    func captureRect(_ rect: CGRect, on screen: NSScreen, type: CaptureType = .area, historyManager: HistoryManager, playSound: Bool = true) async {
+    /// `frozen`: the still the selection was made on, when the screen was
+    /// frozen for it. The shot is then cut from it instead of captured now.
+    func captureRect(_ rect: CGRect, on screen: NSScreen, type: CaptureType = .area, historyManager: HistoryManager, playSound: Bool = true, frozen: FrozenScreen? = nil) async {
         let clamped = rect.intersection(screen.frame)
         let rect = clamped.isNull ? rect : clamped
         let started = CFAbsoluteTimeGetCurrent()
-        guard let image = await captureRectToImage(rect, on: screen, purpose: "\(type.rawValue) shot") else {
+        guard let image = await image(of: rect, on: screen, frozen: frozen, purpose: "\(type.rawValue) shot") else {
             print("[Shotnix] Capture failed for rect \(rect)")
             ToastWindow.show(message: L("Capture failed"), on: screen)
             return
@@ -879,6 +885,15 @@ final class CaptureEngine {
 
     static func warmCaptureSound() {
         _ = bundledCaptureSoundID
+    }
+
+    /// The picture of `rect`: cut from the frozen screen when the selection
+    /// was made on one, captured now otherwise.
+    func image(of rect: CGRect, on screen: NSScreen, frozen: FrozenScreen?, purpose: String) async -> NSImage? {
+        if let cut = frozen?.cut(rect) {
+            return Self.nsImage(from: cut.image, logicalSize: cut.logicalSize)
+        }
+        return await captureRectToImage(rect, on: screen, purpose: purpose)
     }
 
     /// `purpose` labels the timing log (CapturePerformance).
@@ -2699,6 +2714,28 @@ final class RecordingControlsWindow: NSWindow {
         openEditor.state = Settings.openVideoEditorAfterRecording ? .on : .off
         menu.addItem(openEditor)
 
+        // A window recording shows neither the menu bar nor the desktop.
+        if target != .window {
+            menu.addItem(.separator())
+            let hideHeader = NSMenuItem(title: L("Hide While Recording"), action: nil, keyEquivalent: "")
+            hideHeader.isEnabled = false
+            menu.addItem(hideHeader)
+            if RecordingMenuBar.controlCenterHostsEveryItem {
+                let menuBarIcons = NSMenuItem(title: L("Menu Bar Icons"), action: #selector(hideMenuBarIconsToggled), keyEquivalent: "")
+                menuBarIcons.target = self
+                menuBarIcons.state = Settings.recordingHidesMenuBarIcons ? .on : .off
+                menuBarIcons.indentationLevel = 1
+                menuBarIcons.toolTip = L("Leaves the icons and the clock on the right of the menu bar out of the video. You still see them.")
+                menu.addItem(menuBarIcons)
+            }
+            let desktopIcons = NSMenuItem(title: L("Desktop Icons"), action: #selector(hideDesktopIconsToggled), keyEquivalent: "")
+            desktopIcons.target = self
+            desktopIcons.state = Settings.recordingHidesDesktopIcons ? .on : .off
+            desktopIcons.indentationLevel = 1
+            desktopIcons.toolTip = L("Covers the files, folders and widgets on this display until the recording stops.")
+            menu.addItem(desktopIcons)
+        }
+
         menu.addItem(.separator())
         let countdown = NSMenuItem(title: L("Countdown"), action: nil, keyEquivalent: "")
         let countdownMenu = NSMenu()
@@ -2727,6 +2764,14 @@ final class RecordingControlsWindow: NSWindow {
 
     @objc private func openEditorToggled() {
         Settings.openVideoEditorAfterRecording.toggle()
+    }
+
+    @objc private func hideMenuBarIconsToggled() {
+        Settings.recordingHidesMenuBarIcons.toggle()
+    }
+
+    @objc private func hideDesktopIconsToggled() {
+        Settings.recordingHidesDesktopIcons.toggle()
     }
 
     @objc private func countdownChosen(_ sender: NSMenuItem) {

@@ -59,18 +59,93 @@ enum RecordingCaptureFilter {
     /// after the filter was built out of the video too. `content` lists the
     /// windows on screen; `ownApplication` is Shotnix's app entry, which
     /// such a list names only while one of its windows is on screen.
-    static func displayFilter(display: SCDisplay, content: SCShareableContent, ownApplication: SCRunningApplication?) -> SCContentFilter {
+    ///
+    /// `desktopCover`: the windows this recording hides the desktop icons
+    /// with, which belong in the video. `menuBar`: what happens to the menu
+    /// bar's windows (RecordingMenuBar).
+    static func displayFilter(
+        display: SCDisplay,
+        content: SCShareableContent,
+        ownApplication: SCRunningApplication?,
+        desktopCover: [NSWindow] = [],
+        menuBar: RecordingMenuBar.Filter = RecordingMenuBar.Filter()
+    ) -> SCContentFilter {
         let processID = pid_t(ProcessInfo.processInfo.processIdentifier)
-        let keep = recordableOwnWindowIDs()
+        let keep = recordableOwnWindowIDs().union(desktopCover.compactMap { CGWindowID(exactly: $0.windowNumber) })
         let ownWindows = content.windows.filter { $0.owningApplication?.processID == processID }
-        if let app = ownApplication ?? content.applications.first(where: { $0.processID == processID }) {
+        let controlCenter = menuBar.leavesOutControlCenter ? controlCenter(in: content) : nil
+        let controlCenterWindows = controlCenter.map { app in content.windows.filter { $0.owningApplication?.processID == app.processID } } ?? []
+        let letBackIn = controlCenterWindows.filter { menuBar.letIn.contains($0.windowID) }
+        // Windows of apps that are in the video. One of an app that's left
+        // out would be let in by naming it, so those are never among them.
+        let leftOut = content.windows.filter { window in
+            guard menuBar.leftOut.contains(window.windowID) else { return false }
+            let owner = window.owningApplication?.processID
+            return owner != processID && (controlCenter == nil || owner != controlCenter?.processID)
+        }
+        if let app = ownApplication ?? content.applications.first(where: { $0.processID == processID }),
+           leavesOutApplications(content: content, ownApplication: app, naming: menuBar.leftOut) {
+            // A window named as an exception is shown when its app is left
+            // out and left out when its app is shown. Leaving out all of
+            // Control Center also leaves out what it opens later.
             return SCContentFilter(
                 display: display,
-                excludingApplications: [app],
-                exceptingWindows: ownWindows.filter { keep.contains($0.windowID) }
+                excludingApplications: [app] + (controlCenter.map { [$0] } ?? []),
+                exceptingWindows: ownWindows.filter { keep.contains($0.windowID) } + letBackIn + leftOut
             )
         }
-        return SCContentFilter(display: display, excludingWindows: ownWindows.filter { !keep.contains($0.windowID) })
+        let letBackInIDs = Set(letBackIn.map(\.windowID))
+        return SCContentFilter(
+            display: display,
+            excludingWindows: ownWindows.filter { !keep.contains($0.windowID) }
+                + controlCenterWindows.filter { !letBackInIDs.contains($0.windowID) }
+                + leftOut
+        )
+    }
+
+    /// Whether a display filter that names `windows` leaves apps out as
+    /// apps, so that what they open later stays out too. Otherwise it can
+    /// only leave out the windows the list names now. It takes Shotnix's
+    /// own entry in the list, and one that can be told from the owner of
+    /// the windows named.
+    static func leavesOutApplications(content: SCShareableContent, ownApplication: SCRunningApplication?, naming windows: Set<CGWindowID>) -> Bool {
+        let processID = pid_t(ProcessInfo.processInfo.processIdentifier)
+        guard let app = ownApplication ?? content.applications.first(where: { $0.processID == processID }) else { return false }
+        let owners = content.windows
+            .filter { windows.contains($0.windowID) && $0.owningApplication?.processID != processID }
+            .map { $0.owningApplication?.bundleIdentifier ?? "" }
+        return canName(ownersIdentifiers: owners, leavingOut: app.bundleIdentifier)
+    }
+
+    /// The Window Server's windows have an owner without an identifier.
+    /// With an app without one among those left out (Shotnix run outside
+    /// its app bundle, as tests do), ScreenCaptureKit on macOS 26 takes
+    /// them for that app's: naming one as an exception then shows it.
+
+    nonisolated static func canName(ownersIdentifiers: [String], leavingOut identifier: String) -> Bool {
+        !identifier.isEmpty || !ownersIdentifiers.contains("")
+    }
+
+    /// Control Center's app entry. An on-screen list only names it while
+    /// one of its windows is on screen, which is whenever the menu bar is.
+    static func controlCenter(in content: SCShareableContent) -> SCRunningApplication? {
+        content.applications.first { $0.bundleIdentifier == RecordingMenuBar.controlCenterBundleID }
+    }
+
+    /// Control Center's windows as `content` lists them.
+    static func controlCenterWindows(in content: SCShareableContent) -> [RecordingMenuBar.Window] {
+        content.windows.compactMap { window in
+            guard window.owningApplication?.bundleIdentifier == RecordingMenuBar.controlCenterBundleID else { return nil }
+            return RecordingMenuBar.Window(id: window.windowID, layer: window.windowLayer, name: window.title ?? "", frame: window.frame)
+        }
+    }
+
+    /// The Window Server's dots as `content` lists them. The list gives
+    /// them an owner without a name or an identifier.
+    static func privacyDots(in content: SCShareableContent) -> Set<CGWindowID> {
+        Set(content.windows.filter { window in
+            window.title == RecordingMenuBar.privacyDotName && (window.owningApplication?.bundleIdentifier ?? "").isEmpty
+        }.map(\.windowID))
     }
 
     /// What the display filter depends on: a change means it's rebuilt.

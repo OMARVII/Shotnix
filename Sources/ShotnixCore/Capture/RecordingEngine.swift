@@ -64,6 +64,32 @@ final class RecordingEngine: NSObject {
     private var ownWindowObservers: [NSObjectProtocol] = []
     private var ownWindowsSignature: [CGWindowID] = []
     private var filterUpdateWorkItem: DispatchWorkItem?
+    /// Counts display filter rebuilds, so one that was overtaken while it
+    /// waited for the window list doesn't replace a newer one.
+    private var filterGeneration = 0
+    /// What stays out of the menu bar in this recording (RecordingMenuBar).
+    private var menuBarTreatment: RecordingMenuBar.Treatment = .shown
+    private var controlCenterProcessID: pid_t?
+    /// Which windows are Shotnix's own item or what macOS shows while
+    /// recording, as far as this recording has seen.
+    private var recorderItems = RecordingMenuBar.RecorderItems()
+    /// What the filter in effect does with the menu bar's windows.
+    private var menuBarFilter = RecordingMenuBar.Filter()
+    private var menuBarPhase = RecordingMenuBar.Phase.launch
+    private var menuBarLaunchEnds: CFTimeInterval = 0
+    /// Windows on screen that ScreenCaptureKit's list keeps leaving out.
+    private var menuBarUnlisted = RecordingMenuBar.Unlisted()
+    /// When this recording last did something that moves the menu bar's
+    /// icons: showed its timer, started a microphone.
+    private var menuBarLastChange: CFTimeInterval = 0
+    /// Has macOS show its recording indicators before the first frame.
+    private var indicatorWarmUp: RecordingIndicatorWarmUp?
+    private var displayFilterRebuildsInFlight = 0
+    /// After a filter update failed: when the menu bar may ask for the next.
+    private var menuBarRetryNotBefore: CFTimeInterval = 0
+    private var menuBarTimer: Timer?
+    /// Covers the desktop icons for as long as this recording runs.
+    private var desktopCover: DesktopIconsCover?
     private var isCheckingDiskSpace = false
     /// Stop took the foreground for the editor; whatever doesn't open it
     /// must give it back, or Shotnix keeps a Dock icon.
@@ -107,6 +133,13 @@ final class RecordingEngine: NSObject {
     /// Whether the screen has delivered a frame yet (for tests and diagnostics).
     var hasCapturedFrames: Bool { timeline.hasStarted }
 
+    /// How often this recording's display filter was rebuilt to keep up
+    /// with the menu bar (for tests and diagnostics). Rebuilds for Shotnix's
+    /// own windows coming and going aren't counted.
+    private(set) var menuBarFilterRebuilds = 0
+    /// Whether the desktop icons are covered for this recording.
+    var coversDesktopIcons: Bool { desktopCover != nil }
+
     /// Record was pressed; the start itself runs a moment later. A take
     /// finishing in between already counts the new one as queued.
     func startWillFollow() {
@@ -139,7 +172,11 @@ final class RecordingEngine: NSObject {
             return
         }
         isStarting = true
-        defer { isStarting = false }
+        defer {
+            isStarting = false
+            // The recording's own stream runs now, or isn't going to.
+            endIndicatorWarmUp()
+        }
         let session = UUID()
         recordingSessionID = session
 
@@ -182,6 +219,16 @@ final class RecordingEngine: NSObject {
             } else {
                 needsEveryWindow = false
             }
+            if case .displayRect(_, let coveredScreen) = source, configuration.hidesDesktopIcons {
+                // Up before the window list is made: the cover has to be in
+                // it to be let into the video, and in the very first frame.
+                let cover = await DesktopIconsCover.show(on: [coveredScreen])
+                guard recordingSessionID == session else {
+                    cover.remove()
+                    return
+                }
+                desktopCover = cover
+            }
             let content = try await Self.withTimeout(10) {
                 needsEveryWindow
                     ? try await ShareableContentStore.everyWindow(purpose: "recording")
@@ -189,6 +236,12 @@ final class RecordingEngine: NSObject {
             }
             let ownApplication = await ShareableContentStore.ownApplication()
             let prepared = try prepareCaptureSource(source, configuration: configuration, content: content, ownApplication: ownApplication)
+            if prepared.menuBar != .shown, let display = ScreenCoordinates.display(for: prepared.screen, in: content.displays) {
+                // macOS's indicators come up while the rest is set up.
+                let warmUp = RecordingIndicatorWarmUp()
+                warmUp.begin(on: display)
+                indicatorWarmUp = warmUp
+            }
             let format = RecordingVideoFormat.plan(width: prepared.pixelWidth, height: prepared.pixelHeight, fps: configuration.fps)
             if format.width != prepared.pixelWidth || format.height != prepared.pixelHeight {
                 // No encoder here takes the full size: scale the capture to fit.
@@ -238,11 +291,7 @@ final class RecordingEngine: NSObject {
             createdWriter = handles.writer
 
             let output = RecordingStreamOutput(recordingEngine: self)
-            let stream = SCStream(filter: prepared.filter, configuration: prepared.streamConfig, delegate: output)
-            try stream.addStreamOutput(output, type: .screen, sampleHandlerQueue: writerQueue)
-            if configuration.recordsSystemAudio {
-                try stream.addStreamOutput(output, type: .audio, sampleHandlerQueue: writerQueue)
-            }
+            var stream = try makeStream(filter: prepared.filter, configuration: prepared.streamConfig, output: output, systemAudio: configuration.recordsSystemAudio)
             self.stream = stream
             streamOutput = output
             streamConfiguration = prepared.streamConfig
@@ -257,6 +306,8 @@ final class RecordingEngine: NSObject {
             displays = content.displays
             recordingScreen = prepared.screen
             excludesOwnApp = prepared.excludesOwnApp
+            menuBarTreatment = prepared.menuBar
+            menuBarFilterRebuilds = 0
             followedWindow = prepared.window
             followedWindowHidden = prepared.hiddenWindows
             followedWindowFrame = prepared.window?.frame
@@ -283,6 +334,7 @@ final class RecordingEngine: NSObject {
             recordingStartedAt = CACurrentMediaTime()
             metadataRecorder.start()
             stateChangedHandler?()
+            menuBarLastChange = CACurrentMediaTime()
 
             // Arm the queue-confined writer core before any buffer can arrive
             // (the stream hasn't started yet; the serial queue preserves order).
@@ -315,6 +367,7 @@ final class RecordingEngine: NSObject {
             // Stopped while the microphone started: the finish flow already
             // cleaned up this recording.
             guard recordingSessionID == session, isRecording else { return }
+            if microphone != nil { menuBarLastChange = CACurrentMediaTime() }
             cameraFinishTask = nil
             cameraFirstFrameHostTime = nil
             recordsCamera = configuration.recordsCamera
@@ -335,6 +388,25 @@ final class RecordingEngine: NSObject {
             )
             recoveryNote = note
             RecordingRecovery.save(note)
+            if let warmUp = indicatorWarmUp {
+                // The first frame shows the menu bar as it stays: macOS's
+                // indicators are up and left out, and where the icons are
+                // in the video they have made room for them and the timer.
+                await warmUp.waitForIndicators(
+                    settled: menuBarTreatment == .withoutRecorderItems,
+                    controlCenter: RecordingMenuBar.controlCenterProcessID(),
+                    lastChange: menuBarLastChange
+                )
+                guard recordingSessionID == session, isRecording else { return }
+                if let filter = await displayFilterForStart(on: prepared.screen), recordingSessionID == session, isRecording {
+                    // A stream takes a new filter only once it runs, so the
+                    // one that hasn't started is replaced.
+                    stream = try makeStream(filter: filter.filter, configuration: prepared.streamConfig, output: output, systemAudio: configuration.recordsSystemAudio)
+                    self.stream = stream
+                    adopt(filter)
+                }
+                guard recordingSessionID == session, isRecording else { return }
+            }
             try await Self.startCapture(StreamBox(stream), within: 15)
             guard recordingSessionID == session, isRecording else {
                 // Stopped while the stream was starting: the finish flow is
@@ -525,6 +597,49 @@ final class RecordingEngine: NSObject {
         }
     }
 
+    private func makeStream(
+        filter: SCContentFilter,
+        configuration: SCStreamConfiguration,
+        output: RecordingStreamOutput,
+        systemAudio: Bool
+    ) throws -> SCStream {
+        let stream = SCStream(filter: filter, configuration: configuration, delegate: output)
+        try stream.addStreamOutput(output, type: .screen, sampleHandlerQueue: writerQueue)
+        if systemAudio {
+            try stream.addStreamOutput(output, type: .audio, sampleHandlerQueue: writerQueue)
+        }
+        return stream
+    }
+
+    /// The display filter for the menu bar as it is right before the stream
+    /// starts, with macOS's indicators up. nil when the window list can't be
+    /// had: the filter made at the beginning stands, and what it misses is
+    /// left out as soon as the recording runs.
+    private func displayFilterForStart(on screen: NSScreen) async -> BuiltDisplayFilter? {
+        let session = recordingSessionID
+        var built: BuiltDisplayFilter?
+        // A window that came up a moment ago can be missing from the list:
+        // the next one has it.
+        for attempt in 0..<3 {
+            if attempt > 0 { try? await Task.sleep(nanoseconds: 40_000_000) }
+            guard recordingSessionID == session else { return nil }
+            guard let content = try? await Self.withTimeout(3, { try await ShareableContentStore.content(fresh: true, purpose: "recording") }),
+                  recordingSessionID == session,
+                  let display = ScreenCoordinates.display(for: screen, in: content.displays) else { break }
+            let ownApplication = await ShareableContentStore.ownApplication()
+            guard recordingSessionID == session else { return nil }
+            let latest = displayFilter(display: display, content: content, ownApplication: ownApplication, menuBar: menuBarTreatment)
+            built = latest
+            if latest.unlisted.isEmpty { break }
+        }
+        return built
+    }
+
+    private func endIndicatorWarmUp() {
+        indicatorWarmUp?.end()
+        indicatorWarmUp = nil
+    }
+
     private func prepareCaptureSource(
         _ source: RecordingSource,
         configuration: RecordingConfiguration,
@@ -538,9 +653,17 @@ final class RecordingEngine: NSObject {
             guard let display = ScreenCoordinates.display(for: screen, in: content.displays) else {
                 throw RecordingError.noDisplay
             }
-            let filter = RecordingCaptureFilter.displayFilter(display: display, content: content, ownApplication: ownApplication)
-            var prepared = prepareGeometry(rect: rect, on: screen, configuration: configuration, filter: filter)
-            prepared.excludesOwnApp = ownApplication != nil
+            let menuBar = RecordingMenuBar.treatment(
+                hidesIcons: configuration.hidesMenuBarIcons,
+                reachesMenuBar: RecordingMenuBar.reachesMenuBar(rect, screenFrame: screen.frame, barHeight: RecordingMenuBar.barHeight(on: screen)),
+                controlCenterHostsEveryItem: RecordingMenuBar.controlCenterHostsEveryItem
+            )
+            menuBarPhase = .launch
+            let built = displayFilter(display: display, content: content, ownApplication: ownApplication, menuBar: menuBar)
+            adopt(built)
+            var prepared = prepareGeometry(rect: rect, on: screen, configuration: configuration, filter: built.filter)
+            prepared.excludesOwnApp = built.leavesOutApplications
+            prepared.menuBar = menuBar
             return prepared
 
         case .window(let window, let screen):
@@ -720,6 +843,17 @@ final class RecordingEngine: NSObject {
             RunLoop.main.add(follow, forMode: .common)
             followTimer = follow
         }
+        if menuBarTreatment != .shown {
+            // The windows to leave out are named one by one, so the filter
+            // has to keep up with them. Looking takes about a millisecond.
+            menuBarLaunchEnds = CACurrentMediaTime() + RecordingMenuBar.launchSeconds
+            checkMenuBar()
+            let menuBar = Timer(timeInterval: Self.menuBarCheckInterval, repeats: true) { [weak self] _ in
+                MainActor.assumeIsolated { self?.checkMenuBar() }
+            }
+            RunLoop.main.add(menuBar, forMode: .common)
+            menuBarTimer = menuBar
+        }
     }
 
     private func stopMonitoring() {
@@ -728,6 +862,8 @@ final class RecordingEngine: NSObject {
         monitorTimer = nil
         followTimer?.invalidate()
         followTimer = nil
+        menuBarTimer?.invalidate()
+        menuBarTimer = nil
         ownWindowObservers.forEach(NotificationCenter.default.removeObserver)
         ownWindowObservers.removeAll()
         filterUpdateWorkItem?.cancel()
@@ -874,18 +1010,172 @@ final class RecordingEngine: NSObject {
     }
 
     private func updateFilterIfNeeded() {
-        guard isRecording, case .displayRect(_, let screen) = source, let stream else { return }
+        guard isRecording, case .displayRect = source, stream != nil else { return }
         let signature = currentOwnWindowsSignature()
         guard signature != ownWindowsSignature else { return }
         ownWindowsSignature = signature
+        rebuildDisplayFilter()
+    }
+
+    static let menuBarCheckInterval: TimeInterval = 0.1
+
+    private struct BuiltDisplayFilter {
+        let filter: SCContentFilter
+        /// Shotnix is left out as an app, so what it opens later stays out
+        /// too. Otherwise only its windows listed now are.
+        let leavesOutApplications: Bool
+        let menuBar: RecordingMenuBar.Filter
+        /// Wanted in or out of the video, on screen, but not in the list yet.
+        let unlisted: Set<CGWindowID>
+    }
+
+    /// Keeps the filter in step with the menu bar: ends the launch phase,
+    /// leaves out a window of the recorder's that turned up since, and
+    /// Control Center itself once it's on screen if it wasn't at the start.
+    private func checkMenuBar() {
+        guard isRecording, menuBarTreatment != .shown, displayFilterRebuildsInFlight == 0 else { return }
+        let now = CACurrentMediaTime()
+        guard now >= menuBarRetryNotBefore else { return }
+        if menuBarPhase == .launch, now >= menuBarLaunchEnds { menuBarPhase = .steady }
+        let look = lookAtMenuBar()
+        let outOfStep = RecordingMenuBar.isOutOfStep(
+            menuBarFilter,
+            treatment: menuBarTreatment,
+            phase: menuBarPhase,
+            onScreen: Set(look.controlCenter.map(\.id)),
+            recorderItems: recorderItems.all,
+            dots: look.dots,
+            givenUp: menuBarUnlisted.givenUp(at: now)
+        )
+        if outOfStep { rebuildDisplayFilter(forMenuBar: true) }
+    }
+
+    /// The menu bar's windows on screen now, after noting which of them
+    /// are the recorder's.
+    private func lookAtMenuBar() -> RecordingMenuBar.Look {
+        var look = RecordingMenuBar.look(controlCenter: controlCenterProcessID)
+        if look.controlCenter.isEmpty, let current = RecordingMenuBar.controlCenterProcessID(), current != controlCenterProcessID {
+            // Not known yet, or Control Center was relaunched: what the
+            // filter in effect leaves out is a process that's gone.
+            controlCenterProcessID = current
+            menuBarFilter.leavesOutControlCenter = false
+            menuBarFilter.letIn = []
+            look = RecordingMenuBar.look(controlCenter: current)
+        }
+        recorderItems.look(
+            at: look.controlCenter,
+            dots: look.dots,
+            ownBundleID: Bundle.main.bundleIdentifier,
+            ownItemFrames: RecordingMenuBar.ownItemFrames()
+        )
+        return look
+    }
+
+    /// The display filter for what's on screen now. It's in effect only
+    /// once the stream has it: `adopt` then.
+    private func displayFilter(
+        display: SCDisplay,
+        content: SCShareableContent,
+        ownApplication: SCRunningApplication?,
+        menuBar treatment: RecordingMenuBar.Treatment
+    ) -> BuiltDisplayFilter {
+        var state = RecordingMenuBar.Filter()
+        var unlisted: Set<CGWindowID> = []
+        if treatment != .shown {
+            let controlCenter = RecordingCaptureFilter.controlCenter(in: content)
+            if let controlCenter {
+                // The process the filter leaves out, as `content` names it.
+                controlCenterProcessID = controlCenter.processID
+            }
+            let look = lookAtMenuBar()
+            let onScreen = Set(look.controlCenter.map(\.id))
+            // The list also names windows that are out of sight for now:
+            // the indicator's outlasts a capture and comes back with the next.
+            let recorder = recorderItems.all.union(RecordingMenuBar.indicators(among: RecordingCaptureFilter.controlCenterWindows(in: content)))
+            let dots = look.dots.union(RecordingCaptureFilter.privacyDots(in: content))
+            // Only a window the list names can be named to the filter.
+            let listed = Set(content.windows.map(\.windowID))
+            func plan(canLeaveOutControlCenter: Bool) -> RecordingMenuBar.Filter {
+                let wanted = RecordingMenuBar.filter(
+                    for: treatment,
+                    phase: menuBarPhase,
+                    canLeaveOutControlCenter: canLeaveOutControlCenter,
+                    onScreen: onScreen,
+                    recorderItems: recorder,
+                    dots: dots
+                )
+                unlisted = wanted.letIn.union(wanted.leftOut)
+                    .intersection(onScreen.union(look.dots))
+                    .subtracting(listed)
+                    .subtracting(menuBarUnlisted.givenUp(at: CACurrentMediaTime()))
+                return RecordingMenuBar.Filter(
+                    leavesOutControlCenter: wanted.leavesOutControlCenter,
+                    letIn: wanted.letIn.intersection(listed),
+                    leftOut: wanted.leftOut.intersection(listed)
+                )
+            }
+            state = plan(canLeaveOutControlCenter: controlCenter != nil)
+            if state.leavesOutControlCenter,
+               !RecordingCaptureFilter.leavesOutApplications(content: content, ownApplication: ownApplication, naming: state.leftOut) {
+                // The filter can only leave out windows, one by one.
+                state = plan(canLeaveOutControlCenter: false)
+            }
+        }
+        let filter = RecordingCaptureFilter.displayFilter(
+            display: display,
+            content: content,
+            ownApplication: ownApplication,
+            desktopCover: desktopCover?.windows ?? [],
+            menuBar: state
+        )
+        let leavesOutApplications = RecordingCaptureFilter.leavesOutApplications(content: content, ownApplication: ownApplication, naming: state.leftOut)
+        return BuiltDisplayFilter(filter: filter, leavesOutApplications: leavesOutApplications, menuBar: state, unlisted: unlisted)
+    }
+
+    /// `built`'s filter is the one in effect: the stream has it, or is
+    /// about to be made with it.
+    private func adopt(_ built: BuiltDisplayFilter) {
+        menuBarFilter = built.menuBar
+        // Which of Shotnix's own windows the filter has to be rebuilt for.
+        excludesOwnApp = built.leavesOutApplications
+        menuBarUnlisted.note(built.unlisted, at: CACurrentMediaTime())
+    }
+
+    /// Whether rebuild `generation` of recording `session` is still the one to apply.
+    private func isLatestRebuild(_ generation: Int, of session: UUID) -> Bool {
+        isRecording && recordingSessionID == session && filterGeneration == generation
+    }
+
+    private func rebuildDisplayFilter(forMenuBar: Bool = false) {
+        guard isRecording, case .displayRect(_, let screen) = source, let stream else { return }
+        filterGeneration += 1
+        if forMenuBar { menuBarFilterRebuilds += 1 }
+        displayFilterRebuildsInFlight += 1
+        let generation = filterGeneration
+        let session = recordingSessionID
         Task { @MainActor in
+            defer {
+                if self.recordingSessionID == session { self.displayFilterRebuildsInFlight -= 1 }
+            }
             guard let content = try? await Self.withTimeout(5, { try await ShareableContentStore.content(fresh: true, purpose: "recording filter") }),
-                  self.isRecording,
-                  let display = ScreenCoordinates.display(for: screen, in: content.displays) else { return }
+                  self.isLatestRebuild(generation, of: session),
+                  let display = ScreenCoordinates.display(for: screen, in: content.displays) else {
+                // No list to build from: not asked for ten times a second.
+                if self.recordingSessionID == session { self.menuBarRetryNotBefore = CACurrentMediaTime() + 0.5 }
+                return
+            }
             let ownApplication = await ShareableContentStore.ownApplication()
+            guard self.isLatestRebuild(generation, of: session) else { return }
+            let built = self.displayFilter(display: display, content: content, ownApplication: ownApplication, menuBar: self.menuBarTreatment)
+            let update = FilterUpdate(stream: stream, filter: built.filter)
             do {
-                try await stream.updateContentFilter(RecordingCaptureFilter.displayFilter(display: display, content: content, ownApplication: ownApplication))
+                // A stalled update must not keep the menu bar from ever
+                // being looked at again.
+                try await Self.withTimeout(5) { try await update.stream.updateContentFilter(update.filter) }
+                if self.recordingSessionID == session { self.adopt(built) }
             } catch {
+                // What's in effect is unchanged: the next look asks again.
+                if self.recordingSessionID == session { self.menuBarRetryNotBefore = CACurrentMediaTime() + 0.5 }
                 print("[Shotnix] Recording filter update failed: \(error)")
             }
         }
@@ -970,7 +1260,15 @@ final class RecordingEngine: NSObject {
         // the user hits stop are dropped (queued ones still land first).
         let core = writerCore
         writerQueue.async { core.deactivate() }
+        // After the writer stopped taking frames: the icons coming back is
+        // never in the video.
+        removeDesktopCover()
         stateChangedHandler?()
+    }
+
+    private func removeDesktopCover() {
+        desktopCover?.remove()
+        desktopCover = nil
     }
 
     private func finishRecording(reason: StopReason) {
@@ -1352,6 +1650,18 @@ final class RecordingEngine: NSObject {
         followedWindow = nil
         followedWindowHidden = []
         followedWindowFrame = nil
+        removeDesktopCover()
+        endIndicatorWarmUp()
+        menuBarTreatment = .shown
+        recorderItems = RecordingMenuBar.RecorderItems()
+        menuBarFilter = RecordingMenuBar.Filter()
+        menuBarPhase = .launch
+        menuBarLaunchEnds = 0
+        menuBarUnlisted = RecordingMenuBar.Unlisted()
+        menuBarLastChange = 0
+        displayFilterRebuildsInFlight = 0
+        menuBarRetryNotBefore = 0
+        controlCenterProcessID = nil
         if let metadataRecorder {
             _ = metadataRecorder.finish(duration: 0)
         }
@@ -1717,6 +2027,7 @@ final class RecordingEngine: NSObject {
         var window: SCWindow?
         var hiddenWindows: [SCWindow] = []
         var excludesOwnApp = true
+        var menuBar: RecordingMenuBar.Treatment = .shown
     }
 
     enum RecordingError: Error {
@@ -1737,6 +2048,13 @@ struct FinishedRecording {
     /// Open it in the editor now. False when the setting is off — or when
     /// the next take is already being set up, which the editor would cover.
     let opensEditor: Bool
+}
+
+/// A stream and its next filter, crossing into the timeout helper's task
+/// for the one update call.
+private struct FilterUpdate: @unchecked Sendable {
+    let stream: SCStream
+    let filter: SCContentFilter
 }
 
 /// SCStream crosses into the timeout helper's tasks; it's only used there
@@ -1795,6 +2113,8 @@ private struct RecordingConfiguration {
     var microphoneDeviceID: String
     var recordsCamera: Bool
     var cameraDeviceID: String
+    var hidesMenuBarIcons: Bool
+    var hidesDesktopIcons: Bool
 
     /// The pointer goes into the video pixels only when the user wants it
     /// shown AND opted out of the editable cursor.
@@ -1810,7 +2130,9 @@ private struct RecordingConfiguration {
             recordsMicrophone: Settings.recordingMicrophone,
             microphoneDeviceID: Settings.recordingMicrophoneDeviceID,
             recordsCamera: Settings.recordingCamera,
-            cameraDeviceID: Settings.recordingCameraDeviceID
+            cameraDeviceID: Settings.recordingCameraDeviceID,
+            hidesMenuBarIcons: Settings.recordingHidesMenuBarIcons,
+            hidesDesktopIcons: Settings.recordingHidesDesktopIcons
         )
     }
 }

@@ -69,6 +69,7 @@ Free and open source. Native, about 11 MB, and your captures never leave your Ma
 - **All displays** — every connected display at once, one image each
 - **Previous area** — re-capture the last selected region with one shortcut
 - **Adjustable selection** — hold Shift as you let go (or make it the default in Settings) to fine-tune the edges with the mouse or arrow keys, then press Return
+- **Frozen screen** — optionally hold the screen still from the moment you press the shortcut, so you select on a still picture and capture exactly what was there
 - **Scrolling** — scroll a long page and Shotnix stitches it into one tall image; press Esc or the shortcut again to stop
 - **Timed** — a cancellable 3/5/10-second countdown before the shot
 - **Screen recording** — record an area, window, or display to MP4 at 60 fps with system audio, microphone audio, and your camera. Pause and resume, discard a take, or start after a 3/5/10-second countdown. Window recordings follow the window and include its menus and sheets. Recordings survive crashes and are recovered on the next launch, a microphone that drops out is replaced without shifting the audio, and 5K and larger displays record in HEVC. Stop from anywhere with `Ctrl + Cmd + Esc`
@@ -113,7 +114,7 @@ Free and open source. Native, about 11 MB, and your captures never leave your Ma
 - After-capture auto-actions (auto-copy, auto-save; new installs save every screenshot as a file, like the Mac does)
 - Configurable overlay position (left or right) and timeout
 - Capture sound effects (toggleable)
-- Hide desktop icons during capture (without restarting Finder)
+- Hide desktop icons in screenshots and recordings (without restarting Finder), and keep menu bar icons out of recordings (macOS 26 or later)
 - Launch at login
 - What's New changelog in the About tab
 

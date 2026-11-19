@@ -19158,6 +19158,47 @@
         }
       }
     },
+    "Covers the files, folders and widgets on this display until the recording stops." : {
+      "comment" : "Tooltip of Desktop Icons in the recording bar's options menu",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verdeckt die Dateien, Ordner und Widgets auf diesem Bildschirm, bis die Aufzeichnung endet."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recouvre les fichiers, dossiers et widgets de cet écran jusqu’à la fin de l’enregistrement."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "収録が終わるまで、このディスプレイ上のファイル、フォルダ、ウィジェットを隠します。"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закрывает файлы, папки и виджеты на этом дисплее, пока запись не закончится."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закриває файли, папки й віджети на цьому дисплеї, доки запис не закінчиться."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "遮住此显示器上的文件、文件夹和小组件，直到录制结束。"
+          }
+        }
+      }
+    },
     "Crimson Ridge" : {
       "localizations" : {
         "de" : {
@@ -20991,6 +21032,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "沙漠紫罗兰"
+          }
+        }
+      }
+    },
+    "Desktop Icons" : {
+      "comment" : "Recording bar options menu, a checkmark item under Hide While Recording",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schreibtischsymbole"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icônes du bureau"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デスクトップのアイコン"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Значки рабочего стола"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Значки робочого столу"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "桌面图标"
           }
         }
       }
@@ -27471,6 +27553,88 @@
         }
       }
     },
+    "Freeze the screen while selecting" : {
+      "comment" : "Screenshot setting: the screen holds still while an area is selected",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildschirm beim Auswählen einfrieren"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Figer l’écran pendant la sélection"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選択中は画面を静止"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Замораживать экран при выделении"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заморожувати екран під час вибору"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择时冻结屏幕"
+          }
+        }
+      }
+    },
+    "Freezing holds the screen still from the moment you press the shortcut until the shot is taken, so a video frame or an open menu is captured exactly as it was." : {
+      "comment" : "Screenshot settings footnote, after the sentence about releasing the mouse",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beim Einfrieren steht der Bildschirm vom Drücken des Kurzbefehls bis zur Aufnahme still: Ein Videobild oder ein geöffnetes Menü wird genau so aufgenommen, wie es war."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’écran reste figé entre le moment où vous utilisez le raccourci et la capture : une image de vidéo ou un menu ouvert sont capturés exactement tels qu’ils étaient."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ショートカットを押した瞬間から取り込みが終わるまで画面が静止するので、ビデオの1コマや開いているメニューをそのままの状態で取り込めます。"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Экран замирает с момента нажатия сочетания клавиш и до самого снимка: кадр видео или открытое меню попадут на снимок такими, какими были."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Екран завмирає від натискання скорочення і до самого знімка: кадр відео чи відкрите меню потраплять на знімок такими, якими були."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "冻结后，从按下快捷键到完成截屏，屏幕画面会保持静止，视频画面或打开的菜单会按当时的样子截取。"
+          }
+        }
+      }
+    },
     "From your Mac" : {
       "localizations" : {
         "de" : {
@@ -28757,42 +28921,248 @@
         }
       }
     },
-    "Hide desktop icons while capturing" : {
+    "Hide While Recording" : {
+      "comment" : "Recording bar options menu: heading over Menu Bar Icons and Desktop Icons",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Schreibtischsymbole beim Aufnehmen ausblenden"
+            "value" : "Während der Aufzeichnung ausblenden"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Masquer les icônes du bureau pendant la capture"
+            "value" : "Masquer pendant l’enregistrement"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "取り込み中はデスクトップのアイコンを非表示"
+            "value" : "収録中に非表示"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Скрывать значки рабочего стола при съемке"
+            "value" : "Скрывать во время записи"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ховати значки робочого столу під час знімання"
+            "value" : "Ховати під час запису"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "录制时隐藏"
+          }
+        }
+      }
+    },
+    "Hide desktop icons" : {
+      "comment" : "Recording setting, a switch: the desktop is covered while recording",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schreibtischsymbole ausblenden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masquer les icônes du bureau"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デスクトップのアイコンを非表示"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скрывать значки рабочего стола"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ховати значки робочого столу"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隐藏桌面图标"
+          }
+        }
+      }
+    },
+    "Hide desktop icons covers the files, folders and widgets on the display you record until the recording stops." : {
+      "comment" : "Recording settings footnote before macOS 26, where only this setting is offered",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„Schreibtischsymbole ausblenden“ verdeckt die Dateien, Ordner und Widgets auf dem aufgezeichneten Bildschirm, bis die Aufzeichnung endet."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "« Masquer les icônes du bureau » recouvre les fichiers, dossiers et widgets de l’écran enregistré jusqu’à la fin de l’enregistrement."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“デスクトップのアイコンを非表示”をオンにすると、収録が終わるまで、収録するディスプレイ上のファイル、フォルダ、ウィジェットが隠されます。"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«Скрывать значки рабочего стола» закрывает файлы, папки и виджеты на записываемом дисплее, пока запись не закончится."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«Ховати значки робочого столу» закриває файли, папки й віджети на дисплеї, який записується, доки запис не закінчиться."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“隐藏桌面图标”会遮住所录制显示器上的文件、文件夹和小组件，直到录制结束。"
+          }
+        }
+      }
+    },
+    "Hide desktop icons in screenshots" : {
+      "comment" : "General setting. Recordings have their own switch",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schreibtischsymbole in Bildschirmfotos ausblenden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masquer les icônes du bureau dans les captures d’écran"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スクリーンショットではデスクトップのアイコンを非表示"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скрывать значки рабочего стола на снимках экрана"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ховати значки робочого столу на знімках екрана"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "截屏时隐藏桌面图标"
+          }
+        }
+      }
+    },
+    "Hide menu bar icons" : {
+      "comment" : "Recording setting: other apps' icons and the clock stay out of the video",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Symbole in der Menüleiste ausblenden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masquer les icônes de la barre des menus"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メニューバーのアイコンを非表示"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скрывать значки в строке меню"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ховати значки у смузі меню"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隐藏菜单栏图标"
+          }
+        }
+      }
+    },
+    "Hide menu bar icons leaves the icons and the clock on the right of the menu bar out of the video, while you still see them on your screen. Hide desktop icons covers the files, folders and widgets on the display you record until the recording stops. The recording timer in the menu bar and the purple indicator beside it are always left out." : {
+      "comment" : "Recording settings footnote on macOS 26 and later. The two setting names are the rows above it",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„Symbole in der Menüleiste ausblenden“ lässt die Symbole und die Uhr rechts in der Menüleiste im Video weg, auf deinem Bildschirm siehst du sie weiterhin. „Schreibtischsymbole ausblenden“ verdeckt die Dateien, Ordner und Widgets auf dem aufgezeichneten Bildschirm, bis die Aufzeichnung endet. Der Aufzeichnungstimer in der Menüleiste und die violette Anzeige daneben sind nie im Video."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "« Masquer les icônes de la barre des menus » laisse les icônes et l’horloge à droite de la barre des menus hors de la vidéo, mais vous les voyez toujours à l’écran. « Masquer les icônes du bureau » recouvre les fichiers, dossiers et widgets de l’écran enregistré jusqu’à la fin de l’enregistrement. Le minuteur d’enregistrement de la barre des menus et l’indicateur violet à côté n’apparaissent jamais dans la vidéo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“メニューバーのアイコンを非表示”をオンにすると、メニューバー右側のアイコンと時計がビデオに写らなくなります（画面上には引き続き表示されます）。“デスクトップのアイコンを非表示”をオンにすると、収録が終わるまで、収録するディスプレイ上のファイル、フォルダ、ウィジェットが隠されます。メニューバーの収録タイマーとその隣の紫色のインジケータは、ビデオには写りません。"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«Скрывать значки в строке меню» убирает из видео значки и часы в правой части строки меню, а на экране вы по-прежнему их видите. «Скрывать значки рабочего стола» закрывает файлы, папки и виджеты на записываемом дисплее, пока запись не закончится. Таймер записи в строке меню и фиолетовый индикатор рядом с ним никогда не попадают в видео."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«Ховати значки у смузі меню» прибирає з відео значки й годинник у правій частині смуги меню, а на екрані ви бачите їх і далі. «Ховати значки робочого столу» закриває файли, папки й віджети на дисплеї, який записується, доки запис не закінчиться. Таймер запису в смузі меню й фіолетовий індикатор поруч із ним ніколи не потрапляють у відео."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“隐藏菜单栏图标”会让菜单栏右侧的图标和时钟不出现在视频中，但你仍能在屏幕上看到它们。“隐藏桌面图标”会遮住所录制显示器上的文件、文件夹和小组件，直到录制结束。菜单栏中的录制计时器及其旁边的紫色指示器始终不会出现在视频中。"
           }
         }
       }
@@ -32581,6 +32951,47 @@
         }
       }
     },
+    "Leaves the icons and the clock on the right of the menu bar out of the video. You still see them." : {
+      "comment" : "Tooltip of Menu Bar Icons in the recording bar's options menu",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lässt die Symbole und die Uhr rechts in der Menüleiste im Video weg. Du siehst sie weiterhin."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laisse les icônes et l’horloge à droite de la barre des menus hors de la vidéo. Vous les voyez toujours."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メニューバー右側のアイコンと時計がビデオに写らなくなります。画面上には引き続き表示されます。"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Убирает из видео значки и часы в правой части строки меню. Вы по-прежнему их видите."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прибирає з відео значки й годинник у правій частині смуги меню. Ви бачите їх і далі."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "让菜单栏右侧的图标和时钟不出现在视频中。你仍能看到它们。"
+          }
+        }
+      }
+    },
     "Left" : {
       "localizations" : {
         "de" : {
@@ -34117,6 +34528,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "菜单栏"
+          }
+        }
+      }
+    },
+    "Menu Bar Icons" : {
+      "comment" : "Recording bar options menu, a checkmark item under Hide While Recording",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Symbole in der Menüleiste"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icônes de la barre des menus"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メニューバーのアイコン"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Значки в строке меню"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Значки у смузі меню"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "菜单栏图标"
           }
         }
       }
@@ -43083,6 +43535,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "棱镜流光"
+          }
+        }
+      }
+    },
+    "Privacy" : {
+      "comment" : "Recording settings: the section with what a recording hides",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privatsphäre"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confidentialité"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プライバシー"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Конфиденциальность"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приватність"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隐私"
           }
         }
       }

@@ -107,6 +107,56 @@ final class RecordingBarTests: XCTestCase {
         XCTAssertEqual(try XCTUnwrap(RecordingUITestSupport.button(labelled: "Record", in: bar)).keyEquivalent, "\r")
     }
 
+    func testOptionsMenuOffersWhatARecordingHides() throws {
+        let bar = try makeBar(target: .fullscreen)
+        defer { bar.closeControls() }
+        func item(_ title: String) -> NSMenuItem? { bar.optionsMenu().items.first { $0.title == title } }
+
+        let header = try XCTUnwrap(item("Hide While Recording"))
+        XCTAssertFalse(header.isEnabled, "a heading, like Camera")
+        let desktop = try XCTUnwrap(item("Desktop Icons"))
+        XCTAssertEqual(desktop.state, .off)
+        XCTAssertEqual(desktop.indentationLevel, 1)
+        XCTAssertFalse((desktop.toolTip ?? "").isEmpty)
+        _ = desktop.target?.perform(desktop.action)
+        XCTAssertTrue(Settings.recordingHidesDesktopIcons)
+        XCTAssertEqual(item("Desktop Icons")?.state, .on, "the menu is built fresh each time it opens")
+        _ = desktop.target?.perform(desktop.action)
+        XCTAssertFalse(Settings.recordingHidesDesktopIcons)
+
+        // Before macOS 26 there's no leaving the menu bar's icons out.
+        guard RecordingMenuBar.controlCenterHostsEveryItem else {
+            XCTAssertNil(item("Menu Bar Icons"))
+            return
+        }
+        let menuBar = try XCTUnwrap(item("Menu Bar Icons"))
+        XCTAssertEqual(menuBar.state, .off)
+        _ = menuBar.target?.perform(menuBar.action)
+        XCTAssertTrue(Settings.recordingHidesMenuBarIcons)
+        XCTAssertFalse(Settings.recordingHidesDesktopIcons, "one doesn't switch the other")
+        XCTAssertEqual(item("Menu Bar Icons")?.state, .on)
+    }
+
+    func testAnAreaRecordingOffersThemAndAWindowRecordingDoesNot() throws {
+        let area = try makeBar(target: .area)
+        defer { area.closeControls() }
+        XCTAssertNotNil(area.optionsMenu().items.first { $0.title == "Desktop Icons" })
+
+        // A window recording shows neither the menu bar nor the desktop.
+        let window = try makeBar(target: .window)
+        defer { window.closeControls() }
+        let titles = window.optionsMenu().items.map(\.title)
+        XCTAssertFalse(titles.contains("Hide While Recording"))
+        XCTAssertFalse(titles.contains("Menu Bar Icons"))
+        XCTAssertFalse(titles.contains("Desktop Icons"))
+        XCTAssertTrue(titles.contains("Countdown"), "the rest of the menu is there")
+        // No two separators in a row where the section would have been.
+        let items = window.optionsMenu().items
+        for (first, second) in zip(items, items.dropFirst()) {
+            XCTAssertFalse(first.isSeparatorItem && second.isSeparatorItem)
+        }
+    }
+
     func testRendersTheBar() throws {
         Settings.recordingMicrophone = true
         Settings.recordingSystemAudio = true
@@ -117,12 +167,12 @@ final class RecordingBarTests: XCTestCase {
 
     func testRendersTheRecordingSettings() throws {
         Settings.recordingCountdownSeconds = 3
-        let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 560, height: 1100), styleMask: [.borderless], backing: .buffered, defer: false)
+        let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 560, height: 1340), styleMask: [.borderless], backing: .buffered, defer: false)
         window.isReleasedWhenClosed = false
         window.appearance = NSAppearance(named: .darkAqua)
         window.backgroundColor = NSColor(calibratedWhite: 0.1, alpha: 1)
         // The Preferences window draws a dark stage behind the panes.
-        let stage = NSView(frame: NSRect(x: 0, y: 0, width: 560, height: 1100))
+        let stage = NSView(frame: NSRect(x: 0, y: 0, width: 560, height: 1340))
         stage.wantsLayer = true
         stage.layer?.backgroundColor = ShotnixColors.editorStageTop.cgColor
         let hosting = NSHostingView(rootView: RecordingSettingsView())

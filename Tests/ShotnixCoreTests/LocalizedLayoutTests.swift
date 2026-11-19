@@ -184,6 +184,25 @@ final class LocalizedLayoutTests: XCTestCase {
         }
     }
 
+    func testSwitchRowTitlesFitAtTheNarrowestWidthInEveryLanguage() {
+        // 452 pt inside a row (see below). The switch, 40 pt at most, and
+        // the row's two 12 pt gaps come off that; a title is one line.
+        let font = NSFont.systemFont(ofSize: 13, weight: .semibold)
+        for language in Self.languages {
+            L10n.use(language)
+            let titles = [
+                L("Hide desktop icons in screenshots"),
+                L("Hide menu bar icons"),
+                L("Hide desktop icons"),
+                L("Freeze the screen while selecting"),
+                L("Capture immediately after selecting"),
+            ]
+            for title in titles {
+                XCTAssertLessThanOrEqual(TextFitting.width(of: title, font: font), 388, "\(language): “\(title)”")
+            }
+        }
+    }
+
     func testLanguagePopUpFitsAtTheNarrowestWidth() {
         // The narrowest window leaves 452 pt inside a row (520, less 22 pt of
         // pane and 12 pt of row padding on each side); the title, the row's

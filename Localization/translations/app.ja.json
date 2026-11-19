@@ -572,6 +572,12 @@
   "Freehand highlight" : {
     "ja" : "フリーハンドのハイライト"
   },
+  "Freeze the screen while selecting" : {
+    "ja" : "選択中は画面を静止"
+  },
+  "Freezing holds the screen still from the moment you press the shortcut until the shot is taken, so a video frame or an open menu is captured exactly as it was." : {
+    "ja" : "ショートカットを押した瞬間から取り込みが終わるまで画面が静止するので、ビデオの1コマや開いているメニューをそのままの状態で取り込めます。"
+  },
   "Full screen: %@" : {
     "ja" : "画面全体: %@"
   },
@@ -605,8 +611,20 @@
   "Hide Icon" : {
     "ja" : "アイコンを非表示"
   },
-  "Hide desktop icons while capturing" : {
-    "ja" : "取り込み中はデスクトップのアイコンを非表示"
+  "Hide desktop icons" : {
+    "ja" : "デスクトップのアイコンを非表示"
+  },
+  "Hide desktop icons covers the files, folders and widgets on the display you record until the recording stops." : {
+    "ja" : "“デスクトップのアイコンを非表示”をオンにすると、収録が終わるまで、収録するディスプレイ上のファイル、フォルダ、ウィジェットが隠されます。"
+  },
+  "Hide desktop icons in screenshots" : {
+    "ja" : "スクリーンショットではデスクトップのアイコンを非表示"
+  },
+  "Hide menu bar icons" : {
+    "ja" : "メニューバーのアイコンを非表示"
+  },
+  "Hide menu bar icons leaves the icons and the clock on the right of the menu bar out of the video, while you still see them on your screen. Hide desktop icons covers the files, folders and widgets on the display you record until the recording stops. The recording timer in the menu bar and the purple indicator beside it are always left out." : {
+    "ja" : "“メニューバーのアイコンを非表示”をオンにすると、メニューバー右側のアイコンと時計がビデオに写らなくなります（画面上には引き続き表示されます）。“デスクトップのアイコンを非表示”をオンにすると、収録が終わるまで、収録するディスプレイ上のファイル、フォルダ、ウィジェットが隠されます。メニューバーの収録タイマーとその隣の紫色のインジケータは、ビデオには写りません。"
   },
   "Hide the Menu Bar Icon?" : {
     "ja" : "メニューバーのアイコンを非表示にしますか?"
@@ -889,6 +907,9 @@
   },
   "Prism Sweep" : {
     "ja" : "プリズムの光"
+  },
+  "Privacy" : {
+    "ja" : "プライバシー"
   },
   "Privacy Policy" : {
     "ja" : "プライバシーポリシー"

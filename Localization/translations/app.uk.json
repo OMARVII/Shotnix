@@ -490,6 +490,12 @@
   "Freehand highlight" : {
     "uk" : "Виділення від руки"
   },
+  "Freeze the screen while selecting" : {
+    "uk" : "Заморожувати екран під час вибору"
+  },
+  "Freezing holds the screen still from the moment you press the shortcut until the shot is taken, so a video frame or an open menu is captured exactly as it was." : {
+    "uk" : "Екран завмирає від натискання скорочення і до самого знімка: кадр відео чи відкрите меню потраплять на знімок такими, якими були."
+  },
   "Full screen: %@" : {
     "uk" : "Весь екран: %@"
   },
@@ -520,8 +526,20 @@
   "Hide Icon" : {
     "uk" : "Сховати значок"
   },
-  "Hide desktop icons while capturing" : {
-    "uk" : "Ховати значки робочого столу під час знімання"
+  "Hide desktop icons" : {
+    "uk" : "Ховати значки робочого столу"
+  },
+  "Hide desktop icons covers the files, folders and widgets on the display you record until the recording stops." : {
+    "uk" : "«Ховати значки робочого столу» закриває файли, папки й віджети на дисплеї, який записується, доки запис не закінчиться."
+  },
+  "Hide desktop icons in screenshots" : {
+    "uk" : "Ховати значки робочого столу на знімках екрана"
+  },
+  "Hide menu bar icons" : {
+    "uk" : "Ховати значки у смузі меню"
+  },
+  "Hide menu bar icons leaves the icons and the clock on the right of the menu bar out of the video, while you still see them on your screen. Hide desktop icons covers the files, folders and widgets on the display you record until the recording stops. The recording timer in the menu bar and the purple indicator beside it are always left out." : {
+    "uk" : "«Ховати значки у смузі меню» прибирає з відео значки й годинник у правій частині смуги меню, а на екрані ви бачите їх і далі. «Ховати значки робочого столу» закриває файли, папки й віджети на дисплеї, який записується, доки запис не закінчиться. Таймер запису в смузі меню й фіолетовий індикатор поруч із ним ніколи не потрапляють у відео."
   },
   "Hide the Menu Bar Icon?" : {
     "uk" : "Сховати значок у смузі меню?"
@@ -799,6 +817,9 @@
   },
   "Prism Sweep" : {
     "uk" : "Призматична хвиля"
+  },
+  "Privacy" : {
+    "uk" : "Приватність"
   },
   "Privacy Policy" : {
     "uk" : "Політика конфіденційності"

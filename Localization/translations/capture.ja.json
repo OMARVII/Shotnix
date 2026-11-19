@@ -170,11 +170,17 @@
   "Countdown" : {
     "ja" : "カウントダウン"
   },
+  "Covers the files, folders and widgets on this display until the recording stops." : {
+    "ja" : "収録が終わるまで、このディスプレイ上のファイル、フォルダ、ウィジェットを隠します。"
+  },
   "Cursor" : {
     "ja" : "ポインタ"
   },
   "Decoded details" : {
     "ja" : "読み取った内容"
+  },
+  "Desktop Icons" : {
+    "ja" : "デスクトップのアイコン"
   },
   "Discard" : {
     "ja" : "破棄"
@@ -248,6 +254,9 @@
   "Hidden network" : {
     "ja" : "非公開ネットワーク"
   },
+  "Hide While Recording" : {
+    "ja" : "収録中に非表示"
+  },
   "High" : {
     "ja" : "高"
   },
@@ -259,6 +268,9 @@
   },
   "Keyboard shortcuts are on" : {
     "ja" : "キーボードショートカットの表示がオンになりました"
+  },
+  "Leaves the icons and the clock on the right of the menu bar out of the video. You still see them." : {
+    "ja" : "メニューバー右側のアイコンと時計がビデオに写らなくなります。画面上には引き続き表示されます。"
   },
   "Link" : {
     "ja" : "リンク"
@@ -280,6 +292,9 @@
   },
   "Maximum length reached" : {
     "ja" : "最大の長さに達しました"
+  },
+  "Menu Bar Icons" : {
+    "ja" : "メニューバーのアイコン"
   },
   "Message" : {
     "ja" : "メッセージ"

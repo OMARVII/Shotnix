@@ -210,11 +210,17 @@
   "Countdown" : {
     "uk" : "Зворотний відлік"
   },
+  "Covers the files, folders and widgets on this display until the recording stops." : {
+    "uk" : "Закриває файли, папки й віджети на цьому дисплеї, доки запис не закінчиться."
+  },
   "Cursor" : {
     "uk" : "Курсор"
   },
   "Decoded details" : {
     "uk" : "Розкодовані дані"
+  },
+  "Desktop Icons" : {
+    "uk" : "Значки робочого столу"
   },
   "Discard" : {
     "uk" : "Відкинути"
@@ -288,6 +294,9 @@
   "Hidden network" : {
     "uk" : "Прихована мережа"
   },
+  "Hide While Recording" : {
+    "uk" : "Ховати під час запису"
+  },
   "High" : {
     "uk" : "Висока"
   },
@@ -299,6 +308,9 @@
   },
   "Keyboard shortcuts are on" : {
     "uk" : "Клавіатурні скорочення ввімкнено"
+  },
+  "Leaves the icons and the clock on the right of the menu bar out of the video. You still see them." : {
+    "uk" : "Прибирає з відео значки й годинник у правій частині смуги меню. Ви бачите їх і далі."
   },
   "Link" : {
     "uk" : "Посилання"
@@ -320,6 +332,9 @@
   },
   "Maximum length reached" : {
     "uk" : "Досягнуто максимальної довжини"
+  },
+  "Menu Bar Icons" : {
+    "uk" : "Значки у смузі меню"
   },
   "Message" : {
     "uk" : "Повідомлення"

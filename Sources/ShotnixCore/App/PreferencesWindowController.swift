@@ -507,7 +507,7 @@ struct GeneralSettingsView: View {
 
                 PreferenceDivider()
 
-                PreferenceRow(L("Hide desktop icons while capturing")) {
+                PreferenceRow(L("Hide desktop icons in screenshots")) {
                     Toggle("", isOn: $hideDesktopIcons)
                         .labelsHidden()
                         .toggleStyle(.switch)
@@ -880,6 +880,8 @@ struct RecordingSettingsView: View {
     @AppStorage("recordingCamera") var camera = false
     @AppStorage("recordingCameraDeviceID") var cameraDeviceID = ""
     @AppStorage("recordingCountdownSeconds") var countdown = 0
+    @AppStorage("recordingHidesMenuBarIcons") var hidesMenuBarIcons = false
+    @AppStorage("recordingHidesDesktopIcons") var hidesDesktopIcons = false
     @State private var keystrokeAccess = VideoKeystrokeFormatter.isAllowed
 
     private var microphones: [MicrophoneOption] { MicrophoneDeviceProvider.options }
@@ -1053,6 +1055,30 @@ struct RecordingSettingsView: View {
             }
 
             PreferenceFootnote(text: L("Your camera is recorded as its own layer: a live bubble shows while you record (it never appears in the screen capture), and the editor lets you move, resize, and restyle it — or hide it — afterwards."))
+
+            PreferenceSection(L("Privacy")) {
+                // Before macOS 26 other apps' menu bar icons are their own
+                // windows: there's no leaving them out as one.
+                if RecordingMenuBar.controlCenterHostsEveryItem {
+                    PreferenceRow(L("Hide menu bar icons")) {
+                        Toggle("", isOn: $hidesMenuBarIcons)
+                            .labelsHidden()
+                            .toggleStyle(.switch)
+                    }
+
+                    PreferenceDivider()
+                }
+
+                PreferenceRow(L("Hide desktop icons")) {
+                    Toggle("", isOn: $hidesDesktopIcons)
+                        .labelsHidden()
+                        .toggleStyle(.switch)
+                }
+            }
+
+            PreferenceFootnote(text: RecordingMenuBar.controlCenterHostsEveryItem
+                ? L("Hide menu bar icons leaves the icons and the clock on the right of the menu bar out of the video, while you still see them on your screen. Hide desktop icons covers the files, folders and widgets on the display you record until the recording stops. The recording timer in the menu bar and the purple indicator beside it are always left out.")
+                : L("Hide desktop icons covers the files, folders and widgets on the display you record until the recording stops."))
 
             // Leftover video data (VideoDataCleanup.swift).
             PreferenceSection(L("Storage")) {

@@ -742,6 +742,8 @@
 	<string>Не вдалося записати відео. Перевірте, чи є вільне місце і чи можна зберігати в цю папку, а потім експортуйте ще раз.</string>
 	<key>Countdown</key>
 	<string>Зворотний відлік</string>
+	<key>Covers the files, folders and widgets on this display until the recording stops.</key>
+	<string>Закриває файли, папки й віджети на цьому дисплеї, доки запис не закінчиться.</string>
 	<key>Crimson Ridge</key>
 	<string>Багряний хребет</string>
 	<key>Crisp and compact — the best default</key>
@@ -814,6 +816,8 @@
 	<string>Зняти вибір/закрити</string>
 	<key>Desert Violet</key>
 	<string>Фіолет пустелі</string>
+	<key>Desktop Icons</key>
+	<string>Значки робочого столу</string>
 	<key>Dimming</key>
 	<string>Затемнення</string>
 	<key>Dip to black</key>
@@ -1130,6 +1134,10 @@
 	<string>Маркер від руки</string>
 	<key>Freehand highlight</key>
 	<string>Виділення від руки</string>
+	<key>Freeze the screen while selecting</key>
+	<string>Заморожувати екран під час вибору</string>
+	<key>Freezing holds the screen still from the moment you press the shortcut until the shot is taken, so a video frame or an open menu is captured exactly as it was.</key>
+	<string>Екран завмирає від натискання скорочення і до самого знімка: кадр відео чи відкрите меню потраплять на знімок такими, якими були.</string>
 	<key>From your Mac</key>
 	<string>З вашого Mac</string>
 	<key>Full Camera at Playhead</key>
@@ -1194,8 +1202,18 @@
 	<string>Сховати значки робочого столу</string>
 	<key>Hide Icon</key>
 	<string>Сховати значок</string>
-	<key>Hide desktop icons while capturing</key>
-	<string>Ховати значки робочого столу під час знімання</string>
+	<key>Hide While Recording</key>
+	<string>Ховати під час запису</string>
+	<key>Hide desktop icons</key>
+	<string>Ховати значки робочого столу</string>
+	<key>Hide desktop icons covers the files, folders and widgets on the display you record until the recording stops.</key>
+	<string>«Ховати значки робочого столу» закриває файли, папки й віджети на дисплеї, який записується, доки запис не закінчиться.</string>
+	<key>Hide desktop icons in screenshots</key>
+	<string>Ховати значки робочого столу на знімках екрана</string>
+	<key>Hide menu bar icons</key>
+	<string>Ховати значки у смузі меню</string>
+	<key>Hide menu bar icons leaves the icons and the clock on the right of the menu bar out of the video, while you still see them on your screen. Hide desktop icons covers the files, folders and widgets on the display you record until the recording stops. The recording timer in the menu bar and the purple indicator beside it are always left out.</key>
+	<string>«Ховати значки у смузі меню» прибирає з відео значки й годинник у правій частині смуги меню, а на екрані ви бачите їх і далі. «Ховати значки робочого столу» закриває файли, папки й віджети на дисплеї, який записується, доки запис не закінчиться. Таймер запису в смузі меню й фіолетовий індикатор поруч із ним ніколи не потрапляють у відео.</string>
 	<key>Hide the Menu Bar Icon?</key>
 	<string>Сховати значок у смузі меню?</string>
 	<key>Hide the move to Stop</key>
@@ -1326,6 +1344,8 @@
 	<string>Макет</string>
 	<key>Layouts</key>
 	<string>Макети</string>
+	<key>Leaves the icons and the clock on the right of the menu bar out of the video. You still see them.</key>
+	<string>Прибирає з відео значки й годинник у правій частині смуги меню. Ви бачите їх і далі.</string>
 	<key>Left</key>
 	<string>Ліворуч</string>
 	<key>Length</key>
@@ -1396,6 +1416,8 @@
 	<string>Середній</string>
 	<key>Menu Bar</key>
 	<string>Смуга меню</string>
+	<key>Menu Bar Icons</key>
+	<string>Значки у смузі меню</string>
 	<key>Menu bar is full, so macOS hid the Shotnix icon — %@ still captures. Click here for the menu.</key>
 	<string>Смуга меню заповнена, тож macOS ховає значок Shotnix — %@ і далі знімає. Клацніть тут, щоб відкрити меню.</string>
 	<key>Menu bar is full, so macOS hid the Shotnix icon — your shortcuts still work. Click here for the menu.</key>
@@ -1836,6 +1858,8 @@
 	<string>Попередній/наступний кадр</string>
 	<key>Prism Sweep</key>
 	<string>Призматична хвиля</string>
+	<key>Privacy</key>
+	<string>Приватність</string>
 	<key>Privacy Policy</key>
 	<string>Політика конфіденційності</string>
 	<key>Pure</key>

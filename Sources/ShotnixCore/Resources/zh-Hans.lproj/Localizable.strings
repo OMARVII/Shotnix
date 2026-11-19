@@ -808,6 +808,8 @@
 	<string>无法写入视频。请确认有足够的可用空间且你可以存储到该文件夹，然后重新导出。</string>
 	<key>Countdown</key>
 	<string>倒计时</string>
+	<key>Covers the files, folders and widgets on this display until the recording stops.</key>
+	<string>遮住此显示器上的文件、文件夹和小组件，直到录制结束。</string>
 	<key>Crimson Ridge</key>
 	<string>绯红山脊</string>
 	<key>Crisp and compact — the best default</key>
@@ -886,6 +888,8 @@
 	<string>取消选择/关闭</string>
 	<key>Desert Violet</key>
 	<string>沙漠紫罗兰</string>
+	<key>Desktop Icons</key>
+	<string>桌面图标</string>
 	<key>Dimming</key>
 	<string>压暗</string>
 	<key>Dip to black</key>
@@ -1204,6 +1208,10 @@
 	<string>手绘荧光笔</string>
 	<key>Freehand highlight</key>
 	<string>手绘高亮</string>
+	<key>Freeze the screen while selecting</key>
+	<string>选择时冻结屏幕</string>
+	<key>Freezing holds the screen still from the moment you press the shortcut until the shot is taken, so a video frame or an open menu is captured exactly as it was.</key>
+	<string>冻结后，从按下快捷键到完成截屏，屏幕画面会保持静止，视频画面或打开的菜单会按当时的样子截取。</string>
 	<key>From your Mac</key>
 	<string>来自你的 Mac</string>
 	<key>Full Camera at Playhead</key>
@@ -1268,8 +1276,18 @@
 	<string>隐藏桌面图标</string>
 	<key>Hide Icon</key>
 	<string>隐藏图标</string>
-	<key>Hide desktop icons while capturing</key>
+	<key>Hide While Recording</key>
+	<string>录制时隐藏</string>
+	<key>Hide desktop icons</key>
+	<string>隐藏桌面图标</string>
+	<key>Hide desktop icons covers the files, folders and widgets on the display you record until the recording stops.</key>
+	<string>“隐藏桌面图标”会遮住所录制显示器上的文件、文件夹和小组件，直到录制结束。</string>
+	<key>Hide desktop icons in screenshots</key>
 	<string>截屏时隐藏桌面图标</string>
+	<key>Hide menu bar icons</key>
+	<string>隐藏菜单栏图标</string>
+	<key>Hide menu bar icons leaves the icons and the clock on the right of the menu bar out of the video, while you still see them on your screen. Hide desktop icons covers the files, folders and widgets on the display you record until the recording stops. The recording timer in the menu bar and the purple indicator beside it are always left out.</key>
+	<string>“隐藏菜单栏图标”会让菜单栏右侧的图标和时钟不出现在视频中，但你仍能在屏幕上看到它们。“隐藏桌面图标”会遮住所录制显示器上的文件、文件夹和小组件，直到录制结束。菜单栏中的录制计时器及其旁边的紫色指示器始终不会出现在视频中。</string>
 	<key>Hide the Menu Bar Icon?</key>
 	<string>要隐藏菜单栏图标吗？</string>
 	<key>Hide the move to Stop</key>
@@ -1418,6 +1436,8 @@
 	<string>布局</string>
 	<key>Layouts</key>
 	<string>布局</string>
+	<key>Leaves the icons and the clock on the right of the menu bar out of the video. You still see them.</key>
+	<string>让菜单栏右侧的图标和时钟不出现在视频中。你仍能看到它们。</string>
 	<key>Left</key>
 	<string>左侧</string>
 	<key>Length</key>
@@ -1490,6 +1510,8 @@
 	<string>中</string>
 	<key>Menu Bar</key>
 	<string>菜单栏</string>
+	<key>Menu Bar Icons</key>
+	<string>菜单栏图标</string>
 	<key>Menu bar is full, so macOS hid the Shotnix icon — %@ still captures. Click here for the menu.</key>
 	<string>菜单栏已满，macOS 隐藏了 Shotnix 图标 — 按 %@ 仍可截屏。点按此处打开菜单。</string>
 	<key>Menu bar is full, so macOS hid the Shotnix icon — your shortcuts still work. Click here for the menu.</key>
@@ -1932,6 +1954,8 @@
 	<string>上一帧/下一帧</string>
 	<key>Prism Sweep</key>
 	<string>棱镜流光</string>
+	<key>Privacy</key>
+	<string>隐私</string>
 	<key>Privacy Policy</key>
 	<string>隐私政策</string>
 	<key>Pure</key>

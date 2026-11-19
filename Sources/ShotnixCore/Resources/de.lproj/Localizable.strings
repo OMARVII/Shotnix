@@ -746,6 +746,8 @@
 	<string>Das Video konnte nicht geschrieben werden. Prüfe, ob genug Speicherplatz frei ist und du in diesem Ordner sichern darfst, und exportiere erneut.</string>
 	<key>Countdown</key>
 	<string>Countdown</string>
+	<key>Covers the files, folders and widgets on this display until the recording stops.</key>
+	<string>Verdeckt die Dateien, Ordner und Widgets auf diesem Bildschirm, bis die Aufzeichnung endet.</string>
 	<key>Crimson Ridge</key>
 	<string>Purpurgrat</string>
 	<key>Crisp and compact — the best default</key>
@@ -818,6 +820,8 @@
 	<string>Auswahl aufheben/schließen</string>
 	<key>Desert Violet</key>
 	<string>Wüstenviolett</string>
+	<key>Desktop Icons</key>
+	<string>Schreibtischsymbole</string>
 	<key>Dimming</key>
 	<string>Abdunkeln</string>
 	<key>Dip to black</key>
@@ -1134,6 +1138,10 @@
 	<string>Freihand-Textmarker</string>
 	<key>Freehand highlight</key>
 	<string>Freihand-Markierung</string>
+	<key>Freeze the screen while selecting</key>
+	<string>Bildschirm beim Auswählen einfrieren</string>
+	<key>Freezing holds the screen still from the moment you press the shortcut until the shot is taken, so a video frame or an open menu is captured exactly as it was.</key>
+	<string>Beim Einfrieren steht der Bildschirm vom Drücken des Kurzbefehls bis zur Aufnahme still: Ein Videobild oder ein geöffnetes Menü wird genau so aufgenommen, wie es war.</string>
 	<key>From your Mac</key>
 	<string>Von deinem Mac</string>
 	<key>Full Camera at Playhead</key>
@@ -1198,8 +1206,18 @@
 	<string>Schreibtischsymbole ausblenden</string>
 	<key>Hide Icon</key>
 	<string>Symbol ausblenden</string>
-	<key>Hide desktop icons while capturing</key>
-	<string>Schreibtischsymbole beim Aufnehmen ausblenden</string>
+	<key>Hide While Recording</key>
+	<string>Während der Aufzeichnung ausblenden</string>
+	<key>Hide desktop icons</key>
+	<string>Schreibtischsymbole ausblenden</string>
+	<key>Hide desktop icons covers the files, folders and widgets on the display you record until the recording stops.</key>
+	<string>„Schreibtischsymbole ausblenden“ verdeckt die Dateien, Ordner und Widgets auf dem aufgezeichneten Bildschirm, bis die Aufzeichnung endet.</string>
+	<key>Hide desktop icons in screenshots</key>
+	<string>Schreibtischsymbole in Bildschirmfotos ausblenden</string>
+	<key>Hide menu bar icons</key>
+	<string>Symbole in der Menüleiste ausblenden</string>
+	<key>Hide menu bar icons leaves the icons and the clock on the right of the menu bar out of the video, while you still see them on your screen. Hide desktop icons covers the files, folders and widgets on the display you record until the recording stops. The recording timer in the menu bar and the purple indicator beside it are always left out.</key>
+	<string>„Symbole in der Menüleiste ausblenden“ lässt die Symbole und die Uhr rechts in der Menüleiste im Video weg, auf deinem Bildschirm siehst du sie weiterhin. „Schreibtischsymbole ausblenden“ verdeckt die Dateien, Ordner und Widgets auf dem aufgezeichneten Bildschirm, bis die Aufzeichnung endet. Der Aufzeichnungstimer in der Menüleiste und die violette Anzeige daneben sind nie im Video.</string>
 	<key>Hide the Menu Bar Icon?</key>
 	<string>Symbol in der Menüleiste ausblenden?</string>
 	<key>Hide the move to Stop</key>
@@ -1330,6 +1348,8 @@
 	<string>Layout</string>
 	<key>Layouts</key>
 	<string>Layouts</string>
+	<key>Leaves the icons and the clock on the right of the menu bar out of the video. You still see them.</key>
+	<string>Lässt die Symbole und die Uhr rechts in der Menüleiste im Video weg. Du siehst sie weiterhin.</string>
 	<key>Left</key>
 	<string>Links</string>
 	<key>Length</key>
@@ -1400,6 +1420,8 @@
 	<string>Mittel</string>
 	<key>Menu Bar</key>
 	<string>Menüleiste</string>
+	<key>Menu Bar Icons</key>
+	<string>Symbole in der Menüleiste</string>
 	<key>Menu bar is full, so macOS hid the Shotnix icon — %@ still captures. Click here for the menu.</key>
 	<string>Die Menüleiste ist voll, deshalb hat macOS das Shotnix-Symbol ausgeblendet – %@ nimmt trotzdem auf. Klicke hier für das Menü.</string>
 	<key>Menu bar is full, so macOS hid the Shotnix icon — your shortcuts still work. Click here for the menu.</key>
@@ -1840,6 +1862,8 @@
 	<string>Vorheriges/nächstes Bild</string>
 	<key>Prism Sweep</key>
 	<string>Prismenschwung</string>
+	<key>Privacy</key>
+	<string>Privatsphäre</string>
 	<key>Privacy Policy</key>
 	<string>Datenschutzerklärung</string>
 	<key>Pure</key>

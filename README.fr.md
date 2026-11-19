@@ -69,6 +69,7 @@ Gratuit et open source. Une app native d’environ 11 Mo, et vos captures ne qu
 - **Tous les écrans** — chaque écran connecté en même temps, une image par écran
 - **Zone précédente** — recapturez la dernière région sélectionnée d’un seul raccourci
 - **Sélection ajustable** — maintenez Maj en relâchant (ou faites-en le comportement par défaut dans Réglages) pour affiner les bords à la souris ou avec les touches fléchées, puis appuyez sur Retour
+- **Écran figé** — si vous le souhaitez, l’écran se fige dès le raccourci : vous sélectionnez sur une image fixe et capturez exactement ce qui était affiché
 - **Capture défilante** — faites défiler une longue page et Shotnix l’assemble en une seule image, tout en hauteur ; appuyez sur Échap ou de nouveau sur le raccourci pour arrêter
 - **Capture avec minuteur** — un compte à rebours de 3, 5 ou 10 secondes avant la capture, annulable à tout moment
 - **Enregistrement de l’écran** — enregistrez une zone, une fenêtre ou un écran en MP4 à 60 fps, avec le son de l’ordinateur, le micro et votre caméra. Mettez en pause et reprenez, supprimez une prise ou démarrez après un compte à rebours de 3, 5 ou 10 secondes. L’enregistrement d’une fenêtre suit cette fenêtre et inclut ses menus et ses boîtes de dialogue. Les enregistrements survivent aux plantages et sont récupérés au lancement suivant, un micro qui se déconnecte est remplacé sans décaler le son, et les écrans 5K et au-delà sont enregistrés en HEVC. Arrêtez l’enregistrement où que vous soyez avec `Ctrl + Cmd + Esc`
@@ -113,7 +114,7 @@ Gratuit et open source. Une app native d’environ 11 Mo, et vos captures ne qu
 - Actions automatiques après la capture (copie dans le presse-papiers, enregistrement sur le disque ; une nouvelle installation enregistre chaque capture dans un fichier, comme le Mac)
 - Position (à gauche ou à droite) et durée d’affichage de la vignette réglables
 - Sons de capture (désactivables)
-- Masquage des icônes du bureau pendant la capture (sans redémarrer le Finder)
+- Masquage des icônes du bureau dans les captures et les enregistrements (sans redémarrer le Finder), et des icônes de la barre des menus dans les enregistrements (macOS 26 ou ultérieur)
 - Lancement à l’ouverture de session
 - Journal des modifications « Nouveautés » dans l’onglet À propos
 

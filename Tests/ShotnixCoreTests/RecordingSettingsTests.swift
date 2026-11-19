@@ -48,6 +48,21 @@ final class RecordingSettingsTests: XCTestCase {
         XCTAssertTrue(fresh.bool(forKey: "didMigrateRecordingFPSTo60"))
     }
 
+    func testHidingIsOffUntilTurnedOnAndApartFromTheScreenshotSetting() {
+        XCTAssertFalse(Settings.recordingHidesMenuBarIcons)
+        XCTAssertFalse(Settings.recordingHidesDesktopIcons)
+        // The screenshot setting hides the icons for a moment; a recording
+        // would hide them for as long as it runs, so it has to be asked for.
+        Settings.hideDesktopIconsWhileCapturing = true
+        XCTAssertFalse(Settings.recordingHidesDesktopIcons)
+        Settings.recordingHidesDesktopIcons = true
+        Settings.recordingHidesMenuBarIcons = true
+        XCTAssertTrue(Settings.defaults.bool(forKey: "recordingHidesDesktopIcons"), "the key the Settings window binds to")
+        XCTAssertTrue(Settings.defaults.bool(forKey: "recordingHidesMenuBarIcons"))
+        Settings.hideDesktopIconsWhileCapturing = false
+        XCTAssertTrue(Settings.recordingHidesDesktopIcons)
+    }
+
     func testCountdownOffersOffThreeFiveTen() {
         XCTAssertEqual(Settings.recordingCountdownSeconds, 0, "off by default")
         for seconds in [3, 5, 10, 0] {

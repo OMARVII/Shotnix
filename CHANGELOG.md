@@ -2,7 +2,13 @@
 
 ## [Unreleased]
 
+### Added
+- **Freeze the screen while you select an area.** With the new switch in Settings > Screenshots > Selection, the screen holds still from the moment you press the shortcut: you select on a still picture, and the screenshot shows what was there at that moment, however long you take. A video is caught on the frame that was playing, and what would have changed or closed while you select is still there. It works for Capture Area, Capture Text and the QR code scan, on every display. Off unless you turn it on.
+- **Hide the menu bar icons in a recording** (macOS 26 or later). Turn on Hide menu bar icons in Settings > Recording > Privacy, or Menu Bar Icons under Hide While Recording in the recording bar's options menu: the icons and the clock on the right of the menu bar stay out of the video, while you still see them on your screen. The app's menus on the left stay in.
+- **Hide the desktop icons while recording.** In the same two places: the files, folders and widgets on the display you record are covered until the recording stops, then they're back. It's a switch of its own, apart from the one for screenshots, which is now called "Hide desktop icons in screenshots".
+
 ### Fixed
+- **Shotnix's recording timer and macOS's purple recording indicator are out of your recordings on macOS 26.** macOS 26 moved every menu bar icon into Control Center, so the timer that counts in the menu bar while you record ended up in the video, next to the purple indicator and the dot macOS shows while the screen is recorded. All three are left out again from the first frame, and every other icon stays as it is. The icons also no longer slide aside at the start of the video: the menu bar holds still from the first frame.
 - **Area screenshots on a Retina display are sharp wherever the selection lands.** When the edges of a selection fell on half points, the shot could come out slightly soft, with text and thin lines losing a little of their edge. Every area screenshot is now pixel for pixel what's on the screen.
 
 ## [0.31.1-beta] - 2026-11-15

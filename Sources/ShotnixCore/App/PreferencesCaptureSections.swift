@@ -8,6 +8,7 @@ import SwiftUI
 /// Capture on release vs. an adjustable selection.
 struct CaptureSelectionPreferences: View {
     @AppStorage("captureImmediatelyAfterSelecting") var captureImmediately = true
+    @AppStorage("freezeScreenWhileSelecting") var freezesScreen = false
 
     var body: some View {
         PreferenceSection(L("Selection")) {
@@ -16,11 +17,22 @@ struct CaptureSelectionPreferences: View {
                     .labelsHidden()
                     .toggleStyle(.switch)
             }
+
+            PreferenceDivider()
+
+            PreferenceRow(L("Freeze the screen while selecting")) {
+                Toggle("", isOn: $freezesScreen)
+                    .labelsHidden()
+                    .toggleStyle(.switch)
+            }
         }
 
-        PreferenceFootnote(text: captureImmediately
-            ? L("Releasing the mouse takes the shot. Hold ⇧ as you release to adjust the selection first — drag its edges, nudge it with the arrow keys, then press Return.")
-            : L("The selection stays on screen to adjust — drag its edges, nudge it with the arrow keys, then press Return. Hold ⇧ as you release to capture right away."))
+        PreferenceFootnote(text: RecordingEngine.sentences([
+            captureImmediately
+                ? L("Releasing the mouse takes the shot. Hold ⇧ as you release to adjust the selection first — drag its edges, nudge it with the arrow keys, then press Return.")
+                : L("The selection stays on screen to adjust — drag its edges, nudge it with the arrow keys, then press Return. Hold ⇧ as you release to capture right away."),
+            L("Freezing holds the screen still from the moment you press the shortcut until the shot is taken, so a video frame or an open menu is captured exactly as it was."),
+        ]))
     }
 }
 

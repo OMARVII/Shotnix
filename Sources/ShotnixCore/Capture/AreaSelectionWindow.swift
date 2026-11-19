@@ -4,6 +4,8 @@ enum SelectionMode { case area, window }
 
 /// Full-screen translucent overlay that lets the user drag-select a region.
 /// In `.window` mode it highlights the window under the cursor instead.
+/// With `freezesScreen`, an area is selected on a still of the screen taken
+/// the moment the selection begins (FrozenScreen).
 @MainActor
 final class AreaSelectionWindow: NSObject {
 
@@ -11,34 +13,109 @@ final class AreaSelectionWindow: NSObject {
     typealias Completion = (CGRect?, NSScreen) -> Void
 
     private let mode: SelectionMode
+    private let freezesScreen: Bool
     private let completion: Completion
     private var overlays: [SelectionOverlayWindow] = []
+    /// Each display as it was when the selection began, in `NSScreen.screens`' order.
+    private var stills: [FrozenScreen?] = []
+    private var isOver = false
 
     /// In `.window` mode: the CGWindowID of the clicked window, set just
     /// before the completion fires. Enables isolated single-window capture.
     private(set) var selectedWindowID: CGWindowID?
 
-    init(mode: SelectionMode, completion: @escaping Completion) {
+    /// With the screen frozen: the still of the display the selection was
+    /// made on, set just before the completion fires. The shot is cut from it.
+    private(set) var selectedFrozenScreen: FrozenScreen?
+
+    /// How long the overlays wait for the stills when the screen freezes. A
+    /// display whose still takes longer (ScreenCaptureKit busy elsewhere)
+    /// freezes when it arrives: the crosshair never waits longer than this.
+    static var freezeDeadline: TimeInterval = 0.6
+
+    /// Takes a display's still. Tests put their own pictures here.
+    var stillProvider: ((NSScreen) async -> FrozenScreen?)?
+
+    init(mode: SelectionMode, freezesScreen: Bool = false, completion: @escaping Completion) {
         self.mode = mode
+        self.freezesScreen = freezesScreen && mode == .area
         self.completion = completion
     }
 
     private var keyMonitor: Any?
 
+    /// Whether the displays are shown as stills (for tests).
+    var showsFrozenScreens: [Bool] { overlays.map(\.showsFrozenScreen) }
+    var isShowingOverlays: Bool { !overlays.isEmpty }
+
     func prepareAndShow(engine: CaptureEngine) async {
+        let screens = NSScreen.screens
+        let provider = stillProvider ?? { screen in await Self.still(of: screen, engine: engine) }
+        stills = Array(repeating: nil, count: screens.count)
+
+        guard freezesScreen else {
+            // Show the overlays IMMEDIATELY — the crosshair must never wait on a
+            // screenshot. The per-screen stills only feed the loupe and hex
+            // readout, so they load in the background and the loupe appears a beat
+            // later; everything else (crosshair, drag, dimension label) is instant.
+            showOverlays(on: screens)
+            // Window mode never uses the stills — skip the captures entirely.
+            if mode == .area {
+                for (index, screen) in screens.enumerated() {
+                    Task { @MainActor [weak self] in
+                        self?.stillArrived(await provider(screen), at: index)
+                    }
+                }
+            }
+            return
+        }
+
+        // Frozen: the stills come first, before Shotnix takes the foreground
+        // or puts anything of its own on screen. They show the screen as it
+        // was at the shortcut: the front window still active, its menu
+        // still open, the video on the frame that was playing.
+        let arrivals = StillArrivals(expected: screens.count)
+        for (index, screen) in screens.enumerated() {
+            Task { @MainActor [weak self] in
+                let still = await provider(screen)
+                self?.stillArrived(still, at: index)
+                arrivals.oneArrived()
+            }
+        }
+        await arrivals.wait(atMost: Self.freezeDeadline)
+        // Cancelled while the stills were taken.
+        guard !isOver else { return }
+        showOverlays(on: screens)
+    }
+
+    /// A display's still, at its pixel size.
+    private static func still(of screen: NSScreen, engine: CaptureEngine) async -> FrozenScreen? {
+        let frame = screen.frame
+        guard let image = await engine.captureRectToImage(frame, on: screen, purpose: "selection still") else { return nil }
+        var rect = NSRect(origin: .zero, size: frame.size)
+        guard let cgImage = image.cgImage(forProposedRect: &rect, context: nil, hints: nil) else { return nil }
+        return FrozenScreen(image: cgImage, screenFrame: frame)
+    }
+
+    /// The loupe's pixels, and with the screen frozen what the display
+    /// shows from now on. Before the overlays are up it waits for them.
+    private func stillArrived(_ still: FrozenScreen?, at index: Int) {
+        guard !isOver, stills.indices.contains(index) else { return }
+        stills[index] = still
+        guard overlays.indices.contains(index) else { return }
+        overlays[index].updateFrozenImage(still?.image, freezes: freezesScreen)
+    }
+
+    private func showOverlays(on screens: [NSScreen]) {
         NSApp.ensureForegroundCapable()
         NSApp.activate(ignoringOtherApps: true)
 
-        // Show the overlays IMMEDIATELY — the crosshair must never wait on a
-        // screenshot. The frozen per-screen images only feed the loupe and hex
-        // readout, so they load in the background and the loupe appears a beat
-        // later; everything else (crosshair, drag, dimension label) is instant.
-        let screens = NSScreen.screens
-        for screen in screens {
-            let overlay = SelectionOverlayWindow(screen: screen, mode: mode, frozenImage: nil)
+        for (index, screen) in screens.enumerated() {
+            let still = stills.indices.contains(index) ? stills[index] : nil
+            let overlay = SelectionOverlayWindow(screen: screen, mode: mode, frozenImage: still?.image, freezes: freezesScreen)
             overlay.selectionHandler = { [weak self] rect, windowID in
                 self?.selectedWindowID = windowID
-                self?.finish(rect: rect, screen: screen)
+                self?.finish(rect: rect, screen: screen, index: index)
             }
             overlay.cancelHandler = { [weak self] in self?.cancel() }
             // A plain click cancels, unless a selection is being adjusted on
@@ -49,7 +126,7 @@ final class AreaSelectionWindow: NSObject {
                     return self.cancel()
                 }
                 adjusting.makeKeyAndOrderFront(nil)
-                adjusting.makeFirstResponder(adjusting.contentView)
+                adjusting.makeFirstResponder(adjusting.selectionView)
             }
             // One selection at a time: starting one on this display drops an
             // adjustable selection left on another.
@@ -58,18 +135,6 @@ final class AreaSelectionWindow: NSObject {
             }
             overlay.show()
             overlays.append(overlay)
-        }
-
-        // Window mode never uses the frozen images — skip the captures entirely.
-        if mode == .area {
-            for (screen, overlay) in zip(screens, overlays) {
-                Task { @MainActor [weak overlay] in
-                    let image = await engine.captureRectToImage(screen.frame, on: screen, purpose: "loupe snapshot")
-                    var rect = NSRect(origin: .zero, size: screen.frame.size)
-                    let frozenCG = image?.cgImage(forProposedRect: &rect, context: nil, hints: nil)
-                    overlay?.updateFrozenImage(frozenCG)
-                }
-            }
         }
 
         focusFirstOverlay()
@@ -100,10 +165,14 @@ final class AreaSelectionWindow: NSObject {
         NSApp.activate(ignoringOtherApps: true)
         first.makeKeyAndOrderFront(nil)
         first.makeMain()
-        first.makeFirstResponder(first.contentView)
+        first.makeFirstResponder(first.selectionView)
     }
 
-    private func finish(rect: CGRect, screen: NSScreen) {
+    private func finish(rect: CGRect, screen: NSScreen, index: Int) {
+        // Only a display that is showing its still is captured from it.
+        if freezesScreen, overlays.indices.contains(index), overlays[index].showsFrozenScreen, stills.indices.contains(index) {
+            selectedFrozenScreen = stills[index]
+        }
         NSCursor.pop()
         tearDown()
         if #available(macOS 14.0, *) {
@@ -123,18 +192,53 @@ final class AreaSelectionWindow: NSObject {
     }
 
     func cancel() {
-        NSCursor.pop()
+        // Only a selection that got as far as its overlays pushed a cursor.
+        if !overlays.isEmpty { NSCursor.pop() }
         tearDown()
         guard let screen = NSScreen.main ?? NSScreen.screens.first else { return }
         completion(nil, screen)
     }
 
     private func tearDown() {
+        isOver = true
         if let m = keyMonitor { NSEvent.removeMonitor(m); keyMonitor = nil }
         overlays.forEach { $0.orderOut(nil) }
         overlays.removeAll()
+        stills.removeAll()
         // Restore background-only policy
         NSApp.restoreBackgroundOnlyActivationPolicyIfNeeded()
+    }
+}
+
+/// Waits for every display's still, or for a deadline.
+@MainActor
+private final class StillArrivals {
+    private var outstanding: Int
+    private var continuation: CheckedContinuation<Void, Never>?
+
+    init(expected: Int) {
+        outstanding = expected
+    }
+
+    func oneArrived() {
+        outstanding -= 1
+        if outstanding <= 0 { resume() }
+    }
+
+    func wait(atMost seconds: TimeInterval) async {
+        guard outstanding > 0 else { return }
+        await withCheckedContinuation { continuation in
+            self.continuation = continuation
+            Task { @MainActor in
+                try? await Task.sleep(nanoseconds: UInt64(max(0, seconds) * 1_000_000_000))
+                self.resume()
+            }
+        }
+    }
+
+    private func resume() {
+        continuation?.resume()
+        continuation = nil
     }
 }
 
@@ -150,11 +254,18 @@ private final class SelectionOverlayWindow: NSWindow {
 
     var hasAdjustableSelection: Bool { overlayView.stage == .adjusting }
 
+    /// Draws the selection and takes its keys.
+    var selectionView: NSView { overlayView }
+    /// Whether this display is showing its still instead of the live screen.
+    var showsFrozenScreen: Bool { !backdrop.isHidden }
+
     private let overlayView: SelectionOverlayView
+    /// The display's still, under the selection, when the screen is frozen.
+    private let backdrop = NSView()
     private let targetScreen: NSScreen
     private let mode: SelectionMode
 
-    init(screen: NSScreen, mode: SelectionMode, frozenImage: CGImage?) {
+    init(screen: NSScreen, mode: SelectionMode, frozenImage: CGImage?, freezes: Bool = false) {
         self.targetScreen = screen
         self.mode = mode
         self.overlayView = SelectionOverlayView(mode: mode, frozenImage: frozenImage)
@@ -170,8 +281,20 @@ private final class SelectionOverlayWindow: NSWindow {
         ignoresMouseEvents = false
         acceptsMouseMovedEvents = true
         collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
-        contentView = overlayView
-        overlayView.frame = NSRect(origin: .zero, size: screen.frame.size)
+        let container = NSView(frame: NSRect(origin: .zero, size: screen.frame.size))
+        container.wantsLayer = true
+        backdrop.frame = container.bounds
+        backdrop.autoresizingMask = [.width, .height]
+        backdrop.wantsLayer = true
+        // The still is the display's own pixels: it fills the display one for one.
+        backdrop.layer?.contentsGravity = .resize
+        backdrop.isHidden = true
+        container.addSubview(backdrop)
+        overlayView.frame = container.bounds
+        overlayView.autoresizingMask = [.width, .height]
+        container.addSubview(overlayView)
+        contentView = container
+        showBackdrop(frozenImage, freezes: freezes)
         overlayView.selectionHandler = { [weak self] rect, windowID in self?.selectionHandler?(rect, windowID) }
         overlayView.cancelHandler   = { [weak self] in self?.cancelHandler?() }
         overlayView.clickHandler    = { [weak self] in self?.clickHandler?() }
@@ -192,8 +315,19 @@ private final class SelectionOverlayWindow: NSWindow {
 
     /// The loupe's pixel source arrives asynchronously after the overlay is
     /// already on screen — swap it in and repaint if the loupe is visible.
-    func updateFrozenImage(_ image: CGImage?) {
+    /// With `freezes`, the display shows the still from now on.
+    func updateFrozenImage(_ image: CGImage?, freezes: Bool) {
         overlayView.updateFrozenImage(image)
+        showBackdrop(image, freezes: freezes)
+    }
+
+    private func showBackdrop(_ image: CGImage?, freezes: Bool) {
+        guard freezes, let image else { return }
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        backdrop.layer?.contents = image
+        backdrop.isHidden = false
+        CATransaction.commit()
     }
 
     func resetSelection() {

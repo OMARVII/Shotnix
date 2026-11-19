@@ -862,6 +862,18 @@
     "fr" : "Surlignage à main levée",
     "zh-Hans" : "手绘高亮"
   },
+  "Freeze the screen while selecting" : {
+    "comment" : "Screenshot setting: the screen holds still while an area is selected",
+    "de" : "Bildschirm beim Auswählen einfrieren",
+    "fr" : "Figer l’écran pendant la sélection",
+    "zh-Hans" : "选择时冻结屏幕"
+  },
+  "Freezing holds the screen still from the moment you press the shortcut until the shot is taken, so a video frame or an open menu is captured exactly as it was." : {
+    "comment" : "Screenshot settings footnote, after the sentence about releasing the mouse",
+    "de" : "Beim Einfrieren steht der Bildschirm vom Drücken des Kurzbefehls bis zur Aufnahme still: Ein Videobild oder ein geöffnetes Menü wird genau so aufgenommen, wie es war.",
+    "fr" : "L’écran reste figé entre le moment où vous utilisez le raccourci et la capture : une image de vidéo ou un menu ouvert sont capturés exactement tels qu’ils étaient.",
+    "zh-Hans" : "冻结后，从按下快捷键到完成截屏，屏幕画面会保持静止，视频画面或打开的菜单会按当时的样子截取。"
+  },
   "Full screen: %@" : {
     "comment" : "Settings: estimated size of a full-screen recording",
     "de" : "Vollbild: %@",
@@ -914,10 +926,35 @@
     "fr" : "Masquer l’icône",
     "zh-Hans" : "隐藏图标"
   },
-  "Hide desktop icons while capturing" : {
-    "de" : "Schreibtischsymbole beim Aufnehmen ausblenden",
-    "fr" : "Masquer les icônes du bureau pendant la capture",
+  "Hide desktop icons" : {
+    "comment" : "Recording setting, a switch: the desktop is covered while recording",
+    "de" : "Schreibtischsymbole ausblenden",
+    "fr" : "Masquer les icônes du bureau",
+    "zh-Hans" : "隐藏桌面图标"
+  },
+  "Hide desktop icons covers the files, folders and widgets on the display you record until the recording stops." : {
+    "comment" : "Recording settings footnote before macOS 26, where only this setting is offered",
+    "de" : "„Schreibtischsymbole ausblenden“ verdeckt die Dateien, Ordner und Widgets auf dem aufgezeichneten Bildschirm, bis die Aufzeichnung endet.",
+    "fr" : "« Masquer les icônes du bureau » recouvre les fichiers, dossiers et widgets de l’écran enregistré jusqu’à la fin de l’enregistrement.",
+    "zh-Hans" : "“隐藏桌面图标”会遮住所录制显示器上的文件、文件夹和小组件，直到录制结束。"
+  },
+  "Hide desktop icons in screenshots" : {
+    "comment" : "General setting. Recordings have their own switch",
+    "de" : "Schreibtischsymbole in Bildschirmfotos ausblenden",
+    "fr" : "Masquer les icônes du bureau dans les captures d’écran",
     "zh-Hans" : "截屏时隐藏桌面图标"
+  },
+  "Hide menu bar icons" : {
+    "comment" : "Recording setting: other apps' icons and the clock stay out of the video",
+    "de" : "Symbole in der Menüleiste ausblenden",
+    "fr" : "Masquer les icônes de la barre des menus",
+    "zh-Hans" : "隐藏菜单栏图标"
+  },
+  "Hide menu bar icons leaves the icons and the clock on the right of the menu bar out of the video, while you still see them on your screen. Hide desktop icons covers the files, folders and widgets on the display you record until the recording stops. The recording timer in the menu bar and the purple indicator beside it are always left out." : {
+    "comment" : "Recording settings footnote on macOS 26 and later. The two setting names are the rows above it",
+    "de" : "„Symbole in der Menüleiste ausblenden“ lässt die Symbole und die Uhr rechts in der Menüleiste im Video weg, auf deinem Bildschirm siehst du sie weiterhin. „Schreibtischsymbole ausblenden“ verdeckt die Dateien, Ordner und Widgets auf dem aufgezeichneten Bildschirm, bis die Aufzeichnung endet. Der Aufzeichnungstimer in der Menüleiste und die violette Anzeige daneben sind nie im Video.",
+    "fr" : "« Masquer les icônes de la barre des menus » laisse les icônes et l’horloge à droite de la barre des menus hors de la vidéo, mais vous les voyez toujours à l’écran. « Masquer les icônes du bureau » recouvre les fichiers, dossiers et widgets de l’écran enregistré jusqu’à la fin de l’enregistrement. Le minuteur d’enregistrement de la barre des menus et l’indicateur violet à côté n’apparaissent jamais dans la vidéo.",
+    "zh-Hans" : "“隐藏菜单栏图标”会让菜单栏右侧的图标和时钟不出现在视频中，但你仍能在屏幕上看到它们。“隐藏桌面图标”会遮住所录制显示器上的文件、文件夹和小组件，直到录制结束。菜单栏中的录制计时器及其旁边的紫色指示器始终不会出现在视频中。"
   },
   "Hide the Menu Bar Icon?" : {
     "de" : "Symbol in der Menüleiste ausblenden?",
@@ -1407,6 +1444,12 @@
     "de" : "Prismenschwung",
     "fr" : "Balayage prismatique",
     "zh-Hans" : "棱镜流光"
+  },
+  "Privacy" : {
+    "comment" : "Recording settings: the section with what a recording hides",
+    "de" : "Privatsphäre",
+    "fr" : "Confidentialité",
+    "zh-Hans" : "隐私"
   },
   "Privacy Policy" : {
     "de" : "Datenschutzerklärung",

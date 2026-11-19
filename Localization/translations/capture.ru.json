@@ -210,11 +210,17 @@
   "Countdown" : {
     "ru" : "Обратный отсчет"
   },
+  "Covers the files, folders and widgets on this display until the recording stops." : {
+    "ru" : "Закрывает файлы, папки и виджеты на этом дисплее, пока запись не закончится."
+  },
   "Cursor" : {
     "ru" : "Указатель"
   },
   "Decoded details" : {
     "ru" : "Расшифрованные данные"
+  },
+  "Desktop Icons" : {
+    "ru" : "Значки рабочего стола"
   },
   "Discard" : {
     "ru" : "Удалить"
@@ -288,6 +294,9 @@
   "Hidden network" : {
     "ru" : "Скрытая сеть"
   },
+  "Hide While Recording" : {
+    "ru" : "Скрывать во время записи"
+  },
   "High" : {
     "ru" : "Высокое"
   },
@@ -299,6 +308,9 @@
   },
   "Keyboard shortcuts are on" : {
     "ru" : "Сочетания клавиш включены"
+  },
+  "Leaves the icons and the clock on the right of the menu bar out of the video. You still see them." : {
+    "ru" : "Убирает из видео значки и часы в правой части строки меню. Вы по-прежнему их видите."
   },
   "Link" : {
     "ru" : "Ссылка"
@@ -320,6 +332,9 @@
   },
   "Maximum length reached" : {
     "ru" : "Достигнута максимальная длина"
+  },
+  "Menu Bar Icons" : {
+    "ru" : "Значки в строке меню"
   },
   "Message" : {
     "ru" : "Сообщение"

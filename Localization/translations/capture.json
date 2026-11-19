@@ -1437,5 +1437,35 @@
     "de": "Im Verlauf behalten, nicht als Datei gesichert. Klicke, um den Verlauf zu öffnen, oder aktiviere „Automatisch sichern“ in den Einstellungen.",
     "fr": "Capture conservée dans l’historique, sans fichier enregistré. Cliquez pour ouvrir l’historique, ou activez « Enregistrer automatiquement » dans les Réglages.",
     "zh-Hans": "已保留在历史记录中，未存储为文件。点按以打开历史记录，或在“设置”中打开“自动存储”。"
+  },
+  "Hide While Recording": {
+    "comment": "Recording bar options menu: heading over Menu Bar Icons and Desktop Icons",
+    "de": "Während der Aufzeichnung ausblenden",
+    "fr": "Masquer pendant l’enregistrement",
+    "zh-Hans": "录制时隐藏"
+  },
+  "Menu Bar Icons": {
+    "comment": "Recording bar options menu, a checkmark item under Hide While Recording",
+    "de": "Symbole in der Menüleiste",
+    "fr": "Icônes de la barre des menus",
+    "zh-Hans": "菜单栏图标"
+  },
+  "Desktop Icons": {
+    "comment": "Recording bar options menu, a checkmark item under Hide While Recording",
+    "de": "Schreibtischsymbole",
+    "fr": "Icônes du bureau",
+    "zh-Hans": "桌面图标"
+  },
+  "Leaves the icons and the clock on the right of the menu bar out of the video. You still see them.": {
+    "comment": "Tooltip of Menu Bar Icons in the recording bar's options menu",
+    "de": "Lässt die Symbole und die Uhr rechts in der Menüleiste im Video weg. Du siehst sie weiterhin.",
+    "fr": "Laisse les icônes et l’horloge à droite de la barre des menus hors de la vidéo. Vous les voyez toujours.",
+    "zh-Hans": "让菜单栏右侧的图标和时钟不出现在视频中。你仍能看到它们。"
+  },
+  "Covers the files, folders and widgets on this display until the recording stops.": {
+    "comment": "Tooltip of Desktop Icons in the recording bar's options menu",
+    "de": "Verdeckt die Dateien, Ordner und Widgets auf diesem Bildschirm, bis die Aufzeichnung endet.",
+    "fr": "Recouvre les fichiers, dossiers et widgets de cet écran jusqu’à la fin de l’enregistrement.",
+    "zh-Hans": "遮住此显示器上的文件、文件夹和小组件，直到录制结束。"
   }
 }

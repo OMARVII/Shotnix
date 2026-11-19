@@ -69,6 +69,7 @@ Kostenlos und Open Source. Nativ, nur rund 11 MB groß, und deine Aufnahmen verl
 - **Alle Bildschirme** – alle angeschlossenen Bildschirme auf einmal, jeder als eigenes Bild
 - **Vorheriger Bereich** – nimm den zuletzt gewählten Bereich per Kurzbefehl erneut auf
 - **Anpassbare Auswahl** – halte beim Loslassen die Umschalttaste gedrückt (oder mach das in den „Einstellungen“ zum Standard), um die Ränder mit der Maus oder den Pfeiltasten genau einzustellen, und drück dann den Zeilenschalter
+- **Eingefrorener Bildschirm** – auf Wunsch steht der Bildschirm ab dem Kurzbefehl still: Du wählst auf einem Standbild aus und nimmst genau das auf, was in dem Moment zu sehen war
 - **Scroll-Aufnahme** – scroll durch eine lange Seite, und Shotnix setzt sie zu einem einzigen langen Bild zusammen; zum Beenden drückst du Esc oder erneut den Kurzbefehl
 - **Mit Timer** – ein Countdown von 3, 5 oder 10 Sekunden vor der Aufnahme, jederzeit abbrechbar
 - **Bildschirmaufnahme** – zeichne einen Bereich, ein Fenster oder einen Bildschirm als MP4 mit 60 fps auf, mit Systemton, Mikrofon und deiner Kamera. Pausiere und setze fort, verwirf eine Aufnahme oder starte nach einem Countdown von 3, 5 oder 10 Sekunden. Fensteraufzeichnungen folgen dem Fenster und zeigen auch seine Menüs und Dialoge. Aufnahmen überstehen Abstürze und werden beim nächsten Start wiederhergestellt, ein ausfallendes Mikrofon wird ersetzt, ohne dass sich der Ton verschiebt, und Bildschirme ab 5K werden in HEVC aufgezeichnet. Stoppen kannst du von überall mit `Ctrl + Cmd + Esc`
@@ -113,7 +114,7 @@ Kostenlos und Open Source. Nativ, nur rund 11 MB groß, und deine Aufnahmen verl
 - Automatische Aktionen nach der Aufnahme (automatisch kopieren, automatisch sichern; neue Installationen sichern jedes Bildschirmfoto als Datei, wie der Mac selbst)
 - Einstellbare Position der Miniatur (links oder rechts) und Anzeigedauer
 - Ton beim Aufnehmen (abschaltbar)
-- Schreibtischsymbole beim Aufnehmen ausblenden (ohne den Finder neu zu starten)
+- Schreibtischsymbole in Bildschirmfotos und Aufzeichnungen ausblenden (ohne den Finder neu zu starten) und Symbole der Menüleiste aus Aufzeichnungen heraushalten (macOS 26 oder neuer)
 - Shotnix bei der Anmeldung öffnen
 - „Neuigkeiten“ (Changelog) im Tab „Info“
 

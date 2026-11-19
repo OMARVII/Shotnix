@@ -808,6 +808,8 @@
 	<string>ビデオを書き込めませんでした。空き容量があり、そのフォルダに保存できるか確認してから、もう一度書き出してください。</string>
 	<key>Countdown</key>
 	<string>カウントダウン</string>
+	<key>Covers the files, folders and widgets on this display until the recording stops.</key>
+	<string>収録が終わるまで、このディスプレイ上のファイル、フォルダ、ウィジェットを隠します。</string>
 	<key>Crimson Ridge</key>
 	<string>深紅の尾根</string>
 	<key>Crisp and compact — the best default</key>
@@ -886,6 +888,8 @@
 	<string>選択解除/閉じる</string>
 	<key>Desert Violet</key>
 	<string>砂漠のすみれ</string>
+	<key>Desktop Icons</key>
+	<string>デスクトップのアイコン</string>
 	<key>Dimming</key>
 	<string>周囲の暗さ</string>
 	<key>Dip to black</key>
@@ -1204,6 +1208,10 @@
 	<string>フリーハンド蛍光ペン</string>
 	<key>Freehand highlight</key>
 	<string>フリーハンドのハイライト</string>
+	<key>Freeze the screen while selecting</key>
+	<string>選択中は画面を静止</string>
+	<key>Freezing holds the screen still from the moment you press the shortcut until the shot is taken, so a video frame or an open menu is captured exactly as it was.</key>
+	<string>ショートカットを押した瞬間から取り込みが終わるまで画面が静止するので、ビデオの1コマや開いているメニューをそのままの状態で取り込めます。</string>
 	<key>From your Mac</key>
 	<string>このMacから</string>
 	<key>Full Camera at Playhead</key>
@@ -1268,8 +1276,18 @@
 	<string>デスクトップのアイコンを非表示</string>
 	<key>Hide Icon</key>
 	<string>アイコンを非表示</string>
-	<key>Hide desktop icons while capturing</key>
-	<string>取り込み中はデスクトップのアイコンを非表示</string>
+	<key>Hide While Recording</key>
+	<string>収録中に非表示</string>
+	<key>Hide desktop icons</key>
+	<string>デスクトップのアイコンを非表示</string>
+	<key>Hide desktop icons covers the files, folders and widgets on the display you record until the recording stops.</key>
+	<string>“デスクトップのアイコンを非表示”をオンにすると、収録が終わるまで、収録するディスプレイ上のファイル、フォルダ、ウィジェットが隠されます。</string>
+	<key>Hide desktop icons in screenshots</key>
+	<string>スクリーンショットではデスクトップのアイコンを非表示</string>
+	<key>Hide menu bar icons</key>
+	<string>メニューバーのアイコンを非表示</string>
+	<key>Hide menu bar icons leaves the icons and the clock on the right of the menu bar out of the video, while you still see them on your screen. Hide desktop icons covers the files, folders and widgets on the display you record until the recording stops. The recording timer in the menu bar and the purple indicator beside it are always left out.</key>
+	<string>“メニューバーのアイコンを非表示”をオンにすると、メニューバー右側のアイコンと時計がビデオに写らなくなります（画面上には引き続き表示されます）。“デスクトップのアイコンを非表示”をオンにすると、収録が終わるまで、収録するディスプレイ上のファイル、フォルダ、ウィジェットが隠されます。メニューバーの収録タイマーとその隣の紫色のインジケータは、ビデオには写りません。</string>
 	<key>Hide the Menu Bar Icon?</key>
 	<string>メニューバーのアイコンを非表示にしますか?</string>
 	<key>Hide the move to Stop</key>
@@ -1418,6 +1436,8 @@
 	<string>レイアウト</string>
 	<key>Layouts</key>
 	<string>レイアウト</string>
+	<key>Leaves the icons and the clock on the right of the menu bar out of the video. You still see them.</key>
+	<string>メニューバー右側のアイコンと時計がビデオに写らなくなります。画面上には引き続き表示されます。</string>
 	<key>Left</key>
 	<string>左</string>
 	<key>Length</key>
@@ -1490,6 +1510,8 @@
 	<string>中</string>
 	<key>Menu Bar</key>
 	<string>メニューバー</string>
+	<key>Menu Bar Icons</key>
+	<string>メニューバーのアイコン</string>
 	<key>Menu bar is full, so macOS hid the Shotnix icon — %@ still captures. Click here for the menu.</key>
 	<string>メニューバーがいっぱいのため、macOSがShotnixのアイコンを非表示にしました。%@で引き続き取り込めます。ここをクリックするとメニューが開きます。</string>
 	<key>Menu bar is full, so macOS hid the Shotnix icon — your shortcuts still work. Click here for the menu.</key>
@@ -1932,6 +1954,8 @@
 	<string>前/次のフレーム</string>
 	<key>Prism Sweep</key>
 	<string>プリズムの光</string>
+	<key>Privacy</key>
+	<string>プライバシー</string>
 	<key>Privacy Policy</key>
 	<string>プライバシーポリシー</string>
 	<key>Pure</key>

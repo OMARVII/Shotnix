@@ -740,6 +740,8 @@
 	<string>Impossible d’écrire la vidéo. Vérifiez qu’il reste de l’espace libre et que vous pouvez enregistrer dans ce dossier, puis exportez à nouveau.</string>
 	<key>Countdown</key>
 	<string>Compte à rebours</string>
+	<key>Covers the files, folders and widgets on this display until the recording stops.</key>
+	<string>Recouvre les fichiers, dossiers et widgets de cet écran jusqu’à la fin de l’enregistrement.</string>
 	<key>Crimson Ridge</key>
 	<string>Crête pourpre</string>
 	<key>Crisp and compact — the best default</key>
@@ -812,6 +814,8 @@
 	<string>Désélectionner/fermer</string>
 	<key>Desert Violet</key>
 	<string>Violet du désert</string>
+	<key>Desktop Icons</key>
+	<string>Icônes du bureau</string>
 	<key>Dimming</key>
 	<string>Assombrissement</string>
 	<key>Dip to black</key>
@@ -1128,6 +1132,10 @@
 	<string>Surligneur à main levée</string>
 	<key>Freehand highlight</key>
 	<string>Surlignage à main levée</string>
+	<key>Freeze the screen while selecting</key>
+	<string>Figer l’écran pendant la sélection</string>
+	<key>Freezing holds the screen still from the moment you press the shortcut until the shot is taken, so a video frame or an open menu is captured exactly as it was.</key>
+	<string>L’écran reste figé entre le moment où vous utilisez le raccourci et la capture : une image de vidéo ou un menu ouvert sont capturés exactement tels qu’ils étaient.</string>
 	<key>From your Mac</key>
 	<string>De votre Mac</string>
 	<key>Full Camera at Playhead</key>
@@ -1192,8 +1200,18 @@
 	<string>Masquer les icônes du bureau</string>
 	<key>Hide Icon</key>
 	<string>Masquer l’icône</string>
-	<key>Hide desktop icons while capturing</key>
-	<string>Masquer les icônes du bureau pendant la capture</string>
+	<key>Hide While Recording</key>
+	<string>Masquer pendant l’enregistrement</string>
+	<key>Hide desktop icons</key>
+	<string>Masquer les icônes du bureau</string>
+	<key>Hide desktop icons covers the files, folders and widgets on the display you record until the recording stops.</key>
+	<string>« Masquer les icônes du bureau » recouvre les fichiers, dossiers et widgets de l’écran enregistré jusqu’à la fin de l’enregistrement.</string>
+	<key>Hide desktop icons in screenshots</key>
+	<string>Masquer les icônes du bureau dans les captures d’écran</string>
+	<key>Hide menu bar icons</key>
+	<string>Masquer les icônes de la barre des menus</string>
+	<key>Hide menu bar icons leaves the icons and the clock on the right of the menu bar out of the video, while you still see them on your screen. Hide desktop icons covers the files, folders and widgets on the display you record until the recording stops. The recording timer in the menu bar and the purple indicator beside it are always left out.</key>
+	<string>« Masquer les icônes de la barre des menus » laisse les icônes et l’horloge à droite de la barre des menus hors de la vidéo, mais vous les voyez toujours à l’écran. « Masquer les icônes du bureau » recouvre les fichiers, dossiers et widgets de l’écran enregistré jusqu’à la fin de l’enregistrement. Le minuteur d’enregistrement de la barre des menus et l’indicateur violet à côté n’apparaissent jamais dans la vidéo.</string>
 	<key>Hide the Menu Bar Icon?</key>
 	<string>Masquer l’icône de la barre des menus ?</string>
 	<key>Hide the move to Stop</key>
@@ -1324,6 +1342,8 @@
 	<string>Disposition</string>
 	<key>Layouts</key>
 	<string>Dispositions</string>
+	<key>Leaves the icons and the clock on the right of the menu bar out of the video. You still see them.</key>
+	<string>Laisse les icônes et l’horloge à droite de la barre des menus hors de la vidéo. Vous les voyez toujours.</string>
 	<key>Left</key>
 	<string>Gauche</string>
 	<key>Length</key>
@@ -1394,6 +1414,8 @@
 	<string>Moyenne</string>
 	<key>Menu Bar</key>
 	<string>Barre des menus</string>
+	<key>Menu Bar Icons</key>
+	<string>Icônes de la barre des menus</string>
 	<key>Menu bar is full, so macOS hid the Shotnix icon — %@ still captures. Click here for the menu.</key>
 	<string>La barre des menus est pleine : macOS a masqué l’icône de Shotnix — %@ capture toujours. Cliquez ici pour ouvrir le menu.</string>
 	<key>Menu bar is full, so macOS hid the Shotnix icon — your shortcuts still work. Click here for the menu.</key>
@@ -1834,6 +1856,8 @@
 	<string>Image précédente/suivante</string>
 	<key>Prism Sweep</key>
 	<string>Balayage prismatique</string>
+	<key>Privacy</key>
+	<string>Confidentialité</string>
 	<key>Privacy Policy</key>
 	<string>Politique de confidentialité</string>
 	<key>Pure</key>

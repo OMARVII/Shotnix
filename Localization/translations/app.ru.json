@@ -490,6 +490,12 @@
   "Freehand highlight" : {
     "ru" : "Выделение от руки"
   },
+  "Freeze the screen while selecting" : {
+    "ru" : "Замораживать экран при выделении"
+  },
+  "Freezing holds the screen still from the moment you press the shortcut until the shot is taken, so a video frame or an open menu is captured exactly as it was." : {
+    "ru" : "Экран замирает с момента нажатия сочетания клавиш и до самого снимка: кадр видео или открытое меню попадут на снимок такими, какими были."
+  },
   "Full screen: %@" : {
     "ru" : "Весь экран: %@"
   },
@@ -520,8 +526,20 @@
   "Hide Icon" : {
     "ru" : "Скрыть значок"
   },
-  "Hide desktop icons while capturing" : {
-    "ru" : "Скрывать значки рабочего стола при съемке"
+  "Hide desktop icons" : {
+    "ru" : "Скрывать значки рабочего стола"
+  },
+  "Hide desktop icons covers the files, folders and widgets on the display you record until the recording stops." : {
+    "ru" : "«Скрывать значки рабочего стола» закрывает файлы, папки и виджеты на записываемом дисплее, пока запись не закончится."
+  },
+  "Hide desktop icons in screenshots" : {
+    "ru" : "Скрывать значки рабочего стола на снимках экрана"
+  },
+  "Hide menu bar icons" : {
+    "ru" : "Скрывать значки в строке меню"
+  },
+  "Hide menu bar icons leaves the icons and the clock on the right of the menu bar out of the video, while you still see them on your screen. Hide desktop icons covers the files, folders and widgets on the display you record until the recording stops. The recording timer in the menu bar and the purple indicator beside it are always left out." : {
+    "ru" : "«Скрывать значки в строке меню» убирает из видео значки и часы в правой части строки меню, а на экране вы по-прежнему их видите. «Скрывать значки рабочего стола» закрывает файлы, папки и виджеты на записываемом дисплее, пока запись не закончится. Таймер записи в строке меню и фиолетовый индикатор рядом с ним никогда не попадают в видео."
   },
   "Hide the Menu Bar Icon?" : {
     "ru" : "Скрыть значок в строке меню?"
@@ -799,6 +817,9 @@
   },
   "Prism Sweep" : {
     "ru" : "Призматическая волна"
+  },
+  "Privacy" : {
+    "ru" : "Конфиденциальность"
   },
   "Privacy Policy" : {
     "ru" : "Политика конфиденциальности"
