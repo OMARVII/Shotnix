@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [0.33.0-beta] - 2026-11-20
 
 ### Added
 - **Light mode.** Shotnix now looks like your Mac: light when your Mac is light, dark when it's dark, and it changes along with it if your Mac switches by itself in the evening. To keep one whatever the Mac does, pick Light or Dark in Settings > General > Appearance. The command center, Settings, History, the screenshot editor and the video editor all have a light look of their own, drawn for it rather than inverted: text keeps the contrast it has in the dark, and the colors on the timeline are deepened so they read on a white panel. A window that's open turns at once, without a restart. What floats over your screen while you capture (the selection, the recording bar, the countdown) stays dark in either, like macOS's own capture tools.
