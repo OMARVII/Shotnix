@@ -58,19 +58,19 @@ struct VideoOverlayColorPicker: View {
         } label: {
             ZStack {
                 if clear {
-                    Circle().strokeBorder(Color.white.opacity(0.45), lineWidth: 1.5)
+                    Circle().strokeBorder(ShotnixTheme.wash(0.45), lineWidth: 1.5)
                     Rectangle()
                         .fill(Color.red.opacity(0.85))
                         .frame(width: 2, height: 24)
                         .rotationEffect(.degrees(45))
                 } else {
                     Circle().fill(Color(nsColor: color.withAlpha(1).nsColor))
-                    Circle().strokeBorder(Color.white.opacity(0.18), lineWidth: 1)
+                    Circle().strokeBorder(ShotnixTheme.ink(0.18), lineWidth: 1)
                 }
             }
             .frame(width: 24, height: 24)
             .padding(3)
-            .overlay(Circle().strokeBorder(selected ? Color.white : Color.clear, lineWidth: 2))
+            .overlay(Circle().strokeBorder(selected ? ShotnixTheme.solidInk(1) : Color.clear, lineWidth: 2))
             .contentShape(Circle())
         }
         .buttonStyle(.plain)
@@ -110,9 +110,9 @@ struct VideoTextColorPicker: View {
                     .foregroundStyle(VideoEditorTheme.textPrimary)
                     .frame(width: 24, height: 24)
                     .background(Circle().fill(LinearGradient(colors: [Color.white.opacity(0.35), Color.black.opacity(0.6)], startPoint: .topLeading, endPoint: .bottomTrailing)))
-                    .overlay(Circle().strokeBorder(Color.white.opacity(0.18), lineWidth: 1))
+                    .overlay(Circle().strokeBorder(ShotnixTheme.ink(0.18), lineWidth: 1))
                     .padding(3)
-                    .overlay(Circle().strokeBorder(current == nil ? Color.white : Color.clear, lineWidth: 2))
+                    .overlay(Circle().strokeBorder(current == nil ? ShotnixTheme.solidInk(1) : Color.clear, lineWidth: 2))
                     .contentShape(Circle())
             }
             .buttonStyle(.plain)
@@ -126,11 +126,11 @@ struct VideoTextColorPicker: View {
                 } label: {
                     ZStack {
                         Circle().fill(Color(nsColor: color.nsColor))
-                        Circle().strokeBorder(Color.white.opacity(0.18), lineWidth: 1)
+                        Circle().strokeBorder(ShotnixTheme.ink(0.18), lineWidth: 1)
                     }
                     .frame(width: 24, height: 24)
                     .padding(3)
-                    .overlay(Circle().strokeBorder(selected ? Color.white : Color.clear, lineWidth: 2))
+                    .overlay(Circle().strokeBorder(selected ? ShotnixTheme.solidInk(1) : Color.clear, lineWidth: 2))
                     .contentShape(Circle())
                 }
                 .buttonStyle(.plain)
@@ -210,7 +210,7 @@ struct VideoGlyphChoice<Value: Hashable>: View {
                     .frame(height: option.caption == nil ? 26 : 44)
                     .background(
                         RoundedRectangle(cornerRadius: 6, style: .continuous)
-                            .fill(selected ? Color.white.opacity(0.14) : Color.clear)
+                            .fill(selected ? VideoEditorTheme.segmentSelected : Color.clear)
                     )
                     .contentShape(Rectangle())
                 }
@@ -222,7 +222,7 @@ struct VideoGlyphChoice<Value: Hashable>: View {
         }
         .accessibilityElement(children: .contain)
         .padding(2)
-        .background(RoundedRectangle(cornerRadius: 8, style: .continuous).fill(Color.black.opacity(0.28)))
+        .background(RoundedRectangle(cornerRadius: 8, style: .continuous).fill(ShotnixTheme.shade(0.28)))
         .overlay(RoundedRectangle(cornerRadius: 8, style: .continuous).strokeBorder(VideoEditorTheme.cardStroke, lineWidth: 1))
     }
 }
@@ -252,7 +252,7 @@ struct VideoCustomColorSwatch: View {
             }
             .frame(width: 24, height: 24)
             .padding(3)
-            .overlay(Circle().strokeBorder(isCustom ? Color.white : Color.clear, lineWidth: 2))
+            .overlay(Circle().strokeBorder(isCustom ? ShotnixTheme.solidInk(1) : Color.clear, lineWidth: 2))
             .contentShape(Circle())
         }
         .buttonStyle(.plain)
@@ -384,7 +384,7 @@ struct VideoTranscriptPanel: View {
             VideoTranscriptEditor(model: model, timeline: timeline, clock: model.clock, wantsFind: wantsFind)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .padding(8)
-                .background(RoundedRectangle(cornerRadius: 10, style: .continuous).fill(Color.black.opacity(0.22)))
+                .background(RoundedRectangle(cornerRadius: 10, style: .continuous).fill(ShotnixTheme.shade(0.22)))
                 .overlay(RoundedRectangle(cornerRadius: 10, style: .continuous).strokeBorder(VideoEditorTheme.cardStroke, lineWidth: 1))
         }
         .padding(16)
@@ -505,7 +505,7 @@ struct VideoCaptionsInspector: View {
         .menuStyle(.borderlessButton)
         .padding(.horizontal, 12)
         .frame(minHeight: 28)
-        .background(RoundedRectangle(cornerRadius: 7, style: .continuous).fill(Color.white.opacity(0.06)))
+        .background(RoundedRectangle(cornerRadius: 7, style: .continuous).fill(ShotnixTheme.ink(0.06)))
         .overlay(RoundedRectangle(cornerRadius: 7, style: .continuous).strokeBorder(VideoEditorTheme.cardStroke, lineWidth: 1))
         .help(L("Transcribe again, pick the language, or remove the transcript"))
     }
@@ -686,7 +686,7 @@ private struct VideoCaptionRow: View {
         .padding(.vertical, 6)
         .background(
             RoundedRectangle(cornerRadius: 7, style: .continuous)
-                .fill(isSelected ? VideoEditorTheme.caption.opacity(0.18) : (isCurrent ? Color.white.opacity(0.07) : (hovering ? Color.white.opacity(0.04) : Color.clear)))
+                .fill(isSelected ? VideoEditorTheme.caption.opacity(0.18) : (isCurrent ? ShotnixTheme.ink(0.07) : (hovering ? ShotnixTheme.ink(0.04) : Color.clear)))
         )
         .contentShape(Rectangle())
         .onHover { hovering = $0 }
@@ -865,7 +865,7 @@ struct VideoAnchorPicker: View {
         let size = CGSize(width: 150, height: 88)
         ZStack(alignment: .topLeading) {
             RoundedRectangle(cornerRadius: 8, style: .continuous)
-                .fill(Color.black.opacity(0.3))
+                .fill(ShotnixTheme.shade(0.3))
                 .overlay(RoundedRectangle(cornerRadius: 8, style: .continuous).strokeBorder(VideoEditorTheme.cardStroke, lineWidth: 1))
                 .frame(width: size.width, height: size.height)
             ForEach(VideoWebcamSettings.Anchor.allCases) { anchor in
@@ -879,7 +879,7 @@ struct VideoAnchorPicker: View {
                     selection = anchor
                 } label: {
                     Circle()
-                        .fill(selected ? VideoEditorTheme.camera : Color.white.opacity(0.22))
+                        .fill(selected ? VideoEditorTheme.camera : ShotnixTheme.wash(0.22))
                         .frame(width: selected ? 16 : 10, height: selected ? 16 : 10)
                         .overlay(Circle().strokeBorder(Color.white.opacity(selected ? 0.9 : 0), lineWidth: 1.5))
                         .frame(width: 24, height: 24)

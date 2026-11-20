@@ -74,7 +74,7 @@ final class OCRResultWindow: NSWindow, NSWindowDelegate {
     private func buildContent(width: CGFloat, height: CGFloat) {
         let background = NSView(frame: NSRect(x: 0, y: 0, width: width, height: height))
         background.wantsLayer = true
-        background.layer?.backgroundColor = NSColor.windowBackgroundColor.cgColor
+        background.themed { $0.layer?.backgroundColor = NSColor.windowBackgroundColor.cgColor }
         contentView = background
 
         let iconWrap = NSView(frame: NSRect(x: 24, y: height - 82, width: 42, height: 42))
@@ -130,9 +130,9 @@ final class OCRResultWindow: NSWindow, NSWindowDelegate {
         card.wantsLayer = true
         card.layer?.cornerRadius = 14
         card.layer?.cornerCurve = .continuous
-        card.layer?.backgroundColor = NSColor.controlBackgroundColor.cgColor
+        card.themed { $0.layer?.backgroundColor = NSColor.controlBackgroundColor.cgColor }
         card.layer?.borderWidth = 1
-        card.layer?.borderColor = NSColor.separatorColor.cgColor
+        card.themed { $0.layer?.borderColor = NSColor.separatorColor.cgColor }
         background.addSubview(card)
 
         let scroll = NSScrollView(frame: NSRect(x: 10, y: 8, width: card.bounds.width - 20, height: cardHeight - 16))

@@ -110,7 +110,7 @@ final class LocalizedLayoutTests: XCTestCase {
                 toolbar.showOptions(state.1)
                 stage.addSubview(toolbar)
             }
-            try Self.write(stage, name: "editor-toolbar-\(language)", dark: true)
+            try Self.write(stage, name: "editor-toolbar-\(language)", dark: !TestAppearance.isLight)
         }
     }
 
@@ -134,7 +134,7 @@ final class LocalizedLayoutTests: XCTestCase {
                 stage.addSubview(view)
                 x += view.frame.width + 16
             }
-            try Self.write(stage, name: "editor-popovers-\(language)", dark: true)
+            try Self.write(stage, name: "editor-popovers-\(language)", dark: !TestAppearance.isLight)
         }
     }
 
@@ -330,10 +330,10 @@ final class LocalizedLayoutTests: XCTestCase {
 
     /// A SwiftUI view in an offscreen dark window, like Settings and the menu.
     private static func render<V: View>(_ view: V, size: NSSize, name: String, scrollToEnd: Bool = false) async throws {
-        let host = NSHostingView(rootView: view.environment(\.colorScheme, .dark))
+        let host = NSHostingView(rootView: view.environment(\.colorScheme, TestAppearance.colorScheme))
         host.frame = NSRect(origin: .zero, size: size)
         let window = NSWindow(contentRect: host.frame, styleMask: [.borderless], backing: .buffered, defer: false)
-        window.appearance = NSAppearance(named: .darkAqua)
+        window.appearance = TestAppearance.appearance
         window.backgroundColor = ShotnixColors.editorStageTop
         window.contentView = host
         host.layoutSubtreeIfNeeded()

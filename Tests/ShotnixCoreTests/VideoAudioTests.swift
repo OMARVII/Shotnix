@@ -449,10 +449,10 @@ final class VideoAudioTests: XCTestCase {
         defer { L10n.use(nil) }
         for language in [nil, "de", "ja"] as [String?] {
             L10n.use(language)
-            let host = NSHostingView(rootView: VideoInspectorView(model: model).frame(width: 318, height: 900).environment(\.colorScheme, .dark))
+            let host = NSHostingView(rootView: VideoInspectorView(model: model).frame(width: 318, height: 900).environment(\.colorScheme, TestAppearance.colorScheme))
             host.frame = NSRect(x: 0, y: 0, width: 318, height: 900)
             let window = NSWindow(contentRect: host.frame, styleMask: [.borderless], backing: .buffered, defer: false)
-            window.appearance = NSAppearance(named: .darkAqua)
+            window.appearance = TestAppearance.appearance
             window.contentView = host
             host.layoutSubtreeIfNeeded()
             try await Task.sleep(nanoseconds: 300_000_000)

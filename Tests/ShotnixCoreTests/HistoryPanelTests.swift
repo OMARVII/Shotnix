@@ -196,6 +196,51 @@ final class HistoryPanelTests: XCTestCase {
         print("SNAPSHOT-HISTORY: \(url.path)")
     }
 
+    /// The panel is AppKit, with layers that keep the colors they're given:
+    /// open in a dark Shotnix and turned light, its window, cards and buttons
+    /// all come out light (and the primary button dark, with white letters).
+    func testAnOpenPanelTurnsLightWithTheApp() async throws {
+        let before = NSApplication.shared.appearance
+        defer { NSApplication.shared.appearance = before }
+        NSApplication.shared.appearance = NSAppearance(named: .darkAqua)
+        manager.add(image: Self.sampleCapture(hue: 0.58), rect: CGRect(x: 0, y: 0, width: 800, height: 500), type: .area)
+        await manager.waitForPendingFileOperations()
+        panel.show(historyManager: manager)
+        let grid = try XCTUnwrap(panel.collectionView)
+        try await Task.sleep(nanoseconds: 400_000_000)
+        let content = try XCTUnwrap(grid.window?.contentView)
+
+        func picture() throws -> NSBitmapImageRep {
+            content.layoutSubtreeIfNeeded()
+            let rep = try XCTUnwrap(content.bitmapImageRepForCachingDisplay(in: content.bounds))
+            content.cacheDisplay(in: content.bounds, to: rep)
+            return rep
+        }
+        func brightness(_ rep: NSBitmapImageRep, _ x: CGFloat, fromTop y: CGFloat) -> CGFloat {
+            let scale = CGFloat(rep.pixelsWide) / content.bounds.width
+            guard let color = rep.colorAt(x: Int(x * scale), y: Int(y * scale))?.usingColorSpace(.sRGB) else { return -1 }
+            return 0.2126 * color.redComponent + 0.7152 * color.greenComponent + 0.0722 * color.blueComponent
+        }
+        // The first card: its body just above the date, and its two buttons
+        // (Copy at the left, Edit at the right), each at a spot clear of text.
+        let card = (x: CGFloat(60), top: CGFloat(170))
+        let copyEdge = (x: CGFloat(56), top: CGFloat(378))
+        let editEdge = (x: CGFloat(146), top: CGFloat(378))
+
+        let darkPicture = try picture()
+        XCTAssertLessThan(brightness(darkPicture, 400, fromTop: 500), 0.2, "a dark window")
+        XCTAssertLessThan(brightness(darkPicture, card.x, fromTop: card.top), 0.2, "a dark card")
+        XCTAssertGreaterThan(brightness(darkPicture, editEdge.x, fromTop: editEdge.top), 0.8, "a white Edit button")
+
+        NSApplication.shared.appearance = NSAppearance(named: .aqua)
+        try await Task.sleep(nanoseconds: 300_000_000)
+        let lightPicture = try picture()
+        XCTAssertGreaterThan(brightness(lightPicture, 400, fromTop: 500), 0.8, "a light window")
+        XCTAssertGreaterThan(brightness(lightPicture, card.x, fromTop: card.top), 0.85, "a white card")
+        XCTAssertLessThan(brightness(lightPicture, editEdge.x, fromTop: editEdge.top), 0.25, "a near-black Edit button")
+        XCTAssertGreaterThan(brightness(lightPicture, copyEdge.x, fromTop: copyEdge.top), 0.7, "a pale Copy button")
+    }
+
     // MARK: - Helpers
 
     private static func itemCount(in grid: NSCollectionView) -> Int {

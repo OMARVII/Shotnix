@@ -294,6 +294,8 @@
 	<string>Auto-Zoom</string>
 	<key>Auto Zoom from Clicks</key>
 	<string>Auto-Zoom aus Klicks</string>
+	<key>Auto follows your Mac's appearance.</key>
+	<string>„Automatisch“ folgt dem Erscheinungsbild deines Mac.</string>
 	<key>Auto-dismiss overlay</key>
 	<string>Miniatur automatisch ausblenden</string>
 	<key>Auto-save folder</key>
@@ -301,6 +303,8 @@
 	<key>Auto-zoom new recordings</key>
 	<string>Neue Aufnahmen automatisch zoomen</string>
 	<key>Automatic</key>
+	<string>Automatisch</string>
+	<key>Automatic appearance</key>
 	<string>Automatisch</string>
 	<key>Automatic detects each capture's language; pick languages when it guesses wrong. Accurate reads small text best — Fast answers sooner but knows fewer languages. Used by Capture Text, Copy Text, and History search.</key>
 	<string>„Automatisch“ erkennt die Sprache jedes Bildschirmfotos; wähle Sprachen aus, wenn es falsch liegt. „Genau“ liest kleinen Text am besten – „Schnell“ liefert früher ein Ergebnis, kennt aber weniger Sprachen. Wird von „Text erfassen“, „Text kopieren“ und der Suche im Verlauf verwendet.</string>
@@ -788,6 +792,8 @@
 	<string>Schnitt, kein Übergang</string>
 	<key>Cutout</key>
 	<string>Freigestellt</string>
+	<key>Dark appearance</key>
+	<string>Dunkel</string>
 	<key>Decoded details</key>
 	<string>Decodierte Details</string>
 	<key>Delete</key>
@@ -1360,6 +1366,8 @@
 	<string>Stufe</string>
 	<key>Light</key>
 	<string>Leicht</string>
+	<key>Light appearance</key>
+	<string>Hell</string>
 	<key>Lime Signal</key>
 	<string>Limettensignal</string>
 	<key>Line</key>
@@ -2532,6 +2540,8 @@
 	<string>Kürzt jede Stille über einer Sekunde (dieses Video hat keine Shotnix-Zeigerdaten, um zu erkennen, was auf dem Bildschirm passiert)</string>
 	<key>Shotnix Preferences</key>
 	<string>Shotnix-Einstellungen</string>
+	<key>Shotnix appearance</key>
+	<string>Erscheinungsbild</string>
 	<key>Shotnix can't open this file</key>
 	<string>Shotnix kann diese Datei nicht öffnen</string>
 	<key>Shotnix can't save to that folder. Pick another place, like Desktop or Movies, and export again.</key>

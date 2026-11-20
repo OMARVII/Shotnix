@@ -290,6 +290,8 @@
 	<string>Автонаближення</string>
 	<key>Auto Zoom from Clicks</key>
 	<string>Автонаближення за клацаннями</string>
+	<key>Auto follows your Mac's appearance.</key>
+	<string>«Автоматично» повторює вигляд Mac.</string>
 	<key>Auto-dismiss overlay</key>
 	<string>Автоматично ховати мініатюру</string>
 	<key>Auto-save folder</key>
@@ -297,6 +299,8 @@
 	<key>Auto-zoom new recordings</key>
 	<string>Автонаближення в нових записах</string>
 	<key>Automatic</key>
+	<string>Автоматично</string>
+	<key>Automatic appearance</key>
 	<string>Автоматично</string>
 	<key>Automatic detects each capture's language; pick languages when it guesses wrong. Accurate reads small text best — Fast answers sooner but knows fewer languages. Used by Capture Text, Copy Text, and History search.</key>
 	<string>«Автоматично» визначає мову кожного знімка; якщо мову визначено неправильно, виберіть мови самостійно. «Точне» найкраще читає дрібний текст — «Швидке» дає результат швидше, але знає менше мов. Використовується для «Розпізнати текст», «Скопіювати текст» і пошуку в історії.</string>
@@ -784,6 +788,8 @@
 	<string>Склейка без переходу</string>
 	<key>Cutout</key>
 	<string>Силует</string>
+	<key>Dark appearance</key>
+	<string>Темний</string>
 	<key>Decoded details</key>
 	<string>Розкодовані дані</string>
 	<key>Delete</key>
@@ -1356,6 +1362,8 @@
 	<string>Рівень</string>
 	<key>Light</key>
 	<string>Злегка</string>
+	<key>Light appearance</key>
+	<string>Світлий</string>
 	<key>Lime Signal</key>
 	<string>Лаймовий сигнал</string>
 	<key>Line</key>
@@ -2528,6 +2536,8 @@
 	<string>Скорочує кожну тишу, довшу за секунду (у цьому відео немає даних курсора Shotnix, щоб розпізнати, що відбувається на екрані)</string>
 	<key>Shotnix Preferences</key>
 	<string>Параметри Shotnix</string>
+	<key>Shotnix appearance</key>
+	<string>Вигляд</string>
 	<key>Shotnix can't open this file</key>
 	<string>Shotnix не може відкрити цей файл</string>
 	<key>Shotnix can't save to that folder. Pick another place, like Desktop or Movies, and export again.</key>

@@ -97,6 +97,7 @@ final class ToastWindow: NSWindow {
             backing: .buffered,
             defer: false
         )
+        staysDark()
         isOpaque = false
         backgroundColor = .clear
         level = .floating

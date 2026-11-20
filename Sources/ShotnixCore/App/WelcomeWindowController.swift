@@ -374,7 +374,7 @@ private final class ChecklistStepRow: NSView {
         wantsLayer = true
         layer?.cornerRadius = 10
         layer?.cornerCurve = .continuous
-        layer?.backgroundColor = NSColor.labelColor.withAlphaComponent(0.045).cgColor
+        themed { $0.layer?.backgroundColor = NSColor.labelColor.withAlphaComponent(0.045).cgColor }
 
         statusIcon.contentTintColor = .tertiaryLabelColor
         addSubview(statusIcon)

@@ -69,9 +69,9 @@ final class VideoStarAskTests: XCTestCase {
     private func mount<V: View>(_ view: V, size: CGSize) async {
         unmount()
         let window = NSWindow(contentRect: NSRect(origin: NSPoint(x: -9000, y: -9000), size: size), styleMask: [.borderless], backing: .buffered, defer: false)
-        window.appearance = NSAppearance(named: .darkAqua)
+        window.appearance = TestAppearance.appearance
         window.isReleasedWhenClosed = false
-        window.contentView = Host(rootView: AnyView(view.frame(width: size.width, height: size.height).environment(\.colorScheme, .dark)))
+        window.contentView = Host(rootView: AnyView(view.frame(width: size.width, height: size.height).environment(\.colorScheme, TestAppearance.colorScheme)))
         window.orderFrontRegardless()
         self.window = window
         await settle(0.4)

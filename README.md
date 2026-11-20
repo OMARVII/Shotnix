@@ -107,6 +107,7 @@ Free and open source. Native, about 11 MB, and your captures never leave your Ma
 **Configurable**
 
 - Tabbed settings window (General, Shortcuts, Screenshots, Recording, About)
+- Light and dark appearance: follows your Mac, or stays the one you pick
 - Customizable global hotkeys with one-click default reset
 - Sparkle-powered in-app update checks for official builds
 - Export as PNG or JPEG, with a JPEG quality slider (WebP too, on Macs whose system can write it)

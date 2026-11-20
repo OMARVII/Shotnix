@@ -288,6 +288,8 @@
 	<string>Автомасштаб</string>
 	<key>Auto Zoom from Clicks</key>
 	<string>Автомасштаб по нажатиям</string>
+	<key>Auto follows your Mac's appearance.</key>
+	<string>«Автоматически» повторяет оформление Mac.</string>
 	<key>Auto-dismiss overlay</key>
 	<string>Автоскрытие миниатюры</string>
 	<key>Auto-save folder</key>
@@ -295,6 +297,8 @@
 	<key>Auto-zoom new recordings</key>
 	<string>Автомасштаб для новых записей</string>
 	<key>Automatic</key>
+	<string>Автоматически</string>
+	<key>Automatic appearance</key>
 	<string>Автоматически</string>
 	<key>Automatic detects each capture's language; pick languages when it guesses wrong. Accurate reads small text best — Fast answers sooner but knows fewer languages. Used by Capture Text, Copy Text, and History search.</key>
 	<string>«Автоматически» определяет язык каждого снимка; если язык определяется неверно, выберите языки вручную. «Точный» режим лучше распознает мелкий текст, а «Быстрый» работает быстрее, но знает меньше языков. Используется в функциях «Распознать текст», «Скопировать текст» и в поиске по истории.</string>
@@ -782,6 +786,8 @@
 	<string>Склейка без перехода</string>
 	<key>Cutout</key>
 	<string>Силуэт</string>
+	<key>Dark appearance</key>
+	<string>Темное</string>
 	<key>Decoded details</key>
 	<string>Расшифрованные данные</string>
 	<key>Delete</key>
@@ -1354,6 +1360,8 @@
 	<string>Уровень</string>
 	<key>Light</key>
 	<string>Слегка</string>
+	<key>Light appearance</key>
+	<string>Светлое</string>
 	<key>Lime Signal</key>
 	<string>Лаймовый сигнал</string>
 	<key>Line</key>
@@ -2526,6 +2534,8 @@
 	<string>Сокращает каждую паузу длиннее секунды (в этом видео нет данных указателя Shotnix, чтобы понять, что происходит на экране)</string>
 	<key>Shotnix Preferences</key>
 	<string>Настройки Shotnix</string>
+	<key>Shotnix appearance</key>
+	<string>Оформление</string>
 	<key>Shotnix can't open this file</key>
 	<string>Shotnix не может открыть этот файл</string>
 	<key>Shotnix can't save to that folder. Pick another place, like Desktop or Movies, and export again.</key>

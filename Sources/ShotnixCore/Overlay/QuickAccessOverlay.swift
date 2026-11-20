@@ -106,6 +106,8 @@ final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
             backing: .buffered,
             defer: false
         )
+        // Its buttons sit on the screenshot itself: drawn for a dark surface.
+        staysDark()
         isOpaque = false
         backgroundColor = .clear
         level = .floating
@@ -297,7 +299,7 @@ final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
         clipView.layer?.cornerCurve = .continuous
         clipView.layer?.masksToBounds = true
         // Subtle dark tint — frames content, visible at rounded corners and behind image
-        clipView.layer?.backgroundColor = ShotnixColors.overlayTint.cgColor
+        clipView.layer?.backgroundColor = ShotnixColors.overlayTint.hudCGColor
         container.addSubview(clipView)
 
         // White border — primary edge definition on light wallpapers (shadow handles dark)
@@ -306,7 +308,7 @@ final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
         borderView.layer?.cornerRadius = 12
         borderView.layer?.cornerCurve = .continuous
         borderView.layer?.borderWidth = 1.5
-        borderView.layer?.borderColor = ShotnixColors.overlayBorder.cgColor
+        borderView.layer?.borderColor = ShotnixColors.overlayBorder.hudCGColor
         container.addSubview(borderView)
 
         // Draggable thumbnail — drag to Finder/apps, double-click to annotate.
@@ -325,7 +327,7 @@ final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
         thumb.imageScaling = .scaleProportionallyUpOrDown
         thumb.imageAlignment = .alignCenter
         thumb.wantsLayer = true
-        thumb.layer?.backgroundColor = ShotnixColors.overlayContainerFill.cgColor
+        thumb.layer?.backgroundColor = ShotnixColors.overlayContainerFill.hudCGColor
         thumb.layer?.contentsScale = NSScreen.main?.backingScaleFactor ?? 2.0
         thumb.dragImage = image
         thumb.dragFileProvider = { [weak self] in self?.makeDragFile() }
@@ -373,7 +375,7 @@ final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
             btn.layer?.contentsScale = screenScale
             btn.layer?.cornerRadius = cSize / 2
             btn.layer?.cornerCurve = .continuous
-            btn.layer?.backgroundColor = ShotnixColors.cornerButtonBackground.cgColor
+            btn.layer?.backgroundColor = ShotnixColors.cornerButtonBackground.hudCGColor
             controls.addSubview(btn)
         }
 
@@ -412,7 +414,7 @@ final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
             pill.layer?.contentsScale = retinaScale
             pill.layer?.cornerRadius = pillH / 2
             pill.layer?.cornerCurve = .continuous
-            pill.layer?.backgroundColor = ShotnixColors.pillButtonBackground.cgColor
+            pill.layer?.backgroundColor = ShotnixColors.pillButtonBackground.hudCGColor
             controls.addSubview(pill)
             pillCursorX += pw + pillGap
         }
@@ -426,12 +428,12 @@ final class QuickAccessWindow: NSPanel, ShotnixCommandClosable {
         if timeout > 0 {
             let progressBg = NSView(frame: NSRect(x: 0, y: 0, width: thumbW, height: progressH))
             progressBg.wantsLayer = true
-            progressBg.layer?.backgroundColor = ShotnixColors.progressBackground.cgColor
+            progressBg.layer?.backgroundColor = ShotnixColors.progressBackground.hudCGColor
             clipView.addSubview(progressBg)
 
             let progressFill = NSView(frame: progressBg.bounds)
             progressFill.wantsLayer = true
-            progressFill.layer?.backgroundColor = NSColor.controlAccentColor.cgColor
+            progressFill.layer?.backgroundColor = NSColor.controlAccentColor.hudCGColor
             progressFill.layer?.anchorPoint = CGPoint(x: 0, y: 0.5)
             progressFill.layer?.position = CGPoint(x: 0, y: progressH / 2)
             progressBg.addSubview(progressFill)
@@ -1055,19 +1057,19 @@ private final class OverlayCornerButton: NSButton {
 
     override func mouseEntered(with event: NSEvent) {
         isHovered = true
-        layer?.backgroundColor = ShotnixColors.cornerButtonHover.cgColor
+        layer?.backgroundColor = ShotnixColors.cornerButtonHover.hudCGColor
     }
 
     override func mouseExited(with event: NSEvent) {
         isHovered = false
-        layer?.backgroundColor = ShotnixColors.cornerButtonBackground.cgColor
+        layer?.backgroundColor = ShotnixColors.cornerButtonBackground.hudCGColor
     }
 
     /// Presses in about its center. NSButton tracks the click inside
     /// `super.mouseDown` and never gets `mouseUp`, so the spring back runs
     /// when that returns.
     override func mouseDown(with event: NSEvent) {
-        layer?.backgroundColor = ShotnixColors.cornerButtonPressed.cgColor
+        layer?.backgroundColor = ShotnixColors.cornerButtonPressed.hudCGColor
         guard let layer else { return super.mouseDown(with: event) }
         let pressed = layer.scaledAboutCenter(0.92)
         layer.transform = pressed
@@ -1084,8 +1086,8 @@ private final class OverlayCornerButton: NSButton {
         layer.add(spring, forKey: "bounceBack")
         layer.transform = CATransform3DIdentity
         layer.backgroundColor = isHovered
-            ? ShotnixColors.cornerButtonHover.cgColor
-            : ShotnixColors.cornerButtonBackground.cgColor
+            ? ShotnixColors.cornerButtonHover.hudCGColor
+            : ShotnixColors.cornerButtonBackground.hudCGColor
     }
 }
 
@@ -1123,20 +1125,20 @@ private final class OverlayPillButton: NSButton {
 
     override func mouseEntered(with event: NSEvent) {
         isHovered = true
-        layer?.backgroundColor = ShotnixColors.pillButtonHover.cgColor
+        layer?.backgroundColor = ShotnixColors.pillButtonHover.hudCGColor
     }
 
     override func mouseExited(with event: NSEvent) {
         isHovered = false
-        layer?.backgroundColor = ShotnixColors.pillButtonBackground.cgColor
+        layer?.backgroundColor = ShotnixColors.pillButtonBackground.hudCGColor
     }
 
     override func mouseDown(with event: NSEvent) {
-        layer?.backgroundColor = ShotnixColors.pillButtonPressed.cgColor
+        layer?.backgroundColor = ShotnixColors.pillButtonPressed.hudCGColor
         NSHapticFeedbackManager.defaultPerformer.perform(.generic, performanceTime: .default)
         super.mouseDown(with: event)
         layer?.backgroundColor = isHovered
-            ? ShotnixColors.pillButtonHover.cgColor
-            : ShotnixColors.pillButtonBackground.cgColor
+            ? ShotnixColors.pillButtonHover.hudCGColor
+            : ShotnixColors.pillButtonBackground.hudCGColor
     }
 }

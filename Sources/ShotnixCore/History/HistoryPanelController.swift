@@ -101,13 +101,13 @@ final class HistoryPanelController: NSObject {
 
         let title = NSTextField(labelWithString: L("Capture History"))
         title.font = .systemFont(ofSize: 26, weight: .bold)
-        title.textColor = NSColor.white.withAlphaComponent(0.94)
+        title.textColor = ShotnixTheme.inkColor(0.94)
         title.frame = NSRect(x: 28, y: 34, width: 360, height: 34)
         header.addSubview(title)
 
         let count = NSTextField(labelWithString: "")
         count.font = .systemFont(ofSize: 12, weight: .medium)
-        count.textColor = NSColor.white.withAlphaComponent(0.48)
+        count.textColor = ShotnixTheme.inkColor(0.48)
         count.frame = NSRect(x: 30, y: 16, width: 560, height: 16)
         header.addSubview(count)
         countLabel = count
@@ -121,7 +121,6 @@ final class HistoryPanelController: NSObject {
         // Capture-type filter, next to search.
         let typeFilter = NSPopUpButton(frame: NSRect(x: 392, y: 44, width: 120, height: 30), pullsDown: false)
         typeFilter.autoresizingMask = [.minXMargin]
-        typeFilter.appearance = NSAppearance(named: .darkAqua)
         typeFilter.addItem(withTitle: L("All Captures"))
         for type in CaptureType.allCases {
             typeFilter.addItem(withTitle: type.title)
@@ -144,7 +143,6 @@ final class HistoryPanelController: NSObject {
         search.autoresizingMask = [.minXMargin]
         search.placeholderString = L("Search text in captures")
         search.font = .systemFont(ofSize: 13)
-        search.appearance = NSAppearance(named: .darkAqua)
         search.focusRingType = .none
         search.sendsWholeSearchString = false
         search.sendsSearchStringImmediately = true
@@ -240,7 +238,7 @@ final class HistoryPanelController: NSObject {
 
         let message = NSTextField(labelWithString: L("Enjoying Shotnix? Star it on GitHub so more people find it."))
         message.font = .systemFont(ofSize: 13, weight: .medium)
-        message.textColor = NSColor.white.withAlphaComponent(0.88)
+        message.textColor = ShotnixTheme.inkColor(0.88)
         message.lineBreakMode = .byTruncatingTail
         message.frame = NSRect(x: 40, y: 10, width: frame.width - 40 - 260, height: 18)
         message.autoresizingMask = [.width]
@@ -305,21 +303,21 @@ final class HistoryPanelController: NSObject {
 
         let title = NSTextField(labelWithString: L("No captures yet"))
         title.font = .systemFont(ofSize: 18, weight: .bold)
-        title.textColor = NSColor.white.withAlphaComponent(0.92)
+        title.textColor = ShotnixTheme.inkColor(0.92)
         title.alignment = .center
         title.frame = NSRect(x: 0, y: 88, width: 360, height: 24)
         stack.addSubview(title)
 
         let subtitle = NSTextField(labelWithString: Self.emptyStateHint(captureAreaShortcut: ShotnixShortcut.captureArea.displayShortcut))
         subtitle.font = .systemFont(ofSize: 13, weight: .medium)
-        subtitle.textColor = NSColor.white.withAlphaComponent(0.50)
+        subtitle.textColor = ShotnixTheme.inkColor(0.50)
         subtitle.alignment = .center
         subtitle.frame = NSRect(x: 24, y: 56, width: 312, height: 18)
         stack.addSubview(subtitle)
 
         let hint = NSTextField(labelWithString: L("Captured screenshots will appear here instantly"))
         hint.font = .systemFont(ofSize: 12, weight: .regular)
-        hint.textColor = NSColor.white.withAlphaComponent(0.36)
+        hint.textColor = ShotnixTheme.inkColor(0.36)
         hint.alignment = .center
         hint.frame = NSRect(x: 24, y: 30, width: 312, height: 16)
         stack.addSubview(hint)
@@ -894,14 +892,14 @@ final class HistoryCollectionItem: NSCollectionViewItem {
         container.addSubview(thumbView)
 
         dateLabel.font = .monospacedDigitSystemFont(ofSize: 10.5, weight: .semibold)
-        dateLabel.textColor = NSColor.white.withAlphaComponent(0.78)
+        dateLabel.textColor = ShotnixTheme.inkColor(0.78)
         dateLabel.alignment = .left
         dateLabel.lineBreakMode = .byTruncatingTail
         dateLabel.frame = NSRect(x: 14, y: 48, width: 162, height: 15)
         container.addSubview(dateLabel)
 
         detailLabel.font = .systemFont(ofSize: 9.5, weight: .medium)
-        detailLabel.textColor = NSColor.white.withAlphaComponent(0.42)
+        detailLabel.textColor = ShotnixTheme.inkColor(0.42)
         detailLabel.alignment = .left
         detailLabel.lineBreakMode = .byTruncatingTail
         detailLabel.frame = NSRect(x: 14, y: 33, width: 162, height: 13)
@@ -1135,7 +1133,7 @@ final class HistorySectionHeader: NSView, NSCollectionViewElement {
     override init(frame: NSRect) {
         super.init(frame: frame)
         label.font = .systemFont(ofSize: 12, weight: .bold)
-        label.textColor = NSColor.white.withAlphaComponent(0.58)
+        label.textColor = ShotnixTheme.inkColor(0.58)
         label.frame = NSRect(x: 26, y: 7, width: 300, height: 18)
         addSubview(label)
     }
@@ -1174,8 +1172,10 @@ private final class HistoryStageView: NSView {
             rect.fill()
         }
 
-        drawGlow(in: context, color: NSColor.controlAccentColor.withAlphaComponent(0.14), center: CGPoint(x: rect.maxX * 0.78, y: rect.maxY + 12), radius: max(rect.width, rect.height) * 0.42)
-        drawGlow(in: context, color: NSColor.systemPurple.withAlphaComponent(0.12), center: CGPoint(x: rect.minX + rect.width * 0.18, y: rect.minY - 10), radius: max(rect.width, rect.height) * 0.38)
+        // Softer in the light, where a glow shows much more.
+        let dark = ShotnixTheme.isDark(effectiveAppearance)
+        drawGlow(in: context, color: NSColor.controlAccentColor.withAlphaComponent(dark ? 0.14 : 0.09), center: CGPoint(x: rect.maxX * 0.78, y: rect.maxY + 12), radius: max(rect.width, rect.height) * 0.42)
+        drawGlow(in: context, color: NSColor.systemPurple.withAlphaComponent(dark ? 0.12 : 0.07), center: CGPoint(x: rect.minX + rect.width * 0.18, y: rect.minY - 10), radius: max(rect.width, rect.height) * 0.38)
     }
 
     private func drawGlow(in context: CGContext, color: NSColor, center: CGPoint, radius: CGFloat) {
@@ -1219,11 +1219,11 @@ private final class HistoryPreviewWellView: NSView {
         )
 
         context.addPath(path)
-        context.setFillColor(NSColor.black.withAlphaComponent(isHovered ? 0.20 : 0.15).cgColor)
+        context.setFillColor(ShotnixTheme.shadeColor(isHovered ? 0.20 : 0.15).cgColor)
         context.fillPath()
 
         context.addPath(path)
-        context.setStrokeColor(NSColor.white.withAlphaComponent(isHovered ? 0.08 : 0.045).cgColor)
+        context.setStrokeColor(ShotnixTheme.inkColor(isHovered ? 0.08 : 0.045).cgColor)
         context.setLineWidth(1)
         context.strokePath()
     }
@@ -1239,12 +1239,22 @@ private final class HistoryCaptureCardView: NSView {
         wantsLayer = true
         layer?.allowsEdgeAntialiasing = true
         layer?.shadowColor = NSColor.black.cgColor
-        layer?.shadowOpacity = 0.16
         layer?.shadowRadius = 18
         layer?.shadowOffset = CGSize(width: 0, height: -8)
+        updateShadow()
     }
 
     required init?(coder: NSCoder) { fatalError() }
+
+    override func viewDidChangeEffectiveAppearance() {
+        super.viewDidChangeEffectiveAppearance()
+        updateShadow()
+    }
+
+    /// A white card on a light window needs far less shadow to lift off it.
+    private func updateShadow() {
+        layer?.shadowOpacity = ShotnixTheme.isDark(effectiveAppearance) ? 0.16 : 0.09
+    }
 
     override func draw(_ dirtyRect: NSRect) {
         guard let context = NSGraphicsContext.current?.cgContext else { return }
@@ -1260,7 +1270,7 @@ private final class HistoryCaptureCardView: NSView {
         )
 
         context.addPath(path)
-        context.setFillColor(NSColor(calibratedWhite: 0.045, alpha: isHovered || isSelected ? 0.94 : 0.86).cgColor)
+        context.setFillColor(ShotnixTheme.cardColor(raised: isHovered || isSelected).cgColor)
         context.fillPath()
 
         // Selected: an accent ring, like Finder's icon selection.
@@ -1273,7 +1283,7 @@ private final class HistoryCaptureCardView: NSView {
             return
         }
         context.addPath(path)
-        context.setStrokeColor(NSColor.white.withAlphaComponent(isHovered ? 0.12 : 0.06).cgColor)
+        context.setStrokeColor(ShotnixTheme.inkColor(isHovered ? 0.12 : 0.06).cgColor)
         context.setLineWidth(1)
         context.strokePath()
     }
@@ -1305,19 +1315,28 @@ private final class HistoryEmptyStateCard: NSView {
         super.init(frame: frameRect)
         wantsLayer = true
         layer?.shadowColor = NSColor.black.cgColor
-        layer?.shadowOpacity = 0.24
         layer?.shadowRadius = 30
         layer?.shadowOffset = CGSize(width: 0, height: -14)
+        updateShadow()
     }
 
     required init?(coder: NSCoder) { fatalError() }
 
+    override func viewDidChangeEffectiveAppearance() {
+        super.viewDidChangeEffectiveAppearance()
+        updateShadow()
+    }
+
+    private func updateShadow() {
+        layer?.shadowOpacity = ShotnixTheme.isDark(effectiveAppearance) ? 0.24 : 0.1
+    }
+
     override func draw(_ dirtyRect: NSRect) {
         let rect = bounds.insetBy(dx: 1, dy: 1)
         let path = NSBezierPath(roundedRect: rect, xRadius: 26, yRadius: 26)
-        NSColor.black.withAlphaComponent(0.26).setFill()
+        ShotnixTheme.dynamic(light: NSColor(srgbRed: 1, green: 1, blue: 1, alpha: 0.72), dark: NSColor.black.withAlphaComponent(0.26)).setFill()
         path.fill()
-        NSColor.white.withAlphaComponent(0.13).setStroke()
+        ShotnixTheme.inkColor(0.13).setStroke()
         path.lineWidth = 1
         path.stroke()
     }
@@ -1384,43 +1403,52 @@ private final class HistoryActionButton: NSButton {
         layer?.borderColor = borderColor
     }
 
+    /// A layer keeps the color it was given: give it this appearance's.
+    override func viewDidChangeEffectiveAppearance() {
+        super.viewDidChangeEffectiveAppearance()
+        layer?.backgroundColor = isHovered ? hoverColor : baseColor
+        layer?.borderColor = borderColor
+    }
+
+    // The primary button is the surface turned inside out: white with dark
+    // letters on the dark window, near-black with white ones on the light.
     private var baseColor: CGColor {
         switch variant {
-        case .primary: return NSColor.white.withAlphaComponent(0.92).cgColor
-        case .secondary: return ShotnixColors.editorActionBackground.cgColor
-        case .destructive: return NSColor.systemRed.withAlphaComponent(0.18).cgColor
+        case .primary: return ShotnixTheme.solidInkColor(0.92).cgColor(in: self)
+        case .secondary: return ShotnixColors.editorActionBackground.cgColor(in: self)
+        case .destructive: return NSColor.systemRed.withAlphaComponent(0.18).cgColor(in: self)
         }
     }
 
     private var hoverColor: CGColor {
         switch variant {
-        case .primary: return NSColor.white.cgColor
-        case .secondary: return ShotnixColors.cornerButtonHover.cgColor
-        case .destructive: return NSColor.systemRed.withAlphaComponent(0.27).cgColor
+        case .primary: return ShotnixTheme.solidInkColor(1).cgColor(in: self)
+        case .secondary: return ShotnixColors.cornerButtonHover.cgColor(in: self)
+        case .destructive: return NSColor.systemRed.withAlphaComponent(0.27).cgColor(in: self)
         }
     }
 
     private var pressedColor: CGColor {
         switch variant {
-        case .primary: return NSColor.white.withAlphaComponent(0.74).cgColor
-        case .secondary: return ShotnixColors.cornerButtonPressed.cgColor
-        case .destructive: return NSColor.systemRed.withAlphaComponent(0.36).cgColor
+        case .primary: return ShotnixTheme.solidInkColor(0.74).cgColor(in: self)
+        case .secondary: return ShotnixColors.cornerButtonPressed.cgColor(in: self)
+        case .destructive: return NSColor.systemRed.withAlphaComponent(0.36).cgColor(in: self)
         }
     }
 
     private var borderColor: CGColor {
         switch variant {
-        case .primary: return NSColor.white.withAlphaComponent(0.28).cgColor
-        case .secondary: return ShotnixColors.editorDockBorder.cgColor
-        case .destructive: return NSColor.systemRed.withAlphaComponent(0.38).cgColor
+        case .primary: return ShotnixTheme.solidInkColor(0.28).cgColor(in: self)
+        case .secondary: return ShotnixColors.editorDockBorder.cgColor(in: self)
+        case .destructive: return NSColor.systemRed.withAlphaComponent(0.38).cgColor(in: self)
         }
     }
 
     private var textColor: NSColor {
         switch variant {
-        case .primary: return NSColor.black.withAlphaComponent(0.88)
-        case .secondary: return NSColor.white.withAlphaComponent(0.84)
-        case .destructive: return NSColor.systemRed
+        case .primary: return ShotnixTheme.onSolidInkColor
+        case .secondary: return ShotnixTheme.inkColor(0.84)
+        case .destructive: return ShotnixTheme.dangerColor
         }
     }
 

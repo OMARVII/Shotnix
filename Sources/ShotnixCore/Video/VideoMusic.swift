@@ -762,13 +762,13 @@ struct VideoMusicLane: View, Equatable {
                     let point = CGPoint(x: geometry.x(keyframe.time), y: size.height - 4 - CGFloat(min(keyframe.volume / top, 1)) * (size.height - 8))
                     if index == 0 { line.move(to: point) } else { line.addLine(to: point) }
                 }
-                inner.stroke(line, with: .color(.white.opacity(0.85)), lineWidth: 1.2)
+                inner.stroke(line, with: .color(VideoEditorTheme.onTint(0.85)), lineWidth: 1.2)
             }
             if frame.width > 60 {
                 inner.draw(
                     Text("\(Image(systemName: "music.note")) \(music.name)") // l10n-ignore: a symbol and the song's file name
                         .font(.system(size: 10, weight: .semibold))
-                        .foregroundColor(.white.opacity(0.92)),
+                        .foregroundColor(VideoEditorTheme.onTint(0.92)),
                     at: CGPoint(x: frame.minX + 8, y: size.height / 2),
                     anchor: .leading
                 )

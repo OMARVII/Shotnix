@@ -293,7 +293,7 @@ struct ShotnixCommandCenterView: View {
                 .font(.system(size: 16, weight: .semibold))
                 .foregroundStyle(.tint)
                 .frame(width: 28, height: 28)
-                .background(.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                .background(ShotnixTheme.ink(0.08), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
 
             VStack(alignment: .leading, spacing: 1) {
                 Text(verbatim: "Shotnix")
@@ -307,7 +307,7 @@ struct ShotnixCommandCenterView: View {
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 12)
-        .background(.black.opacity(0.12))
+        .background(ShotnixTheme.shade(0.12))
     }
 
     private var attentionRows: [ShotnixHealthRow] {
@@ -325,7 +325,7 @@ struct ShotnixCommandCenterView: View {
                 HStack(spacing: 8) {
                     Image(systemName: "checkmark.seal.fill")
                         .font(.system(size: 11, weight: .bold))
-                        .foregroundStyle(Color(NSColor.systemGreen))
+                        .foregroundStyle(ShotnixTheme.success)
                     Text(L("Everything is ready"))
                         .font(.system(size: 11.5, weight: .semibold))
                         .foregroundStyle(Color.primary.opacity(0.85))
@@ -389,8 +389,8 @@ private struct ShotnixCommandFooter: View {
                     Image(systemName: action.symbolName)
                         .font(.system(size: 12, weight: .semibold))
                         .frame(width: 28, height: 28)
-                        .foregroundStyle(action.isEnabled ? Color.white.opacity(0.82) : Color.white.opacity(0.28))
-                        .background(Color.white.opacity(action.isEnabled ? 0.075 : 0.035), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                        .foregroundStyle(action.isEnabled ? ShotnixTheme.ink(0.82) : ShotnixTheme.ink(0.28))
+                        .background(ShotnixTheme.ink(action.isEnabled ? 0.075 : 0.035), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
                 }
                 .buttonStyle(.plain)
                 .disabled(!action.isEnabled)
@@ -402,7 +402,7 @@ private struct ShotnixCommandFooter: View {
             if let versionText {
                 Text(versionText)
                     .font(.system(size: 10, weight: .semibold))
-                    .foregroundStyle(Color.white.opacity(0.42))
+                    .foregroundStyle(ShotnixTheme.ink(0.42))
                     .lineLimit(1)
             }
 
@@ -414,7 +414,7 @@ private struct ShotnixCommandFooter: View {
                     Image(systemName: quitAction.symbolName)
                         .font(.system(size: 12, weight: .semibold))
                         .frame(width: 28, height: 28)
-                        .foregroundStyle(Color(NSColor.systemRed).opacity(0.9))
+                        .foregroundStyle(ShotnixTheme.danger.opacity(0.9))
                         .background(Color(NSColor.systemRed).opacity(0.13), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
                 }
                 .buttonStyle(.plain)
@@ -423,10 +423,10 @@ private struct ShotnixCommandFooter: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
-        .background(Color.black.opacity(0.18))
+        .background(ShotnixTheme.shade(0.18))
         .overlay(alignment: .top) {
             Rectangle()
-                .fill(Color.white.opacity(0.08))
+                .fill(ShotnixTheme.ink(0.08))
                 .frame(height: 1)
         }
     }
@@ -597,11 +597,11 @@ private struct ShotnixMenuActionRow: View {
     }
 
     private var textColor: Color {
-        action.role == .destructive ? Color(NSColor.systemRed) : Color.primary
+        action.role == .destructive ? ShotnixTheme.danger : Color.primary
     }
 
     private var iconColor: Color {
-        if action.role == .destructive { return Color(NSColor.systemRed) }
+        if action.role == .destructive { return ShotnixTheme.danger }
         if action.role == .primary { return .accentColor }
         return .primary
     }
@@ -609,19 +609,19 @@ private struct ShotnixMenuActionRow: View {
     private var iconBackground: Color {
         if action.role == .destructive { return Color(NSColor.systemRed).opacity(0.15) }
         if isPrimary { return Color.accentColor.opacity(0.18) }
-        return Color.white.opacity(0.07)
+        return ShotnixTheme.ink(0.07)
     }
 
     private var rowBackground: Color {
         if isPrimary && active { return Color.accentColor.opacity(0.16) }
         if isPrimary { return Color.accentColor.opacity(0.09) }
-        if active { return Color.white.opacity(0.12) }
-        return Color.white.opacity(0.045)
+        if active { return ShotnixTheme.ink(0.12) }
+        return ShotnixTheme.ink(0.045)
     }
 
     private var rowBorder: Color {
         if isPrimary { return Color.accentColor.opacity(active ? 0.34 : 0.22) }
-        return Color.white.opacity(active ? 0.08 : 0.035)
+        return ShotnixTheme.ink(active ? 0.08 : 0.035)
     }
 
     private var rowHeight: CGFloat {
@@ -699,9 +699,9 @@ private struct ShotnixHealthTile: View {
 
     private var color: Color {
         switch row.state {
-        case .ok: return Color(NSColor.systemGreen)
-        case .warning: return Color(NSColor.systemYellow)
-        case .issue: return Color(NSColor.systemRed)
+        case .ok: return ShotnixTheme.success
+        case .warning: return ShotnixTheme.warning
+        case .issue: return ShotnixTheme.danger
         case .info: return .accentColor
         }
     }
@@ -744,18 +744,19 @@ private struct ShotnixSmoothScrollView<Content: View>: NSViewRepresentable {
 }
 
 struct ShotnixHUDBackground: View {
+    @Environment(\.colorScheme) private var colorScheme
+
     var body: some View {
         ZStack {
             VisualEffectView(material: .hudWindow, blendingMode: .behindWindow)
             LinearGradient(
-                colors: [
-                    Color(NSColor(calibratedRed: 0.045, green: 0.049, blue: 0.062, alpha: 0.96)),
-                    Color(NSColor(calibratedRed: 0.105, green: 0.096, blue: 0.13, alpha: 0.96))
-                ],
+                colors: [ShotnixTheme.veilTop, ShotnixTheme.veilBottom],
                 startPoint: .top,
                 endPoint: .bottom
             )
-            .opacity(0.82)
+            // A dark window takes a little of what's behind it well; a light
+            // one turns muddy over a dark desktop, so it stays nearly solid.
+            .opacity(colorScheme == .dark ? 0.82 : 0.95)
         }
     }
 }

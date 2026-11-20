@@ -169,7 +169,7 @@ final class RecordingBarTests: XCTestCase {
         Settings.recordingCountdownSeconds = 3
         let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 560, height: 1340), styleMask: [.borderless], backing: .buffered, defer: false)
         window.isReleasedWhenClosed = false
-        window.appearance = NSAppearance(named: .darkAqua)
+        window.appearance = TestAppearance.appearance
         window.backgroundColor = NSColor(calibratedWhite: 0.1, alpha: 1)
         // The Preferences window draws a dark stage behind the panes.
         let stage = NSView(frame: NSRect(x: 0, y: 0, width: 560, height: 1340))

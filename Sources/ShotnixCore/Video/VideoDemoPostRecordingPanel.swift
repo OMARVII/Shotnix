@@ -46,6 +46,7 @@ final class VideoDemoPostRecordingPanel: NSPanel {
             backing: .buffered,
             defer: false
         )
+        staysDark()
 
         isReleasedWhenClosed = false
         level = .floating

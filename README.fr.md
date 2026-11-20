@@ -107,6 +107,7 @@ Gratuit et open source. Une app native d’environ 11 Mo, et vos captures ne qu
 **Personnalisable**
 
 - Fenêtre de réglages à onglets (Général, Raccourcis, Captures, Enregistrement, À propos)
+- Apparence claire ou sombre : suit votre Mac, ou reste celle que vous choisissez
 - Raccourcis globaux personnalisables, avec retour aux valeurs par défaut en un clic
 - Recherche de mises à jour intégrée, grâce à Sparkle, pour les versions officielles
 - Export en PNG ou JPEG, avec un curseur de qualité JPEG (et en WebP, sur les Mac dont le système sait l’écrire)

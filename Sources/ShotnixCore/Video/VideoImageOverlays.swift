@@ -479,7 +479,7 @@ struct VideoImageOverlayInspector: View {
         let picture = VideoBackgroundRenderer.thumbnail(path: image.path, maxPixel: 120)
         ZStack {
             RoundedRectangle(cornerRadius: 6, style: .continuous)
-                .fill(Color.white.opacity(0.06))
+                .fill(ShotnixTheme.ink(0.06))
             if let picture {
                 Image(nsImage: picture)
                     .resizable()

@@ -62,12 +62,12 @@ final class CaptureSettingsTests: XCTestCase {
         .padding(22)
         .frame(width: 560, height: 560, alignment: .top)
         .background(Color(nsColor: ShotnixColors.editorStageTop))
-        .environment(\.colorScheme, .dark)
+        .environment(\.colorScheme, TestAppearance.colorScheme)
 
         let host = NSHostingView(rootView: sections)
         host.frame = NSRect(x: 0, y: 0, width: 560, height: 560)
         let window = NSWindow(contentRect: host.frame, styleMask: [.borderless], backing: .buffered, defer: false)
-        window.appearance = NSAppearance(named: .darkAqua)
+        window.appearance = TestAppearance.appearance
         window.contentView = host
         host.layoutSubtreeIfNeeded()
         try await Task.sleep(nanoseconds: 300_000_000)

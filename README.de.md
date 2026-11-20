@@ -107,6 +107,7 @@ Kostenlos und Open Source. Nativ, nur rund 11 MB groß, und deine Aufnahmen verl
 **Anpassbar**
 
 - Einstellungsfenster mit Tabs („Allgemein“, „Kurzbefehle“, „Bildschirmfotos“, „Aufzeichnung“, „Info“)
+- Helles und dunkles Erscheinungsbild: folgt deinem Mac oder bleibt bei dem, das du auswählst
 - Anpassbare globale Kurzbefehle; „Standards wiederherstellen“ setzt sie mit einem Klick zurück
 - Integrierte Suche nach Updates über Sparkle (für offizielle Builds)
 - Export als PNG oder JPEG, mit Regler für die JPEG-Qualität (auch WebP, auf Macs, deren System es schreiben kann)

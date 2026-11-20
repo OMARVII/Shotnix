@@ -348,6 +348,8 @@
 	<string>自动缩放</string>
 	<key>Auto Zoom from Clicks</key>
 	<string>根据点按自动缩放</string>
+	<key>Auto follows your Mac's appearance.</key>
+	<string>“自动”会跟随 Mac 的外观。</string>
 	<key>Auto zoom applied — %lld zooms follow your clicks</key>
 	<string>已应用自动缩放 — %lld 个缩放跟随你的点按</string>
 	<key>Auto zoom — %lld zooms</key>
@@ -359,6 +361,8 @@
 	<key>Auto-zoom new recordings</key>
 	<string>自动缩放新录制内容</string>
 	<key>Automatic</key>
+	<string>自动</string>
+	<key>Automatic appearance</key>
 	<string>自动</string>
 	<key>Automatic detects each capture's language; pick languages when it guesses wrong. Accurate reads small text best — Fast answers sooner but knows fewer languages. Used by Capture Text, Copy Text, and History search.</key>
 	<string>“自动”会检测每张截屏的语言；识别有误时可手动选择语言。“精确”最适合识别小字 — “快速”响应更快，但支持的语言更少。用于“提取文字”、“拷贝文字”和历史记录搜索。</string>
@@ -852,6 +856,8 @@
 	<string>硬切，无转场</string>
 	<key>Cutout</key>
 	<string>抠像</string>
+	<key>Dark appearance</key>
+	<string>深色</string>
 	<key>Decoded details</key>
 	<string>解码详情</string>
 	<key>Delete</key>
@@ -1448,6 +1454,8 @@
 	<string>级别</string>
 	<key>Light</key>
 	<string>轻度</string>
+	<key>Light appearance</key>
+	<string>浅色</string>
 	<key>Lime Signal</key>
 	<string>青柠信号</string>
 	<key>Line</key>
@@ -2652,6 +2660,8 @@
 	<string>缩短每段超过一秒的静音（此视频没有 Shotnix 指针数据，无法识别屏幕上发生了什么）</string>
 	<key>Shotnix Preferences</key>
 	<string>Shotnix 设置</string>
+	<key>Shotnix appearance</key>
+	<string>外观</string>
 	<key>Shotnix can't open this file</key>
 	<string>Shotnix 无法打开此文件</string>
 	<key>Shotnix can't save to that folder. Pick another place, like Desktop or Movies, and export again.</key>

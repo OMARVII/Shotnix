@@ -306,10 +306,10 @@ final class VideoAnnotationStyleTests: XCTestCase {
 
         // The inspector with the color picker.
         model.selection = .overlay(first.id)
-        let host = NSHostingView(rootView: VideoInspectorView(model: model).frame(width: 318, height: 520).environment(\.colorScheme, .dark))
+        let host = NSHostingView(rootView: VideoInspectorView(model: model).frame(width: 318, height: 520).environment(\.colorScheme, TestAppearance.colorScheme))
         host.frame = NSRect(x: 0, y: 0, width: 318, height: 520)
         let window = NSWindow(contentRect: host.frame, styleMask: [.borderless], backing: .buffered, defer: false)
-        window.appearance = NSAppearance(named: .darkAqua)
+        window.appearance = TestAppearance.appearance
         window.contentView = host
         host.layoutSubtreeIfNeeded()
         try await Task.sleep(nanoseconds: 300_000_000)

@@ -62,6 +62,7 @@ final class RecordingHUDWindow: NSPanel {
             backing: .buffered,
             defer: false
         )
+        staysDark()
         isOpaque = false
         backgroundColor = .clear
         hasShadow = true
@@ -117,13 +118,13 @@ final class RecordingHUDWindow: NSPanel {
         dotHalo.frame = NSRect(x: 30, y: 15, width: 14, height: 14)
         dotHalo.wantsLayer = true
         dotHalo.layer?.borderWidth = 1
-        dotHalo.layer?.borderColor = NSColor.systemRed.withAlphaComponent(0.34).cgColor
+        dotHalo.layer?.borderColor = NSColor.systemRed.withAlphaComponent(0.34).hudCGColor
         dotHalo.layer?.cornerRadius = 7
         root.addSubview(dotHalo)
 
         dot.frame = NSRect(x: 34, y: 19, width: 6, height: 6)
         dot.wantsLayer = true
-        dot.layer?.backgroundColor = NSColor.systemRed.cgColor
+        dot.layer?.backgroundColor = NSColor.systemRed.hudCGColor
         dot.layer?.cornerRadius = 3
         root.addSubview(dot)
 
@@ -526,7 +527,7 @@ private final class RecordingHUDIconButton: NSButton {
         wantsLayer = true
         layer?.cornerRadius = 10
         layer?.cornerCurve = .continuous
-        layer?.backgroundColor = tint.withAlphaComponent(tint == .white ? 0.08 : 0.16).cgColor
+        layer?.backgroundColor = tint.withAlphaComponent(tint == .white ? 0.08 : 0.16).hudCGColor
         contentTintColor = tint == .white ? NSColor.white.withAlphaComponent(0.82) : tint
         setAccessibilityLabel(label)
         setSymbol(symbol)
@@ -544,7 +545,7 @@ private final class RecordingHUDIconButton: NSButton {
 
     override func mouseDown(with event: NSEvent) {
         let idle = layer?.backgroundColor
-        layer?.backgroundColor = tint.withAlphaComponent(0.26).cgColor
+        layer?.backgroundColor = tint.withAlphaComponent(0.26).hudCGColor
         NSHapticFeedbackManager.defaultPerformer.perform(.generic, performanceTime: .default)
         super.mouseDown(with: event)
         layer?.backgroundColor = idle
@@ -559,7 +560,7 @@ private final class RecordingHUDTextButton: NSButton {
         wantsLayer = true
         layer?.cornerRadius = 8
         layer?.cornerCurve = .continuous
-        layer?.backgroundColor = tint.withAlphaComponent(tint == .white ? 0.1 : 0.22).cgColor
+        layer?.backgroundColor = tint.withAlphaComponent(tint == .white ? 0.1 : 0.22).hudCGColor
         attributedTitle = NSAttributedString(string: title, attributes: [
             .font: NSFont.systemFont(ofSize: 11, weight: .bold),
             .foregroundColor: tint == .white ? NSColor.white.withAlphaComponent(0.88) : tint,
@@ -608,7 +609,7 @@ private final class RecordingHUDLevelMeter: NSView {
             let x = CGFloat(index) * (barWidth + gap)
             bar.frame = NSRect(x: x, y: (bounds.height - height) / 2, width: barWidth, height: height)
             bar.layer?.backgroundColor = response > 0.08
-                ? NSColor.systemGreen.withAlphaComponent(0.58 + response * 0.42).cgColor
+                ? NSColor.systemGreen.withAlphaComponent(0.58 + response * 0.42).hudCGColor
                 : NSColor.white.withAlphaComponent(0.16).cgColor
         }
     }

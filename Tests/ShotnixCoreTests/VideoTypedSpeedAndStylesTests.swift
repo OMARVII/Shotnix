@@ -74,7 +74,7 @@ final class VideoTypedSpeedAndStylesTests: XCTestCase {
         let clip = try XCTUnwrap(model.segments.first?.id)
         model.selectClip(clip)
         let size = CGSize(width: 318, height: 700)
-        let host = NSHostingView(rootView: VideoInspectorView(model: model).frame(width: size.width, height: size.height).environment(\.colorScheme, .dark))
+        let host = NSHostingView(rootView: VideoInspectorView(model: model).frame(width: size.width, height: size.height).environment(\.colorScheme, TestAppearance.colorScheme))
         host.frame = NSRect(origin: .zero, size: size)
         let window = KeyWindow(contentRect: NSRect(x: -9000, y: -9000, width: size.width, height: size.height), styleMask: [.borderless], backing: .buffered, defer: false)
         window.contentView = host
@@ -123,7 +123,7 @@ final class VideoTypedSpeedAndStylesTests: XCTestCase {
             // The editor's keys: Esc in a field goes through it.
             VideoKeyboardBridge(model: model)
             VideoInspectorView(model: model)
-        }.frame(width: size.width, height: size.height).environment(\.colorScheme, .dark))
+        }.frame(width: size.width, height: size.height).environment(\.colorScheme, TestAppearance.colorScheme))
         host.frame = NSRect(origin: .zero, size: size)
         let window = KeyWindow(contentRect: NSRect(x: -9000, y: -9000, width: size.width, height: size.height), styleMask: [.borderless], backing: .buffered, defer: false)
         window.contentView = host

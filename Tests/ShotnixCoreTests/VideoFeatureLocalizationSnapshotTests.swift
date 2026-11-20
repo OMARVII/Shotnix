@@ -44,10 +44,10 @@ final class VideoFeatureLocalizationSnapshotTests: XCTestCase {
 
     @discardableResult
     private func render<V: View>(_ view: V, size: CGSize, name: String) async throws -> URL {
-        let host = NSHostingView(rootView: view.frame(width: size.width, height: size.height).environment(\.colorScheme, .dark))
+        let host = NSHostingView(rootView: view.frame(width: size.width, height: size.height).environment(\.colorScheme, TestAppearance.colorScheme))
         host.frame = NSRect(origin: .zero, size: size)
         let window = NSWindow(contentRect: host.frame, styleMask: [.borderless], backing: .buffered, defer: false)
-        window.appearance = NSAppearance(named: .darkAqua)
+        window.appearance = TestAppearance.appearance
         window.contentView = host
         host.layoutSubtreeIfNeeded()
         try await Task.sleep(nanoseconds: 400_000_000)

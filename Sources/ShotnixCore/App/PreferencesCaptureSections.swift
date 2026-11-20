@@ -92,13 +92,13 @@ struct TextRecognitionPreferences: View {
                         Spacer(minLength: 6)
                         Image(systemName: "chevron.up.chevron.down")
                             .font(.system(size: 10, weight: .bold))
-                            .foregroundStyle(Color.white.opacity(0.44))
+                            .foregroundStyle(ShotnixTheme.ink(0.44))
                     }
-                    .foregroundStyle(Color.white.opacity(0.86))
+                    .foregroundStyle(ShotnixTheme.ink(0.86))
                     .padding(.horizontal, 10)
                     .frame(width: 190, height: 28)
-                    .background(RoundedRectangle(cornerRadius: 8, style: .continuous).fill(Color.white.opacity(0.08)))
-                    .overlay(RoundedRectangle(cornerRadius: 8, style: .continuous).stroke(Color.white.opacity(0.10), lineWidth: 1))
+                    .background(RoundedRectangle(cornerRadius: 8, style: .continuous).fill(ShotnixTheme.ink(0.08)))
+                    .overlay(RoundedRectangle(cornerRadius: 8, style: .continuous).stroke(ShotnixTheme.ink(0.10), lineWidth: 1))
                 }
                 .buttonStyle(.plain)
             }

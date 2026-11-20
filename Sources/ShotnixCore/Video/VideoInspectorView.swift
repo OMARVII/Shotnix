@@ -107,7 +107,7 @@ struct VideoInspectorView: View {
                     .frame(height: 48)
                     .background(
                         RoundedRectangle(cornerRadius: 8, style: .continuous)
-                            .fill(selected ? Color.white.opacity(0.09) : Color.clear)
+                            .fill(selected ? ShotnixTheme.ink(0.09) : Color.clear)
                     )
                     .overlay(alignment: .topTrailing) {
                         // A narrated video nobody transcribed yet.
@@ -364,7 +364,7 @@ struct VideoBackgroundInspector: View {
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                 } else {
-                    Color.white.opacity(0.06)
+                    ShotnixTheme.ink(0.06)
                 }
             }
             .frame(height: 42)
@@ -372,7 +372,7 @@ struct VideoBackgroundInspector: View {
             .clipShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: 7, style: .continuous)
-                    .strokeBorder(selected ? Color.white : Color.white.opacity(0.1), lineWidth: selected ? 2 : 1)
+                    .strokeBorder(selected ? ShotnixTheme.solidInk(1) : ShotnixTheme.ink(0.1), lineWidth: selected ? 2 : 1)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 9, style: .continuous)
@@ -818,7 +818,7 @@ struct VideoSelectionInspector: View {
             }
             .onChange(of: maxHeight) { _ in updateMoreBelow() }
         }
-        .background(Color.white.opacity(0.02))
+        .background(ShotnixTheme.ink(0.02))
         .accessibilityElement(children: .contain)
         .accessibilityLabel(L("Selected \(headerTitle)"))
     }
@@ -1022,7 +1022,7 @@ struct VideoSelectionInspector: View {
                             .foregroundStyle(VideoEditorTheme.textPrimary)
                             .padding(.horizontal, 10)
                             .frame(height: 30)
-                            .background(RoundedRectangle(cornerRadius: 7, style: .continuous).fill(region.layout == layout ? VideoEditorTheme.camera.opacity(0.18) : Color.white.opacity(0.04)))
+                            .background(RoundedRectangle(cornerRadius: 7, style: .continuous).fill(region.layout == layout ? VideoEditorTheme.camera.opacity(0.18) : ShotnixTheme.ink(0.04)))
                             .contentShape(Rectangle())
                         }
                         .buttonStyle(.plain)
@@ -1105,7 +1105,7 @@ struct VideoSelectionInspector: View {
                 .font(.system(size: 13))
                 .lineLimit(2...6)
                 .padding(8)
-                .background(RoundedRectangle(cornerRadius: 8, style: .continuous).fill(Color.black.opacity(0.28)))
+                .background(RoundedRectangle(cornerRadius: 8, style: .continuous).fill(ShotnixTheme.shade(0.28)))
                 .overlay(RoundedRectangle(cornerRadius: 8, style: .continuous).strokeBorder(VideoEditorTheme.cardStroke, lineWidth: 1))
                 .focused($textFocused)
                 .onSubmit { model.endGesture() }
@@ -1416,7 +1416,7 @@ struct VideoSelectionInspector: View {
                     .font(.system(size: 13, weight: .medium))
                     .lineLimit(1...4)
                     .padding(8)
-                    .background(RoundedRectangle(cornerRadius: 7, style: .continuous).fill(Color.black.opacity(0.3)))
+                    .background(RoundedRectangle(cornerRadius: 7, style: .continuous).fill(ShotnixTheme.shade(0.3)))
                     .overlay(RoundedRectangle(cornerRadius: 7, style: .continuous).strokeBorder(VideoEditorTheme.cardStroke, lineWidth: 1))
                     .focused($textFocused)
                     .onChange(of: model.textEditRequest) { _ in textFocused = true }
@@ -1568,7 +1568,7 @@ struct VideoSpeedField: View {
         }
         .padding(.horizontal, 6)
         .frame(height: 22)
-        .background(RoundedRectangle(cornerRadius: 6, style: .continuous).fill(lit ? VideoEditorTheme.clip : Color.black.opacity(0.3)))
+        .background(RoundedRectangle(cornerRadius: 6, style: .continuous).fill(lit ? VideoEditorTheme.clip : ShotnixTheme.shade(0.3)))
         .overlay(RoundedRectangle(cornerRadius: 6, style: .continuous).strokeBorder(focused ? VideoEditorTheme.accent.opacity(0.8) : lit ? Color.clear : VideoEditorTheme.cardStroke, lineWidth: 1))
         .onAppear { text = shown }
         .onChange(of: speed) { _ in

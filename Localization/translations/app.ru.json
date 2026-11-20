@@ -150,6 +150,9 @@
   "Aurora Blue" : {
     "ru" : "Синее сияние"
   },
+  "Auto follows your Mac's appearance." : {
+    "ru" : "«Автоматически» повторяет оформление Mac."
+  },
   "Auto-dismiss overlay" : {
     "ru" : "Автоскрытие миниатюры"
   },
@@ -160,6 +163,9 @@
     "ru" : "Автомасштаб для новых записей"
   },
   "Automatic" : {
+    "ru" : "Автоматически"
+  },
+  "Automatic appearance" : {
     "ru" : "Автоматически"
   },
   "Automatic detects each capture's language; pick languages when it guesses wrong. Accurate reads small text best — Fast answers sooner but knows fewer languages. Used by Capture Text, Copy Text, and History search." : {
@@ -350,6 +356,9 @@
   },
   "Cut" : {
     "ru" : "Вырезать"
+  },
+  "Dark appearance" : {
+    "ru" : "Темное"
   },
   "Delete %lld Captures?" : {
     "ru" : {
@@ -658,6 +667,9 @@
   },
   "Left" : {
     "ru" : "Слева"
+  },
+  "Light appearance" : {
+    "ru" : "Светлое"
   },
   "Lime Signal" : {
     "ru" : "Лаймовый сигнал"
@@ -1038,6 +1050,9 @@
   },
   "Shotnix Preferences" : {
     "ru" : "Настройки Shotnix"
+  },
+  "Shotnix appearance" : {
+    "ru" : "Оформление"
   },
   "Shotnix could not write the file to:\n%@" : {
     "ru" : "Shotnix не удалось записать файл в это место:\n%@"

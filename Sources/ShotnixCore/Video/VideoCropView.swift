@@ -307,7 +307,7 @@ struct VideoCropBar: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
-        .background(Capsule().fill(Color.black.opacity(0.78)))
-        .overlay(Capsule().strokeBorder(Color.white.opacity(0.12), lineWidth: 1))
+        .background(Capsule().fill(VideoEditorTheme.pill(0.78)))
+        .overlay(Capsule().strokeBorder(ShotnixTheme.ink(0.12), lineWidth: 1))
     }
 }

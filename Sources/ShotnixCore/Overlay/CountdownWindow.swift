@@ -42,6 +42,7 @@ final class CountdownWindow: NSWindow {
             backing: .buffered,
             defer: false
         )
+        staysDark()
         isOpaque = false
         backgroundColor = .clear
         level = .screenSaver
@@ -152,7 +153,7 @@ final class CountdownWindow: NSWindow {
 
         progressRing.path = ringPath
         progressRing.fillColor = nil
-        progressRing.strokeColor = NSColor.controlAccentColor.cgColor
+        progressRing.strokeColor = NSColor.controlAccentColor.hudCGColor
         progressRing.lineWidth = 4
         progressRing.lineCap = .round
         circleLayer.addSublayer(progressRing)

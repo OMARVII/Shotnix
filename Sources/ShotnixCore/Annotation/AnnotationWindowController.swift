@@ -211,9 +211,12 @@ final class AnnotationWindowController: NSWindowController {
         scrollView.layer?.cornerRadius = 18
         scrollView.layer?.cornerCurve = .continuous
         scrollView.layer?.borderWidth = 1
-        scrollView.layer?.borderColor = ShotnixColors.editorChromeBorder.cgColor
         scrollView.layer?.shadowColor = NSColor.black.cgColor
-        scrollView.layer?.shadowOpacity = 0.24
+        scrollView.themed { scrollView in
+            scrollView.layer?.borderColor = ShotnixColors.editorChromeBorder.cgColor
+            // The screenshot needs less shadow to stand off a light stage.
+            scrollView.layer?.shadowOpacity = ShotnixTheme.isDark(scrollView.effectiveAppearance) ? 0.24 : 0.14
+        }
         scrollView.layer?.shadowRadius = 32
         scrollView.layer?.shadowOffset = CGSize(width: 0, height: -18)
 
@@ -471,8 +474,10 @@ private final class PremiumEditorStageView: NSView {
             rect.fill()
         }
 
-        drawGlow(in: ctx, rect: rect, color: NSColor.controlAccentColor.withAlphaComponent(0.18), center: CGPoint(x: rect.maxX * 0.72, y: rect.minY + 24), radius: max(rect.width, rect.height) * 0.42)
-        drawGlow(in: ctx, rect: rect, color: NSColor.systemPurple.withAlphaComponent(0.12), center: CGPoint(x: rect.minX + rect.width * 0.18, y: rect.maxY + 20), radius: max(rect.width, rect.height) * 0.36)
+        // Softer in the light, where a glow shows much more.
+        let dark = ShotnixTheme.isDark(effectiveAppearance)
+        drawGlow(in: ctx, rect: rect, color: NSColor.controlAccentColor.withAlphaComponent(dark ? 0.18 : 0.1), center: CGPoint(x: rect.maxX * 0.72, y: rect.minY + 24), radius: max(rect.width, rect.height) * 0.42)
+        drawGlow(in: ctx, rect: rect, color: NSColor.systemPurple.withAlphaComponent(dark ? 0.12 : 0.07), center: CGPoint(x: rect.minX + rect.width * 0.18, y: rect.maxY + 20), radius: max(rect.width, rect.height) * 0.36)
     }
 
     private func drawGlow(in context: CGContext, rect: CGRect, color: NSColor, center: CGPoint, radius: CGFloat) {

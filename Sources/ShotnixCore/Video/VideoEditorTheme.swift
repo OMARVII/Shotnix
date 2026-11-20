@@ -1,26 +1,96 @@
 import AppKit
 import SwiftUI
 
-/// The editor's dark, content-first palette.
+/// The editor's content-first palette, in the light and the dark: the
+/// dark values are the ones the editor has always had.
 enum VideoEditorTheme {
-    static let window = Color(red: 0.047, green: 0.047, blue: 0.055)
-    static let stage = Color(red: 0.035, green: 0.035, blue: 0.043)
-    static let panel = Color(red: 0.075, green: 0.075, blue: 0.086)
-    static let card = Color.white.opacity(0.045)
-    static let cardHover = Color.white.opacity(0.075)
-    static let cardStroke = Color.white.opacity(0.075)
-    static let hairline = Color.white.opacity(0.07)
-    static let textPrimary = Color.white.opacity(0.93)
-    static let textSecondary = Color.white.opacity(0.58)
+    private static func themed(light: (Double, Double, Double), dark: (Double, Double, Double)) -> Color {
+        ShotnixTheme.color(
+            light: NSColor(srgbRed: light.0, green: light.1, blue: light.2, alpha: 1),
+            dark: NSColor(srgbRed: dark.0, green: dark.1, blue: dark.2, alpha: 1)
+        )
+    }
+
+    /// The window's own chrome: the toolbar, and what shows between panes.
+    static let window = themed(light: (0.949, 0.949, 0.961), dark: (0.047, 0.047, 0.055))
+    /// What the video lies on. A step darker than the chrome in either
+    /// appearance, so the picture stands out.
+    static let stage = themed(light: (0.894, 0.894, 0.914), dark: (0.035, 0.035, 0.043))
+    /// The inspector and the timeline: a step above the chrome.
+    static let panel = themed(light: (0.975, 0.975, 0.984), dark: (0.075, 0.075, 0.086))
+    /// A sheet, a palette or a menu floating over the editor.
+    static let sheet = ShotnixTheme.color(light: NSColor(srgbRed: 0.985, green: 0.985, blue: 0.992, alpha: 1), dark: NSColor(srgbRed: 0.11, green: 0.11, blue: 0.11, alpha: 1))
+    /// A floating bar of tools over the stage.
+    static let dock = ShotnixTheme.color(
+        light: NSColor(srgbRed: 0.992, green: 0.992, blue: 0.996, alpha: 0.94),
+        dark: NSColor(srgbRed: 0.1, green: 0.1, blue: 0.115, alpha: 0.94)
+    )
+    static let card = ShotnixTheme.ink(0.045)
+    static let cardHover = ShotnixTheme.ink(0.075)
+    static let cardStroke = ShotnixTheme.ink(0.075)
+    static let hairline = ShotnixTheme.ink(0.07)
+    static let textPrimary = ShotnixTheme.ink(0.93)
+    static let textSecondary = ShotnixTheme.ink(0.58)
     /// Helper text: still readable on the panel (about 5:1).
-    static let textTertiary = Color.white.opacity(0.5)
-    static let zoom = Color(red: 0.43, green: 0.39, blue: 1.0)
-    static let clip = Color(red: 0.94, green: 0.58, blue: 0.2)
-    static let playhead = Color(red: 1.0, green: 0.31, blue: 0.43)
+    static let textTertiary = ShotnixTheme.ink(0.5)
+    // The timeline's colors, a little deeper in the light so they read as
+    // text and thin lines on a white panel too.
+    static let zoom = themed(light: (0.36, 0.31, 0.93), dark: (0.43, 0.39, 1.0))
+    static let clip = themed(light: (0.80, 0.42, 0.04), dark: (0.94, 0.58, 0.2))
+    static let playhead = themed(light: (0.93, 0.2, 0.35), dark: (1.0, 0.31, 0.43))
     static let accent = Color.accentColor
     /// Primary buttons: a fixed blue, so white text stays readable whatever
     /// accent color the Mac uses (yellow, orange, green…).
     static let primary = Color(red: 0.04, green: 0.42, blue: 1.0)
+    /// A secondary button's "this deletes something" text.
+    static let destructiveText = ShotnixTheme.color(light: NSColor(srgbRed: 0.80, green: 0.14, blue: 0.15, alpha: 1), dark: NSColor(srgbRed: 1, green: 0.47, blue: 0.47, alpha: 1))
+    /// The chosen segment of a segmented control: lifted off its track. On
+    /// the light panel that's a white tile, the way macOS draws one.
+    static let segmentSelected = ShotnixTheme.color(light: NSColor(srgbRed: 1, green: 1, blue: 1, alpha: 0.96), dark: NSColor(srgbRed: 1, green: 1, blue: 1, alpha: 0.14))
+    /// A note or a row of tips lying on the stage: dark glass in the dark,
+    /// a white capsule in the light. `opacity` is the dark one's.
+    static func pill(_ opacity: Double) -> Color {
+        ShotnixTheme.color(light: NSColor(srgbRed: 1, green: 1, blue: 1, alpha: 0.92), dark: NSColor(srgbRed: 0, green: 0, blue: 0, alpha: opacity))
+    }
+
+    /// The editor window's own background, behind the SwiftUI views.
+    static let windowBackground = ShotnixTheme.dynamic(
+        light: NSColor(srgbRed: 0.949, green: 0.949, blue: 0.961, alpha: 1),
+        dark: NSColor(red: 0.047, green: 0.047, blue: 0.055, alpha: 1)
+    )
+
+    /// The export sheet, and the list of exports under its chip.
+    static let exportSheet = ShotnixTheme.color(light: NSColor(srgbRed: 0.985, green: 0.985, blue: 0.992, alpha: 1), dark: NSColor(srgbRed: 0.105, green: 0.105, blue: 0.105, alpha: 1))
+    static let popover = ShotnixTheme.color(light: NSColor(srgbRed: 0.985, green: 0.985, blue: 0.992, alpha: 1), dark: NSColor(srgbRed: 0.12, green: 0.12, blue: 0.12, alpha: 1))
+    // What went wrong, readable on either surface.
+    private static let lightError = NSColor(srgbRed: 0.78, green: 0.16, blue: 0.14, alpha: 1)
+    static let errorText = ShotnixTheme.color(light: lightError, dark: NSColor(srgbRed: 1, green: 0.55, blue: 0.5, alpha: 1))
+    static let failedChipText = ShotnixTheme.color(light: lightError, dark: NSColor(srgbRed: 1, green: 0.62, blue: 0.55, alpha: 1))
+    static let failedPillText = ShotnixTheme.color(light: lightError, dark: NSColor(srgbRed: 1, green: 0.6, blue: 0.55, alpha: 1))
+    /// A heads-up, not an error. Yellow is unreadable on a white sheet.
+    static let cautionText = ShotnixTheme.color(light: NSColor(srgbRed: 0.62, green: 0.4, blue: 0, alpha: 1), dark: NSColor(Color.yellow.opacity(0.85)))
+    /// A label or a line on a lane's block. The block is its color mixed
+    /// with the panel behind it: a deep shade on the dark panel, where white
+    /// reads, and a pale tint on the light one, where near-black does.
+    static func onTint(_ opacity: Double = 1) -> Color {
+        ShotnixTheme.color(
+            light: NSColor(srgbRed: 0.075, green: 0.078, blue: 0.098, alpha: opacity * 0.86),
+            dark: NSColor(srgbRed: 1, green: 1, blue: 1, alpha: opacity)
+        )
+    }
+
+    /// The same for a block in a color of the user's own, where either
+    /// appearance may need either ink.
+    static func onTint(darkInkInTheDark: Bool, darkInkInTheLight: Bool) -> Color {
+        let darkInk = NSColor(srgbRed: 0, green: 0, blue: 0, alpha: 0.8)
+        let white = NSColor(srgbRed: 1, green: 1, blue: 1, alpha: 1)
+        return ShotnixTheme.color(light: darkInkInTheLight ? darkInk : white, dark: darkInkInTheDark ? darkInk : white)
+    }
+
+    /// The dimming behind a sheet.
+    static func scrim(_ opacity: Double) -> Color {
+        ShotnixTheme.color(light: NSColor(srgbRed: 0.1, green: 0.1, blue: 0.14, alpha: opacity * 0.55), dark: NSColor(srgbRed: 0, green: 0, blue: 0, alpha: opacity))
+    }
 
     static func overlayTint(_ kind: VideoDemoOverlayEffectKind) -> Color {
         switch kind {
@@ -74,14 +144,14 @@ struct VideoToolButtonStyle: ButtonStyle {
 
         private var foreground: Color {
             guard isEnabled else { return VideoEditorTheme.textTertiary }
-            if destructive { return Color(red: 1, green: 0.45, blue: 0.45) }
+            if destructive { return ShotnixTheme.destructive }
             return VideoEditorTheme.textPrimary
         }
 
         private var background: Color {
-            if prominent { return Color.white.opacity(configuration.isPressed ? 0.2 : (hovered ? 0.16 : 0.11)) }
-            if configuration.isPressed { return Color.white.opacity(0.14) }
-            return hovered && isEnabled ? Color.white.opacity(0.08) : Color.clear
+            if prominent { return ShotnixTheme.ink(configuration.isPressed ? 0.2 : (hovered ? 0.16 : 0.11)) }
+            if configuration.isPressed { return ShotnixTheme.ink(0.14) }
+            return hovered && isEnabled ? ShotnixTheme.ink(0.08) : Color.clear
         }
     }
 }
@@ -98,17 +168,17 @@ struct VideoPrimaryButtonStyle: ButtonStyle {
         var body: some View {
             configuration.label
                 .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(.white.opacity(isEnabled ? 1 : 0.45))
+                .foregroundStyle(isEnabled ? Color.white : ShotnixTheme.ink(0.45))
                 .padding(.horizontal, 14)
                 .frame(height: 30)
                 .background(
                     RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .fill(isEnabled ? VideoEditorTheme.primary : Color.white.opacity(0.08))
+                        .fill(isEnabled ? VideoEditorTheme.primary : ShotnixTheme.ink(0.08))
                         .brightness(configuration.isPressed ? -0.08 : 0)
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .strokeBorder(Color.white.opacity(isEnabled ? 0.18 : 0.06), lineWidth: 1)
+                        .strokeBorder(isEnabled ? Color.white.opacity(0.18) : ShotnixTheme.ink(0.06), lineWidth: 1)
                 )
                 .shadow(color: VideoEditorTheme.primary.opacity(isEnabled ? 0.35 : 0), radius: 8, y: 2)
                 .scaleEffect(configuration.isPressed ? 0.98 : 1)
@@ -132,12 +202,12 @@ struct VideoSecondaryButtonStyle: ButtonStyle {
         var body: some View {
             configuration.label
                 .font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(isEnabled ? (destructive ? Color(red: 1, green: 0.47, blue: 0.47) : VideoEditorTheme.textPrimary) : VideoEditorTheme.textTertiary)
+                .foregroundStyle(isEnabled ? (destructive ? VideoEditorTheme.destructiveText : VideoEditorTheme.textPrimary) : VideoEditorTheme.textTertiary)
                 .padding(.horizontal, 12)
                 .frame(minHeight: 28)
                 .background(
                     RoundedRectangle(cornerRadius: 7, style: .continuous)
-                        .fill(Color.white.opacity(configuration.isPressed ? 0.14 : (hovered && isEnabled ? 0.1 : 0.06)))
+                        .fill(ShotnixTheme.ink(configuration.isPressed ? 0.14 : (hovered && isEnabled ? 0.1 : 0.06)))
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 7, style: .continuous)
@@ -386,7 +456,7 @@ struct VideoSegmented<Value: Hashable>: View {
                         .frame(height: 24)
                         .background(
                             RoundedRectangle(cornerRadius: 6, style: .continuous)
-                                .fill(selected ? Color.white.opacity(0.14) : Color.clear)
+                                .fill(selected ? VideoEditorTheme.segmentSelected : Color.clear)
                         )
                         .contentShape(Rectangle())
                 }
@@ -399,7 +469,7 @@ struct VideoSegmented<Value: Hashable>: View {
         .padding(2)
         .background(
             RoundedRectangle(cornerRadius: 8, style: .continuous)
-                .fill(Color.black.opacity(0.28))
+                .fill(ShotnixTheme.shade(0.28))
         )
         .overlay(
             RoundedRectangle(cornerRadius: 8, style: .continuous)

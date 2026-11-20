@@ -635,8 +635,7 @@ struct VideoExportToolbarStatus: View {
                 .popover(isPresented: $showsList, arrowEdge: .bottom) {
                     VideoExportJobsPill(model: model)
                         .padding(10)
-                        .background(Color(white: 0.12))
-                        .environment(\.colorScheme, .dark)
+                        .background(VideoEditorTheme.popover)
                 }
         }
     }
@@ -662,10 +661,10 @@ private struct VideoExportStatusChip: View {
                             .font(.system(size: 10, weight: .bold))
                             .padding(.horizontal, 5)
                             .frame(height: 16)
-                            .background(Capsule().fill(Color.white.opacity(0.14)))
+                            .background(Capsule().fill(ShotnixTheme.ink(0.14)))
                     }
                 }
-                .foregroundStyle(isFailed ? Color(red: 1, green: 0.62, blue: 0.55) : VideoEditorTheme.textPrimary)
+                .foregroundStyle(isFailed ? VideoEditorTheme.failedChipText : VideoEditorTheme.textPrimary)
                 .padding(.leading, 9)
                 .padding(.trailing, 4)
                 .frame(height: 28)
@@ -677,7 +676,7 @@ private struct VideoExportStatusChip: View {
             actions
         }
         .padding(.trailing, 2)
-        .background(RoundedRectangle(cornerRadius: 7, style: .continuous).fill(Color.white.opacity(0.06)))
+        .background(RoundedRectangle(cornerRadius: 7, style: .continuous).fill(ShotnixTheme.ink(0.06)))
         .fixedSize()
     }
 
@@ -715,9 +714,9 @@ private struct VideoExportStatusChip: View {
         case .failed:
             Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(Color.orange).font(.system(size: 13))
         case .cancelled:
-            Image(systemName: "xmark.circle").foregroundStyle(Color.white.opacity(0.6)).font(.system(size: 13))
+            Image(systemName: "xmark.circle").foregroundStyle(ShotnixTheme.ink(0.6)).font(.system(size: 13))
         case .queued:
-            Image(systemName: "clock").foregroundStyle(Color.white.opacity(0.7)).font(.system(size: 12))
+            Image(systemName: "clock").foregroundStyle(ShotnixTheme.ink(0.7)).font(.system(size: 12))
         case .enhancingVoice(let value), .running(.balancingLoudness(let value)), .running(.rendering(let value)), .running(.savingSound(let value)):
             ring(value)
         case .running(.preparing):
@@ -727,7 +726,7 @@ private struct VideoExportStatusChip: View {
 
     private func ring(_ value: Double) -> some View {
         ZStack {
-            Circle().stroke(Color.white.opacity(0.18), lineWidth: 2.5)
+            Circle().stroke(ShotnixTheme.ink(0.18), lineWidth: 2.5)
             Circle()
                 .trim(from: 0, to: min(max(value, 0.03), 1))
                 .stroke(Color.accentColor, style: StrokeStyle(lineWidth: 2.5, lineCap: .round))
@@ -791,12 +790,12 @@ private struct VideoExportJobRow: View {
             VStack(alignment: .leading, spacing: 3) {
                 Text(job.toClipboard ? L("Copy to clipboard") : job.destination.lastPathComponent)
                     .font(.system(size: 11.5, weight: .semibold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(ShotnixTheme.ink(1))
                     .lineLimit(1)
                     .truncationMode(.middle)
                 Text(job.statusText)
                     .font(.system(size: 10.5, weight: .medium))
-                    .foregroundStyle(isFailed ? Color(red: 1, green: 0.6, blue: 0.55) : Color.white.opacity(0.7))
+                    .foregroundStyle(isFailed ? VideoEditorTheme.failedPillText : ShotnixTheme.ink(0.7))
                     .lineLimit(2)
                     .fixedSize(horizontal: false, vertical: true)
                 if !job.isDone {
@@ -811,9 +810,9 @@ private struct VideoExportJobRow: View {
         }
         .padding(.horizontal, 11)
         .padding(.vertical, 8)
-        .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(Color.black.opacity(0.8)))
-        .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(Color.white.opacity(0.12), lineWidth: 1))
-        .shadow(color: .black.opacity(0.35), radius: 10, y: 4)
+        .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(VideoEditorTheme.pill(0.8)))
+        .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(ShotnixTheme.ink(0.12), lineWidth: 1))
+        .shadow(color: ShotnixTheme.shadow(0.35), radius: 10, y: 4)
     }
 
     private var isFailed: Bool {
@@ -829,9 +828,9 @@ private struct VideoExportJobRow: View {
         case .failed:
             Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(Color.orange).font(.system(size: 15))
         case .cancelled:
-            Image(systemName: "xmark.circle").foregroundStyle(Color.white.opacity(0.6)).font(.system(size: 15))
+            Image(systemName: "xmark.circle").foregroundStyle(ShotnixTheme.ink(0.6)).font(.system(size: 15))
         case .queued:
-            Image(systemName: "clock").foregroundStyle(Color.white.opacity(0.7)).font(.system(size: 14))
+            Image(systemName: "clock").foregroundStyle(ShotnixTheme.ink(0.7)).font(.system(size: 14))
         default:
             ProgressView().controlSize(.small)
         }
@@ -865,7 +864,7 @@ private struct VideoExportJobRow: View {
             .accessibilityLabel(job.isDone ? L("Dismiss") : L("Cancel export"))
         }
         .font(.system(size: 11.5, weight: .semibold))
-        .foregroundStyle(.white)
+        .foregroundStyle(ShotnixTheme.ink(1))
     }
 }
 
@@ -1020,7 +1019,6 @@ private struct VideoExportCompletionView: View {
         .padding(14)
         .frame(width: 360, height: 96, alignment: .topLeading)
         .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(.regularMaterial))
-        .environment(\.colorScheme, .dark)
     }
 
     private var failed: Bool {

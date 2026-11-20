@@ -498,11 +498,11 @@ struct VideoDataSettingsRow: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(usage.map { L("Video data uses \(ByteCountFormatter.string(fromByteCount: $0, countStyle: .file))") } ?? L("Video data"))
                     .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Color.white.opacity(0.88))
+                    .foregroundStyle(ShotnixTheme.ink(0.88))
                     .lineLimit(1)
                 Text(result ?? L("Camera footage, cleaned-up voice, drafts, and clipboard exports"))
                     .font(.system(size: 11, weight: .medium))
-                    .foregroundStyle(Color.white.opacity(0.45))
+                    .foregroundStyle(ShotnixTheme.ink(0.45))
                     // Longer languages take a second line.
                     .lineLimit(2)
                     .fixedSize(horizontal: false, vertical: true)

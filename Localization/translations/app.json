@@ -274,6 +274,12 @@
     "fr" : "Bleu aurore",
     "zh-Hans" : "极光蓝"
   },
+  "Auto follows your Mac's appearance." : {
+    "comment" : "Under the Appearance setting",
+    "de" : "„Automatisch“ folgt dem Erscheinungsbild deines Mac.",
+    "fr" : "« Automatique » suit l’apparence de votre Mac.",
+    "zh-Hans" : "“自动”会跟随 Mac 的外观。"
+  },
   "Auto-dismiss overlay" : {
     "de" : "Miniatur automatisch ausblenden",
     "fr" : "Masquer la vignette automatiquement",
@@ -290,6 +296,13 @@
     "zh-Hans" : "自动缩放新录制内容"
   },
   "Automatic" : {
+    "de" : "Automatisch",
+    "fr" : "Automatique",
+    "zh-Hans" : "自动"
+  },
+  "Automatic appearance" : {
+    "comment" : "Appearance choice, shown as \"Auto\": follows the Mac. The word macOS uses in System Settings > Appearance",
+    "en" : "Auto",
     "de" : "Automatisch",
     "fr" : "Automatique",
     "zh-Hans" : "自动"
@@ -618,6 +631,13 @@
     "de" : "Ausschneiden",
     "fr" : "Couper",
     "zh-Hans" : "剪切"
+  },
+  "Dark appearance" : {
+    "comment" : "Appearance choice, shown as \"Dark\". The word macOS uses in System Settings > Appearance",
+    "en" : "Dark",
+    "de" : "Dunkel",
+    "fr" : "Sombre",
+    "zh-Hans" : "深色"
   },
   "Delete %lld Captures?" : {
     "de" : {
@@ -1171,6 +1191,13 @@
     "de" : "Links",
     "fr" : "Gauche",
     "zh-Hans" : "左侧"
+  },
+  "Light appearance" : {
+    "comment" : "Appearance choice, shown as \"Light\". The word macOS uses in System Settings > Appearance",
+    "en" : "Light",
+    "de" : "Hell",
+    "fr" : "Clair",
+    "zh-Hans" : "浅色"
   },
   "Lime Signal" : {
     "de" : "Limettensignal",
@@ -1823,6 +1850,13 @@
     "de" : "Shotnix-Einstellungen",
     "fr" : "Réglages de Shotnix",
     "zh-Hans" : "Shotnix 设置"
+  },
+  "Shotnix appearance" : {
+    "comment" : "General setting, shown as \"Appearance\": light, dark, or like the Mac. The name macOS uses for it",
+    "en" : "Appearance",
+    "de" : "Erscheinungsbild",
+    "fr" : "Apparence",
+    "zh-Hans" : "外观"
   },
   "Shotnix could not write the file to:\n%@" : {
     "de" : "Shotnix konnte die Datei nicht hier sichern:\n%@",

@@ -141,6 +141,9 @@ final class AnnotationToolbar: NSView {
         layer?.cornerCurve = .continuous
         layer?.shadowColor = NSColor.black.cgColor
         layer?.shadowOpacity = 0.18
+        themed { toolbar in
+            toolbar.layer?.shadowOpacity = ShotnixTheme.isDark(toolbar.effectiveAppearance) ? 0.18 : 0.12
+        }
         layer?.shadowRadius = 22
         layer?.shadowOffset = CGSize(width: 0, height: -10)
         setAccessibilityRole(.toolbar)
@@ -163,7 +166,7 @@ final class AnnotationToolbar: NSView {
         border.layer?.cornerRadius = 18
         border.layer?.cornerCurve = .continuous
         border.layer?.borderWidth = 1
-        border.layer?.borderColor = ShotnixColors.editorDockBorder.cgColor
+        border.themed { $0.layer?.borderColor = ShotnixColors.editorDockBorder.cgColor }
         addSubview(border)
 
         let midY = Self.height / 2
@@ -199,7 +202,7 @@ final class AnnotationToolbar: NSView {
         colorBtn.layer?.cornerRadius = 15
         colorBtn.layer?.backgroundColor = NSColor.systemRed.cgColor
         colorBtn.layer?.borderWidth = 2
-        colorBtn.layer?.borderColor = NSColor.white.withAlphaComponent(0.3).cgColor
+        colorBtn.themed { $0.layer?.borderColor = ShotnixTheme.washColor(0.3).cgColor }
         colorBtn.isBordered = false
         colorBtn.bezelStyle = .regularSquare
         colorBtn.toolTip = L("Color")
@@ -441,9 +444,11 @@ final class AnnotationToolbar: NSView {
         group.wantsLayer = true
         group.layer?.cornerRadius = Self.groupRadius
         group.layer?.cornerCurve = .continuous
-        group.layer?.backgroundColor = NSColor.white.withAlphaComponent(0.055).cgColor
         group.layer?.borderWidth = 1
-        group.layer?.borderColor = NSColor.white.withAlphaComponent(0.055).cgColor
+        group.themed { group in
+            group.layer?.backgroundColor = ShotnixTheme.inkColor(0.055).cgColor
+            group.layer?.borderColor = ShotnixTheme.inkColor(0.055).cgColor
+        }
         addSubview(group)
     }
 
@@ -964,7 +969,7 @@ final class BackgroundPopoverController: NSViewController {
             let preset = ScreenshotBackgroundOptions.imagePresets[index]
             let selected = options.style == .image && options.customImageData == nil && preset.name == options.presetName
             button.layer?.borderWidth = selected ? 2 : 1
-            button.layer?.borderColor = selected ? NSColor.controlAccentColor.cgColor : NSColor.white.withAlphaComponent(0.18).cgColor
+            button.layer?.borderColor = selected ? NSColor.controlAccentColor.cgColor : ShotnixTheme.inkColor(0.18).cgColor(in: button)
         }
     }
 
@@ -1120,7 +1125,7 @@ private final class AnnotationToolButton: NSButton {
         NSAnimationContext.runAnimationGroup { ctx in
             ctx.duration = 0.15
             ctx.allowsImplicitAnimation = true
-            self.layer?.backgroundColor = NSColor.labelColor.withAlphaComponent(0.08).cgColor
+            self.layer?.backgroundColor = NSColor.labelColor.withAlphaComponent(0.08).cgColor(in: self)
         }
     }
 
@@ -1198,21 +1203,21 @@ private final class PremiumToolbarActionButton: NSButton {
 
     override func mouseEntered(with event: NSEvent) {
         isHovered = true
-        animateBackground(ShotnixColors.cornerButtonHover.cgColor)
+        animateBackground(ShotnixColors.cornerButtonHover.cgColor(in: self))
     }
 
     override func mouseExited(with event: NSEvent) {
         isHovered = false
-        animateBackground(ShotnixColors.editorActionBackground.cgColor)
+        animateBackground(ShotnixColors.editorActionBackground.cgColor(in: self))
     }
 
     /// NSButton tracks the click inside `super.mouseDown` and never gets
     /// `mouseUp`, so the release look is restored when that returns.
     override func mouseDown(with event: NSEvent) {
-        animateBackground(ShotnixColors.cornerButtonPressed.cgColor)
+        animateBackground(ShotnixColors.cornerButtonPressed.cgColor(in: self))
         if let layer { layer.transform = layer.scaledAboutCenter(0.97) }
         super.mouseDown(with: event)
-        animateBackground(isHovered ? ShotnixColors.cornerButtonHover.cgColor : ShotnixColors.editorActionBackground.cgColor)
+        animateBackground((isHovered ? ShotnixColors.cornerButtonHover : ShotnixColors.editorActionBackground).cgColor(in: self))
         layer?.transform = CATransform3DIdentity
     }
 
@@ -1221,9 +1226,11 @@ private final class PremiumToolbarActionButton: NSButton {
         isBordered = false
         layer?.cornerRadius = 9
         layer?.cornerCurve = .continuous
-        layer?.backgroundColor = ShotnixColors.editorActionBackground.cgColor
         layer?.borderWidth = 1
-        layer?.borderColor = ShotnixColors.editorDockBorder.cgColor
+        themed { button in
+            button.layer?.backgroundColor = (button.isHovered ? ShotnixColors.cornerButtonHover : ShotnixColors.editorActionBackground).cgColor
+            button.layer?.borderColor = ShotnixColors.editorDockBorder.cgColor
+        }
     }
 
     private func animateBackground(_ color: CGColor) {

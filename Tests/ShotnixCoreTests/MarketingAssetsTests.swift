@@ -463,10 +463,10 @@ final class MarketingAssetsTests: XCTestCase {
     // MARK: Renders
 
     private func render<V: View>(_ view: V, size: CGSize, name: String, scale: CGFloat = 2) async throws {
-        let host = NSHostingView(rootView: view.frame(width: size.width, height: size.height).environment(\.colorScheme, .dark))
+        let host = NSHostingView(rootView: view.frame(width: size.width, height: size.height).environment(\.colorScheme, TestAppearance.colorScheme))
         host.frame = NSRect(origin: .zero, size: size)
         let window = NSWindow(contentRect: host.frame, styleMask: [.borderless], backing: .buffered, defer: false)
-        window.appearance = NSAppearance(named: .darkAqua)
+        window.appearance = TestAppearance.appearance
         window.contentView = host
         host.layoutSubtreeIfNeeded()
         try await Task.sleep(nanoseconds: 600_000_000)
@@ -668,7 +668,7 @@ final class MarketingAssetsTests: XCTestCase {
         let controller = AnnotationWindowController(image: screenshot, historyItem: nil, historyManager: nil)
         controller.showToast = { _, _ in }
         let window = try XCTUnwrap(controller.window)
-        window.appearance = NSAppearance(named: .darkAqua)
+        window.appearance = TestAppearance.appearance
         let canvas = controller.canvas
 
         let spotlight = SpotlightAnnotation(rect: local(Layout.chart).insetBy(dx: -6, dy: -6))

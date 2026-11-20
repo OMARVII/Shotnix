@@ -300,7 +300,7 @@ struct VideoComputerSoundLane: View, Equatable {
                     let point = CGPoint(x: geometry.x(keyframe.time), y: y(keyframe.volume))
                     if n == 0 { path.move(to: point) } else { path.addLine(to: point) }
                 }
-                inner.stroke(path, with: .color(.white.opacity(0.88)), lineWidth: 1.3)
+                inner.stroke(path, with: .color(VideoEditorTheme.onTint(0.88)), lineWidth: 1.3)
             }
             // Its name on a pill, like the clips'.
             if index == 0, frame.width > 150 {
@@ -324,7 +324,7 @@ struct VideoComputerSoundLane: View, Equatable {
             ghost.addLine(to: CGPoint(x: geometry.x(dip.range.lowerBound), y: floor))
             ghost.addLine(to: CGPoint(x: geometry.x(dip.range.upperBound), y: floor))
             ghost.addLine(to: CGPoint(x: geometry.x(dip.range.upperBound + VideoMusicMix.duckRelease), y: top))
-            context.stroke(ghost, with: .color(.white.opacity(0.55)), style: StrokeStyle(lineWidth: 1, dash: [3, 3]))
+            context.stroke(ghost, with: .color(VideoEditorTheme.onTint(0.55)), style: StrokeStyle(lineWidth: 1, dash: [3, 3]))
         }
     }
 
@@ -357,7 +357,7 @@ struct VideoComputerSoundLane: View, Equatable {
             Color.clear
             if active {
                 RoundedRectangle(cornerRadius: 4, style: .continuous)
-                    .fill(Color.white.opacity(0.1))
+                    .fill(ShotnixTheme.ink(0.1))
                 if width > 30 || dragging == index {
                     Text(dip.lowered ? percent : L("Not lowered"))
                         .font(.system(size: 9.5, weight: .bold, design: .rounded))

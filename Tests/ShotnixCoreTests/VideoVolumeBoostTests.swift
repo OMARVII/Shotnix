@@ -398,7 +398,7 @@ final class VideoVolumeBoostTests: XCTestCase {
         let model = try await T.make(in: directory, T.Options(audio: true))
         let id = try XCTUnwrap(model.project.timelineClips.first?.id)
         model.selectClip(id)
-        let host = NSHostingView(rootView: VideoInspectorView(model: model).frame(width: 318, height: 900).environment(\.colorScheme, .dark))
+        let host = NSHostingView(rootView: VideoInspectorView(model: model).frame(width: 318, height: 900).environment(\.colorScheme, TestAppearance.colorScheme))
         host.frame = NSRect(x: 0, y: 0, width: 318, height: 900)
         let window = NSWindow(contentRect: NSRect(x: -9_000, y: -9_000, width: 318, height: 900), styleMask: [.borderless], backing: .buffered, defer: false)
         window.contentView = host
@@ -469,10 +469,10 @@ final class VideoVolumeBoostTests: XCTestCase {
                     model.selection = .none
                     model.inspectorTab = .audio
                 }
-                let host = NSHostingView(rootView: VideoInspectorView(model: model).frame(width: 318, height: 900).environment(\.colorScheme, .dark))
+                let host = NSHostingView(rootView: VideoInspectorView(model: model).frame(width: 318, height: 900).environment(\.colorScheme, TestAppearance.colorScheme))
                 host.frame = NSRect(x: 0, y: 0, width: 318, height: 900)
                 let window = NSWindow(contentRect: host.frame, styleMask: [.borderless], backing: .buffered, defer: false)
-                window.appearance = NSAppearance(named: .darkAqua)
+                window.appearance = TestAppearance.appearance
                 window.contentView = host
                 host.layoutSubtreeIfNeeded()
                 await T.settle(0.3)

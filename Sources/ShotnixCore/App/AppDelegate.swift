@@ -84,6 +84,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // After a restart, the previous Shotnix finishes quitting before this
         // one takes the hotkeys, the menu bar, and History.
         AppRelaunch.waitForPreviousInstance()
+        // Light or dark, as picked in Settings, before any window opens.
+        ShotnixAppearance.apply()
         // Before anything that could crash: the next launch can tell a crash
         // from a normal quit.
         CrashReporter.startSession()

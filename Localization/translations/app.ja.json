@@ -155,6 +155,9 @@
   "Aurora Blue" : {
     "ja" : "オーロラブルー"
   },
+  "Auto follows your Mac's appearance." : {
+    "ja" : "“自動”はMacの外観に合わせて切り替わります。"
+  },
   "Auto-dismiss overlay" : {
     "ja" : "サムネールを自動的に閉じる"
   },
@@ -165,6 +168,9 @@
     "ja" : "新しい収録に自動ズームを適用"
   },
   "Automatic" : {
+    "ja" : "自動"
+  },
+  "Automatic appearance" : {
     "ja" : "自動"
   },
   "Automatic detects each capture's language; pick languages when it guesses wrong. Accurate reads small text best — Fast answers sooner but knows fewer languages. Used by Capture Text, Copy Text, and History search." : {
@@ -418,6 +424,9 @@
   },
   "Cut" : {
     "ja" : "カット"
+  },
+  "Dark appearance" : {
+    "ja" : "ダーク"
   },
   "Delete" : {
     "ja" : "削除"
@@ -709,6 +718,9 @@
   },
   "Left" : {
     "ja" : "左"
+  },
+  "Light appearance" : {
+    "ja" : "ライト"
   },
   "Lime Signal" : {
     "ja" : "ライムシグナル"
@@ -1159,6 +1171,9 @@
   },
   "Shotnix Preferences" : {
     "ja" : "Shotnixの設定"
+  },
+  "Shotnix appearance" : {
+    "ja" : "外観"
   },
   "Shotnix could not write the file to:\n%@" : {
     "ja" : "Shotnixは次の場所にファイルを書き込めませんでした:\n%@"

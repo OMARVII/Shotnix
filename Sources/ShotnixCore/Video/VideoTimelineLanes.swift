@@ -135,7 +135,7 @@ struct VideoTimelineHoverLayer: View {
         let position = geometry.x(time)
         return ZStack(alignment: .topLeading) {
             Rectangle()
-                .fill(Color.white.opacity(0.28))
+                .fill(ShotnixTheme.wash(0.28))
                 .frame(width: 1, height: height - M.rulerHeight)
                 .offset(x: position, y: M.rulerHeight)
             Text(VideoEditorModel.timecode(time))
@@ -159,7 +159,7 @@ struct VideoTimelineHoverLayer: View {
                 Text(L("Zoom"))
             }
             .font(.system(size: 11, weight: .bold))
-            .foregroundStyle(Color.white.opacity(0.8))
+            .foregroundStyle(ShotnixTheme.ink(0.8))
             .frame(width: max(CGFloat(length) * geometry.pointsPerSecond, 30), height: M.zoomTrackHeight - 4)
             .background(
                 RoundedRectangle(cornerRadius: 7, style: .continuous)
@@ -236,19 +236,19 @@ struct VideoCaptionLane: View, Equatable {
                 let selected = selectedIDs.contains(item.id)
                 let path = Path(roundedRect: frame, cornerRadius: 6, style: .continuous)
                 context.fill(path, with: .color(VideoEditorTheme.caption.opacity(selected ? 0.85 : 0.34)))
-                context.stroke(path, with: .color(.white.opacity(selected ? 0.95 : 0.12)), lineWidth: selected ? 1.5 : 1)
+                context.stroke(path, with: .color(selected ? ShotnixTheme.solidInk(0.95) : Color.white.opacity(0.12)), lineWidth: selected ? 1.5 : 1)
                 if frame.width > 26 {
                     var inner = context
                     inner.clip(to: Path(frame.insetBy(dx: 5, dy: 0)))
                     inner.draw(
-                        Text(item.text).font(.system(size: 10, weight: .medium)).foregroundColor(.white.opacity(selected ? 1 : 0.88)),
+                        Text(item.text).font(.system(size: 10, weight: .medium)).foregroundColor(VideoEditorTheme.onTint(selected ? 1 : 0.88)),
                         at: CGPoint(x: frame.minX + 6, y: frame.midY),
                         anchor: .leading
                     )
                 }
                 if frame.width > Self.edge * 3, selected {
                     for x in [frame.minX + 3, frame.maxX - 3] {
-                        context.fill(Path(roundedRect: CGRect(x: x - 1, y: frame.midY - 5, width: 2, height: 10), cornerRadius: 1), with: .color(.white.opacity(0.7)))
+                        context.fill(Path(roundedRect: CGRect(x: x - 1, y: frame.midY - 5, width: 2, height: 10), cornerRadius: 1), with: .color(VideoEditorTheme.onTint(0.7)))
                     }
                 }
             }
@@ -412,9 +412,9 @@ struct VideoKeysLane: View, Equatable {
                 let selected = selectedIDs.contains(item.id)
                 let path = Path(roundedRect: frame, cornerRadius: 5, style: .continuous)
                 context.fill(path, with: .color(VideoEditorTheme.keys.opacity(selected ? 0.9 : (hidden ? 0.16 : 0.4))))
-                context.stroke(path, with: .color(.white.opacity(selected ? 0.95 : 0.14)), lineWidth: selected ? 1.5 : 1)
+                context.stroke(path, with: .color(selected ? ShotnixTheme.solidInk(0.95) : Color.white.opacity(0.14)), lineWidth: selected ? 1.5 : 1)
                 context.draw(
-                    Text(item.label).font(.system(size: 9.5, weight: .semibold)).foregroundColor(.white.opacity(hidden ? 0.45 : 0.95)),
+                    Text(item.label).font(.system(size: 9.5, weight: .semibold)).foregroundColor(VideoEditorTheme.onTint(hidden ? 0.45 : 0.95)),
                     at: CGPoint(x: frame.midX, y: frame.midY)
                 )
             }
@@ -509,8 +509,8 @@ struct VideoClickLane: View, Equatable {
                 guard x >= -8, x <= size.width + 8 else { continue }
                 let selected = selectedIDs.contains(item.id) || drag?.id == item.id
                 let dot = Path(ellipseIn: CGRect(x: x - 4, y: (M.clickLaneHeight - 8) / 2, width: 8, height: 8))
-                context.fill(dot, with: .color(selected ? .white : .white.opacity(0.55)))
-                context.stroke(dot, with: .color(selected ? VideoEditorTheme.zoom : .black.opacity(0.4)), lineWidth: selected ? 2 : 1)
+                context.fill(dot, with: .color(selected ? ShotnixTheme.solidInk(1) : ShotnixTheme.wash(0.55)))
+                context.stroke(dot, with: .color(selected ? VideoEditorTheme.zoom : ShotnixTheme.shade(0.4)), lineWidth: selected ? 2 : 1)
             }
         }
         .frame(width: geometry.width, height: M.clickLaneHeight)
@@ -648,14 +648,14 @@ struct VideoCameraLayoutLane: View, Equatable {
                 let selected = selectedIDs.contains(item.id)
                 let path = Path(roundedRect: frame, cornerRadius: 6, style: .continuous)
                 context.fill(path, with: .color(VideoEditorTheme.camera.opacity(selected ? 0.9 : 0.45)))
-                context.stroke(path, with: .color(.white.opacity(selected ? 0.95 : 0.14)), lineWidth: selected ? 1.5 : 1)
+                context.stroke(path, with: .color(selected ? ShotnixTheme.solidInk(0.95) : Color.white.opacity(0.14)), lineWidth: selected ? 1.5 : 1)
                 if frame.width > 30 {
                     var inner = context
                     inner.clip(to: Path(frame.insetBy(dx: 5, dy: 0)))
                     inner.draw(
                         (Text(Image(systemName: item.layout.symbol)) + Text(verbatim: frame.width > 90 ? " \(item.layout.title)" : " "))
                             .font(.system(size: 10, weight: .semibold))
-                            .foregroundColor(.white),
+                            .foregroundColor(VideoEditorTheme.onTint()),
                         at: CGPoint(x: frame.minX + 7, y: frame.midY),
                         anchor: .leading
                     )

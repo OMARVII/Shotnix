@@ -1329,6 +1329,7 @@ private final class RecordingWindowChooserWindow: NSWindow {
         self.selectHandler = selectHandler
         self.closeHandler = closeHandler
         super.init(contentRect: NSRect(x: 0, y: 0, width: Self.panelWidth, height: Self.panelHeight), styleMask: [.borderless], backing: .buffered, defer: false)
+        staysDark()
 
         isOpaque = false
         backgroundColor = .clear
@@ -1500,7 +1501,7 @@ private final class RecordingWindowChoiceButton: NSButton {
         wantsLayer = true
         layer?.cornerRadius = 18
         layer?.cornerCurve = .continuous
-        layer?.backgroundColor = idleBackground.cgColor
+        layer?.backgroundColor = idleBackground.hudCGColor
         layer?.borderWidth = 1
         layer?.borderColor = NSColor.white.withAlphaComponent(0.105).cgColor
 
@@ -1547,10 +1548,10 @@ private final class RecordingWindowChoiceButton: NSButton {
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
 
     override func mouseDown(with event: NSEvent) {
-        layer?.backgroundColor = pressedBackground.cgColor
+        layer?.backgroundColor = pressedBackground.hudCGColor
         NSHapticFeedbackManager.defaultPerformer.perform(.generic, performanceTime: .default)
         super.mouseDown(with: event)
-        layer?.backgroundColor = idleBackground.cgColor
+        layer?.backgroundColor = idleBackground.hudCGColor
     }
 }
 
@@ -1728,6 +1729,7 @@ private final class RecordingScreenChooserWindow: NSWindow {
         let rowCount = screens.count + (allDisplaysHandler == nil ? 0 : 1)
         let height = Self.headerHeight + CGFloat(rowCount) * Self.rowStride + Self.bottomPadding
         super.init(contentRect: NSRect(x: 0, y: 0, width: Self.panelWidth, height: height), styleMask: [.borderless], backing: .buffered, defer: false)
+        staysDark()
 
         isOpaque = false
         backgroundColor = .clear
@@ -2073,6 +2075,7 @@ final class RecordingControlsWindow: NSWindow {
             backing: .buffered,
             defer: false
         )
+        staysDark()
 
         isOpaque = false
         backgroundColor = .clear
@@ -2965,7 +2968,7 @@ private final class RecordingToggleButton: NSButton {
 
     private func updateAppearance() {
         layer?.backgroundColor = isOn
-            ? activeTint.withAlphaComponent(0.18).cgColor
+            ? activeTint.withAlphaComponent(0.18).hudCGColor
             : NSColor.white.withAlphaComponent(0.07).cgColor
         contentTintColor = isOn ? activeTint : NSColor.white.withAlphaComponent(0.48)
         let config = NSImage.SymbolConfiguration(pointSize: 15, weight: .semibold)
@@ -3002,7 +3005,7 @@ private final class RecordingActionButton: NSButton {
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
 
     override func mouseDown(with event: NSEvent) {
-        layer?.backgroundColor = buttonTint.withAlphaComponent(0.16).cgColor
+        layer?.backgroundColor = buttonTint.withAlphaComponent(0.16).hudCGColor
         NSHapticFeedbackManager.defaultPerformer.perform(.generic, performanceTime: .default)
         super.mouseDown(with: event)
         layer?.backgroundColor = NSColor.white.withAlphaComponent(0.08).cgColor
@@ -3043,7 +3046,7 @@ private final class RecordingAudioLevelMeter: NSView {
             let x = CGFloat(index) * (barWidth + gap)
             bar.frame = NSRect(x: x, y: (bounds.height - height) / 2, width: barWidth, height: height)
             bar.layer?.backgroundColor = response > 0.08
-                ? NSColor.systemGreen.withAlphaComponent(0.58 + response * 0.42).cgColor
+                ? NSColor.systemGreen.withAlphaComponent(0.58 + response * 0.42).hudCGColor
                 : NSColor.white.withAlphaComponent(0.18).cgColor
         }
     }

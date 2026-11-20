@@ -32,10 +32,10 @@ final class VideoInspectorLayoutTests: XCTestCase {
     private typealias T = VideoEditorTestModel
 
     private func mount<V: View>(_ view: V, size: CGSize) async -> NSView {
-        let host = NSHostingView(rootView: view.frame(width: size.width, height: size.height).environment(\.colorScheme, .dark))
+        let host = NSHostingView(rootView: view.frame(width: size.width, height: size.height).environment(\.colorScheme, TestAppearance.colorScheme))
         host.frame = NSRect(origin: .zero, size: size)
         let window = NSWindow(contentRect: host.frame, styleMask: [.borderless], backing: .buffered, defer: false)
-        window.appearance = NSAppearance(named: .darkAqua)
+        window.appearance = TestAppearance.appearance
         window.contentView = host
         window.orderFrontRegardless()
         self.window = window

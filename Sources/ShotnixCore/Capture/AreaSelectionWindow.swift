@@ -275,6 +275,7 @@ private final class SelectionOverlayWindow: NSWindow {
             backing: .buffered,
             defer: false
         )
+        staysDark()
         isOpaque = false
         backgroundColor = .clear
         level = .screenSaver

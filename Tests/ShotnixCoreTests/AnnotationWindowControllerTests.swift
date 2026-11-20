@@ -363,7 +363,7 @@ final class AnnotationWindowControllerTests: XCTestCase {
         let image = AnnotationTestImages.document(pointSize: CGSize(width: 900, height: 420), density: 2)
         let controller = makeController(image: image)
         let window = try XCTUnwrap(controller.window)
-        window.appearance = NSAppearance(named: .darkAqua)
+        window.appearance = TestAppearance.appearance
         let canvas = controller.canvas
         let callout = CalloutAnnotation(origin: CGPoint(x: 420, y: 60), tail: CGPoint(x: 330, y: 120))
         callout.text = "Callout bubble"

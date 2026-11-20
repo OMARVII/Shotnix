@@ -150,6 +150,9 @@
   "Aurora Blue" : {
     "uk" : "Синє сяйво"
   },
+  "Auto follows your Mac's appearance." : {
+    "uk" : "«Автоматично» повторює вигляд Mac."
+  },
   "Auto-dismiss overlay" : {
     "uk" : "Автоматично ховати мініатюру"
   },
@@ -160,6 +163,9 @@
     "uk" : "Автонаближення в нових записах"
   },
   "Automatic" : {
+    "uk" : "Автоматично"
+  },
+  "Automatic appearance" : {
     "uk" : "Автоматично"
   },
   "Automatic detects each capture's language; pick languages when it guesses wrong. Accurate reads small text best — Fast answers sooner but knows fewer languages. Used by Capture Text, Copy Text, and History search." : {
@@ -350,6 +356,9 @@
   },
   "Cut" : {
     "uk" : "Вирізати"
+  },
+  "Dark appearance" : {
+    "uk" : "Темний"
   },
   "Delete %lld Captures?" : {
     "uk" : {
@@ -658,6 +667,9 @@
   },
   "Left" : {
     "uk" : "Ліворуч"
+  },
+  "Light appearance" : {
+    "uk" : "Світлий"
   },
   "Lime Signal" : {
     "uk" : "Лаймовий сигнал"
@@ -1038,6 +1050,9 @@
   },
   "Shotnix Preferences" : {
     "uk" : "Параметри Shotnix"
+  },
+  "Shotnix appearance" : {
+    "uk" : "Вигляд"
   },
   "Shotnix could not write the file to:\n%@" : {
     "uk" : "Shotnix не вдалося записати файл сюди:\n%@"
