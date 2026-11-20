@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [0.32.0-beta] - 2026-11-20
 
 ### Added
 - **Freeze the screen while you select an area.** With the new switch in Settings > Screenshots > Selection, the screen holds still from the moment you press the shortcut: you select on a still picture, and the screenshot shows what was there at that moment, however long you take. A video is caught on the frame that was playing, and what would have changed or closed while you select is still there. It works for Capture Area, Capture Text and the QR code scan, on every display. Off unless you turn it on.

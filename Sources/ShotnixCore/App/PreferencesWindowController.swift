@@ -1091,7 +1091,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.31.1"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.32.0"
     
     var body: some View {
         PreferencesPane {
@@ -1135,6 +1135,12 @@ struct AboutSettingsView: View {
                 ScrollView {
                     // The release notes stay in English (l10n-ignore); everything around them is localized.
                     Text(verbatim: """
+                    Version 0.32.0
+                    • Freeze the screen while you select an area, so the shot shows the moment you pressed the shortcut
+                    • Recordings can hide the menu bar icons (macOS 26) and the desktop icons
+                    • The recording timer and macOS's purple indicator stay out of recordings on macOS 26
+                    • Area screenshots on a Retina display are sharp wherever the selection lands
+
                     Version 0.31.1
                     • The one-time GitHub star ask also shows once after your third finished video export
 
