@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+- **Taking a screenshot no longer brings an open editor to the front.** With a video editor left open behind other apps (after a recording, say), or Settings or History, Shotnix stayed the active app the moment you finished or cancelled a selection, so macOS brought that window in front of the app you were in. Now the app you were in gets the keyboard back as the selection closes, and Shotnix's own windows stay where they were. Timed screenshots, scrolling captures, Capture Text and the QR code scan do the same. A screenshot you take while working in the editor still leaves you in the editor.
+
 ## [0.33.0-beta] - 2026-11-20
 
 ### Added

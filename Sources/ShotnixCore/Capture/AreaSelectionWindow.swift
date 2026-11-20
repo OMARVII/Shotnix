@@ -36,9 +36,15 @@ final class AreaSelectionWindow: NSObject {
     /// Takes a display's still. Tests put their own pictures here.
     var stillProvider: ((NSScreen) async -> FrozenScreen?)?
 
-    init(mode: SelectionMode, freezesScreen: Bool = false, completion: @escaping Completion) {
+    /// Whether a window of Shotnix's follows a finished selection and
+    /// needs the keyboard (a countdown, the recording controls, a result).
+    /// Otherwise the app the user was in gets it back as the overlay closes.
+    private let leadsToAnotherWindow: Bool
+
+    init(mode: SelectionMode, freezesScreen: Bool = false, leadsToAnotherWindow: Bool = false, completion: @escaping Completion) {
         self.mode = mode
         self.freezesScreen = freezesScreen && mode == .area
+        self.leadsToAnotherWindow = leadsToAnotherWindow
         self.completion = completion
     }
 
@@ -49,6 +55,8 @@ final class AreaSelectionWindow: NSObject {
     var isShowingOverlays: Bool { !overlays.isEmpty }
 
     func prepareAndShow(engine: CaptureEngine) async {
+        // Before anything of Shotnix's shows: whose keyboard this borrows.
+        CaptureFocus.begin()
         let screens = NSScreen.screens
         let provider = stillProvider ?? { screen in await Self.still(of: screen, engine: engine) }
         stills = Array(repeating: nil, count: screens.count)
@@ -174,7 +182,7 @@ final class AreaSelectionWindow: NSObject {
             selectedFrozenScreen = stills[index]
         }
         NSCursor.pop()
-        tearDown()
+        tearDown(more: leadsToAnotherWindow)
         if #available(macOS 14.0, *) {
             // SCK captures exclude Shotnix's own windows, so there's no need
             // to wait for the dimming overlay to leave the compositor —
@@ -194,14 +202,18 @@ final class AreaSelectionWindow: NSObject {
     func cancel() {
         // Only a selection that got as far as its overlays pushed a cursor.
         if !overlays.isEmpty { NSCursor.pop() }
-        tearDown()
+        tearDown(more: false)
         guard let screen = NSScreen.main ?? NSScreen.screens.first else { return }
         completion(nil, screen)
     }
 
-    private func tearDown() {
+    private func tearDown(more: Bool) {
         isOver = true
         if let m = keyMonitor { NSEvent.removeMonitor(m); keyMonitor = nil }
+        // Before the overlays go: with them gone and Shotnix still the
+        // active app, macOS would bring an editor left open in the
+        // background in front of what's being captured.
+        CaptureFocus.windowWillClose(more: more)
         overlays.forEach { $0.orderOut(nil) }
         overlays.removeAll()
         stills.removeAll()

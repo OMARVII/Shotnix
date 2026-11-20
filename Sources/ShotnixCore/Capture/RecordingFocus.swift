@@ -41,14 +41,7 @@ enum RecordingFocus {
     /// macOS only lets the active app pass focus on. `app` wins (a window
     /// recording's own app); otherwise the target noted at setup.
     static func returnFocus(to app: NSRunningApplication? = nil) {
-        guard let target = app ?? returnTarget, !target.isTerminated,
-              target.processIdentifier != ProcessInfo.processInfo.processIdentifier else { return }
-        if #available(macOS 14.0, *) {
-            NSApp.yieldActivation(to: target)
-            target.activate(from: .current, options: [])
-        } else {
-            target.activate(options: [])
-        }
+        (app ?? returnTarget)?.takeFocusFromShotnix()
     }
 
     /// Brings the window being recorded in front of its app's other windows

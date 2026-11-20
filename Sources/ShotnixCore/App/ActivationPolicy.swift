@@ -25,6 +25,17 @@ extension NSApplication {
         setActivationPolicy(.prohibited)
     }
 
+    /// Whether Shotnix stays the active app once its transient UI closes: an
+    /// editor is open (minimized counts) or another lasting window is up.
+    /// macOS then brings one of those forward instead of going back to the
+    /// app the user was in (see `CaptureFocus`).
+    func staysInFrontAfterTransientUI() -> Bool {
+        VideoDemoEditorWindowController.hasOpenEditors
+            || AnnotationWindowController.hasOpenEditors
+            || ShotnixEditorActivation.isHoldingForeground
+            || hasVisiblePersistentWindow(excluding: nil)
+    }
+
     /// Lets a menu-bar-only Shotnix show transient UI (menu, capture
     /// overlay, panels). Never demotes a regular app — while an editor is
     /// open that would hide its Dock icon and drop it behind other apps.

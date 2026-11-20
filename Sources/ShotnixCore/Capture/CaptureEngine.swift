@@ -133,12 +133,12 @@ final class CaptureEngine {
             PermissionsManager.showPermissionDeniedAlert(); return
         }
         guard !selectionInProgress, countdownWindow == nil else { return }
-        areaSelectionWindow = AreaSelectionWindow(mode: .area) { [weak self] rect, screen in
+        areaSelectionWindow = AreaSelectionWindow(mode: .area, leadsToAnotherWindow: true) { [weak self] rect, screen in
             guard let self else { return }
             self.areaSelectionWindow = nil
             guard let rect else { return }
             self.lastCaptureRect = rect
-            let countdown = CountdownWindow(seconds: Settings.timedCaptureDelaySeconds, on: screen) { [weak self] finished in
+            let countdown = CountdownWindow(seconds: Settings.timedCaptureDelaySeconds, on: screen, givesFocusBack: true) { [weak self] finished in
                 guard let self else { return }
                 self.countdownWindow = nil
                 guard finished else { return }
@@ -308,7 +308,7 @@ final class CaptureEngine {
         RecordingFocus.noteSetupStarted()
 
         recordingSelectionActive = true
-        areaSelectionWindow = AreaSelectionWindow(mode: .area) { [weak self] rect, screen in
+        areaSelectionWindow = AreaSelectionWindow(mode: .area, leadsToAnotherWindow: true) { [weak self] rect, screen in
             guard let self else { return }
             self.recordingSelectionActive = false
             self.areaSelectionWindow = nil
@@ -768,7 +768,8 @@ final class CaptureEngine {
         }
         guard !selectionInProgress else { return }
         let hiddenByCapture = await hideDesktopIconsBeforeSelecting()
-        areaSelectionWindow = AreaSelectionWindow(mode: .area, freezesScreen: Settings.freezeScreenWhileSelecting) { [weak self] rect, screen in
+        // The result window follows the selection and takes the keyboard.
+        areaSelectionWindow = AreaSelectionWindow(mode: .area, freezesScreen: Settings.freezeScreenWhileSelecting, leadsToAnotherWindow: true) { [weak self] rect, screen in
             guard let self else { return }
             let frozen = self.areaSelectionWindow?.selectedFrozenScreen
             self.areaSelectionWindow = nil
@@ -778,6 +779,7 @@ final class CaptureEngine {
             }
             Task {
                 guard let image = await self.image(of: rect, on: screen, frozen: frozen, purpose: "QR code") else {
+                    CaptureFocus.finish()
                     ToastWindow.show(message: L("Capture failed"), on: screen)
                     self.restoreDesktopIconsIfNeeded(hiddenByCapture)
                     return
@@ -785,6 +787,8 @@ final class CaptureEngine {
                 let results = await QRCodeEngine.detect(in: image)
                 await MainActor.run {
                     if results.isEmpty {
+                        // No result window after all.
+                        CaptureFocus.finish()
                         ToastWindow.show(message: L("No barcode found in this selection"), on: screen)
                     } else {
                         QRCodeResultWindow.show(results: results)

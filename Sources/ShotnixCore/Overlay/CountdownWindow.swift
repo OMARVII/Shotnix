@@ -14,6 +14,9 @@ final class CountdownWindow: NSWindow {
     private var timer: Timer?
     private var keyMonitor: Any?
     private var didFinish = false
+    /// A screenshot follows the countdown: the app the user was in gets the
+    /// keyboard back as it closes. A recording hands focus on itself.
+    private let givesFocusBack: Bool
 
     private let circleSize: CGFloat = 150
     private static let hintFont = NSFont.systemFont(ofSize: 11, weight: .semibold)
@@ -24,9 +27,10 @@ final class CountdownWindow: NSWindow {
 
     /// - Parameter completion: called exactly once — `true` when the countdown
     ///   ran to zero, `false` when the user cancelled.
-    init(seconds: Int, on screen: NSScreen, completion: @escaping (Bool) -> Void) {
+    init(seconds: Int, on screen: NSScreen, givesFocusBack: Bool = false, completion: @escaping (Bool) -> Void) {
         self.totalSeconds = max(1, seconds)
         self.remaining = max(1, seconds)
+        self.givesFocusBack = givesFocusBack
         self.completion = completion
 
         // Wide enough for the circle, or for the cancel hint in a longer language.
@@ -241,6 +245,9 @@ final class CountdownWindow: NSWindow {
             NSEvent.removeMonitor(keyMonitor)
             self.keyMonitor = nil
         }
+        // Before the window goes, or an editor open in the background
+        // comes forward and into the shot.
+        if givesFocusBack { CaptureFocus.windowWillClose(more: false) }
         orderOut(nil)
         NSApp.restoreBackgroundOnlyActivationPolicyIfNeeded()
         // A short beat so the window is gone from the compositor before the
