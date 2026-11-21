@@ -1113,7 +1113,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.33.0"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.33.1"
     
     var body: some View {
         PreferencesPane {
@@ -1157,6 +1157,9 @@ struct AboutSettingsView: View {
                 ScrollView {
                     // The release notes stay in English (l10n-ignore); everything around them is localized.
                     Text(verbatim: """
+                    Version 0.33.1
+                    • Taking a screenshot no longer brings an open video editor, Settings or History in front of the app you're in
+
                     Version 0.33.0
                     • Light mode: Shotnix is light when your Mac is light and dark when it's dark
                     • Pick Auto, Light or Dark in Settings > General > Appearance
