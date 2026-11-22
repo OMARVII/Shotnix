@@ -1120,7 +1120,7 @@ struct RecordingSettingsView: View {
 }
 
 struct AboutSettingsView: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.33.1"
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.33.2"
     
     var body: some View {
         PreferencesPane {
@@ -1164,6 +1164,9 @@ struct AboutSettingsView: View {
                 ScrollView {
                     // The release notes stay in English (l10n-ignore); everything around them is localized.
                     Text(verbatim: """
+                    Version 0.33.2
+                    • Settings shows a new save folder as soon as you choose it
+
                     Version 0.33.1
                     • Taking a screenshot no longer brings an open video editor, Settings or History in front of the app you're in
 

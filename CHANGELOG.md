@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [0.33.2-beta] - 2026-11-22
 
 ### Fixed
 - **Settings shows a new save folder as soon as you choose it.** After picking a folder under Settings > Screenshots > Save Location, the row kept showing the old path until you opened another tab and came back. The folder itself was saved either way, so screenshots already went to the right place. The row also follows a folder chosen from the menu while Settings is open.
