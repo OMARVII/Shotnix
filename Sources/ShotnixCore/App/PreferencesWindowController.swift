@@ -729,8 +729,22 @@ struct ScreenshotsSettingsView: View {
     @AppStorage("windowCaptureShadow") var windowCaptureShadow = true
     @AppStorage("timedCaptureDelaySeconds") var timedCaptureDelay = 5
 
+    /// The folder, from the stored value this view watches: the row then
+    /// shows a new folder the moment it's chosen. Read straight from
+    /// `Settings`, it kept the old one until the tab was opened again.
     var displayLocation: String {
-        Settings.autoSaveLocation
+        Settings.autoSaveLocation(stored: autoSaveLocation)
+    }
+
+    /// Asks for a folder, starting in `current`. Nil when the person
+    /// cancels. Tests answer in their place.
+    static var chooseFolder: @MainActor (_ current: String) -> URL? = { current in
+        let panel = NSOpenPanel()
+        panel.canChooseFiles = false
+        panel.canChooseDirectories = true
+        panel.canCreateDirectories = true
+        panel.directoryURL = URL(fileURLWithPath: current)
+        return panel.runModal() == .OK ? panel.url : nil
     }
 
     private var filenamePreview: String {
@@ -807,18 +821,11 @@ struct ScreenshotsSettingsView: View {
             PreferenceSection(L("Save Location")) {
                 PreferenceRow(L("Auto-save folder"), detail: displayLocation) {
                     Button(L("Choose...")) {
-                        let panel = NSOpenPanel()
-                        panel.canChooseFiles = false
-                        panel.canChooseDirectories = true
-                        panel.canCreateDirectories = true
-                        panel.directoryURL = URL(fileURLWithPath: displayLocation)
-
-                        if panel.runModal() == .OK, let url = panel.url {
-                            if Settings.setAutoSaveLocation(url.path) {
-                                autoSaveLocation = Settings.autoSaveLocation
-                            } else {
-                                ToastWindow.show(message: L("Choose a writable folder for auto-save."))
-                            }
+                        guard let url = Self.chooseFolder(displayLocation) else { return }
+                        if Settings.setAutoSaveLocation(url.path) {
+                            autoSaveLocation = Settings.autoSaveLocation
+                        } else {
+                            ToastWindow.show(message: L("Choose a writable folder for auto-save."))
                         }
                     }
                     .buttonStyle(.bordered)

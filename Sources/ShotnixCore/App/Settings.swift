@@ -131,12 +131,15 @@ enum Settings {
     }
 
     static var autoSaveLocation: String {
-        get {
-            let v = defaults.string(forKey: autoSaveLocationKey) ?? ""
-            guard !v.isEmpty else { return defaultAutoSaveLocation }
-            return normalizedWritableDirectoryPath(v) ?? defaultAutoSaveLocation
-        }
+        get { autoSaveLocation(stored: defaults.string(forKey: autoSaveLocationKey) ?? "") }
         set { _ = setAutoSaveLocation(newValue) }
+    }
+
+    /// The folder a stored value stands for: the Desktop when nothing is
+    /// stored, or when the stored folder is gone or can't be written to.
+    static func autoSaveLocation(stored: String) -> String {
+        guard !stored.isEmpty else { return defaultAutoSaveLocation }
+        return normalizedWritableDirectoryPath(stored) ?? defaultAutoSaveLocation
     }
 
     @discardableResult
