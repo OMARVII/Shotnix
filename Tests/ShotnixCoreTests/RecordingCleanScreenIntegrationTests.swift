@@ -1,9 +1,45 @@
 import AppKit
 import AVFoundation
+import CoreImage
 import IOKit.pwr_mgt
 import ScreenCaptureKit
 import XCTest
 @testable import ShotnixCore
+
+/// The first picture a stream delivers.
+private final class FirstFrame: NSObject, SCStreamOutput, @unchecked Sendable {
+    private let lock = NSLock()
+    private var image: CGImage?
+
+    private var taken: CGImage? {
+        lock.lock()
+        defer { lock.unlock() }
+        return image
+    }
+
+    func stream(_ stream: SCStream, didOutputSampleBuffer sampleBuffer: CMSampleBuffer, of type: SCStreamOutputType) {
+        guard type == .screen, let buffer = sampleBuffer.imageBuffer else { return }
+        lock.lock()
+        defer { lock.unlock() }
+        guard image == nil else { return }
+        let picture = CIImage(cvPixelBuffer: buffer)
+        image = CIContext().createCGImage(picture, from: picture.extent)
+    }
+
+    static func capture(_ filter: SCContentFilter, _ configuration: SCStreamConfiguration) async throws -> CGImage {
+        let output = FirstFrame()
+        let stream = SCStream(filter: filter, configuration: configuration, delegate: nil)
+        try stream.addStreamOutput(output, type: .screen, sampleHandlerQueue: DispatchQueue(label: "shotnix.tests.first-frame"))
+        try await stream.startCapture()
+        let deadline = Date().addingTimeInterval(3)
+        while output.taken == nil, Date() < deadline {
+            try await Task.sleep(nanoseconds: 20_000_000)
+        }
+        try? await stream.stopCapture()
+        guard let image = output.taken else { throw XCTSkip("the screen isn't delivering frames") }
+        return image
+    }
+}
 
 /// What a display recording keeps out of the picture, checked in real
 /// recordings of this Mac's own menu bar and desktop: the recorder's menu bar
@@ -177,6 +213,9 @@ final class RecordingCleanScreenIntegrationTests: XCTestCase {
     }
 
     /// The screen as it is now, with or without Control Center's windows.
+    /// A frame of a stream, as a recording's are: ScreenCaptureKit's stills
+    /// leave out the shadow a window right under the menu bar casts on the
+    /// bar, so a still and a video frame differ there with nothing drawn.
     private func still(of rect: CGRect, on screen: NSScreen, withoutControlCenter: Bool = false) async throws -> Pixels {
         let content = try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: true)
         let display = try XCTUnwrap(ScreenCoordinates.display(for: screen, in: content.displays))
@@ -186,7 +225,7 @@ final class RecordingCleanScreenIntegrationTests: XCTestCase {
         configuration.width = Int(rect.width)
         configuration.height = Int(rect.height)
         configuration.showsCursor = false
-        let image: CGImage = try await SCScreenshotManager.captureImage(contentFilter: SCContentFilter(display: display, excludingApplications: left, exceptingWindows: []), configuration: configuration)
+        let image = try await FirstFrame.capture(SCContentFilter(display: display, excludingApplications: left, exceptingWindows: []), configuration)
         return Pixels(image, width: Int(rect.width), height: Int(rect.height))
     }
 
@@ -214,12 +253,26 @@ final class RecordingCleanScreenIntegrationTests: XCTestCase {
         let item = NSStatusBar.system.statusItem(withLength: 46)
         statusItems.append(item)
         item.button?.image = Self.magentaImage(NSSize(width: 40, height: 16))
+        // Each display's bar gets a window for the item, not at the same
+        // moment. macOS shows its indicator on the main display's bar only,
+        // so that bar's window is the one to follow: another bar's serves
+        // when the main one hasn't taken the item a while after.
+        let mainBar = CGDisplayBounds(CGMainDisplayID())
+        var elsewhere: RecordingMenuBar.Window?
+        var waitedForMainBar = 0
         for _ in 0..<60 {
             let windows = RecordingMenuBar.windowsOnScreen(controlCenter: controlCenter)
             let ids = RecordingMenuBar.recorderItems(among: windows, ownBundleID: nil, ownItemFrames: RecordingMenuBar.ownItemFrames())
-            if let window = windows.first(where: { ids.contains($0.id) && $0.name != RecordingMenuBar.systemIndicatorName }) { return window }
+            let found = windows.filter { ids.contains($0.id) && $0.name != RecordingMenuBar.systemIndicatorName }
+            if let window = found.first(where: { mainBar.contains(CGPoint(x: $0.frame.midX, y: $0.frame.midY)) }) { return window }
+            elsewhere = found.first ?? elsewhere
+            if elsewhere != nil {
+                waitedForMainBar += 1
+                if waitedForMainBar > 15 { break }
+            }
             try await sleep(0.1)
         }
+        if let elsewhere { return elsewhere }
         throw XCTSkip("the menu bar didn't take a new item (full, or hidden)")
     }
 
